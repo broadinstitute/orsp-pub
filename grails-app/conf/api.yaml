@@ -1,0 +1,186 @@
+swagger: "2.0"
+info:
+  description: "ORSP Compliance Portal"
+  version: ${appVersion}
+  title: "ORSP Compliance Portal"
+  termsOfService: "https://orsp.broadinstitute.org/index/about"
+  contact:
+    email: "grushton@broadinstitute.org"
+  license:
+    name: "BSD 3"
+    url: "https://github.com/broadinstitute/orsp/blob/develop/LICENSE.txt"
+
+basePath: ${contextPath}
+produces:
+  - application/json
+
+paths:
+  /api/bookit:
+    get:
+      tags:
+        - Bookit
+      summary: Bookit Information
+      description: List of approved and/or completed projects for Bookit
+      responses:
+        200:
+          description: List of approved and/or completed projects for Bookit
+          schema:
+            type: array
+            items:
+              type: string
+        500:
+          description: Server Error
+  /api/consents:
+    get:
+      tags:
+        - Consent
+      summary: Consent Group Summaries
+      description: Consent Group Summaries
+      responses:
+        200:
+          description: Consent Groups
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Consent'
+        500:
+          description: Server Error
+  /api/projects:
+    get:
+      tags:
+        - Projects
+      summary: Project Summaries
+      description: Project Summaries
+      parameters:
+        - in: query
+          name: term
+          schema:
+            type: string
+          required: false
+          description: Returns projects matching query term against all project fields
+      responses:
+        200:
+          description: Projects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+        500:
+          description: Server Error
+  /api/samples:
+    get:
+      tags:
+        - Samples
+      summary: Sample Collection Summaries
+      description: Sample Collection Summaries
+      responses:
+        200:
+          description: Sample Collections
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SampleCollection'
+        500:
+          description: Server Error
+  /api/status:
+    get:
+      tags:
+        - SystemStatus
+      summary: System SystemStatus
+      description: System SystemStatus
+      responses:
+        200:
+          description: System SystemStatus
+          schema:
+            $ref: '#/definitions/SystemStatus'
+        500:
+          description: Server Error
+
+
+definitions:
+  Consent:
+    description: Consent Group
+    properties:
+      key:
+        description: Consent Group Key
+        type: string
+      label:
+        description: Consent Group Label
+        type: string
+      sampleCollections:
+        description: List of Sample Collection IDs
+        type: array
+        items:
+          type: string
+      dataUseRestriction:
+        description: Data Use Restriction
+        type: string
+      url:
+        description: Link to Consent Group
+        type: string
+  Project:
+    properties:
+      key:
+        description: Project Key
+        type: string
+      label:
+        description: Project Label
+        type: string
+      type:
+        description: Project Type
+        type: string
+      description:
+        description: Project Description
+        type: string
+      url:
+        description: Link to Project
+        type: string
+  SampleCollection:
+    properties:
+      sampleCollection:
+        description: Sample Collection ID
+        type: string
+      sampleCollectionName:
+        description: Sample Collection Name
+        type: string
+      project:
+        description: Project Key
+        type: string
+      projectUrl:
+        description: Link to Project
+        type: string
+      consent:
+        description: Consent Group Key
+        type: string
+      consentUrl:
+        description: Link to Consent Group
+        type: string
+  SystemStatus:
+    properties:
+      ok:
+        description: Overall system status
+        type: boolean
+        required: true
+        example: false
+      messages:
+        description: Error messages
+        required: false
+        type: array
+        items:
+          type: string
+      systems:
+        description: Map[String, SubsystemStatus]
+        required: false
+        type: object
+        example:
+          BSP:
+            ok: true
+          Crowd:
+            ok: true
+          Database:
+            ok: true
+          DUOS:
+            ok: false
+            messages:
+              - "DUOS is down"
+

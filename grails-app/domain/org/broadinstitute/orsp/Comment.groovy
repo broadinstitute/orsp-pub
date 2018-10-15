@@ -1,0 +1,33 @@
+package org.broadinstitute.orsp
+
+import com.google.common.base.Splitter
+
+class Comment {
+
+    String projectKey
+    String author
+    String description
+    Date created
+
+    static constraints = {
+        projectKey nullable: false
+        author nullable: false
+        description nullable: false
+        created nullable: false
+    }
+
+    /**
+     * Format the body of the comment to no larger than 75 contiguous non-whitespace characters.
+     *
+     * @return Formatted comment string
+     */
+    def String formattedActionBody() {
+        def list = []
+        Splitter.fixedLength(75).split(description).each {
+            list.add(it)
+            if (it.matches(/^\S*$/)) { list.add("\n") }
+        }
+        return list.join("")
+    }
+
+}

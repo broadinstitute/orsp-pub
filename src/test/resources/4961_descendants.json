@@ -1,0 +1,547 @@
+{
+  "page": 1,
+  "pageCount": 1,
+  "totalCount": 12,
+  "prevPage": null,
+  "nextPage": null,
+  "links": {
+    "nextPage": null,
+    "prevPage": null
+  },
+  "collection": [
+    {
+      "prefLabel": "Chuvash polycythemia",
+      "synonym": [
+        "Chuvash erythromatosis",
+        "Chuvash type polycythemia",
+        "familial erythrocytosis 2",
+        "autosomal recessive benign erythrocytosis"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_0060474",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060474",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "familial erythrocytosis 1",
+      "synonym": [
+        "primary familial and congenital polycythemia",
+        "autosomal dominant benign erythrocytosis"
+      ],
+      "definition": [
+        "A primary polycythemia that has_material_basis_in mutation in the gene encoding the erythropoietin receptor. It is characterized by increased serum red blood cell mass and hemoglobin concentration, hypersensitivity of erythroid progenitors to EPO, and low serum levels of EPO."
+      ],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_0060652",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0060652",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "primary polycythemia",
+      "synonym": [
+        "familial erythrocytosis",
+        "Familiar Polycythemia"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_10780",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_10780",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "plethora of newborn",
+      "synonym": [
+        "Neonatal polycythemia (disorder)"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_11242",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_11242",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "dehydration polycythemia",
+      "synonym": [],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_2833",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2833",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "acquired polycythemia",
+      "synonym": [
+        "secondary polycythemia (disorder)",
+        "secondary Polycythemia",
+        "secondary polycythemia NOS (disorder)",
+        "secondary polycythemia",
+        "Polycythemia, secondary"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_2834",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2834",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "polycythemia due to hypoxia",
+      "synonym": [],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_2835",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2835",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "stress polycythemia",
+      "synonym": [
+        "Stress polycythemia [dup] (disorder)",
+        "Gaisbock's syndrome",
+        "Gaisbock's syndrome (disorder)",
+        "Polycythemia, emotional",
+        "Stress polycythemia (disorder)",
+        "Stress Polycythemia"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_2838",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2838",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "erythropoietin polycythemia",
+      "synonym": [
+        "Polycythemia, nephrogenous",
+        "Polycythaemia due to Excess Erythropoetin Production",
+        "Polycythemia due to excess erythopoetin production",
+        "secondary polycythemia with excess erythropoietin (disorder)",
+        "Nephrogenous polycythemia"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_2839",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_2839",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "physiological polycythemia",
+      "synonym": [],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_8431",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8431",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "polycythemia",
+      "synonym": [
+        "Erythrocythemia"
+      ],
+      "definition": [],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_8432",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8432",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    },
+    {
+      "prefLabel": "polycythemia vera",
+      "synonym": [
+        "Polycythaemia rubra vera",
+        "Osler-Vaquez syndrome",
+        "Proliferative polycythaemia"
+      ],
+      "definition": [
+        "OMIM mapping confirmed by DO. [SN]."
+      ],
+      "obsolete": false,
+      "@id": "http://purl.obolibrary.org/obo/DOID_8997",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997",
+        "ontology": "http://data.bioontology.org/ontologies/DOID",
+        "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/children",
+        "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/parents",
+        "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/descendants",
+        "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/ancestors",
+        "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/instances",
+        "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/tree",
+        "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/notes",
+        "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_8997",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+        "synonym": "http://data.bioontology.org/metadata/skossynonym",
+        "definition": "http://data.bioontology.org/metadata/skosdefinition",
+        "obsolete": "http://data.bioontology.org/metadata/owlobsolete"
+      }
+    }
+  ]
+}
