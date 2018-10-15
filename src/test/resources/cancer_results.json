@@ -1,0 +1,194 @@
+[
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_602",
+    "label": "cancerophobia",
+    "synonyms": [
+      "Fear of getting cancer (finding)",
+      "cancer phobia"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_162",
+    "label": "cancer",
+    "definition": "A disease of cellular proliferation that is malignant and primary, characterized by uncontrolled cellular proliferation, local cell invasion and metastasis.",
+    "synonyms": [
+      "primary cancer",
+      "malignant tumor ",
+      "malignant neoplasm"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_5612",
+    "label": "spinal cancer",
+    "definition": "A central nervous system cancer that is located_in the spinal cord. It is mostly formed from metastases from primary cancers elsewhere (commonly breast, prostate, and lung cancer).",
+    "synonyms": [
+      "spinal cord cancer",
+      "spinal cord neoplasm",
+      "malignant tumor of the Spinal Cord",
+      "Intraspinal tumor",
+      "tumor of the Spinal Cord"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_5877",
+    "label": "endocardium cancer",
+    "synonyms": [
+      "malignant Endocardial tumor",
+      "malignant tumor of endocardium",
+      "malignant neoplasm of endocardium"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_14110",
+    "label": "anus cancer",
+    "definition": "A large intestine cancer that is located_in the anus.",
+    "synonyms": [
+      "malignant anal tumor",
+      "anal cancer"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_11817",
+    "label": "urachus cancer",
+    "synonyms": [
+      "malignant tumor of urachus (disorder)"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_1659",
+    "label": "supratentorial cancer",
+    "definition": "A brain cancer that is located_in the supratentorial region.",
+    "synonyms": [
+      "malignant Supratentorial tumor",
+      "Brain neoplasm, Supratentorial"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_1725",
+    "label": "peritoneum cancer",
+    "definition": "An organ system cancer that is located in the peritoneum.",
+    "synonyms": []
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_734",
+    "label": "urethra cancer",
+    "definition": "An urinary tract cancer that derives_from the tissues of the urethra.",
+    "synonyms": [
+      "urethral Ca",
+      "malignant tumour of urethra",
+      "malignant urethral neoplasm"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_175",
+    "label": "vascular cancer",
+    "definition": "A cardiovascular cancer that is located_in blood vessels.",
+    "synonyms": [
+      "Blood vessel tumor (morphologic abnormality)",
+      "malignant vascular tumor",
+      "vascular tumors",
+      "pulmonary vein malignant neoplasm",
+      "leiomyosarcoma of the renal Vein",
+      "vascular tissue neoplasm",
+      "Blood Vessel neoplasm",
+      "blood vessel neoplasm",
+      "malignant great vessel tumor",
+      "malignant tumor of pulmonary artery",
+      "Haemangiomatous tumour",
+      "malignant vascular neoplasm",
+      "renal vein leiomyosarcoma",
+      "pulmonary artery malignant neoplasm",
+      "malignant tumor of pulmonary Vein",
+      "Blood vessel tumors (morphologic abnormality)",
+      "Blood vessel tumour disorder",
+      "neoplasm of great vessel"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_688",
+    "label": "embryonal cancer",
+    "definition": "A germ cell cancer that is associated with an embryo.",
+    "synonyms": [
+      "embryonal neoplasm",
+      "embryo neoplasm"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_4205",
+    "label": "cerebellum cancer",
+    "synonyms": [
+      "cerebellar cancer",
+      "malignant tumor of Cerebellum"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_5546",
+    "label": "femoral cancer",
+    "definition": "A bone cancer that is located_in the femur.",
+    "synonyms": [
+      "neoplasm of femur"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_363",
+    "label": "uterine cancer",
+    "definition": "A female reproductive organ cancer that is located_in the uterus.",
+    "synonyms": [
+      "Ca uterus NOS",
+      "uterus neoplasm",
+      "uterine tumor",
+      "Tumour of uterus",
+      "malignant uterine tumor",
+      "CA - cancer of uterus",
+      "neoplasm of uterus (disorder)",
+      "malignant neoplasm of uterus (disorder)"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_13499",
+    "label": "jejunal cancer",
+    "synonyms": [
+      "malignant neoplasm of jejunum",
+      "malignant tumor of jejunum (disorder)"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_2174",
+    "label": "ocular cancer",
+    "definition": "A sensory system cancer located_in the eye that is characterized by uncontrolled cellular proliferation in the eye.",
+    "synonyms": [
+      "neoplasm of eye (disorder)",
+      "neoplasm of eye proper",
+      "malignant eye neoplasm",
+      "eye neoplasm",
+      "Ocular tumor"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_3303",
+    "label": "notochordal cancer",
+    "definition": "An embryonal cancer and bone cancer and mesenchymal cell neoplasm that is located_in the notochord.",
+    "synonyms": []
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_2596",
+    "label": "larynx cancer",
+    "definition": "A respiratory system cancer that is located_in the larynx.",
+    "synonyms": []
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_8635",
+    "label": "uvula cancer",
+    "synonyms": [
+      "malignant tumor of uvula (disorder)",
+      "malignant Uvular tumor"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_8556",
+    "label": "vallecula cancer",
+    "synonyms": [
+      "malignant tumor of vallecula (disorder)"
+    ]
+  }
+]
