@@ -1,0 +1,246 @@
+import org.broadinstitute.orsp.deploy.RenderConfigs
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "com.moowork.gradle:gradle-node-plugin:1.1.1"
+        classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.6"
+        classpath "org.grails.plugins:views-gradle:1.1.6"
+        classpath "gradle.plugin.com.srcclr:gradle:3.0.3"
+        classpath 'com.bmuschko:gradle-clover-plugin:2.2.0'
+    }
+}
+
+version "3.9.6"
+group "orsp"
+
+apply plugin:"eclipse"
+apply plugin:"idea"
+apply plugin:"war"
+apply plugin:"org.grails.grails-web"
+apply plugin:"com.moowork.node"
+apply plugin:"asset-pipeline"
+apply plugin:"org.grails.grails-gsp"
+apply plugin:"org.grails.plugins.views-json"
+apply plugin:"com.srcclr.gradle"
+apply plugin:'com.bmuschko.clover'
+
+repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencies {
+    // Including explicit transitive dependencies due to security issues:
+    compile (group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7') {
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    }
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.7' // Required for databind
+    compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'org.springframework.integration', name: 'spring-integration-core', version: '4.3.15.RELEASE'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4', classifier: 'jdk15'
+
+    // Default dependencies from Grails
+    // Keep these separated from App-dependencies for a cleaner/easier upgrade process.
+    compile "org.springframework.boot:spring-boot-starter-logging"
+    compile "org.springframework.boot:spring-boot-autoconfigure"
+    compile "org.grails:grails-core"
+    compile ("org.springframework.boot:spring-boot-starter-actuator") {
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
+
+    // When running as a standalone jar, this dependency needs to be `compile`.
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    // compile "org.springframework.boot:spring-boot-starter-tomcat"
+
+    compile "org.grails:grails-web-boot"
+    compile "org.grails:grails-logging"
+    compile "org.grails:grails-plugin-rest"
+    compile "org.grails:grails-plugin-databinding"
+    compile "org.grails:grails-plugin-i18n"
+    compile "org.grails:grails-plugin-services"
+    compile "org.grails:grails-plugin-url-mappings"
+    compile "org.grails:grails-plugin-interceptors"
+    compile "org.grails.plugins:cache"
+    compile "org.grails.plugins:async"
+    compile "org.grails.plugins:scaffolding"
+    compile "org.grails:grails-plugin-gsp"
+    compile "org.grails.plugins:events"
+    compile "org.grails.plugins:hibernate5"
+    compile "org.hibernate:hibernate-core:5.1.5.Final"
+    compile "org.grails.plugins:gsp"
+    compile "org.grails.plugins:views-json"
+    compile "org.grails.plugins:views-json-templates"
+    console "org.grails:grails-console"
+    profile "org.grails.profiles:react:1.1.0"
+    profile "org.grails.profiles:web"
+    runtime "org.glassfish.web:el-impl:2.2.1-b05"
+    runtime "org.apache.tomcat:tomcat-jdbc:9.0.12"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.6"
+    testRuntime "com.h2database:h2"
+    testCompile "org.grails:grails-gorm-testing-support"
+    testCompile "org.grails.plugins:geb"
+    testCompile "org.grails:grails-web-testing-support"
+    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+
+    // Application Specific dependencies
+    compile group: 'org.drizzle.jdbc', name: 'drizzle-jdbc', version: '1.4'
+    compile 'javax.ws.rs:jsr311-api:1.1.1'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+    compile 'javax.mail:mail:1.4.7'
+    compile 'com.google.guava:guava:26.0-jre'
+    compile 'commons-logging:commons-logging:1.2'
+    compile 'com.google.apis:google-api-services-storage:v1-rev136-1.24.1'
+    compile 'com.google.api-client:google-api-client:1.25.0'
+    compile 'com.google.api-client:google-api-client-jackson2:1.25.0'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3'
+    compile group: 'joda-time', name: 'joda-time', version: '2.10'
+    compile 'org.grails.plugins:quartz:2.0.13'
+
+    // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
+    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
+    compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
+
+    testCompile ('com.github.tomakehurst:wiremock:2.18.0') {
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
+    testCompile 'junit:junit:4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.11.0'
+
+    // Swagger
+    compile group: 'org.parboiled', name: 'parboiled-java', version: '1.2.0'
+    compile group: 'org.webjars', name: 'swagger-ui', version: '2.2.10-1'
+
+    // Code Coverage
+    clover 'org.openclover:clover:4.3.1'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}
+
+bootRun {
+    jvmArgs('-Dspring.output.ansi.enabled=always')
+    addResources = true
+}
+
+node {
+    version = '7.10.0'
+    yarnVersion = '0.21.3'
+    distBaseUrl = 'https://nodejs.org/dist'
+    download = true
+}
+
+task bundle(type: YarnTask, dependsOn: 'yarn') {
+    group = 'build'
+    description = 'Build the client bundle'
+    args = ['run', 'bundle']
+}
+
+task webpackDev(type: YarnTask, dependsOn: 'yarn') {
+    group = 'application'
+    description = 'Build the client bundle in watch mode'
+    args = ['run', 'dev']
+}
+
+task webpackProd(type: YarnTask, dependsOn: 'yarn') {
+    group 'application'
+    description = 'Build the client bundle in production mode'
+    args = ['run', 'prod']
+}
+
+task mochaTest(type: YarnTask, dependsOn: 'yarn') {
+    group = 'verification'
+    description = 'Run the client tests'
+    args = ['run', 'test']
+}
+
+// Turning off minify. See https://github.com/bertramdev/asset-pipeline/issues/147
+assets {
+    minifyJs = false
+    minifyCss = true
+}
+
+war {
+    baseName = 'orsp'
+    version = ''
+}
+
+test {
+    afterTest { desc, result ->
+        println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}
+
+integrationTest {
+    afterTest { desc, result ->
+        println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}
+
+task ('cleanTest') {
+    dependsOn clean, test, integrationTest
+}
+
+/**
+ * See /docs/DEPLOY.md for configuration management
+ */
+task renderConfigs(type: RenderConfigs) {
+    local = false
+    projectHome = projectDir
+    vault = System.getenv('VAULT_ADDR')
+}
+
+// See https://github.com/bmuschko/gradle-clover-plugin for configuration options
+clover {
+    licenseLocation = File.createTempFile('clover', '.license').absolutePath
+    excludes = ['**/Application.groovy',
+                '**/BootStrap.groovy',
+                '**/UrlMappings.groovy',
+                '**/*GrailsPlugin.groovy',
+                '**/*Mock.groovy',
+    ]
+    testIncludes = ['**/*Spec.groovy']
+    report {
+        historical {
+            enabled = true
+            historyIncludes = 'clover-*.xml.gz'
+            packageFilter = null
+            from = null
+            to = null
+            added {
+                range = 10
+                interval = '3 weeks'
+            }
+            mover {
+                threshold = 1
+                range = 10
+                interval = '3 weeks'
+            }
+            mover {
+                threshold = 1
+                range = 10
+                interval = '3 months'
+            }
+            mover {
+                threshold = 1
+                range = 10
+                interval = '1 year'
+            }        }
+        html = true
+        xml = true
+    }
+}

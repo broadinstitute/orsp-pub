@@ -1,0 +1,51 @@
+{
+  "prefLabel": "central sleep apnea",
+  "synonym": [
+    "primary central sleep apnea",
+    "central sleep apnea syndrome"
+  ],
+  "definition": [
+    "A sleep apnea that is characterized by a malfunction of the basic neurological controls for breathing rate and the failure to give the signal to inhale, causing the individual to miss one or more cycles of breathing.",
+    "Xref MGI."
+  ],
+  "cui": [],
+  "semanticType": [],
+  "obsolete": false,
+  "@id": "http://purl.obolibrary.org/obo/DOID_9220",
+  "@type": "http://www.w3.org/2002/07/owl#Class",
+  "links": {
+    "self": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220",
+    "ontology": "http://data.bioontology.org/ontologies/DOID",
+    "children": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/children",
+    "parents": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/parents",
+    "descendants": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/descendants",
+    "ancestors": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/ancestors",
+    "instances": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/instances",
+    "tree": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/tree",
+    "notes": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/notes",
+    "mappings": "http://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220/mappings",
+    "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_9220",
+    "@context": {
+      "self": "http://www.w3.org/2002/07/owl#Class",
+      "ontology": "http://data.bioontology.org/metadata/Ontology",
+      "children": "http://www.w3.org/2002/07/owl#Class",
+      "parents": "http://www.w3.org/2002/07/owl#Class",
+      "descendants": "http://www.w3.org/2002/07/owl#Class",
+      "ancestors": "http://www.w3.org/2002/07/owl#Class",
+      "instances": "http://data.bioontology.org/metadata/Instance",
+      "tree": "http://www.w3.org/2002/07/owl#Class",
+      "notes": "http://data.bioontology.org/metadata/Note",
+      "mappings": "http://data.bioontology.org/metadata/Mapping",
+      "ui": "http://www.w3.org/2002/07/owl#Class"
+    }
+  },
+  "@context": {
+    "@vocab": "http://data.bioontology.org/metadata/",
+    "prefLabel": "http://data.bioontology.org/metadata/skosprefLabel",
+    "synonym": "http://data.bioontology.org/metadata/skossynonym",
+    "definition": "http://data.bioontology.org/metadata/skosdefinition",
+    "obsolete": "http://data.bioontology.org/metadata/owlobsolete",
+    "semanticType": "http://data.bioontology.org/metadata/umlssemanticType",
+    "cui": "http://data.bioontology.org/metadata/umlscui"
+  }
+}
