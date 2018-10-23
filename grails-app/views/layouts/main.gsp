@@ -41,19 +41,9 @@
             document.getElementById("login_spinner").setAttribute("class", "visible");
             var profile = googleUser.getBasicProfile();
             var token = googleUser.getAuthResponse().id_token;
-            console.log('User signin: ' + profile.getEmail());
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.then(function() {
                 var xhttp = new XMLHttpRequest();
-
-                %{-- This is here so that after a non-Broad user signs in, their page is refreshed with valid content --}%
-                <auth:nonBroadSession>
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log('Successful signin from non-Broad user');
-                    }
-                };
-                </auth:nonBroadSession>
 
                 %{--
                     This is here so that after a Broad user signs in, their page is refreshed with valid content
@@ -62,7 +52,6 @@
                 <auth:isNotAuthenticated>
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        console.log('Successful signin, redirecting home with refreshed authentication');
                         location.reload();
                     }
                 };
@@ -76,14 +65,10 @@
         }
         function signOut() {
             var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log('User sign out.');
-            }).then(function (){
-                console.log('Logging out of application.');
+            auth2.signOut().then(function (){
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        console.log('Application log out complete, redirecting to home.');
                         window.location = "${request.contextPath}";
                     }
                 };

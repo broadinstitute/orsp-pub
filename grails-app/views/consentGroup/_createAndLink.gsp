@@ -111,8 +111,6 @@ issue
                         empty().
                         append(unConsentedSamples).
                         trigger("chosen:updated");
-
-                    console.log("Added unconsented samples to select");
                  }
             );
 

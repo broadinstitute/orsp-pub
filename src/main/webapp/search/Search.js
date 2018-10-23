@@ -138,8 +138,6 @@ class Search extends React.Component {
         axios.post(this.state.searchUrl, params)
             .then(response => {
                 const results = response.data;
-                // console.log("raw results:     " + results);
-                // console.log("results.data:    " + results.data);
                 this.setState({
                     data: results.data,
                     loading: false,
