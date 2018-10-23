@@ -14,10 +14,6 @@ import org.springframework.http.MediaType
 
 /**
  * Web Service manager for all calls to the Data Bio Ontology web services. 
- *
- * Created: 8/11/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
  */
 @Slf4j
 class DataBioOntologyService implements Status {

@@ -4,12 +4,6 @@ import groovy.util.logging.Slf4j
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.utils.IssueUtils
 
-/**
- *
- * Created: 1/15/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
- */
 @Slf4j
 class SubmissionController extends AuthenticatedController {
 

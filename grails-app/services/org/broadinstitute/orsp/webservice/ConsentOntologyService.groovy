@@ -13,10 +13,6 @@ import org.springframework.http.MediaType
 
 /**
  * Ontology lookup service hosted by DSDE Consent Ontology Service
- *
- * Created: 9/9/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
  */
 @Slf4j
 class ConsentOntologyService {

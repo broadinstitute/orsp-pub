@@ -24,10 +24,6 @@ import java.text.SimpleDateFormat
 
 /**
  * TODO: Move all transactions to persistence service
- *
- * Created: 10/15/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
  */
 @Slf4j
 class StorageProviderService implements Status {

@@ -2,12 +2,6 @@ package org.broadinstitute.orsp
 
 import java.text.SimpleDateFormat
 
-/**
- *
- * Created: 10/15/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
- */
 class StorageDocument {
 
     String projectKey

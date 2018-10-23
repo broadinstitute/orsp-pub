@@ -1,11 +1,5 @@
 package org.broadinstitute.orsp
 
-/**
- *
- * Created: 10/21/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
- */
 class Event {
 
     String projectKey

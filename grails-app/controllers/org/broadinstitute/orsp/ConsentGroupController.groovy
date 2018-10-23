@@ -5,10 +5,6 @@ import org.springframework.web.multipart.MultipartFile
 
 /**
  * Handle all functions related to Consent Groups
- *
- * Created: 8/18/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
  */
 class ConsentGroupController extends AuthenticatedController {
 

@@ -2,10 +2,6 @@ package org.broadinstitute.orsp
 
 /**
  * This class holds all of the generic query arguments that are used for searching across issues
- *
- * Created: 2/20/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
  */
 class QueryOptions {
 

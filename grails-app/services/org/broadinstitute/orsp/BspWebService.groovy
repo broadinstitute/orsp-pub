@@ -9,12 +9,6 @@ import org.broadinstitute.orsp.webservice.BspCollection
 
 import static groovyx.net.http.HttpBuilder.configure
 
-/**
- *
- * Created: 7/21/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
- */
 @Slf4j
 class BspWebService implements Status {
 

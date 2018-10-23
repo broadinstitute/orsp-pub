@@ -4,12 +4,6 @@ import org.apache.commons.lang.StringUtils
 import org.jsoup.Jsoup
 import org.jsoup.examples.HtmlToPlainText
 
-/**
- *
- * Created: 11/10/14
- *
- * @author <a href="mailto:grushton@broadinstitute.org">grushton</a>
- */
 class Submission {
 
     Long id
