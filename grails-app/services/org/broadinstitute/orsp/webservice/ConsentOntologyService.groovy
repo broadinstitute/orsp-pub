@@ -8,6 +8,7 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.ChainedHttpConfig
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
+import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.DataUseDTO
 import org.springframework.http.MediaType
 
@@ -17,7 +18,7 @@ import org.springframework.http.MediaType
 @Slf4j
 class ConsentOntologyService {
 
-    def grailsApplication
+    ConsentConfiguration consentConfiguration
     private static final JsonSlurper SLURPER = new JsonSlurper()
 
     /**
@@ -57,7 +58,7 @@ class ConsentOntologyService {
      */
     JsonElement getUseRestriction(DataUseDTO dataUseDTO) {
         String json = new Gson().toJson(dataUseDTO).toString()
-        String url = (String) grailsApplication.config.consent.service.ontologyUrl + "schemas/data-use/consent/translate"
+        String url = consentConfiguration.ontologyUrl + "schemas/data-use/consent/translate"
         HttpBuilder http = getBuilder(url)
         String duDtoString = http.post(String) {
             request.contentType = MediaType.APPLICATION_JSON_VALUE
@@ -114,7 +115,7 @@ class ConsentOntologyService {
      * @return Full results as a string
      */
     private String getAutocompleteResponse(String term) {
-        String url = grailsApplication.config.consent.service.ontologyUrl + "autocomplete"
+        String url = consentConfiguration.ontologyUrl + "autocomplete"
         HttpBuilder http = getBuilder(url)
         http.get(String) {
             request.uri.query = [q: term]
@@ -132,7 +133,7 @@ class ConsentOntologyService {
      * @return Full results as a string
      */
     private String getSearchResponse(String term) {
-        String url = grailsApplication.config.consent.service.ontologyUrl + "search"
+        String url = consentConfiguration.ontologyUrl + "search"
         HttpBuilder http = getBuilder(url)
         http.get(String) {
             request.uri.query = [id: term]

@@ -1,7 +1,6 @@
 package org.broadinstitute.orsp
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import grails.core.GrailsApplication
 import grails.testing.mixin.integration.Integration
 import groovy.util.logging.Slf4j
 import org.junit.Rule
@@ -23,8 +22,6 @@ class NotifyServiceSpec extends Specification {
 
     @Autowired
     NotifyService service
-
-    GrailsApplication grailsApplication
 
     private static User getUser() {
         new User(
@@ -49,7 +46,7 @@ class NotifyServiceSpec extends Specification {
     }
 
     private void resetWireMock() {
-        grailsApplication.config.notifyService.sendGridUrl = "http://localhost:${wireMockRule.port()}/send"
+        service.notifyConfiguration.sendGridUrl = "http://localhost:${wireMockRule.port()}/send"
         wireMockRule.resetAll()
         stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)))
     }

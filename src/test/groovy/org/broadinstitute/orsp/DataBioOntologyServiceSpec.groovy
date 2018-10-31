@@ -4,10 +4,13 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
 import grails.testing.services.ServiceUnitTest
+import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.config.DataBioConfiguration
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.broadinstitute.orsp.webservice.DataBioOntologyService
 import org.junit.Rule
+import spock.lang.Specification
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl
@@ -16,7 +19,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import static org.junit.Assert.assertTrue
 
-class DataBioOntologyServiceSpec extends BaseSpec implements ServiceUnitTest<DataBioOntologyService> {
+@Slf4j
+class DataBioOntologyServiceSpec extends Specification implements ServiceUnitTest<DataBioOntologyService> {
+
+    Closure doWithSpring() {{ ->
+        dataBioConfiguration(DataBioConfiguration) {}
+    }}
 
     private static final String DOID_9220 = "http://purl.obolibrary.org/obo/DOID_9220"
 
@@ -24,8 +32,8 @@ class DataBioOntologyServiceSpec extends BaseSpec implements ServiceUnitTest<Dat
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort())
 
     void stubResponse(String resourceName) {
-        grailsApplication.config.dataBio.searchUrl = "http://localhost:${wireMockRule.port()}/search"
-        grailsApplication.config.dataBio.classUrl = "http://localhost:${wireMockRule.port()}/ontologies"
+        service.dataBioConfiguration.searchUrl = "http://localhost:${wireMockRule.port()}/search"
+        service.dataBioConfiguration.classUrl = "http://localhost:${wireMockRule.port()}/ontologies"
         wireMockRule.resetAll()
         URL url = Resources.getResource(resourceName)
         String results = Resources.toString(url, Charsets.UTF_8)

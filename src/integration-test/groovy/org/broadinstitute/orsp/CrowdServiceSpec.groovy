@@ -3,7 +3,6 @@ package org.broadinstitute.orsp
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
-import grails.core.GrailsApplication
 import grails.testing.mixin.integration.Integration
 import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,8 +23,6 @@ class CrowdServiceSpec extends Specification {
     @Autowired
     UserService userService
 
-    GrailsApplication grailsApplication
-
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort())
 
@@ -36,7 +33,7 @@ class CrowdServiceSpec extends Specification {
     }
 
     void stubCrowdResource() {
-        grailsApplication.config.crowd.url = "http://localhost:${wireMockRule.port()}/crowd"
+        crowdService.crowdConfiguration.url = "http://localhost:${wireMockRule.port()}/crowd"
         wireMockRule.resetAll()
         URL url = Resources.getResource("test_crowd_users.json")
         String mockCrowdJson = Resources.toString(url, Charsets.UTF_8)

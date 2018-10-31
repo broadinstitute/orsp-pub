@@ -10,6 +10,7 @@ import groovyx.net.http.HttpBuilder
 import org.apache.commons.lang.CharEncoding
 import org.broadinstitute.orsp.Status
 import org.broadinstitute.orsp.SubsystemStatus
+import org.broadinstitute.orsp.config.DataBioConfiguration
 import org.springframework.http.MediaType
 
 /**
@@ -18,24 +19,24 @@ import org.springframework.http.MediaType
 @Slf4j
 class DataBioOntologyService implements Status {
 
+    DataBioConfiguration dataBioConfiguration
+
     private static final JsonParser PARSER = new JsonParser()
 
-    def grailsApplication
-
     private String getSearchUrl() {
-        (String) grailsApplication.config.dataBio.searchUrl
+        dataBioConfiguration.searchUrl
     }
 
     private String getStatusUrl() {
-        (String) grailsApplication.config.dataBio.statusUrl
+        dataBioConfiguration.statusUrl
     }
 
     private String getOntologyClassUrl() {
-        (String) grailsApplication.config.dataBio.classUrl
+        dataBioConfiguration.classUrl
     }
 
     private String getApiKey() {
-        (String) grailsApplication.config.dataBio.apiKey
+        dataBioConfiguration.apiKey
     }
 
     /**

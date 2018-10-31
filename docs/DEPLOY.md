@@ -16,3 +16,14 @@ Some additional reference material:
 * [Broad's Vault Instructions](https://broadinstitute.atlassian.net/wiki/spaces/DO/pages/113874856/Vault)
 * [Hashicorp Vault Docs](https://www.vaultproject.io/docs/commands/login.html)
 * [DSDE Toolbox Docs](https://hub.docker.com/r/broadinstitute/dsde-toolbox/)
+
+If you see an error like this, it generally means you should re-authenticate with vault
+```
+* What went wrong:
+Execution failed for task ':renderConfigs'.
+> Forbidden
+```
+Authenticate (or see dsde-toolbox link for authenticating)
+```
+vault auth -method=github token=$(cat ~/.github-token)
+```

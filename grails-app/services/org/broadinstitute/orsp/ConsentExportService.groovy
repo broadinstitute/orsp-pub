@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.AssociationType
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
@@ -13,7 +14,7 @@ import java.sql.Timestamp
 @Slf4j
 class ConsentExportService {
 
-    def grailsApplication
+    ConsentConfiguration consentConfiguration
     ConsentService consentService
     PersistenceService persistenceService
 
@@ -61,7 +62,7 @@ class ConsentExportService {
     }
 
     private String getConsentLocation(DataUseRestriction restriction) {
-        grailsApplication.config.consent.service.url + "/" + restriction.getVaultConsentId()
+        consentConfiguration.url + "/" + restriction.getVaultConsentId()
     }
 
     /**

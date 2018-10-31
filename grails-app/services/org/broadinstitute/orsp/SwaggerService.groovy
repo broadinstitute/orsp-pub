@@ -1,8 +1,8 @@
 package org.broadinstitute.orsp
 
 import grails.artefact.controller.support.ResponseRenderer
-import grails.core.GrailsApplication
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.config.AppInfoConfiguration
 import org.parboiled.common.FileUtils
 
 import javax.servlet.http.HttpServletRequest
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest
 @Slf4j
 class SwaggerService implements ResponseRenderer {
 
-    GrailsApplication grailsApplication
+    AppInfoConfiguration appInfoConfiguration
 
     // Note, this needs to be kept in sync with the version in build.gradle. boo.
     private final static String swaggerResource = 'META-INF/resources/webjars/swagger-ui/2.2.10-1'
@@ -31,7 +31,7 @@ class SwaggerService implements ResponseRenderer {
             } else if (path.endsWith('api.yaml')) {
                 String content = FileUtils.readAllTextFromResource('api.yaml').
                         replace('${contextPath}'.toString(), request.contextPath).
-                        replace('${appVersion}', grailsApplication.metadata.getApplicationVersion())
+                        replace('${appVersion}', appInfoConfiguration.getVersion())
                 render (text: content, contentType: mediaType, encoding: 'UTF-8')
             } else {
                 String content = FileUtils.readAllTextFromResource(swaggerResource + path)

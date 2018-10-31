@@ -22,18 +22,15 @@ class ConsentGroupController extends AuthenticatedController {
 
     ConsentService consentService
 
-    @Override
     String getType() {
         IssueType.CONSENT_GROUP.controller
     }
 
-    @Override
-    create() {
+    def create() {
         [consentGroupNames: getExistingConsentGroupNames()]
     }
 
-    @Override
-    handleIntake(String key) {
+    def handleIntake(String key) {
         // no-op
     }
 

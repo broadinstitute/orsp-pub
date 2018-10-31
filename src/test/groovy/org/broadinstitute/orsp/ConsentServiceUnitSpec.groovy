@@ -6,6 +6,7 @@ import com.google.gson.JsonParser
 import grails.testing.services.ServiceUnitTest
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
+import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.consent.DataUseDTO
 import org.broadinstitute.orsp.webservice.OntologyTerm
@@ -27,13 +28,17 @@ import static org.junit.Assert.assertNotNull
 @Slf4j
 class ConsentServiceUnitSpec extends BaseSpec implements ServiceUnitTest<ConsentService> {
 
+    Closure doWithSpring() {{ ->
+        consentConfiguration(ConsentConfiguration)
+    }}
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort())
 
     void "Post a Consent"() {
         given:
         JsonElement everything = new JsonParser().parse("{\"type\":\"everything\"}").asJsonObject
-        grailsApplication.config.consent.service.url = "http://localhost:${wireMockRule.port()}/consent"
+        service.consentConfiguration.url = "http://localhost:${wireMockRule.port()}/consent"
         wireMockRule.resetAll()
         // Create Consent endpoint
         stubFor(post(urlEqualTo("/consent"))
@@ -70,7 +75,7 @@ class ConsentServiceUnitSpec extends BaseSpec implements ServiceUnitTest<Consent
         given:
         String consentUrl = "http://localhost:${wireMockRule.port()}/consent"
         String consentLocation = consentUrl + "/consent-id"
-        grailsApplication.config.consent.service.url = consentUrl
+        service.consentConfiguration.url = consentUrl
         wireMockRule.resetAll()
         // Post Consent Data Use Letter endpoint
         stubFor(post(urlEqualTo("/consent/consent-id/dul"))

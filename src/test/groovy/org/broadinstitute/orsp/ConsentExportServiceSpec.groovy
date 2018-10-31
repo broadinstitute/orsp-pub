@@ -6,6 +6,7 @@ import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
+import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentResource
 import spock.lang.Shared
 import spock.lang.Specification
@@ -13,6 +14,10 @@ import spock.lang.Specification
 @SuppressWarnings("GroovyAssignabilityCheck")
 @Slf4j
 class ConsentExportServiceSpec extends Specification implements DataTest, ServiceUnitTest<ConsentExportService>{
+
+    Closure doWithSpring() {{ ->
+        consentConfiguration(ConsentConfiguration)
+    }}
 
     Date now = new Date()
     Collection<String> sampleCollectionIds = ["1", "2", "3"]

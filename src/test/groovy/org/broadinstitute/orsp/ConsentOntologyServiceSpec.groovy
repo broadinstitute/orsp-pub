@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
 import grails.testing.services.ServiceUnitTest
+import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.broadinstitute.orsp.webservice.ConsentOntologyService
@@ -17,14 +18,18 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.junit.Assert.assertTrue
 
 class ConsentOntologyServiceSpec extends BaseSpec implements ServiceUnitTest<ConsentOntologyService> {
-    
+
+    Closure doWithSpring() {{ ->
+        consentConfiguration(ConsentConfiguration)
+    }}
+
     private static final String DOID_9220 = "http://purl.obolibrary.org/obo/DOID_9220"
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort())
 
     void stubResponse(String resourceName) {
-        grailsApplication.config.consent.service.ontologyUrl = "http://localhost:${wireMockRule.port()}/"
+        service.consentConfiguration.ontologyUrl = "http://localhost:${wireMockRule.port()}/"
         wireMockRule.resetAll()
         URL url = Resources.getResource(resourceName)
         String results = Resources.toString(url, Charsets.UTF_8)

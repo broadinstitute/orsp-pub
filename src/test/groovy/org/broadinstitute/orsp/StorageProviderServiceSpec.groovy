@@ -7,10 +7,14 @@ import com.google.api.client.http.HttpContent
 import com.google.api.client.http.HttpResponse
 import com.google.api.client.http.HttpStatusCodes
 import grails.testing.services.ServiceUnitTest
+import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
+import org.broadinstitute.orsp.config.StorageConfiguration
 import org.junit.Rule
 import org.mockito.Mockito
+import spock.lang.Specification
 
+import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -19,19 +23,23 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import static org.junit.Assert.assertTrue
 
-class StorageProviderServiceSpec extends BaseSpec implements ServiceUnitTest<StorageProviderService> {
+@Slf4j
+class StorageProviderServiceSpec extends Specification implements ServiceUnitTest<StorageProviderService> {
+
+    Closure doWithSpring() {{ ->
+        storageConfiguration(StorageConfiguration)
+    }}
 
     private final String uuid = UUID.randomUUID().toString()
-    private final fileContent = "Testing"
+    private final String fileContent = "Testing"
     private final HttpContent content = new ByteArrayContent("text/plain", fileContent.getBytes())
     
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort())
 
     void stubStorage() {
-        grailsApplication.config.storage.url = "http://localhost:${wireMockRule.port()}/"
+        service.storageConfiguration.url = "http://localhost:${wireMockRule.port()}/"
         service.setCredential(Mockito.mock(GoogleCredential.class))
         wireMockRule.resetAll()
         stubFor(put(urlEqualTo("/broad_institute_orsp_test/OD-1/" + uuid))
@@ -61,7 +69,7 @@ class StorageProviderServiceSpec extends BaseSpec implements ServiceUnitTest<Sto
         HttpResponse response = service.uploadContent(content, document)
 
         then:
-        assertTrue(response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK)
+        response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK
     }
 
     void "Download Storage Document"() {
@@ -82,7 +90,7 @@ class StorageProviderServiceSpec extends BaseSpec implements ServiceUnitTest<Sto
 
         then:
         newDoc.inputStream != null
-        assertTrue(IOUtils.toString(newDoc.inputStream).equals(fileContent))
+        IOUtils.toString(newDoc.inputStream, Charset.defaultCharset()).equals(fileContent)
     }
 
 }

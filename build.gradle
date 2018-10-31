@@ -18,12 +18,13 @@ buildscript {
 }
 
 version "3.9.6"
-group "orsp"
+group "org.broadinstitute"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"war"
 apply plugin:"org.grails.grails-web"
+apply plugin:"org.grails.grails-gsp"
 apply plugin:"com.moowork.node"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
@@ -135,6 +136,8 @@ task wrapper(type: Wrapper) {
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
     addResources = true
+    String springProfilesActive = 'spring.profiles.active'
+    systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
 
 node {

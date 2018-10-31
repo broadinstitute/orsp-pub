@@ -2,11 +2,11 @@ package org.broadinstitute.orsp
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
-import grails.core.GrailsApplication
 import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpEncoders
+import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.consent.DataUseDTO
@@ -27,7 +27,7 @@ import static groovyx.net.http.MultipartContent.multipart
 @Slf4j
 class ConsentService implements Status {
 
-    GrailsApplication grailsApplication
+    ConsentConfiguration consentConfiguration
     OntologyService ontologyService
 
     private static final String YES = "Yes"
@@ -189,7 +189,7 @@ class ConsentService implements Status {
      * @return URL location of the created consent resource
      */
     def postConsent(ConsentResource consent) {
-        HttpBuilder http = getBuilder((String) grailsApplication.config.consent.service.url)
+        HttpBuilder http = getBuilder(consentConfiguration.url)
         String json = new Gson().toJson(consent)
         http.post {
             request.body = json
@@ -229,10 +229,9 @@ class ConsentService implements Status {
     }
 
     SubsystemStatus getStatus() {
-        String statusUrl = (String) grailsApplication.config.consent.service.statusUrl
         Gson gson = new Gson()
         HttpBuilder http = HttpBuilder.configure {
-            request.uri = statusUrl
+            request.uri = consentConfiguration.statusUrl
             request.contentType = MediaType.APPLICATION_JSON_VALUE
             request.headers['Accept'] = MediaType.APPLICATION_JSON_VALUE
         }
@@ -256,24 +255,20 @@ class ConsentService implements Status {
     }
 
     private HttpBuilder getBuilder(String url) {
-        String username = (String) grailsApplication.config.consent.service.username
-        String password = (String) grailsApplication.config.consent.service.password
         HttpBuilder.configure {
             request.uri = url
             request.contentType = MediaType.APPLICATION_JSON_VALUE
             request.headers['Accept'] = MediaType.APPLICATION_JSON_VALUE
-            request.auth.basic username, password
+            request.auth.basic consentConfiguration.username, consentConfiguration.password
         }
     }
 
     private HttpBuilder getMultipartBuilder(String url) {
-        String username = (String) grailsApplication.config.consent.service.username
-        String password = (String) grailsApplication.config.consent.service.password
         HttpBuilder.configure {
             request.uri = url
             request.contentType = MediaType.MULTIPART_FORM_DATA_VALUE
             request.headers['Accept'] = MediaType.APPLICATION_JSON_VALUE
-            request.auth.basic username, password
+            request.auth.basic consentConfiguration.username, consentConfiguration.password
         }
     }
 

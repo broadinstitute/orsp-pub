@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import grails.testing.services.ServiceUnitTest
+import org.broadinstitute.orsp.config.BspConfiguration
 import org.junit.Rule
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -12,13 +13,17 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 
 class BspWebServiceSpec extends BaseSpec implements ServiceUnitTest<BspWebService> {
 
+    Closure doWithSpring() {{ ->
+        bspConfiguration(BspConfiguration) {}
+    }}
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort())
 
     void "Get all sample collections"() {
         given:
         String path = "/ws/bsp/collection/get_all_collections"
-        grailsApplication.config.bsp.service.allSampleCollectionsUrl = "http://localhost:${wireMockRule.port()}${path}"
+        service.bspConfiguration.service.allSampleCollectionsUrl = "http://localhost:${wireMockRule.port()}${path}"
         wireMockRule.resetAll()
         stubFor(get(urlEqualTo(path))
                 .willReturn(aResponse()

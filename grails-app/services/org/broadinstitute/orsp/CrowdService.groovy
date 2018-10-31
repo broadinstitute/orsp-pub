@@ -4,28 +4,30 @@ import grails.async.PromiseList
 import groovy.util.logging.Slf4j
 import groovyx.net.http.Method
 import groovyx.net.http.HTTPBuilder
+import org.broadinstitute.orsp.config.AppInfoConfiguration
+import org.broadinstitute.orsp.config.CrowdConfiguration
 
 @Slf4j
-@SuppressWarnings("GrUnresolvedAccess")
 class CrowdService implements Status {
 
-    def grailsApplication
     UserService userService
+    CrowdConfiguration crowdConfiguration
+    AppInfoConfiguration appInfoConfiguration
 
     private Integer getInterval() {
-        grailsApplication.config?.crowd?.interval ?: 500
+        crowdConfiguration.interval ?: 500
     }
 
     private Integer getRange() {
-        grailsApplication.config?.crowd?.range ?: 10
+        crowdConfiguration.range ?: 10
     }
 
     private String getUsername() {
-        grailsApplication.config?.crowd?.username
+        crowdConfiguration.username
     }
 
     private String getPassword() {
-        grailsApplication.config?.crowd?.password
+        crowdConfiguration.password
     }
 
     private String getCredentials() {
@@ -34,19 +36,18 @@ class CrowdService implements Status {
     }
 
     private String getSearchUri(Integer startIndex) {
-        grailsApplication.config.crowd.url +
+        crowdConfiguration.url +
                 "/rest/usermanagement/latest/search?" +
                 "entity-type=user&expand=user&restriction=active%3Dtrue&max-results=${getInterval()}&start-index=${startIndex * getInterval()}"
     }
 
     SubsystemStatus getStatus() {
         SubsystemStatus status = new SubsystemStatus()
-        String serviceUrl = (String) grailsApplication.config.crowd.url
         try {
-            def http = new HTTPBuilder(serviceUrl)
+            def http = new HTTPBuilder(crowdConfiguration.url)
             http.request(Method.HEAD) {
                 headers.Accept = 'application/json'
-                headers."User-Agent" = "ORSP" + (String) grailsApplication.config.info.app.version
+                headers."User-Agent" = "ORSP" + appInfoConfiguration.version
                 headers.Authorization = "Basic " + getCredentials()
                 response.success = {
                     status.ok = true
@@ -103,7 +104,7 @@ class CrowdService implements Status {
         def http = new HTTPBuilder(uri)
         http.request(Method.GET) { req->
             headers.Accept = 'application/json'
-            headers."User-Agent" = "ORSP" + (String) grailsApplication.config.info.app.version
+            headers."User-Agent" = "ORSP" + appInfoConfiguration.version
             headers.Authorization = "Basic " + getCredentials()
             response.success = { resp, json ->
                 json.users?.

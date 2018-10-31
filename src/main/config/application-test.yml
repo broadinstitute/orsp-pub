@@ -27,6 +27,7 @@ environments:
       bccRecipients:
         - grushton@broadinstitute.org
       replyToRecipient: orsp-dev@broadinstitute.org
+      sendGridStatusUrl: http://localhost:9000/
     storage:
       config: /orsp-client.json
       url: http://localhost
@@ -36,10 +37,13 @@ environments:
         username: un
         password: pw
         url: http://localhost/consent
+        statusUrl: http://localhost/status
         ontologyUrl: http://localhost/
+        ontologyStatusUrl: http://localhost/status
     dataBio:
       searchUrl: http://localhost/search
       classUrl: http://localhost/ontologies
+      statusUrl: http://localhost/status
       apiKey: test
     bsp:
       sync: false
@@ -47,6 +51,7 @@ environments:
         username: un
         password: pw
         allSampleCollectionsUrl: http://localhost/ws/bsp/collection/get_all_collections
+        statusUrl: http://localhost/
     dataSource:
       dbCreate: update
       url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE

@@ -5,6 +5,7 @@ import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
+import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
 import org.springframework.http.MediaType
@@ -16,43 +17,38 @@ class NotifyService implements SendgridSupport, Status  {
     PageRenderer groovyPageRenderer
     LinkGenerator grailsLinkGenerator
     UserService userService
-
-    def grailsApplication
+    NotifyConfiguration notifyConfiguration
 
     String getDefaultRecipient() {
-        grailsApplication.config.notifyService.defaultRecipient
+        notifyConfiguration.defaultRecipient
     }
 
     String getDefaultFromAddress() {
-        grailsApplication.config.notifyService.fromAddress
+        notifyConfiguration.fromAddress
     }
 
     List<String> getOrspSpecialRecipients() {
-        List<String> orspSpecialRecipients = new ArrayList<>()
-        orspSpecialRecipients.addAll((List<String>) grailsApplication.config.notifyService.orspSpecialRecipients)
-        orspSpecialRecipients
+        new ArrayList<String>(notifyConfiguration.orspSpecialRecipients)
     }
 
     List<String> getBccRecipients() {
-        List<String> bccRecipients = new ArrayList<>()
-        bccRecipients.addAll((List<String>) grailsApplication.config.notifyService.bccRecipients)
-        bccRecipients
+        new ArrayList<String>(notifyConfiguration.bccRecipients)
     }
 
     String getReplyToRecipient() {
-        grailsApplication.config.notifyService.replyToRecipient
+        notifyConfiguration.replyToRecipient
     }
 
     String getSendGridUrl() {
-        grailsApplication.config.notifyService.sendGridUrl
+        notifyConfiguration.sendGridUrl
     }
 
     String getApiKey() {
-        grailsApplication.config.notifyService.apiKey
+        notifyConfiguration.apiKey
     }
 
     String getSendGridStatusUrl() {
-        grailsApplication.config.notifyService.sendGridStatusUrl
+        notifyConfiguration.sendGridStatusUrl
     }
 
     /**

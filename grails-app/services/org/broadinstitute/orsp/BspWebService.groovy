@@ -1,10 +1,10 @@
 package org.broadinstitute.orsp
 
 import com.google.gson.Gson
-import grails.core.GrailsApplication
 import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
+import org.broadinstitute.orsp.config.BspConfiguration
 import org.broadinstitute.orsp.webservice.BspCollection
 
 import static groovyx.net.http.HttpBuilder.configure
@@ -12,12 +12,12 @@ import static groovyx.net.http.HttpBuilder.configure
 @Slf4j
 class BspWebService implements Status {
 
+    BspConfiguration bspConfiguration
     Gson gson = new Gson()
-    GrailsApplication grailsApplication
 
     SubsystemStatus getStatus() {
         SubsystemStatus status = new SubsystemStatus()
-        String serviceUrl = (String) grailsApplication.config.bsp.service.statusUrl
+        String serviceUrl = bspConfiguration.service.statusUrl
         try {
             HttpBuilder http = configure {
                 request.uri = serviceUrl
@@ -40,7 +40,7 @@ class BspWebService implements Status {
 
     List<BspCollection> getBspCollections() {
         List<BspCollection> collections = new ArrayList<>()
-        String serviceUrl = (String) grailsApplication.config.bsp.service.allSampleCollectionsUrl
+        String serviceUrl = bspConfiguration.service.allSampleCollectionsUrl
         getResponse(serviceUrl).splitEachLine('\t') {
             elements ->
                 collections.add(
@@ -91,11 +91,9 @@ class BspWebService implements Status {
     }
 
     private String getResponse(String url) {
-        String username = grailsApplication.config.bsp.service.username
-        String password = grailsApplication.config.bsp.service.password
         HttpBuilder http = configure {
             request.uri = url
-            request.auth.basic username, password
+            request.auth.basic bspConfiguration.service.username, bspConfiguration.service.password
         }
         http.get(String) {}
     }

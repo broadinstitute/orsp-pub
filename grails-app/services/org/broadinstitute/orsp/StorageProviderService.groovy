@@ -11,10 +11,10 @@ import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.storage.StorageScopes
-import grails.core.GrailsApplication
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
+import org.broadinstitute.orsp.config.StorageConfiguration
 import org.grails.io.support.GrailsResourceUtils
 import org.springframework.web.multipart.MultipartFile
 
@@ -28,8 +28,8 @@ import java.text.SimpleDateFormat
 @Slf4j
 class StorageProviderService implements Status {
 
-    GrailsApplication grailsApplication
     PersistenceService persistenceService
+    StorageConfiguration storageConfiguration
 
     private final String RESPONSE_PROJECT_HEADER = "x-goog-meta-project"
     private final String RESPONSE_UUID_HEADER = "x-goog-meta-uuid"
@@ -307,7 +307,7 @@ class StorageProviderService implements Status {
     }
 
     private String getBucketUrl() {
-        grailsApplication.config.storage.url + grailsApplication.config.storage.bucket
+        storageConfiguration.url + storageConfiguration.bucket
     }
 
     private HttpRequest buildHttpDeleteRequest(GenericUrl url) throws IOException, GeneralSecurityException {
@@ -354,10 +354,9 @@ class StorageProviderService implements Status {
      * @return A GoogleCredential from json secrets.
      */
     private GoogleCredential getCredential() {
-        String gcsConfig = (String) grailsApplication.config.storage.config
         if (!credential) {
             File configFile = GrailsResourceUtils.getFile(
-                    GrailsResourceUtils.toURI(this.getClass().getResource(gcsConfig)),
+                    GrailsResourceUtils.toURI(this.getClass().getResource(storageConfiguration.config)),
                     "GCS Config")
             setCredential(GoogleCredential.
                     fromStream(new FileInputStream(configFile)).
