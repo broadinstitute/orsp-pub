@@ -17,13 +17,8 @@ buildscript {
     }
 }
 
-<<<<<<< HEAD
-version "3.9.6"
-group "org.broadinstitute"
-=======
 version "3.9.7"
-group "orsp"
->>>>>>> initial-commit
+group "org.broadinstitute"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
