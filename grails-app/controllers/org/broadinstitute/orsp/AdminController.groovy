@@ -1,47 +1,90 @@
 package org.broadinstitute.orsp
 
+import grails.async.Promise
+import grails.async.Promises
 import grails.converters.JSON
+import groovy.json.JsonOutput
 
 class AdminController extends AuthenticatedController {
 
-    def index() {
-        def collectionLinks = queryService.findAllCollectionLinks()
-        render(view: "/admin/index", model: [
-                consentCollections: collectionLinks
-        ])
+    def index() {}
+
+    def cclSummaries() {
+        Promise<Collection> cclPromise = Promises.task {
+            queryService.getCCLSummaries()
+        }
+        Collection data = cclPromise.get()
+        render ([data: data] as JSON)
     }
 
-    // TODO: Move db logic to service
-    @SuppressWarnings("GroovyAssignabilityCheck")
+    def collectionLinks() {
+        render (view: '/admin/collectionLinks')
+    }
+
     def createConsentCollection() {
-        List<String> errors = new ArrayList<>()
-        if (!params.projectKey) {
-            errors.add("Project is required")
-        }
-        if (!params.consentKey) {
-            errors.add("Consent Group is required")
-        }
-        if (!params.sampleCollectionId) {
-            errors.add("Sample Collection is required")
-        }
+        String projectKey = params['projectKey']
+        String consentKey = params['consentKey']
+        String sampleCollectionId = params['sampleCollectionId']
+        List<String> errors = validateConsentCollectionLinkFields(projectKey, consentKey, sampleCollectionId)
         if (!errors.isEmpty()) {
-            flash.error = "Unable to create consent: " + errors.join("; ")
-            redirect(controller: 'admin', action: 'index')
+            render(status: 400, text: errors as JSON, contentType: 'application/json')
         } else {
-            def consent = new ConsentCollectionLink(
-                    projectKey: params.projectKey,
-                    consentKey: params.consentKey,
-                    sampleCollectionId: params.sampleCollectionId,
-                    creationDate: new Date()
-            )
-            if (consent.save(flush: true)) {
-                flash.message = "Successfully created a new consent collection link."
-                redirect(controller: 'admin', action: 'index')
+            Collection<ConsentCollectionLink> existing = queryService.findCollectionLinks(projectKey, consentKey, sampleCollectionId)
+            Collection<ConsentCollectionLink> associated = queryService.findCollectionLinksBySample(sampleCollectionId)
+            associated.removeAll { it.consentKey.equals(consentKey) }
+            if (existing?.size() > 0) {
+                render(status: 409, text: JsonOutput.toJson("Conflict: consent collection link exists"), contentType: 'application/json')
+            } else if (!associated.isEmpty()) {
+                render(status: 409, text: JsonOutput.toJson("Conflict: sample collection is associated to a different consent group"), contentType: 'application/json')
             } else {
-                flash.error = "Unable to create consent"
-                redirect(controller: 'admin', action: 'index')
+                try {
+                    ConsentCollectionLink ccl = persistenceService.saveConsentCollectionLink(projectKey, consentKey, sampleCollectionId)
+                    if (ccl.errors?.allErrors?.size() > 0) {
+                        render(status: 500, text: ccl.errors.allErrors as JSON, contentType: 'application/json')
+                    } else {
+                        render(status: 201, text: ccl as JSON, contentType: 'application/json')
+                    }
+                } catch (Exception e) {
+                    render(status: 500, text: e as JSON, contentType: 'application/json')
+                }
             }
         }
+    }
+
+    private List<String> validateConsentCollectionLinkFields(String projectKey, String consentKey, String sampleCollectionId) {
+        Set<IssueType> projectTypes = EnumSet.of(IssueType.IRB, IssueType.NE, IssueType.NHSR)
+        List<String> errors = new ArrayList<>()
+        if (!projectKey || projectKey?.isEmpty()) {
+            errors.add("Project Key is a required parameter")
+        } else {
+            Issue issue = queryService.findByKey(projectKey)
+            if (!issue) {
+                errors.add("Project Key must refer to a valid project")
+            }
+            if (!projectTypes*.name.contains(issue?.type)) {
+                errors.add("Project Key must refer to an IRB, Not Engaged, or Not Human Subjects project")
+            }
+        }
+        if (!consentKey || consentKey?.isEmpty()) {
+            errors.add("Consent Key is a required parameter")
+        } else {
+            Issue issue = queryService.findByKey(consentKey)
+            if (!issue) {
+                errors.add("Consent must refer to a valid Consent Group")
+            }
+            if (![IssueType.CONSENT_GROUP.name].contains(issue?.type)) {
+                errors.add("Consent Key must refer to a Consent Group project")
+            }
+        }
+        if (!sampleCollectionId || sampleCollectionId?.isEmpty()) {
+            errors.add("Sample Collection is a required parameter")
+        } else {
+            SampleCollection sampleCollection = queryService.findCollectionById(sampleCollectionId)
+            if (!sampleCollection) {
+                errors.add("Sample Collection must refer to a valid Sample Collection")
+            }
+        }
+        errors
     }
 
     def reviewCategories() {
@@ -60,46 +103,52 @@ class AdminController extends AuthenticatedController {
         redirect(controller: 'admin', action: 'reviewCategories')
     }
 
+    /**
+     * See ProjectAutocomplete.js
+     *
+     * @return Consent projects matching term
+     */
     def getMatchingConsents() {
         def response = []
-        queryService.findIssuesByConsentTerm(params.term).each {
+        List<String> typeNames = [IssueType.CONSENT_GROUP.name]
+        queryService.findProjectsBySearchTerm(params.term, typeNames).each {
             response << [
-                    "id": it.projectKey,
-                    "label": it.projectKey + " ( " + it.summary + " )",
-                    "value": it.projectKey
+                    "projectKey": it.projectKey,
+                    "summary": it.summary + " ( " + it.summary + " )",
+                    "type": it.type
             ]
         }
         render response as JSON
     }
 
+    /**
+     * See ProjectAutocomplete.js
+     *
+     * @return Non-consent projects matching term
+     */
     def getMatchingProjects() {
         def response = []
-        QueryOptions
-        queryService.findProjectsBySearchTerm(params.term).each {
+        List<String> typeNames = EnumSet.of(IssueType.IRB, IssueType.NHSR, IssueType.NE)*.name
+        queryService.findProjectsBySearchTerm(params.term, typeNames).each {
             response << [
-                    "id": it.projectKey,
-                    "label": it.summary,
-                    "value": it.projectKey
+                    "projectKey": it.projectKey,
+                    "summary": it.summary,
+                    "type": it.type
             ]
         }
         render response as JSON
     }
 
-    def getMatchingUnConsentedSampleCollections() {
+    def getMatchingSampleCollections() {
         def response = []
-        String term = params.term
-        queryService.getUnConsentedSamples().find {
-            it.name.toLowerCase().contains(term.toLowerCase()) ||
-            it.collectionId.toLowerCase().contains(term.toLowerCase()) ||
-            it.groupName.toLowerCase().contains(term.toLowerCase()) ||
-            it.category.toLowerCase().contains(term.toLowerCase())
-        }.each {
+        queryService.findCollectionsBySearchTerm(params.term).each {
             response << [
                     "id": it.id,
-                    "label": it.id + " ( " + it.name + ": " + it.category + " )",
+                    "label": it.collectionId + " ( " + it.name + ": " + it.category + " )",
                     "value": it.id,
                     "group": it.groupName,
-                    "category": it.category
+                    "category": it.category,
+                    "collectionId": it.collectionId
             ]
         }
         render response as JSON

@@ -11,7 +11,6 @@ import org.broadinstitute.orsp.webservice.PaginationParams
 @Slf4j
 class ReportController extends AuthenticatedController {
 
-    QueryService queryService
     ReportService reportService
 
     def index() {

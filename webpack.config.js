@@ -5,6 +5,7 @@ module.exports = {
       fs: "empty"
   },
   entry: {
+    collectionLinks: './src/main/webapp/collectionLinks/index.js',
     search: './src/main/webapp/search/index.js'
   },
   output: {

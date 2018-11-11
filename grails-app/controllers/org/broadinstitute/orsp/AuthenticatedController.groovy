@@ -62,7 +62,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     protected Collection<User> getPIsForIssue(Issue issue) {
         Collection<String> pis = IssueExtraProperty.findAllByProjectKeyAndName(issue.projectKey, IssueExtraProperty.PI)*.value
-        userService.findUsers(pis) ?: Collections.emptyList()
+        userService.findUsers(pis)
     }
 
     String getType() {

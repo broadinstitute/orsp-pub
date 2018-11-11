@@ -17,7 +17,7 @@ buildscript {
     }
 }
 
-version "3.9.6"
+version "3.9.7"
 group "orsp"
 
 apply plugin:"eclipse"
@@ -126,6 +126,10 @@ dependencies {
 
     // Code Coverage
     clover 'org.openclover:clover:4.3.1'
+
+    // Slf4j startup error handling
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
 }
 
 task wrapper(type: Wrapper) {
@@ -138,8 +142,8 @@ bootRun {
 }
 
 node {
-    version = '7.10.0'
-    yarnVersion = '0.21.3'
+    version = '10.13.0'
+    yarnVersion = '1.12.1'
     distBaseUrl = 'https://nodejs.org/dist'
     download = true
 }
@@ -162,7 +166,7 @@ task webpackProd(type: YarnTask, dependsOn: 'yarn') {
     args = ['run', 'prod']
 }
 
-task mochaTest(type: YarnTask, dependsOn: 'yarn') {
+task jest(type: YarnTask, dependsOn: 'yarn') {
     group = 'verification'
     description = 'Run the client tests'
     args = ['run', 'test']

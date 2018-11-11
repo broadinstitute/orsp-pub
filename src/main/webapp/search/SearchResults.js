@@ -92,7 +92,7 @@ class SearchResults extends React.Component {
         if (this.props.loading) {
             return (<div>
                 <h2>Results</h2>
-                <div className={"alert alert-info"}><span className={"glyphicon glyphicon-refresh glyphicon-refresh-animate"}></span> Searching...</div>
+                <div className={"alert alert-info"}><span className={"glyphicon glyphicon-refresh glyphicon-refresh-animate"}> </span> Searching...</div>
             </div>)
         } else if (this.props.loaded) {
             loadData(this.props.data);
@@ -105,7 +105,7 @@ class SearchResults extends React.Component {
                                excelDataSet={excelDataSet}
                                sheetName="search-result"
                   />
-                 </div>
+                </div>
                 <BootstrapTable data={formattedProjectData}
                                 exportCSV={true}
                                 csvFileName='search-results.csv'

@@ -36,4 +36,13 @@ class PersistenceService {
         ).save(flush: true)
     }
 
+    ConsentCollectionLink saveConsentCollectionLink(String projectKey, String consentKey, String sampleCollectionId) {
+        new ConsentCollectionLink(
+                projectKey: projectKey,
+                consentKey: consentKey,
+                sampleCollectionId: sampleCollectionId,
+                creationDate: new Date()
+        ).save(flush: true)
+    }
+
 }
