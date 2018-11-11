@@ -88,7 +88,7 @@ class UserService {
     @Transactional(readOnly = true)
     Collection<User> findUsers(Collection<String> userNames) {
         if (userNames == null || userNames?.isEmpty()) {
-            Collections.emptyList()
+            Collections.<User>emptyList()
         } else {
             User.findAllByUserNameInList(userNames.asList())
         }

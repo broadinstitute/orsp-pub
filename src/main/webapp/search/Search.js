@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import axios from 'axios';
 
-import ProjectAutocomplete from './ProjectAutocomplete';
+import ProjectAutocomplete from '../util/ProjectAutocomplete';
 import SearchResults from './SearchResults';
-import UserAutocomplete from './UserAutocomplete';
+import UserAutocomplete from '../util/UserAutocomplete';
 
 class Search extends React.Component {
     constructor(props) {
@@ -14,6 +14,8 @@ class Search extends React.Component {
         this.handleClear = this.handleClear.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.userAutocomplete = React.createRef();
+        this.projectAutocomplete = React.createRef();
         this.state = {
             // setup data
             searchUrl: props.searchUrl,
@@ -97,8 +99,8 @@ class Search extends React.Component {
             loading: false,
             loaded: false
         });
-        this._userAutocomplete.clear();
-        this._projectAutocomplete.clear();
+        this.userAutocomplete.clear();
+        this.projectAutocomplete.clear();
         this.refs.issueType.getInstance().clear();
         this.refs.issueType.getInstance().blur();
         this.refs.issueStatus.getInstance().clear();
@@ -157,7 +159,7 @@ class Search extends React.Component {
                         <div className={"form-group col-md-6"}>
                             <label>ORSP Identification #</label>
                             <ProjectAutocomplete
-                                ref={(projectAutocomplete) => { this._projectAutocomplete = projectAutocomplete; }}
+                                ref={el => { this.projectAutocomplete = el; }}
                                 searchUrl={this.state.projectKeySearchUrl}
                                 onChange={ (selected) => {
                                     if (selected[0] != null && !(typeof selected[0].projectKey === "undefined")) {
@@ -193,7 +195,7 @@ class Search extends React.Component {
                         <div className={"form-group col-md-6"}>
                             <label>Person</label>
                             <UserAutocomplete
-                                ref={(userAutocomplete) => { this._userAutocomplete = userAutocomplete; }}
+                                ref={el => { this.userAutocomplete = el; }}
                                 userNameSearchUrl={this.state.userNameSearchUrl}
                                 onChange={ (selected) => {
                                     if (selected[0] != null && !(typeof selected[0].id === "undefined")) {

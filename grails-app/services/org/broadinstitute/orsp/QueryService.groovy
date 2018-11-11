@@ -19,6 +19,10 @@ import java.sql.SQLException
 
 /**
  * This class should handle generic domain class queries and avoid persistence updates.
+ *
+ * In general, favor Groovy sql (using dataSource) or hibernate sql (using sessionFactory) over GORM
+ * when dealing with collections.
+ *
  */
 @Slf4j
 @Transactional(readOnly = true)
@@ -28,6 +32,7 @@ class QueryService implements Status {
     DataSource dataSource
     OntologyService ontologyService
     UserService userService
+    SessionFactory sessionFactory
 
     public static String PROJECT_KEY_PREFIX
 
@@ -119,19 +124,6 @@ class QueryService implements Status {
             }
         }
         metricsMap.values()
-    }
-
-    /**
-     * Find all sample collection ids that have been associated to a consent.
-     *
-     * @return Collection of distinct sample collection ids
-     */
-    Collection<String> findAllConsentedSampleCollectionIds() {
-        final String query =
-                ' select distinct sample_collection_id ' +
-                ' from consent_collection_link ' +
-                ' where sample_collection_id is not null '
-        getSqlConnection().rows(query).collect { it.get("sample_collection_id").toString() }
     }
 
     /**
@@ -308,6 +300,48 @@ class QueryService implements Status {
         links
     }
 
+    Collection<Object> getCCLSummaries() {
+        final String query =
+                " select distinct ccl.consent_key, ccl.project_key, concat(ccl.sample_collection_id, ' - ', s.name) as 'sample_collection_id' " +
+                        " from consent_collection_link ccl " +
+                        " left outer join sample_collection s on s.collection_id = ccl.sample_collection_id "
+        getSqlConnection().rows(query).collect()
+    }
+
+    Collection<ConsentCollectionLink> findCollectionLinks(String projectKey, String consentKey, String sampleCollectionId) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from consent_collection_link c ' +
+                        ' where c.project_key = :projectKey ' +
+                        ' and c.consent_key = :consentKey ' +
+                        ' and c.sample_collection_id = :sampleCollectionId '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('projectKey', projectKey)
+            setString('consentKey', consentKey)
+            setString('sampleCollectionId', sampleCollectionId)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
+    Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from consent_collection_link c ' +
+                        ' where c.sample_collection_id = :sampleCollectionId '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('sampleCollectionId', sampleCollectionId)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
     Collection<ConsentCollectionLink> findCollectionLinksWithSamples() {
         Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllBySampleCollectionIdIsNotNull()
         Collection<SampleCollection> sampleCollections = SampleCollection.
@@ -335,7 +369,7 @@ class QueryService implements Status {
         }
     }
 
-    // Simplified, faster, project key autocomplete query
+    // Simplified project key autocomplete query
     List<Map> projectKeyAutocomplete(String term) {
         // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
         String iLikeTerm = "%" + getIssueNumberFromString(term) + "%"
@@ -381,6 +415,28 @@ class QueryService implements Status {
         }
     }
 
+    SampleCollection findCollectionById(String id) {
+        if (id) {
+            final String query = 'select * from sample_collection ' +
+                    ' where lower(collection_id) = lower(:id) '
+            SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+            final session = sessionFactory.currentSession
+            final SQLQuery sqlQuery = session.createSQLQuery(query)
+            final results = sqlQuery.with {
+                addEntity(SampleCollection)
+                setString('id', id.toLowerCase())
+                list()
+            }
+            if (results?.size() > 0) {
+                results.get(0)
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
     List<String> getConsentGroupSummaries() {
         Issue.findAllByType(IssueType.CONSENT_GROUP.name, [cache: true])*.summary
     }
@@ -391,10 +447,12 @@ class QueryService implements Status {
      * @param term The search term
      * @return List of issues that match term
      */
-    List<Issue> findProjectsBySearchTerm(String term) {
+    List<Issue> findProjectsBySearchTerm(String term, Collection<String> typeNames) {
         def likeTerm = generateILikeTerm(term)
         Issue.withCriteria {
+            inList("type", typeNames)
             or {
+                ilike "projectKey", likeTerm
                 ilike "summary", likeTerm
                 ilike "description", likeTerm
             }

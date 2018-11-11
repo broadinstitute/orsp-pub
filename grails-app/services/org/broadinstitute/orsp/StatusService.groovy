@@ -40,7 +40,7 @@ class StatusService {
 
     def status() {
         try {
-            PromiseMap<String, SubsystemStatus> statusMap = new PromiseMap()
+            PromiseMap<String, SubsystemStatus> statusMap = new PromiseMap<>()
             statusMap.put('BSP', { getCachedSubsystem('BSP', bsp) })
             statusMap.put('Crowd', { getCachedSubsystem('Crowd', crowd) })
             statusMap.put('Database', { getCachedSubsystem('Database', database) })

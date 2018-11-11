@@ -10,7 +10,6 @@ class DataUseController extends AuthenticatedController {
 
     ConsentService consentService
     ConsentExportService consentExportService
-    QueryService queryService
     GrailsApplication grailsApplication
 
     @Override
