@@ -44,8 +44,7 @@ implementation should be ever get there (react/angular/etc.).
   - git
   - grails
 * Requires Docker and Vault for generating configuration files: https://broadinstitute.atlassian.net/wiki/display/DO/Vault
-  - Run `/scripts/config.sh local` to generate a configuration suitable for running locally
-  - Run `/scripts/config.sh` to generate a configuration suitable for running in a dev/prod environment 
+  - See [Deployment](DEPLOY.md) for more information about how to render configurations. 
 * Run locally with `grails run-app -https` and ignore the cert-error when accessing the site locally.
   
 **Local Testing**  
