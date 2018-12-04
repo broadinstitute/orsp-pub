@@ -43,7 +43,7 @@
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-polyfill": "6.26.0",
     "babel-register": "6.26.0",
-    "bootstrap": "3.3.7",
+    "bootstrap": "4.1.2",
     "lodash-fp": "0.10.4",
     "prop-types": "15.6.2",
     "react": "16.6.0",
