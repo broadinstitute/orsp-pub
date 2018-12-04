@@ -85,7 +85,7 @@ class Search extends React.Component {
     }
 
     handleClear() {
-        this.setState({
+        this.setState(() => ({
             projectKey: "",
             defaultProjectSelected: [],
             userName: "",
@@ -98,7 +98,7 @@ class Search extends React.Component {
             data: [],
             loading: false,
             loaded: false
-        });
+        }));
         this.userAutocomplete.clear();
         this.projectAutocomplete.clear();
         this.refs.issueType.getInstance().clear();
@@ -114,14 +114,14 @@ class Search extends React.Component {
         const target = event.target;
         const name = target.name;
         const value = target.value;
-        this.setState({[name]: value});
+        this.setState(() => ({[name]: value}));
         this.saveStateToLocalStorage();
     }
 
     handleSubmit(event) {
         event.preventDefault();
         // these state changes do not need to be persisted for the user
-        this.setState({ data: [], loading: true, loaded: false });
+        this.setState(() => ({ data: [], loading: true, loaded: false }));
 
         let params = new URLSearchParams();
         params.append('text', this.state.freeText);
@@ -140,11 +140,11 @@ class Search extends React.Component {
         axios.post(this.state.searchUrl, params)
             .then(response => {
                 const results = response.data;
-                this.setState({
+                this.setState(() => ({
                     data: results.data,
                     loading: false,
                     loaded: true
-                });
+                }));
                 this.saveStateToLocalStorage();
             });
     }
@@ -163,15 +163,15 @@ class Search extends React.Component {
                                 searchUrl={this.state.projectKeySearchUrl}
                                 onChange={ (selected) => {
                                     if (selected[0] != null && !(typeof selected[0].projectKey === "undefined")) {
-                                        this.setState({
+                                        this.setState(() => ({
                                             projectKey: selected[0].projectKey,
                                             defaultProjectSelected: selected
-                                        });
+                                        }));
                                     } else {
-                                        this.setState({
+                                        this.setState(() => ({
                                             projectKey: "",
                                             defaultProjectSelected: []
-                                        });
+                                        }));
                                     }
                                     this.saveStateToLocalStorage();
                                 }}
@@ -185,7 +185,7 @@ class Search extends React.Component {
                                 multiple={true}
                                 options={this.state.issueTypes}
                                 onChange={ (selected) => {
-                                    this.setState({types: selected});
+                                    this.setState(() => ({types: selected}));
                                     this.saveStateToLocalStorage();
                                 }}
                                 defaultSelected={this.state.types}/>
@@ -199,15 +199,15 @@ class Search extends React.Component {
                                 userNameSearchUrl={this.state.userNameSearchUrl}
                                 onChange={ (selected) => {
                                     if (selected[0] != null && !(typeof selected[0].id === "undefined")) {
-                                        this.setState({
+                                        this.setState(() => ({
                                             userName: selected[0].id,
                                             defaultUserSelected: selected
-                                        });
+                                        }));
                                     } else {
-                                        this.setState({
+                                        this.setState(() => ({
                                             userName: "",
                                             defaultUserSelected: []
-                                        });
+                                        }));
                                     }
                                     this.saveStateToLocalStorage();
                                 }}
@@ -221,7 +221,7 @@ class Search extends React.Component {
                                 multiple={true}
                                 options={this.state.issueStatuses}
                                 onChange={ (selected) => {
-                                    this.setState({statuses: selected});
+                                    this.setState(() => ({statuses: selected}));
                                     this.saveStateToLocalStorage();
                                 }}
                                 defaultSelected={this.state.statuses}/>
@@ -246,7 +246,7 @@ class Search extends React.Component {
                                 labelKey={(option) => `${option.value}`}
                                 options={this.state.irbs}
                                 onChange={ (selected) => {
-                                    this.setState({irb: selected});
+                                    this.setState(() => ({irb: selected}));
                                     this.saveStateToLocalStorage();
                                 }}
                                 defaultSelected={this.state.irb}/>

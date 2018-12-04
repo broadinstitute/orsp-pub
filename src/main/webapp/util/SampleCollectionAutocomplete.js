@@ -46,7 +46,7 @@ class SampleCollectionAutocomplete extends React.Component {
                     isLoading={this.state.isLoading}
                     onChange={this.state.onChange}
                     onSearch={query => {
-                        this.setState({isLoading: true});
+                        this.setState(() => ({isLoading: true}));
                         fetch(this.state.sampleSearchUrl + "?term=" + query)
                             .then(resp => resp.json())
                             .then(json => this.setState({

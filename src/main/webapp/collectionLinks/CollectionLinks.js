@@ -40,22 +40,22 @@ export default class CollectionLinks extends React.Component {
     axios.get(this.props.cclSummariesUrl)
       .then(response => {
         const results = response.data;
-        this.setState({
+        this.setState(() => ({
           data: results.data,
           loading: false,
           loaded: true
-        });
+        }));
       });
   }
 
   handleClear() {
-    this.setState({
+    this.setState(() => ({
       consentKey: "",
       projectKey: "",
       sampleCollectionId: "",
       successResponse: {},
       errorResponse: {},
-    });
+    }));
     this.projectAutocomplete.clear();
     this.consentAutocomplete.clear();
     this.sampleAutocomplete.clear();
@@ -69,21 +69,21 @@ export default class CollectionLinks extends React.Component {
     params.append('sampleCollectionId', this.state.sampleCollectionId);
     axios.post(this.props.cclPostUrl, params)
       .then(response => {
-        this.setState({
+        this.setState(() => ({
           successResponse: response,
           errorResponse: {},
           // re-init values for the current list of collection links
           data: [],
           loading: true,
           loaded: false
-        });
+        }));
         this.loadData();
       })
       .catch(response => {
-        this.setState({
+        this.setState(() => ({
           successResponse: {},
           errorResponse: response
-        });
+        }));
       });
   }
 
@@ -124,9 +124,9 @@ export default class CollectionLinks extends React.Component {
                 searchUrl={this.props.projectKeySearchUrl}
                 onChange={ (selected) => {
                   if (selected[0] != null && !(typeof selected[0].projectKey === "undefined")) {
-                    this.setState({ projectKey: selected[0].projectKey});
+                    this.setState(() => ({ projectKey: selected[0].projectKey}));
                   } else {
-                    this.setState({projectKey: ""});
+                    this.setState(() => ({projectKey: ""}));
                   }
                 }}
                 defaultSelected={[]}
@@ -140,9 +140,9 @@ export default class CollectionLinks extends React.Component {
                 searchUrl={this.props.consentKeySearchUrl}
                 onChange={ (selected) => {
                   if (selected[0] != null && !(typeof selected[0].projectKey === "undefined")) {
-                    this.setState({ consentKey: selected[0].projectKey});
+                    this.setState(() => ({ consentKey: selected[0].projectKey}));
                   } else {
-                    this.setState({consentKey: ""});
+                    this.setState(() => ({consentKey: ""}));
                   }
                 }}
                 defaultSelected={[]}
@@ -157,9 +157,9 @@ export default class CollectionLinks extends React.Component {
                 defaultSelected={[]}
                 onChange={ (selected) => {
                   if (selected[0] != null && !(typeof selected[0].collectionId === "undefined")) {
-                    this.setState({ sampleCollectionId: selected[0].collectionId});
+                    this.setState(() => ({ sampleCollectionId: selected[0].collectionId}));
                   } else {
-                    this.setState({sampleCollectionId: ""});
+                    this.setState(() => ({sampleCollectionId: ""}));
                   }
                 }}
               />
