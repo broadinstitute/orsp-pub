@@ -18,7 +18,7 @@ search for data use restrictions. Please contact [orsp-portal@broadinstitute.org
 * [ORSP on the Broad Intranet](https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection)
 
 ### Current Build Status
-[![CircleCI](https://circleci.com/gh/broadinstitute/orsp-pub/tree/develop.svg?style=svg&circle-token=320d634e9619091595b68eee6c975cf0340e188c)](https://circleci.com/gh/broadinstitute/orsp-pub/tree/develop)
+[![CircleCI](https://circleci.com/gh/broadinstitute/orsp-pub/tree/develop.svg?style=svg&circle-token=87ca485f82e138ef549ca1cf9201a8151fe78162)](https://circleci.com/gh/broadinstitute/orsp-pub/tree/develop)
 
 ### Development
 See [Dev Notes](docs/DEVNOTES.md)
