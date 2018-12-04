@@ -1,0 +1,32 @@
+[
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_0050847",
+    "label": "sleep apnea",
+    "definition": "A sleep disorder characterized by repeated cessation and commencing of breathing that repeatedly disrupts sleep.",
+    "synonyms": []
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_0050848",
+    "label": "obstructive sleep apnea",
+    "definition": "A sleep apnea that is characterized by repeated collapse and obstruction of the upper airway during sleep, which results in reduced airflow (hypopnea) or complete airflow cessation (apnea), oxygen desaturation, and arousals from sleep.",
+    "synonyms": [
+      "obstructive sleep apnea syndrome"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_9220",
+    "label": "central sleep apnea",
+    "definition": "A sleep apnea that is characterized by a malfunction of the basic neurological controls for breathing rate and the failure to give the signal to inhale, causing the individual to miss one or more cycles of breathing.",
+    "synonyms": [
+      "primary central sleep apnea"
+    ]
+  },
+  {
+    "id": "http://purl.obolibrary.org/obo/DOID_4952",
+    "label": "postpoliomyelitis syndrome",
+    "definition": "A poliomyelitis that results_in atrophy located_in muscle, many years after the initial infection, has_material_basis_in Human poliovirus 1, has_material_basis_in Human poliovirus 2, or has_material_basis_in Human poliovirus 3. It is characterized by new weakening in muscles that were previously affected by the polio infection and in muscles that were unaffected. The infection has_symptom muscle weakness, has_symptom muscle pain, has_symptom sleep apnea, and has_symptom breathing problems.",
+    "synonyms": [
+      "Postpolio syndrome"
+    ]
+  }
+]

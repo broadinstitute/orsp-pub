@@ -1,0 +1,50 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# See https://github.com/grails-guides/grails-on-circleci-basics/blob/master/complete/.circleci/config.yml
+
+version: 2
+jobs:
+  gradle_test:
+    working_directory: ~/repo
+    docker:
+    - image: circleci/openjdk:8-jdk
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+      - checkout
+      - restore_cache:
+                key: grailsapp-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}
+      - run: chmod +x gradlew
+      - run: ./gradlew --console=plain testClasses
+      - run: ./gradlew --console=plain integrationTestClasses
+      - save_cache:
+                paths:
+                  - ~/.gradle
+                key: grailsapp-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}
+      # generate test configs
+      - run: ./scripts/test_ci_config.sh
+      # run tests!
+      - run: ./gradlew clean cloverGenerateReport
+      - store_artifacts:
+          path: build/reports
+          destination: reports
+      - store_test_results:
+          path: build/test-results
+  ui_test:
+    working_directory: ~/repo
+    docker:
+    - image: circleci/node:10
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm test
+workflows:
+    version: 2
+    gradle_and_ui_test:
+        jobs:
+        - gradle_test
+        - ui_test
