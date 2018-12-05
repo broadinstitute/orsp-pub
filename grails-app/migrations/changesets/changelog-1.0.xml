@@ -1,0 +1,489 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="vvicario (generated)" id="1543933537042-1">
+        <createTable tableName="amendment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comments" type="TEXT"/>
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amendment_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-2">
+        <createTable tableName="amendment_storage_document">
+            <column name="amendment_documents_id" type="BIGINT"/>
+            <column name="storage_document_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-3">
+        <createTable tableName="checklist_answer">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reviewer" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-4">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-5">
+        <createTable tableName="consent_collection_link">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="consent_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sample_collection_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-6">
+        <createTable tableName="data_use_restriction">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="aggregate_research_excluded" type="BIT(1)"/>
+            <column name="comments" type="VARCHAR(255)"/>
+            <column name="commercial_use_excluded" type="BIT(1)"/>
+            <column name="consent_group_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="consentpiname" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_restriction" type="datetime(6)"/>
+            <column name="gender" type="VARCHAR(255)"/>
+            <column name="general_use" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="methods_research_excluded" type="BIT(1)"/>
+            <column name="other" type="TEXT"/>
+            <column name="pediatric_limited" type="BIT(1)"/>
+            <column name="vault_consent_id" type="VARCHAR(255)"/>
+            <column name="vault_consent_location" type="VARCHAR(255)"/>
+            <column name="vault_export_date" type="datetime(6)"/>
+            <column name="control_set_excluded" type="BIT(1)"/>
+            <column name="aggregate_research_response" type="VARCHAR(25)"/>
+            <column name="hmb_research" type="BIT(1)"/>
+            <column name="population_origins_ancestry" type="BIT(1)"/>
+            <column name="control_set_option" type="VARCHAR(25)"/>
+            <column name="recontacting_data_subjects" type="BIT(1)"/>
+            <column name="recontact_may" type="VARCHAR(255)"/>
+            <column name="recontact_must" type="VARCHAR(255)"/>
+            <column name="genomic_phenotypic_data" type="VARCHAR(25)"/>
+            <column name="other_restrictions" type="BIT(1)"/>
+            <column name="cloud_storage" type="VARCHAR(25)"/>
+            <column name="irb" type="BIT(1)"/>
+            <column name="geographical_restrictions" type="VARCHAR(255)"/>
+            <column name="manual_review" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-7">
+        <createTable tableName="data_use_restriction_disease_restrictions">
+            <column name="data_use_restriction_id" type="BIGINT"/>
+            <column name="disease_restrictions_string" type="VARCHAR(255)"/>
+            <column name="disease_restrictions_idx" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-8">
+        <createTable tableName="data_use_restriction_population_restrictions">
+            <column name="data_use_restriction_id" type="BIGINT"/>
+            <column name="population_restrictions_string" type="VARCHAR(255)"/>
+            <column name="population_restrictions_idx" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-9">
+        <createTable tableName="event">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="summary" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-10">
+        <createTable tableName="funding">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issue_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(60)"/>
+            <column name="source_key" type="VARCHAR(60)"/>
+            <column name="name" type="VARCHAR(500)"/>
+            <column name="award_number" type="VARCHAR(255)"/>
+            <column name="project_key" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-11">
+        <createTable tableName="issue">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issuenum" type="BIGINT"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="summary" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="reporter" type="VARCHAR(255)"/>
+            <column name="request_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime(6)"/>
+            <column name="expiration_date" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-12">
+        <createTable tableName="issue_extra_property">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issue_id" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-13">
+        <createTable tableName="sample_collection">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="INT"/>
+            <column name="collection_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="group_name" type="VARCHAR(255)"/>
+            <column name="archived" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-14">
+        <createTable tableName="storage_document">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="VARCHAR(255)"/>
+            <column name="creator" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-15">
+        <createTable tableName="submission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comments" type="TEXT"/>
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-16">
+        <createTable tableName="submission_document">
+            <column name="submission_document_id" type="BIGINT"/>
+            <column name="storage_document_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-17">
+        <createTable tableName="supplemental_role">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-18">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_name" type="VARCHAR(255)"/>
+            <column name="display_name" type="VARCHAR(255)"/>
+            <column name="email_address" type="VARCHAR(255)"/>
+            <column name="created_date" type="datetime(6)"/>
+            <column name="updated_date" type="datetime(6)"/>
+            <column name="last_login_date" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-19">
+        <addUniqueConstraint columnNames="consent_group_key" constraintName="consent_group_key" tableName="data_use_restriction"/>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-20">
+        <addUniqueConstraint columnNames="uuid" constraintName="uuid" tableName="storage_document"/>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-21">
+        <createIndex indexName="FK93ECB55149C24510" tableName="amendment_storage_document">
+            <column name="amendment_documents_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-22">
+        <createIndex indexName="FK93ECB551A41A0680" tableName="amendment_storage_document">
+            <column name="storage_document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-23">
+        <createIndex indexName="FKF557E54A6390B0A9" tableName="issue_extra_property">
+            <column name="issue_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-24">
+        <createIndex indexName="IDX_EP_NAME" tableName="issue_extra_property">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-25">
+        <createIndex indexName="IDX_EP_PROJECT_KEY" tableName="issue_extra_property">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-26">
+        <createIndex indexName="idx_amendment_project" tableName="amendment">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-27">
+        <createIndex indexName="idx_consent_collection_consent" tableName="consent_collection_link">
+            <column name="consent_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-28">
+        <createIndex indexName="idx_consent_collection_project" tableName="consent_collection_link">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-29">
+        <createIndex indexName="idx_consent_collection_sample" tableName="consent_collection_link">
+            <column name="sample_collection_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-30">
+        <createIndex indexName="idx_event_project_key" tableName="event">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-31">
+        <createIndex indexName="idx_event_type" tableName="event">
+            <column name="event_type"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-32">
+        <createIndex indexName="idx_issue_project" tableName="issue">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-33">
+        <createIndex indexName="idx_issue_status" tableName="issue">
+            <column name="status"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-34">
+        <createIndex indexName="idx_issue_type" tableName="issue">
+            <column name="type"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-35">
+        <createIndex indexName="idx_storage_doc_project" tableName="storage_document">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-36">
+        <createIndex indexName="idx_submission_project" tableName="submission">
+            <column name="project_key"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-37">
+        <createIndex indexName="idx_submission_type" tableName="submission">
+            <column name="type"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-38">
+        <createIndex indexName="idx_user_email_address" tableName="user">
+            <column name="email_address"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-39">
+        <createIndex indexName="idx_user_user_name" tableName="user">
+            <column name="user_name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-40">
+        <createIndex indexName="storage_document_id" tableName="submission_document">
+            <column name="storage_document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-41">
+        <createIndex indexName="submission_document_id" tableName="submission_document">
+            <column name="submission_document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-42">
+        <addForeignKeyConstraint baseColumnNames="amendment_documents_id" baseTableName="amendment_storage_document" constraintName="FK93ECB55149C24510" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="amendment"/>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-43">
+        <addForeignKeyConstraint baseColumnNames="storage_document_id" baseTableName="amendment_storage_document" constraintName="FK93ECB551A41A0680" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="storage_document"/>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-44">
+        <addForeignKeyConstraint baseColumnNames="issue_id" baseTableName="issue_extra_property" constraintName="FKF557E54A6390B0A9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="issue"/>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-45">
+        <addForeignKeyConstraint baseColumnNames="submission_document_id" baseTableName="submission_document" constraintName="submission_document_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="submission"/>
+    </changeSet>
+    <changeSet author="vvicario (generated)" id="1543933537042-46">
+        <addForeignKeyConstraint baseColumnNames="storage_document_id" baseTableName="submission_document" constraintName="submission_document_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="storage_document"/>
+    </changeSet>
+</databaseChangeLog>

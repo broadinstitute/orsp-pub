@@ -39,12 +39,15 @@ implementation should be ever get there (react/angular/etc.).
 * Grails 3.3.8: https://grails.org/download.html
 * Gradle 3.5
 * Groovy 2.4.11
+* Liquibase 3.5.5
 * homebrew:
   - ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   - git
   - grails
 * Requires Docker and Vault for generating configuration files: https://broadinstitute.atlassian.net/wiki/display/DO/Vault
-  - See [Deployment](DEPLOY.md) for more information about how to render configurations. 
+  - See [Deployment](DEPLOY.md) for more information about how to render configurations.
+* If the database already exists mark all changes as executed in the database
+  -  grails dbm-changelog-sync
 * Run locally with `grails run-app -https` and ignore the cert-error when accessing the site locally.
   
 **Local Testing**  

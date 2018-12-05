@@ -5,7 +5,10 @@ hibernate:
     queries: false
     use_second_level_cache: false
     use_query_cache: false
-
+grails.plugin.databasemigration.changelogLocation: grails-app/migrations
+grails.plugin.databasemigration.changelogFileName: changelog-master.xml
+grails.plugin.databasemigration.updateOnStart: true
+grails.plugin.databasemigration.updateOnStartFileName: changelog-master.xml
 environments:
   test:
     crowd:
@@ -104,10 +107,10 @@ environments:
         statusUrl: http://bsp/BSP/
     dataSource:
       pooled: true
-      driverClassName: org.drizzle.jdbc.DrizzleDriver
+      driverClassName: com.mysql.jdbc.Driver
       username: {{$orsp.Data.dev_ds_username}}
       password: {{$orsp.Data.dev_ds_password}}
-      url: jdbc:mysql:thin://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
+      url: jdbc:mysql://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
       properties:
         initialSize: 5
         maxActive: 50
@@ -172,10 +175,10 @@ environments:
         statusUrl: http://bsp/BSP/
     dataSource:
       pooled: true
-      driverClassName: org.drizzle.jdbc.DrizzleDriver
+      driverClassName: com.mysql.jdbc.Driver
       username: {{$orsp.Data.prod_ds_username}}
       password: {{$orsp.Data.prod_ds_password}}
-      url: jdbc:mysql:thin://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}
+      url: jdbc:mysql://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}
       properties:
         jmxEnabled: true
         initialSize: 5
