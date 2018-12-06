@@ -4,5 +4,5 @@ import NewProject from './NewProject';
 
 ReactDOM.render(
     <NewProject />,
-    document.getElementById('app')
+    document.getElementById('pages')
 );
