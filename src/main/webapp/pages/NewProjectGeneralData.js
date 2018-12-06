@@ -15,7 +15,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   render() {
 
     return (
-      WizardStep({ title: "1. General Data"}, [
+      WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep}, [
         Panel({ title: "Requestor Information (person filling the form)" }, [
           InputFieldText({ label: "Requestor Name" }),
           InputFieldText({ label: "Requesto Email Address" })

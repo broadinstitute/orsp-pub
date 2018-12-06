@@ -27,9 +27,9 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       question: "Question Nbr. 3",
 
     }, []);
-    
+
     return (
-      WizardStep({ title: "2. Determination Questions" }, [
+      WizardStep({ title: this.props.title, step:1, currentStep: this.props.currentStep }, [
 
         QuestionnaireWorkflow({}, [
           qs1,

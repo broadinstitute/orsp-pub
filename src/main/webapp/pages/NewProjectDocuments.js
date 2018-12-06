@@ -34,7 +34,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     }
 
     return (
-      WizardStep({ title: "3. Documents" }, [
+      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [
         requiredDocuments.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
             InputFieldFile({ label: rd.label })

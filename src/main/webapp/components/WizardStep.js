@@ -9,15 +9,23 @@ export const WizardStep = hh(class WizardStep extends Component {
   }
 
   render() {
-    console.log(this.props.children);
-    return (
-      div({ style: {"margin":"3px", "padding":"2px", "border": "solid 3px red" } }, [
-        div({style: {"margin":"3px", "padding":"2px", "backgroundColor":"yellow", "color":"black" }}, [ 
-          h3({},["(wizardStep) " + this.props.title])
+
+    let view = null;
+
+    const { step, currentStep } = this.props;
+
+    console.log(step, currentStep);
+
+    if (currentStep === step) {
+
+      view = div({ style: { "margin": "3px", "padding": "2px", "border": "solid 2px red" } }, [
+        div({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "yellow", "color": "black" } }, [
+          h3({}, ["(wizardStep) " + this.props.title])
         ]),
         this.props.children
-      ])
-    )
+      ]);
+    }
+    return view;
   }
 });
 
