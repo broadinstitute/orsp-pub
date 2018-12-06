@@ -11,7 +11,7 @@ class RenderConfigs extends DefaultTask {
     @Option(option = 'local', description = 'Generate configurations for running application locally')
     void setLocalConfig(boolean localConfig) { this.local = localConfig }
 
-    String projectHome
+    public String projectHome
     String vault
 
     @TaskAction

@@ -1,6 +1,22 @@
 # Deployment
 
-TODO:
+TODO: Update for cloud deployment
+
+Run the `deploy` gradle task to deploy to an environment. Defaults to dev environment
+if not specified. Requires username and password to the current application host
+as well as a vault url where configuration secrets are maintained. Requires an updated and
+valid `.vault-token` file in the user's home directory.
+
+```
+gradle deploy --user=user --pass=pass -Dgrails.env=prod
+```
+
+Overridable options include:
+* **-Dgrails.env**  *Optional.* The environment, dev if not provided.
+* **host**          *Optional.* The application host (current host by default)
+* **user**          *Required.* The tomcat manager username
+* **pass**          *Required.* The tomcat manager password
+
 
 ## Render Configurations
 
