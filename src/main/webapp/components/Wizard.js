@@ -16,6 +16,11 @@ export const Wizard = hh(class Wizard extends Component {
     console.log(error, info);
   }
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
+  }
+
   prevStep = (e) => {
     e.preventDefault();
     this.setState(prev => {
@@ -36,32 +41,40 @@ export const Wizard = hh(class Wizard extends Component {
     })
   }
 
-  goStep = (n) => {
-    // this.setState(prev => {
-    //   prev.currentStepIndex = n;
-    //   return prev;
-    // }, () => {
-    //   this.props.stepChanged(this.state.currentStepIndex);
-    // })
+  goStep = (n) => (e) => {
+    console.log(n);
+    e.preventDefault();
+    this.setState(prev => {
+      prev.currentStepIndex = n;
+      return prev;
+    }, () => {
+      this.props.stepChanged(this.state.currentStepIndex);
+    })
   }
 
   render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
 
     return (
-      div({ style: { "border": "solid 3px black" } }, [
-        div({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "#aabbcc" } }, [h2({}, ["(wizard) " + this.props.title])]),
-        div({  }, [
+      div({ style: { "border": "solid 1px black", "borderRadius": "4px" } }, [
+        div({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "#aabbcc" } }, [h2({}, [this.props.title + " (wizard)"])]),
+        div({}, [
           this.props.children.map((child, idx) => {
             console.log(child.props.title);
             return h(Fragment, { key: idx }, [
-              div({ style: { "margin":"4px", "padding":"4px", "borderRadius":"3px", "border": "1px solid gray", "display":"inline" },
-            onClick: this.goStep(idx) }, [child.props.title])
+              div({
+                style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === this.currentStepIndex ? 'bold' : 'normal' },
+                onClick: this.goStep(idx)
+              }, [child.props.title])
             ])
           })
         ]),
         this.props.children,
-        button({ onClick: this.prevStep }, ["Previous Step"]),
-        button({ onClick: this.nextStep }, ["Next Step"]),
+        button({ className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevStep }, ["Previous Step"]),
+        button({ className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextStep }, ["Next Step"]),
       ])
     );
   }

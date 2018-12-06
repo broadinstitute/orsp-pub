@@ -22487,9 +22487,17 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
   _inherits(WizardStep, _Component);
 
   function WizardStep() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, WizardStep);
 
-    return _possibleConstructorReturn(this, (WizardStep.__proto__ || Object.getPrototypeOf(WizardStep)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WizardStep.__proto__ || Object.getPrototypeOf(WizardStep)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(WizardStep, [{
@@ -22502,6 +22510,15 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
     key: 'render',
     value: function render() {
 
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
       var view = null;
 
       var _props = this.props,
@@ -22513,9 +22530,15 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
 
       if (currentStep === step) {
 
-        view = (0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "border": "solid 2px red" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "yellow", "color": "black" } }, [(0, _reactHyperscriptHelpers.h3)({}, ["(wizardStep) " + this.props.title])]), this.props.children]);
+        view = (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "black" } }, [(0, _reactHyperscriptHelpers.h3)({}, [this.props.title + " (wizardStep)"])]), this.props.children]);
       }
       return view;
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -22670,6 +22693,89 @@ module.exports = TAG_NAMES.reduce(function (exported, type) {
 
 /***/ }),
 
+/***/ 264:
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+
 /***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22767,6 +22873,416 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
 module.exports = checkPropTypes;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+
+/***/ 474:
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		// Test for IE <= 9 as proposed by Browserhacks
+		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+		// Tests for existence of standard globals is to allow style-loader 
+		// to operate correctly into non-standard environments
+		// @see https://github.com/webpack-contrib/style-loader/issues/177
+		return window && document && document.all && !window.atob;
+	}),
+	getElement = (function(fn) {
+		var memo = {};
+		return function(selector) {
+			if (typeof memo[selector] === "undefined") {
+				memo[selector] = fn.call(this, selector);
+			}
+			return memo[selector]
+		};
+	})(function (styleTarget) {
+		return document.querySelector(styleTarget)
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [],
+	fixUrls = __webpack_require__(475);
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (typeof options.insertInto === "undefined") options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list, options) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var styleTarget = getElement(options.insertInto)
+	if (!styleTarget) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			styleTarget.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		styleTarget.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	options.attrs.type = "text/css";
+
+	attachTagAttrs(styleElement, options.attrs);
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	attachTagAttrs(linkElement, options.attrs);
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function attachTagAttrs(element, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		element.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove, transformResult;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    transformResult = options.transform(obj.css);
+	    
+	    if (transformResult) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = transformResult;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css. 
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement, options);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+	and there is no publicPath defined then lets turn convertToAbsoluteUrls
+	on by default.  Otherwise default to the convertToAbsoluteUrls option
+	directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls){
+		css = fixUrls(css);
+	}
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+
+/***/ 475:
+/***/ (function(module, exports) {
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+  // get current location
+  var location = typeof window !== "undefined" && window.location;
+
+  if (!location) {
+    throw new Error("fixUrls requires window.location");
+  }
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+	  return css;
+  }
+
+  var baseUrl = location.protocol + "//" + location.host;
+  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+	This regular expression is just a way to recursively match brackets within
+	a string.
+
+	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+	   (  = Start a capturing group
+	     (?:  = Start a non-capturing group
+	         [^)(]  = Match anything that isn't a parentheses
+	         |  = OR
+	         \(  = Match a start parentheses
+	             (?:  = Start another non-capturing groups
+	                 [^)(]+  = Match anything that isn't a parentheses
+	                 |  = OR
+	                 \(  = Match a start parentheses
+	                     [^)(]*  = Match anything that isn't a parentheses
+	                 \)  = Match a end parentheses
+	             )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+	 \)  = Match a close parens
+
+	 /gi  = Get all matches, not the first.  Be case insensitive.
+	 */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl
+			.trim()
+			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
+		  return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+		  	//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
 
 /***/ }),
 
@@ -22888,12 +23404,50 @@ var NewProject = function (_Component) {
 
       return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "1. General Data", currentStep: currentStep }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "2. Determination Questions", currentStep: currentStep }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "3. Documents", currentStep: currentStep, projectType: 'IRB' })]);
     }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
+    }
   }]);
 
   return NewProject;
 }(_react.Component);
 
 exports.default = NewProject;
+
+/***/ }),
+
+/***/ 532:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(580);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(474)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./style.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./style.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ }),
 
@@ -23022,9 +23576,17 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
   _inherits(Panel, _Component);
 
   function Panel() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, Panel);
 
-    return _possibleConstructorReturn(this, (Panel.__proto__ || Object.getPrototypeOf(Panel)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Panel.__proto__ || Object.getPrototypeOf(Panel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Panel, [{
@@ -23037,7 +23599,22 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "border": "solid 1px green" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "green", "color": "white" } }, ["(panel) " + this.props.title]), this.props.children]);
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
+      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "border": "solid 1px black", "borderRadius": "4px", "color": "#333" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, [this.props.title + " (panel)"]), (0, _reactHyperscriptHelpers.hr)(), this.props.children]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23075,9 +23652,17 @@ var QuestionnaireStep = exports.QuestionnaireStep = (0, _reactHyperscriptHelpers
   _inherits(QuestionnaireStep, _Component);
 
   function QuestionnaireStep() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, QuestionnaireStep);
 
-    return _possibleConstructorReturn(this, (QuestionnaireStep.__proto__ || Object.getPrototypeOf(QuestionnaireStep)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = QuestionnaireStep.__proto__ || Object.getPrototypeOf(QuestionnaireStep)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(QuestionnaireStep, [{
@@ -23090,7 +23675,22 @@ var QuestionnaireStep = exports.QuestionnaireStep = (0, _reactHyperscriptHelpers
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px orange" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "white", "color": "black" } }, ["(QuestionnaireStep) " + this.props.question])]);
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
+      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px gray" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "white", "color": "black" } }, [this.props.question + " (QuestionnaireStep)"]), this.props.children]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23155,21 +23755,36 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
   }
 
   _createClass(QuestionnaireWorkflow, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {}
+  }, {
     key: 'componentDidCatch',
     value: function componentDidCatch(error, info) {
       console.log('----------------------- error ----------------------');
       console.log(error, info);
     }
   }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
     key: 'render',
     value: function render() {
 
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
       var currentQuestion = this.props.children[this.state.currentQuestionIndex];
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "border": "solid 1px blue" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "orange", "color": "white" } }, ["(QuestionnaireWorkflow) " + this.props.title]), currentQuestion, (0, _reactHyperscriptHelpers.button)({ onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ onClick: this.nextQuestion }, ["Next Question"])]);
+      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]), currentQuestion, (0, _reactHyperscriptHelpers.button)({ className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23232,12 +23847,16 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
     };
 
     _this.goStep = function (n) {
-      // this.setState(prev => {
-      //   prev.currentStepIndex = n;
-      //   return prev;
-      // }, () => {
-      //   this.props.stepChanged(this.state.currentStepIndex);
-      // })
+      return function (e) {
+        console.log(n);
+        e.preventDefault();
+        _this.setState(function (prev) {
+          prev.currentStepIndex = n;
+          return prev;
+        }, function () {
+          _this.props.stepChanged(_this.state.currentStepIndex);
+        });
+      };
     };
 
     console.log(props);
@@ -23258,11 +23877,28 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
     value: function render() {
       var _this2 = this;
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 3px black" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "#aabbcc" } }, [(0, _reactHyperscriptHelpers.h2)({}, ["(wizard) " + this.props.title])]), (0, _reactHyperscriptHelpers.div)({}, [this.props.children.map(function (child, idx) {
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
+      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px black", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "#aabbcc" } }, [(0, _reactHyperscriptHelpers.h2)({}, [this.props.title + " (wizard)"])]), (0, _reactHyperscriptHelpers.div)({}, [this.props.children.map(function (child, idx) {
         console.log(child.props.title);
-        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: idx }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline" },
-          onClick: _this2.goStep(idx) }, [child.props.title])]);
-      })]), this.props.children, (0, _reactHyperscriptHelpers.button)({ onClick: this.prevStep }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ onClick: this.nextStep }, ["Next Step"])]);
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: idx }, [(0, _reactHyperscriptHelpers.div)({
+          style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === _this2.currentStepIndex ? 'bold' : 'normal' },
+          onClick: _this2.goStep(idx)
+        }, [child.props.title])]);
+      })]), this.props.children, (0, _reactHyperscriptHelpers.button)({ className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevStep }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextStep }, ["Next Step"])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23306,9 +23942,17 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
   _inherits(NewProjectDetermination, _Component);
 
   function NewProjectDetermination() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, NewProjectDetermination);
 
-    return _possibleConstructorReturn(this, (NewProjectDetermination.__proto__ || Object.getPrototypeOf(NewProjectDetermination)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = NewProjectDetermination.__proto__ || Object.getPrototypeOf(NewProjectDetermination)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(NewProjectDetermination, [{
@@ -23321,22 +23965,37 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
     key: 'render',
     value: function render() {
 
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
       var qs1 = new _QuestionnaireStep.QuestionnaireStep({
         question: "Question Nbr. 1"
 
-      }, []);
+      }, ["yex", "no"]);
 
       var qs2 = new _QuestionnaireStep.QuestionnaireStep({
         question: "Question Nbr. 2"
 
-      }, []);
+      }, ["True", "False", "N/A"]);
 
       var qs3 = new _QuestionnaireStep.QuestionnaireStep({
         question: "Question Nbr. 3"
 
-      }, []);
+      }, ["Yes", "No", "Other"]);
 
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 1, currentStep: this.props.currentStep }, [(0, _QuestionnaireWorkflow.QuestionnaireWorkflow)({}, [qs1, qs2, qs3])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23378,9 +24037,17 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
   _inherits(NewProjectDocuments, _Component);
 
   function NewProjectDocuments() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, NewProjectDocuments);
 
-    return _possibleConstructorReturn(this, (NewProjectDocuments.__proto__ || Object.getPrototypeOf(NewProjectDocuments)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = NewProjectDocuments.__proto__ || Object.getPrototypeOf(NewProjectDocuments)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(NewProjectDocuments, [{
@@ -23392,6 +24059,15 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
   }, {
     key: 'render',
     value: function render() {
+
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
       var requiredDocuments = [];
 
       switch (this.props.projectType) {
@@ -23417,6 +24093,12 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [requiredDocuments.map(function (rd, Index) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _InputFieldFile.InputFieldFile)({ label: rd.label })]);
       })]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23460,9 +24142,17 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
   _inherits(NewProjectGeneralData, _Component);
 
   function NewProjectGeneralData() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, NewProjectGeneralData);
 
-    return _possibleConstructorReturn(this, (NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(NewProjectGeneralData, [{
@@ -23475,7 +24165,22 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
     key: 'render',
     value: function render() {
 
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return React.createElement(
+          'h1',
+          null,
+          'Something went wrong.'
+        );
+      }
+
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ label: "Requestor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Requesto Email Address" })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, []), (0, _Panel.Panel)({ title: "Funding" }, []), (0, _Panel.Panel)({ title: "Project Summary" }, [])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -23504,6 +24209,8 @@ var _NewProject = __webpack_require__(529);
 
 var _NewProject2 = _interopRequireDefault(_NewProject);
 
+__webpack_require__(532);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom2.default.render(_react2.default.createElement(_NewProject2.default, null), document.getElementById('pages'));
@@ -23526,6 +24233,21 @@ _reactDom2.default.render(_react2.default.createElement(_NewProject2.default, nu
 var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 module.exports = ReactPropTypesSecret;
+
+
+/***/ }),
+
+/***/ 580:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(264)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n/* Animation css for nice loading icon */\n.glyphicon-refresh-animate {\n  -animation: spin .7s infinite linear;\n  -webkit-animation: spin2 .7s infinite linear;\n}\n\n@-webkit-keyframes spin2 {\n    from { -webkit-transform: rotate(0deg);}\n    to { -webkit-transform: rotate(360deg);}\n}\n\n@keyframes spin {\n    from { transform: scale(1) rotate(0deg);}\n    to { transform: scale(1) rotate(360deg);}\n}\n\n\n/* React Bootstrap Table styles */\n.rbt {\n    outline: none;\n}\n\n.rbt .focus {\n    /* Mimic focus state */\n    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);\n    border-color: #66afe9;\n    outline: 0;\n}\n\n.rbt-menu > li a {\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.rbt-menu > li a:focus {\n    outline: none;\n}\n\n.rbt-menu-paginator {\n    text-align: center;\n}\n\n.rbt .dropdown-menu-justify {\n    right: 0;\n}\n\n.rbt input[type=text]::-ms-clear {\n    /* Hide IE's native \"clear\" button */\n    display: none;\n}\n\n.rbt-input {\n    display: -webkit-box;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: -webkit-flex;\n    display: flex;\n    cursor: text;\n    overflow: hidden;\n    position: relative;\n    height: auto;\n}\n\n.rbt-input-multi .rbt-input-wrapper {\n    margin-bottom: -4px;\n    margin-top: -1px;\n}\n\n.rbt-input-multi .rbt-input-main {\n    margin: 1px 0 4px;\n}\n\n.rbt-input-wrapper {\n    -webkit-box-flex: 1;\n    -moz-box-flex: 1;\n    -webkit-flex: 1;\n    -ms-flex: 1;\n    flex: 1;\n    overflow: hidden;\n}\n\n.rbt-input-main, .rbt-input-hint {\n    /* Set input height for cross-browser consistency */\n    height: 20px;\n}\n\n.rbt-close {\n    z-index: 1;\n}\n\n.rbt-close-lg {\n    font-size: 24px;\n}\n\n.rbt-token {\n    background-color: #e7f4ff;\n    border: 0;\n    border-radius: 2px;\n    color: #1f8dd6;\n    display: inline-block;\n    line-height: 1em;\n    margin: 0 3px 3px 0;\n    padding: 4px 7px;\n    position: relative;\n}\n\n.rbt-token-disabled {\n    background-color: #ddd;\n    color: #888;\n    pointer-events: none;\n}\n\n.rbt-token-removeable {\n    cursor: pointer;\n    padding-right: 21px;\n}\n\n.rbt-token-active {\n    background-color: #1f8dd6;\n    color: #fff;\n    outline: none;\n    text-decoration: none;\n}\n\n.rbt-token .rbt-token-remove-button {\n    bottom: 0;\n    color: inherit;\n    font-size: inherit;\n    font-weight: normal;\n    opacity: 1;\n    outline: none;\n    padding: 3px 7px;\n    position: absolute;\n    right: 0;\n    text-shadow: none;\n    top: -2px;\n}\n\n.rbt-loader {\n    -webkit-animation: loader-animation 600ms infinite linear;\n    -o-animation: loader-animation 600ms infinite linear;\n    animation: loader-animation 600ms infinite linear;\n    border: 1px solid #d5d5d5;\n    border-radius: 50%;\n    border-top-color: #1f8dd6;\n    display: block;\n    height: 16px;\n    width: 16px;\n}\n\n.rbt-loader-lg {\n    height: 20px;\n    width: 20px;\n}\n\n.rbt-aux {\n    margin-left: 5px;\n}\n\n.rbt-aux .rbt-close {\n    margin-top: -12px;\n    position: relative;\n    top: 50%;\n}\n\n.rbt-aux .rbt-close-lg {\n    margin-top: -15px;\n}\n\n.rbt-aux .rbt-loader {\n    margin-top: -8px;\n    position: relative;\n    top: 50%;\n}\n\n.rbt-aux .rbt-loader-lg {\n    margin-top: -10px;\n}\n\n.rbt-highlight-text {\n    background-color: inherit;\n    color: inherit;\n    font-weight: bold;\n    padding: 0;\n}\n\n.input-lg .rbt-input-main,\n.input-lg .rbt-input-hint,\n.form-control-lg .rbt-input-main,\n.form-control-lg .rbt-input-hint {\n    height: 24px;\n}\n\n.input-sm .rbt-input-main,\n.input-sm .rbt-input-hint,\n.form-control-sm .rbt-input-main,\n.form-control-sm .rbt-input-hint {\n    height: 18px;\n}\n\n@keyframes loader-animation {\n    to {\n        transform: rotate(1turn);\n    }\n}\n\n@-webkit-keyframes loader-animation {\n    to {\n        -webkit-transform: rotate(1turn);\n    }\n}\n\n.dropdown.react-bs-table-sizePerPage-dropdown {\n    margin-right: 15px;\n    float: left;\n}\n.totalCount {\n    display: inline;\n    line-height: 35px;\n}\n\n.btn-export-excel {\n    position: absolute;\n    left: 120px;\n    font-size: 12px;\n    line-height: 1.5;\n    padding: 5px 10px;\n    border-radius: 3px;\n    z-index: 1000;\n}\n\n.btn-export-excel i{\n    padding-right: 5px;\n}\n\n.position-relative {\n    position: relative;\n}\n\n.rbt-input-main, .rbt-input-hint {\n    height: 34px;\n}\n", ""]);
+
+// exports
 
 
 /***/ }),

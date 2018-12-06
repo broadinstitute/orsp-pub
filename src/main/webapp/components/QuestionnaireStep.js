@@ -3,16 +3,29 @@ import { div, hh } from 'react-hyperscript-helpers';
 
 export const QuestionnaireStep = hh(class QuestionnaireStep extends Component {
 
+  state = {};
+  
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
+  }
+  
   render() {
 
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
+
     return (
-      div({ style: { "border": "solid 1px orange" } }, [
-        div({style: {"margin":"3px", "padding":"2px", "backgroundColor":"white", "color":"black" }}, ["(QuestionnaireStep) " + this.props.question]),
+      div({ style: { "border": "solid 1px gray" } }, [
+        div({style: {"margin":"3px", "padding":"2px", "backgroundColor":"white", "color":"black" }}, [this.props.question + " (QuestionnaireStep)" ]),
+        this.props.children
       ])
     )
   }
