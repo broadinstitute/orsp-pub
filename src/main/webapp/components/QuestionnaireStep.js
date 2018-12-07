@@ -4,7 +4,7 @@ import { div, hh } from 'react-hyperscript-helpers';
 export const QuestionnaireStep = hh(class QuestionnaireStep extends Component {
 
   state = {};
-  
+
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
@@ -24,7 +24,7 @@ export const QuestionnaireStep = hh(class QuestionnaireStep extends Component {
 
     return (
       div({ style: { "border": "solid 1px gray" } }, [
-        div({style: {"margin":"3px", "padding":"2px", "backgroundColor":"white", "color":"black" }}, [this.props.question + " (QuestionnaireStep)" ]),
+        div({style: {"margin":"3px", "padding":"2px", "backgroundColor":"white", "color":"black" }}, [this.props.question ]),
         this.props.children
       ])
     )

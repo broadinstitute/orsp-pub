@@ -23384,6 +23384,14 @@ var NewProject = function (_Component) {
       });
     };
 
+    _this.determinationHandler = function (determination) {
+      _this.setState({
+        determination: determination
+      }, function () {
+        console.log("project determination ", determination);
+      });
+    };
+
     _this.state = {
       currentStep: 0
     };
@@ -23402,7 +23410,7 @@ var NewProject = function (_Component) {
       var currentStep = this.state.currentStep;
 
 
-      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "1. General Data", currentStep: currentStep }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "2. Determination Questions", currentStep: currentStep }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "3. Documents", currentStep: currentStep, projectType: 'IRB' })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "1. General Data", currentStep: currentStep }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "2. Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "3. Documents", currentStep: currentStep, projectType: 'IRB' })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -23684,7 +23692,7 @@ var QuestionnaireStep = exports.QuestionnaireStep = (0, _reactHyperscriptHelpers
         );
       }
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px gray" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "white", "color": "black" } }, [this.props.question + " (QuestionnaireStep)"]), this.props.children]);
+      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px gray" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "white", "color": "black" } }, [this.props.question]), this.props.children]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -23735,7 +23743,10 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
     _this.prevQuestion = function (e) {
       e.preventDefault();
       _this.setState(function (prev) {
-        prev.currentQuestionIndex = prev.currentQuestionIndex === 0 ? _this.props.children.length - 1 : prev.currentQuestionIndex - 1;
+        prev.projectType = null;
+        prev.endState = false;
+        prev.nextQuestionIndex = prev.currentQuestionIndex;
+        prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
         return prev;
       });
     };
@@ -23743,20 +23754,107 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
     _this.nextQuestion = function (e) {
       e.preventDefault();
       _this.setState(function (prev) {
-        prev.currentQuestionIndex = prev.currentQuestionIndex === _this.props.children.length - 1 ? 0 : prev.currentQuestionIndex + 1;
+        prev.endState = false;
+        prev.currentQuestionIndex = prev.nextQuestionIndex;
         return prev;
       });
     };
 
+    _this.gotoNextquestion = function () {
+      var answer = _this.state.questions[_this.state.currentQuestionIndex].answer;
+      _this.evaluateAnswer();
+    };
+
+    _this.evaluateAnswer = function (answer) {
+      var onYes = _this.state.questions[_this.state.currentQuestionIndex].yesOutput;
+      var onNo = _this.state.questions[_this.state.currentQuestionIndex].noOutput;
+      // console.log(answer, onYes, onNo);
+
+      var requiredError = true;
+      var nextQuestionIndex = null;
+      var projectType = null;
+      var endState = true;
+
+      if (answer === null) {
+        requiredError = true;
+        nextQuestionIndex = null;
+        projectType = null;
+        endState = true;
+      } else if (answer === 'yes') {
+        if (onYes < 100) {
+          requiredError = false;
+          nextQuestionIndex = onYes - 1;
+          projectType = null;
+          endState = false;
+        } else {
+          requiredError = false;
+          nextQuestionIndex = null;
+          projectType = onYes;
+          endState = true;
+        }
+      } else if (answer === 'no') {
+        if (onNo < 100) {
+          requiredError = false;
+          nextQuestionIndex = onNo - 1;
+          projectType = null;
+          endState = false;
+        } else {
+          requiredError = false;
+          nextQuestionIndex = null;
+          projectType = onNo;
+          endState = true;
+        }
+      }
+
+      _this.setState({
+        requiredError: requiredError,
+        nextQuestionIndex: nextQuestionIndex,
+        projectType: projectType,
+        endState: endState
+      }, function () {
+        // call parent's callback
+        _this.props.handler(_this.state);
+      });
+    };
+
+    _this.handleChange = function (event) {
+      // event.preventDefault();
+      var answer = event.target.value;
+      _this.setState(function (prev) {
+        prev.questions[prev.currentQuestionIndex].answer = answer;
+        return prev;
+      }, function () {
+        _this.evaluateAnswer(answer);
+      });
+    };
+
+    _this.getTypeDescription = function (t) {
+      if (t === 200) return 'NE';
+      if (t === 300) return 'NHSR';
+      if (t === 400) return 'IRB';
+    };
+
     _this.state = {
-      currentQuestionIndex: 0
+      requiredError: false,
+      currentQuestionIndex: null,
+      nextQuestionIndex: null,
+      endState: true,
+      questions: []
     };
     return _this;
   }
 
   _createClass(QuestionnaireWorkflow, [{
     key: 'componentDidMount',
-    value: function componentDidMount() {}
+    value: function componentDidMount() {
+      this.setState({
+        endState: false,
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        questions: this.props.questions
+      });
+    }
   }, {
     key: 'componentDidCatch',
     value: function componentDidCatch(error, info) {
@@ -23776,9 +23874,15 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
         );
       }
 
-      var currentQuestion = this.props.children[this.state.currentQuestionIndex];
+      if (this.state.currentQuestionIndex === null) {
+        return null;
+      }
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]), currentQuestion, (0, _reactHyperscriptHelpers.button)({ className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"])]);
+      var currentQuestionIndex = this.state.currentQuestionIndex;
+
+      // let currentQuestion = this.state.questions[currentQuestionIndex];
+
+      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]), (0, _reactHyperscriptHelpers.div)({}, [this.state.questions[currentQuestionIndex].question]), (0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "yes", checked: this.state.questions[currentQuestionIndex].answer === "yes", onChange: this.handleChange }), 'Yes'])]), (0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "no", checked: this.state.questions[currentQuestionIndex].answer === "no", onChange: this.handleChange }), 'No'])]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]), (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ isRendered: this.state.endState === false, className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"])]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -23941,21 +24045,22 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var NE = 200;
+var NHSR = 300;
+var IRB = 400;
+
 var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewProjectDetermination, _Component);
 
-  function NewProjectDetermination() {
-    var _ref;
-
-    var _temp, _this, _ret;
-
+  function NewProjectDetermination(props) {
     _classCallCheck(this, NewProjectDetermination);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    var _this = _possibleConstructorReturn(this, (NewProjectDetermination.__proto__ || Object.getPrototypeOf(NewProjectDetermination)).call(this, props));
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = NewProjectDetermination.__proto__ || Object.getPrototypeOf(NewProjectDetermination)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
+    _this.state = {};
+
+    _this.state = _this.initQuestions();
+    return _this;
   }
 
   _createClass(NewProjectDetermination, [{
@@ -23963,6 +24068,71 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
     value: function componentDidCatch(error, info) {
       console.log('----------------------- error ----------------------');
       console.log(error, info);
+    }
+  }, {
+    key: 'initQuestions',
+    value: function initQuestions() {
+      var questions = [];
+
+      questions.push({
+        question: '1. Is this a "fee-for-service" project? (commercial service only, no Broad publication privileges)',
+        yesOutput: NE,
+        noOutput: 2,
+        answer: null
+      });
+
+      questions.push({
+        question: '2. Is a Broad investigator conductin reseach (generating, contributing to generalizable knowledge) ? Examples include case studies, internal technology development projects',
+        yesOutput: 3,
+        noOutput: NHSR,
+        answer: null
+      });
+
+      questions.push({
+        question: '3. Are all subjects who provided samples and/or data now deceased?',
+        yesOutput: NHSR,
+        noOutput: 4,
+        answer: null
+      });
+
+      questions.push({
+        question: '4. Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating dentifiable private information or identifiable biospecimens (Coded data are considered identifiable if researcher has access to key)',
+        yesOutput: IRB,
+        noOutput: 5,
+        answer: null
+      });
+
+      questions.push({
+        question: '5. Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction (i.e. is conductin HSR)?',
+        yesOutput: 6,
+        noOutput: NHSR,
+        answer: null
+      });
+
+      questions.push({
+        question: '6. Is the Broad receiving subject identifiers?',
+        yesOutput: IRB,
+        noOutput: 7,
+        answer: null
+      });
+
+      questions.push({
+        question: '7. Is the Broad researcher co-publishing or doing joint analysis with investigator who has acess to identifiers?',
+        yesOutput: 8,
+        noOutput: NHSR,
+        answer: null
+      });
+
+      questions.push({
+        question: '8. Is Broad receiving direct federal funding?',
+        yesOutput: IRB,
+        noOutput: NE,
+        answer: null
+      });
+
+      return {
+        questions: questions
+      };
     }
   }, {
     key: 'render',
@@ -23977,22 +24147,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         );
       }
 
-      var qs1 = new _QuestionnaireStep.QuestionnaireStep({
-        question: "Question Nbr. 1"
-
-      }, ["yex", "no"]);
-
-      var qs2 = new _QuestionnaireStep.QuestionnaireStep({
-        question: "Question Nbr. 2"
-
-      }, ["True", "False", "N/A"]);
-
-      var qs3 = new _QuestionnaireStep.QuestionnaireStep({
-        question: "Question Nbr. 3"
-
-      }, ["Yes", "No", "Other"]);
-
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 1, currentStep: this.props.currentStep }, [(0, _QuestionnaireWorkflow.QuestionnaireWorkflow)({}, [qs1, qs2, qs3])]);
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 1, currentStep: this.props.currentStep }, [(0, _QuestionnaireWorkflow.QuestionnaireWorkflow)({ questions: this.state.questions, handler: this.props.handler })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
