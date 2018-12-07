@@ -67,7 +67,8 @@ export const Wizard = hh(class Wizard extends Component {
           this.props.children.map((child, idx) => {
             return h(Fragment, { key: idx }, [
               div({
-                style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === currentStepIndex ? 'bold' : 'normal' },
+                style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline",
+                 "cursor":"pointer", "fontWeight": idx === currentStepIndex ? 'bold' : 'normal' },
                 onClick: this.goStep(idx)
               }, [child.props.title])
             ])
