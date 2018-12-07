@@ -8,7 +8,7 @@ export const InputFieldFile = hh(class InputFieldFile extends Component {
 
     return (
       InputField({ label: this.props.label }, [
-        input({ type: 'file' })
+        input({ type: 'file', onChange: this.props.callback})
       ])
     )
   }

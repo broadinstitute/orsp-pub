@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h } from 'react-hyperscript-helpers';
+import { hh, h, p} from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
@@ -16,12 +16,24 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }
-  
+
+  setFilesToUpload = (key) => (e) => {
+    let filesBundle = {};
+    let file = e.target.files[0];
+    filesBundle.fileKey = key;
+    filesBundle.fileData = file;
+    this.props.fileHandler(filesBundle);
+  }
+
   render() {
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return <h1>Something went wrong.</h1>;
+    }
+
+    if (this.props.files !== null ) {
+
     }
     let requiredDocuments = [];
 
@@ -49,7 +61,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [
         requiredDocuments.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
-            InputFieldFile({ label: rd.label })
+            InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey) })
           ])
         })
       ])
