@@ -5,10 +5,6 @@ hibernate:
     queries: false
     use_second_level_cache: false
     use_query_cache: false
-grails.plugin.databasemigration.changelogLocation: grails-app/migrations
-grails.plugin.databasemigration.changelogFileName: changelog-master.xml
-grails.plugin.databasemigration.updateOnStart: true
-grails.plugin.databasemigration.updateOnStartFileName: changelog-master.xml
 environments:
   test:
     crowd:
@@ -271,6 +267,11 @@ grails:
         scriptlets: html
         taglib: none
         staticparts: none
+  plugin.databasemigration:
+    changelogLocation: grails-app/migrations
+    changelogFileName: changelog-master.xml
+    updateOnStart: true
+    updateOnStartFileName: changelog-master.xml
 endpoints:
   jmx:
     unique-names: true

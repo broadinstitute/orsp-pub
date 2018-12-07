@@ -39,7 +39,6 @@ implementation should be ever get there (react/angular/etc.).
 * Grails 3.3.8: https://grails.org/download.html
 * Gradle 3.5
 * Groovy 2.4.11
-* Liquibase 3.5.5
 * homebrew:
   - ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   - git
