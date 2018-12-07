@@ -9,11 +9,14 @@ class NewProject extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      determination: {
+        projectType: 'IRB'
+      },
       currentStep: 0,
       files: []
     }
   }
- 
+
   submitNewProject = () => {
 
   }
@@ -22,6 +25,14 @@ class NewProject extends Component {
     console.log(newStep);
     this.setState({
       currentStep: newStep
+    });
+  }
+
+  determinationHandler = (determination) => {
+    this.setState({
+      determination: determination
+    }, () => {
+      console.log("project determination ", determination);
     });
   }
 
@@ -45,16 +56,18 @@ class NewProject extends Component {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }
-  
+
   render() {
 
-    const { currentStep } = this.state;
+    const { currentStep, determination } = this.state;
+
+    let projectType = determination.projectType;
 
     return (
       Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [
-        NewProjectGeneralData({ title:"1. General Data", currentStep: currentStep }),
-        NewProjectDetermination({ title: "2. Determination Questions", currentStep: currentStep }),
-        NewProjectDocuments({ title:"3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: 'IRB' }),
+        NewProjectGeneralData({ title: "1. General Data", currentStep: currentStep }),
+        NewProjectDetermination({ title: "2. Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
+        NewProjectDocuments({ title:"3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType }),
       ])
     );
   }
