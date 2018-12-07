@@ -58,15 +58,16 @@ export const Wizard = hh(class Wizard extends Component {
       return <h1>Something went wrong.</h1>;
     }
 
+    const { currentStepIndex } = this.state;
+
     return (
       div({ style: { "border": "solid 1px black", "borderRadius": "4px" } }, [
         div({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "#aabbcc" } }, [h2({}, [this.props.title + " (wizard)"])]),
         div({}, [
           this.props.children.map((child, idx) => {
-            console.log(child.props.title);
             return h(Fragment, { key: idx }, [
               div({
-                style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === this.currentStepIndex ? 'bold' : 'normal' },
+                style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === currentStepIndex ? 'bold' : 'normal' },
                 onClick: this.goStep(idx)
               }, [child.props.title])
             ])

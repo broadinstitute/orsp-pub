@@ -23886,10 +23886,12 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
         );
       }
 
+      var currentStepIndex = this.state.currentStepIndex;
+
+
       return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px black", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "#aabbcc" } }, [(0, _reactHyperscriptHelpers.h2)({}, [this.props.title + " (wizard)"])]), (0, _reactHyperscriptHelpers.div)({}, [this.props.children.map(function (child, idx) {
-        console.log(child.props.title);
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: idx }, [(0, _reactHyperscriptHelpers.div)({
-          style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === _this2.currentStepIndex ? 'bold' : 'normal' },
+          style: { "margin": "4px", "padding": "4px", "borderRadius": "3px", "border": "1px solid gray", "display": "inline", "fontWeight": idx === currentStepIndex ? 'bold' : 'normal' },
           onClick: _this2.goStep(idx)
         }, [child.props.title])]);
       })]), this.props.children, (0, _reactHyperscriptHelpers.button)({ className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevStep }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextStep }, ["Next Step"])]);
