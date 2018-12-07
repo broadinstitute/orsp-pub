@@ -80,3 +80,4 @@ gradle-app.setting
 /buildSrc/out/
 /..bfg-report
 .idea_modules/
+/.asscache
