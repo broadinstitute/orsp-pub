@@ -337,16 +337,6 @@
     <changeSet author="vvicario" id="1543933537042-20">
         <addUniqueConstraint columnNames="uuid" constraintName="uuid" tableName="storage_document"/>
     </changeSet>
-    <changeSet author="vvicario" id="1543933537042-21">
-        <createIndex indexName="FK93ECB55149C24510" tableName="amendment_storage_document">
-            <column name="amendment_documents_id"/>
-        </createIndex>
-    </changeSet>
-    <changeSet author="vvicario" id="1543933537042-22">
-        <createIndex indexName="FK93ECB551A41A0680" tableName="amendment_storage_document">
-            <column name="storage_document_id"/>
-        </createIndex>
-    </changeSet>
     <changeSet author="vvicario" id="1543933537042-23">
         <createIndex indexName="FKF557E54A6390B0A9" tableName="issue_extra_property">
             <column name="issue_id"/>
@@ -359,11 +349,6 @@
     </changeSet>
     <changeSet author="vvicario" id="1543933537042-25">
         <createIndex indexName="IDX_EP_PROJECT_KEY" tableName="issue_extra_property">
-            <column name="project_key"/>
-        </createIndex>
-    </changeSet>
-    <changeSet author="vvicario" id="1543933537042-26">
-        <createIndex indexName="idx_amendment_project" tableName="amendment">
             <column name="project_key"/>
         </createIndex>
     </changeSet>
@@ -441,12 +426,6 @@
         <createIndex indexName="submission_document_id" tableName="submission_document">
             <column name="submission_document_id"/>
         </createIndex>
-    </changeSet>
-    <changeSet author="vvicario" id="1543933537042-42">
-        <addForeignKeyConstraint baseColumnNames="amendment_documents_id" baseTableName="amendment_storage_document" constraintName="FK93ECB55149C24510" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="amendment"/>
-    </changeSet>
-    <changeSet author="vvicario" id="1543933537042-43">
-        <addForeignKeyConstraint baseColumnNames="storage_document_id" baseTableName="amendment_storage_document" constraintName="FK93ECB551A41A0680" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="storage_document"/>
     </changeSet>
     <changeSet author="vvicario" id="1543933537042-44">
         <addForeignKeyConstraint baseColumnNames="issue_id" baseTableName="issue_extra_property" constraintName="FKF557E54A6390B0A9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="issue"/>
