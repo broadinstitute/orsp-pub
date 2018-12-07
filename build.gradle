@@ -1,3 +1,4 @@
+import org.broadinstitute.orsp.deploy.Deploy
 import org.broadinstitute.orsp.deploy.RenderConfigs
 
 buildscript {
@@ -209,6 +210,27 @@ task renderConfigs(type: RenderConfigs) {
     local = false
     projectHome = projectDir
     vault = System.getenv('VAULT_ADDR')
+}
+
+/**
+ * See /docs/DEPLOY.md for documentation
+ */
+task deploy(type: Deploy) {
+    projectHome = projectDir
+    env = System.getProperty("grails.env") ?: Deploy.DeployEnv.dev.name()
+    if (env.equalsIgnoreCase("development")) { env = Deploy.DeployEnv.dev.name()}
+    if (!Deploy.DeployEnv.values()*.name().contains(env.toLowerCase())) {
+        throw new InvalidUserDataException("Only 'dev' or 'prod' environments are supported. Provided value: $env")
+    }
+    // all applications are deployed to the same host at present so each env
+    // is deployed as a separate war in its own application path context
+    appPath = env.equals(Deploy.DeployEnv.prod.name()) ? '/' : "/${env}"
+    host = 'https://orsp.broadinstitute.org' // Overrideable option
+    user = ''   // Required option
+    pass = ''   // Required option
+    dependsOn renderConfigs
+    dependsOn war
+    tasks.findByName('war').mustRunAfter renderConfigs
 }
 
 // See https://github.com/bmuschko/gradle-clover-plugin for configuration options
