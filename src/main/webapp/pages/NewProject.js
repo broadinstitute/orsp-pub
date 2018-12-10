@@ -30,6 +30,7 @@ class NewProject extends Component {
 
   determinationHandler = (determination) => {
     this.setState({
+      files: [],
       determination: determination
     }, () => {
       console.log("project determination ", determination);
@@ -67,7 +68,7 @@ class NewProject extends Component {
       Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [
         NewProjectGeneralData({ title: "1. General Data", currentStep: currentStep }),
         NewProjectDetermination({ title: "2. Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
-        NewProjectDocuments({ title:"3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType }),
+        NewProjectDocuments({ title:"3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files}),
       ])
     );
   }
