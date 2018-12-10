@@ -106,7 +106,7 @@ environments:
       driverClassName: com.mysql.jdbc.Driver
       username: {{$orsp.Data.dev_ds_username}}
       password: {{$orsp.Data.dev_ds_password}}
-      url: jdbc:mysql://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
+      url: jdbc:mysql://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}?serverTimezone=UTC
       properties:
         initialSize: 5
         maxActive: 50
@@ -174,7 +174,7 @@ environments:
       driverClassName: com.mysql.jdbc.Driver
       username: {{$orsp.Data.prod_ds_username}}
       password: {{$orsp.Data.prod_ds_password}}
-      url: jdbc:mysql://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      url: jdbc:mysql://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}?serverTimezone=UTC
       properties:
         jmxEnabled: true
         initialSize: 5
