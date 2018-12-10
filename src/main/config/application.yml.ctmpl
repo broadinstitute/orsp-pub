@@ -103,10 +103,10 @@ environments:
         statusUrl: http://bsp/BSP/
     dataSource:
       pooled: true
-      driverClassName: com.mysql.jdbc.Driver
+      driverClassName: org.mariadb.jdbc.Driver
       username: {{$orsp.Data.dev_ds_username}}
       password: {{$orsp.Data.dev_ds_password}}
-      url: jdbc:mysql://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}?serverTimezone=UTC
+      url: jdbc:mariadb://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
       properties:
         initialSize: 5
         maxActive: 50
@@ -171,10 +171,10 @@ environments:
         statusUrl: http://bsp/BSP/
     dataSource:
       pooled: true
-      driverClassName: com.mysql.jdbc.Driver
+      driverClassName: org.mariadb.jdbc.Driver
       username: {{$orsp.Data.prod_ds_username}}
       password: {{$orsp.Data.prod_ds_password}}
-      url: jdbc:mysql://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}?serverTimezone=UTC
+      url: jdbc:mariadb://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}
       properties:
         jmxEnabled: true
         initialSize: 5
