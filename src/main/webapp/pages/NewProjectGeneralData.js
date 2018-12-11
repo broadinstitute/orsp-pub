@@ -54,13 +54,37 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
+    console.log("name? ",e.target.name, "value", e.target.value);
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
     }, () => console.log("STATE: ", this.state)/*this.checkValidations()*/);
   };
 
-  handleRadioChange = (e) => {
+  handleFundingChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+//    const id = this.state.formData.fundings.length + 1;
+    const id = e.target.id;
+    console.log("name? ",e.target.name, "value", e.target.value);
+    console.log("event: ", e.target);
+    this.setState(prev => {
+      prev.formData.fundings[id][field]= value;
+      return prev;
+    }, () => console.log("STATE: ", this.state)/*this.checkValidations()*/);
+  };
+
+  handleRadioChange = (e, field, value) => {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, console.log("STATE RADIO ", this.state)/*, () => this.checkValidations()*/);
   };
 
   componentDidCatch(error, info) {
@@ -76,7 +100,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   addFundings() {
     this.setState(prev => {
       let fundings = prev.formData.fundings;
-      fundings.push({ source: '', sponsor: '', identifier: '' });
+      fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
       prev.formData.fundings = fundings;
       return prev;
     });
@@ -146,7 +170,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
                 identifier: this.state.formData.fundings[Index].identifier,
                 sourceLabel: Index === 0 ? "Funding Source" : "",
                 sponsorLabel: Index === 0 ? "Prime Sponsor Name" : "",
-                identifierLabel: Index === 0 ? "Award Number/Identifier" : ""
+                identifierLabel: Index === 0 ? "Award Number/Identifier" : "",
+                inputHandler: this.handleFundingChange
+
               }),
               Btn({ action: { label: "--", handler: this.removeFundings(Index) }, disabled: !this.state.formData.fundings.length > 1 }),
             ]);
