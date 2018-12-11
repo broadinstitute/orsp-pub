@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, hr } from 'react-hyperscript-helpers';
+import { div, hh, hr, h1 } from 'react-hyperscript-helpers';
 
 export const Panel = hh(class Panel extends Component {
 
@@ -19,7 +19,7 @@ export const Panel = hh(class Panel extends Component {
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     return (

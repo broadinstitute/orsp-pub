@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, button, label, input } from 'react-hyperscript-helpers';
+import { div, hh, button, label, input, h1 } from 'react-hyperscript-helpers';
 
 export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Component {
 
@@ -133,7 +133,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     if (this.state.currentQuestionIndex === null) {

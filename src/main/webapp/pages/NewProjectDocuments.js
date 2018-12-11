@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h } from 'react-hyperscript-helpers';
+import { hh, h, h1 } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 const NE = 200;
 const NHSR = 300;
@@ -36,7 +36,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     if (this.props.files !== null ) {

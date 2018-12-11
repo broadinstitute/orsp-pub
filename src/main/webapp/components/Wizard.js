@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { div, hh, h2, h, button } from 'react-hyperscript-helpers';
+import { div, hh, h2, h, button, h1 } from 'react-hyperscript-helpers';
 
 export const Wizard = hh(class Wizard extends Component {
 
@@ -55,7 +55,7 @@ export const Wizard = hh(class Wizard extends Component {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     const { currentStepIndex } = this.state;
