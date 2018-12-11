@@ -21,12 +21,12 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
     return (
       InputField({ label: this.props.label }, [
-      <Select
-        value={this.state.selectedOption}
-        onChange={this.handleChange}
-        options={this.props.options}
-      />
+        <Select
+          value={this.state.selectedOption}
+          onChange={this.handleChange}
+          options={this.props.options}
+        />
       ]
-    ))
+      ))
   }
 });

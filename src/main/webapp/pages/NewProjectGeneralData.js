@@ -34,16 +34,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   state = {
     formData: {
-        requestorName: '',
-        requestorEmail: '',
-        projectManager: '',
-        primeSponsorName: '',
-        awardId: '',
-        studyDescription: '',
-        pTitle: '',
-        irbProtocolId: '',
-        subjectProtection: '',
-        fundings: [{ source: '', sponsor: '', identifier: '' }]
+      requestorName: '',
+      requestorEmail: '',
+      projectManager: '',
+      primeSponsorName: '',
+      awardId: '',
+      studyDescription: '',
+      pTitle: '',
+      irbProtocolId: '',
+      subjectProtection: '',
+      fundings: [{ source: '', sponsor: '', identifier: '' }]
     }
   };
 
@@ -83,14 +83,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   }
 
   removeFundings = (e) => (Index) => {
-    if(this.state.formData.fundings.length > 1) {
+    if (this.state.formData.fundings.length > 1) {
       this.setState(prev => {
         let fundings = prev.formData.fundings;
         fundings.splice(Index, 1);
         prev.formData.fundings = fundings;
         return prev;
       });
-    }    
+    }
   }
 
   render() {
@@ -103,31 +103,37 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
         Panel({ title: "Requestor Information (person filling the form)" }, [
-          InputFieldText({ id: "inputRequestorName",
-                           name: "requestorName",
-                           label: "Requestor Name",
-                           value: this.state.formData.requestorName,
-                           disabled: false,
-                           required: true,
-                           onChange: this.handleInputChange }),
-          InputFieldText({ id: "inputRequestorEmail",
-                           name: "requestorEmail",
-                           label: "Requestor Email Address",
-                           value: this.state.formData.requestorEmail,
-                           disabled: false,
-                           required: true,
-                           onChange: this.handleInputChange })
+          InputFieldText({
+            id: "inputRequestorName",
+            name: "requestorName",
+            label: "Requestor Name",
+            value: this.state.formData.requestorName,
+            disabled: false,
+            required: true,
+            onChange: this.handleInputChange
+          }),
+          InputFieldText({
+            id: "inputRequestorEmail",
+            name: "requestorEmail",
+            label: "Requestor Email Address",
+            value: this.state.formData.requestorEmail,
+            disabled: false,
+            required: true,
+            onChange: this.handleInputChange
+          })
         ]),
         Panel({ title: "Principal Investigator (if applicable)" }, [
-          InputFieldSelect({options: options, label: "Broad PI"}),
-          InputFieldText({ id: "inputProjectManager",
-                           name: "projectManager",
-                           label: "Broad Project Manager",
-                           value: this.state.formData.projectManager,
-                           disabled: false,
-                           required: false,
-                           onChange: this.handleInputChange })
-       ]),
+          InputFieldSelect({ options: options, label: "Broad PI" }),
+          InputFieldText({
+            id: "inputProjectManager",
+            name: "projectManager",
+            label: "Broad Project Manager",
+            value: this.state.formData.projectManager,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange
+          })
+        ]),
         Panel({ title: "Funding" }, [
           Btn({ action: { label: "++", handler: this.addFundings }, disabled: false }),
           this.state.formData.fundings.map((rd, Index) => {
@@ -142,39 +148,47 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
                 sponsorLabel: Index === 0 ? "Prime Sponsor Name" : "",
                 identifierLabel: Index === 0 ? "Award Number/Identifier" : ""
               }),
-              Btn({ action: { label: "--", handler:  this.removeFundings(Index) }, disabled: !this.state.formData.fundings.length > 1 }),
+              Btn({ action: { label: "--", handler: this.removeFundings(Index) }, disabled: !this.state.formData.fundings.length > 1 }),
             ]);
           })
         ]),
         Panel({ title: "Project Summary" }, [
-           InputFieldTextArea({ id: "inputStudyActivitiesDescription",
-                                name: "studyDescription",
-                                label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
-                                value: this.state.formData.studyDescription,
-                                disabled: false,
-                                required: false,
-                                onChange: this.handleInputChange }),
-           InputFieldSelect({options: options, label: "Individuals who require access to this project record"}),
-           InputFieldText({ id: "inputPTitle",
-                            name: "pTitle",
-                            label: "Tittle of project/protocol *",
-                            value: this.state.formData.pTitle,
-                            disabled: false,
-                            required: false,
-                            onChange: this.handleInputChange }),
-           InputFieldText({ id: "inputIrbProtocolId",
-                            name: "irbProtocolId",
-                            label: "Protocol # at Broad IRB of record (If applicable/available)",
-                            value: this.state.formData.irbProtocolId,
-                            disabled: false,
-                            required: false,
-                            onChange: this.handleInputChange }),
-           InputYesNo({ id: "radioSubjectProtection",
-                        name: "subjectProtection",
-                        label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *",
-                        value: this.state.formData.subjectProtection,
-                        onChange: this.handleRadioChange,
-                        required: false }),
+          InputFieldTextArea({
+            id: "inputStudyActivitiesDescription",
+            name: "studyDescription",
+            label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            value: this.state.formData.studyDescription,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange
+          }),
+          InputFieldSelect({ options: options, label: "Individuals who require access to this project record" }),
+          InputFieldText({
+            id: "inputPTitle",
+            name: "pTitle",
+            label: "Tittle of project/protocol *",
+            value: this.state.formData.pTitle,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange
+          }),
+          InputFieldText({
+            id: "inputIrbProtocolId",
+            name: "irbProtocolId",
+            label: "Protocol # at Broad IRB of record (If applicable/available)",
+            value: this.state.formData.irbProtocolId,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange
+          }),
+          InputYesNo({
+            id: "radioSubjectProtection",
+            name: "subjectProtection",
+            label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *",
+            value: this.state.formData.subjectProtection,
+            onChange: this.handleRadioChange,
+            required: false
+          }),
         ]),
       ])
     )
