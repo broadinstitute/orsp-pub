@@ -45,7 +45,13 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return { hasError: true }
   }
   addFundings() {
-   
+    console.log("test vero************");
+  //   ReactDOM.render(
+  //     <NewProject />,
+  //     document.getElementById('pages')
+  // );
+    ReactDOM.render(InputFieldText({ label: "Tittle of project/protocol *" }), document.getElementById('fundings'));
+    
   }
   
   render() {
@@ -69,11 +75,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           InputFieldSelect({options: foundingOptions, label: "Founding Source"}),
           InputFieldText({ label: "Prime Sponsor Name" }),
           InputFieldText({ label: "Award Number / Identifier" }),
-          // div({ className: "funding" }, [
-          //   button({ id: "btn_action", className: "col-lg-3 col-md-3 col-sm-4 col-xs-6 btn " + this.props.color + "-background",
-          //     onClick: this.addFundings }, ["+"]),
-          //     div({id:"fundings"})
-          // ]),
+          div({ className: "funding" }, [
+            button({ id: "btn_action", className: "col-lg-3 col-md-3 col-sm-4 col-xs-6 btn " + this.props.color + "-background",
+              onClick: this.addFundings }, ["+v"]),
+              div({id:"fundings", className: "fundings" }, [                               
+              ]),
+          ]),
         ]),
         Panel({ title: "Project Summary" }, [
           // TextEditor({}),

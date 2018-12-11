@@ -27897,7 +27897,14 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
     }
   }, {
     key: 'addFundings',
-    value: function addFundings() {}
+    value: function addFundings() {
+      console.log("test vero************");
+      //   ReactDOM.render(
+      //     <NewProject />,
+      //     document.getElementById('pages')
+      // );
+      _reactDom2.default.render((0, _InputFieldText.InputFieldText)({ label: "Tittle of project/protocol *" }), document.getElementById('fundings'));
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -27911,13 +27918,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         );
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ label: "Requestor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Requesto Email Address" })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Broad PI" }), (0, _InputFieldText.InputFieldText)({ label: "Broad Project Manager" })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: foundingOptions, label: "Founding Source" }), (0, _InputFieldText.InputFieldText)({ label: "Prime Sponsor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Award Number / Identifier" })]
-      // div({ className: "funding" }, [
-      //   button({ id: "btn_action", className: "col-lg-3 col-md-3 col-sm-4 col-xs-6 btn " + this.props.color + "-background",
-      //     onClick: this.addFundings }, ["+"]),
-      //     div({id:"fundings"})
-      // ]),
-      ), (0, _Panel.Panel)({ title: "Project Summary" }, [
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ label: "Requestor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Requesto Email Address" })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Broad PI" }), (0, _InputFieldText.InputFieldText)({ label: "Broad Project Manager" })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: foundingOptions, label: "Founding Source" }), (0, _InputFieldText.InputFieldText)({ label: "Prime Sponsor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Award Number / Identifier" }), (0, _reactHyperscriptHelpers.div)({ className: "funding" }, [(0, _reactHyperscriptHelpers.button)({ id: "btn_action", className: "col-lg-3 col-md-3 col-sm-4 col-xs-6 btn " + this.props.color + "-background",
+        onClick: this.addFundings }, ["+v"]), (0, _reactHyperscriptHelpers.div)({ id: "fundings", className: "fundings" }, [])])]), (0, _Panel.Panel)({ title: "Project Summary" }, [
       // TextEditor({}),
       (0, _InputFieldTextArea.InputFieldTextArea)({ label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)" }), (0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Individuals who require access to this project record" }), (0, _InputFieldText.InputFieldText)({ label: "Tittle of project/protocol *" }), (0, _InputFieldText.InputFieldText)({ label: "Protocol # at Broad IRB of record (If applicable/available)" }), (0, _InputYesNo.InputYesNo)({ label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *" })])]);
     }
