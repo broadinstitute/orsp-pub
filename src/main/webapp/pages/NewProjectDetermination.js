@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh } from 'react-hyperscript-helpers';
+import { hh, h1 } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { QuestionnaireStep } from '../components/QuestionnaireStep';
@@ -95,7 +95,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     return (

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, h3 } from 'react-hyperscript-helpers';
+import { div, hh, h3, h1 } from 'react-hyperscript-helpers';
 
 export const WizardStep = hh(class WizardStep extends Component {
 
@@ -19,7 +19,7 @@ export const WizardStep = hh(class WizardStep extends Component {
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     let view = null;

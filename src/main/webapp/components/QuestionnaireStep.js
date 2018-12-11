@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh } from 'react-hyperscript-helpers';
+import { div, hh, h1 } from 'react-hyperscript-helpers';
 
 export const QuestionnaireStep = hh(class QuestionnaireStep extends Component {
 
@@ -19,7 +19,7 @@ export const QuestionnaireStep = hh(class QuestionnaireStep extends Component {
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return h1({},["Something went wrong."]);
     }
 
     return (
