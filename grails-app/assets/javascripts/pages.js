@@ -26191,7 +26191,7 @@ var NewProject = function (_Component) {
 
     _this.state = {
       determination: {
-        projectType: 'IRB'
+        projectType: 400
       },
       currentStep: 0,
       files: []
@@ -27154,7 +27154,13 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.input)({ type: 'text' })]);
+      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.input)({ type: 'text',
+        id: this.props.id,
+        name: this.props.name,
+        value: this.props.value,
+        disabled: this.props.disabled,
+        required: this.props.required,
+        onChange: this.props.onChange })]);
     }
   }]);
 
@@ -27257,13 +27263,35 @@ var InputYesNo = exports.InputYesNo = (0, _reactHyperscriptHelpers.hh)(function 
   _createClass(InputYesNo, [{
     key: 'render',
     value: function render() {
-
-      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "yes", checked: this.state.answer === "yes", onChange: this.handleChange }), 'Yes'])]), (0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "no", checked: this.state.answer === "no", onChange: this.handleChange }), 'No'])])]);
+      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "yes", checked: this.state.answer === "yes", onChange: this.props.handleChange }), 'Yes'])]), (0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "no", checked: this.state.answer === "no", onChange: this.props.handleChange }), 'No'])])]);
     }
   }]);
 
   return InputYesNo;
 }(_react.Component));
+
+/*
+InputField({ label: this.props.label }, [
+        div({ className: "radio" }, [
+          label({}, [
+            input({ type: "radio",
+                    value: "yes",
+                    checked: this.state.answer === "yes",
+                    onChange: this.props.handleChange() }),
+            'Yes',
+          ])
+        ]),
+        div({ className: "radio" }, [
+          label({}, [
+            input({ type: "radio",
+                    value: "no",
+                    checked: this.state.answer === "no",
+                    onChange: this.props.handleChange() }),
+            'No'
+          ])
+        ])
+      ])
+*/
 
 /***/ }),
 
@@ -27845,25 +27873,45 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
     var _this = _possibleConstructorReturn(this, (NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call(this, props));
 
     _this.state = {
-      fundings: [{ source: '', sponsor: '', identifier: '' }]
+      formData: {
+        requestorName: '',
+        requestorEmail: '',
+        projectManager: '',
+        primeSponsorName: '',
+        awardId: '',
+        studyDescription: '',
+        pTitle: '',
+        irbProtocolId: '',
+        subjectProtection: '',
+        fundings: [{ source: '', sponsor: '', identifier: '' }]
+      }
     };
 
-    _this.handler = function () {
-      // this.setState({
-      //   determination: determination
-      // }, () => {
-      //   console.log("project determination ", determination);
-      // });
+    _this.handler = function () {};
+
+    _this.handleInputChange = function (e) {
+      var field = e.target.name;
+      var value = e.target.value;
+      _this.setState(function (prev) {
+        prev.formData[field] = value;
+        return prev;
+      }, function () {
+        return console.log("STATE: ", _this.state);
+      } /*this.checkValidations()*/);
     };
+
+    _this.handleRadioChange = function (e) {};
 
     _this.removeFundings = function (e) {
       return function (Index) {
-        _this.setState(function (prev) {
-          var fundings = prev.fundings;
-          fundings.splice(Index, 1);
-          prev.fundings = fundings;
-          return prev;
-        });
+        if (_this.state.formData.fundings.length > 1) {
+          _this.setState(function (prev) {
+            var fundings = prev.formData.fundings;
+            fundings.splice(Index, 1);
+            prev.formData.fundings = fundings;
+            return prev;
+          });
+        }
       };
     };
 
@@ -27882,9 +27930,9 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
     key: 'addFundings',
     value: function addFundings() {
       this.setState(function (prev) {
-        var fundings = prev.fundings;
+        var fundings = prev.formData.fundings;
         fundings.push({ source: '', sponsor: '', identifier: '' });
-        prev.fundings = fundings;
+        prev.formData.fundings = fundings;
         return prev;
       });
     }
@@ -27898,18 +27946,59 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ label: "Requestor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Requesto Email Address" })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Broad PI" }), (0, _InputFieldText.InputFieldText)({ label: "Broad Project Manager" })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _Btn.Btn)({ action: { label: "++", handler: this.addFundings }, disabled: false }), this.state.fundings.map(function (rd, Index) {
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ id: "inputRequestorName",
+        name: "requestorName",
+        label: "Requestor Name",
+        value: this.state.formData.requestorName,
+        disabled: false,
+        required: true,
+        onChange: this.handleInputChange }), (0, _InputFieldText.InputFieldText)({ id: "inputRequestorEmail",
+        name: "requestorEmail",
+        label: "Requestor Email Address",
+        value: this.state.formData.requestorEmail,
+        disabled: false,
+        required: true,
+        onChange: this.handleInputChange })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Broad PI" }), (0, _InputFieldText.InputFieldText)({ id: "inputProjectManager",
+        name: "projectManager",
+        label: "Broad Project Manager",
+        value: this.state.formData.projectManager,
+        disabled: false,
+        required: false,
+        onChange: this.handleInputChange })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _Btn.Btn)({ action: { label: "++", handler: this.addFundings }, disabled: false }), this.state.formData.fundings.map(function (rd, Index) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _Funding.Funding)({
           id: Index,
           options: fundingOptions,
-          source: _this2.state.fundings[Index].source,
-          sponsor: _this2.state.fundings[Index].sponsor,
-          identifier: _this2.state.fundings[Index].identifier,
+          source: _this2.state.formData.fundings[Index].source,
+          sponsor: _this2.state.formData.fundings[Index].sponsor,
+          identifier: _this2.state.formData.fundings[Index].identifier,
           sourceLabel: Index === 0 ? "Funding Source" : "",
           sponsorLabel: Index === 0 ? "Prime Sponsor Name" : "",
           identifierLabel: Index === 0 ? "Award Number/Identifier" : ""
-        }), (0, _Btn.Btn)({ action: { label: "--", handler: _this2.removeFundings(Index) }, disabled: false })]);
-      })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({ label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)" }), (0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Individuals who require access to this project record" }), (0, _InputFieldText.InputFieldText)({ label: "Tittle of project/protocol *" }), (0, _InputFieldText.InputFieldText)({ label: "Protocol # at Broad IRB of record (If applicable/available)" }), (0, _InputYesNo.InputYesNo)({ label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *" })])]);
+        }), (0, _Btn.Btn)({ action: { label: "--", handler: _this2.removeFundings(Index) }, disabled: !_this2.state.formData.fundings.length > 1 })]);
+      })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({ id: "inputStudyActivitiesDescription",
+        name: "studyDescription",
+        label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+        value: this.state.formData.studyDescription,
+        disabled: false,
+        required: false,
+        onChange: this.handleInputChange }), (0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Individuals who require access to this project record" }), (0, _InputFieldText.InputFieldText)({ id: "inputPTitle",
+        name: "pTitle",
+        label: "Tittle of project/protocol *",
+        value: this.state.formData.pTitle,
+        disabled: false,
+        required: false,
+        onChange: this.handleInputChange }), (0, _InputFieldText.InputFieldText)({ id: "inputIrbProtocolId",
+        name: "irbProtocolId",
+        label: "Protocol # at Broad IRB of record (If applicable/available)",
+        value: this.state.formData.irbProtocolId,
+        disabled: false,
+        required: false,
+        onChange: this.handleInputChange }), (0, _InputYesNo.InputYesNo)({ id: "radioSubjectProtection",
+        name: "subjectProtection",
+        label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *",
+        value: this.state.formData.subjectProtection,
+        onChange: this.handleRadioChange,
+        required: false })])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -27921,8 +28010,6 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
 
   return NewProjectGeneralData;
 }(_react.Component));
-
-// export default NewProjectGeneralData;
 
 /***/ }),
 

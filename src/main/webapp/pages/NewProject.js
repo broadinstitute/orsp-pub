@@ -10,7 +10,7 @@ class NewProject extends Component {
     super(props);
     this.state = {
       determination: {
-        projectType: 'IRB'
+        projectType: 400
       },
       currentStep: 0,
       files: []

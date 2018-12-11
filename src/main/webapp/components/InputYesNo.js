@@ -7,18 +7,17 @@ export const InputYesNo = hh(class InputYesNo extends Component {
   state = {answer: ""};
 
   render() {
-
     return (
       InputField({ label: this.props.label }, [
         div({ className: "radio" }, [
           label({}, [
-            input({ type: "radio", value: "yes", checked: this.state.answer === "yes", onChange: this.handleChange }),
+            input({ type: "radio", value: "yes", checked: this.state.answer === "yes", onChange: this.props.handleChange }),
             'Yes',
           ])
         ]),
         div({ className: "radio" }, [
           label({}, [
-            input({ type: "radio", value: "no", checked: this.state.answer === "no", onChange: this.handleChange }),
+            input({ type: "radio", value: "no", checked: this.state.answer === "no", onChange: this.props.handleChange }),
             'No'
           ])
         ])
@@ -26,3 +25,26 @@ export const InputYesNo = hh(class InputYesNo extends Component {
     )
   }
 });
+
+/*
+InputField({ label: this.props.label }, [
+        div({ className: "radio" }, [
+          label({}, [
+            input({ type: "radio",
+                    value: "yes",
+                    checked: this.state.answer === "yes",
+                    onChange: this.props.handleChange() }),
+            'Yes',
+          ])
+        ]),
+        div({ className: "radio" }, [
+          label({}, [
+            input({ type: "radio",
+                    value: "no",
+                    checked: this.state.answer === "no",
+                    onChange: this.props.handleChange() }),
+            'No'
+          ])
+        ])
+      ])
+*/
