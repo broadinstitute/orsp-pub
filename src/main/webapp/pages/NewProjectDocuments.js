@@ -1,7 +1,10 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, p} from 'react-hyperscript-helpers';
+import { hh, h } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
+const NE = 200;
+const NHSR = 300;
+const IRB = 400;
 
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
 
@@ -25,6 +28,10 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     this.props.fileHandler(filesBundle);
   }
 
+  obtainFile(fileKey) {
+    return this.props.files.find(file => file.fileKey === fileKey)
+  }
+
   render() {
 
     if (this.state.hasError) {
@@ -38,18 +45,18 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     let requiredDocuments = [];
 
     switch (this.props.projectType) {
-      case 'IRB':
+      case IRB:
         requiredDocuments.push({ fileKey: 'IRB Approval Doc', label: "Upload the IRB Approval for this Project here" });
         requiredDocuments.push({ fileKey: 'IRB Applicationl Doc', label: "Upload the IRB Application for this Project here" });
         break;
 
-      case 'NE':
+      case NE:
         requiredDocuments.push({ fileKey: 'NE Approval Doc', label: "Upload the NE Approval for this Project here" });
         requiredDocuments.push({ fileKey: 'NE Applicationl Doc', label: "Upload the NE Application for this Project here" });
         requiredDocuments.push({ fileKey: 'NE Consent Doc', label: "Upload the Consent Document I for this Project here (if applicable)" });
         break;
 
-      case 'NHSR':
+      case NHSR:
         requiredDocuments.push({ fileKey: 'NHSR Applicationl Doc', label: "Upload the NHSR Application for this Project here" });
         break;
 
@@ -61,7 +68,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [
         requiredDocuments.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
-            InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey) })
+            InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey), nameFiles: this.obtainFile(rd.fileKey)}),
           ])
         })
       ])

@@ -26177,6 +26177,7 @@ var NewProject = function (_Component) {
 
     _this.determinationHandler = function (determination) {
       _this.setState({
+        files: [],
         determination: determination
       }, function () {
         console.log("project determination ", determination);
@@ -26222,7 +26223,7 @@ var NewProject = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "1. General Data", currentStep: currentStep }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "2. Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "1. General Data", currentStep: currentStep }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "2. Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -27032,24 +27033,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(InputFieldFile, _Component);
 
-  function InputFieldFile() {
+  function InputFieldFile(props) {
     _classCallCheck(this, InputFieldFile);
 
-    return _possibleConstructorReturn(this, (InputFieldFile.__proto__ || Object.getPrototypeOf(InputFieldFile)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (InputFieldFile.__proto__ || Object.getPrototypeOf(InputFieldFile)).call(this, props));
   }
 
   _createClass(InputFieldFile, [{
     key: 'render',
     value: function render() {
-
-      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback })]);
+      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback }), (0, _reactHyperscriptHelpers.p)({}, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])]);
     }
   }]);
 
   return InputFieldFile;
 }(_react.Component));
-
-// export default InputFieldText;
 
 /***/ }),
 
@@ -27721,6 +27719,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var NE = 200;
+var NHSR = 300;
+var IRB = 400;
+
 var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewProjectDocuments, _Component);
 
@@ -27753,6 +27755,13 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
       console.log(error, info);
     }
   }, {
+    key: 'obtainFile',
+    value: function obtainFile(fileKey) {
+      return this.props.files.find(function (file) {
+        return file.fileKey === fileKey;
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -27770,18 +27779,18 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
       var requiredDocuments = [];
 
       switch (this.props.projectType) {
-        case 'IRB':
+        case IRB:
           requiredDocuments.push({ fileKey: 'IRB Approval Doc', label: "Upload the IRB Approval for this Project here" });
           requiredDocuments.push({ fileKey: 'IRB Applicationl Doc', label: "Upload the IRB Application for this Project here" });
           break;
 
-        case 'NE':
+        case NE:
           requiredDocuments.push({ fileKey: 'NE Approval Doc', label: "Upload the NE Approval for this Project here" });
           requiredDocuments.push({ fileKey: 'NE Applicationl Doc', label: "Upload the NE Application for this Project here" });
           requiredDocuments.push({ fileKey: 'NE Consent Doc', label: "Upload the Consent Document I for this Project here (if applicable)" });
           break;
 
-        case 'NHSR':
+        case NHSR:
           requiredDocuments.push({ fileKey: 'NHSR Applicationl Doc', label: "Upload the NHSR Application for this Project here" });
           break;
 
@@ -27790,7 +27799,7 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
       }
 
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [requiredDocuments.map(function (rd, Index) {
-        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _InputFieldFile.InputFieldFile)({ label: rd.label, callback: _this2.setFilesToUpload(rd.fileKey) })]);
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _InputFieldFile.InputFieldFile)({ label: rd.label, callback: _this2.setFilesToUpload(rd.fileKey), nameFiles: _this2.obtainFile(rd.fileKey) })]);
       })]);
     }
   }], [{
