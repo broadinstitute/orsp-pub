@@ -12,6 +12,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-typeahead/css/Typeahead.css">
     <title>Project</title>
+    <script type="application/javascript">
+        const user = {name: "${session.user.displayName}", email: "${session.user.emailAddress}"};
+
+        const component = {
+            user: user
+        };
+    </script>
 </head>
 <body>
 
