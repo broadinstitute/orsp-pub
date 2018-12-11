@@ -24852,11 +24852,7 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       var view = null;
@@ -25182,11 +25178,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       if (this.state.currentQuestionIndex === null) {
@@ -27327,11 +27319,7 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "border": "solid 1px black", "borderRadius": "4px", "color": "#333" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, [this.props.title + " (panel)"]), (0, _reactHyperscriptHelpers.hr)(), this.props.children]);
@@ -27403,11 +27391,7 @@ var QuestionnaireStep = exports.QuestionnaireStep = (0, _reactHyperscriptHelpers
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px gray" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "white", "color": "black" } }, [this.props.question]), this.props.children]);
@@ -27511,11 +27495,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       var currentStepIndex = this.state.currentStepIndex;
@@ -27668,11 +27648,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 1, currentStep: this.props.currentStep }, [(0, _QuestionnaireWorkflow.QuestionnaireWorkflow)({ questions: this.state.questions, handler: this.props.handler })]);
@@ -27768,11 +27744,7 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
       if (this.props.files !== null) {}
@@ -27848,11 +27820,9 @@ var _QuestionnaireWorkflow = __webpack_require__(484);
 
 var _InputYesNo = __webpack_require__(558);
 
-var _reactDom = __webpack_require__(5);
+var _Funding = __webpack_require__(690);
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Btn = __webpack_require__(692);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -27860,33 +27830,46 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import { TextEditor } from '../components/TextEditor';
-
-
 var options = [{ value: 'veronica', label: 'Veronica' }, { value: 'nadya', label: 'Nadya' }, { value: 'leo', label: 'Leonardo' }];
-var foundingOptions = [{ value: 'federal_prime', label: 'Federal Prime' }, { value: 'internal_broad', label: 'Internal Broad' }];
+var fundingOptions = [{ value: 'federal_prime', label: 'Federal Prime' }, { value: 'internal_broad', label: 'Internal Broad' }];
 
 var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewProjectGeneralData, _Component);
 
-  function NewProjectGeneralData() {
-    var _ref;
-
-    var _temp, _this, _ret;
-
+  function NewProjectGeneralData(props) {
     _classCallCheck(this, NewProjectGeneralData);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    // this.state = {
+    //   fundings: [{ source: '', sponsor: '', identifier: '' }]
+    // };
+    var _this = _possibleConstructorReturn(this, (NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call(this, props));
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this.handler = function () {
+    _this.state = {
+      fundings: [{ source: '', sponsor: '', identifier: '' }]
+    };
+
+    _this.handler = function () {
       // this.setState({
       //   determination: determination
       // }, () => {
       //   console.log("project determination ", determination);
       // });
-    }, _temp), _possibleConstructorReturn(_this, _ret);
+    };
+
+    _this.removeFundings = function (e) {
+      return function (Index) {
+        _this.setState(function (prev) {
+          var fundings = prev.fundings;
+          fundings.splice(Index, 1);
+          prev.fundings = fundings;
+          return prev;
+        });
+      };
+    };
+
+    _this.addFundings = _this.addFundings.bind(_this);
+    _this.removeFundings = _this.removeFundings.bind(_this);
+    return _this;
   }
 
   _createClass(NewProjectGeneralData, [{
@@ -27898,30 +27881,35 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
   }, {
     key: 'addFundings',
     value: function addFundings() {
-      console.log("test vero************");
-      //   ReactDOM.render(
-      //     <NewProject />,
-      //     document.getElementById('pages')
-      // );
-      _reactDom2.default.render((0, _InputFieldText.InputFieldText)({ label: "Tittle of project/protocol *" }), document.getElementById('fundings'));
+      this.setState(function (prev) {
+        var fundings = prev.fundings;
+        fundings.push({ source: '', sponsor: '', identifier: '' });
+        prev.fundings = fundings;
+        return prev;
+      });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
 
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return _react.React.createElement(
-          'h1',
-          null,
-          'Something went wrong.'
-        );
+        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ label: "Requestor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Requesto Email Address" })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Broad PI" }), (0, _InputFieldText.InputFieldText)({ label: "Broad Project Manager" })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: foundingOptions, label: "Founding Source" }), (0, _InputFieldText.InputFieldText)({ label: "Prime Sponsor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Award Number / Identifier" }), (0, _reactHyperscriptHelpers.div)({ className: "funding" }, [(0, _reactHyperscriptHelpers.button)({ id: "btn_action", className: "col-lg-3 col-md-3 col-sm-4 col-xs-6 btn " + this.props.color + "-background",
-        onClick: this.addFundings }, ["+v"]), (0, _reactHyperscriptHelpers.div)({ id: "fundings", className: "fundings" }, [])])]), (0, _Panel.Panel)({ title: "Project Summary" }, [
-      // TextEditor({}),
-      (0, _InputFieldTextArea.InputFieldTextArea)({ label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)" }), (0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Individuals who require access to this project record" }), (0, _InputFieldText.InputFieldText)({ label: "Tittle of project/protocol *" }), (0, _InputFieldText.InputFieldText)({ label: "Protocol # at Broad IRB of record (If applicable/available)" }), (0, _InputYesNo.InputYesNo)({ label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *" })])]);
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information (person filling the form)" }, [(0, _InputFieldText.InputFieldText)({ label: "Requestor Name" }), (0, _InputFieldText.InputFieldText)({ label: "Requesto Email Address" })]), (0, _Panel.Panel)({ title: "Principal Investigator (if applicable)" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Broad PI" }), (0, _InputFieldText.InputFieldText)({ label: "Broad Project Manager" })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _Btn.Btn)({ action: { label: "++", handler: this.addFundings }, disabled: false }), this.state.fundings.map(function (rd, Index) {
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _Funding.Funding)({
+          id: Index,
+          options: fundingOptions,
+          source: _this2.state.fundings[Index].source,
+          sponsor: _this2.state.fundings[Index].sponsor,
+          identifier: _this2.state.fundings[Index].identifier,
+          sourceLabel: Index === 0 ? "Funding Source" : "",
+          sponsorLabel: Index === 0 ? "Prime Sponsor Name" : "",
+          identifierLabel: Index === 0 ? "Award Number/Identifier" : ""
+        }), (0, _Btn.Btn)({ action: { label: "--", handler: _this2.removeFundings(Index) }, disabled: false })]);
+      })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({ label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)" }), (0, _InputFieldSelect.InputFieldSelect)({ options: options, label: "Individuals who require access to this project record" }), (0, _InputFieldText.InputFieldText)({ label: "Tittle of project/protocol *" }), (0, _InputFieldText.InputFieldText)({ label: "Protocol # at Broad IRB of record (If applicable/available)" }), (0, _InputYesNo.InputYesNo)({ label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *" })])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -34572,6 +34560,99 @@ function getNextChildMapping(nextProps, prevChildMapping, onExited) {
 	}
 }))
 
+
+/***/ }),
+
+/***/ 690:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Funding = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _reactHyperscriptHelpers = __webpack_require__(16);
+
+var _InputFieldText = __webpack_require__(556);
+
+var _InputFieldSelect = __webpack_require__(555);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Funding = exports.Funding = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
+  _inherits(Funding, _Component);
+
+  function Funding() {
+    _classCallCheck(this, Funding);
+
+    return _possibleConstructorReturn(this, (Funding.__proto__ || Object.getPrototypeOf(Funding)).apply(this, arguments));
+  }
+
+  _createClass(Funding, [{
+    key: 'render',
+    value: function render() {
+      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: this.props.id }, [(0, _InputFieldSelect.InputFieldSelect)({ options: this.props.options, label: this.props.sourceLabel, value: this.props.source }), (0, _InputFieldText.InputFieldText)({ label: this.props.sponsorLabel, value: this.props.sponsor }), (0, _InputFieldText.InputFieldText)({ label: this.props.identifierLabel, value: this.props.identifier })]);
+    }
+  }]);
+
+  return Funding;
+}(_react.Component));
+
+/***/ }),
+
+/***/ 692:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Btn = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _reactHyperscriptHelpers = __webpack_require__(16);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Btn = exports.Btn = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
+  _inherits(Btn, _Component);
+
+  function Btn() {
+    _classCallCheck(this, Btn);
+
+    return _possibleConstructorReturn(this, (Btn.__proto__ || Object.getPrototypeOf(Btn)).apply(this, arguments));
+  }
+
+  _createClass(Btn, [{
+    key: 'render',
+    value: function render() {
+
+      return (0, _reactHyperscriptHelpers.button)({ id: "btn", onClick: this.props.action.handler, disabled: this.props.disabled }, [this.props.action.label]);
+    }
+  }]);
+
+  return Btn;
+}(_react.Component));
 
 /***/ }),
 
