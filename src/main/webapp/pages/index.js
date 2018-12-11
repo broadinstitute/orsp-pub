@@ -4,6 +4,8 @@ import NewProject from './NewProject';
 import '../search//style.css';
 
 ReactDOM.render(
-    <NewProject />,
+    <NewProject
+        user = {component.user}
+     />,
     document.getElementById('pages')
 );

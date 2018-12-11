@@ -107,8 +107,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorName",
             name: "requestorName",
             label: "Requestor Name",
-            value: this.state.formData.requestorName,
-            disabled: false,
+            value: this.props.user.name,
+            disabled: true,
             required: true,
             onChange: this.handleInputChange
           }),
@@ -116,8 +116,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorEmail",
             name: "requestorEmail",
             label: "Requestor Email Address",
-            value: this.state.formData.requestorEmail,
-            disabled: false,
+            value: this.props.user.email,
+            disabled: true,
             required: true,
             onChange: this.handleInputChange
           })
