@@ -39,13 +39,20 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         subjectProtection: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
-      }
+      },
     };
   }
 
 
   handler = () => {
+    this.props.updateForm(this.state.formData);
+  }
 
+  handleUpdateFundings = (updated) => {
+    this.setState(prev => {
+      prev.formData.fundings = updated;
+      return prev;
+    }, () => console.log("New project state ", this.state.formData))
   }
 
   handleInputChange = (e) => {
@@ -121,6 +128,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       return h1({}, ["Something went wrong."]);
     }
 
+    if (this.props.currentStep !== 0) {
+      this.props.updateForm(this.state.formData);
+    }
+
     return (
       WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
         Panel({ title: "Requestor Information ", aclaration: "(person filling the form)", tooltipLabel: "?" }, [
@@ -169,7 +180,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
         Panel({ title: "Funding*", tooltipLabel: "?" }, [
           Fundings({
-            fundings: this.state.formData.fundings
+            fundings: this.state.formData.fundings,
+            updateFundings: this.handleUpdateFundings
           }),
         ]),
 

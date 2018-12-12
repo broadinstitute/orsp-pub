@@ -16,20 +16,19 @@ export const Fundings = hh(class Fundings extends Component {
     super(props);
     this.addFundings = this.addFundings.bind(this);
     this.removeFundings = this.removeFundings.bind(this);
+    this.handleFundingSelect = this.handleFundingSelect.bind(this);
+    this.state = {
+      fundings: [{ source: '', sponsor: '', identifier: '' }]
+    };
   }
 
-  state = {
-    fundings: [{ source: '', sponsor: '', identifier: '' }]
-  };
-
   addFundings() {
-    console.log("add");
     this.setState(prev => {
       let fundings = prev.fundings;
-      fundings.push({ source: '', sponsor: '', identifier: '' });
+      fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
       prev.fundings = fundings;
       return prev;
-    });
+    }, () => this.props.updateFundings(this.state.fundings));
   }
 
   removeFundings = (e) => (Index) => {
@@ -39,12 +38,29 @@ export const Fundings = hh(class Fundings extends Component {
         fundings.splice(Index, 1);
         prev.fundings = fundings;
         return prev;
-      });
+      }, () => this.props.updateFundings(this.state.fundings));
     }
   }
 
-  render() {
+  handleFundingChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    const id = e.target.id;
+    this.setState(prev => {
+      prev.fundings[id][field]= value;
+      return prev;
+    }, () => this.props.updateFundings(this.state.fundings));
+  };
 
+  handleFundingSelect = (id) => (selectedOption) => {
+    this.setState(prev => {
+      prev.fundings[id].source = selectedOption.value;
+      return prev;
+    }, ()=> this.props.updateFundings(this.state.fundings)
+    )
+  }
+
+  render() {
     return (
       h(Fragment, {}, [
         div({ className: "row" }, [
@@ -68,20 +84,40 @@ export const Fundings = hh(class Fundings extends Component {
 
         hr({ className: "fullWidth" }),
 
-        this.props.fundings.map((rd, Index) => {
+        this.state.fundings.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
 
             div({ className: "row" }, [
               div({ className: "col-lg-11" }, [
                 div({ className: "row" }, [
                   div({ className: "col-lg-4" }, [
-                    InputFieldSelect({ options: fundingOptions, value: rd.source })
+                    InputFieldSelect({ label: "",
+                                       id: Index,
+                                       name: "source",
+                                       options: fundingOptions,
+                                       value: this.state.fundings[Index].source,
+                                       onChange: this.handleFundingSelect
+                                       })
                   ]),
                   div({ className: "col-lg-4" }, [
-                    InputFieldText({ value: rd.sponsor })
+                    InputFieldText({ id: Index,
+                                     name: "sponsor",
+                                     label: "",
+                                     value: this.state.fundings[Index].sponsor,
+                                     disabled: false,
+                                     required: false,
+                                     onChange: this.handleFundingChange
+                                     })
+                                      //value: rd.sponsor })
                   ]),
                   div({ className: "col-lg-4" }, [
-                    InputFieldText({ value: rd.identifier })
+                    InputFieldText({ id: Index,
+                                     name: "identifier",
+                                     label: "",
+                                     value: this.state.fundings[Index].identifier,
+                                     disabled: false,
+                                     required: false,
+                                     onChange: this.handleFundingChange })
                   ])
                 ])
               ]),
