@@ -1,18 +1,13 @@
 import axios from 'axios';
 
 export const Search = {
-  searchUsers(url, query) {
-    axios.get(url + '?term=' + query)
-      .then(response => {
-        console.log(response.data);
-        return response.data;
-      })
-      .catch(error => {
-        console.log(error);
-      })
+
+  getMatchingUsers(url, query) {
+    return axios.get(url + '?term=' + query);
   }
-};
+  
+}
 
 export const Project = {
-  createProject(data) {}
+  createProject(data) { }
 };

@@ -1,5 +1,6 @@
 import { Component } from 'react';
-import { div, hh } from 'react-hyperscript-helpers';
+import { hh, h } from 'react-hyperscript-helpers';
+import { InputField } from './InputField';
 import AsyncSelect from 'react-select/lib/Async';
 
 export const MultiSelect = hh(class MultiSelect extends Component {
@@ -12,25 +13,20 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   render() {
 
     return (
-     // InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label }, [
         h(AsyncSelect, {
-          id: "multiselect",
-          key: 'vero',
-          isDisabled: false,
-          isMulti: true,
+          id: this.props.id,
+          isDisabled: this.props.isDisabled,
+          isMulti: this.props.isMulti,
+          isClearable: true,
           loadOptions: (query, callback) => this.props.loadOptions(query, callback),
           onChange: (option) => this.props.handleChange(option),
-          value: this.props.values,
-         // noOptionsMessage: () => this.state.optionMessage,
-         // loadingMessage: () => this.state.optionMessage,
-         // classNamePrefix: "select",
-            placeholder: "Dataset Name, Sample Collection ID, or PI",
-        //  className: step2.inputDatasets.invalid && showValidationMessages ? ' required-select-error select-autocomplete' : 'select-autocomplete',
+          value: this.props.value,
+          placeholder: this.props.placeholder,
+          className: "select-autocomplete",
+          classNamePrefix: "select"
+        })
 
-        }//)
-      //]
-      ))
+      ]))
   }
 });
-
-// export default InputField;

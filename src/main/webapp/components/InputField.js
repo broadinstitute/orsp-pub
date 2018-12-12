@@ -20,4 +20,3 @@ export const InputField = hh(class InputField extends Component {
   }
 });
 
-// export default InputField;
