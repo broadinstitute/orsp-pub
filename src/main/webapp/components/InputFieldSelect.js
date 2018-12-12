@@ -3,7 +3,7 @@ import React from 'react';
 import Select from 'react-select';
 import { hh } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
-
+import './InputField.css';
 
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 

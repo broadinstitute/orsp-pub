@@ -8,7 +8,7 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { InputYesNo } from '../components/InputYesNo';
-import { Funding } from '../components/Funding';
+import { Fundings } from '../components/Fundings';
 import { Btn } from '../components/Btn';
 
 const options = [
@@ -16,20 +16,11 @@ const options = [
   { value: 'nadya', label: 'Nadya' },
   { value: 'leo', label: 'Leonardo' }
 ]
-const fundingOptions = [
-  { value: 'federal_prime', label: 'Federal Prime' },
-  { value: 'internal_broad', label: 'Internal Broad' }
-]
 
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
 
   constructor(props) {
     super(props);
-    // this.state = {
-    //   fundings: [{ source: '', sponsor: '', identifier: '' }]
-    // };
-    this.addFundings = this.addFundings.bind(this);
-    this.removeFundings = this.removeFundings.bind(this);
   }
 
   state = {
@@ -54,22 +45,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    console.log("name? ",e.target.name, "value", e.target.value);
     this.setState(prev => {
       prev.formData[field] = value;
-      return prev;
-    }, () => console.log("STATE: ", this.state)/*this.checkValidations()*/);
-  };
-
-  handleFundingChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-//    const id = this.state.formData.fundings.length + 1;
-    const id = e.target.id;
-    console.log("name? ",e.target.name, "value", e.target.value);
-    console.log("event: ", e.target);
-    this.setState(prev => {
-      prev.formData.fundings[id][field]= value;
       return prev;
     }, () => console.log("STATE: ", this.state)/*this.checkValidations()*/);
   };
@@ -97,25 +74,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return { hasError: true }
   }
 
-  addFundings() {
-    this.setState(prev => {
-      let fundings = prev.formData.fundings;
-      fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
-      prev.formData.fundings = fundings;
-      return prev;
-    });
-  }
 
-  removeFundings = (e) => (Index) => {
-    if (this.state.formData.fundings.length > 1) {
-      this.setState(prev => {
-        let fundings = prev.formData.fundings;
-        fundings.splice(Index, 1);
-        prev.formData.fundings = fundings;
-        return prev;
-      });
-    }
-  }
 
   render() {
 
@@ -126,7 +85,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
     return (
       WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
-        Panel({ title: "Requestor Information (person filling the form)" }, [
+        Panel({ title: "Requestor Information ", aclaration: "(person filling the form)", tooltipLabel: "?" }, [
           InputFieldText({
             id: "inputRequestorName",
             name: "requestorName",
@@ -146,7 +105,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange
           })
         ]),
-        Panel({ title: "Principal Investigator (if applicable)" }, [
+
+        Panel({ title: "Principal Investigator ", aclaration: "(if applicable)" }, [
           InputFieldSelect({ options: options, label: "Broad PI" }),
           InputFieldText({
             id: "inputProjectManager",
@@ -158,26 +118,13 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange
           })
         ]),
-        Panel({ title: "Funding" }, [
-          Btn({ action: { label: "++", handler: this.addFundings }, disabled: false }),
-          this.state.formData.fundings.map((rd, Index) => {
-            return h(Fragment, { key: Index }, [
-              Funding({
-                id: Index,
-                options: fundingOptions,
-                source: this.state.formData.fundings[Index].source,
-                sponsor: this.state.formData.fundings[Index].sponsor,
-                identifier: this.state.formData.fundings[Index].identifier,
-                sourceLabel: Index === 0 ? "Funding Source" : "",
-                sponsorLabel: Index === 0 ? "Prime Sponsor Name" : "",
-                identifierLabel: Index === 0 ? "Award Number/Identifier" : "",
-                inputHandler: this.handleFundingChange
 
-              }),
-              Btn({ action: { label: "--", handler: this.removeFundings(Index) }, disabled: !this.state.formData.fundings.length > 1 }),
-            ]);
-          })
+        Panel({ title: "Funding*", tooltipLabel: "?" }, [
+          Fundings({
+            fundings: this.state.formData.fundings
+          }),
         ]),
+
         Panel({ title: "Project Summary" }, [
           InputFieldTextArea({
             id: "inputStudyActivitiesDescription",
@@ -214,8 +161,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.state.formData.subjectProtection,
             onChange: this.handleRadioChange,
             required: false
-          }),
-        ]),
+          })
+        ])
       ])
     )
   }

@@ -1,0 +1,20 @@
+.inputField {
+  margin: 15px 0 0 0;
+}
+
+.inputField:first-child {
+  margin-top: 0;
+}
+
+.inputFieldLabel {
+  font-weight: 400;
+  margin-bottom: 3px;
+}
+
+.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {
+  border-radius: 0;
+}
+
+.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {
+  min-height: 38px;
+}

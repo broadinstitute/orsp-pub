@@ -66,9 +66,9 @@ class NewProject extends Component {
 
     return (
       Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [
-        NewProjectGeneralData({ title: "1. General Data", currentStep: currentStep, user: this.props.user }),
-        NewProjectDetermination({ title: "2. Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
-        NewProjectDocuments({ title:"3. Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files}),
+        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user }),
+        NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
+        NewProjectDocuments({ title:"Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files}),
       ])
     );
   }
