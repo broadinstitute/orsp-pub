@@ -17,11 +17,12 @@ export const MultiSelect = hh(class MultiSelect extends Component {
         h(AsyncSelect, {
           id: this.props.id,
           isDisabled: this.props.isDisabled,
-          isMulti: false,
+          isMulti: this.props.isMulti,
+          isClearable: true,
           loadOptions: (query, callback) => this.props.loadOptions(query, callback),
           onChange: (option) => this.props.handleChange(option),
           value: this.props.value,
-          placeholder: "Please select one or more individuals",
+          placeholder: this.props.placeholder,
           className: "select-autocomplete",
           classNamePrefix: "select"
         })

@@ -11,7 +11,7 @@ import { InputYesNo } from '../components/InputYesNo';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 import { Btn } from '../components/Btn';
-import AsyncSelect from 'react-select/lib/Async';
+import { Search } from '../util/ajax';
 
 const options = [
   { value: 'veronica', label: 'Veronica' },
@@ -22,12 +22,15 @@ const options = [
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
 
   constructor(props) {
+    console.log("Props general data: **** ", props);
     super(props);
+    this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
       formData: {
         requestorName: '',
         requestorEmail: '',
         projectManager: '',
+        piName: '',
         primeSponsorName: '',
         awardId: '',
         studyDescription: '',
@@ -37,7 +40,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
       }
-    };  
+    };
   }
 
 
@@ -77,23 +80,24 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return { hasError: true }
   }
 
-  loadProjectCollaboratorOptions(query, callback) {
-    let options = [
-      { key: 'vero', value: 'Vero', label: 'Veronica Vicario' },
-      { key: 'leo', value: 'Leo', label: 'Leonardo Forconesi' },
-      { key: 'nadya', value: 'Nadya', label: 'Nadya Lopez' },
-    ]
-    callback(options);
-    // DAR.getAutoCompleteDS(query).then(items => {
-    //   let options = items.map(function (item) {
-    //     return {
-    //       key: item.id,
-    //       value: item.value,
-    //       label: item.label
-    //     };
-    //   });
-    //   callback(options);
-    // });
+  loadUsersOptions(query, callback) {
+    // let options = [
+    //   { key: 'vero', value: 'Vero', label: 'Veronica Vicario' },
+    //   { key: 'leo', value: 'Leo', label: 'Leonardo Forconesi' },
+    //   { key: 'nadya', value: 'Nadya', label: 'Nadya Lopez' },
+    // ]
+    // callback(options);
+    Search.getMatchingUsers(this.props.searchUsersURL, query)
+      .then(response => {
+        let options = response.data.map(function (item) {
+          return {
+            key: item.id,
+            value: item.value,
+            label: item.label
+          };
+        });
+        callback(options);
+      })
   };
 
   handleProjectCollaboratorChange = (data, action) => {
@@ -103,6 +107,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     });
   };
 
+  handlePIChange = (data, action) => {
+    this.setState(prev => {
+      prev.formData.piName = data;
+      return prev;
+    });
+  }
 
   render() {
 
@@ -118,7 +128,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorName",
             name: "requestorName",
             label: "Requestor Name",
-            value: this.props.user.name,
+            value: "test", //this.props.user.name,
             disabled: true,
             required: true,
             onChange: this.handleInputChange
@@ -127,7 +137,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorEmail",
             name: "requestorEmail",
             label: "Requestor Email Address",
-            value: this.props.user.email,
+            value: "test", //this.props.user.email,
             disabled: true,
             required: true,
             onChange: this.handleInputChange
@@ -135,7 +145,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         ]),
 
         Panel({ title: "Principal Investigator ", aclaration: "(if applicable)" }, [
-          InputFieldSelect({ options: options, label: "Broad PI" }),
+          MultiSelect({
+            id: "pi_select",
+            label: "Broad PI",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handlePIChange,
+            value: this.state.formData.piName,
+            placeholder: "Select...",
+            isMulti: false
+          }),
+
           InputFieldText({
             id: "inputProjectManager",
             name: "projectManager",
@@ -157,7 +177,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           InputFieldTextArea({
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
-            label: "Describe Broad study activities * (briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            label: "Describe Broad study activities* ",
+            aclaration: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
             value: this.state.formData.studyDescription,
             disabled: false,
             required: false,
@@ -166,16 +187,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           MultiSelect({
             id: "collaborator_select",
             label: "Individuals who require access to this project record",
-            isDisabled: false, 
-            loadOptions: this.loadProjectCollaboratorOptions,
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
+            placeholder: "Please select one or more individuals",
             isMulti: true
-           }),
+          }),
           InputFieldText({
             id: "inputPTitle",
             name: "pTitle",
-            label: "Tittle of project/protocol *",
+            label: "Title of project/protocol*",
             value: this.state.formData.pTitle,
             disabled: false,
             required: false,
@@ -184,7 +206,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           InputFieldText({
             id: "inputIrbProtocolId",
             name: "irbProtocolId",
-            label: "Protocol # at Broad IRB of record (If applicable/available)",
+            label: "Protocol # at Broad IRB-of-record ",
+            aclaration: "(if applicable/available)",
             value: this.state.formData.irbProtocolId,
             disabled: false,
             required: false,
@@ -193,7 +216,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           InputYesNo({
             id: "radioSubjectProtection",
             name: "subjectProtection",
-            label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, i.e. responsible for oversight and submissions? *",
+            label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
+            aclaration: "i.e. responsible for oversight and submissions? *",
             value: this.state.formData.subjectProtection,
             onChange: this.handleRadioChange,
             required: false
