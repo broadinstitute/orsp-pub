@@ -16,7 +16,8 @@
         const user = {name: "${session.user.displayName}", email: "${session.user.emailAddress}"};
 
         const component = {
-            user: user
+            user: user,
+            searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}"
         };
     </script>
 </head>

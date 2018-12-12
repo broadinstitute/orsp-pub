@@ -6,6 +6,7 @@ import '../search//style.css';
 ReactDOM.render(
     <NewProject
         user = {component.user}
+        searchUsersURL = {component.searchUsersURL}
      />,
     document.getElementById('pages')
 );

@@ -10,6 +10,7 @@ import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { InputYesNo } from '../components/InputYesNo';
 import { Funding } from '../components/Funding';
 import { Btn } from '../components/Btn';
+import { Search } from '../util/ajax';
 
 const options = [
   { value: 'veronica', label: 'Veronica' },
@@ -119,6 +120,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   render() {
 
+    Search.searchUsers(this.props.searchUsersURL, 'aar');
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
