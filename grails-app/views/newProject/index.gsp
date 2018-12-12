@@ -13,7 +13,12 @@
     <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-typeahead/css/Typeahead.css">
     <title>Project</title>
     <script type="application/javascript">
-        const user = {name: "${session.user.displayName}", email: "${session.user.emailAddress}"};
+        const user = {
+            <g:if test="${session?.user}">
+                name: "${session.user.displayName}",
+                email: "${session.user.emailAddress}"
+            </g:if>
+        };
 
         const component = {
             user: user,
