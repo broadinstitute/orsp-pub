@@ -9,7 +9,9 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { InputYesNo } from '../components/InputYesNo';
 import { Fundings } from '../components/Fundings';
+import { MultiSelect } from '../components/MultiSelect';
 import { Btn } from '../components/Btn';
+import AsyncSelect from 'react-select/lib/Async';
 
 const options = [
   { value: 'veronica', label: 'Veronica' },
@@ -21,22 +23,23 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   constructor(props) {
     super(props);
+    this.state = {
+      formData: {
+        requestorName: '',
+        requestorEmail: '',
+        projectManager: '',
+        primeSponsorName: '',
+        awardId: '',
+        studyDescription: '',
+        pTitle: '',
+        irbProtocolId: '',
+        subjectProtection: '',
+        fundings: [{ source: '', sponsor: '', identifier: '' }],
+        collaborators: []
+      }
+    };  
   }
 
-  state = {
-    formData: {
-      requestorName: '',
-      requestorEmail: '',
-      projectManager: '',
-      primeSponsorName: '',
-      awardId: '',
-      studyDescription: '',
-      pTitle: '',
-      irbProtocolId: '',
-      subjectProtection: '',
-      fundings: [{ source: '', sponsor: '', identifier: '' }]
-    }
-  };
 
   handler = () => {
 
@@ -74,6 +77,31 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return { hasError: true }
   }
 
+  loadProjectCollaboratorOptions(query, callback) {
+    let options = [
+      { key: 'vero', value: 'Vero', label: 'Veronica Vicario' },
+      { key: 'leo', value: 'Leo', label: 'Leonardo Forconesi' },
+      { key: 'nadya', value: 'Nadya', label: 'Nadya Lopez' },
+    ]
+    callback(options);
+    // DAR.getAutoCompleteDS(query).then(items => {
+    //   let options = items.map(function (item) {
+    //     return {
+    //       key: item.id,
+    //       value: item.value,
+    //       label: item.label
+    //     };
+    //   });
+    //   callback(options);
+    // });
+  };
+
+  handleProjectCollaboratorChange = (data, action) => {
+    this.setState(prev => {
+      prev.formData.collaborators = data;
+      return prev;
+    });
+  };
 
 
   render() {
@@ -135,7 +163,15 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             required: false,
             onChange: this.handleInputChange
           }),
-          InputFieldSelect({ options: options, label: "Individuals who require access to this project record" }),
+          MultiSelect({
+            id: "collaborator_select",
+            label: "Individuals who require access to this project record",
+            isDisabled: false, 
+            loadOptions: this.loadProjectCollaboratorOptions,
+            handleChange: this.handleProjectCollaboratorChange,
+            value: this.state.formData.collaborators,
+            isMulti: true
+           }),
           InputFieldText({
             id: "inputPTitle",
             name: "pTitle",
