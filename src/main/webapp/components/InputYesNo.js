@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { input, hh, div, label, span } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
+import './InputField.css';
 import './InputYesNo.css';
 
 export const InputYesNo = (props) => {

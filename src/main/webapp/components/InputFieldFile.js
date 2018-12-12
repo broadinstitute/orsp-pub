@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { input, hh, p } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
+import './InputField.css';
 
 export const InputFieldFile = hh(class InputFieldFile extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ export const InputFieldFile = hh(class InputFieldFile extends Component {
   render() {
     return (
       InputField({ label: this.props.label }, [
-        input({ type: 'file', onChange: this.props.callback}),
+        input({ type: 'file', onChange: this.props.callback, className: "form-control inputFieldText" }),
         p({}, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])
 
       ])

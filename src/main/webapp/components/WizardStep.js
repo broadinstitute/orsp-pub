@@ -1,10 +1,11 @@
 import { Component } from 'react';
-import { div, hh, h3, h1 } from 'react-hyperscript-helpers';
+import { div, hh, h1, h2, small } from 'react-hyperscript-helpers';
+import './Wizard.css';
 
 export const WizardStep = hh(class WizardStep extends Component {
 
   state = {};
-  
+
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
@@ -14,12 +15,12 @@ export const WizardStep = hh(class WizardStep extends Component {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }
-  
+
   render() {
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return h1({},["Something went wrong."]);
+      return h1({}, ["Something went wrong."]);
     }
 
     let view = null;
@@ -29,10 +30,12 @@ export const WizardStep = hh(class WizardStep extends Component {
     console.log(step, currentStep);
 
     if (currentStep === step) {
-
-      view = div({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray" } }, [
-        div({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "black" } }, [
-          h3({}, [this.props.title + " (wizardStep)"])
+      view = div({ className: "wizardStepContainer" }, [
+        div({}, [
+          h2({ className: "wizardStepTitle" }, [
+            small({}, ["Step " + (step+1)]),
+            this.props.title
+          ])
         ]),
         this.props.children
       ]);
