@@ -61,7 +61,7 @@ export const Fundings = hh(class Fundings extends Component {
 
   handleFundingSelect = (id) => (selectedOption) => {
     this.setState(prev => {
-      prev.fundings[id].source = selectedOption.value;
+      prev.fundings[id].source = selectedOption;
       return prev;
     }, ()=> this.props.updateFundings(this.state.fundings)
     )
@@ -70,6 +70,7 @@ export const Fundings = hh(class Fundings extends Component {
   render() {
     return (
       h(Fragment, {}, [
+        p({isRendered: this.props.error}[this.props.errorMessage]),
         div({ className: "row" }, [
           div({ className: "col-lg-11" }, [
             div({ className: "row" }, [
@@ -115,7 +116,6 @@ export const Fundings = hh(class Fundings extends Component {
                                      required: false,
                                      onChange: this.handleFundingChange
                                      })
-                                      //value: rd.sponsor })
                   ]),
                   div({ className: "col-lg-4" }, [
                     InputFieldText({ id: Index,

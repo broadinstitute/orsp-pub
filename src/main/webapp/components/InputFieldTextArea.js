@@ -9,14 +9,15 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
   render() {
 
     return (
-      InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label,  error: this.props.error, errorMessage: this.props.errorMessage}, [
         textarea({ name: this.props.name,
                    id: "txt_description",
                    rows: "5",
                    className: "form-control inputFieldTextarea",
                    onChange: this.props.onChange,
                    required: this.props.required,
-                   disabled: this.props.disabled
+                   disabled: this.props.disabled,
+                   value: this.props.value
         })
       ])
     )

@@ -34,23 +34,26 @@ export const Wizard = hh(class Wizard extends Component {
 
   nextStep = (e) => {
     e.preventDefault();
-    this.setState(prev => {
-      prev.currentStepIndex = prev.currentStepIndex === this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
-      return prev;
-    }, () => {
-      this.props.stepChanged(this.state.currentStepIndex);
-    })
+    if (this.props.isValid(this.state.currentStepIndex)) {
+      this.setState(prev => {
+        prev.currentStepIndex = prev.currentStepIndex === this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
+        return prev;
+      }, () => {
+        this.props.stepChanged(this.state.currentStepIndex);
+      })
+    }
   }
 
   goStep = (n) => (e) => {
-    console.log(n);
     e.preventDefault();
-    this.setState(prev => {
-      prev.currentStepIndex = n;
-      return prev;
-    }, () => {
-      this.props.stepChanged(this.state.currentStepIndex);
-    })
+    if (this.props.isValid(this.state.currentStepIndex)) {
+      this.setState(prev => {
+        prev.currentStepIndex = n;
+        return prev;
+      }, () => {
+        this.props.stepChanged(this.state.currentStepIndex);
+      })
+    }
   }
 
   render() {
@@ -73,7 +76,7 @@ export const Wizard = hh(class Wizard extends Component {
             })
           ]),
           this.props.children,
-          div ({ className: "buttonContainer"}, [
+          div({ className: "buttonContainer" }, [
             button({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep }, ["Previous Step"]),
             button({ className: "btn buttonPrimary floatRight", onClick: this.nextStep }, ["Next Step"]),
           ])

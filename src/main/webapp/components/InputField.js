@@ -17,10 +17,9 @@ export const InputField = hh(class InputField extends Component {
           this.props.label,
           span({ isRendered: this.props.aclaration !== undefined, className: "italic" }, [this.props.aclaration])
         ]),
-        this.props.children
+        this.props.children,
+        p({isRendered: this.props.error}, [this.props.errorMessage])
       ])
     )
   }
 });
-
-// export default InputField;
