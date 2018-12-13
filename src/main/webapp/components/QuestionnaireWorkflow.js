@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import { div, hh, button, label, input, h1 } from 'react-hyperscript-helpers';
+import { InputYesNo } from './InputYesNo';
+
 
 export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Component {
 
@@ -52,8 +54,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
   evaluateAnswer = (answer) => {
     let onYes = this.state.questions[this.state.currentQuestionIndex].yesOutput;
     let onNo = this.state.questions[this.state.currentQuestionIndex].noOutput;
-    // console.log(answer, onYes, onNo);
-
     let requiredError = true;
     let nextQuestionIndex = null;
     let projectType = null;
@@ -64,7 +64,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       nextQuestionIndex = null;
       projectType = null;
       endState = true;
-    } else if (answer === 'yes') {
+    } else if (answer) {
       if (onYes < 100) {
         requiredError = false;
         nextQuestionIndex = onYes - 1;
@@ -76,7 +76,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         projectType = onYes;
         endState = true;
       }
-    } else if (answer === 'no') {
+    } else if (answer === false) {
       if (onNo < 100) {
         requiredError = false;
         nextQuestionIndex = onNo - 1;
@@ -96,7 +96,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       projectType: projectType,
       endState : endState
     }, () => {
-      // call parent's callback
       this.props.handler(this.state);
     });
 
@@ -112,16 +111,20 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     return { hasError: true }
   }
 
-  handleChange = (event) => {
-    // event.preventDefault();
-    let answer = event.target.value;
+  handleChange = (e, field, value) => {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
     this.setState(prev => {
-      prev.questions[prev.currentQuestionIndex].answer = answer;
+      prev.questions[prev.currentQuestionIndex].answer = value;
       return prev;
     }, () => {
-      this.evaluateAnswer(answer);
+      this.evaluateAnswer(value);
     });
   }
+
 
   getTypeDescription = (t) => {
     if (t === 200) return 'NE';
@@ -141,25 +144,17 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
 
     const { currentQuestionIndex } = this.state;
-
-    // let currentQuestion = this.state.questions[currentQuestionIndex];
-
     return (
       div({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [
         div({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]),
         div({}, [this.state.questions[currentQuestionIndex].question]),
-        div({ className: "radio" }, [
-          label({}, [
-            input({ type: "radio", value: "yes", checked: this.state.questions[currentQuestionIndex].answer === "yes", onChange: this.handleChange }),
-            'Yes',
-          ])
-        ]),
-        div({ className: "radio" }, [
-          label({}, [
-            input({ type: "radio", value: "no", checked: this.state.questions[currentQuestionIndex].answer === "no", onChange: this.handleChange }),
-            'No'
-          ])
-        ]),
+        InputYesNo({
+           id: this.state.questions[currentQuestionIndex].id,
+
+          value: this.state.questions[currentQuestionIndex].answer,
+          onChange: this.handleChange,
+          required: false
+        }),
         div({ isRendered: (this.state.projectType != null) }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
         div({}, [
           button({ isRendered: (currentQuestionIndex > 0), className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]),
@@ -170,5 +165,3 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     )
   }
 });
-
-// export default QuestionnaireWorkflow;

@@ -20,7 +20,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   render() {
 
     return (
-      InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label, aclaration: this.props.aclaration }, [
         <Select
           value={this.state.selectedOption}
           onChange={this.handleChange}
