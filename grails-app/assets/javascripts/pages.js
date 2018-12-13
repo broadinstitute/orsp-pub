@@ -30083,9 +30083,11 @@ var NewProject = function (_Component) {
 
     _this.stepChanged = function (newStep) {
       console.log(newStep);
+      var previousStep = _this.state.currentStep;
       _this.setState({
         currentStep: newStep
       });
+      _this.props.stepChanged(previousStep);
     };
 
     _this.determinationHandler = function (determination) {
@@ -30151,7 +30153,7 @@ var NewProject = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateFormData }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateFormData, stepChanged: this.stepChanged }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -30994,7 +30996,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var fundingOptions = [{ value: 'federal_prime', label: 'Federal Prime' }, { value: 'internal_broad', label: 'Internal Broad' }];
+var fundingOptions = [{ value: 'federal_prime', label: 'Federal Prime' }, { value: 'federal_sub_award', label: 'Federal Sub-award' }, { value: 'internal_broad', label: 'Internal Broad' }, { value: 'purchase_order', label: 'Purchase Order' }, { value: 'corporate_funding', label: 'Corporate Funding' }, { value: 'foundation', label: 'Foundation' }, { value: 'philanthropy', label: 'Philanthropy' }, { value: 'other', label: 'Other' }, { value: 'none', label: 'None' }];
 
 var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(Fundings, _Component);
@@ -31914,8 +31916,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var options = [{ value: 'veronica', label: 'Veronica' }, { value: 'nadya', label: 'Nadya' }, { value: 'leo', label: 'Leonardo' }];
-
 var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewProjectGeneralData, _Component);
 
@@ -32006,22 +32006,27 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
   }, {
     key: 'loadUsersOptions',
     value: function loadUsersOptions(query, callback) {
-      // let options = [
-      //   { key: 'vero', value: 'Vero', label: 'Veronica Vicario' },
-      //   { key: 'leo', value: 'Leo', label: 'Leonardo Forconesi' },
-      //   { key: 'nadya', value: 'Nadya', label: 'Nadya Lopez' },
-      // ]
-      // callback(options);
-      _ajax.Search.getMatchingUsers(this.props.searchUsersURL, query).then(function (response) {
-        var options = response.data.map(function (item) {
-          return {
-            key: item.id,
-            value: item.value,
-            label: item.label
-          };
+      if (query.length > 2) {
+        _ajax.Search.getMatchingUsers(this.props.searchUsersURL, query).then(function (response) {
+          var options = response.data.map(function (item) {
+            return {
+              key: item.id,
+              value: item.value,
+              label: item.label
+            };
+          });
+          callback(options);
         });
-        callback(options);
-      });
+      }
+    }
+  }, {
+    key: 'stepChanged',
+    value: function stepChanged(previousStep) {
+      console.log("validate");
+      if (previousStep === 0) {
+        // validar
+        console.log("validarrrrr");
+      }
     }
   }, {
     key: 'render',

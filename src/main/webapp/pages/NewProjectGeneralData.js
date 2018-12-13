@@ -13,12 +13,6 @@ import { MultiSelect } from '../components/MultiSelect';
 import { Btn } from '../components/Btn';
 import { Search } from '../util/ajax';
 
-const options = [
-  { value: 'veronica', label: 'Veronica' },
-  { value: 'nadya', label: 'Nadya' },
-  { value: 'leo', label: 'Leonardo' }
-]
-
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
 
   constructor(props) {
@@ -88,13 +82,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   }
 
   loadUsersOptions(query, callback) {
-    // let options = [
-    //   { key: 'vero', value: 'Vero', label: 'Veronica Vicario' },
-    //   { key: 'leo', value: 'Leo', label: 'Leonardo Forconesi' },
-    //   { key: 'nadya', value: 'Nadya', label: 'Nadya Lopez' },
-    // ]
-    // callback(options);
-    Search.getMatchingUsers(this.props.searchUsersURL, query)
+    if(query.length > 2) {
+      Search.getMatchingUsers(this.props.searchUsersURL, query)
       .then(response => {
         let options = response.data.map(function (item) {
           return {
@@ -104,7 +93,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           };
         });
         callback(options);
-      })
+      });
+    }    
   };
 
   handleProjectCollaboratorChange = (data, action) => {
@@ -119,6 +109,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.piName = data;
       return prev;
     });
+  }
+
+  stepChanged(previousStep) {
+    console.log("validate");
+    if(previousStep === 0) {
+      // validar
+      console.log("validarrrrr");
+    }
   }
 
   render() {

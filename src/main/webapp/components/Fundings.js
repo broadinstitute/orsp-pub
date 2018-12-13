@@ -5,8 +5,15 @@ import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
 
 const fundingOptions = [
-  { value: 'federal_prime', label: 'Federal Prime' },
-  { value: 'internal_broad', label: 'Internal Broad' }
+  { value: 'federal_prime', label: 'Federal Prime'},
+  { value: 'federal_sub_award', label: 'Federal Sub-award'},
+  { value: 'internal_broad', label: 'Internal Broad'},
+  { value: 'purchase_order', label: 'Purchase Order'},
+  { value: 'corporate_funding', label: 'Corporate Funding'},
+  { value: 'foundation', label: 'Foundation'},
+  { value: 'philanthropy', label: 'Philanthropy'},
+  { value: 'other', label:  'Other'},
+  { value: 'none', label: 'None'}
 ]
 
 
