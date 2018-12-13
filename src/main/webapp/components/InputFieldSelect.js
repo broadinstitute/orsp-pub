@@ -7,23 +7,14 @@ import './InputField.css';
 
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
-  state = {
-    value: '',
-    selectedOption: null
-  };
-
-  handleChange = (selectedOption) => {
-    this.setState({ selectedOption });
-    console.log(`Option selected:`, selectedOption);
-  }
-
   render() {
-
     return (
-      InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label, aclaration: this.props.aclaration }, [
         <Select
-          value={this.state.selectedOption}
-          onChange={this.handleChange}
+          id={this.props.id}
+          name={this.props.name}
+          value={this.props.value}
+          onChange={this.props.onChange(this.props.id)}
           options={this.props.options}
         />
       ]

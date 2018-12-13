@@ -12,9 +12,12 @@ class NewProject extends Component {
       determination: {
         projectType: 400
       },
+      step1FormData : {},
       currentStep: 0,
       files: []
     }
+
+    this.updateStep1FormData = this.updateStep1FormData.bind(this);
   }
 
   submitNewProject = () => {
@@ -58,6 +61,14 @@ class NewProject extends Component {
     return { hasError: true }
   }
 
+  updateStep1FormData = (updatedForm) => {
+    this.setState(prev => {
+      prev.step1FormData = updatedForm;
+      return prev;
+      }
+    );
+  }
+
   render() {
 
     const { currentStep, determination } = this.state;
@@ -66,7 +77,7 @@ class NewProject extends Component {
 
     return (
       Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [
-        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL }),
+        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData}),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
         NewProjectDocuments({ title:"Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files}),
       ])

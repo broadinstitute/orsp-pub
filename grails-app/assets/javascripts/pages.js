@@ -192,12 +192,14 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputField" }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label]), this.props.children]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputField" }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.aclaration !== undefined, className: "italic" }, [this.props.aclaration])]), this.props.children]);
     }
   }]);
 
   return InputField;
 }(_react.Component));
+
+// export default InputField;
 
 /***/ }),
 
@@ -27392,32 +27394,20 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _inherits(InputFieldSelect, _Component);
 
   function InputFieldSelect() {
-    var _ref;
-
-    var _temp, _this, _ret;
-
     _classCallCheck(this, InputFieldSelect);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-      value: '',
-      selectedOption: null
-    }, _this.handleChange = function (selectedOption) {
-      _this.setState({ selectedOption: selectedOption });
-      console.log('Option selected:', selectedOption);
-    }, _temp), _possibleConstructorReturn(_this, _ret);
+    return _possibleConstructorReturn(this, (InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).apply(this, arguments));
   }
 
   _createClass(InputFieldSelect, [{
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label }, [_react2.default.createElement(_reactSelect2.default, {
-        value: this.state.selectedOption,
-        onChange: this.handleChange,
+      return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [_react2.default.createElement(_reactSelect2.default, {
+        id: this.props.id,
+        name: this.props.name,
+        value: this.props.value,
+        onChange: this.props.onChange(this.props.id),
         options: this.props.options
       })]);
     }
@@ -27468,7 +27458,7 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.input)({ type: 'text',
+      return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.input)({ type: 'text',
         id: this.props.id,
         name: this.props.name,
         className: "form-control inputFieldText",
@@ -27500,6 +27490,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(15);
+
+var _InputYesNo = __webpack_require__(579);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -27543,8 +27535,6 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
     _this.evaluateAnswer = function (answer) {
       var onYes = _this.state.questions[_this.state.currentQuestionIndex].yesOutput;
       var onNo = _this.state.questions[_this.state.currentQuestionIndex].noOutput;
-      // console.log(answer, onYes, onNo);
-
       var requiredError = true;
       var nextQuestionIndex = null;
       var projectType = null;
@@ -27555,7 +27545,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
         nextQuestionIndex = null;
         projectType = null;
         endState = true;
-      } else if (answer === 'yes') {
+      } else if (answer) {
         if (onYes < 100) {
           requiredError = false;
           nextQuestionIndex = onYes - 1;
@@ -27567,7 +27557,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
           projectType = onYes;
           endState = true;
         }
-      } else if (answer === 'no') {
+      } else if (answer === false) {
         if (onNo < 100) {
           requiredError = false;
           nextQuestionIndex = onNo - 1;
@@ -27587,19 +27577,21 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
         projectType: projectType,
         endState: endState
       }, function () {
-        // call parent's callback
         _this.props.handler(_this.state);
       });
     };
 
-    _this.handleChange = function (event) {
-      // event.preventDefault();
-      var answer = event.target.value;
+    _this.handleChange = function (e, field, value) {
+      if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
       _this.setState(function (prev) {
-        prev.questions[prev.currentQuestionIndex].answer = answer;
+        prev.questions[prev.currentQuestionIndex].answer = value;
         return prev;
       }, function () {
-        _this.evaluateAnswer(answer);
+        _this.evaluateAnswer(value);
       });
     };
 
@@ -27651,9 +27643,13 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
 
       var currentQuestionIndex = this.state.currentQuestionIndex;
 
-      // let currentQuestion = this.state.questions[currentQuestionIndex];
+      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]), (0, _reactHyperscriptHelpers.div)({}, [this.state.questions[currentQuestionIndex].question]), (0, _InputYesNo.InputYesNo)({
+        id: this.state.questions[currentQuestionIndex].id,
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]), (0, _reactHyperscriptHelpers.div)({}, [this.state.questions[currentQuestionIndex].question]), (0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "yes", checked: this.state.questions[currentQuestionIndex].answer === "yes", onChange: this.handleChange }), 'Yes'])]), (0, _reactHyperscriptHelpers.div)({ className: "radio" }, [(0, _reactHyperscriptHelpers.label)({}, [(0, _reactHyperscriptHelpers.input)({ type: "radio", value: "no", checked: this.state.questions[currentQuestionIndex].answer === "no", onChange: this.handleChange }), 'No'])]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]), (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ isRendered: this.state.endState === false, className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"])]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"])]);
+        value: this.state.questions[currentQuestionIndex].answer,
+        onChange: this.handleChange,
+        required: false
+      }), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]), (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ isRendered: this.state.endState === false, className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"])]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -27665,8 +27661,6 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
 
   return QuestionnaireWorkflow;
 }(_react.Component));
-
-// export default QuestionnaireWorkflow;
 
 /***/ }),
 
@@ -30116,13 +30110,28 @@ var NewProject = function (_Component) {
       }
     };
 
+    _this.updateFormData = function (updatedForm) {
+      return function () {
+        console.log(updatedForm);
+        _this.setState(function (prev) {
+          prev.formData = updatedForm;
+          return prev;
+        }, function () {
+          return console.log("UPDATED FORM : ", _this.state.formData);
+        });
+      };
+    };
+
     _this.state = {
       determination: {
         projectType: 400
       },
+      formData: {},
       currentStep: 0,
       files: []
     };
+
+    _this.updateFormData = _this.updateFormData.bind(_this);
     return _this;
   }
 
@@ -30142,7 +30151,7 @@ var NewProject = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateFormData }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -30995,10 +31004,6 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
 
     var _this = _possibleConstructorReturn(this, (Fundings.__proto__ || Object.getPrototypeOf(Fundings)).call(this, props));
 
-    _this.state = {
-      fundings: [{ source: '', sponsor: '', identifier: '' }]
-    };
-
     _this.removeFundings = function (e) {
       return function (Index) {
         if (_this.state.fundings.length > 1) {
@@ -31007,34 +31012,87 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
             fundings.splice(Index, 1);
             prev.fundings = fundings;
             return prev;
+          }, function () {
+            return _this.props.updateFundings(_this.state.fundings);
           });
         }
       };
     };
 
+    _this.handleFundingChange = function (e) {
+      var field = e.target.name;
+      var value = e.target.value;
+      var id = e.target.id;
+      _this.setState(function (prev) {
+        prev.fundings[id][field] = value;
+        return prev;
+      }, function () {
+        return _this.props.updateFundings(_this.state.fundings);
+      });
+    };
+
+    _this.handleFundingSelect = function (id) {
+      return function (selectedOption) {
+        _this.setState(function (prev) {
+          prev.fundings[id].source = selectedOption.value;
+          return prev;
+        }, function () {
+          return _this.props.updateFundings(_this.state.fundings);
+        });
+      };
+    };
+
     _this.addFundings = _this.addFundings.bind(_this);
     _this.removeFundings = _this.removeFundings.bind(_this);
+    _this.handleFundingSelect = _this.handleFundingSelect.bind(_this);
+    _this.state = {
+      fundings: [{ source: '', sponsor: '', identifier: '' }]
+    };
     return _this;
   }
 
   _createClass(Fundings, [{
     key: 'addFundings',
     value: function addFundings() {
-      console.log("add");
+      var _this2 = this;
+
       this.setState(function (prev) {
         var fundings = prev.fundings;
-        fundings.push({ source: '', sponsor: '', identifier: '' });
+        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
         prev.fundings = fundings;
         return prev;
+      }, function () {
+        return _this2.props.updateFundings(_this2.state.fundings);
       });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
-      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.props.fundings.map(function (rd, Index) {
-        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: fundingOptions, value: rd.source })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ value: rd.sponsor })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ value: rd.identifier })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this2.removeFundings(Index) }, disabled: !_this2.state.fundings.length > 1 })])])]);
+      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.state.fundings.map(function (rd, Index) {
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldSelect.InputFieldSelect)({ label: "",
+          id: Index,
+          name: "source",
+          options: fundingOptions,
+          value: _this3.state.fundings[Index].source,
+          onChange: _this3.handleFundingSelect
+        })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ id: Index,
+          name: "sponsor",
+          label: "",
+          value: _this3.state.fundings[Index].sponsor,
+          disabled: false,
+          required: false,
+          onChange: _this3.handleFundingChange
+        })
+        //value: rd.sponsor })
+        ]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ id: Index,
+          name: "identifier",
+          label: "",
+          value: _this3.state.fundings[Index].identifier,
+          disabled: false,
+          required: false,
+          onChange: _this3.handleFundingChange })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this3.removeFundings(Index) }, disabled: !_this3.state.fundings.length > 1 })])])]);
       })]);
     }
   }]);
@@ -31083,7 +31141,7 @@ var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(f
   _createClass(InputFieldFile, [{
     key: 'render',
     value: function render() {
-      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "form-control inputFieldText" }), (0, _reactHyperscriptHelpers.p)({}, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])]);
+      return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "form-control inputFieldText" }), (0, _reactHyperscriptHelpers.p)({}, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])]);
     }
   }]);
 
@@ -31132,7 +31190,14 @@ var InputFieldTextArea = exports.InputFieldTextArea = (0, _reactHyperscriptHelpe
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.textarea)({ name: 'description', id: "txt_description", rows: "5", className: "form-control inputFieldTextarea" })]);
+      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.textarea)({ name: this.props.name,
+        id: "txt_description",
+        rows: "5",
+        className: "form-control inputFieldTextarea",
+        onChange: this.props.onChange,
+        required: this.props.required,
+        disabled: this.props.disabled
+      })]);
     }
   }]);
 
@@ -31156,10 +31221,6 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(15);
 
-var _InputField = __webpack_require__(104);
-
-__webpack_require__(110);
-
 __webpack_require__(726);
 
 var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
@@ -31180,14 +31241,14 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 
   var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
 
-  return (0, _InputField.InputField)({ label: props.label }, [optionLabels.map(function (option, ix) {
+  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.aclaration !== undefined, className: "italic" }, [props.aclaration])]), optionLabels.map(function (option, ix) {
     return (0, _reactHyperscriptHelpers.label)({
       key: id + ix,
       onClick: function onClick(e) {
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radio-wrapper"
+      className: "radioOptions"
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
       id: "rad_" + id + "_" + ix,
@@ -31195,7 +31256,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
       value: optionValues[ix],
       checked: normValue === optionValues[ix],
       onChange: function onChange() {}
-    }), (0, _reactHyperscriptHelpers.span)({ className: "radio-check" }), (0, _reactHyperscriptHelpers.span)({ className: "radio-label" }, [optionLabels[ix]])]);
+    }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
   })]);
 };
 
@@ -31597,56 +31658,64 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         question: '1. Is this a "fee-for-service" project? (commercial service only, no Broad publication privileges)',
         yesOutput: NE,
         noOutput: 2,
-        answer: null
+        answer: null,
+        id: 1
       });
 
       questions.push({
         question: '2. Is a Broad investigator conductin reseach (generating, contributing to generalizable knowledge) ? Examples include case studies, internal technology development projects',
         yesOutput: 3,
         noOutput: NHSR,
-        answer: null
+        answer: null,
+        id: 2
       });
 
       questions.push({
         question: '3. Are all subjects who provided samples and/or data now deceased?',
         yesOutput: NHSR,
         noOutput: 4,
-        answer: null
+        answer: null,
+        id: 3
       });
 
       questions.push({
         question: '4. Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating dentifiable private information or identifiable biospecimens (Coded data are considered identifiable if researcher has access to key)',
         yesOutput: IRB,
         noOutput: 5,
-        answer: null
+        answer: null,
+        id: 4
       });
 
       questions.push({
         question: '5. Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction (i.e. is conductin HSR)?',
         yesOutput: 6,
         noOutput: NHSR,
-        answer: null
+        answer: null,
+        id: 5
       });
 
       questions.push({
         question: '6. Is the Broad receiving subject identifiers?',
         yesOutput: IRB,
         noOutput: 7,
-        answer: null
+        answer: null,
+        id: 6
       });
 
       questions.push({
         question: '7. Is the Broad researcher co-publishing or doing joint analysis with investigator who has acess to identifiers?',
         yesOutput: 8,
         noOutput: NHSR,
-        answer: null
+        answer: null,
+        id: 7
       });
 
       questions.push({
         question: '8. Is Broad receiving direct federal funding?',
         yesOutput: IRB,
         noOutput: NE,
-        answer: null
+        answer: null,
+        id: 8
       });
 
       return {
@@ -31857,7 +31926,18 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
 
     var _this = _possibleConstructorReturn(this, (NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call(this, props));
 
-    _this.handler = function () {};
+    _this.handler = function () {
+      _this.props.updateForm(_this.state.formData);
+    };
+
+    _this.handleUpdateFundings = function (updated) {
+      _this.setState(function (prev) {
+        prev.formData.fundings = updated;
+        return prev;
+      }, function () {
+        return console.log("New project state ", _this.state.formData);
+      });
+    };
 
     _this.handleInputChange = function (e) {
       var field = e.target.name;
@@ -31952,11 +32032,15 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
+      if (this.props.currentStep !== 0) {
+        this.props.updateForm(this.state.formData);
+      }
+
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information ", aclaration: "(person filling the form)", tooltipLabel: "?" }, [(0, _InputFieldText.InputFieldText)({
         id: "inputRequestorName",
         name: "requestorName",
         label: "Requestor Name",
-        value: "test", //this.props.user.name,
+        value: this.props.user.name,
         disabled: true,
         required: true,
         onChange: this.handleInputChange
@@ -31964,7 +32048,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         id: "inputRequestorEmail",
         name: "requestorEmail",
         label: "Requestor Email Address",
-        value: "test", //this.props.user.email,
+        value: this.props.user.email,
         disabled: true,
         required: true,
         onChange: this.handleInputChange
@@ -31986,7 +32070,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         required: false,
         onChange: this.handleInputChange
       })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?" }, [(0, _Fundings.Fundings)({
-        fundings: this.state.formData.fundings
+        fundings: this.state.formData.fundings,
+        updateFundings: this.handleUpdateFundings
       })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({
         id: "inputStudyActivitiesDescription",
         name: "studyDescription",
@@ -32849,7 +32934,7 @@ exports = module.exports = __webpack_require__(44)(undefined);
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {\r\n  min-height: 38px;\r\n}", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {\r\n  min-height: 38px;\r\n}\r\n", ""]);
 
 // exports
 
@@ -32864,7 +32949,7 @@ exports = module.exports = __webpack_require__(44)(undefined);
 
 
 // module
-exports.push([module.i, ".radio-wrapper {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radio-wrapper input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n}\n\n.radio-label {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radio-check {\n  position: absolute;\n  top: 0;\n  left: 0;\n  height: 20px;\n  width: 20px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radio-wrapper:hover input~.radio-check {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radio-wrapper input:checked ~ .radio-check {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radio-check:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radio-wrapper input:checked~.radio-check:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radio-wrapper .radio-check:after {\n  top: 3px;\n  left: 3px;\n  width: 12px;\n  height: 12px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\n\nfieldset[disabled] .radio-wrapper {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
+exports.push([module.i, ".radioContainer {\n  margin-top: 15px;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 3px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
 
 // exports
 

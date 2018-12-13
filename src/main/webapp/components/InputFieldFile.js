@@ -10,10 +10,9 @@ export const InputFieldFile = hh(class InputFieldFile extends Component {
 
   render() {
     return (
-      InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label, aclaration: this.props.aclaration }, [
         input({ type: 'file', onChange: this.props.callback, className: "form-control inputFieldText" }),
         p({}, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])
-
       ])
     )
   }

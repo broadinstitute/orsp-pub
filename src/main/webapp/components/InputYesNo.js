@@ -1,7 +1,5 @@
 import { Component } from 'react';
-import { input, hh, div, label, span } from 'react-hyperscript-helpers';
-import { InputField } from './InputField';
-import './InputField.css';
+import { input, hh, div, label, span, p } from 'react-hyperscript-helpers';
 import './InputYesNo.css';
 
 export const InputYesNo = (props) => {
@@ -14,31 +12,36 @@ export const InputYesNo = (props) => {
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
 
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
-      (value === 'false' || value === false || value === '0') ? 'false' : null;
+    (value === 'false' || value === false || value === '0') ? 'false' : null;
 
-    return (
-      InputField({ label: props.label }, [
-        optionLabels.map((option, ix) => {
-          return (
+  return (
+    div({ className: "radioContainer" }, [
+      p({ className: "bold" }, [
+        props.label,
+        span({ isRendered: props.aclaration !== undefined, className: "italic" }, [props.aclaration])
+      ]),
+
+      optionLabels.map((option, ix) => {
+        return (
           label({
-              key: id + ix,
-              onClick: (e) => selectOption(e, optionValues[ix]),
-              id: "lbl_" + props.id + "_" + ix,
-              className: "radio-wrapper"
-            }, [
-          input({
-            type: "radio",
-            id: "rad_" + id + "_" + ix,
-            name: name,
-            value: optionValues[ix],
-            checked: normValue === optionValues[ix],
-            onChange: () => { }
-            }),
-            span({ className: "radio-check"}),
-            span({ className: "radio-label"}, [optionLabels[ix]])
+            key: id + ix,
+            onClick: (e) => selectOption(e, optionValues[ix]),
+            id: "lbl_" + props.id + "_" + ix,
+            className: "radioOptions"
+          }, [
+              input({
+                type: "radio",
+                id: "rad_" + id + "_" + ix,
+                name: name,
+                value: optionValues[ix],
+                checked: normValue === optionValues[ix],
+                onChange: () => { }
+              }),
+              span({ className: "radioCheck" }),
+              span({ className: "radioLabel" }, [optionLabels[ix]])
             ])
-          )
-        })
-      ])
-    )
+        )
+      })
+    ])
+  )
 };

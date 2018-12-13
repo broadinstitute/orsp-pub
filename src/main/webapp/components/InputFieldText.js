@@ -8,7 +8,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
   render() {
 
     return (
-      InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label, aclaration: this.props.aclaration }, [
         input({ type: 'text',
                 id: this.props.id,
                 name: this.props.name,
