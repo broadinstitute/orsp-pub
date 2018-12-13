@@ -27394,23 +27394,9 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _inherits(InputFieldSelect, _Component);
 
   function InputFieldSelect() {
-    var _ref;
-
-    var _temp, _this, _ret;
-
     _classCallCheck(this, InputFieldSelect);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-      value: '',
-      selectedOption: null
-    }, _this.handleChange = function (selectedOption) {
-      _this.setState({ selectedOption: selectedOption });
-      console.log('Option selected:', selectedOption);
-    }, _temp), _possibleConstructorReturn(_this, _ret);
+    return _possibleConstructorReturn(this, (InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).apply(this, arguments));
   }
 
   _createClass(InputFieldSelect, [{
@@ -27418,8 +27404,10 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
     value: function render() {
 
       return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [_react2.default.createElement(_reactSelect2.default, {
-        value: this.state.selectedOption,
-        onChange: this.handleChange,
+        id: this.props.id,
+        name: this.props.name,
+        value: this.props.value,
+        onChange: this.props.onChange(this.props.id),
         options: this.props.options
       })]);
     }
@@ -30122,13 +30110,28 @@ var NewProject = function (_Component) {
       }
     };
 
+    _this.updateFormData = function (updatedForm) {
+      return function () {
+        console.log(updatedForm);
+        _this.setState(function (prev) {
+          prev.formData = updatedForm;
+          return prev;
+        }, function () {
+          return console.log("UPDATED FORM : ", _this.state.formData);
+        });
+      };
+    };
+
     _this.state = {
       determination: {
         projectType: 400
       },
+      formData: {},
       currentStep: 0,
       files: []
     };
+
+    _this.updateFormData = _this.updateFormData.bind(_this);
     return _this;
   }
 
@@ -30148,7 +30151,7 @@ var NewProject = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateFormData }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -31001,10 +31004,6 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
 
     var _this = _possibleConstructorReturn(this, (Fundings.__proto__ || Object.getPrototypeOf(Fundings)).call(this, props));
 
-    _this.state = {
-      fundings: [{ source: '', sponsor: '', identifier: '' }]
-    };
-
     _this.removeFundings = function (e) {
       return function (Index) {
         if (_this.state.fundings.length > 1) {
@@ -31013,34 +31012,87 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
             fundings.splice(Index, 1);
             prev.fundings = fundings;
             return prev;
+          }, function () {
+            return _this.props.updateFundings(_this.state.fundings);
           });
         }
       };
     };
 
+    _this.handleFundingChange = function (e) {
+      var field = e.target.name;
+      var value = e.target.value;
+      var id = e.target.id;
+      _this.setState(function (prev) {
+        prev.fundings[id][field] = value;
+        return prev;
+      }, function () {
+        return _this.props.updateFundings(_this.state.fundings);
+      });
+    };
+
+    _this.handleFundingSelect = function (id) {
+      return function (selectedOption) {
+        _this.setState(function (prev) {
+          prev.fundings[id].source = selectedOption.value;
+          return prev;
+        }, function () {
+          return _this.props.updateFundings(_this.state.fundings);
+        });
+      };
+    };
+
     _this.addFundings = _this.addFundings.bind(_this);
     _this.removeFundings = _this.removeFundings.bind(_this);
+    _this.handleFundingSelect = _this.handleFundingSelect.bind(_this);
+    _this.state = {
+      fundings: [{ source: '', sponsor: '', identifier: '' }]
+    };
     return _this;
   }
 
   _createClass(Fundings, [{
     key: 'addFundings',
     value: function addFundings() {
-      console.log("add");
+      var _this2 = this;
+
       this.setState(function (prev) {
         var fundings = prev.fundings;
-        fundings.push({ source: '', sponsor: '', identifier: '' });
+        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
         prev.fundings = fundings;
         return prev;
+      }, function () {
+        return _this2.props.updateFundings(_this2.state.fundings);
       });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
-      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.props.fundings.map(function (rd, Index) {
-        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldSelect.InputFieldSelect)({ options: fundingOptions, value: rd.source })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ value: rd.sponsor })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ value: rd.identifier })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this2.removeFundings(Index) }, disabled: !_this2.state.fundings.length > 1 })])])]);
+      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.state.fundings.map(function (rd, Index) {
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldSelect.InputFieldSelect)({ label: "",
+          id: Index,
+          name: "source",
+          options: fundingOptions,
+          value: _this3.state.fundings[Index].source,
+          onChange: _this3.handleFundingSelect
+        })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ id: Index,
+          name: "sponsor",
+          label: "",
+          value: _this3.state.fundings[Index].sponsor,
+          disabled: false,
+          required: false,
+          onChange: _this3.handleFundingChange
+        })
+        //value: rd.sponsor })
+        ]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ id: Index,
+          name: "identifier",
+          label: "",
+          value: _this3.state.fundings[Index].identifier,
+          disabled: false,
+          required: false,
+          onChange: _this3.handleFundingChange })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this3.removeFundings(Index) }, disabled: !_this3.state.fundings.length > 1 })])])]);
       })]);
     }
   }]);
@@ -31138,7 +31190,14 @@ var InputFieldTextArea = exports.InputFieldTextArea = (0, _reactHyperscriptHelpe
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.textarea)({ name: 'description', id: "txt_description", rows: "5", className: "form-control inputFieldTextarea" })]);
+      return (0, _InputField.InputField)({ label: this.props.label }, [(0, _reactHyperscriptHelpers.textarea)({ name: this.props.name,
+        id: "txt_description",
+        rows: "5",
+        className: "form-control inputFieldTextarea",
+        onChange: this.props.onChange,
+        required: this.props.required,
+        disabled: this.props.disabled
+      })]);
     }
   }]);
 
@@ -31867,7 +31926,18 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
 
     var _this = _possibleConstructorReturn(this, (NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call(this, props));
 
-    _this.handler = function () {};
+    _this.handler = function () {
+      _this.props.updateForm(_this.state.formData);
+    };
+
+    _this.handleUpdateFundings = function (updated) {
+      _this.setState(function (prev) {
+        prev.formData.fundings = updated;
+        return prev;
+      }, function () {
+        return console.log("New project state ", _this.state.formData);
+      });
+    };
 
     _this.handleInputChange = function (e) {
       var field = e.target.name;
@@ -31962,6 +32032,10 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
+      if (this.props.currentStep !== 0) {
+        this.props.updateForm(this.state.formData);
+      }
+
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [(0, _Panel.Panel)({ title: "Requestor Information ", aclaration: "(person filling the form)", tooltipLabel: "?" }, [(0, _InputFieldText.InputFieldText)({
         id: "inputRequestorName",
         name: "requestorName",
@@ -31996,7 +32070,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         required: false,
         onChange: this.handleInputChange
       })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?" }, [(0, _Fundings.Fundings)({
-        fundings: this.state.formData.fundings
+        fundings: this.state.formData.fundings,
+        updateFundings: this.handleUpdateFundings
       })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({
         id: "inputStudyActivitiesDescription",
         name: "studyDescription",
