@@ -8,7 +8,6 @@ import './InputField.css';
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
   render() {
-
     return (
       InputField({ label: this.props.label, aclaration: this.props.aclaration }, [
         <Select

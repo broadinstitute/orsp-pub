@@ -16,7 +16,8 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
                    className: "form-control inputFieldTextarea",
                    onChange: this.props.onChange,
                    required: this.props.required,
-                   disabled: this.props.disabled
+                   disabled: this.props.disabled,
+                   value: this.props.value
         })
       ])
     )

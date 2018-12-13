@@ -54,7 +54,7 @@ export const Fundings = hh(class Fundings extends Component {
 
   handleFundingSelect = (id) => (selectedOption) => {
     this.setState(prev => {
-      prev.fundings[id].source = selectedOption.value;
+      prev.fundings[id].source = selectedOption;
       return prev;
     }, ()=> this.props.updateFundings(this.state.fundings)
     )
