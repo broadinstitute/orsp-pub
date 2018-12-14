@@ -1,20 +1,22 @@
 package org.broadinstitute.orsp
 
-import grails.transaction.Transactional
-import com.google.gson.Gson
+import grails.converters.JSON
+import grails.rest.Resource
+import groovy.util.logging.Slf4j
 
-@Transactional(readOnly = true)
-class ProjectController {
+@Slf4j
+@Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
+class ProjectController extends AuthenticatedController {
 
     def pages() {
       render(view: "/newProject/index")
     }
 
-    def index() {
-
-    }
-
+    @Override
     def show() {
+        List<String> diseaseAndPopulationRestrictions = queryService.findAllDiseaseAndPopulationRestrictions()
+        response.status = 200
+        render([message: diseaseAndPopulationRestrictions] as JSON)
     }
 
     def create() {
@@ -24,6 +26,9 @@ class ProjectController {
     }
 
     def save() {
+        def value = request.JSON
+        response.status = 201
+        render([message: value] as JSON)
     }
 
     def update() {
@@ -31,4 +36,5 @@ class ProjectController {
 
     def delete() {
     }
+
 }
