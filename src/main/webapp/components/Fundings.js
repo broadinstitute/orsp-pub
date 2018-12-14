@@ -1,19 +1,19 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, div, p, hr } from 'react-hyperscript-helpers';
+import { input, hh, h, div, p, hr, small } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
 
 const fundingOptions = [
-  { value: 'federal_prime', label: 'Federal Prime'},
-  { value: 'federal_sub_award', label: 'Federal Sub-award'},
-  { value: 'internal_broad', label: 'Internal Broad'},
-  { value: 'purchase_order', label: 'Purchase Order'},
-  { value: 'corporate_funding', label: 'Corporate Funding'},
-  { value: 'foundation', label: 'Foundation'},
-  { value: 'philanthropy', label: 'Philanthropy'},
-  { value: 'other', label:  'Other'},
-  { value: 'none', label: 'None'}
+  { value: 'federal_prime', label: 'Federal Prime' },
+  { value: 'federal_sub_award', label: 'Federal Sub-award' },
+  { value: 'internal_broad', label: 'Internal Broad' },
+  { value: 'purchase_order', label: 'Purchase Order' },
+  { value: 'corporate_funding', label: 'Corporate Funding' },
+  { value: 'foundation', label: 'Foundation' },
+  { value: 'philanthropy', label: 'Philanthropy' },
+  { value: 'other', label: 'Other' },
+  { value: 'none', label: 'None' }
 ]
 
 
@@ -54,7 +54,7 @@ export const Fundings = hh(class Fundings extends Component {
     const value = e.target.value;
     const id = e.target.id;
     this.setState(prev => {
-      prev.fundings[id][field]= value;
+      prev.fundings[id][field] = value;
       return prev;
     }, () => this.props.updateFundings(this.state.fundings));
   };
@@ -63,29 +63,28 @@ export const Fundings = hh(class Fundings extends Component {
     this.setState(prev => {
       prev.fundings[id].source = selectedOption;
       return prev;
-    }, ()=> this.props.updateFundings(this.state.fundings)
+    }, () => this.props.updateFundings(this.state.fundings)
     )
   }
 
   render() {
     return (
       h(Fragment, {}, [
-        p({isRendered: this.props.error}[this.props.errorMessage]),
         div({ className: "row" }, [
-          div({ className: "col-lg-11" }, [
+          div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row" }, [
-              div({ className: "col-lg-4" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 p({ className: "noMargin" }, ["Funding Source"])
               ]),
-              div({ className: "col-lg-4" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 p({ className: "noMargin" }, ["Prime Sponsor Name"])
               ]),
-              div({ className: "col-lg-4" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 p({ className: "noMargin" }, ["Award Number/Identifier"])
               ])
             ])
           ]),
-          div({ className: "col-lg-1" }, [
+          div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
             Btn({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false }),
           ])
         ]),
@@ -96,42 +95,47 @@ export const Fundings = hh(class Fundings extends Component {
           return h(Fragment, { key: Index }, [
 
             div({ className: "row" }, [
-              div({ className: "col-lg-11" }, [
+              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: "col-lg-4" }, [
-                    InputFieldSelect({ label: "",
-                                       id: Index,
-                                       name: "source",
-                                       options: fundingOptions,
-                                       value: this.state.fundings[Index].source,
-                                       onChange: this.handleFundingSelect
-                                       })
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                    InputFieldSelect({
+                      label: "",
+                      id: Index,
+                      name: "source",
+                      options: fundingOptions,
+                      value: this.state.fundings[Index].source,
+                      onChange: this.handleFundingSelect
+                    })
                   ]),
-                  div({ className: "col-lg-4" }, [
-                    InputFieldText({ id: Index,
-                                     name: "sponsor",
-                                     label: "",
-                                     value: this.state.fundings[Index].sponsor,
-                                     disabled: false,
-                                     required: false,
-                                     onChange: this.handleFundingChange
-                                     })
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                    InputFieldText({
+                      id: Index,
+                      name: "sponsor",
+                      label: "",
+                      value: this.state.fundings[Index].sponsor,
+                      disabled: false,
+                      required: false,
+                      onChange: this.handleFundingChange
+                    })
                   ]),
-                  div({ className: "col-lg-4" }, [
-                    InputFieldText({ id: Index,
-                                     name: "identifier",
-                                     label: "",
-                                     value: this.state.fundings[Index].identifier,
-                                     disabled: false,
-                                     required: false,
-                                     onChange: this.handleFundingChange })
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                    InputFieldText({
+                      id: Index,
+                      name: "identifier",
+                      label: "",
+                      value: this.state.fundings[Index].identifier,
+                      disabled: false,
+                      required: false,
+                      onChange: this.handleFundingChange
+                    })
                   ])
                 ])
               ]),
-              div({ className: "col-lg-1", style: { "paddingTop": "12px" } }, [
+              div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
               ])
-            ])
+            ]),
+            small({ isRendered: this.props.error, className: "inputFieldErrorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])

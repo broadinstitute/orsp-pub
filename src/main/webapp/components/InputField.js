@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, p, span } from 'react-hyperscript-helpers';
+import { div, hh, p, span, small } from 'react-hyperscript-helpers';
 import './InputField.css';
 
 export const InputField = hh(class InputField extends Component {
@@ -12,13 +12,13 @@ export const InputField = hh(class InputField extends Component {
   render() {
 
     return (
-      div({ className: "inputField" }, [
+      div({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [
         p({ className: "inputFieldLabel" }, [
           this.props.label,
           span({ isRendered: this.props.aclaration !== undefined, className: "italic" }, [this.props.aclaration])
         ]),
         this.props.children,
-        p({isRendered: this.props.error}, [this.props.errorMessage])
+        small({ isRendered: this.props.error, className: "inputFieldError" }, [this.props.error])
       ])
     )
   }

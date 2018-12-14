@@ -19,6 +19,14 @@
   min-height: 38px;
 }
 
+.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus {
+  border: 1px solid red !important;
+}
+
+.inputFieldError .form-control:hover, .inputFieldError .form-control:focus {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);
+}
+
 .inputFileContainer {
   display: inline-block;
   width: 100%;
