@@ -25,14 +25,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
-        primeSponsorName: '',
-        awardId: '',
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
         subjectProtection: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
+      },
+      errors: {
+        studyDescription: this.props.errors.studyDescription,
+        pTitle: this.props.errors.pTitle,
+        subjectProtection:  this.props.errors.subjectProtection
       }
     };
   }

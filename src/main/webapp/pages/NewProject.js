@@ -18,7 +18,8 @@ class NewProject extends Component {
       errors: {
         studyDescription: false,
         pTitle: false,
-        subjectProtection: false
+        subjectProtection: false,
+        fundings: false
       }
     }
 
