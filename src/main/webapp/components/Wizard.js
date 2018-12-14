@@ -46,14 +46,12 @@ export const Wizard = hh(class Wizard extends Component {
 
   goStep = (n) => (e) => {
     e.preventDefault();
-    if (this.props.isValid(this.state.currentStepIndex)) {
       this.setState(prev => {
         prev.currentStepIndex = n;
         return prev;
       }, () => {
         this.props.stepChanged(this.state.currentStepIndex);
       })
-    }
   }
 
   render() {

@@ -1166,7 +1166,8 @@ module.exports = root;
 
 
 /***/ }),
-/* 15 */
+/* 15 */,
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1309,7 +1310,6 @@ module.exports = TAG_NAMES.reduce(function (exported, type) {
 }, { h: h, hh: hh });
 
 /***/ }),
-/* 16 */,
 /* 17 */
 /***/ (function(module, exports) {
 
@@ -1557,7 +1557,7 @@ module.exports = function (it, key) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(40),
+var Symbol = __webpack_require__(41),
     getRawTag = __webpack_require__(336),
     objectToString = __webpack_require__(367);
 
@@ -1923,6 +1923,88 @@ module.exports = function (exec) {
 
 /***/ }),
 /* 40 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var root = __webpack_require__(14);
@@ -1934,7 +2016,7 @@ module.exports = Symbol;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isSymbol = __webpack_require__(60);
@@ -1961,7 +2043,7 @@ module.exports = toKey;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1977,7 +2059,7 @@ module.exports = toKey;
 var printWarning = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactPropTypesSecret = __webpack_require__(43);
+  var ReactPropTypesSecret = __webpack_require__(44);
   var loggedTypeFailures = {};
 
   printWarning = function(text) {
@@ -2060,7 +2142,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2079,91 +2161,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 44 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 45 */,
-/* 46 */,
-/* 47 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2476,6 +2474,8 @@ function updateLink(linkElement, options, obj) {
 
 
 /***/ }),
+/* 46 */,
+/* 47 */,
 /* 48 */
 /***/ (function(module, exports) {
 
@@ -3344,7 +3344,7 @@ module.exports = MapCache;
 /***/ (function(module, exports, __webpack_require__) {
 
 var castPath = __webpack_require__(55),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * The base implementation of `_.get` without support for default values.
@@ -6750,7 +6750,7 @@ module.exports = toString;
 
 
 
-var ReactPropTypesSecret = __webpack_require__(43);
+var ReactPropTypesSecret = __webpack_require__(44);
 
 function emptyFunction() {}
 
@@ -6818,8 +6818,8 @@ module.exports = function() {
 
 var assign = __webpack_require__(20);
 
-var ReactPropTypesSecret = __webpack_require__(43);
-var checkPropTypes = __webpack_require__(42);
+var ReactPropTypesSecret = __webpack_require__(44);
+var checkPropTypes = __webpack_require__(43);
 
 var printWarning = function() {};
 
@@ -11142,7 +11142,7 @@ if (process.env.NODE_ENV !== "production") {
 
 var React = __webpack_require__(0);
 var _assign = __webpack_require__(20);
-var checkPropTypes = __webpack_require__(42);
+var checkPropTypes = __webpack_require__(43);
 var scheduler = __webpack_require__(68);
 var tracing = __webpack_require__(219);
 
@@ -31910,7 +31910,7 @@ if (process.env.NODE_ENV !== "production") {
 'use strict';
 
 var _assign = __webpack_require__(20);
-var checkPropTypes = __webpack_require__(42);
+var checkPropTypes = __webpack_require__(43);
 
 // TODO: this is special because it gets imported during build.
 
@@ -37334,7 +37334,7 @@ var baseIsEqual = __webpack_require__(86),
     isKey = __webpack_require__(88),
     isStrictComparable = __webpack_require__(164),
     matchesStrictComparable = __webpack_require__(165),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -37474,7 +37474,7 @@ var assignValue = __webpack_require__(298),
     castPath = __webpack_require__(55),
     isIndex = __webpack_require__(57),
     isObject = __webpack_require__(18),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * The base implementation of `_.set`.
@@ -37605,7 +37605,7 @@ module.exports = baseTimes;
 /* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(40),
+var Symbol = __webpack_require__(41),
     arrayMap = __webpack_require__(297),
     isArray = __webpack_require__(9),
     isSymbol = __webpack_require__(60);
@@ -37878,7 +37878,7 @@ module.exports = createFlow;
 /* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(40),
+var Symbol = __webpack_require__(41),
     Uint8Array = __webpack_require__(293),
     eq = __webpack_require__(59),
     equalArrays = __webpack_require__(159),
@@ -38155,7 +38155,7 @@ module.exports = getPrototype;
 /* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(40);
+var Symbol = __webpack_require__(41);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -38331,7 +38331,7 @@ var castPath = __webpack_require__(55),
     isArray = __webpack_require__(9),
     isIndex = __webpack_require__(57),
     isLength = __webpack_require__(93),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * Checks if `path` exists on `object`.
@@ -38509,7 +38509,7 @@ module.exports = hashSet;
 /* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(40),
+var Symbol = __webpack_require__(41),
     isArguments = __webpack_require__(90),
     isArray = __webpack_require__(9);
 
@@ -39959,7 +39959,7 @@ module.exports = pick;
 var baseProperty = __webpack_require__(317),
     basePropertyDeep = __webpack_require__(318),
     isKey = __webpack_require__(88),
-    toKey = __webpack_require__(41);
+    toKey = __webpack_require__(42);
 
 /**
  * Creates a function that returns the value at `path` of a given object.
@@ -56967,7 +56967,7 @@ var _axios = __webpack_require__(112);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _CollectionTable = __webpack_require__(573);
 
@@ -56981,7 +56981,7 @@ var _ResponseView = __webpack_require__(574);
 
 var _ResponseView2 = _interopRequireDefault(_ResponseView);
 
-var _SampleCollectionAutocomplete = __webpack_require__(590);
+var _SampleCollectionAutocomplete = __webpack_require__(589);
 
 var _SampleCollectionAutocomplete2 = _interopRequireDefault(_SampleCollectionAutocomplete);
 
@@ -57252,7 +57252,7 @@ exports.default = CollectionLinks;
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(614);
+var content = __webpack_require__(613);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -57260,7 +57260,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -57310,7 +57310,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactBootstrapTable = __webpack_require__(424);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57398,7 +57398,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57509,8 +57509,7 @@ _reactDom2.default.render(_react2.default.createElement(_CollectionLinks2.defaul
 /* 586 */,
 /* 587 */,
 /* 588 */,
-/* 589 */,
-/* 590 */
+/* 589 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57620,6 +57619,7 @@ var SampleCollectionAutocomplete = function (_React$Component) {
 exports.default = SampleCollectionAutocomplete;
 
 /***/ }),
+/* 590 */,
 /* 591 */,
 /* 592 */,
 /* 593 */,
@@ -57642,11 +57642,10 @@ exports.default = SampleCollectionAutocomplete;
 /* 610 */,
 /* 611 */,
 /* 612 */,
-/* 613 */,
-/* 614 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 

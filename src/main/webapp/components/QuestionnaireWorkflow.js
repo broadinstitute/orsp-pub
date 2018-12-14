@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { div, hh, button, label, input, h1 } from 'react-hyperscript-helpers';
+import { div, hh, button, label, input, h1, span } from 'react-hyperscript-helpers';
 import { InputYesNo } from './InputYesNo';
+import './QuestionnaireWorkflow.css';
 
 
 export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Component {
@@ -94,7 +95,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       requiredError: requiredError,
       nextQuestionIndex: nextQuestionIndex,
       projectType: projectType,
-      endState : endState
+      endState: endState
     }, () => {
       this.props.handler(this.state);
     });
@@ -136,7 +137,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return h1({},["Something went wrong."]);
+      return h1({}, ["Something went wrong."]);
     }
 
     if (this.state.currentQuestionIndex === null) {
@@ -144,23 +145,29 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
 
     const { currentQuestionIndex } = this.state;
-    return (
-      div({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [
-        div({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]),
-        div({}, [this.state.questions[currentQuestionIndex].question]),
-        InputYesNo({
-           id: this.state.questions[currentQuestionIndex].id,
 
+    return (
+      div({ className: "questionnaireContainer" }, [
+        InputYesNo({
+          id: this.state.questions[currentQuestionIndex].id,
           value: this.state.questions[currentQuestionIndex].answer,
+          label: this.state.questions[currentQuestionIndex].question,
+          aclaration: this.state.questions[currentQuestionIndex].aclaration,
           onChange: this.handleChange,
           required: false
         }),
-        div({ isRendered: (this.state.projectType != null) }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
-        div({}, [
-          button({ isRendered: (currentQuestionIndex > 0), className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]),
-          button({ isRendered: (this.state.endState === false), className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"]),
-        ]),
-        div({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"])
+
+        div({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
+        div({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"]),
+
+        div({ isRendered: (this.state.endState === false), className: "buttonContainer" }, [
+          button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [
+            span({ className: "glyphicon glyphicon-chevron-left" }, [])
+          ]),
+          button({ className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [
+            span({ className: "glyphicon glyphicon-chevron-right" }, [])
+          ])
+        ])
       ])
     )
   }

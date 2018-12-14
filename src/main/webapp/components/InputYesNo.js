@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { input, hh, div, label, span, p } from 'react-hyperscript-helpers';
+import { input, hh, div, label, span, p, small } from 'react-hyperscript-helpers';
 import './InputYesNo.css';
 
 export const InputYesNo = (props) => {
@@ -19,7 +19,7 @@ export const InputYesNo = (props) => {
     div({ className: "radioContainer" }, [
       p({ className: "bold" }, [
         props.label,
-        span({ isRendered: props.aclaration !== undefined, className: "italic" }, [props.aclaration])
+        span({ isRendered: props.aclaration !== undefined, className: "normal" }, [props.aclaration])
       ]),
 
       optionLabels.map((option, ix) => {
@@ -43,7 +43,7 @@ export const InputYesNo = (props) => {
             ])
         )
       }),
-      p({isRendered: props.error}[props.errorMessage])
+      small({ isRendered: props.error, className: "inputFieldErrorMessage" }, [props.errorMessage])
     ])
   )
 };

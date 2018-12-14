@@ -2,7 +2,6 @@ import { Component } from 'react';
 import { hh, h1 } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
-import { QuestionnaireStep } from '../components/QuestionnaireStep';
 
 const NE = 200;
 const NHSR = 300;
@@ -31,7 +30,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     let questions = [];
 
     questions.push({
-      question: '1. Is this a "fee-for-service" project? (commercial service only, no Broad publication privileges)',
+      question: 'Is this a "fee-for-service" project? ',
+      aclaration: '(commercial service only, no Broad publication privileges)',
       yesOutput: NE,
       noOutput: 2,
       answer: null,
@@ -39,7 +39,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '2. Is a Broad investigator conductin reseach (generating, contributing to generalizable knowledge) ? Examples include case studies, internal technology development projects',
+      question: 'Is a Broad investigator conducting research ',
+      aclaration: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
       yesOutput: 3,
       noOutput: NHSR,
       answer: null,
@@ -47,7 +48,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '3. Are all subjects who provided samples and/or data now deceased?',
+      question: 'Are all subjects who provided samples and/or data now deceased?',
       yesOutput: NHSR,
       noOutput: 4,
       answer: null,
@@ -55,7 +56,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '4. Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating dentifiable private information or identifiable biospecimens (Coded data are considered identifiable if researcher has access to key)',
+      question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
+      aclaration: '(Coded data are considered identifiable if researcher has access to key)',
       yesOutput: IRB,
       noOutput: 5,
       answer: null,
@@ -63,7 +65,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '5. Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction (i.e. is conductin HSR)?',
+      question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
+      aclaration: '(i.e. is conductin HSR)?',
       yesOutput: 6,
       noOutput: NHSR,
       answer: null,
@@ -71,7 +74,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '6. Is the Broad receiving subject identifiers?',
+      question: 'Is the Broad receiving subject identifiers?',
       yesOutput: IRB,
       noOutput: 7,
       answer: null,
@@ -79,7 +82,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '7. Is the Broad researcher co-publishing or doing joint analysis with investigator who has acess to identifiers?',
+      question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
       yesOutput: 8,
       noOutput: NHSR,
       answer: null,
@@ -87,7 +90,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: '8. Is Broad receiving direct federal funding?',
+      question: 'Is Broad receiving direct federal funding?',
       yesOutput: IRB,
       noOutput: NE,
       answer: null,
@@ -103,7 +106,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return h1({},["Something went wrong."]);
+      return h1({}, ["Something went wrong."]);
     }
 
     return (

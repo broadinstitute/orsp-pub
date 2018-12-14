@@ -48,7 +48,7 @@ class NewProject extends Component {
     let pTitle = false;
     let subjectProtection = false;
     let isValid = true;
-    let fundings = true;
+    let fundings = false;
     if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
     }
@@ -58,16 +58,15 @@ class NewProject extends Component {
     if (!this.isTextValid(this.state.step1FormData.pTitle)) {
       pTitle = true;
     }
-    if(this.state.step1FormData.fundings === undefined) {
+    if (this.state.step1FormData.fundings === undefined) {
       fundings = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (!(funding.source === 'None' ||
-          (funding.source !== 'None' &&
-            this.isTextValid(funding.sponsor) && this.isTextValid(funding.identifier)))) {
-          fundings = false;
+        if (funding.source.label !== 'None' &&
+            (!this.isTextValid(funding.sponsor) || !this.isTextValid(funding.identifier))) {
+          fundings = true;
         }
-      });  
+      });
     }
     if (studyDescription || pTitle || subjectProtection || fundings) {
       this.setState(prev => {
@@ -135,7 +134,7 @@ class NewProject extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged, isValid: this.isValid }, [
+      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid }, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),

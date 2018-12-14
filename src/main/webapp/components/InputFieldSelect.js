@@ -14,6 +14,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
           id={this.props.id}
           name={this.props.name}
           value={this.props.value}
+          className="inputFieldSelect"
           onChange={this.props.onChange(this.props.id)}
           options={this.props.options}
         />
