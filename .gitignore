@@ -17,6 +17,7 @@
 /migration
 /node_modules
 yarn.lock
+.clover
 
 ### Gradle template
 .gradle
