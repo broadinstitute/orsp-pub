@@ -12,9 +12,14 @@ class NewProject extends Component {
       determination: {
         projectType: 400
       },
-      step1FormData : {},
+      step1FormData: {},
       currentStep: 0,
-      files: []
+      files: [],
+      errors: {
+        studyDescription: false,
+        pTitle: false,
+        subjectProtection: false
+      }
     }
 
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
@@ -25,11 +30,65 @@ class NewProject extends Component {
   }
 
   stepChanged = (newStep) => {
-    console.log(newStep);
     this.setState({
       currentStep: newStep
     });
   }
+
+  isValid = (currentSep) => {
+    let isValid = true;
+    if (currentSep === 0) {
+      isValid = this.isStep1Valid();
+    }
+    return isValid;
+  }
+
+  isStep1Valid() {
+    let studyDescription = false;
+    let pTitle = false;
+    let subjectProtection = false;
+    let isValid = true;
+    let fundings = true;
+    if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
+      studyDescription = true;
+    }
+    if (!this.isTextValid(this.state.step1FormData.subjectProtection)) {
+      subjectProtection = true;
+    }
+    if (!this.isTextValid(this.state.step1FormData.pTitle)) {
+      pTitle = true;
+    }
+    if(this.state.step1FormData.fundings === undefined) {
+      fundings = false;
+    } else {
+      this.state.step1FormData.fundings.forEach(funding => {
+        if (!(funding.source === 'None' ||
+          (funding.source !== 'None' &&
+            this.isTextValid(funding.sponsor) && this.isTextValid(funding.identifier)))) {
+          fundings = false;
+        }
+      });  
+    }
+    if (studyDescription || pTitle || subjectProtection || fundings) {
+      this.setState(prev => {
+        prev.errors.studyDescription = studyDescription;
+        prev.errors.subjectProtection = subjectProtection;
+        prev.errors.pTitle = pTitle;
+        prev.errors.fundings = fundings;
+        return prev;
+      });
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  isTextValid(value) {
+    let isValid = false;
+    if (value !== '' && value !== null && value !== undefined) {
+      isValid = true;
+    }
+    return isValid;
+  };
 
   determinationHandler = (determination) => {
     this.setState({
@@ -45,7 +104,7 @@ class NewProject extends Component {
     console.log(error, info);
   }
 
-  fileHandler =  (file) => {
+  fileHandler = (file) => {
     if (file.fileData !== undefined && file.fileData) {
       let result = this.state.files.filter(element => element.fileKey !== file.fileKey);
       result.push(file);
@@ -65,7 +124,7 @@ class NewProject extends Component {
     this.setState(prev => {
       prev.step1FormData = updatedForm;
       return prev;
-      }
+    }
     );
   }
 
@@ -76,10 +135,10 @@ class NewProject extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged }, [
-        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData}),
+      Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged, isValid: this.isValid }, [
+        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
-        NewProjectDocuments({ title:"Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files}),
+        NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),
       ])
     );
   }

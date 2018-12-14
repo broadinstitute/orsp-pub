@@ -15,6 +15,7 @@ export const InputYesNo = (props) => {
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
   return (
+    
     div({ className: "radioContainer" }, [
       p({ className: "bold" }, [
         props.label,
@@ -41,7 +42,8 @@ export const InputYesNo = (props) => {
               span({ className: "radioLabel" }, [optionLabels[ix]])
             ])
         )
-      })
+      }),
+      p({isRendered: props.error}[props.errorMessage])
     ])
   )
 };
