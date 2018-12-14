@@ -112,7 +112,7 @@
                 <div class="form-group">
                     <p>
                         Is a Broad staff member/affiliate interacting or intervening with living human subjects or
-                        obtaining their private identifiable information? (Coded data/samples are considered identifiable
+                        obtaining their private identifiable information/biospecimens? (Coded data/samples are considered identifiable
                         if researcher <em>or anyone on the study team</em> has access to a key that would allow linkage
                         to private identifiable information.)
                     </p>
@@ -133,7 +133,7 @@
                 <div class="form-group">
                     <p>
                         Are samples or data being provided to the Broad by an investigator who has private identifiable
-                        information?
+                        information/biospecimens?
                     </p>
 
                     <div class="radio"><label><input type="radio" name="collHasIdentity" value="10126"/> Yes</label>
@@ -152,7 +152,7 @@
                 <div class="form-group">
                     <p>
                         Is the Broad researcher co-publishing or doing joint analysis with an investigator who has access
-                        to private identifiable information?
+                        to private identifiable information/biospecimens?
                     </p>
 
                     <div class="radio"><label><input type="radio" name="collPublication" value="10028"/> Yes</label>

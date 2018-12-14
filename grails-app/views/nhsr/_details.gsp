@@ -74,17 +74,24 @@
             <g:render template="/base/value" model="[value: BooleanOptions.getLabelForKey(issue.deceased)]"/>
         </div>
 
-        <div class="property-label">Is a Broad staff member/affiliate <strong>interacting/intervening with human subjects or obtaining their private identifiable information?</strong> (Coded data/samples are considered identifiable if the researcher or anyone on the study team has access to a key that would allow linkage to private identifiable information.)</div>
+        <div class="property-label">
+            Is a Broad staff member/affiliate either
+            a) <strong>obtaining information/biospecimens through an intervention or interaction with an individual,
+            and using, studying or analyzing the information/biospecimens</strong>, or
+            b) <strong>obtaining, using, studying, analyzing, or generating identifiable private information/biospecimens</strong>?
+            (Note that coded data/biospecimens are considered identifiable if the researcher or anyone on the study team has access to a
+            key that would allow linkage to private identifiable information.)
+        </div>
         <div class="property-value well well-sm">
             <g:render template="/base/value" model="[value: BooleanOptions.getLabelForKey(issue.identifiable)]"/>
         </div>
 
-        <div class="property-label">Are samples or data being <strong>provided to the Broad by an investigator who has access to private identifiable information?</strong></div>
+        <div class="property-label">Are samples or data being <strong>provided to the Broad by an investigator who has access to private identifiable information/biospecimens?</strong></div>
         <div class="property-value well well-sm">
             <g:render template="/base/value" model="[value: BooleanOptions.getLabelForKey(issue.collHasIdentity)]"/>
         </div>
 
-        <div class="property-label">Is the Broad researcher <strong>co-publishing or doing joint analysis</strong> with investigator who has access to identifiers?</div>
+        <div class="property-label">Is the Broad researcher <strong>co-publishing or doing joint analysis</strong> with investigator who has access to identifiers/biospecimens?</div>
         <div class="property-value well well-sm">
             <g:render template="/base/value" model="[value: issue.collPublication]"/>
         </div>
