@@ -18,3 +18,41 @@
 .inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {
   min-height: 38px;
 }
+
+.inputFileContainer {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.inputFileContainer:last-child {
+  margin-bottom: 0;
+}
+
+.fileNameContainer {
+  min-height: 38px;
+  border: 1px solid #ccc;
+}
+
+.buttonUpload {
+  position: relative;
+  overflow: hidden;
+  min-height: 38px;
+  padding: 8px 12px 0 12px;
+}
+
+.buttonUpload input.inputFieldFile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  height: 100%;
+  width: 100%;
+}
+
+.fileName {
+  color: #555;
+  margin: 8px 5px 0 5px;
+}

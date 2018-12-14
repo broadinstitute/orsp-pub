@@ -50,12 +50,6 @@
   background: white;
 }
 
-.buttonContainer {
-  display: block;
-  min-height: 35px;
-  margin: 20px 20px 40px 20px;
-}
-
 .wizardStepContainer {
   margin: 0 20px 20px 20px;
 }

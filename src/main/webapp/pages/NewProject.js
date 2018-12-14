@@ -58,7 +58,7 @@ class NewProject extends Component {
     if (!this.isTextValid(this.state.step1FormData.pTitle)) {
       pTitle = true;
     }
-    if(this.state.step1FormData.fundings === undefined) {
+    if (this.state.step1FormData.fundings === undefined) {
       fundings = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
@@ -67,7 +67,7 @@ class NewProject extends Component {
             this.isTextValid(funding.sponsor) && this.isTextValid(funding.identifier)))) {
           fundings = false;
         }
-      });  
+      });
     }
     if (studyDescription || pTitle || subjectProtection || fundings) {
       this.setState(prev => {
@@ -135,7 +135,7 @@ class NewProject extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged, isValid: this.isValid }, [
+      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid }, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),

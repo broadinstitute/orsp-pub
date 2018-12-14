@@ -15,11 +15,11 @@ export const InputYesNo = (props) => {
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
   return (
-    
+
     div({ className: "radioContainer" }, [
       p({ className: "bold" }, [
         props.label,
-        span({ isRendered: props.aclaration !== undefined, className: "italic" }, [props.aclaration])
+        span({ isRendered: props.aclaration !== undefined, className: "normal" }, [props.aclaration])
       ]),
 
       optionLabels.map((option, ix) => {
@@ -43,7 +43,7 @@ export const InputYesNo = (props) => {
             ])
         )
       }),
-      p({isRendered: props.error}[props.errorMessage])
+      p({ isRendered: props.error }[props.errorMessage])
     ])
   )
 };

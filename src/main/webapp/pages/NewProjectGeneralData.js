@@ -33,7 +33,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         subjectProtection: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
-      },
+      }
     };
   }
 
@@ -77,19 +77,19 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   }
 
   loadUsersOptions(query, callback) {
-    if(query.length > 2) {
+    if (query.length > 2) {
       Search.getMatchingUsers(this.props.searchUsersURL, query)
-      .then(response => {
-        let options = response.data.map(function (item) {
-          return {
-            key: item.id,
-            value: item.value,
-            label: item.label
-          };
+        .then(response => {
+          let options = response.data.map(function (item) {
+            return {
+              key: item.id,
+              value: item.value,
+              label: item.label
+            };
+          });
+          callback(options);
         });
-        callback(options);
-      });
-    }    
+    }
   };
 
   handleProjectCollaboratorChange = (data, action) => {
@@ -108,7 +108,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   stepChanged(previousStep) {
     console.log("validate");
-    if(previousStep === 0) {
+    if (previousStep === 0) {
       // validar
       console.log("validarrrrr");
     }
@@ -196,7 +196,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
-            placeholder: "Please select one or more individuals",
+            placeholder: "Please select one or more individuals...",
             isMulti: true
           }),
           InputFieldText({
