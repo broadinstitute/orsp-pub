@@ -57,17 +57,17 @@
             <g:render template="/base/value" model="[value: BooleanOptions.getLabelForKey(issue.feeForService)]"/>
         </div>
 
-        <div class="property-label">As part of the research, is a Broad staff member/affiliate interacting or intervening with living human subjects or obtaining their private identifiable information? (Coded data/samples are considered identifiable if researcher <em>or anyone on the study team</em> has access to key that would allow linkage to personal identifiers.)</div>
+        <div class="property-label">As part of the research, is a Broad staff member/affiliate interacting or intervening with living human subjects or obtaining their private identifiable information/biospecimens? (Coded data/samples are considered identifiable if researcher <em>or anyone on the study team</em> has access to key that would allow linkage to personal identifiers.)</div>
         <div class="property-value well well-sm">
             <g:render template="/base/value" model="[value: BooleanOptions.getLabelForKey(issue.identifiable)]"/>
         </div>
 
-        <div class="property-label">Are samples or data being provided to the Broad by an investigator who has private identifiable information?</div>
+        <div class="property-label">Are samples or data being provided to the Broad by an investigator who has private identifiable information/biospecimens?</div>
         <div class="property-value well well-sm">
             <g:render template="/base/value" model="[value: BooleanOptions.getLabelForKey(issue.collHasIdentity)]"/>
         </div>
 
-        <div class="property-label">Is the Broad researcher co-publishing or doing joint analysis with an investigator who has access to private identifiable information?</div>
+        <div class="property-label">Is the Broad researcher co-publishing or doing joint analysis with an investigator who has access to private identifiable information/biospecimens?</div>
         <div class="property-value well well-sm">
             <g:render template="/base/value" model="[value: issue.collPublication]"/>
         </div>
