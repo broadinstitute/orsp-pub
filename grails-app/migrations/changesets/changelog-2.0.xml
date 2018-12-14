@@ -4,12 +4,10 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <changeSet author="grushton" id="changelog-2.0-1">
         <dropTable cascadeConstraints="true"
-                   schemaName="public"
                    tableName="amendment_storage_document"/>
     </changeSet>
     <changeSet author="grushton" id="changelog-2.0-2">
         <dropTable cascadeConstraints="true"
-                   schemaName="public"
                    tableName="amendment"/>
     </changeSet>
 </databaseChangeLog>
