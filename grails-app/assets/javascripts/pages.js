@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/assets/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 586);
+/******/ 	return __webpack_require__(__webpack_require__.s = 585);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1210,7 +1210,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 __webpack_require__(221);
 
@@ -1248,7 +1248,35 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
 
 /***/ }),
 
-/***/ 15:
+/***/ 151:
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+
+/***/ }),
+
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1392,34 +1420,6 @@ module.exports = TAG_NAMES.reduce(function (exported, type) {
 
 /***/ }),
 
-/***/ 151:
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
-}
-
-function isBuffer (obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer (obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
-}
-
-
-/***/ }),
-
 /***/ 175:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1433,7 +1433,7 @@ function isSlowBuffer (obj) {
 
 
 
-var ReactPropTypesSecret = __webpack_require__(43);
+var ReactPropTypesSecret = __webpack_require__(44);
 
 function emptyFunction() {}
 
@@ -1502,8 +1502,8 @@ module.exports = function() {
 
 var assign = __webpack_require__(20);
 
-var ReactPropTypesSecret = __webpack_require__(43);
-var checkPropTypes = __webpack_require__(42);
+var ReactPropTypesSecret = __webpack_require__(44);
+var checkPropTypes = __webpack_require__(43);
 
 var printWarning = function() {};
 
@@ -2363,7 +2363,7 @@ if (process.env.NODE_ENV !== "production") {
 
 var React = __webpack_require__(0);
 var _assign = __webpack_require__(20);
-var checkPropTypes = __webpack_require__(42);
+var checkPropTypes = __webpack_require__(43);
 var scheduler = __webpack_require__(68);
 var tracing = __webpack_require__(219);
 
@@ -22355,7 +22355,7 @@ if (process.env.NODE_ENV !== "production") {
 'use strict';
 
 var _assign = __webpack_require__(20);
-var checkPropTypes = __webpack_require__(42);
+var checkPropTypes = __webpack_require__(43);
 
 // TODO: this is special because it gets imported during build.
 
@@ -25452,7 +25452,7 @@ module.exports = function (css) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(616);
+var content = __webpack_require__(615);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -25460,7 +25460,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -25493,7 +25493,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 __webpack_require__(725);
 
@@ -25545,7 +25545,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 __webpack_require__(552);
 
@@ -25597,7 +25597,7 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
       console.log(step, currentStep);
 
       if (currentStep === step) {
-        view = (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContainer" }, [(0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.h2)({ className: "wizardStepTitle" }, [(0, _reactHyperscriptHelpers.small)({}, ["Step " + (step + 1)]), this.props.title])]), this.props.children]);
+        view = (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContainer" }, [(0, _reactHyperscriptHelpers.h2)({ className: "wizardStepTitle" }, [(0, _reactHyperscriptHelpers.small)({}, ["Step " + (step + 1)]), this.props.title]), this.props.children]);
       }
       return view;
     }
@@ -25621,7 +25621,7 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_create_emotion__ = __webpack_require__(611);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_create_emotion__ = __webpack_require__(610);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flush", function() { return flush; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hydrate", function() { return hydrate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cx", function() { return cx; });
@@ -25759,7 +25759,90 @@ module.exports = defaults;
 
 /***/ }),
 
-/***/ 42:
+/***/ 40:
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+
+/***/ 43:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25775,7 +25858,7 @@ module.exports = defaults;
 var printWarning = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactPropTypesSecret = __webpack_require__(43);
+  var ReactPropTypesSecret = __webpack_require__(44);
   var loggedTypeFailures = {};
 
   printWarning = function(text) {
@@ -25859,7 +25942,7 @@ module.exports = checkPropTypes;
 
 /***/ }),
 
-/***/ 43:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25879,90 +25962,7 @@ module.exports = ReactPropTypesSecret;
 
 /***/ }),
 
-/***/ 44:
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-
-/***/ 47:
+/***/ 45:
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -27374,7 +27374,7 @@ var _reactSelect = __webpack_require__(689);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputField = __webpack_require__(130);
 
@@ -27430,7 +27430,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputField = __webpack_require__(130);
 
@@ -27484,7 +27484,7 @@ exports.InputYesNo = undefined;
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 __webpack_require__(726);
 
@@ -27506,7 +27506,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 
   var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
 
-  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.aclaration !== undefined, className: "italic" }, [props.aclaration])]), optionLabels.map(function (option, ix) {
+  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.aclaration !== undefined, className: "normal" }, [props.aclaration])]), optionLabels.map(function (option, ix) {
     return (0, _reactHyperscriptHelpers.label)({
       key: id + ix,
       onClick: function onClick(e) {
@@ -27542,9 +27542,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputYesNo = __webpack_require__(491);
+
+__webpack_require__(728);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -27696,13 +27698,15 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
 
       var currentQuestionIndex = this.state.currentQuestionIndex;
 
-      return (0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "border": "solid 1px gray", "borderRadius": "4px" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "2px", "padding": "2px", "backgroundColor": "gray", "color": "white" } }, ["(QuestionnaireWorkflow)"]), (0, _reactHyperscriptHelpers.div)({}, [this.state.questions[currentQuestionIndex].question]), (0, _InputYesNo.InputYesNo)({
-        id: this.state.questions[currentQuestionIndex].id,
 
+      return (0, _reactHyperscriptHelpers.div)({ className: "questionnaireContainer" }, [(0, _InputYesNo.InputYesNo)({
+        id: this.state.questions[currentQuestionIndex].id,
         value: this.state.questions[currentQuestionIndex].answer,
+        label: this.state.questions[currentQuestionIndex].question,
+        aclaration: this.state.questions[currentQuestionIndex].aclaration,
         onChange: this.handleChange,
         required: false
-      }), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]), (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn btn-primary", style: { "margin": "2px" }, onClick: this.prevQuestion }, ["Previous Question"]), (0, _reactHyperscriptHelpers.button)({ isRendered: this.state.endState === false, className: "btn btn-default", style: { "margin": "2px" }, onClick: this.nextQuestion }, ["Next Question"])]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"])]);
+      }), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.endState === false, className: "buttonContainer" }, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [(0, _reactHyperscriptHelpers.span)({ className: "glyphicon glyphicon-chevron-left" }, [])]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [(0, _reactHyperscriptHelpers.span)({ className: "glyphicon glyphicon-chevron-right" }, [])])])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -29858,7 +29862,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29890,13 +29894,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _Wizard = __webpack_require__(582);
+var _Wizard = __webpack_require__(581);
 
-var _NewProjectGeneralData = __webpack_require__(585);
+var _NewProjectGeneralData = __webpack_require__(584);
 
-var _NewProjectDetermination = __webpack_require__(583);
+var _NewProjectDetermination = __webpack_require__(582);
 
-var _NewProjectDocuments = __webpack_require__(584);
+var _NewProjectDocuments = __webpack_require__(583);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -29984,7 +29988,7 @@ var NewProject = function (_Component) {
       var pTitle = false;
       var subjectProtection = false;
       var isValid = true;
-      var fundings = true;
+      var fundings = false;
       if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
         studyDescription = true;
       }
@@ -29998,8 +30002,8 @@ var NewProject = function (_Component) {
         fundings = false;
       } else {
         this.state.step1FormData.fundings.forEach(function (funding) {
-          if (!(funding.source === 'None' || funding.source !== 'None' && _this2.isTextValid(funding.sponsor) && _this2.isTextValid(funding.identifier))) {
-            fundings = false;
+          if (funding.source.label !== 'None' && (!_this2.isTextValid(funding.sponsor) || !_this2.isTextValid(funding.identifier))) {
+            fundings = true;
           }
         });
       }
@@ -30040,7 +30044,7 @@ var NewProject = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Project", style: { "margin": "5px 5px 15px 5px", "padding": "5px 5px 15px 5px" }, stepChanged: this.stepChanged, isValid: this.isValid }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -30071,7 +30075,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -30869,7 +30873,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputFieldText = __webpack_require__(490);
 
@@ -31004,7 +31008,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputField = __webpack_require__(130);
 
@@ -31028,7 +31032,7 @@ var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(f
   _createClass(InputFieldFile, [{
     key: 'render',
     value: function render() {
-      return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "form-control inputFieldText" }), (0, _reactHyperscriptHelpers.p)({}, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputFileContainer" }, [(0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-2 col-md-3 col-sm-3 col-xs-12 btn buttonSecondary buttonUpload" }, ["Select File", (0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })])]), (0, _reactHyperscriptHelpers.div)({ className: "fileNameContainer col-lg-10 col-md-9 col-sm-9 col-xs-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "fileName" }, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])])]);
     }
   }]);
 
@@ -31052,7 +31056,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputField = __webpack_require__(130);
 
@@ -31077,7 +31081,8 @@ var InputFieldTextArea = exports.InputFieldTextArea = (0, _reactHyperscriptHelpe
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.textarea)({ name: this.props.name,
+      return (0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.textarea)({
+        name: this.props.name,
         id: "txt_description",
         rows: "5",
         className: "form-control inputFieldTextarea",
@@ -31109,7 +31114,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputField = __webpack_require__(130);
 
@@ -31184,7 +31189,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 __webpack_require__(727);
 
@@ -31254,85 +31259,13 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.QuestionnaireStep = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _reactHyperscriptHelpers = __webpack_require__(15);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var QuestionnaireStep = exports.QuestionnaireStep = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
-  _inherits(QuestionnaireStep, _Component);
-
-  function QuestionnaireStep() {
-    var _ref;
-
-    var _temp, _this, _ret;
-
-    _classCallCheck(this, QuestionnaireStep);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = QuestionnaireStep.__proto__ || Object.getPrototypeOf(QuestionnaireStep)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
-  }
-
-  _createClass(QuestionnaireStep, [{
-    key: 'componentDidCatch',
-    value: function componentDidCatch(error, info) {
-      console.log('----------------------- error ----------------------');
-      console.log(error, info);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-
-      if (this.state.hasError) {
-        // You can render any custom fallback UI
-        return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
-      }
-
-      return (0, _reactHyperscriptHelpers.div)({ style: { "border": "solid 1px gray" } }, [(0, _reactHyperscriptHelpers.div)({ style: { "margin": "3px", "padding": "2px", "backgroundColor": "white", "color": "black" } }, [this.props.question]), this.props.children]);
-    }
-  }], [{
-    key: 'getDerivedStateFromError',
-    value: function getDerivedStateFromError(error) {
-      // Update state so the next render will show the fallback UI.
-      return { hasError: true };
-    }
-  }]);
-
-  return QuestionnaireStep;
-}(_react.Component));
-
-// export default QuestionnaireStep;
-
-/***/ }),
-
-/***/ 582:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.Wizard = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 __webpack_require__(552);
 
@@ -31375,14 +31308,12 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
     _this.goStep = function (n) {
       return function (e) {
         e.preventDefault();
-        if (_this.props.isValid(_this.state.currentStepIndex)) {
-          _this.setState(function (prev) {
-            prev.currentStepIndex = n;
-            return prev;
-          }, function () {
-            _this.props.stepChanged(_this.state.currentStepIndex);
-          });
-        }
+        _this.setState(function (prev) {
+          prev.currentStepIndex = n;
+          return prev;
+        }, function () {
+          _this.props.stepChanged(_this.state.currentStepIndex);
+        });
       };
     };
 
@@ -31431,7 +31362,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
 /***/ }),
 
-/***/ 583:
+/***/ 582:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31446,13 +31377,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _WizardStep = __webpack_require__(231);
 
 var _QuestionnaireWorkflow = __webpack_require__(492);
-
-var _QuestionnaireStep = __webpack_require__(581);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -31490,7 +31419,8 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       var questions = [];
 
       questions.push({
-        question: '1. Is this a "fee-for-service" project? (commercial service only, no Broad publication privileges)',
+        question: 'Is this a "fee-for-service" project? ',
+        aclaration: '(commercial service only, no Broad publication privileges)',
         yesOutput: NE,
         noOutput: 2,
         answer: null,
@@ -31498,7 +31428,8 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '2. Is a Broad investigator conductin reseach (generating, contributing to generalizable knowledge) ? Examples include case studies, internal technology development projects',
+        question: 'Is a Broad investigator conducting research ',
+        aclaration: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
         yesOutput: 3,
         noOutput: NHSR,
         answer: null,
@@ -31506,7 +31437,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '3. Are all subjects who provided samples and/or data now deceased?',
+        question: 'Are all subjects who provided samples and/or data now deceased?',
         yesOutput: NHSR,
         noOutput: 4,
         answer: null,
@@ -31514,7 +31445,8 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '4. Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating dentifiable private information or identifiable biospecimens (Coded data are considered identifiable if researcher has access to key)',
+        question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
+        aclaration: '(Coded data are considered identifiable if researcher has access to key)',
         yesOutput: IRB,
         noOutput: 5,
         answer: null,
@@ -31522,7 +31454,8 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '5. Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction (i.e. is conductin HSR)?',
+        question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
+        aclaration: '(i.e. is conductin HSR)?',
         yesOutput: 6,
         noOutput: NHSR,
         answer: null,
@@ -31530,7 +31463,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '6. Is the Broad receiving subject identifiers?',
+        question: 'Is the Broad receiving subject identifiers?',
         yesOutput: IRB,
         noOutput: 7,
         answer: null,
@@ -31538,7 +31471,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '7. Is the Broad researcher co-publishing or doing joint analysis with investigator who has acess to identifiers?',
+        question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
         yesOutput: 8,
         noOutput: NHSR,
         answer: null,
@@ -31546,7 +31479,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       });
 
       questions.push({
-        question: '8. Is Broad receiving direct federal funding?',
+        question: 'Is Broad receiving direct federal funding?',
         yesOutput: IRB,
         noOutput: NE,
         answer: null,
@@ -31583,7 +31516,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
 
 /***/ }),
 
-/***/ 584:
+/***/ 583:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31600,7 +31533,7 @@ var _react = __webpack_require__(0);
 
 var _WizardStep = __webpack_require__(231);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _InputFieldFile = __webpack_require__(577);
 
@@ -31704,7 +31637,7 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
 
 /***/ }),
 
-/***/ 585:
+/***/ 584:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31719,7 +31652,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactHyperscriptHelpers = __webpack_require__(15);
+var _reactHyperscriptHelpers = __webpack_require__(16);
 
 var _WizardStep = __webpack_require__(231);
 
@@ -31741,7 +31674,7 @@ var _MultiSelect = __webpack_require__(579);
 
 var _Btn = __webpack_require__(230);
 
-var _ajax = __webpack_require__(592);
+var _ajax = __webpack_require__(591);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -31928,7 +31861,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         loadOptions: this.loadUsersOptions,
         handleChange: this.handleProjectCollaboratorChange,
         value: this.state.formData.collaborators,
-        placeholder: "Please select one or more individuals",
+        placeholder: "Please select one or more individuals...",
         isMulti: true
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputPTitle",
@@ -31974,7 +31907,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
 
 /***/ }),
 
-/***/ 586:
+/***/ 585:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32003,7 +31936,7 @@ _reactDom2.default.render(_react2.default.createElement(_NewProject2.default, {
 
 /***/ }),
 
-/***/ 592:
+/***/ 591:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32221,7 +32154,7 @@ module.exports = function xhrAdapter(config) {
 
 /***/ }),
 
-/***/ 611:
+/***/ 610:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32229,7 +32162,7 @@ module.exports = function xhrAdapter(config) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__emotion_unitless__ = __webpack_require__(564);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__emotion_hash__ = __webpack_require__(561);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__emotion_stylis__ = __webpack_require__(563);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet__ = __webpack_require__(728);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet__ = __webpack_require__(729);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet__);
 
 
@@ -32755,10 +32688,10 @@ function createEmotion(context, options) {
 
 /***/ }),
 
-/***/ 615:
+/***/ 614:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 
@@ -32770,25 +32703,25 @@ exports.push([module.i, ".btnPrimary{\r\n  color: #f5f5f5;\r\n  display: inline-
 
 /***/ }),
 
-/***/ 616:
+/***/ 615:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {\r\n  min-height: 38px;\r\n}\r\n", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFileContainer {\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.inputFileContainer:last-child {\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameContainer {\r\n  min-height: 38px;\r\n  border: 1px solid #ccc;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  margin: 8px 5px 0 5px;\r\n}\r\n", ""]);
 
 // exports
 
 
 /***/ }),
 
-/***/ 617:
+/***/ 616:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 
@@ -32800,10 +32733,10 @@ exports.push([module.i, ".radioContainer {\n  margin-top: 15px;\n}\n\n.radioOpti
 
 /***/ }),
 
-/***/ 618:
+/***/ 617:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 
@@ -32815,15 +32748,30 @@ exports.push([module.i, "\r\n.panelContainer {\r\n  margin-bottom: 20px;\r\n  ba
 
 /***/ }),
 
-/***/ 619:
+/***/ 618:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, ".wizardWrapper {\r\n  margin: 20px 0 0 0;\r\n}\r\n\r\n.wizardTitle {\r\n  font-weight: 400;\r\n  margin: 20px 0 10px 0;\r\n}\r\n\r\n.wizardContainer {\r\n  display: block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n  border: 1px solid #e3e3e3;\r\n  border-radius: 4px;\r\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n}\r\n\r\n.tabContainer {\r\n  display: block;\r\n  width: 100%;\r\n  min-height: 40px;\r\n  margin: 12px 3px;\r\n}\r\n\r\n.tabStep {\r\n  margin: 2px 1px 10px 1px;\r\n  padding: .5em 1em;\r\n  display: inline;\r\n  cursor: pointer;\r\n  font-size: 1.2rem;\r\n  border: 1px solid #d3d3d3;\r\n  color: #555555;\r\n  background: #e6e6e6;\r\n}\r\n\r\n.tabStep:first-child {\r\n  border-radius: 3px 0 0 0;\r\n}\r\n\r\n.tabStep:last-child {\r\n  border-radius: 0 3px 0 0;\r\n}\r\n\r\n.tabStep.active {\r\n  border: 1px solid #aaaaaa;\r\n  border-bottom: none;\r\n  color: #212121;\r\n  background: white;\r\n}\r\n\r\n.buttonContainer {\r\n  display: block;\r\n  min-height: 35px;\r\n  margin: 20px 20px 40px 20px;\r\n}\r\n\r\n.wizardStepContainer {\r\n  margin: 0 20px 20px 20px;\r\n}\r\n\r\n.wizardStepTitle {\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.wizardStepTitle small {\r\n  font-style: italic;\r\n  display: block;\r\n  margin-bottom: 5px;\r\n}", ""]);
+exports.push([module.i, ".questionnaireContainer {\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);\n  box-shadow: 0 1px 1px rgba(0,0,0,.05);\n}\n\n.questionnaireContainer .radioContainer p{\n  font-size: 1.1rem;\n}\n\n.questionnaireContainer .buttonContainer {\n  margin: 25px 0 0 0;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ 619:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(40)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".wizardWrapper {\r\n  margin: 20px 0 0 0;\r\n}\r\n\r\n.wizardTitle {\r\n  font-weight: 400;\r\n  margin: 20px 0 10px 0;\r\n}\r\n\r\n.wizardContainer {\r\n  display: block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n  border: 1px solid #e3e3e3;\r\n  border-radius: 4px;\r\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n}\r\n\r\n.tabContainer {\r\n  display: block;\r\n  width: 100%;\r\n  min-height: 40px;\r\n  margin: 12px 3px;\r\n}\r\n\r\n.tabStep {\r\n  margin: 2px 1px 10px 1px;\r\n  padding: .5em 1em;\r\n  display: inline;\r\n  cursor: pointer;\r\n  font-size: 1.2rem;\r\n  border: 1px solid #d3d3d3;\r\n  color: #555555;\r\n  background: #e6e6e6;\r\n}\r\n\r\n.tabStep:first-child {\r\n  border-radius: 3px 0 0 0;\r\n}\r\n\r\n.tabStep:last-child {\r\n  border-radius: 0 3px 0 0;\r\n}\r\n\r\n.tabStep.active {\r\n  border: 1px solid #aaaaaa;\r\n  border-bottom: none;\r\n  color: #212121;\r\n  background: white;\r\n}\r\n\r\n.wizardStepContainer {\r\n  margin: 0 20px 20px 20px;\r\n}\r\n\r\n.wizardStepTitle {\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.wizardStepTitle small {\r\n  font-style: italic;\r\n  display: block;\r\n  margin-bottom: 5px;\r\n}", ""]);
 
 // exports
 
@@ -32860,12 +32808,12 @@ module.exports = Cancel;
 /***/ 620:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(44)(undefined);
+exports = module.exports = __webpack_require__(40)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "html, body {\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white;\n  font-size: 1rem;\n  transition: all 0.3s ease; \n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.col,\n[class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}", ""]);
+exports.push([module.i, "html, body {\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.col,\n[class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -42203,7 +42151,7 @@ function getNextChildMapping(nextProps, prevChildMapping, onExited) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(615);
+var content = __webpack_require__(614);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -42211,7 +42159,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -42235,7 +42183,7 @@ if(false) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(617);
+var content = __webpack_require__(616);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -42243,7 +42191,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -42267,7 +42215,7 @@ if(false) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(618);
+var content = __webpack_require__(617);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -42275,7 +42223,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(47)(content, options);
+var update = __webpack_require__(45)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -42294,6 +42242,38 @@ if(false) {
 /***/ }),
 
 /***/ 728:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(618);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(45)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./QuestionnaireWorkflow.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./QuestionnaireWorkflow.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 729:
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (factory) {

@@ -48,7 +48,7 @@ class NewProject extends Component {
     let pTitle = false;
     let subjectProtection = false;
     let isValid = true;
-    let fundings = true;
+    let fundings = false;
     if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
     }
@@ -62,10 +62,9 @@ class NewProject extends Component {
       fundings = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (!(funding.source === 'None' ||
-          (funding.source !== 'None' &&
-            this.isTextValid(funding.sponsor) && this.isTextValid(funding.identifier)))) {
-          fundings = false;
+        if (funding.source.label !== 'None' &&
+            (!this.isTextValid(funding.sponsor) || !this.isTextValid(funding.identifier))) {
+          fundings = true;
         }
       });
     }
