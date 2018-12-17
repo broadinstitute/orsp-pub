@@ -25,8 +25,9 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     let file = e.target.files[0];
     filesBundle.fileKey = key;
     filesBundle.fileData = file;
+    console.log(file);
     this.props.fileHandler(filesBundle);
-  }
+  };
 
   obtainFile(fileKey) {
     return this.props.files.find(file => file.fileKey === fileKey)

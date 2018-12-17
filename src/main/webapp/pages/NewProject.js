@@ -3,6 +3,7 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
+import { Files } from '../util/ajax';
 
 class NewProject extends Component {
 
@@ -27,7 +28,7 @@ class NewProject extends Component {
 
   submitNewProject = () => {
 
-  }
+  };
 
   stepChanged = (newStep) => {
     this.setState({
@@ -110,9 +111,13 @@ class NewProject extends Component {
       this.setState(prev => {
         prev.files = result;
         return prev
+      }, () => {
+        if (this.state.files.length === 3) {
+          this.uploadFiles();
+        }
       });
     }
-  }
+  };
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -125,6 +130,14 @@ class NewProject extends Component {
       return prev;
     }
     );
+  };
+
+  uploadFiles(projectKey) {
+    Files.upload(`/dev/api/project/attach-document`, this.state.files, projectKey).then(resp => {
+      console.log(resp);
+    }).catch(err => {
+      console.error(err);
+    });
   }
 
   render() {

@@ -15,6 +15,7 @@ class UrlMappings {
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
         '/api/project'(resource: 'project')
+        '/api/project/attach-document'(controller: 'project', action: 'attachDocument', method: 'POST')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
