@@ -16,7 +16,6 @@ import { Search } from '../util/ajax';
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
 
   constructor(props) {
-    console.log("Props general data: **** ", props);
     super(props);
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
@@ -33,9 +32,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         collaborators: []
       },
       errors: {
-        studyDescription: this.props.errors.studyDescription,
-        pTitle: this.props.errors.pTitle,
-        subjectProtection:  this.props.errors.subjectProtection
+        studyDescription: false,
+        pTitle: false,
+        subjectProtection: false,
+        fundings: false
       }
     };
   }
@@ -44,7 +44,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.fundings = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData))
+    }, () => this.props.updateForm(this.state.formData, 'fundings'))
   }
 
   handleInputChange = (e) => {
@@ -53,8 +53,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, field));
   };
+
 
   handleRadioChange = (e, field, value) => {
     if (value === 'true') {
@@ -66,11 +67,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, field));
   };
 
+  handleProjectManagerChange = (data, action) => {
+    this.setState(prev => {
+      prev.formData.projectManager = data;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'projectManager'));
+  }
+
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
@@ -99,22 +106,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.collaborators = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, 'collaborators'));
   };
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
       prev.formData.piName = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
-  }
-
-  stepChanged(previousStep) {
-    console.log("validate");
-    if (previousStep === 0) {
-      // validar
-      console.log("validarrrrr");
-    }
+    }, () => this.props.updateForm(this.state.formData, 'piName'));
   }
 
   render() {
@@ -158,23 +157,23 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             placeholder: "Select...",
             isMulti: false
           }),
-
-          InputFieldText({
+          MultiSelect({
             id: "inputProjectManager",
-            name: "projectManager",
             label: "Broad Project Manager",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleProjectManagerChange,
             value: this.state.formData.projectManager,
-            disabled: false,
-            required: false,
-            onChange: this.handleInputChange
-          })
+            placeholder: "Select...",
+            isMulti: false
+          }),
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?" }, [
           Fundings({
             fundings: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
-            error: this.props.errors.studyDescription,
+            error: this.props.errors.fundings,
             errorMessage: "Required field"
           }),
         ]),
@@ -231,7 +230,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.state.formData.subjectProtection,
             onChange: this.handleRadioChange,
             required: false,
-            error: this.props.subjectProtection,
+            error: this.props.errors.subjectProtection,
             errorMessage: "Required field"
           })
         ])

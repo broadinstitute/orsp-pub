@@ -34,7 +34,7 @@ export const Wizard = hh(class Wizard extends Component {
 
   nextStep = (e) => {
     e.preventDefault();
-    if (this.props.isValid(this.state.currentStepIndex)) {
+    if (this.props.isValid(this.state.currentStepIndex, null)) {
       this.setState(prev => {
         prev.currentStepIndex = prev.currentStepIndex === this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
         return prev;

@@ -1239,7 +1239,7 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputField" }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.aclaration !== undefined, className: "italic" }, [this.props.aclaration])]), this.props.children, (0, _reactHyperscriptHelpers.p)({ isRendered: this.props.error }, [this.props.errorMessage])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.aclaration !== undefined, className: "italic" }, [this.props.aclaration])]), this.props.children, (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.error, className: "inputFieldError" }, [this.props.error])]);
     }
   }]);
 
@@ -27522,7 +27522,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
       checked: normValue === optionValues[ix],
       onChange: function onChange() {}
     }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
-  }), (0, _reactHyperscriptHelpers.p)({ isRendered: props.error }[props.errorMessage])]);
+  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "inputFieldErrorMessage" }, [props.errorMessage])]);
 };
 
 /***/ }),
@@ -29924,10 +29924,10 @@ var NewProject = function (_Component) {
       });
     };
 
-    _this.isValid = function (currentSep) {
+    _this.isValid = function (field) {
       var isValid = true;
-      if (currentSep === 0) {
-        isValid = _this.isStep1Valid();
+      if (_this.state.currentStep === 0) {
+        isValid = _this.validateStep1(field);
       }
       return isValid;
     };
@@ -29954,10 +29954,15 @@ var NewProject = function (_Component) {
       }
     };
 
-    _this.updateStep1FormData = function (updatedForm) {
+    _this.updateStep1FormData = function (updatedForm, field) {
+      if (_this.currentStep === 0) {
+        _this.validateStep1(field);
+      }
       _this.setState(function (prev) {
         prev.step1FormData = updatedForm;
         return prev;
+      }, function () {
+        return _this.isValid(field);
       });
     };
 
@@ -29971,17 +29976,19 @@ var NewProject = function (_Component) {
       errors: {
         studyDescription: false,
         pTitle: false,
-        subjectProtection: false
+        subjectProtection: false,
+        fundings: false
       }
     };
 
     _this.updateStep1FormData = _this.updateStep1FormData.bind(_this);
+    _this.isValid = _this.isValid.bind(_this);
     return _this;
   }
 
   _createClass(NewProject, [{
-    key: 'isStep1Valid',
-    value: function isStep1Valid() {
+    key: 'validateStep1',
+    value: function validateStep1(field) {
       var _this2 = this;
 
       var studyDescription = false;
@@ -29991,23 +29998,28 @@ var NewProject = function (_Component) {
       var fundings = false;
       if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
         studyDescription = true;
+        isValid = false;
       }
-      if (!this.isTextValid(this.state.step1FormData.subjectProtection)) {
+      if (this.state.step1FormData.subjectProtection !== true && this.state.step1FormData.subjectProtection !== false) {
         subjectProtection = true;
+        isValid = false;
       }
       if (!this.isTextValid(this.state.step1FormData.pTitle)) {
         pTitle = true;
+        isValid = false;
       }
       if (this.state.step1FormData.fundings === undefined) {
-        fundings = false;
+        fundings = true;
+        isValid = false;
       } else {
         this.state.step1FormData.fundings.forEach(function (funding) {
-          if (funding.source.label !== 'None' && (!_this2.isTextValid(funding.sponsor) || !_this2.isTextValid(funding.identifier))) {
+          if (!_this2.isTextValid(funding.source.label)) {
             fundings = true;
+            isValid = false;
           }
         });
       }
-      if (studyDescription || pTitle || subjectProtection || fundings) {
+      if (field === undefined || field === null || field === 0) {
         this.setState(function (prev) {
           prev.errors.studyDescription = studyDescription;
           prev.errors.subjectProtection = subjectProtection;
@@ -30015,7 +30027,20 @@ var NewProject = function (_Component) {
           prev.errors.fundings = fundings;
           return prev;
         });
-        isValid = false;
+      } else if (field === 'fundings' || field === 'studyDescription' || field === 'subjectProtection' || field === 'pTitle') {
+
+        this.setState(function (prev) {
+          if (field === 'fundings') {
+            prev.errors.fundings = fundings;
+          } else if (field === 'studyDescription') {
+            prev.errors.studyDescription = studyDescription;
+          } else if (field === 'subjectProtection') {
+            prev.errors.subjectProtection = subjectProtection;
+          } else if (field === 'pTitle') {
+            prev.errors.pTitle = pTitle;
+          }
+          return prev;
+        });
       }
       return isValid;
     }
@@ -30897,19 +30922,17 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
 
     var _this = _possibleConstructorReturn(this, (Fundings.__proto__ || Object.getPrototypeOf(Fundings)).call(this, props));
 
-    _this.removeFundings = function (e) {
-      return function (Index) {
-        if (_this.state.fundings.length > 1) {
-          _this.setState(function (prev) {
-            var fundings = prev.fundings;
-            fundings.splice(Index, 1);
-            prev.fundings = fundings;
-            return prev;
-          }, function () {
-            return _this.props.updateFundings(_this.state.fundings);
-          });
-        }
-      };
+    _this.removeFundings = function (index) {
+      if (_this.state.fundings.length > 1) {
+        _this.setState(function (prev) {
+          var fundings = prev.fundings;
+          fundings.splice(index, 1);
+          prev.fundings = fundings;
+          return prev;
+        }, function () {
+          return _this.props.updateFundings(_this.state.fundings);
+        });
+      }
     };
 
     _this.handleFundingChange = function (e) {
@@ -30939,7 +30962,9 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
     _this.removeFundings = _this.removeFundings.bind(_this);
     _this.handleFundingSelect = _this.handleFundingSelect.bind(_this);
     _this.state = {
-      fundings: [{ source: '', sponsor: '', identifier: '' }]
+      fundings: _this.props.fundings,
+      error: false,
+      errorMessage: 'Requiered field'
     };
     return _this;
   }
@@ -30949,41 +30974,50 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
     value: function addFundings() {
       var _this2 = this;
 
-      this.setState(function (prev) {
-        var fundings = prev.fundings;
-        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
-        prev.fundings = fundings;
-        return prev;
-      }, function () {
-        return _this2.props.updateFundings(_this2.state.fundings);
-      });
+      if (this.state.fundings[0].source !== '') {
+        this.setState(function (prev) {
+          var fundings = prev.fundings;
+          fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+          prev.fundings = fundings;
+          prev.error = false;
+          return prev;
+        }, function () {
+          return _this2.props.updateFundings(_this2.state.fundings);
+        });
+      }
     }
   }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
 
-      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.p)({ isRendered: this.props.error }[this.props.errorMessage]), (0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.state.fundings.map(function (rd, Index) {
-        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldSelect.InputFieldSelect)({ label: "",
+      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.props.fundings.map(function (rd, Index) {
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldSelect.InputFieldSelect)({
+          label: "",
           id: Index,
           name: "source",
           options: fundingOptions,
           value: _this3.state.fundings[Index].source,
           onChange: _this3.handleFundingSelect
-        })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ id: Index,
+        })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldText.InputFieldText)({
+          id: Index,
           name: "sponsor",
           label: "",
           value: _this3.state.fundings[Index].sponsor,
           disabled: false,
           required: false,
           onChange: _this3.handleFundingChange
-        })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4" }, [(0, _InputFieldText.InputFieldText)({ id: Index,
+        })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldText.InputFieldText)({
+          id: Index,
           name: "identifier",
           label: "",
           value: _this3.state.fundings[Index].identifier,
           disabled: false,
           required: false,
-          onChange: _this3.handleFundingChange })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this3.removeFundings(Index) }, disabled: !_this3.state.fundings.length > 1 })])])]);
+          onChange: _this3.handleFundingChange
+        })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: function handler(e) {
+              return _this3.removeFundings(Index);
+            } }, disabled: !_this3.state.fundings.length > 1 })])]), (0, _reactHyperscriptHelpers.small)({ isRendered: _this3.props.error && Index === 0, className: "inputFieldErrorMessage" }, ['Required field'])]);
       })]);
     }
   }]);
@@ -31032,7 +31066,7 @@ var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(f
   _createClass(InputFieldFile, [{
     key: 'render',
     value: function render() {
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputFileContainer" }, [(0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-2 col-md-3 col-sm-3 col-xs-12 btn buttonSecondary buttonUpload" }, ["Select File", (0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })])]), (0, _reactHyperscriptHelpers.div)({ className: "fileNameContainer col-lg-10 col-md-9 col-sm-9 col-xs-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "fileName" }, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputFileContainer" }, [(0, _InputField.InputField)({ label: this.props.label, aclaration: this.props.aclaration }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-2 col-md-3 col-sm-3 col-12 btn buttonSecondary buttonUpload" }, ["Select File", (0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })])]), (0, _reactHyperscriptHelpers.div)({ className: "fileNameContainer col-lg-10 col-md-9 col-sm-9 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "fileName" }, [this.props.nameFiles !== undefined ? this.props.nameFiles.fileData.name : ''])])]);
     }
   }]);
 
@@ -31295,7 +31329,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
     _this.nextStep = function (e) {
       e.preventDefault();
-      if (_this.props.isValid(_this.state.currentStepIndex)) {
+      if (_this.props.isValid(_this.state.currentStepIndex, null)) {
         _this.setState(function (prev) {
           prev.currentStepIndex = prev.currentStepIndex === _this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
           return prev;
@@ -31688,8 +31722,6 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
   function NewProjectGeneralData(props) {
     _classCallCheck(this, NewProjectGeneralData);
 
-    console.log("Props general data: **** ", props);
-
     var _this = _possibleConstructorReturn(this, (NewProjectGeneralData.__proto__ || Object.getPrototypeOf(NewProjectGeneralData)).call(this, props));
 
     _this.handleUpdateFundings = function (updated) {
@@ -31697,7 +31729,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         prev.formData.fundings = updated;
         return prev;
       }, function () {
-        return _this.props.updateForm(_this.state.formData);
+        return _this.props.updateForm(_this.state.formData, 'fundings');
       });
     };
 
@@ -31708,7 +31740,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         prev.formData[field] = value;
         return prev;
       }, function () {
-        return _this.props.updateForm(_this.state.formData);
+        return _this.props.updateForm(_this.state.formData, field);
       });
     };
 
@@ -31723,7 +31755,16 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         prev.formData[field] = value;
         return prev;
       }, function () {
-        return _this.props.updateForm(_this.state.formData);
+        return _this.props.updateForm(_this.state.formData, field);
+      });
+    };
+
+    _this.handleProjectManagerChange = function (data, action) {
+      _this.setState(function (prev) {
+        prev.formData.projectManager = data;
+        return prev;
+      }, function () {
+        return _this.props.updateForm(_this.state.formData, 'projectManager');
       });
     };
 
@@ -31732,7 +31773,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         prev.formData.collaborators = data;
         return prev;
       }, function () {
-        return _this.props.updateForm(_this.state.formData);
+        return _this.props.updateForm(_this.state.formData, 'collaborators');
       });
     };
 
@@ -31741,7 +31782,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         prev.formData.piName = data;
         return prev;
       }, function () {
-        return _this.props.updateForm(_this.state.formData);
+        return _this.props.updateForm(_this.state.formData, 'piName');
       });
     };
 
@@ -31752,14 +31793,18 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         requestorEmail: _this.props.user !== undefined ? _this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
-        primeSponsorName: '',
-        awardId: '',
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
         subjectProtection: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
+      },
+      errors: {
+        studyDescription: false,
+        pTitle: false,
+        subjectProtection: false,
+        fundings: false
       }
     };
     return _this;
@@ -31768,7 +31813,6 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
   _createClass(NewProjectGeneralData, [{
     key: 'componentDidCatch',
     value: function componentDidCatch(error, info) {
-      console.log('----------------------- error ----------------------');
       console.log(error, info);
     }
   }, {
@@ -31785,15 +31829,6 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
           });
           callback(options);
         });
-      }
-    }
-  }, {
-    key: 'stepChanged',
-    value: function stepChanged(previousStep) {
-      console.log("validate");
-      if (previousStep === 0) {
-        // validar
-        console.log("validarrrrr");
       }
     }
   }, {
@@ -31830,18 +31865,19 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.state.formData.piName,
         placeholder: "Select...",
         isMulti: false
-      }), (0, _InputFieldText.InputFieldText)({
+      }), (0, _MultiSelect.MultiSelect)({
         id: "inputProjectManager",
-        name: "projectManager",
         label: "Broad Project Manager",
+        isDisabled: false,
+        loadOptions: this.loadUsersOptions,
+        handleChange: this.handleProjectManagerChange,
         value: this.state.formData.projectManager,
-        disabled: false,
-        required: false,
-        onChange: this.handleInputChange
+        placeholder: "Select...",
+        isMulti: false
       })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?" }, [(0, _Fundings.Fundings)({
         fundings: this.state.formData.fundings,
         updateFundings: this.handleUpdateFundings,
-        error: this.props.errors.studyDescription,
+        error: this.props.errors.fundings,
         errorMessage: "Required field"
       })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({
         id: "inputStudyActivitiesDescription",
@@ -31890,7 +31926,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.state.formData.subjectProtection,
         onChange: this.handleRadioChange,
         required: false,
-        error: this.props.subjectProtection,
+        error: this.props.errors.subjectProtection,
         errorMessage: "Required field"
       })])]);
     }
@@ -32711,7 +32747,7 @@ exports = module.exports = __webpack_require__(40)(undefined);
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFileContainer {\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.inputFileContainer:last-child {\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameContainer {\r\n  min-height: 38px;\r\n  border: 1px solid #ccc;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  margin: 8px 5px 0 5px;\r\n}\r\n", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect, .inputField div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputFileContainer {\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.inputFileContainer:last-child {\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameContainer {\r\n  min-height: 38px;\r\n  border: 1px solid #ccc;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  margin: 8px 5px 0 5px;\r\n}\r\n", ""]);
 
 // exports
 
@@ -32813,7 +32849,7 @@ exports = module.exports = __webpack_require__(40)(undefined);
 
 
 // module
-exports.push([module.i, "html, body {\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.col,\n[class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
+exports.push([module.i, "html, body {\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.inputFieldErrorMessage {\n  color: red;\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.col,\n[class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
