@@ -139,7 +139,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorEmail",
             name: "requestorEmail",
             label: "Requestor Email Address",
-            value: this.state.formData.requestorEmail,
+            value: this.props.user.email.replace('&#64;', '@'),
             disabled: true,
             required: true,
             onChange: this.handleInputChange
