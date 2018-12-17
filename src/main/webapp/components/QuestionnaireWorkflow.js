@@ -150,8 +150,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     return (
       div({ className: "questionnaireContainer" }, [
         div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [
-          p({}, [this.state.questions[currentQuestionIndex].progress + "%"]),
-          QuestionnaireProgressBar({ progress: this.state.questions[currentQuestionIndex].progress }, []),
+          p({}, [(this.state.endState === true ? "100%" : this.state.questions[currentQuestionIndex].progress + "%")]),
+          QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
         ]),
 
         InputYesNo({
