@@ -25,15 +25,17 @@ export const WizardStep = hh(class WizardStep extends Component {
 
     let view = null;
 
-    const { step, currentStep } = this.props;
+    const { step, currentStep, questionnaireStep } = this.props;
 
     console.log(step, currentStep);
 
     if (currentStep === step) {
       view = div({ className: "wizardStepContainer" }, [
-        h2({ className: "wizardStepTitle" }, [
-          small({}, ["Step " + (step + 1)]),
-          this.props.title
+        div({ className: "row" }, [
+          h2({ className: "wizardStepTitle " + (questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12') }, [
+            small({}, ["Step " + (step + 1)]),
+            this.props.title
+          ])
         ]),
         this.props.children
       ]);

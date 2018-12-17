@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { div, hh, button, label, input, h1, span } from 'react-hyperscript-helpers';
+import { div, hh, button, label, input, h1, span, p } from 'react-hyperscript-helpers';
 import { InputYesNo } from './InputYesNo';
+import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
 import './QuestionnaireWorkflow.css';
 
 
@@ -148,6 +149,11 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
     return (
       div({ className: "questionnaireContainer" }, [
+        div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [
+          p({}, [this.state.questions[currentQuestionIndex].progress + "%"]),
+          QuestionnaireProgressBar({ progress: this.state.questions[currentQuestionIndex].progress }, []),
+        ]),
+
         InputYesNo({
           id: this.state.questions[currentQuestionIndex].id,
           value: this.state.questions[currentQuestionIndex].answer,
