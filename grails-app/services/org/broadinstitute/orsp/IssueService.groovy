@@ -2,7 +2,9 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
+import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.models.Project
 import org.broadinstitute.orsp.utils.IssueUtils
 
 /**
@@ -151,6 +153,45 @@ class IssueService {
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
+            issue.save(flush: true)
+        }
+        issue
+    }
+
+    Issue updateProject(Issue issue, Project project) throws DomainException {
+        IssueType type = IssueType.valueOfName(issue.type)
+        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
+        if (issue.hasErrors()) {
+            throw new DomainException(issue.getErrors())
+        } else {
+            issue.save(flush: true)
+        }
+        issue.setProjectKey(issue.projectKey + issue.id)
+
+        def fundingList = project.getFundingList(issue.getProjectKey())
+
+        fundingList.each {
+            issue.addToFundings(it)
+            it.save()
+        }
+
+        issue.setExpirationDate(null)
+
+
+
+//
+//        Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, project)
+//        propsToSave.addAll(getMultiValuedPropsForSaving(issue, input))
+//
+//
+//        propsToSave.each {
+//            it.save()
+//        }
+
+        if (issue.hasErrors()) {
+            throw new DomainException(issue.getErrors())
+        }
+        else {
             issue.save(flush: true)
         }
         issue

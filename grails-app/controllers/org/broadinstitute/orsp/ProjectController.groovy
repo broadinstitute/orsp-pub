@@ -1,9 +1,33 @@
 package org.broadinstitute.orsp
 
+import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.springframework.web.multipart.MultipartFile
+import org.broadinstitute.orsp.models.Project
+
+/*
+JSON model
+ {
+
+    "type": "IRB Project",
+    "status": "Open",
+    "summary":"Summary",
+    "description": "Description Text",
+    "reporter": "Leo",
+    "requestDate":"2018-06-01",
+    "fundings":[
+        {"awardNumber": "identifier",
+          "source":"Federal Sub-award",
+          "name":"sponsor Name"},
+        {"awardNumber": "identifier 2",
+          "source":"Federal Sub-award",
+          "name":"Sponsor Name 2"}
+
+     ]
+}
+* */
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -20,16 +44,19 @@ class ProjectController extends AuthenticatedController {
         render([message: diseaseAndPopulationRestrictions] as JSON)
     }
 
-    def create() {
-    }
 
     def edit() {
     }
 
     def save() {
-        def value = request.JSON
+        println params
+        Gson gson = new Gson()
+        Project project = gson.fromJson(gson.toJson(request.JSON), Project.class)
+
+        Issue response = issueService.updateProject(project.getIssue(), project)
+
         response.status = 201
-        render([message: value] as JSON)
+        render([message: response] as JSON)
     }
 
     def update() {
