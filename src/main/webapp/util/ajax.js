@@ -16,7 +16,8 @@ export const Files = {
     files.forEach(file => {
       data.append(file.fileKey, file.fileData, file.fileData.name);
     });
-    data.append('id', 'DEV-IRB-5164');
+
+    data.append('id', projectKey);
 
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
@@ -27,5 +28,15 @@ export const Files = {
 };
 
 export const Project = {
-  createProject(data) { }
+
+  createProject(url, data) {
+    console.log(data);
+
+    const config = {
+      headers: { 'content-type': 'application/json' }
+    };
+
+    return axios.post(url, data, config);
+  }
+
 };

@@ -3,7 +3,7 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-import { Files } from '../util/ajax';
+import { Files, Project } from '../util/ajax';
 
 class NewProject extends Component {
 
@@ -22,14 +22,21 @@ class NewProject extends Component {
         subjectProtection: false,
         fundings: false
       }
-    }
+    };
 
+    console.log('save project url', this.props.createProjectURL);
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
     this.isValid = this.isValid.bind(this);
+    this.submitNewProject = this.submitNewProject.bind(this);
   }
 
   submitNewProject = () => {
-
+    if (this.state.isValid) {
+      Project.createProject(this.props.createProjectURL, this.state).then(resp => {
+        console.log(resp);
+        // this.uploadFiles() TODO add key-project
+      });
+    }
   };
 
   stepChanged = (newStep) => {
@@ -135,10 +142,6 @@ class NewProject extends Component {
       this.setState(prev => {
         prev.files = result;
         return prev
-      }, () => {
-        if (this.state.files.length === 3) {
-          this.uploadFiles();
-        }
       });
     }
   };
@@ -159,7 +162,7 @@ class NewProject extends Component {
   };
 
   uploadFiles(projectKey) {
-    Files.upload(`/dev/api/project/attach-document`, this.state.files, projectKey).then(resp => {
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey).then(resp => {
       console.log(resp);
     }).catch(err => {
       console.error(err);
@@ -173,7 +176,7 @@ class NewProject extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid }, [
+      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject}, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, handler: this.determinationHandler }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),

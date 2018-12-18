@@ -57,7 +57,6 @@ class ProjectController extends AuthenticatedController {
                 }
             }
             render(['id': issue.projectKey, 'files': names] as JSON)
-//            redirect(controller: 'irb', action: "show", params: [id: issue.projectKey, tab: 'documents'])
         } catch (Exception e) {
             render([status: 500, text: [error: e.message] as JSON])
         }

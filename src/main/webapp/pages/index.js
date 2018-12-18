@@ -7,6 +7,8 @@ ReactDOM.render(
     <NewProject
         user = {component.user}
         searchUsersURL = {component.searchUsersURL}
+        attachDocumentsURL = {component.attachDocumentsURL}
+        createProjectURL = {component.createProjectURL}
      />,
     document.getElementById('pages')
 );

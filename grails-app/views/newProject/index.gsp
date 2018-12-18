@@ -22,7 +22,9 @@
 
         const component = {
             user: user,
-            searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}"
+            searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
+            attachDocumentsURL: "/api${createLink(controller: 'project', action: 'attachDocument')}",
+            createProjectURL: "/api${createLink(controller:'project', action: 'save')}"
         };
     </script>
 </head>
