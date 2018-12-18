@@ -31,7 +31,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is this a "fee-for-service" project? ',
-      aclaration: '(commercial service only, no Broad publication privileges)',
+      moreInfo: '(commercial service only, no Broad publication privileges)',
+      progress: 12,
       yesOutput: NE,
       noOutput: 2,
       answer: null,
@@ -40,7 +41,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is a Broad investigator conducting research ',
-      aclaration: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+      moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+      progress: 25,
       yesOutput: 3,
       noOutput: NHSR,
       answer: null,
@@ -49,6 +51,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Are all subjects who provided samples and/or data now deceased?',
+      progress: 37,
       yesOutput: NHSR,
       noOutput: 4,
       answer: null,
@@ -57,7 +60,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
-      aclaration: '(Coded data are considered identifiable if researcher has access to key)',
+      moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
+      progress: 50,
       yesOutput: IRB,
       noOutput: 5,
       answer: null,
@@ -66,7 +70,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
-      aclaration: '(i.e. is conductin HSR)?',
+      moreInfo: '(i.e. is conductin HSR)?',
+      progress: 62,
       yesOutput: 6,
       noOutput: NHSR,
       answer: null,
@@ -75,6 +80,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is the Broad receiving subject identifiers?',
+      progress: 75,
       yesOutput: IRB,
       noOutput: 7,
       answer: null,
@@ -83,6 +89,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
+      progress: 87,
       yesOutput: 8,
       noOutput: NHSR,
       answer: null,
@@ -91,6 +98,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is Broad receiving direct federal funding?',
+      progress: 100,
       yesOutput: IRB,
       noOutput: NE,
       answer: null,
@@ -110,7 +118,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 1, currentStep: this.props.currentStep }, [
+      WizardStep({ title: this.props.title, step: 1, currentStep: this.props.currentStep, questionnaireStep: true }, [
         QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler })
       ])
     )

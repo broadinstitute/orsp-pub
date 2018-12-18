@@ -11,7 +11,7 @@ export const InputFieldFile = hh(class InputFieldFile extends Component {
   render() {
     return (
       div({ className: "inputFileContainer" }, [
-        InputField({ label: this.props.label, aclaration: this.props.aclaration }, [
+        InputField({ label: this.props.label, moreInfo: this.props.moreInfo }, [
           div({ className: "col-lg-2 col-md-3 col-sm-3 col-12 btn buttonSecondary buttonUpload" }, [
             "Select File",
             input({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })

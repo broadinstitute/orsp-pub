@@ -29,7 +29,7 @@ export const Panel = hh(class Panel extends Component {
         div({ className: "panelHeader" }, [
           h3({ className: 'panelTitle' }, [
             this.props.title,
-            span({ className: "panelTitleAclaration" }, [this.props.aclaration]),
+            span({ className: "panelTitleMoreInfo" }, [this.props.moreInfo]),
             Btn({ isRendered: this.props.tooltipLabel !== undefined, action: { label: this.props.tooltipLabel } })
           ])
         ]),

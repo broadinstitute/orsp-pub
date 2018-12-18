@@ -19,7 +19,7 @@ export const InputYesNo = (props) => {
     div({ className: "radioContainer" }, [
       p({ className: "bold" }, [
         props.label,
-        span({ isRendered: props.aclaration !== undefined, className: "normal" }, [props.aclaration])
+        span({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])
       ]),
 
       optionLabels.map((option, ix) => {

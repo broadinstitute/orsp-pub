@@ -19,11 +19,13 @@ class NewProject extends Component {
       errors: {
         studyDescription: false,
         pTitle: false,
-        subjectProtection: false
+        subjectProtection: false,
+        fundings: false
       }
     }
 
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
+    this.isValid = this.isValid.bind(this);
   }
 
   submitNewProject = () => {
@@ -34,17 +36,17 @@ class NewProject extends Component {
     this.setState({
       currentStep: newStep
     });
-  }
+  };
 
-  isValid = (currentSep) => {
+  isValid = (field) => {
     let isValid = true;
-    if (currentSep === 0) {
-      isValid = this.isStep1Valid();
+    if (this.state.currentStep === 0) {
+      isValid = this.validateStep1(field);
     }
     return isValid;
-  }
+  };
 
-  isStep1Valid() {
+  validateStep1(field) {
     let studyDescription = false;
     let pTitle = false;
     let subjectProtection = false;
@@ -52,24 +54,28 @@ class NewProject extends Component {
     let fundings = false;
     if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
+      isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.subjectProtection)) {
+    if (this.state.step1FormData.subjectProtection !== true && this.state.step1FormData.subjectProtection !== false) {
       subjectProtection = true;
+      isValid = false;
     }
     if (!this.isTextValid(this.state.step1FormData.pTitle)) {
       pTitle = true;
+      isValid = false;
     }
     if (this.state.step1FormData.fundings === undefined) {
-      fundings = false;
+      fundings = true;
+      isValid = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (funding.source.label !== 'None' &&
-            (!this.isTextValid(funding.sponsor) || !this.isTextValid(funding.identifier))) {
+        if (!this.isTextValid(funding.source.label)) {
           fundings = true;
+          isValid = false;
         }
       });
     }
-    if (studyDescription || pTitle || subjectProtection || fundings) {
+    if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.studyDescription = studyDescription;
         prev.errors.subjectProtection = subjectProtection;
@@ -77,7 +83,25 @@ class NewProject extends Component {
         prev.errors.fundings = fundings;
         return prev;
       });
-      isValid = false;
+    } 
+    else if(field === 'fundings' || field === 'studyDescription' || 
+            field === 'subjectProtection' || field === 'pTitle') {
+
+      this.setState(prev => {
+        if (field === 'fundings') {
+          prev.errors.fundings = fundings;
+        }
+        else if (field === 'studyDescription') {
+          prev.errors.studyDescription = studyDescription;
+        }
+        else if (field === 'subjectProtection') {
+          prev.errors.subjectProtection = subjectProtection;
+        }
+        else if (field === 'pTitle') {
+          prev.errors.pTitle = pTitle;
+        }
+        return prev;
+      });
     }
     return isValid;
   }
@@ -97,7 +121,7 @@ class NewProject extends Component {
     }, () => {
       console.log("project determination ", determination);
     });
-  }
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -124,12 +148,14 @@ class NewProject extends Component {
     return { hasError: true }
   }
 
-  updateStep1FormData = (updatedForm) => {
+  updateStep1FormData = (updatedForm, field) => {
+    if (this.currentStep === 0) {
+      this.validateStep1(field);
+    }
     this.setState(prev => {
       prev.step1FormData = updatedForm;
       return prev;
-    }
-    );
+    }, () => this.isValid(field));
   };
 
   uploadFiles(projectKey) {

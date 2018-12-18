@@ -16,7 +16,6 @@ import { Search } from '../util/ajax';
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
 
   constructor(props) {
-    console.log("Props general data: **** ", props);
     super(props);
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
@@ -25,14 +24,18 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
-        primeSponsorName: '',
-        awardId: '',
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
         subjectProtection: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
+      },
+      errors: {
+        studyDescription: false,
+        pTitle: false,
+        subjectProtection: false,
+        fundings: false
       }
     };
   }
@@ -41,7 +44,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.fundings = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData))
+    }, () => this.props.updateForm(this.state.formData, 'fundings'))
   }
 
   handleInputChange = (e) => {
@@ -50,8 +53,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, field));
   };
+
 
   handleRadioChange = (e, field, value) => {
     if (value === 'true') {
@@ -63,11 +67,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, field));
   };
 
+  handleProjectManagerChange = (data, action) => {
+    this.setState(prev => {
+      prev.formData.projectManager = data;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'projectManager'));
+  }
+
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
@@ -96,22 +106,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.collaborators = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, 'collaborators'));
   };
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
       prev.formData.piName = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
-  }
-
-  stepChanged(previousStep) {
-    console.log("validate");
-    if (previousStep === 0) {
-      // validar
-      console.log("validarrrrr");
-    }
+    }, () => this.props.updateForm(this.state.formData, 'piName'));
   }
 
   render() {
@@ -123,7 +125,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
     return (
       WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
-        Panel({ title: "Requestor Information ", aclaration: "(person filling the form)", tooltipLabel: "?" }, [
+        Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?" }, [
           InputFieldText({
             id: "inputRequestorName",
             name: "requestorName",
@@ -144,7 +146,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-        Panel({ title: "Principal Investigator ", aclaration: "(if applicable)" }, [
+        Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
           MultiSelect({
             id: "pi_select",
             label: "Broad PI",
@@ -155,23 +157,23 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             placeholder: "Select...",
             isMulti: false
           }),
-
-          InputFieldText({
+          MultiSelect({
             id: "inputProjectManager",
-            name: "projectManager",
             label: "Broad Project Manager",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleProjectManagerChange,
             value: this.state.formData.projectManager,
-            disabled: false,
-            required: false,
-            onChange: this.handleInputChange
-          })
+            placeholder: "Select...",
+            isMulti: false
+          }),
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?" }, [
           Fundings({
             fundings: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
-            error: this.props.errors.studyDescription,
+            error: this.props.errors.fundings,
             errorMessage: "Required field"
           }),
         ]),
@@ -181,7 +183,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
             label: "Describe Broad study activities* ",
-            aclaration: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            moreInfo: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
             value: this.state.formData.studyDescription,
             disabled: false,
             required: false,
@@ -214,7 +216,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputIrbProtocolId",
             name: "irbProtocolId",
             label: "Protocol # at Broad IRB-of-record ",
-            aclaration: "(if applicable/available)",
+            moreInfo: "(if applicable/available)",
             value: this.state.formData.irbProtocolId,
             disabled: false,
             required: false,
@@ -224,11 +226,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "radioSubjectProtection",
             name: "subjectProtection",
             label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
-            aclaration: "i.e. responsible for oversight and submissions? *",
+            moreInfo: "i.e. responsible for oversight and submissions? *",
             value: this.state.formData.subjectProtection,
             onChange: this.handleRadioChange,
             required: false,
-            error: this.props.subjectProtection,
+            error: this.props.errors.subjectProtection,
             errorMessage: "Required field"
           })
         ])
