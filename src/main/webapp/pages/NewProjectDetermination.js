@@ -28,7 +28,6 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
   initQuestions() {
     let questions = [];
-
     questions.push({
       question: 'Is this a "fee-for-service" project? ',
       moreInfo: '(commercial service only, no Broad publication privileges)',
@@ -104,7 +103,6 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       answer: null,
       id: 8
     });
-
     return {
       questions: questions
     }
@@ -118,11 +116,10 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 1, currentStep: this.props.currentStep, questionnaireStep: true }, [
-        QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler })
+      WizardStep({ title: this.props.title, step: 1, currentStep: this.props.currentStep, questionnaireStep: true,
+                   error: this.props.errors, errorMessage: ' Please answer all questions to continue'}, [
+        QuestionnaireWorkflow({ questions: this.state.questions, determination: this.props.determination, handler: this.props.handler })
       ])
     )
   }
 });
-
-// export default NewProjectDetermination;

@@ -13,19 +13,31 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       requiredError: false,
       currentQuestionIndex: null,
       nextQuestionIndex: null,
+      projectType: null,
       endState: true,
       questions: []
     };
   }
 
   componentDidMount() {
-    this.setState({
-      endState: false,
-      requiredError: false,
-      currentQuestionIndex: 0,
-      nextQuestionIndex: 1,
-      questions: this.props.questions
-    });
+    if (this.props.determination.questions.length > 0) {
+      this.setState({
+        endState: this.props.determination.endState,
+        requiredError: this.props.determination.requiredError,
+        currentQuestionIndex: this.props.determination.currentQuestionIndex,
+        nextQuestionIndex: this.props.determination.nextQuestionIndex,
+        questions: this.props.determination.questions,
+        projectType: this.props.determination.projectType
+      });
+    } else {
+      this.setState({
+        endState: false,
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        questions: this.props.questions
+      });
+    }
   }
 
   prevQuestion = (e) => {
@@ -40,63 +52,69 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
   }
 
   nextQuestion = (e) => {
-    e.preventDefault();
-    this.setState(prev => {
-      prev.endState = false;
-      prev.currentQuestionIndex = prev.nextQuestionIndex;
-      return prev;
-    })
-  }
-
-  gotoNextquestion = () => {
-    let answer = this.state.questions[this.state.currentQuestionIndex].answer;
-    this.evaluateAnswer();
+    let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
+    if (currentAnswer !== null) {
+      e.preventDefault();
+      this.setState(prev => {
+        prev.endState = false;
+        prev.currentQuestionIndex = prev.nextQuestionIndex;
+        prev.requiredError = false;
+        return prev;
+      }, () => {
+        let answer = this.state.questions[this.state.currentQuestionIndex].answer;
+        if (answer !== null) {
+          this.evaluateAnswer(answer);
+        }
+      });
+    } else {
+      this.setState(prev => {
+        prev.requiredError = true;
+        return prev;
+      }, () => {
+        this.props.handler(this.state);
+      });
+    }
   }
 
   evaluateAnswer = (answer) => {
     let onYes = this.state.questions[this.state.currentQuestionIndex].yesOutput;
     let onNo = this.state.questions[this.state.currentQuestionIndex].noOutput;
-    let requiredError = true;
     let nextQuestionIndex = null;
     let projectType = null;
-    let endState = true;
+    let endState = false;
 
     if (answer === null) {
-      requiredError = true;
       nextQuestionIndex = null;
       projectType = null;
       endState = true;
     } else if (answer) {
       if (onYes < 100) {
-        requiredError = false;
         nextQuestionIndex = onYes - 1;
         projectType = null;
         endState = false;
       } else {
-        requiredError = false;
         nextQuestionIndex = null;
         projectType = onYes;
         endState = true;
       }
     } else if (answer === false) {
       if (onNo < 100) {
-        requiredError = false;
         nextQuestionIndex = onNo - 1;
         projectType = null;
         endState = false;
       } else {
-        requiredError = false;
         nextQuestionIndex = null;
         projectType = onNo;
         endState = true;
       }
     }
 
-    this.setState({
-      requiredError: requiredError,
-      nextQuestionIndex: nextQuestionIndex,
-      projectType: projectType,
-      endState: endState
+    this.setState(prev => {
+      prev.nextQuestionIndex = nextQuestionIndex;
+      prev.projectType = projectType;
+      prev.requiredError = false;
+      prev.endState = endState;
+      return prev
     }, () => {
       this.props.handler(this.state);
     });
@@ -132,6 +150,11 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     if (t === 200) return 'NE';
     if (t === 300) return 'NHSR';
     if (t === 400) return 'IRB';
+    if (t === 500) return 'EXIT';
+    if (t === 600) return 'DPA';
+    if (t === 700) return 'RA';
+    if (t === 800) return 'CTC';
+    if (t === 900) return 'OSAP';
   }
 
   render() {
@@ -166,11 +189,11 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         div({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
         div({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"]),
 
-        div({ isRendered: (this.state.endState === false), className: "buttonContainer" }, [
+        div({ className: "buttonContainer" }, [
           button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [
             span({ className: "glyphicon glyphicon-chevron-left" }, [])
           ]),
-          button({ className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [
+          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [
             span({ className: "glyphicon glyphicon-chevron-right" }, [])
           ])
         ])

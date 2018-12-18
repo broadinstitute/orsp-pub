@@ -25,29 +25,24 @@ export const Fundings = hh(class Fundings extends Component {
     this.removeFundings = this.removeFundings.bind(this);
     this.handleFundingSelect = this.handleFundingSelect.bind(this);
     this.state = {
-      fundings: this.props.fundings,
-      error: false,
-      errorMessage: 'Requiered field'
+      fundings: [{ source: '', sponsor: '', identifier: '' }]
     };
   }
 
   addFundings() {
-    if(this.state.fundings[0].source !== '') {
-      this.setState(prev => {
-        let fundings = prev.fundings;
-        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
-        prev.fundings = fundings;
-        prev.error = false;
-        return prev;
-      }, () => this.props.updateFundings(this.state.fundings));
-    } 
+    this.setState(prev => {
+      let fundings = prev.fundings;
+      fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+      prev.fundings = fundings;
+      return prev;
+    }, () => this.props.updateFundings(this.state.fundings));
   }
 
-  removeFundings = (index) => {
+  removeFundings = (e) => (Index) => {
     if (this.state.fundings.length > 1) {
       this.setState(prev => {
         let fundings = prev.fundings;
-        fundings.splice(index, 1);
+        fundings.splice(Index, 1);
         prev.fundings = fundings;
         return prev;
       }, () => this.props.updateFundings(this.state.fundings));
@@ -96,7 +91,7 @@ export const Fundings = hh(class Fundings extends Component {
 
         hr({ className: "fullWidth" }),
 
-        this.props.fundings.map((rd, Index) => {
+        this.state.fundings.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
 
             div({ className: "row" }, [
@@ -137,10 +132,10 @@ export const Fundings = hh(class Fundings extends Component {
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error && Index === 0 , className: "inputFieldErrorMessage" }, ['Required field'])
+            small({ isRendered: this.props.error, className: "inputFieldErrorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])

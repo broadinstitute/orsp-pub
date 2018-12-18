@@ -124,7 +124,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
+      WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep, 
+                   error: this.props.errors.fundings || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.subjectProtection,
+                   errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?" }, [
           InputFieldText({
             id: "inputRequestorName",

@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, p } from 'react-hyperscript-helpers';
+import { hh, h, h1 } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 const NE = 200;
 const NHSR = 300;
@@ -25,9 +25,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     let file = e.target.files[0];
     filesBundle.fileKey = key;
     filesBundle.fileData = file;
-    console.log(file);
     this.props.fileHandler(filesBundle);
-  };
+  }
 
   obtainFile(fileKey) {
     return this.props.files.find(file => file.fileKey === fileKey)
@@ -66,7 +65,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [
+      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep, errorMessage: 'Please upload all required documents', error: this.props.errors }, [
         requiredDocuments.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
             InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey), nameFiles: this.obtainFile(rd.fileKey)}),

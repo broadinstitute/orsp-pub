@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, h1, h2, small } from 'react-hyperscript-helpers';
+import { div, hh, h1, h2, small,  p} from 'react-hyperscript-helpers';
 import './Wizard.css';
 
 export const WizardStep = hh(class WizardStep extends Component {
@@ -37,7 +37,8 @@ export const WizardStep = hh(class WizardStep extends Component {
             this.props.title
           ])
         ]),
-        this.props.children
+        this.props.children,
+        p({isRendered: this.props.error},[this.props.errorMessage])
       ]);
     }
     return view;
