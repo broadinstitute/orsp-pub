@@ -31,7 +31,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is this a "fee-for-service" project? ',
-      aclaration: '(commercial service only, no Broad publication privileges)',
+      moreInfo: '(commercial service only, no Broad publication privileges)',
       progress: 12,
       yesOutput: NE,
       noOutput: 2,
@@ -41,7 +41,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is a Broad investigator conducting research ',
-      aclaration: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+      moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
       progress: 25,
       yesOutput: 3,
       noOutput: NHSR,
@@ -60,7 +60,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
-      aclaration: '(Coded data are considered identifiable if researcher has access to key)',
+      moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
       progress: 50,
       yesOutput: IRB,
       noOutput: 5,
@@ -70,7 +70,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
-      aclaration: '(i.e. is conductin HSR)?',
+      moreInfo: '(i.e. is conductin HSR)?',
       progress: 62,
       yesOutput: 6,
       noOutput: NHSR,

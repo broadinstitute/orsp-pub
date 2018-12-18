@@ -125,7 +125,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
     return (
       WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
-        Panel({ title: "Requestor Information ", aclaration: "(person filling the form)", tooltipLabel: "?" }, [
+        Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?" }, [
           InputFieldText({
             id: "inputRequestorName",
             name: "requestorName",
@@ -146,7 +146,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-        Panel({ title: "Principal Investigator ", aclaration: "(if applicable)" }, [
+        Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
           MultiSelect({
             id: "pi_select",
             label: "Broad PI",
@@ -183,7 +183,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
             label: "Describe Broad study activities* ",
-            aclaration: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            moreInfo: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
             value: this.state.formData.studyDescription,
             disabled: false,
             required: false,
@@ -216,7 +216,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputIrbProtocolId",
             name: "irbProtocolId",
             label: "Protocol # at Broad IRB-of-record ",
-            aclaration: "(if applicable/available)",
+            moreInfo: "(if applicable/available)",
             value: this.state.formData.irbProtocolId,
             disabled: false,
             required: false,
@@ -226,7 +226,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "radioSubjectProtection",
             name: "subjectProtection",
             label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
-            aclaration: "i.e. responsible for oversight and submissions? *",
+            moreInfo: "i.e. responsible for oversight and submissions? *",
             value: this.state.formData.subjectProtection,
             onChange: this.handleRadioChange,
             required: false,
