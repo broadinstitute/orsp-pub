@@ -1,8 +1,8 @@
 package org.broadinstitute.orsp.models
 
-import com.google.gson.Gson
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 
 class Project {
 
@@ -11,27 +11,32 @@ class Project {
     String summary
     String studyDescription
     String reporter
-    Date requestDate
+    String pTitle
     String piName
     String projectmanager
-    List<String> collaboratorIds
+    Date requestDate
     List<Object> fundings
     List<Object> questions
-
     String irbProtocolId
+    List<Object> collaborators
+    Boolean subjectProtection
 
     static constraints = {
         type nullable:true
         status nullable:true
+        summary nullable:true
+        studyDescription nullable:true
         reporter nullable:true
-        requestDate nullable:true
+        pTitle nullable:true
         piName nullable:true
         projectmanager nullable:true
-        collaboratorIds nullable:true
+        requestDate nullable:true
+        collaborators nullable:true
         fundings nullable:true
         studyDescription nullable:true
-        summary nullable:true
         irbProtocolId nullable:true
+        questions nullable:true
+        subjectProtection nullable:true
     }
 
     Issue getIssue () {
@@ -52,11 +57,10 @@ class Project {
 
             f.setCreated(new Date())
             f.setSource(p.get("source").toString())
-            f.setName(p.get("name").toString())
-            f.setAwardNumber(p.get("awardNumber").toString())
+            f.setName(p.get("sponsor").toString())
+            f.setAwardNumber(p.get("identifier").toString())
             f.setProjectKey(projectKey)
             f
         }
-
     }
 }
