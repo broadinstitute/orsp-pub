@@ -1,5 +1,5 @@
-import { Component, React, Fragment } from 'react';
-import { hh, div, h, button, h1 } from 'react-hyperscript-helpers';
+import { Component, React } from 'react';
+import { hh, h1 } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
@@ -18,6 +18,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.state = {
       formData: {
         requestorName: this.props.user !== undefined ? this.props.user.displayName : '',
+        reporter: this.props.user !== undefined ?  this.props.user.userName : '',
         requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
