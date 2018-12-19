@@ -26,7 +26,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     filesBundle.fileKey = key;
     filesBundle.fileData = file;
     this.props.fileHandler(filesBundle);
-  }
+  };
 
   obtainFile(fileKey) {
     return this.props.files.find(file => file.fileKey === fileKey)
@@ -65,7 +65,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep, errorMessage: 'Please upload all required documents', error: this.props.errors }, [
+      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep, errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps', error: this.props.errors || this.props.generalError }, [
         requiredDocuments.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
             InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey), nameFiles: this.obtainFile(rd.fileKey)}),

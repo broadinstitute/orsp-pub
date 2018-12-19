@@ -4,6 +4,7 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
+import {Project} from "../util/ajax";
 
 class NewProject extends Component {
 
@@ -13,6 +14,7 @@ class NewProject extends Component {
       showErrorStep2: false,
       showErrorStep3: false,
       isReadyToSubmit: false,
+      generalError: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -38,17 +40,26 @@ class NewProject extends Component {
   }
 
   submitNewProject = () => {
-
-     // TODO validate step 1 and 2 show message if are false
-     if (this.validateStep3() && this.validateStep2() && this.validateStep1()) {
-      console.log(`step 3 valid - submit the form`);
-      Project.createProject(this.props.createProjectURL, this.state).then(resp => {
-        console.log(resp);
-        // TODO call uploadFiles with projectKey
-      });
-    }
-   let project = this.getProject();
-  }
+     if (this.validateStep3()) {
+       if (this.validateStep2() || this.validateStep1()) {
+         console.log(JSON.stringify(this.getProject()));
+         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
+           console.log(resp);
+           // TODO call uploadFiles with projectKey
+         });
+       } else {
+         this.setState(prev => {
+           prev.generalError = true;
+           return prev;
+         });
+       }
+    } else {
+       this.setState(prev => {
+         prev.showErrorStep3 = true;
+         return prev;
+       });
+     }
+  };
 
   getProject(){
     let project = {};
@@ -85,7 +96,7 @@ class NewProject extends Component {
     let questionList = [];
     if (questions !== undefined && questions !== null && questions.length > 1) {
       questions.map((q, idx) => {
-        if (answer !== null) {
+        if (q.answer !== null) {
           let question = {};
           question.key = q.key;
           question.answer = q.answer;
@@ -298,7 +309,7 @@ class NewProject extends Component {
       Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit,  }, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
-        NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3 }),
+        NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError }),
       ])
     );
   }
