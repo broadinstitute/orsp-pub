@@ -30,19 +30,22 @@ export const Fundings = hh(class Fundings extends Component {
   }
 
   addFundings() {
-    this.setState(prev => {
-      let fundings = prev.fundings;
-      fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
-      prev.fundings = fundings;
-      return prev;
-    }, () => this.props.updateFundings(this.state.fundings));
+    if(this.state.fundings[0].source !== '') {
+      this.setState(prev => {
+        let fundings = prev.fundings;
+        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+        prev.fundings = fundings;
+        prev.error = false;
+        return prev;
+      }, () => this.props.updateFundings(this.state.fundings));
+    } 
   }
 
-  removeFundings = (e) => (Index) => {
+  removeFundings = (index) => {
     if (this.state.fundings.length > 1) {
       this.setState(prev => {
         let fundings = prev.fundings;
-        fundings.splice(Index, 1);
+        fundings.splice(index, 1);
         prev.fundings = fundings;
         return prev;
       }, () => this.props.updateFundings(this.state.fundings));
@@ -132,10 +135,10 @@ export const Fundings = hh(class Fundings extends Component {
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error, className: "inputFieldErrorMessage" }, [this.props.errorMessage])
+            small({ isRendered: this.props.error && Index === 0 , className: "inputFieldErrorMessage" }, ['Required field'])
           ]);
         })
       ])

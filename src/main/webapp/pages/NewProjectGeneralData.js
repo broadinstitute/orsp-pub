@@ -1,16 +1,13 @@
-import { Component, React, Fragment } from 'react';
-import { hh, div, h, button, h1 } from 'react-hyperscript-helpers';
+import { Component, React } from 'react';
+import { hh, h1 } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { InputYesNo } from '../components/InputYesNo';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
-import { Btn } from '../components/Btn';
 import { Search } from '../util/ajax';
 
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
