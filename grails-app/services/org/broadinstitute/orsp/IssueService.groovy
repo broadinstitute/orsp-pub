@@ -2,7 +2,6 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
-import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.models.Project
 import org.broadinstitute.orsp.utils.IssueUtils
@@ -47,14 +46,24 @@ class IssueService {
             IssueExtraProperty.RESPONSIBLE,
             IssueExtraProperty.REVIEW_CATEGORY,
             IssueExtraProperty.SOURCE,
-            IssueExtraProperty.SUBMISSION_TYPE]
+            IssueExtraProperty.SUBMISSION_TYPE,
+            IssueExtraProperty.PROJECT_TITLE,
+            IssueExtraProperty.PROJECT_MANAGER,
+            IssueExtraProperty.PI_NAME,
+            IssueExtraProperty.IRB_PROTOCOL_ID,
+            IssueExtraProperty.SUBJECT_PROTECTION
+    ]
+
 
     Collection<String> multiValuedPropertyKeys = [
+            IssueExtraProperty.PROJECT_QUESTIONARE,
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
             IssueExtraProperty.PI,
-            IssueExtraProperty.PM]
+            IssueExtraProperty.PM,
+            IssueExtraProperty.COLLABORATORS,
+    ]
 
     /**
      * Persist a new, unsaved issue
@@ -179,14 +188,14 @@ class IssueService {
 
 
 
-//
-//        Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, project)
-//        propsToSave.addAll(getMultiValuedPropsForSaving(issue, input))
-//
-//
-//        propsToSave.each {
-//            it.save()
-//        }
+
+        Collection<IssueExtraProperty> propsToSave = getExtraPropertiesIndividual(issue, project)
+        propsToSave.addAll(getExtraPropertiesColletion(issue, project))
+
+
+        propsToSave.each {
+            it.save()
+        }
 
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
@@ -260,4 +269,35 @@ class IssueService {
         props
     }
 
+    @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
+    Collection<IssueExtraProperty> getExtraPropertiesColletion(Issue issue, Project project) {
+        Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect { name ->
+            if (project.getProperties().containsKey(name) && project.getProperty(name) != null ) {
+                if( name != "questions") {
+                    project.getProperty(name).collect {
+                        value ->
+                            Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
+                    }
+                } else {
+                    ((List<String>) project.getProperty(name)).collect {
+                        new IssueExtraProperty(issue: issue, name: it.key, value: it.answer, projectKey: issue.projectKey)
+                    }
+                }
+            }
+        }.flatten().findAll { it != null }
+        props
+    }
+
+    private Collection<IssueExtraProperty> getExtraPropertiesIndividual(Issue issue, Project project) {
+        Collection<IssueExtraProperty> props = singleValuedPropertyKeys.collect {
+            name ->
+                if (project.getProperties().containsKey(name) && project.getProperty(name) != null) {
+                    def value = project.getProperty(name)
+                    if (value && value instanceof String) {
+                        Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
+                    }
+                }
+        }.findAll { it != null }
+        props
+    }
 }
