@@ -42,7 +42,7 @@ class NewProject extends Component {
   submitNewProject = () => {
      if (this.validateStep3()) {
        if (this.validateStep2() || this.validateStep1()) {
-         console.log(JSON.stringify(this.getProject()));
+         console.log(JSON.stringify(2, null, this.getProject()));
          Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
            console.log(resp);
            // TODO call uploadFiles with projectKey
@@ -69,7 +69,7 @@ class NewProject extends Component {
     project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
     project.reporter = this.state.step1FormData.userName;
     project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
-    project.piName = this.state.step1FormData.piName !== '' ? this.state.step1FormData.piName : null;
+    project.piName = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.value : null;
     project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
     project.irbProtocolId = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
     project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
