@@ -15,16 +15,17 @@
     <script type="application/javascript">
         const user = {
             <g:if test="${session?.user}">
-                name: "${session.user.displayName}",
-                email: "${session.user.emailAddress}"
+                displayName : "${session.user.displayName}",
+                email: "${session.user.emailAddress}",
+                userName: "${session.user.userName}"
             </g:if>
         };
 
         const component = {
             user: user,
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-            attachDocumentsURL: "/api${createLink(controller: 'project', action: 'attachDocument')}",
-            createProjectURL: "/api${createLink(controller:'project', action: 'save')}"
+            attachDocumentsURL: "${createLink(controller: 'project', action: 'attachDocument', uri: '/api/project/attachDocument', method: 'POST')}",
+            createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}"
         };
     </script>
 </head>

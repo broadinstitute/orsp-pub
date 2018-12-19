@@ -9,8 +9,11 @@ export const Wizard = hh(class Wizard extends Component {
     console.log(props);
     this.state = {
       currentStepIndex: 0,
-      showError: false
+      showError: false,
+      readyToSubmit: false,
     };
+
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -27,11 +30,12 @@ export const Wizard = hh(class Wizard extends Component {
     e.preventDefault();
     this.setState(prev => {
       prev.currentStepIndex = prev.currentStepIndex === 0 ? this.props.children.length - 1 : prev.currentStepIndex - 1;
+      prev.readyToSubmit = false;
       return prev;
     }, () => {
       this.props.stepChanged(this.state.currentStepIndex);
     })
-  }
+  };
 
   nextStep = (e) => {
     e.preventDefault();
@@ -39,22 +43,29 @@ export const Wizard = hh(class Wizard extends Component {
       this.setState(prev => {
         prev.showError = true;
         prev.currentStepIndex = prev.currentStepIndex === this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
+        prev.readyToSubmit = this.props.showSubmit(prev.currentStepIndex);
         return prev;
       }, () => {
         this.props.stepChanged(this.state.currentStepIndex);
       })
     }
-  }
+  };
 
   goStep = (n) => (e) => {
+    console.log('TAB index', n);
     e.preventDefault();
     this.setState(prev => {
       prev.currentStepIndex = n;
+      prev.readyToSubmit = this.props.showSubmit(n);
       return prev;
     }, () => {
       this.props.stepChanged(this.state.currentStepIndex);
     })
-  }
+  };
+
+  submitHandler = () => {
+    this.props.submitHandler();
+  };
 
   render() {
     if (this.state.hasError) {
@@ -78,7 +89,8 @@ export const Wizard = hh(class Wizard extends Component {
           this.props.children,
           div({ className: "buttonContainer wizardButtonContainer" }, [
             button({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep }, ["Previous Step"]),
-            button({ className: "btn buttonPrimary floatRight", onClick: this.nextStep }, ["Next Step"]),
+            button({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]),
+            button({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit }, ["SUBMIT"]),
           ])
         ])
       ])

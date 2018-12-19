@@ -4,13 +4,10 @@ import { hh, div, h, button, h1 } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { InputYesNo } from '../components/InputYesNo';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
-import { Btn } from '../components/Btn';
 import { Search } from '../util/ajax';
 
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
@@ -20,7 +17,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
       formData: {
-        requestorName: this.props.user !== undefined ? this.props.user.name : '',
+        requestorName: this.props.user !== undefined ? this.props.user.displayName : '',
         requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',

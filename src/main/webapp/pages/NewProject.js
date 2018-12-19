@@ -3,6 +3,7 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
+import { Files, Project } from "../util/ajax";
 
 const NE = 200;
 const NHSR = 300;
@@ -15,6 +16,7 @@ class NewProject extends Component {
     this.state = {
       showErrorStep2: false,
       showErrorStep3: false,
+      isReadyToSubmit: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -32,20 +34,29 @@ class NewProject extends Component {
         subjectProtection: false,
         fundings: false
       }
-    }
+    };
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
     this.isValid = this.isValid.bind(this);
+    this.submitNewProject = this.submitNewProject.bind(this);
+    this.uploadFiles = this.uploadFiles.bind(this);
   }
 
   submitNewProject = () => {
-
-  }
+    // TODO validate step 1 and 2 show message if are false
+    if (this.validateStep3() && this.validateStep2() && this.validateStep1()) {
+      console.log(`step 3 valid - submit the form`);
+      Project.createProject(this.props.createProjectURL, this.state).then(resp => {
+        console.log(resp);
+        // TODO call uploadFiles with projectKey
+      });
+    }
+  };
 
   stepChanged = (newStep) => {
     this.setState({
       currentStep: newStep
     });
-  }
+  };
 
   isValid = (field) => {
     let isValid = true;
@@ -54,11 +65,9 @@ class NewProject extends Component {
     }
     else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
-    } else {
-      isValid = this.validateStep3();
     }
     return isValid;
-  }
+  };
 
   validateStep2() {
     let isValid = true;
@@ -173,7 +182,7 @@ class NewProject extends Component {
       files: [],
       determination: determination
     });
-  }
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -189,7 +198,7 @@ class NewProject extends Component {
         return prev
       });
     }
-  }
+  };
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -204,7 +213,23 @@ class NewProject extends Component {
       prev.step1FormData = updatedForm;
       return prev;
     }, () => this.isValid(field));
-  }
+  };
+
+  uploadFiles = (projectKey) => {
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey).then(resp => {
+      console.log(resp);
+    }).catch(error => {
+      console.error(error);
+    });
+  };
+
+  showSubmit = (currentStep) => {
+    let renderSubmit = false;
+    if (currentStep === 2) {
+      renderSubmit = true;
+    }
+    return renderSubmit;
+  };
 
   render() {
 
@@ -212,7 +237,7 @@ class NewProject extends Component {
     const { user = { email: 'test@broadinstitute.org' } } = this.props;
     let projectType = determination.projectType;
     return (
-      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid }, [
+      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit,  }, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3 }),
