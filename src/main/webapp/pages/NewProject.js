@@ -3,10 +3,7 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-
-const NE = 200;
-const NHSR = 300;
-const IRB = 400;
+import { NE, NHSR, IRB } from './NewProjectDetermination';
 
 class NewProject extends Component {
 
@@ -38,7 +35,67 @@ class NewProject extends Component {
   }
 
   submitNewProject = () => {
+   let project = this.getProject();
+  }
 
+  getProject(){
+    let project = {};
+    project.type = this.getProjectType(project);
+    project.status = 'Open';
+    project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
+    project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
+    project.reporter = this.state.step1FormData.userName;
+    project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
+    project.piName = this.state.step1FormData.piName !== '' ? this.state.step1FormData.piName : null;
+    project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
+    project.irbProtocolId = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
+    project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
+    project.questions = this.getQuestions(this.state.determination.questions);
+    project.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
+    project.fundings = this.state.step1FormData.fundings;
+    return project;
+  }
+
+  getFundings(fundings) {
+
+  }
+  getCollaborators(collaborators) {
+    let collaboratorList = [];
+    if (collaborators !== null && collaborators.length > 1) {
+      collaborators.map((collaborator, idx) => {
+        collaboratorList.push(collaborator.key);
+      });
+    }
+    return collaboratorList;
+  }
+
+  getQuestions(questions) {
+    let questionList = [];
+    if (questions !== undefined && questions !== null && questions.length > 1) {
+      questions.map((q, idx) => {
+        if (answer !== null) {
+          let question = {};
+          question.key = q.key;
+          question.answer = q.answer;
+          questionList.push(question);
+        }
+      });  
+    }
+    return questionList;
+  }
+
+  getProjectType(project) {
+    let type = '';
+    if (this.state.determination.projectType === NE) {
+      type = 'NE';
+    }
+    else if (this.state.determination.projectType === NHSR) {
+      type = 'NHSR';
+    }
+    else if (this.state.determination.projectType === IRB) {
+      type = 'IRB';
+    }
+    return type;
   }
 
   stepChanged = (newStep) => {

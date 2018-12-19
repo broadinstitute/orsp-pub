@@ -15,8 +15,9 @@
     <script type="application/javascript">
         const user = {
             <g:if test="${session?.user}">
-                name: "${session.user.displayName}",
-                email: "${session.user.emailAddress}"
+                displayName: "${session.user.displayName}",
+                email: "${session.user.emailAddress}",
+                userName: "${session.user.userName}"
             </g:if>
         };
 

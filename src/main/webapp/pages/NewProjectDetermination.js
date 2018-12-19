@@ -3,9 +3,9 @@ import { hh, h1 } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 
-const NE = 200;
-const NHSR = 300;
-const IRB = 400;
+export const NE = 200;
+export const NHSR = 300;
+export const IRB = 400;
 
 export const NewProjectDetermination = hh(class NewProjectDetermination extends Component {
 
@@ -35,6 +35,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: NE,
       noOutput: 2,
       answer: null,
+      key: 'feeForService',
       id: 1
     });
 
@@ -45,6 +46,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: 3,
       noOutput: NHSR,
       answer: null,
+      key: 'broadInvestigator',
       id: 2
     });
 
@@ -54,6 +56,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: NHSR,
       noOutput: 4,
       answer: null,
+      key: 'subjectsDeceased',
       id: 3
     });
 
@@ -64,6 +67,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: IRB,
       noOutput: 5,
       answer: null,
+      key: 'sensitiveInformationSource',
       id: 4
     });
 
@@ -74,6 +78,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: 6,
       noOutput: NHSR,
       answer: null,
+      key: 'interactionSource',
       id: 5
     });
 
@@ -83,6 +88,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: IRB,
       noOutput: 7,
       answer: null,
+      key: 'isIdReceive',
       id: 6
     });
 
@@ -92,6 +98,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: 8,
       noOutput: NHSR,
       answer: null,
+      key: 'isCoPublishing',
       id: 7
     });
 
@@ -101,6 +108,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       yesOutput: IRB,
       noOutput: NE,
       answer: null,
+      key: 'federalFunding',
       id: 8
     });
     return {

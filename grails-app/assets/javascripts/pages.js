@@ -31514,10 +31514,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var NE = 200;
-var NHSR = 300;
-var IRB = 400;
-
 var NewProject = function (_Component) {
   _inherits(NewProject, _Component);
 
@@ -31526,7 +31522,9 @@ var NewProject = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (NewProject.__proto__ || Object.getPrototypeOf(NewProject)).call(this, props));
 
-    _this.submitNewProject = function () {};
+    _this.submitNewProject = function () {
+      var project = _this.getProject();
+    };
 
     _this.stepChanged = function (newStep) {
       _this.setState({
@@ -31605,6 +31603,68 @@ var NewProject = function (_Component) {
   }
 
   _createClass(NewProject, [{
+    key: 'getProject',
+    value: function getProject() {
+      var project = {};
+      project.type = this.getProjectType(project);
+      project.status = 'Open';
+      project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
+      project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
+      project.reporter = this.state.step1FormData.userName;
+      project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
+      project.piName = this.state.step1FormData.piName !== '' ? this.state.step1FormData.piName : null;
+      project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
+      project.irbProtocolId = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
+      project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
+      project.questions = this.getQuestions(this.state.determination.questions);
+      project.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
+      project.fundings = this.state.step1FormData.fundings;
+      return project;
+    }
+  }, {
+    key: 'getFundings',
+    value: function getFundings(fundings) {}
+  }, {
+    key: 'getCollaborators',
+    value: function getCollaborators(collaborators) {
+      var collaboratorList = [];
+      if (collaborators !== null && collaborators.length > 1) {
+        collaborators.map(function (collaborator, idx) {
+          collaboratorList.push(collaborator.key);
+        });
+      }
+      return collaboratorList;
+    }
+  }, {
+    key: 'getQuestions',
+    value: function getQuestions(questions) {
+      var questionList = [];
+      if (questions !== undefined && questions !== null && questions.length > 1) {
+        questions.map(function (q, idx) {
+          if (answer !== null) {
+            var question = {};
+            question.key = q.key;
+            question.answer = q.answer;
+            questionList.push(question);
+          }
+        });
+      }
+      return questionList;
+    }
+  }, {
+    key: 'getProjectType',
+    value: function getProjectType(project) {
+      var type = '';
+      if (this.state.determination.projectType === _NewProjectDetermination.NE) {
+        type = 'NE';
+      } else if (this.state.determination.projectType === _NewProjectDetermination.NHSR) {
+        type = 'NHSR';
+      } else if (this.state.determination.projectType === _NewProjectDetermination.IRB) {
+        type = 'IRB';
+      }
+      return type;
+    }
+  }, {
     key: 'validateStep2',
     value: function validateStep2() {
       var isValid = true;
@@ -31680,11 +31740,11 @@ var NewProject = function (_Component) {
     value: function validateStep3() {
       var isValid = false;
       if (this.state.files !== null) {
-        if (this.state.determination.projectType === NE && this.state.files.length > 1 && this.state.files[0].fileData !== null && this.state.files[1].fileData !== null) {
+        if (this.state.determination.projectType === _NewProjectDetermination.NE && this.state.files.length > 1 && this.state.files[0].fileData !== null && this.state.files[1].fileData !== null) {
           isValid = true;
-        } else if (this.state.determination.projectType === NHSR && this.state.files.length === 1 && this.state.files[0].fileData !== null) {
+        } else if (this.state.determination.projectType === _NewProjectDetermination.NHSR && this.state.files.length === 1 && this.state.files[0].fileData !== null) {
           isValid = true;
-        } else if (this.state.determination.projectType === IRB && this.state.files.length === 2 && this.state.files[0].fileData !== null && this.state.files[1].fileData !== null) {
+        } else if (this.state.determination.projectType === _NewProjectDetermination.IRB && this.state.files.length === 2 && this.state.files[0].fileData !== null && this.state.files[1].fileData !== null) {
           isValid = true;
         }
       } else {
@@ -33206,6 +33266,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
       _this.setState(function (prev) {
         prev.projectType = null;
         prev.endState = false;
+        prev.requiredError = false;
         prev.nextQuestionIndex = prev.currentQuestionIndex;
         prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
         return prev;
@@ -33502,7 +33563,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.NewProjectDetermination = undefined;
+exports.NewProjectDetermination = exports.IRB = exports.NHSR = exports.NE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -33520,9 +33581,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var NE = 200;
-var NHSR = 300;
-var IRB = 400;
+var NE = exports.NE = 200;
+var NHSR = exports.NHSR = 300;
+var IRB = exports.IRB = 400;
 
 var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewProjectDetermination, _Component);
@@ -33555,6 +33616,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: NE,
         noOutput: 2,
         answer: null,
+        key: 'feeForService',
         id: 1
       });
 
@@ -33565,6 +33627,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: 3,
         noOutput: NHSR,
         answer: null,
+        key: 'broadInvestigator',
         id: 2
       });
 
@@ -33574,6 +33637,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: NHSR,
         noOutput: 4,
         answer: null,
+        key: 'subjectsDeceased',
         id: 3
       });
 
@@ -33584,6 +33648,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: IRB,
         noOutput: 5,
         answer: null,
+        key: 'sensitiveInformationSource',
         id: 4
       });
 
@@ -33594,6 +33659,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: 6,
         noOutput: NHSR,
         answer: null,
+        key: 'interactionSource',
         id: 5
       });
 
@@ -33603,6 +33669,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: IRB,
         noOutput: 7,
         answer: null,
+        key: 'isIdReceive',
         id: 6
       });
 
@@ -33612,6 +33679,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: 8,
         noOutput: NHSR,
         answer: null,
+        key: 'isCoPublishing',
         id: 7
       });
 
@@ -33621,6 +33689,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
         yesOutput: IRB,
         noOutput: NE,
         answer: null,
+        key: 'federalFunding',
         id: 8
       });
       return {
@@ -33883,7 +33952,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
     _this.loadUsersOptions = _this.loadUsersOptions.bind(_this);
     _this.state = {
       formData: {
-        requestorName: _this.props.user !== undefined ? _this.props.user.name : '',
+        requestorName: _this.props.user !== undefined ? _this.props.user.displayName : '',
+        reporter: _this.props.user !== undefined ? _this.props.user.userName : '',
         requestorEmail: _this.props.user !== undefined ? _this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',

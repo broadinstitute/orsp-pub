@@ -17,7 +17,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
       formData: {
-        requestorName: this.props.user !== undefined ? this.props.user.name : '',
+        requestorName: this.props.user !== undefined ? this.props.user.displayName : '',
+        reporter: this.props.user !== undefined ?  this.props.user.userName : '',
         requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
