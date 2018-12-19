@@ -3,15 +3,7 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-<<<<<<< HEAD
-import { Files, Project } from "../util/ajax";
-
-const NE = 200;
-const NHSR = 300;
-const IRB = 400;
-=======
 import { NE, NHSR, IRB } from './NewProjectDetermination';
->>>>>>> d902d2320d54ea4062f5a2accfc912e3b1ba6648
 
 class NewProject extends Component {
 
