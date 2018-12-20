@@ -4,7 +4,7 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import {Project} from "../util/ajax";
+import {Files, Project} from "../util/ajax";
 
 class NewProject extends Component {
 
@@ -45,7 +45,7 @@ class NewProject extends Component {
          console.log(JSON.stringify(2, null, this.getProject()));
          Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
            console.log(resp);
-           // TODO call uploadFiles with projectKey
+           this.uploadFiles(resp.message.projectKey);
          });
        } else {
          this.setState(prev => {
@@ -75,13 +75,25 @@ class NewProject extends Component {
     project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
     project.questions = this.getQuestions(this.state.determination.questions);
     project.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
-    project.fundings = this.state.step1FormData.fundings;
+    project.fundings = this.getFundings(this.state.step1FormData.fundings);
     return project;
   }
 
   getFundings(fundings) {
-
+    let fundingList = [];
+    if (fundings !== null && fundings.length > 1) {
+      fundings.map((f, idx) => {
+        let funding = {};
+        funding.source = f.label;
+        funding.awardNumber = f.identifier;
+        funding.name = f.sponsor;
+        fundingList.push(f);
+      });
+    }
+    return fundingList;
   }
+
+
   getCollaborators(collaborators) {
     let collaboratorList = [];
     if (collaborators !== null && collaborators.length > 1) {
@@ -285,9 +297,10 @@ class NewProject extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey).then(resp => {
-      console.log(resp);
-    }).catch(error => {
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+      .then(resp => {
+        console.log(resp);
+      }).catch(error => {
       console.error(error);
     });
   };

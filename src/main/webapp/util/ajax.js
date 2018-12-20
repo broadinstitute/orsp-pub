@@ -10,7 +10,7 @@ export const Search = {
 
 export const Files = {
 
-  upload(url, files, projectKey) {
+  upload(url, files, projectKey, displayName, userName) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -18,6 +18,8 @@ export const Files = {
     });
 
     data.append('id', projectKey);
+    data.append('displayName', displayName);
+    data.append('userName', userName);
 
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
