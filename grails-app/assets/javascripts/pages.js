@@ -29455,7 +29455,7 @@ var Search = exports.Search = {
 };
 
 var Files = exports.Files = {
-  upload: function upload(url, files, projectKey) {
+  upload: function upload(url, files, projectKey, displayName, userName) {
     var data = new FormData();
 
     files.forEach(function (file) {
@@ -29463,6 +29463,8 @@ var Files = exports.Files = {
     });
 
     data.append('id', projectKey);
+    data.append('displayName', displayName);
+    data.append('userName', userName);
 
     var config = {
       headers: { 'content-type': 'multipart/form-data' }
@@ -31921,9 +31923,12 @@ var NewProject = function (_Component) {
     _this.submitNewProject = function () {
       if (_this.validateStep3()) {
         if (_this.validateStep2() || _this.validateStep1()) {
+          _this.setState(function (prev) {
+            prev.formSubmitted = true;
+            return prev;
+          });
           _ajax.Project.createProject(_this.props.createProjectURL, _this.getProject()).then(function (resp) {
-            console.log(resp);
-            // TODO call uploadFiles with projectKey
+            _this.uploadFiles(resp.data.message.projectKey);
           });
         } else {
           _this.setState(function (prev) {
@@ -31988,8 +31993,8 @@ var NewProject = function (_Component) {
     };
 
     _this.uploadFiles = function (projectKey) {
-      Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey).then(function (resp) {
-        console.log(resp);
+      _ajax.Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey, _this.props.user.displayName, _this.props.user.userName).then(function (resp) {
+        window.location.href = _this.props.serverURL;
       }).catch(function (error) {
         console.error(error);
       });
@@ -32008,6 +32013,7 @@ var NewProject = function (_Component) {
       showErrorStep3: false,
       isReadyToSubmit: false,
       generalError: false,
+      formSubmitted: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -32224,7 +32230,7 @@ var NewProject = function (_Component) {
           user = _props$user === undefined ? { email: 'test@broadinstitute.org' } : _props$user;
 
       var projectType = determination.projectType;
-      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -33684,7 +33690,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
       _this.setState(function (prev) {
         prev.projectType = null;
         prev.endState = false;
-        //      prev.requiredError = false;
+        prev.requiredError = false;
         prev.nextQuestionIndex = prev.currentQuestionIndex;
         prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
         return prev;
@@ -33924,7 +33930,6 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
     _this.goStep = function (n) {
       return function (e) {
-        console.log('TAB index', n);
         e.preventDefault();
         _this.setState(function (prev) {
           prev.currentStepIndex = n;
@@ -33940,7 +33945,6 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
       _this.props.submitHandler();
     };
 
-    console.log(props);
     _this.state = {
       currentStepIndex: 0,
       showError: false,
@@ -33972,7 +33976,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
       return (0, _reactHyperscriptHelpers.div)({ className: "wizardWrapper" }, [(0, _reactHyperscriptHelpers.h1)({ className: "wizardTitle" }, [this.props.title]), (0, _reactHyperscriptHelpers.div)({ className: "wizardContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "tabContainer" }, [this.props.children.map(function (child, idx) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: idx }, [(0, _reactHyperscriptHelpers.div)({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: _this2.goStep(idx) }, [child.props.title])]);
-      })]), this.props.children, (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer wizardButtonContainer" }, [(0, _reactHyperscriptHelpers.button)({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit }, ["SUBMIT"])])])]);
+      })]), this.props.children, (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer wizardButtonContainer" }, [(0, _reactHyperscriptHelpers.button)({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep, isRendered: this.state.currentStepIndex > 0 }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit, disabled: this.props.disabledSubmit }, ["SUBMIT"])])])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -34044,7 +34048,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       questions.push({
         question: 'Is this a "fee-for-service" project? ',
         moreInfo: '(commercial service only, no Broad publication privileges)',
-        progress: 12,
+        progress: 0,
         yesOutput: NE,
         noOutput: 2,
         answer: null,
@@ -34055,7 +34059,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       questions.push({
         question: 'Is a Broad investigator conducting research ',
         moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
-        progress: 25,
+        progress: 12,
         yesOutput: 3,
         noOutput: NHSR,
         answer: null,
@@ -34065,7 +34069,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
 
       questions.push({
         question: 'Are all subjects who provided samples and/or data now deceased?',
-        progress: 37,
+        progress: 25,
         yesOutput: NHSR,
         noOutput: 4,
         answer: null,
@@ -34076,7 +34080,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       questions.push({
         question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
         moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
-        progress: 50,
+        progress: 37,
         yesOutput: IRB,
         noOutput: 5,
         answer: null,
@@ -34087,7 +34091,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
       questions.push({
         question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
         moreInfo: '(i.e. is conductin HSR)?',
-        progress: 62,
+        progress: 50,
         yesOutput: 6,
         noOutput: NHSR,
         answer: null,
@@ -34097,7 +34101,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
 
       questions.push({
         question: 'Is the Broad receiving subject identifiers?',
-        progress: 75,
+        progress: 62,
         yesOutput: IRB,
         noOutput: 7,
         answer: null,
@@ -34107,7 +34111,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
 
       questions.push({
         question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
-        progress: 87,
+        progress: 75,
         yesOutput: 8,
         noOutput: NHSR,
         answer: null,
@@ -34117,7 +34121,7 @@ var NewProjectDetermination = exports.NewProjectDetermination = (0, _reactHypers
 
       questions.push({
         question: 'Is Broad receiving direct federal funding?',
-        progress: 100,
+        progress: 87,
         yesOutput: IRB,
         noOutput: NE,
         answer: null,
@@ -34405,7 +34409,6 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         fundings: false
       }
     };
-    console.log("reoprter" + _this.props.user);
     return _this;
   }
 
@@ -34570,7 +34573,8 @@ _reactDom2.default.render(_react2.default.createElement(_NewProject2.default, {
     user: component.user,
     searchUsersURL: component.searchUsersURL,
     attachDocumentsURL: component.attachDocumentsURL,
-    createProjectURL: component.createProjectURL
+    createProjectURL: component.createProjectURL,
+    serverURL: component.serverURL
 }), document.getElementById('pages'));
 
 /***/ }),

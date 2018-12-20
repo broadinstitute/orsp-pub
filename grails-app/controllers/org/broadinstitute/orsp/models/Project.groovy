@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.models
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.FundingFields
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 
 class Project {
 
@@ -22,32 +23,34 @@ class Project {
     Boolean subjectProtection
 
     static constraints = {
-        type nullable:true
-        status nullable:true
-        summary nullable:true
-        studyDescription nullable:false
-        reporter nullable:true
-        pTitle nullable:false
-        piName nullable:true
-        projectManager nullable:true
-        requestDate nullable:true
-        collaborators nullable:true
-        fundings nullable:false
-        studyDescription nullable:true
-        irbProtocolId nullable:true
+        type blank: true, nullable: true
+        status blank: true, nullable: true
+        summary blank: true, nullable: true
+        studyDescription blank: true, nullable: true
+        reporter blank: true, nullable: true
+        pTitle blank: true, nullable: true
+        piName blank: true, nullable: true
+        projectManager blank: true, nullable: true
+        requestDate blank: true, nullable: true
+        collaborators blank: true, nullable: true
+        fundings blank: true, nullable: true
+        studyDescription blank: true, nullable: true
+        irbProtocolId blank: true, nullable: true
         questions nullable:false
         subjectProtection nullable:false
     }
 
     Issue getIssue () {
+        IssueType type = IssueType.valueOfPrefix(this.type)
         return new Issue(
-                type: this.type,
+                type: type.name,
                 status: this.status,
                 summary: this.summary,
                 description: this.studyDescription,
                 reporter: this.reporter,
                 expirationDate: null,
-                requestDate: new Date()
+                requestDate: new Date(),
+                updateDate: new Date()
         )
     }
 
