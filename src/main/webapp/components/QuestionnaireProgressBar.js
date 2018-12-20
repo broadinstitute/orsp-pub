@@ -7,7 +7,7 @@ export const QuestionnaireProgressBar = hh(class QuestionnaireProgressBar extend
   render() {
 
     return (
-      h(ProgressBar, { now: this.props.progress }, [])
+      h(ProgressBar, { now: this.props.progress, className: (this.props.progress === 100 ? 'complete' : '') }, [])
     )
   }
 });

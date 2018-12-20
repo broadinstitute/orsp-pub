@@ -18,7 +18,7 @@ export const InputField = hh(class InputField extends Component {
           span({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])
         ]),
         this.props.children,
-        small({ isRendered: this.props.error, className: "inputFieldError" }, [this.props.error])
+        small({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])
       ])
     )
   }

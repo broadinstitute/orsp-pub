@@ -29,10 +29,16 @@
 
 .questionnaireProgressBar .progress {
   height: 12px;
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
   border-radius: 2px;
 }
 
 .questionnaireProgressBar .progress-bar {
   background-color: #2c3e50;
+  background-image: linear-gradient(to bottom,#395266 0,#2c3e50 100%);
+}
+
+.questionnaireProgressBar .progress.complete .progress-bar {
+  background-color: #2a631e;
+  background-image: linear-gradient(to bottom,#2fb20f 0,#339314 100%);
 }

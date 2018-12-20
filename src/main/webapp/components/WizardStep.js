@@ -1,14 +1,31 @@
 import { Component } from 'react';
-import { div, hh, h1, h2, small,  p} from 'react-hyperscript-helpers';
+import { div, hh, h1, h2, small } from 'react-hyperscript-helpers';
+import { AlertMessage } from './AlertMessage';
 import './Wizard.css';
 
 export const WizardStep = hh(class WizardStep extends Component {
 
-  state = {};
+  state = {
+    tooltipShown: this.props.error
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
+  }
+
+  tooltipBtnHandler = (e) => {
+    this.setState(prev => {
+      prev.tooltipShown = !prev.tooltipShown;
+      return prev;
+    }, () => {
+    });
+  }
+
+  dismissHandler = () => {
+    this.setState({
+      tooltipShown: false
+    });
   }
 
   static getDerivedStateFromError(error) {
@@ -27,8 +44,6 @@ export const WizardStep = hh(class WizardStep extends Component {
 
     const { step, currentStep, questionnaireStep } = this.props;
 
-    console.log(step, currentStep);
-
     if (currentStep === step) {
       view = div({ className: "wizardStepContainer" }, [
         div({ className: "row" }, [
@@ -38,7 +53,10 @@ export const WizardStep = hh(class WizardStep extends Component {
           ])
         ]),
         this.props.children,
-        p({isRendered: this.props.error},[this.props.errorMessage])
+        AlertMessage({
+          msg: this.props.errorMessage,
+          show: this.props.error
+        })
       ]);
     }
     return view;

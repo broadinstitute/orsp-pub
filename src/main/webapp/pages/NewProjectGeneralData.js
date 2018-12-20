@@ -1,14 +1,29 @@
-import { Component, React } from 'react';
-import { hh, h1 } from 'react-hyperscript-helpers';
+import { Component, React, Fragment } from 'react';
+import { hh, div, h, button, h1, ul, li, span, p } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
+
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
+
 import { InputYesNo } from '../components/InputYesNo';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
+
 import { Search } from '../util/ajax';
+
+const fundingTooltip =
+  ul({}, [
+    li({}, [span({ className: "bold" }, ["Federal Prime: "]), "Direct federal (ex: NIH) award to Broad."]),
+    li({}, [span({ className: "bold" }, ["Federal Sub - Award: "]), "Federal award received by Broad via a subcontract with another institution.For example, MGH is the prime reciepient of a federal award and Broad receives a portion of the award via a subcontract from MGH."]),
+    li({}, [span({ className: "bold" }, ["Internal Broad: "]), "Internal Broad Institute funding such as SPARC funding"]),
+    li({}, [span({ className: "bold" }, ["Purchase Order: "]), "Typically used for Fee -for-Service work."]),
+    li({}, [span({ className: "bold" }, ["Corporate Funding: "]), "Industry(ex: Johnson & Johnson) funding"]),
+    li({}, [span({ className: "bold" }, ["Foundation: "]), "Foundation funding(ex: American Cancer Society)"]),
+    li({}, [span({ className: "bold" }, ["Philanthropy: "]), "Private Donors"]),
+    li({}, [span({ className: "bold" }, ["Other: "]), "Anything not covered in one of the other categories"]),
+  ]);
 
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
 
@@ -122,10 +137,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep, 
-                   error: this.props.errors.fundings || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.subjectProtection,
-                   errorMessage: 'Please complete all required fields'}, [
-        Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?" }, [
+      WizardStep({
+        title: this.props.title, step: 0, currentStep: this.props.currentStep,
+        error: this.props.errors.fundings || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.subjectProtection,
+        errorMessage: 'Please complete all required fields'}, [
+        Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
             id: "inputRequestorName",
             name: "requestorName",
@@ -169,7 +185,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
         ]),
 
-        Panel({ title: "Funding*", tooltipLabel: "?" }, [
+        Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
           Fundings({
             fundings: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
@@ -235,6 +251,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ])
       ])
-    )
+    );
   }
 });

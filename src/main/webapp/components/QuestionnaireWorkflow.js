@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, button, label, input, h1, span, p } from 'react-hyperscript-helpers';
+import { div, hh, button, label, input, h1, span, p, small } from 'react-hyperscript-helpers';
 import { InputYesNo } from './InputYesNo';
 import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
 import './QuestionnaireWorkflow.css';
@@ -45,7 +45,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     this.setState(prev => {
       prev.projectType = null;
       prev.endState = false;
-      prev.requiredError = false;
+//      prev.requiredError = false;
       prev.nextQuestionIndex = prev.currentQuestionIndex;
       prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
       return prev;
@@ -187,8 +187,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
           required: false
         }),
 
-        div({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
-        div({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"]),
+        // div({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
+        small({ isRendered: this.state.requiredError === true, className: "errorMessage" }, ["Required field"]),
 
         div({ className: "buttonContainer" }, [
           button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [

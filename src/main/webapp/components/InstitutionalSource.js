@@ -76,7 +76,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                 Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(Index) }, disabled: !this.state.institutionalSources.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error, className: "inputFieldErrorMessage" }, [this.props.errorMessage])
+            small({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])

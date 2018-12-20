@@ -43,7 +43,7 @@ export const InputFieldRadio = (props) => {
             ])
         )
       }),
-      small({ isRendered: props.error, className: "inputFieldErrorMessage" }, [props.errorMessage])
+      small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
   )
 };

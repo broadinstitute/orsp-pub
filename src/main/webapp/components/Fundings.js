@@ -30,7 +30,7 @@ export const Fundings = hh(class Fundings extends Component {
   }
 
   addFundings() {
-    if(this.state.fundings[0].source !== '') {
+    if (this.state.fundings[0].source !== '') {
       this.setState(prev => {
         let fundings = prev.fundings;
         fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
@@ -38,7 +38,7 @@ export const Fundings = hh(class Fundings extends Component {
         prev.error = false;
         return prev;
       }, () => this.props.updateFundings(this.state.fundings));
-    } 
+    }
   }
 
   removeFundings = (index) => {
@@ -138,10 +138,10 @@ export const Fundings = hh(class Fundings extends Component {
                 Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error && Index === 0 , className: "inputFieldErrorMessage" }, ['Required field'])
+            small({ isRendered: this.props.error && Index === 0, className: "errorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])
     )
-  }
+  } 
 });
