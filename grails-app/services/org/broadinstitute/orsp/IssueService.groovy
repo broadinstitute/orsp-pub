@@ -168,7 +168,7 @@ class IssueService {
     }
 
     Issue createProject(Issue issue, Project project) throws DomainException {
-        IssueType type = IssueType.valueOfPrefix(issue.type)
+        IssueType type = IssueType.valueOfName(issue.type)
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
 
         if (issue.hasErrors()) {
