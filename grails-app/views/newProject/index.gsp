@@ -20,7 +20,6 @@
                 userName: "${session.user.userName}"
             </g:if>
         };
-
         const component = {
             user: user,
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",

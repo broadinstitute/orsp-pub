@@ -23,6 +23,10 @@ enum IssueType {
         values().find { it.name == name }
     }
 
+    static IssueType valueOfPrefix(String prefix) {
+        values().find { it.prefix == prefix }
+    }
+
     static IssueType valueOfController(String controller) {
         values().find { it.controller == controller }
     }

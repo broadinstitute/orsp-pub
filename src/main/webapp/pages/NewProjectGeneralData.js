@@ -51,6 +51,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         fundings: false
       }
     };
+    console.log("reoprter" + this.props.user);
   }
 
   handleUpdateFundings = (updated) => {

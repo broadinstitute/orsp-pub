@@ -25,7 +25,9 @@ export const Fundings = hh(class Fundings extends Component {
     this.removeFundings = this.removeFundings.bind(this);
     this.handleFundingSelect = this.handleFundingSelect.bind(this);
     this.state = {
-      fundings: [{ source: '', sponsor: '', identifier: '' }]
+      fundings: this.props.fundings,
+      error: false,
+      errorMessage: 'Requiered field'
     };
   }
 
@@ -94,7 +96,7 @@ export const Fundings = hh(class Fundings extends Component {
 
         hr({ className: "fullWidth" }),
 
-        this.state.fundings.map((rd, Index) => {
+        this.props.fundings.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
 
             div({ className: "row" }, [
