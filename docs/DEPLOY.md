@@ -8,7 +8,7 @@ as well as a vault url where configuration secrets are maintained. Requires an u
 valid `.vault-token` file in the user's home directory.
 
 ```
-gradle deploy --user=user --pass=pass -Dgrails.env=prod
+./gradlew deploy --user=user --pass=pass -Dgrails.env=prod
 ```
 
 Overridable options include:
@@ -17,6 +17,8 @@ Overridable options include:
 * **user**          *Required.* The tomcat manager username
 * **pass**          *Required.* The tomcat manager password
 
+Note: Remember to use `./gradlew` which uses the right version for this repo. These tasks do not 
+work under Gradle 5. 
 
 ## Render Configurations
 
@@ -24,6 +26,10 @@ Run the `renderConfigs` gradle task to generate fresh configuration files from
 current vault secrets. Can be run with an input argument `--local` for
 configurations that are appropriate for a local instance, pointing to the dev 
 database. The default is false, for dev/prod config generation.
+
+```
+./gradlew renderConfigs --local
+```
 
 Requires an environment variable to be set (or passed in via -D): 
 * `VAULT_ADDR` that points to a vault secrets server.

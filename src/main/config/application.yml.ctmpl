@@ -5,7 +5,6 @@ hibernate:
     queries: false
     use_second_level_cache: false
     use_query_cache: false
-
 environments:
   test:
     crowd:
@@ -104,10 +103,10 @@ environments:
         statusUrl: http://bsp/BSP/
     dataSource:
       pooled: true
-      driverClassName: org.drizzle.jdbc.DrizzleDriver
+      driverClassName: org.mariadb.jdbc.Driver
       username: {{$orsp.Data.dev_ds_username}}
       password: {{$orsp.Data.dev_ds_password}}
-      url: jdbc:mysql:thin://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
+      url: jdbc:mariadb://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
       properties:
         initialSize: 5
         maxActive: 50
@@ -172,10 +171,10 @@ environments:
         statusUrl: http://bsp/BSP/
     dataSource:
       pooled: true
-      driverClassName: org.drizzle.jdbc.DrizzleDriver
+      driverClassName: org.mariadb.jdbc.Driver
       username: {{$orsp.Data.prod_ds_username}}
       password: {{$orsp.Data.prod_ds_password}}
-      url: jdbc:mysql:thin://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}
+      url: jdbc:mariadb://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}
       properties:
         jmxEnabled: true
         initialSize: 5
@@ -268,6 +267,11 @@ grails:
         scriptlets: html
         taglib: none
         staticparts: none
+  plugin.databasemigration:
+    changelogLocation: grails-app/migrations
+    changelogFileName: changelog-master.xml
+    updateOnStart: true
+    updateOnStartFileName: changelog-master.xml
 endpoints:
   jmx:
     unique-names: true

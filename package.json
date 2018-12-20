@@ -4,8 +4,8 @@
   "description": "Office of Research Subject Protection",
   "main": "app.js",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/broadinstitute/orsp.git"
+    "type" : "git",
+    "url" : "https://github.com/broadinstitute/orsp-pub.git"
   },
   "jest": {
     "verbose": true
