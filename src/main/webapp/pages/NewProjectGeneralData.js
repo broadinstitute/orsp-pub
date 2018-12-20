@@ -51,7 +51,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         fundings: false
       }
     };
-    console.log("reoprter" + this.props.user);
   }
 
   handleUpdateFundings = (updated) => {
@@ -59,7 +58,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.fundings = updated;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'fundings'))
-  }
+  };
 
   handleInputChange = (e) => {
     const field = e.target.name;
@@ -89,7 +88,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.projectManager = data;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'projectManager'));
-  }
+  };
 
   componentDidCatch(error, info) {
     console.log(error, info);

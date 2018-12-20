@@ -43,13 +43,12 @@ class NewProject extends Component {
   submitNewProject = () => {
      if (this.validateStep3()) {
        if (this.validateStep2() || this.validateStep1()) {
-         console.log(JSON.stringify(this.getProject(), null, 2));
          this.setState(prev => {
            prev.formSubmitted = true;
            return prev;
          });
          Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-           this.uploadFiles(resp.message.projectKey);
+           this.uploadFiles(resp.data.message.projectKey);
          });
        } else {
          this.setState(prev => {
@@ -302,7 +301,6 @@ class NewProject extends Component {
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
-        console.log(resp);
         window.location.href = this.props.serverURL;
       }).catch(error => {
       console.error(error);
@@ -323,7 +321,7 @@ class NewProject extends Component {
     const { user = { email: 'test@broadinstitute.org' } } = this.props;
     let projectType = determination.projectType;
     return (
-      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit,  }, [
+      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError }),

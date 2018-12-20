@@ -20,13 +20,13 @@ export const WizardStep = hh(class WizardStep extends Component {
       return prev;
     }, () => {
     });
-  }
+  };
 
   dismissHandler = () => {
     this.setState({
       tooltipShown: false
     });
-  }
+  };
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
