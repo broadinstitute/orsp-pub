@@ -58,6 +58,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.fundings = updated;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'fundings'))
+    this.props.removeErrorMessage();
   };
 
   handleInputChange = (e) => {
@@ -67,6 +68,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData[field] = value;
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
   };
 
 
@@ -81,6 +83,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData[field] = value;
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
   };
 
   handleProjectManagerChange = (data, action) => {
@@ -88,6 +91,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.projectManager = data;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'projectManager'));
+    this.props.removeErrorMessage();
   };
 
   componentDidCatch(error, info) {

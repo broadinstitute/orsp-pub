@@ -38,11 +38,12 @@ class NewProject extends Component {
     this.isValid = this.isValid.bind(this);
     this.submitNewProject = this.submitNewProject.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
+    this.removeErrorMessage = this.removeErrorMessage.bind(this);
   }
 
   submitNewProject = () => {
      if (this.validateStep3()) {
-       if (this.validateStep2() || this.validateStep1()) {
+       if (this.validateStep2() && this.validateStep1()) {
          this.setState(prev => {
            prev.formSubmitted = true;
            return prev;
@@ -315,6 +316,20 @@ class NewProject extends Component {
     return renderSubmit;
   };
 
+  enableSubmit = () => {
+    this.setState(prev => {
+      prev.formSubmitted = true;
+      return prev;
+    });
+  };
+
+  removeErrorMessage() {
+    this.setState(prev => {
+      prev.generalError = false;
+      return prev;
+    });
+  }
+
   render() {
 
     const { currentStep, determination } = this.state;
@@ -322,7 +337,7 @@ class NewProject extends Component {
     let projectType = determination.projectType;
     return (
       Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [
-        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
+        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError }),
       ])
