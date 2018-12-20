@@ -45,7 +45,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     this.setState(prev => {
       prev.projectType = null;
       prev.endState = false;
-//      prev.requiredError = false;
+      prev.requiredError = false;
       prev.nextQuestionIndex = prev.currentQuestionIndex;
       prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
       return prev;

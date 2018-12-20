@@ -88,7 +88,7 @@ export const Wizard = hh(class Wizard extends Component {
           ]),
           this.props.children,
           div({ className: "buttonContainer wizardButtonContainer" }, [
-            button({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep }, ["Previous Step"]),
+            button({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep, isRendered: (this.state.currentStepIndex > 0)}, ["Previous Step"]),
             button({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]),
             button({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit }, ["SUBMIT"]),
           ])
