@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1 } from 'react-hyperscript-helpers';
+import { hh, h, h1, span } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 const NE = 200;
 const NHSR = 300;
@@ -9,7 +9,7 @@ const IRB = 400;
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
 
   state = {};
-  
+
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
@@ -36,28 +36,28 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return h1({},["Something went wrong."]);
+      return h1({}, ["Something went wrong."]);
     }
 
-    if (this.props.files !== null ) {
+    if (this.props.files !== null) {
 
     }
     let requiredDocuments = [];
 
     switch (this.props.projectType) {
       case IRB:
-        requiredDocuments.push({ fileKey: 'IRB Approval Doc', label: "Upload the IRB Approval for this Project here" });
-        requiredDocuments.push({ fileKey: 'IRB Applicationl Doc', label: "Upload the IRB Application for this Project here" });
+        requiredDocuments.push({ fileKey: 'IRB Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here"]) });
+        requiredDocuments.push({ fileKey: 'IRB Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here"]) });
         break;
 
       case NE:
-        requiredDocuments.push({ fileKey: 'NE Approval Doc', label: "Upload the NE Approval for this Project here" });
-        requiredDocuments.push({ fileKey: 'NE Applicationl Doc', label: "Upload the NE Application for this Project here" });
-        requiredDocuments.push({ fileKey: 'NE Consent Doc', label: "Upload the Consent Document I for this Project here (if applicable)" });
+        requiredDocuments.push({ fileKey: 'NE Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here"]) });
+        requiredDocuments.push({ fileKey: 'NE Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here"]) });
+        requiredDocuments.push({ fileKey: 'NE Consent Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]) });
         break;
 
       case NHSR:
-        requiredDocuments.push({ fileKey: 'NHSR Applicationl Doc', label: "Upload the NHSR Application for this Project here" });
+        requiredDocuments.push({ fileKey: 'NHSR Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here"]) });
         break;
 
       default:
@@ -68,7 +68,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep, errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps', error: this.props.errors || this.props.generalError }, [
         requiredDocuments.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
-            InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey), nameFiles: this.obtainFile(rd.fileKey)}),
+            InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey), nameFiles: this.obtainFile(rd.fileKey) }),
           ])
         })
       ])

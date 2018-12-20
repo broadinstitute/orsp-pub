@@ -170,7 +170,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
             value: this.state.formData.piName,
-            placeholder: "Select...",
+            placeholder: "Start typing the PI Name",
             isMulti: false
           }),
           MultiSelect({
@@ -180,7 +180,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectManagerChange,
             value: this.state.formData.projectManager,
-            placeholder: "Select...",
+            placeholder: "Start typing the Project Manager Name",
             isMulti: false
           }),
         ]),
@@ -214,7 +214,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
-            placeholder: "Please select one or more individuals...",
+            placeholder: "Start typing collaborator names",
             isMulti: true
           }),
           InputFieldText({
