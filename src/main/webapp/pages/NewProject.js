@@ -42,7 +42,6 @@ class NewProject extends Component {
   submitNewProject = () => {
      if (this.validateStep3()) {
        if (this.validateStep2() || this.validateStep1()) {
-         console.log(JSON.stringify(2, null, this.getProject()));
          Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
            console.log(resp);
            // TODO call uploadFiles with projectKey
@@ -67,7 +66,7 @@ class NewProject extends Component {
     project.status = 'Open';
     project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
     project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
-    project.reporter = this.state.step1FormData.userName;
+    project.reporter = this.props.user.userName;
     project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
     project.piName = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.value : null;
     project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
@@ -81,13 +80,13 @@ class NewProject extends Component {
 
   getFundings(fundings) {
     let fundingList = [];
-    if (fundings !== null && fundings.length > 1) {
+    if (fundings !== null && fundings.length > 0) {
       fundings.map((f, idx) => {
         let funding = {};
         funding.source = f.source.label;
         funding.awardNumber = f.identifier;
         funding.name = f.sponsor;
-        fundingList.push(f);
+        fundingList.push(funding);
       });
     }
     return fundingList;
@@ -95,7 +94,7 @@ class NewProject extends Component {
 
   getCollaborators(collaborators) {
     let collaboratorList = [];
-    if (collaborators !== null && collaborators.length > 1) {
+    if (collaborators !== null && collaborators.length > 0) {
       collaborators.map((collaborator, idx) => {
         collaboratorList.push(collaborator.key);
       });

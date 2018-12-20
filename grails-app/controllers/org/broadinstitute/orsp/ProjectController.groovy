@@ -7,70 +7,6 @@ import groovy.util.logging.Slf4j
 import org.springframework.web.multipart.MultipartFile
 import org.broadinstitute.orsp.models.Project
 
-/*
-JSON model
- {
-   "type":"IRB Project",
-   "status":"Open",
-   "summary":"Summary",
-   "studyDescription":"Description Text",
-   "reporter":"Leo",
-   "requestDate":"2018-06-01",
-   "projectManager":"Manager Name",
-   "piName":"Pi Name",
-   "pTitle":"Project Title",
-   "irbProtocolId":"irb 1234 id",
-   "subjectProtection":true,
-   "fundings":[
-      {
-         "identifier":"identifier",
-         "source":"Federal Sub-award",
-         "sponsor":"sponsor Name"
-      },
-      {
-         "awardNumber":"identifier 2",
-         "source":"Federal Sub-award",
-         "name":"Sponsor Name 2"
-      }
-   ],
-   "collaborators":[ "name", "name2" ],
-   "questions":[
-      {
-         "key":"feeForService",
-         "answer":"true"
-      },
-      {
-         "key":"broadInvestigator",
-         "answer":"true"
-      },
-      {
-         "key":"subjectsDeceased",
-         "answer":"true"
-      },
-      {
-         "key":"sensitiveInformationSource",
-         "answer":"true"
-      },
-      {
-         "key":"interactionSource",
-         "answer":"true"
-      },
-      {
-         "key":"isIdReceive",
-         "answer":"true"
-      },
-      {
-         "key":"isCoPublishing",
-         "answer":"true"
-      },
-      {
-         "key":"federalFunding",
-         "answer":"true"
-      }
-   ]
-}
-* */
-
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ProjectController extends AuthenticatedController {
@@ -94,7 +30,7 @@ class ProjectController extends AuthenticatedController {
         Gson gson = new Gson()
         Project project = gson.fromJson(gson.toJson(request.JSON), Project.class)
 
-        Issue response = issueService.updateProject(project.getIssue(), project)
+        Issue response = issueService.createProject(project.getIssue(), project)
 
         response.status = 201
         render([message: response] as JSON)
