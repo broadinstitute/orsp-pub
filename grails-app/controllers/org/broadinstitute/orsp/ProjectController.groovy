@@ -117,8 +117,8 @@ class ProjectController extends AuthenticatedController {
                 names.push(it.name)
                 if (!files.empty) {
                     storageProviderService.saveMultipartFile(
-                            (String) params.displayName, // display name
-                            (String) params.userName, // user name
+                            (String) params.displayName,
+                            (String) params.userName,
                             (String) issue.projectKey,
                             (String) it.name,
                             (MultipartFile) it)

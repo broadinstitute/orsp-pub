@@ -15,6 +15,7 @@ class NewProject extends Component {
       showErrorStep3: false,
       isReadyToSubmit: false,
       generalError: false,
+      formSubmitted: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -42,9 +43,12 @@ class NewProject extends Component {
   submitNewProject = () => {
      if (this.validateStep3()) {
        if (this.validateStep2() || this.validateStep1()) {
-         console.log(JSON.stringify(2, null, this.getProject()));
+         console.log(JSON.stringify(this.getProject(), null, 2));
+         this.setState(prev => {
+           prev.formSubmitted = true;
+           return prev;
+         });
          Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-           console.log(resp);
            this.uploadFiles(resp.message.projectKey);
          });
        } else {
@@ -299,6 +303,7 @@ class NewProject extends Component {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
         console.log(resp);
+        window.location.href = this.props.serverURL;
       }).catch(error => {
       console.error(error);
     });

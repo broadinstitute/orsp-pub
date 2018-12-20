@@ -9,6 +9,7 @@ ReactDOM.render(
         searchUsersURL = {component.searchUsersURL}
         attachDocumentsURL = {component.attachDocumentsURL}
         createProjectURL = {component.createProjectURL}
+        serverURL = {component.serverURL}
      />,
     document.getElementById('pages')
 );

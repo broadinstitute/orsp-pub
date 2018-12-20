@@ -2,7 +2,6 @@ package org.broadinstitute.orsp.models
 
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueExtraProperty
 
 class Project {
 
@@ -13,7 +12,7 @@ class Project {
     String reporter
     String pTitle
     String piName
-    String projectmanager
+    String projectManager
     Date requestDate
     List<Object> fundings
     List<Object> questions
@@ -29,7 +28,7 @@ class Project {
         reporter nullable:true
         pTitle nullable:true
         piName nullable:true
-        projectmanager nullable:true
+        projectManager nullable:true
         requestDate nullable:true
         collaborators nullable:true
         fundings nullable:true

@@ -24,8 +24,9 @@
         const component = {
             user: user,
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-            attachDocumentsURL: "${createLink(controller: 'project', action: 'attachDocument', uri: '/api/project/attachDocument', method: 'POST')}",
-            createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}"
+            attachDocumentsURL: "${createLink(controller: 'project', action: 'attachDocument', uri: '/api/project/attach-document', method: 'POST')}",
+            createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
+            serverURL: "${webRequest.baseUrl}"
         };
     </script>
 </head>
