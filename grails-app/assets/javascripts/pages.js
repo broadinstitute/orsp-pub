@@ -3567,7 +3567,7 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])]), this.props.children, (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.error, className: "inputFieldError" }, [this.props.error])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])]), this.props.children, (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])]);
     }
   }]);
 
@@ -27691,6 +27691,8 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(17);
 
+var _AlertMessage = __webpack_require__(768);
+
 __webpack_require__(555);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27713,7 +27715,18 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WizardStep.__proto__ || Object.getPrototypeOf(WizardStep)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WizardStep.__proto__ || Object.getPrototypeOf(WizardStep)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      tooltipShown: _this.props.error
+    }, _this.tooltipBtnHandler = function (e) {
+      _this.setState(function (prev) {
+        prev.tooltipShown = !prev.tooltipShown;
+        return prev;
+      }, function () {});
+    }, _this.dismissHandler = function () {
+      _this.setState({
+        tooltipShown: false
+      });
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(WizardStep, [{
@@ -27739,10 +27752,11 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
           questionnaireStep = _props.questionnaireStep;
 
 
-      console.log(step, currentStep);
-
       if (currentStep === step) {
-        view = (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.h2)({ className: "wizardStepTitle " + (questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12') }, [(0, _reactHyperscriptHelpers.small)({}, ["Step " + (step + 1)]), this.props.title])]), this.props.children, (0, _reactHyperscriptHelpers.p)({ isRendered: this.props.error }, [this.props.errorMessage])]);
+        view = (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.h2)({ className: "wizardStepTitle " + (questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12') }, [(0, _reactHyperscriptHelpers.small)({}, ["Step " + (step + 1)]), this.props.title])]), this.props.children, (0, _AlertMessage.AlertMessage)({
+          msg: this.props.errorMessage,
+          show: this.props.error
+        })]);
       }
       return view;
     }
@@ -29257,7 +29271,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
       checked: normValue === optionValues[ix],
       onChange: function onChange() {}
     }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
-  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "inputFieldErrorMessage" }, [props.errorMessage])]);
+  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
 };
 
 /***/ }),
@@ -31508,6 +31522,8 @@ var _NewProjectDetermination = __webpack_require__(598);
 
 var _NewProjectDocuments = __webpack_require__(599);
 
+var _ajax = __webpack_require__(607);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -31523,7 +31539,25 @@ var NewProject = function (_Component) {
     var _this = _possibleConstructorReturn(this, (NewProject.__proto__ || Object.getPrototypeOf(NewProject)).call(this, props));
 
     _this.submitNewProject = function () {
-      var project = _this.getProject();
+      if (_this.validateStep3()) {
+        if (_this.validateStep2() || _this.validateStep1()) {
+          console.log(JSON.stringify(2, null, _this.getProject()));
+          _ajax.Project.createProject(_this.props.createProjectURL, _this.getProject()).then(function (resp) {
+            console.log(resp);
+            // TODO call uploadFiles with projectKey
+          });
+        } else {
+          _this.setState(function (prev) {
+            prev.generalError = true;
+            return prev;
+          });
+        }
+      } else {
+        _this.setState(function (prev) {
+          prev.showErrorStep3 = true;
+          return prev;
+        });
+      }
     };
 
     _this.stepChanged = function (newStep) {
@@ -31538,8 +31572,6 @@ var NewProject = function (_Component) {
         isValid = _this.validateStep1(field);
       } else if (_this.state.currentStep === 1) {
         isValid = _this.validateStep2();
-      } else {
-        isValid = _this.validateStep3();
       }
       return isValid;
     };
@@ -31576,9 +31608,27 @@ var NewProject = function (_Component) {
       });
     };
 
+    _this.uploadFiles = function (projectKey) {
+      Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey).then(function (resp) {
+        console.log(resp);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    };
+
+    _this.showSubmit = function (currentStep) {
+      var renderSubmit = false;
+      if (currentStep === 2) {
+        renderSubmit = true;
+      }
+      return renderSubmit;
+    };
+
     _this.state = {
       showErrorStep2: false,
       showErrorStep3: false,
+      isReadyToSubmit: false,
+      generalError: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -31599,6 +31649,8 @@ var NewProject = function (_Component) {
     };
     _this.updateStep1FormData = _this.updateStep1FormData.bind(_this);
     _this.isValid = _this.isValid.bind(_this);
+    _this.submitNewProject = _this.submitNewProject.bind(_this);
+    _this.uploadFiles = _this.uploadFiles.bind(_this);
     return _this;
   }
 
@@ -31612,7 +31664,7 @@ var NewProject = function (_Component) {
       project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
       project.reporter = this.state.step1FormData.userName;
       project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
-      project.piName = this.state.step1FormData.piName !== '' ? this.state.step1FormData.piName : null;
+      project.piName = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.value : null;
       project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
       project.irbProtocolId = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
       project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
@@ -31641,7 +31693,7 @@ var NewProject = function (_Component) {
       var questionList = [];
       if (questions !== undefined && questions !== null && questions.length > 1) {
         questions.map(function (q, idx) {
-          if (answer !== null) {
+          if (q.answer !== null) {
             var question = {};
             question.key = q.key;
             question.answer = q.answer;
@@ -31781,7 +31833,7 @@ var NewProject = function (_Component) {
           user = _props$user === undefined ? { email: 'test@broadinstitute.org' } : _props$user;
 
       var projectType = determination.projectType;
-      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3 })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -32850,7 +32902,7 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
           onChange: _this3.handleFundingChange
         })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: function handler(e) {
               return _this3.removeFundings(Index);
-            } }, disabled: !_this3.state.fundings.length > 1 })])]), (0, _reactHyperscriptHelpers.small)({ isRendered: _this3.props.error && Index === 0, className: "inputFieldErrorMessage" }, ['Required field'])]);
+            } }, disabled: !_this3.state.fundings.length > 1 })])]), (0, _reactHyperscriptHelpers.small)({ isRendered: _this3.props.error && Index === 0, className: "errorMessage" }, [_this3.props.errorMessage])]);
       })]);
     }
   }]);
@@ -33120,6 +33172,8 @@ __webpack_require__(756);
 
 var _Btn = __webpack_require__(490);
 
+var _AlertMessage = __webpack_require__(768);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -33140,7 +33194,18 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Panel.__proto__ || Object.getPrototypeOf(Panel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Panel.__proto__ || Object.getPrototypeOf(Panel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      tooltipShown: false
+    }, _this.tooltipBtnHandler = function (e) {
+      _this.setState(function (prev) {
+        prev.tooltipShown = !prev.tooltipShown;
+        return prev;
+      }, function () {});
+    }, _this.dismissHandler = function () {
+      _this.setState({
+        tooltipShown: false
+      });
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Panel, [{
@@ -33158,7 +33223,12 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "panelContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "panelHeader" }, [(0, _reactHyperscriptHelpers.h3)({ className: 'panelTitle' }, [this.props.title, (0, _reactHyperscriptHelpers.span)({ className: "panelTitleMoreInfo" }, [this.props.moreInfo]), (0, _Btn.Btn)({ isRendered: this.props.tooltipLabel !== undefined, action: { label: this.props.tooltipLabel } })])]), (0, _reactHyperscriptHelpers.div)({ className: "panelContent" }, [this.props.children])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "panelContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "panelHeader" }, [(0, _reactHyperscriptHelpers.h3)({ className: 'panelTitle' }, [this.props.title, (0, _reactHyperscriptHelpers.span)({ className: "panelTitleMoreInfo" }, [this.props.moreInfo]), (0, _Btn.Btn)({ isRendered: this.props.tooltipLabel !== undefined, action: { label: this.props.tooltipLabel, handler: this.tooltipBtnHandler } })]), (0, _AlertMessage.AlertMessage)({
+        type: "info",
+        msg: this.props.tooltipMsg,
+        show: this.state.tooltipShown,
+        dismissHandler: this.dismissHandler
+      })]), (0, _reactHyperscriptHelpers.div)({ className: "panelContent" }, [this.props.children])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -33216,7 +33286,7 @@ var QuestionnaireProgressBar = exports.QuestionnaireProgressBar = (0, _reactHype
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.h)(_ProgressBar2.default, { now: this.props.progress }, []);
+      return (0, _reactHyperscriptHelpers.h)(_ProgressBar2.default, { now: this.props.progress, className: this.props.progress === 100 ? 'complete' : '' }, []);
     }
   }]);
 
@@ -33266,7 +33336,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
       _this.setState(function (prev) {
         prev.projectType = null;
         prev.endState = false;
-        prev.requiredError = false;
+        //      prev.requiredError = false;
         prev.nextQuestionIndex = prev.currentQuestionIndex;
         prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
         return prev;
@@ -33429,7 +33499,10 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
         moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
         onChange: this.handleChange,
         required: false
-      }), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.state.requiredError === true }, ["Please answer Yes or No"]), (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer" }, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [(0, _reactHyperscriptHelpers.span)({ className: "glyphicon glyphicon-chevron-left" }, [])]), (0, _reactHyperscriptHelpers.button)({ isRendered: this.state.endState === false, className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [(0, _reactHyperscriptHelpers.span)({ className: "glyphicon glyphicon-chevron-right" }, [])])])]);
+      }),
+
+      // div({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
+      (0, _reactHyperscriptHelpers.small)({ isRendered: this.state.requiredError === true, className: "errorMessage" }, ["Required field"]), (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer" }, [(0, _reactHyperscriptHelpers.button)({ isRendered: currentQuestionIndex > 0, className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [(0, _reactHyperscriptHelpers.span)({ className: "glyphicon glyphicon-chevron-left" }, [])]), (0, _reactHyperscriptHelpers.button)({ isRendered: this.state.endState === false, className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [(0, _reactHyperscriptHelpers.span)({ className: "glyphicon glyphicon-chevron-right" }, [])])])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -33480,6 +33553,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
       e.preventDefault();
       _this.setState(function (prev) {
         prev.currentStepIndex = prev.currentStepIndex === 0 ? _this.props.children.length - 1 : prev.currentStepIndex - 1;
+        prev.readyToSubmit = false;
         return prev;
       }, function () {
         _this.props.stepChanged(_this.state.currentStepIndex);
@@ -33492,6 +33566,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
         _this.setState(function (prev) {
           prev.showError = true;
           prev.currentStepIndex = prev.currentStepIndex === _this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
+          prev.readyToSubmit = _this.props.showSubmit(prev.currentStepIndex);
           return prev;
         }, function () {
           _this.props.stepChanged(_this.state.currentStepIndex);
@@ -33501,9 +33576,11 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
     _this.goStep = function (n) {
       return function (e) {
+        console.log('TAB index', n);
         e.preventDefault();
         _this.setState(function (prev) {
           prev.currentStepIndex = n;
+          prev.readyToSubmit = _this.props.showSubmit(n);
           return prev;
         }, function () {
           _this.props.stepChanged(_this.state.currentStepIndex);
@@ -33511,11 +33588,18 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
       };
     };
 
+    _this.submitHandler = function () {
+      _this.props.submitHandler();
+    };
+
     console.log(props);
     _this.state = {
       currentStepIndex: 0,
-      showError: false
+      showError: false,
+      readyToSubmit: false
     };
+
+    _this.submitHandler = _this.submitHandler.bind(_this);
     return _this;
   }
 
@@ -33540,7 +33624,7 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 
       return (0, _reactHyperscriptHelpers.div)({ className: "wizardWrapper" }, [(0, _reactHyperscriptHelpers.h1)({ className: "wizardTitle" }, [this.props.title]), (0, _reactHyperscriptHelpers.div)({ className: "wizardContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "tabContainer" }, [this.props.children.map(function (child, idx) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: idx }, [(0, _reactHyperscriptHelpers.div)({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: _this2.goStep(idx) }, [child.props.title])]);
-      })]), this.props.children, (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer wizardButtonContainer" }, [(0, _reactHyperscriptHelpers.button)({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.nextStep }, ["Next Step"])])])]);
+      })]), this.props.children, (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer wizardButtonContainer" }, [(0, _reactHyperscriptHelpers.button)({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep }, ["Previous Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]), (0, _reactHyperscriptHelpers.button)({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit }, ["SUBMIT"])])])]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -33822,7 +33906,7 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
           break;
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 2, currentStep: this.props.currentStep, errorMessage: 'Please upload all required documents', error: this.props.errors }, [requiredDocuments.map(function (rd, Index) {
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 2, currentStep: this.props.currentStep, errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps', error: this.props.errors || this.props.generalError }, [requiredDocuments.map(function (rd, Index) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _InputFieldFile.InputFieldFile)({ label: rd.label, callback: _this2.setFilesToUpload(rd.fileKey), nameFiles: _this2.obtainFile(rd.fileKey) })]);
       })]);
     }
@@ -33878,6 +33962,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var fundingTooltip = (0, _reactHyperscriptHelpers.ul)({}, [(0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Federal Prime: "]), "Direct federal (ex: NIH) award to Broad."]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Federal Sub - Award: "]), "Federal award received by Broad via a subcontract with another institution.For example, MGH is the prime reciepient of a federal award and Broad receives a portion of the award via a subcontract from MGH."]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Internal Broad: "]), "Internal Broad Institute funding such as SPARC funding"]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Purchase Order: "]), "Typically used for Fee -for-Service work."]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Corporate Funding: "]), "Industry(ex: Johnson & Johnson) funding"]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Foundation: "]), "Foundation funding(ex: American Cancer Society)"]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Philanthropy: "]), "Private Donors"]), (0, _reactHyperscriptHelpers.li)({}, [(0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Other: "]), "Anything not covered in one of the other categories"])]);
 
 var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewProjectGeneralData, _Component);
@@ -34004,9 +34090,10 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 0, currentStep: this.props.currentStep,
+      return (0, _WizardStep.WizardStep)({
+        title: this.props.title, step: 0, currentStep: this.props.currentStep,
         error: this.props.errors.fundings || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.subjectProtection,
-        errorMessage: 'Please complete all required fields' }, [(0, _Panel.Panel)({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?" }, [(0, _InputFieldText.InputFieldText)({
+        errorMessage: 'Please complete all required fields' }, [(0, _Panel.Panel)({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [(0, _InputFieldText.InputFieldText)({
         id: "inputRequestorName",
         name: "requestorName",
         label: "Requestor Name",
@@ -34040,7 +34127,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.state.formData.projectManager,
         placeholder: "Select...",
         isMulti: false
-      })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?" }, [(0, _Fundings.Fundings)({
+      })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [(0, _Fundings.Fundings)({
         fundings: this.state.formData.fundings,
         updateFundings: this.handleUpdateFundings,
         error: this.props.errors.fundings,
@@ -34874,7 +34961,7 @@ exports = module.exports = __webpack_require__(45)(undefined);
 
 
 // module
-exports.push([module.i, ".btnPrimary{\r\n  color: #f5f5f5;\r\n  display: inline-block;\r\n  min-width: 20px;\r\n  min-height: 18px;\r\n  padding: 1px 8px;\r\n  font-size: 1.1rem;\r\n  font-weight: 700;\r\n  line-height: 1;\r\n  color: #fff;\r\n  text-align: center;\r\n  white-space: nowrap;\r\n  vertical-align: baseline;\r\n  border-radius: 10px;\r\n  border: none;\r\n  background-color: #333;\r\n  transition: all 0.3s ease; \r\n  outline: none;\r\n}\r\n\r\n.btnPrimary:hover {\r\n  background-color: #777;\r\n}\r\n\r\n.btnPrimary .glyphicon {\r\n  vertical-align: 8%;\r\n  font-size: 0.8rem;\r\n  padding-left: 1px;\r\n}", ""]);
+exports.push([module.i, ".btnPrimary{\r\n  color: #f5f5f5;\r\n  display: inline-block;\r\n  min-width: 20px;\r\n  min-height: 18px;\r\n  padding: 1px 8px;\r\n  font-size: 1.1rem;\r\n  font-weight: 700;\r\n  line-height: 1;\r\n  color: #fff;\r\n  text-align: center;\r\n  white-space: nowrap;\r\n  vertical-align: baseline;\r\n  border-radius: 10px;\r\n  border: none;\r\n  background-color: #333;\r\n  transition: all 0.3s ease; \r\n  outline: none !important;\r\n}\r\n\r\n.btnPrimary:hover {\r\n  background-color: #777;\r\n}\r\n\r\n.btnPrimary .glyphicon {\r\n  vertical-align: 8%;\r\n  font-size: 0.8rem;\r\n  padding-left: 1px;\r\n}", ""]);
 
 // exports
 
@@ -34930,7 +35017,7 @@ exports = module.exports = __webpack_require__(45)(undefined);
 
 
 // module
-exports.push([module.i, ".questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.questionnaireContainer .radioContainer p {\n  font-size: 1.1rem;\n}\n\n.questionnaireContainer .buttonContainer {\n  margin: 25px 0 0 0;\n}\n\n.questionnaireProgressBar {\n  position: absolute;\n  right: 0;\n  top: -65px;\n  padding: 0;\n}\n\n.questionnaireProgressBar p {\n  text-align: right;\n}\n\n.questionnaireProgressBar .progress {\n  height: 12px;\n  margin-bottom: 0;\n  border-radius: 2px;\n}\n\n.questionnaireProgressBar .progress-bar {\n  background-color: #2c3e50;\n}", ""]);
+exports.push([module.i, ".questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.questionnaireContainer .radioContainer p {\n  font-size: 1.1rem;\n}\n\n.questionnaireContainer .buttonContainer {\n  margin: 25px 0 0 0;\n}\n\n.questionnaireProgressBar {\n  position: absolute;\n  right: 0;\n  top: -65px;\n  padding: 0;\n}\n\n.questionnaireProgressBar p {\n  text-align: right;\n}\n\n.questionnaireProgressBar .progress {\n  height: 12px;\n  margin-bottom: 0 !important;\n  border-radius: 2px;\n}\n\n.questionnaireProgressBar .progress-bar {\n  background-color: #2c3e50;\n  background-image: linear-gradient(to bottom,#395266 0,#2c3e50 100%);\n}\n\n.questionnaireProgressBar .progress.complete .progress-bar {\n  background-color: #2a631e;\n  background-image: linear-gradient(to bottom,#2fb20f 0,#339314 100%);\n}", ""]);
 
 // exports
 
@@ -34944,7 +35031,7 @@ exports = module.exports = __webpack_require__(45)(undefined);
 
 
 // module
-exports.push([module.i, ".wizardWrapper {\r\n  height: 100%;\r\n  width: 100%;\r\n  padding: 20px 0;\r\n  display: inline-table;\r\n}\r\n\r\n.wizardTitle {\r\n  font-weight: 400;\r\n  margin: 20px 0 10px 0;\r\n}\r\n\r\n.wizardContainer {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 100%;\r\n  min-height: 80vh;\r\n  border: 1px solid #e3e3e3;\r\n  border-radius: 4px;\r\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n}\r\n\r\n.tabContainer {\r\n  display: block;\r\n  width: 100%;\r\n  min-height: 40px;\r\n  margin: 12px 3px;\r\n}\r\n\r\n.tabStep {\r\n  margin: 2px 1px 10px 1px;\r\n  padding: .5em 1em;\r\n  display: inline;\r\n  cursor: pointer;\r\n  font-size: 1.2rem;\r\n  border: 1px solid #d3d3d3;\r\n  color: #555555;\r\n  background: #e6e6e6;\r\n}\r\n\r\n.tabStep:first-child {\r\n  border-radius: 3px 0 0 0;\r\n}\r\n\r\n.tabStep:last-child {\r\n  border-radius: 0 3px 0 0;\r\n}\r\n\r\n.tabStep.active {\r\n  border: 1px solid #aaaaaa;\r\n  border-bottom: none;\r\n  color: #212121;\r\n  background: white;\r\n}\r\n\r\n.wizardStepContainer {\r\n  padding: 0 20px;\r\n  margin-bottom: 75px;\r\n}\r\n\r\n.wizardStepTitle {\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.wizardStepTitle small {\r\n  font-style: italic;\r\n  display: block;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.wizardButtonContainer {\r\n  position: absolute;\r\n  width: 100%;\r\n  bottom: 0;\r\n  margin: 0;\r\n  padding: 0 20px 20px 20px;\r\n}", ""]);
+exports.push([module.i, ".wizardWrapper {\r\n  height: 100%;\r\n  width: 100%;\r\n  padding: 20px 0;\r\n  display: inline-table;\r\n}\r\n\r\n.wizardTitle {\r\n  font-weight: 400;\r\n  margin: 20px 0 10px 0;\r\n}\r\n\r\n.wizardContainer {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 100%;\r\n  min-height: 80vh;\r\n  border: 1px solid #e3e3e3;\r\n  border-radius: 4px;\r\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n}\r\n\r\n.tabContainer {\r\n  display: block;\r\n  width: 100%;\r\n  min-height: 40px;\r\n  margin: 12px 3px;\r\n}\r\n\r\n.tabStep {\r\n  margin: 2px 1px 10px 1px;\r\n  padding: .5em 1em;\r\n  display: inline;\r\n  cursor: pointer;\r\n  font-size: 1.2rem;\r\n  border: 1px solid #d3d3d3;\r\n  color: #555555;\r\n  background: #e6e6e6;\r\n}\r\n\r\n.tabStep:first-child {\r\n  border-radius: 3px 0 0 0;\r\n}\r\n\r\n.tabStep:last-child {\r\n  border-radius: 0 3px 0 0;\r\n}\r\n\r\n.tabStep.active {\r\n  border: 1px solid #aaaaaa;\r\n  border-bottom: none;\r\n  color: #212121;\r\n  background: white;\r\n}\r\n\r\n.wizardStepContainer {\r\n  padding: 0 20px;\r\n  margin-bottom: 75px;\r\n}\r\n\r\n.wizardStepTitle {\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.wizardStepTitle small {\r\n  font-style: italic;\r\n  display: block;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.wizardButtonContainer {\r\n  position: absolute;\r\n  width: 100%;\r\n  bottom: 0;\r\n  margin: 0 !important;\r\n  padding: 0 20px 20px 20px;\r\n}", ""]);
 
 // exports
 
@@ -34958,7 +35045,7 @@ exports = module.exports = __webpack_require__(45)(undefined);
 
 
 // module
-exports.push([module.i, "html, body {\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.inputFieldErrorMessage {\n  color: red;\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.col,\n[class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
+exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.col,\n[class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -44738,6 +44825,276 @@ if(false) {
 	}
 }))
 
+
+/***/ }),
+/* 759 */,
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */,
+/* 767 */,
+/* 768 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AlertMessage = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _reactHyperscriptHelpers = __webpack_require__(17);
+
+var _Alert = __webpack_require__(770);
+
+var _Alert2 = _interopRequireDefault(_Alert);
+
+__webpack_require__(772);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AlertMessage = exports.AlertMessage = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
+  _inherits(AlertMessage, _Component);
+
+  function AlertMessage() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, AlertMessage);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AlertMessage.__proto__ || Object.getPrototypeOf(AlertMessage)).call.apply(_ref, [this].concat(args))), _this), _this.handleDismiss = function (e) {
+      _this.props.dismissHandler();
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(AlertMessage, [{
+    key: 'render',
+    value: function render() {
+      if (this.props.show) {
+        if (this.props.dismissHandler != null) {
+          return (0, _reactHyperscriptHelpers.h)(_Alert2.default, { bsStyle: this.props.type !== undefined ? this.props.type : 'danger', className: "alertMessage", onDismiss: this.handleDismiss }, [(0, _reactHyperscriptHelpers.div)({ className: "alertMessageContent" }, [this.props.msg])]);
+        } else {
+          return (0, _reactHyperscriptHelpers.h)(_Alert2.default, { bsStyle: this.props.type !== undefined ? this.props.type : 'danger', className: "alertMessage" }, [(0, _reactHyperscriptHelpers.div)({ className: "alertMessageContent" }, [this.props.msg])]);
+        }
+      }
+      return null;
+    }
+  }]);
+
+  return AlertMessage;
+}(_react.Component));
+
+/***/ }),
+/* 769 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".alertMessage.alert {\n  width: 100%;\n  background-image: none;\n}\n\n.alertMessage.alert-dismissable .close, .alertMessage.alert-dismissible .close {\n  position: relative;\n  float: right;\n  margin-right: 20px;\n  outline: none;\n}\n\n.alertMessageContent {\n  margin-right: 20px;\n}\n\n.alertMessageContent ul {\n  margin: 0 20px 0 -20px;\n}\n\n.panelHeader .alertMessage.alert {\n  margin: 15px 0 5px 0;\n}\n\n.alertMessage.alert-danger {\n  color: red;\n  background-color: #f9dcdc;\n  border-color: #f9cdcd;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 770 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(242);
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _values = _interopRequireDefault(__webpack_require__(569));
+
+var _extends3 = _interopRequireDefault(__webpack_require__(485));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(572));
+
+var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(570));
+
+var _classnames = _interopRequireDefault(__webpack_require__(3));
+
+var _react = _interopRequireDefault(__webpack_require__(0));
+
+var _propTypes = _interopRequireDefault(__webpack_require__(1));
+
+var _bootstrapUtils = __webpack_require__(714);
+
+var _StyleConfig = __webpack_require__(534);
+
+var _CloseButton = _interopRequireDefault(__webpack_require__(771));
+
+var propTypes = {
+  onDismiss: _propTypes.default.func,
+  closeLabel: _propTypes.default.string
+};
+var defaultProps = {
+  closeLabel: 'Close alert'
+};
+
+var Alert =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inheritsLoose2.default)(Alert, _React$Component);
+
+  function Alert() {
+    return _React$Component.apply(this, arguments) || this;
+  }
+
+  var _proto = Alert.prototype;
+
+  _proto.render = function render() {
+    var _extends2;
+
+    var _this$props = this.props,
+        onDismiss = _this$props.onDismiss,
+        closeLabel = _this$props.closeLabel,
+        className = _this$props.className,
+        children = _this$props.children,
+        props = (0, _objectWithoutPropertiesLoose2.default)(_this$props, ["onDismiss", "closeLabel", "className", "children"]);
+
+    var _splitBsProps = (0, _bootstrapUtils.splitBsProps)(props),
+        bsProps = _splitBsProps[0],
+        elementProps = _splitBsProps[1];
+
+    var dismissable = !!onDismiss;
+    var classes = (0, _extends3.default)({}, (0, _bootstrapUtils.getClassSet)(bsProps), (_extends2 = {}, _extends2[(0, _bootstrapUtils.prefix)(bsProps, 'dismissable')] = dismissable, _extends2));
+    return _react.default.createElement("div", (0, _extends3.default)({}, elementProps, {
+      role: "alert",
+      className: (0, _classnames.default)(className, classes)
+    }), dismissable && _react.default.createElement(_CloseButton.default, {
+      onClick: onDismiss,
+      label: closeLabel
+    }), children);
+  };
+
+  return Alert;
+}(_react.default.Component);
+
+Alert.propTypes = propTypes;
+Alert.defaultProps = defaultProps;
+
+var _default = (0, _bootstrapUtils.bsStyles)((0, _values.default)(_StyleConfig.State), _StyleConfig.State.INFO, (0, _bootstrapUtils.bsClass)('alert', Alert));
+
+exports.default = _default;
+module.exports = exports["default"];
+
+/***/ }),
+/* 771 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(242);
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(570));
+
+var _propTypes = _interopRequireDefault(__webpack_require__(1));
+
+var _react = _interopRequireDefault(__webpack_require__(0));
+
+var propTypes = {
+  label: _propTypes.default.string.isRequired,
+  onClick: _propTypes.default.func
+};
+var defaultProps = {
+  label: 'Close'
+};
+
+var CloseButton =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inheritsLoose2.default)(CloseButton, _React$Component);
+
+  function CloseButton() {
+    return _React$Component.apply(this, arguments) || this;
+  }
+
+  var _proto = CloseButton.prototype;
+
+  _proto.render = function render() {
+    var _this$props = this.props,
+        label = _this$props.label,
+        onClick = _this$props.onClick;
+    return _react.default.createElement("button", {
+      type: "button",
+      className: "close",
+      onClick: onClick
+    }, _react.default.createElement("span", {
+      "aria-hidden": "true"
+    }, "\xD7"), _react.default.createElement("span", {
+      className: "sr-only"
+    }, label));
+  };
+
+  return CloseButton;
+}(_react.default.Component);
+
+CloseButton.propTypes = propTypes;
+CloseButton.defaultProps = defaultProps;
+var _default = CloseButton;
+exports.default = _default;
+module.exports = exports["default"];
+
+/***/ }),
+/* 772 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(769);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(50)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./AlertMessage.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./AlertMessage.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);

@@ -75,13 +75,24 @@ class NewProject extends Component {
     project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
     project.questions = this.getQuestions(this.state.determination.questions);
     project.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
-    project.fundings = this.state.step1FormData.fundings;
+    project.fundings = this.getFundings(this.state.step1FormData.fundings);
     return project;
   }
 
   getFundings(fundings) {
-
+    let fundingList = [];
+    if (fundings !== null && fundings.length > 1) {
+      fundings.map((f, idx) => {
+        let funding = {};
+        funding.source = f.source.label;
+        funding.awardNumber = f.identifier;
+        funding.name = f.sponsor;
+        fundingList.push(f);
+      });
+    }
+    return fundingList;
   }
+
   getCollaborators(collaborators) {
     let collaboratorList = [];
     if (collaborators !== null && collaborators.length > 1) {
