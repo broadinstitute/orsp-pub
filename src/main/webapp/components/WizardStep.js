@@ -62,5 +62,3 @@ export const WizardStep = hh(class WizardStep extends Component {
     return view;
   }
 });
-
-// export default WizardStep;

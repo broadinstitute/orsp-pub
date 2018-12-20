@@ -75,5 +75,3 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     )
   }
 });
-
-// export default NewProjectDocuments;

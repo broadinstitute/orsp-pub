@@ -22,10 +22,6 @@ class ProjectController extends AuthenticatedController {
         render([message: diseaseAndPopulationRestrictions] as JSON)
     }
 
-
-    def edit() {
-    }
-
     def save() {
         Gson gson = new Gson()
         Project project = gson.fromJson(gson.toJson(request.JSON), Project.class)
@@ -34,12 +30,6 @@ class ProjectController extends AuthenticatedController {
 
         response.status = 201
         render([message: response] as JSON)
-    }
-
-    def update() {
-    }
-
-    def delete() {
     }
 
     def attachDocument() {

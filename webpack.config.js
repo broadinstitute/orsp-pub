@@ -7,7 +7,7 @@ module.exports = {
   entry: {
     collectionLinks: './src/main/webapp/collectionLinks/index.js',
     search: './src/main/webapp/search/index.js',
-    pages: './src/main/webapp/pages/index.js',
+    pages: './src/main/webapp/pages/index.js'
 
   },
   output: {
