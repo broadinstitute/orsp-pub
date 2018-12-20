@@ -13,12 +13,12 @@ class Project {
     String studyDescription
     String reporter
     String pTitle
-    String piName
-    String projectManager
+    String pi
+    String pm
     Date requestDate
     List<Object> fundings
     List<Object> questions
-    String irbProtocolId
+    String protocol
     List<Object> collaborators
     Boolean subjectProtection
 
@@ -29,13 +29,13 @@ class Project {
         studyDescription blank: true, nullable: true
         reporter blank: true, nullable: true
         pTitle blank: true, nullable: true
-        piName blank: true, nullable: true
-        projectManager blank: true, nullable: true
+        pi blank: true, nullable: true
+        pm blank: true, nullable: true
         requestDate blank: true, nullable: true
         collaborators blank: true, nullable: true
         fundings blank: true, nullable: true
         studyDescription blank: true, nullable: true
-        irbProtocolId blank: true, nullable: true
+        protocol blank: true, nullable: true
         questions nullable:false
         subjectProtection nullable:false
     }

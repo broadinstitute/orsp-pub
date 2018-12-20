@@ -48,10 +48,10 @@ class IssueService {
             IssueExtraProperty.SOURCE,
             IssueExtraProperty.SUBMISSION_TYPE,
             IssueExtraProperty.PROJECT_TITLE,
-            IssueExtraProperty.PROJECT_MANAGER,
-            IssueExtraProperty.PI_NAME,
             IssueExtraProperty.IRB_PROTOCOL_ID,
-            IssueExtraProperty.SUBJECT_PROTECTION
+            IssueExtraProperty.SUBJECT_PROTECTION,
+            IssueExtraProperty.PI,
+            IssueExtraProperty.PM
     ]
 
 
@@ -60,9 +60,7 @@ class IssueService {
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
-            IssueExtraProperty.PI,
-            IssueExtraProperty.PM,
-            IssueExtraProperty.COLLABORATORS,
+            IssueExtraProperty.COLLABORATORS
     ]
 
     /**

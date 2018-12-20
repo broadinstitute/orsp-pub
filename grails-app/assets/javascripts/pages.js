@@ -31724,6 +31724,11 @@ function (_React$Component) {
 
   _proto.componentDidMount = function componentDidMount() {
     this.appeared = true;
+    this.mounted = true;
+  };
+
+  _proto.componentWillUnmount = function componentWillUnmount() {
+    this.mounted = false;
   };
 
   TransitionGroup.getDerivedStateFromProps = function getDerivedStateFromProps(nextProps, _ref) {
@@ -31744,14 +31749,16 @@ function (_React$Component) {
       child.props.onExited(node);
     }
 
-    this.setState(function (state) {
-      var children = _extends({}, state.children);
+    if (this.mounted) {
+      this.setState(function (state) {
+        var children = _extends({}, state.children);
 
-      delete children[child.key];
-      return {
-        children: children
-      };
-    });
+        delete children[child.key];
+        return {
+          children: children
+        };
+      });
+    }
   };
 
   _proto.render = function render() {
@@ -31922,7 +31929,7 @@ var NewProject = function (_Component) {
 
     _this.submitNewProject = function () {
       if (_this.validateStep3()) {
-        if (_this.validateStep2() || _this.validateStep1()) {
+        if (_this.validateStep2() && _this.validateStep1()) {
           _this.setState(function (prev) {
             prev.formSubmitted = true;
             return prev;
@@ -32008,6 +32015,13 @@ var NewProject = function (_Component) {
       return renderSubmit;
     };
 
+    _this.enableSubmit = function () {
+      _this.setState(function (prev) {
+        prev.formSubmitted = true;
+        return prev;
+      });
+    };
+
     _this.state = {
       showErrorStep2: false,
       showErrorStep3: false,
@@ -32036,6 +32050,7 @@ var NewProject = function (_Component) {
     _this.isValid = _this.isValid.bind(_this);
     _this.submitNewProject = _this.submitNewProject.bind(_this);
     _this.uploadFiles = _this.uploadFiles.bind(_this);
+    _this.removeErrorMessage = _this.removeErrorMessage.bind(_this);
     return _this;
   }
 
@@ -32048,10 +32063,10 @@ var NewProject = function (_Component) {
       project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
       project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
       project.reporter = this.props.user.userName;
-      project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
-      project.piName = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.value : null;
+      project.pm = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
+      project.pi = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.key : null;
       project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
-      project.irbProtocolId = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
+      project.protocol = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
       project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
       project.questions = this.getQuestions(this.state.determination.questions);
       project.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
@@ -32221,6 +32236,14 @@ var NewProject = function (_Component) {
       console.log(error, info);
     }
   }, {
+    key: 'removeErrorMessage',
+    value: function removeErrorMessage() {
+      this.setState(function (prev) {
+        prev.generalError = false;
+        return prev;
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _state = this.state,
@@ -32230,7 +32253,7 @@ var NewProject = function (_Component) {
           user = _props$user === undefined ? { email: 'test@broadinstitute.org' } : _props$user;
 
       var projectType = determination.projectType;
-      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError })]);
+      return (0, _Wizard.Wizard)({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [(0, _NewProjectGeneralData.NewProjectGeneralData)({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewProjectDetermination.NewProjectDetermination)({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }), (0, _NewProjectDocuments.NewProjectDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -34240,18 +34263,18 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
 
       switch (this.props.projectType) {
         case IRB:
-          requiredDocuments.push({ fileKey: 'IRB Approval Doc', label: "Upload the IRB Approval for this Project here" });
-          requiredDocuments.push({ fileKey: 'IRB Applicationl Doc', label: "Upload the IRB Application for this Project here" });
+          requiredDocuments.push({ fileKey: 'IRB Approval Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["IRB Approval "]), "for this Project here"]) });
+          requiredDocuments.push({ fileKey: 'IRB Applicationl Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["IRB Application "]), "for this Project here"]) });
           break;
 
         case NE:
-          requiredDocuments.push({ fileKey: 'NE Approval Doc', label: "Upload the NE Approval for this Project here" });
-          requiredDocuments.push({ fileKey: 'NE Applicationl Doc', label: "Upload the NE Application for this Project here" });
-          requiredDocuments.push({ fileKey: 'NE Consent Doc', label: "Upload the Consent Document I for this Project here (if applicable)" });
+          requiredDocuments.push({ fileKey: 'NE Approval Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["NE Approval "]), "for this Project here"]) });
+          requiredDocuments.push({ fileKey: 'NE Applicationl Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["NE Application "]), "for this Project here"]) });
+          requiredDocuments.push({ fileKey: 'NE Consent Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Consent Document "]), "for this Project here ", (0, _reactHyperscriptHelpers.span)({ className: "italic" }, ["(if applicable)"])]) });
           break;
 
         case NHSR:
-          requiredDocuments.push({ fileKey: 'NHSR Applicationl Doc', label: "Upload the NHSR Application for this Project here" });
+          requiredDocuments.push({ fileKey: 'NHSR Applicationl Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["NHSR Application "]), "for this Project here"]) });
           break;
 
         default:
@@ -34332,6 +34355,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
       }, function () {
         return _this.props.updateForm(_this.state.formData, 'fundings');
       });
+      _this.props.removeErrorMessage();
     };
 
     _this.handleInputChange = function (e) {
@@ -34343,6 +34367,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
       }, function () {
         return _this.props.updateForm(_this.state.formData, field);
       });
+      _this.props.removeErrorMessage();
     };
 
     _this.handleRadioChange = function (e, field, value) {
@@ -34358,6 +34383,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
       }, function () {
         return _this.props.updateForm(_this.state.formData, field);
       });
+      _this.props.removeErrorMessage();
     };
 
     _this.handleProjectManagerChange = function (data, action) {
@@ -34367,6 +34393,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
       }, function () {
         return _this.props.updateForm(_this.state.formData, 'projectManager');
       });
+      _this.props.removeErrorMessage();
     };
 
     _this.handleProjectCollaboratorChange = function (data, action) {
@@ -34468,7 +34495,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         loadOptions: this.loadUsersOptions,
         handleChange: this.handlePIChange,
         value: this.state.formData.piName,
-        placeholder: "Select...",
+        placeholder: "Start typing the PI Name",
         isMulti: false
       }), (0, _MultiSelect.MultiSelect)({
         id: "inputProjectManager",
@@ -34477,7 +34504,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         loadOptions: this.loadUsersOptions,
         handleChange: this.handleProjectManagerChange,
         value: this.state.formData.projectManager,
-        placeholder: "Select...",
+        placeholder: "Start typing the Project Manager Name",
         isMulti: false
       })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [(0, _Fundings.Fundings)({
         fundings: this.state.formData.fundings,
@@ -34502,7 +34529,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         loadOptions: this.loadUsersOptions,
         handleChange: this.handleProjectCollaboratorChange,
         value: this.state.formData.collaborators,
-        placeholder: "Please select one or more individuals...",
+        placeholder: "Start typing collaborator names",
         isMulti: true
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputPTitle",

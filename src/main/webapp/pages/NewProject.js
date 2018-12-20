@@ -72,10 +72,10 @@ class NewProject extends Component {
     project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
     project.studyDescription = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
     project.reporter = this.props.user.userName;
-    project.projectManager = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
-    project.piName = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.value : null;
+    project.pm = this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null;
+    project.pi = this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.key : null;
     project.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
-    project.irbProtocolId = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
+    project.protocol = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
     project.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
     project.questions = this.getQuestions(this.state.determination.questions);
     project.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);

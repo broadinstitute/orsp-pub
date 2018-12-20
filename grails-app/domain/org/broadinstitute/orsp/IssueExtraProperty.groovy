@@ -43,9 +43,8 @@ class IssueExtraProperty {
     public static final String DATA_SHARING_COMMENTS = "dataSharingComments"
     public static final String DATA_SHARING_NIH = "dataSharingNih"
     public static final String COLLABORATORS = "collaborators"
-    public static final String PI_NAME = "piName"
-    public static final String PROJECT_MANAGER = "projectManager"
-    public static final String IRB_PROTOCOL_ID = "irbProtocolId"
+    public static final String PROJECT_MANAGER = "pm"
+    public static final String IRB_PROTOCOL_ID = "protocol"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
 
     // Status Flags
