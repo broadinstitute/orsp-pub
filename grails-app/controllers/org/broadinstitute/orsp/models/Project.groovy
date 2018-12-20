@@ -57,8 +57,8 @@ class Project {
 
             f.setCreated(new Date())
             f.setSource(p.get("source").toString())
-            f.setName(p.get("sponsor").toString())
-            f.setAwardNumber(p.get("identifier").toString())
+            f.setName(p.get("name").toString())
+            f.setAwardNumber(p.get("awardNumber").toString())
             f.setProjectKey(projectKey)
             f
         }

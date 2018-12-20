@@ -31,7 +31,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Is this a "fee-for-service" project? ',
       moreInfo: '(commercial service only, no Broad publication privileges)',
-      progress: 12,
+      progress: 0,
       yesOutput: NE,
       noOutput: 2,
       answer: null,
@@ -42,7 +42,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Is a Broad investigator conducting research ',
       moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
-      progress: 25,
+      progress: 12,
       yesOutput: 3,
       noOutput: NHSR,
       answer: null,
@@ -52,7 +52,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Are all subjects who provided samples and/or data now deceased?',
-      progress: 37,
+      progress: 25,
       yesOutput: NHSR,
       noOutput: 4,
       answer: null,
@@ -63,7 +63,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
       moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
-      progress: 50,
+      progress: 37,
       yesOutput: IRB,
       noOutput: 5,
       answer: null,
@@ -74,7 +74,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
       moreInfo: '(i.e. is conductin HSR)?',
-      progress: 62,
+      progress: 50,
       yesOutput: 6,
       noOutput: NHSR,
       answer: null,
@@ -84,7 +84,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is the Broad receiving subject identifiers?',
-      progress: 75,
+      progress: 62,
       yesOutput: IRB,
       noOutput: 7,
       answer: null,
@@ -94,7 +94,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
-      progress: 87,
+      progress: 75,
       yesOutput: 8,
       noOutput: NHSR,
       answer: null,
@@ -104,7 +104,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is Broad receiving direct federal funding?',
-      progress: 100,
+      progress: 87,
       yesOutput: IRB,
       noOutput: NE,
       answer: null,

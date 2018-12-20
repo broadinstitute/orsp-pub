@@ -84,7 +84,7 @@ class NewProject extends Component {
     if (fundings !== null && fundings.length > 1) {
       fundings.map((f, idx) => {
         let funding = {};
-        funding.source = f.label;
+        funding.source = f.source.label;
         funding.awardNumber = f.identifier;
         funding.name = f.sponsor;
         fundingList.push(f);
@@ -92,7 +92,6 @@ class NewProject extends Component {
     }
     return fundingList;
   }
-
 
   getCollaborators(collaborators) {
     let collaboratorList = [];
