@@ -21,4 +21,3 @@ export const InputFieldText = hh(class InputFieldText extends Component {
     )
   }
 });
-

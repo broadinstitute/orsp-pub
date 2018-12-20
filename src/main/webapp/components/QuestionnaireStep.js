@@ -31,5 +31,3 @@ export const QuestionnaireStep = hh(class QuestionnaireStep extends Component {
     )
   }
 });
-
-// export default QuestionnaireStep;

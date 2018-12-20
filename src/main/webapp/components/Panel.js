@@ -61,5 +61,3 @@ export const Panel = hh(class Panel extends Component {
     )
   }
 });
-
-// export default Panel;

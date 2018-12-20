@@ -187,7 +187,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
           required: false
         }),
 
-        // div({ isRendered: this.state.projectType != null }, ["Project Type is " + this.getTypeDescription(this.state.projectType)]),
         small({ isRendered: this.state.requiredError === true, className: "errorMessage" }, ["Required field"]),
 
         div({ className: "buttonContainer" }, [
