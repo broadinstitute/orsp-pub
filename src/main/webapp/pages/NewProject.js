@@ -5,6 +5,7 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
 import {Files, Project} from "../util/ajax";
+import { span } from 'react-hyperscript-helpers';
 
 class NewProject extends Component {
 

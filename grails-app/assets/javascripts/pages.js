@@ -31534,6 +31534,8 @@ var _NewProjectDocuments = __webpack_require__(548);
 
 var _ajax = __webpack_require__(435);
 
+var _reactHyperscriptHelpers = __webpack_require__(14);
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31913,18 +31915,18 @@ var NewProject = function (_Component) {
 
         switch (projectType) {
           case _NewProjectDetermination.IRB:
-            documents.push({ required: true, fileKey: 'IRB Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-            documents.push({ required: true, fileKey: 'IRB Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+            documents.push({ required: true, fileKey: 'IRB Approval Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+            documents.push({ required: true, fileKey: 'IRB Applicationl Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
             break;
 
           case _NewProjectDetermination.NE:
-            documents.push({ required: true, fileKey: 'NE Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-            documents.push({ required: true, fileKey: 'NE Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-            documents.push({ required: false, fileKey: 'NE Consent Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
+            documents.push({ required: true, fileKey: 'NE Approval Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+            documents.push({ required: true, fileKey: 'NE Applicationl Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+            documents.push({ required: false, fileKey: 'NE Consent Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Consent Document "]), "for this Project here ", (0, _reactHyperscriptHelpers.span)({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
             break;
 
           case _NewProjectDetermination.NHSR:
-            documents.push({ required: true, fileKey: 'NHSR Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+            documents.push({ required: true, fileKey: 'NHSR Applicationl Doc', label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
             break;
 
           default:
