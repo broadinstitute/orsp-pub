@@ -165,16 +165,22 @@ class IssueService {
         issue
     }
 
-    Issue createProject(Issue issue, Project project) throws DomainException {
-        IssueType type = IssueType.valueOfName(issue.type)
+    Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
-
+        issue.setUpdateDate(new Date())
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
             issue.save(flush: true)
         }
         issue.setProjectKey(issue.projectKey + issue.id)
+        issue.save(flush: true)
+        issue
+    }
+
+    Issue createProject(Issue issue, Project project) throws DomainException {
+        IssueType type = IssueType.valueOfName(issue.type)
+        createIssue(type, issue);
         def fundingList = project.getFundingList(issue.getProjectKey())
         fundingList.each {
             issue.addToFundings(it)
