@@ -5,7 +5,9 @@ import { InputFieldFile } from '../components/InputFieldFile';
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
 
-  state = {};
+  state = {
+    documents: []
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -17,17 +19,12 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     return { hasError: true }
   }
 
-  setFilesToUpload = (key) => (e) => {
-    let filesBundle = {};
-    let file = e.target.files[0];
-    filesBundle.fileKey = key;
-    filesBundle.fileData = file;
-    this.props.fileHandler(filesBundle);
-  }
-
-  obtainFile(fileKey) {
-    return this.props.files.find(file => file.fileKey === fileKey)
-  }
+  setFilesToUpload = (docs, ix) => (e) => {
+    let selectedFile = e.target.files[0];
+    docs[ix].file = selectedFile;
+    docs[ix].error = false;
+    this.props.fileHandler(docs);
+  };
 
   render() {
 
@@ -36,21 +33,30 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
       return h1({}, ["Something went wrong."]);
     }
 
-    if (this.props.files !== null) {
+    let documents = this.props.files;
 
-    }
-    let requiredDocuments = [];
-
-    requiredDocuments.push({ fileKey: 'Consent Document', label: "Upload the Consent Document for this Consent Group here:" });
-    requiredDocuments.push({ fileKey: 'IRB approval', label: "Upload local IRB approval docuemnt (required for DFCO & MIT IRBs only):" });
-    requiredDocuments.push({ fileKey: 'Sample Providers Permission', label: "Upload Sample Provider's Permission to add cohort to this Broad project (DCI IRB only. Optional):" });
-    requiredDocuments.push({ fileKey: 'Data Use Letter', label: "Upload Data Use Letter her (optional):" });
+    let errors = false;
+    documents.forEach(doc => {
+      errors = errors || doc.error;
+    });
 
     return (
-      WizardStep({ title: this.props.title, step: 1, currentStep: this.props.currentStep }, [
-        requiredDocuments.map((rd, Index) => {
-          return h(Fragment, { key: Index }, [
-            InputFieldFile({ label: rd.label, callback: this.setFilesToUpload(rd.fileKey), nameFiles: this.obtainFile(rd.fileKey) }),
+
+      WizardStep({
+        title: this.props.title, step: 2, currentStep: this.props.currentStep,
+        errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps',
+        error: errors || this.props.generalError
+      }, [
+        documents.map((document, index) => {
+          return h(Fragment, { key: index }, [
+            InputFieldFile({
+              label: document.label,
+              callback: this.setFilesToUpload(documents, index),
+              fileName: (document.file != null ? document.file.name : ''),
+              required: document.required,
+              error: document.error,
+              errorMessage: "Required field"
+            }),
           ])
         })
       ])
@@ -58,4 +64,3 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   }
 });
 
-// export default NewProjectDocuments;

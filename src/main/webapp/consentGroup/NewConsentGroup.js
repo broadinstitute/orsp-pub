@@ -5,6 +5,7 @@ import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
+import { span } from 'react-hyperscript-helpers';
 
 class NewConsentGroup extends Component {
 
@@ -92,7 +93,7 @@ class NewConsentGroup extends Component {
         return prev
       });
     }
-  }
+  };
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -103,8 +104,51 @@ class NewConsentGroup extends Component {
     this.setState(prev => {
       prev.step1FormData = updatedForm;
       return prev;
-    }
-    );
+    }, () => {
+      this.initDocuments()
+    });
+  };
+
+  initDocuments() {
+    let documents = [];
+
+    documents.push({
+      required: true,
+      fileKey: 'Consent Document',
+      label: span({}, ["Upload the ", span({className: "bold"}, ["Consent Document "]), "for this Consent Group here:"]),
+      file: null,
+      fileName: null,
+      error: false
+    });
+    documents.push({
+      required: true,
+      fileKey: 'IRB approval',
+      label: span({}, ["Upload local ", span({className: "bold"}, ["IRB approval "]), "document (required for DFCI & MIT IRBs only):"]),
+      file: null,
+      fileName: null,
+      error: false
+    });
+
+    documents.push({
+      required: true,
+      fileKey: 'Sample Providers Permission',
+      label: span({}, ["Upload the ", span({className: "bold"}, ["Sample Provider's Permission to add cohort "]), "to this Broad project (DFCI IRB only. Optional):"]),
+      file: null,
+      fileName: null,
+      error: false
+    });
+    documents.push({
+      required: true,
+      fileKey: 'Data Use Letter',
+      label: span({}, ["Upload the ", span({className: "bold"}, ["Data Use Letter "]), "here (optional):"]),
+      file: null,
+      fileName: null,
+      error: false
+    });
+
+    this.setState({
+      files: documents
+    });
   }
 
   render() {
