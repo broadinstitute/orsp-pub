@@ -15,7 +15,7 @@
   border-radius: 0;
 }
 
-.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea {
+.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {
   min-height: 38px;
 }
 
@@ -47,8 +47,7 @@
 }
 
 .fileNameContainer {
-  min-height: 38px;
-  border: 1px solid #ccc;
+  border: 1px solid #ced4da;
 }
 
 .buttonUpload {
@@ -73,4 +72,30 @@
 .fileName {
   color: #555;
   margin: 8px 5px 0 5px;
+}
+
+.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {
+  position: relative;
+  width: 100%;
+}
+
+.inputField .inputFieldDatePicker {
+  padding-left: 10px;
+  border: 1px solid #ced4da;
+  font-size: 1rem;
+}
+
+.inputField .react-datepicker__input-container:after {
+  font-family: 'Glyphicons Halflings';
+  content: "\e109";
+  font-size: 1.2rem;
+  color: #555;
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
+
+.inputField .react-datepicker__close-icon {
+  top: 12px;
+  right: 35px !important;
 }

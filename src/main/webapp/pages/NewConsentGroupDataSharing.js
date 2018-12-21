@@ -1,0 +1,86 @@
+import { Component } from 'react';
+import { hh, h1 } from 'react-hyperscript-helpers';
+
+import { WizardStep } from '../components/WizardStep';
+import { InputFieldRadio } from '../components/InputFieldRadio';
+import { InputFieldText } from '../components/InputFieldText';
+
+export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing extends Component {
+
+  state = {};
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      formData: {
+        sharingplan: null
+      }
+    }
+
+  }
+
+  componentDidCatch(error, info) {
+    console.log('----------------------- error ----------------------')
+    console.log(error, info);
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
+  }
+
+  handleRadioChange = (e, field, value) => {
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    });
+  };
+
+  render() {
+
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return h1({}, ["Something went wrong."]);
+    }
+
+    return (
+      WizardStep({ title: this.props.title, step: 4, currentStep: this.props.currentStep }, [
+        InputFieldRadio({
+          id: "radioSharingplan",
+          name: "sharingplan",
+          label: "What is your Data Sharing plan?",
+          moreInfo: "",
+          optionValues: ["controlled", "open", "none", "undetermined"],
+          optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
+          value: this.state.formData.sharingplan,
+          onChange: this.handleRadioChange,
+          required: false,
+          error: this.props.subjectProtection,
+          errorMessage: "Required field"
+        }),
+        InputFieldText({
+          isRendered: this.state.formData.sharingplan === "controlled",
+          id: "inputDatabaseControlled",
+          name: "databaseControlled",
+          label: "Name of Database(s)",
+          moreInfo: "Data Use Letter NR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available",
+          value: this.state.formData.databaseControlled,
+          disabled: false,
+          required: true,
+          onChange: this.handleInputChange
+        }),
+        InputFieldText({
+          isRendered: this.state.formData.sharingplan === "open",
+          id: "inputDatabaseOpen",
+          name: "databaseOpen",
+          label: "Last Name of Investigator Listed on the Consent Form",
+          value: this.state.formData.databaseOpen,
+          disabled: false,
+          required: true,
+          onChange: this.handleInputChange
+        })
+      ])
+    )
+  }
+});
+

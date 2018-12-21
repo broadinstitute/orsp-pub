@@ -7,39 +7,39 @@ import './InputField.css';
 
 export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            startDate: null
-        };
-        this.handleChange = this.handleChange.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      startDate: null
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-    handleChange(date) {
-        this.setState({
-            startDate: date
-        });
-    }
+  handleChange(date) {
+    this.setState({
+      startDate: date
+    });
+  }
 
+  render() {
 
-    render() {
+    return (
 
-        return (
-
-            InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
-                h(
-                    DatePicker, ({
-                        selected: this.state.startDate,
-                        onChange: this.handleChange,
-                        showYearDropdown: true,
-                        dropdownMode: "select",
-                        isClearable: true,
-                        disabled: this.props.disabled,
-                        placeholderText: this.props.placeholder
-                    })
-                )
-            ])
+      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
+        h(
+          DatePicker, ({
+            selected: this.state.startDate,
+            onChange: this.handleChange,
+            showYearDropdown: true,
+            dropdownMode: "select",
+            isClearable: true,
+            disabled: this.props.disabled,
+            placeholderText: this.props.placeholder,
+            className: "inputFieldDatePicker"
+          })
         )
-    }
+      ])
+    )
+  }
 
 });

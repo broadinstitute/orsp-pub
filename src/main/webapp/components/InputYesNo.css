@@ -1,5 +1,5 @@
 .radioContainer {
-  margin-top: 15px;
+  margin: 15px 0;
 }
 
 .radioOptions {
@@ -71,7 +71,6 @@
   border-radius: 50%;
   background-color: #2196F3;
 }
-
 
 fieldset[disabled] .radioOptions {
   opacity: 0.65 !important;
