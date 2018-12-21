@@ -42,6 +42,14 @@ class NewConsentGroup extends Component {
     });
   }
 
+  showSubmit = (currentStep) => {
+    let renderSubmit = false;
+    if (currentStep === 5) {
+      renderSubmit = true;
+    }
+    return renderSubmit;
+  };
+
   isValid = (currentSep) => {
     let isValid = true;
     if (currentSep === 0) {
@@ -106,7 +114,7 @@ class NewConsentGroup extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid }, [
+      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit }, [
         NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination }),

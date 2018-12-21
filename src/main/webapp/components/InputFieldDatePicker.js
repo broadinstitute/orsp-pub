@@ -16,9 +16,11 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
   }
 
   handleChange(date) {
-    this.setState({
-      startDate: date
-    });
+//    this.setState({
+//      startDate: date
+//    });
+console.log("En date picker -> ", date)
+    this.props.onChange(date)
   }
 
   render() {
@@ -28,7 +30,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
       InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
         h(
           DatePicker, ({
-            selected: this.state.startDate,
+            selected: this.props.selected,
             onChange: this.handleChange,
             showYearDropdown: true,
             dropdownMode: "select",
