@@ -69,8 +69,51 @@ hr {
   width: 40px;
 }
 
-.col,
-[class*="col-"] {
+.regular-checkbox {
+  cursor: pointer;
+  position: relative;
+  padding-left: 25px !important;
+  margin-right: 15px;
+  font-size: 1rem;
+}
+
+.regular-checkbox:before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  background-color: #ffffff;
+  border-radius: 3px;
+  border: 1px solid #999999;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+input[type=checkbox]:checked+label:before {
+  content: "\2713";
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+  color: #ffffff;
+  background: #2FA4E7;
+  border: 1px solid #2FA4E7;
+  text-align: center;
+  line-height: 1.2rem;
+}
+
+.checkbox[disabled] .regular-checkbox {
+  cursor: not-allowed !important;
+  opacity: 0.65;
+}
+
+.checkbox[disabled] .regular-checkbox:before {
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+
+.col, [class*="col-"] {
   padding-right: 5px;
   padding-left: 5px;
 }

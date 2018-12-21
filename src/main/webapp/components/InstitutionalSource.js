@@ -58,17 +58,23 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
         hr({ className: "fullWidth" }),
 
-        this.props.institutionalSources.map((rd, Index) => {
+        this.state.institutionalSources.map((rd, Index) => {
           return h(Fragment, { key: Index }, [
 
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                    InputFieldText({ value: rd.name })
+                    InputFieldText({
+                      value: this.props.value,
+                      onChange: this.props.onChange,
+                      value: rd.name })
                   ]),
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                    InputFieldText({ value: rd.country })
+                    InputFieldText({
+                      value: this.props.value,
+                      onChange: this.props.onChange,
+                      value: rd.country })
                   ])
                 ])
               ]),
