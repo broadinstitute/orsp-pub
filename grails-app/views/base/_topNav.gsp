@@ -28,6 +28,7 @@
                             <li><a href="${createLink(controller: 'ne', action: 'create')}">'Not Engaged' Project</a></li>
                             <li><a href="${createLink(controller: 'nhsr', action: 'create')}">Not Human Subjects Research Project</a></li>
                             <li><a href="${createLink(controller: 'consentGroup', action: 'create')}">Consent Group</a></li>
+                            <li><a href="${createLink(controller: 'newConsentGroup', action: 'show')}">New Consent Group</a></li>
                         </ul>
                     </li>
                     <auth:isOrsp>
