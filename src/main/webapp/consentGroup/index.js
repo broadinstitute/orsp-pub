@@ -11,5 +11,5 @@ ReactDOM.render(
         createProjectURL = {component.createProjectURL}
         serverURL = {component.serverURL}
      />,
-    document.getElementById('newConsentgroup')
+    document.getElementById('newConsentGroup')
 );
