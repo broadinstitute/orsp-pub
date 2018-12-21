@@ -18,16 +18,17 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     console.log("Props general data: **** ", props);
     super(props);
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.state = {
       formData: {
-        investigatorLastName: this.props.user !== undefined ? this.props.user.name : '',
-        institutionProtocolNumber: this.props.user !== undefined ? this.props.user.email : '',
-        consentGroupName: '',
-        collaboratingInstitution: '',
-        primaryContact: '',
+        investigatorLastName: this.props.user !== undefined ? this.props.user.name : '', // consent
+        institutionProtocolNumber: this.props.user !== undefined ? this.props.user.email : '', //protocol
+        consentGroupName: '', //groupName
+        collaboratingInstitution: '', //collInst
+        primaryContact: '',  //collContact
         sampleCollections: [],
-        describeConsentGroup: '',
-        subjectProtection: '',
+        describeConsentGroup: '', //consentGroupDescription
+        subjectProtection: '', //subjectProtection
         institutionalSources: [{ name: '', country: '' }],
         startDate: '',
         endDate: '',
@@ -52,14 +53,12 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     }, () => this.props.updateForm(this.state.formData));
   };
 
-  handleChange = (e) => {
-    console.log("dates ", e.target);
-
-    this.setState(prev => {
-      prev.formData.startDate = ""
-    });
-
-  }
+handleChange(date, id) {
+  this.setState(prev => {
+      prev.formData[id] = date;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData));
+  };
 
   handleRadioChange = (e, field, value) => {
     if (value === 'true') {
@@ -122,7 +121,11 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
   }
 
   handleCheck = () => {
-    this.setState({ checked: !this.state.onGoingProcess });
+  let current = this.state.onGoingProcess;
+    this.setState(prev =>
+      { prev.onGoingProcess = !current;
+        return prev;
+      }, () => this.props.updateForm(this.state.formData));
   }
 
   stepChanged(previousStep) {
@@ -240,7 +243,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                   label: "End Date",
                   onChange: this.handleChange,
                   placeholder: "Enter End Date",
-                  disabled: this.state.checked === true
+                  disabled: this.state.onGoingProcess === true
                 })
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
@@ -252,6 +255,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
 
         Panel({ title: "Institutional Source of Data/Samples and Location*" }, [
           InstitutionalSource({
+            onChange: this.handleUpdateinstitutionalSources,
             institutionalSources: this.state.formData.institutionalSources
           })
         ]),
