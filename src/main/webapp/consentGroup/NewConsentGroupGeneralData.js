@@ -52,6 +52,15 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     }, () => this.props.updateForm(this.state.formData));
   };
 
+  handleChange = (e) => {
+    console.log("dates ", e.target);
+
+    this.setState(prev => {
+      prev.formData.startDate = ""
+    });
+
+  }
+
   handleRadioChange = (e, field, value) => {
     if (value === 'true') {
       value = true;
@@ -113,7 +122,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
   }
 
   handleCheck = () => {
-    this.setState({ checked: !this.state.checked });
+    this.setState({ checked: !this.state.onGoingProcess });
   }
 
   stepChanged(previousStep) {
@@ -218,6 +227,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             div({ className: "row" }, [
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 InputFieldDatePicker({
+                  selected: this.state.startDate,
                   name: "startDate",
                   label: "Start Date",
                   onChange: this.handleChange,
@@ -234,7 +244,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 })
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
-                input({ type: 'checkbox', id: "onGoingProcess", name: "onGoingProcess", onChange: this.handleCheck, defaultChecked: this.state.checked }),
+                input({ type: 'checkbox', id: "onGoingProcess", name: "onGoingProcess", onChange: this.handleCheck, defaultChecked: this.state.onGoingProcess }),
                 label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
               ])
             ])
