@@ -31536,8 +31536,6 @@ var _ajax = __webpack_require__(435);
 
 var _reactHyperscriptHelpers = __webpack_require__(14);
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -31548,56 +31546,34 @@ var NewProject = function (_Component) {
   _inherits(NewProject, _Component);
 
   function NewProject(props) {
-    var _this2 = this;
-
     _classCallCheck(this, NewProject);
 
     var _this = _possibleConstructorReturn(this, (NewProject.__proto__ || Object.getPrototypeOf(NewProject)).call(this, props));
 
-    _this.submitNewProject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _this.validateStep3();
+    _this.submitNewProject = function () {
 
-            case 2:
-              if (!_context.sent) {
-                _context.next = 6;
-                break;
-              }
-
-              if (_this.validateStep2() && _this.validateStep1()) {
-                _this.setState(function (prev) {
-                  prev.formSubmitted = true;
-                  return prev;
-                });
-                _ajax.Project.createProject(_this.props.createProjectURL, _this.getProject()).then(function (resp) {
-                  _this.uploadFiles(resp.data.message.projectKey);
-                });
-              } else {
-                _this.setState(function (prev) {
-                  prev.generalError = true;
-                  return prev;
-                });
-              }
-              _context.next = 7;
-              break;
-
-            case 6:
-              _this.setState(function (prev) {
-                prev.showErrorStep3 = true;
-                return prev;
-              });
-
-            case 7:
-            case 'end':
-              return _context.stop();
-          }
+      if (_this.validateStep3()) {
+        if (_this.validateStep2() && _this.validateStep1()) {
+          _this.setState(function (prev) {
+            prev.formSubmitted = true;
+            return prev;
+          });
+          _ajax.Project.createProject(_this.props.createProjectURL, _this.getProject()).then(function (resp) {
+            _this.uploadFiles(resp.data.message.projectKey);
+          });
+        } else {
+          _this.setState(function (prev) {
+            prev.generalError = true;
+            return prev;
+          });
         }
-      }, _callee, _this2);
-    }));
+      } else {
+        _this.setState(function (prev) {
+          prev.showErrorStep3 = true;
+          return prev;
+        });
+      }
+    };
 
     _this.stepChanged = function (newStep) {
       _this.setState({
@@ -31789,7 +31765,7 @@ var NewProject = function (_Component) {
   }, {
     key: 'validateStep1',
     value: function validateStep1(field) {
-      var _this3 = this;
+      var _this2 = this;
 
       var studyDescription = false;
       var pTitle = false;
@@ -31813,7 +31789,7 @@ var NewProject = function (_Component) {
         isValid = false;
       } else {
         this.state.step1FormData.fundings.forEach(function (funding) {
-          if (!_this3.isTextValid(funding.source.label)) {
+          if (!_this2.isTextValid(funding.source.label)) {
             fundings = true;
             isValid = false;
           }
@@ -31846,54 +31822,32 @@ var NewProject = function (_Component) {
     }
   }, {
     key: 'validateStep3',
-    value: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var isValid, docs;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                isValid = true;
-                docs = [];
+    value: function validateStep3() {
+      var isValid = true;
 
-                if (this.state.files !== null) {
-                  this.state.files.forEach(function (file) {
-                    if (file.required === true && file.file === null) {
-                      file.error = true;
-                      isValid = false;
-                    } else {
-                      file.error = false;
-                    }
-                    docs.push(file);
-                  });
-                } else {
-                  isValid = false;
-                }
-
-                _context2.next = 5;
-                return this.setState(function (prev) {
-                  prev.files = docs;
-                  prev.showErrorStep3 = !isValid;
-                  return prev;
-                });
-
-              case 5:
-                return _context2.abrupt('return', isValid);
-
-              case 6:
-              case 'end':
-                return _context2.stop();
-            }
+      var docs = [];
+      if (this.state.files !== null) {
+        this.state.files.forEach(function (file) {
+          if (file.required === true && file.file === null) {
+            file.error = true;
+            isValid = false;
+          } else {
+            file.error = false;
           }
-        }, _callee2, this);
-      }));
-
-      function validateStep3() {
-        return _ref2.apply(this, arguments);
+          docs.push(file);
+        });
+      } else {
+        isValid = false;
       }
 
-      return validateStep3;
-    }()
+      this.setState(function (prev) {
+        prev.files = docs;
+        prev.showErrorStep3 = !isValid;
+        return prev;
+      }, function () {
+        return isValid;
+      });
+    }
   }, {
     key: 'isTextValid',
     value: function isTextValid(value) {

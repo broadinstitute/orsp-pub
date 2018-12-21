@@ -43,9 +43,9 @@ class NewProject extends Component {
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
   }
 
-  submitNewProject = async () => {
+  submitNewProject = () => {
 
-    if (await this.validateStep3()) {
+    if (this.validateStep3()) {
        if (this.validateStep2() && this.validateStep1()) {
          this.setState(prev => {
            prev.formSubmitted = true;
@@ -228,7 +228,7 @@ class NewProject extends Component {
     return isValid;
   }
 
-  async validateStep3() {
+  validateStep3() {
     let isValid = true;
 
     let docs = [];
@@ -247,13 +247,14 @@ class NewProject extends Component {
       isValid = false;
     }
 
-    await this.setState(prev => {
+    this.setState(prev => {
       prev.files = docs;
       prev.showErrorStep3 = !isValid;
       return prev;
+    }, () => {
+      return isValid;
     });
 
-    return isValid;
   }
 
   isTextValid(value) {
