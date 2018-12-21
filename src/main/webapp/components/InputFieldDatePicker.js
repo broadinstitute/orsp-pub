@@ -10,17 +10,16 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
   constructor(props) {
     super(props);
     this.state = {
-      startDate: null
+      selected: null
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(date) {
-//    this.setState({
-//      startDate: date
-//    });
-console.log("En date picker -> ", date)
-    this.props.onChange(date)
+    console.log(date);
+      this.setState({
+          selected: date
+      }, () => this.props.onChange(date, this.props.name));
   }
 
   render() {
@@ -30,7 +29,7 @@ console.log("En date picker -> ", date)
       InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
         h(
           DatePicker, ({
-            selected: this.props.selected,
+            selected: this.state.selected,
             onChange: this.handleChange,
             showYearDropdown: true,
             dropdownMode: "select",
