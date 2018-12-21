@@ -5,7 +5,7 @@ export const Search = {
   getMatchingUsers(url, query) {
     return axios.get(url + '?term=' + query);
   }
-  
+
 };
 
 export const Files = {
@@ -14,7 +14,9 @@ export const Files = {
     let data = new FormData();
 
     files.forEach(file => {
-      data.append(file.fileKey, file.file, file.file.name);
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
     });
 
     data.append('id', projectKey);
@@ -32,12 +34,9 @@ export const Files = {
 export const Project = {
 
   createProject(url, data) {
-    console.log(data);
-
     const config = {
       headers: { 'content-type': 'application/json' }
     };
-
     return axios.post(url, data, config);
   }
 

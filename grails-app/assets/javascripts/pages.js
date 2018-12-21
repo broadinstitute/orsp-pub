@@ -28959,7 +28959,9 @@ var Files = exports.Files = {
     var data = new FormData();
 
     files.forEach(function (file) {
-      data.append(file.fileKey, file.file, file.file.name);
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
     });
 
     data.append('id', projectKey);
@@ -28976,12 +28978,9 @@ var Files = exports.Files = {
 
 var Project = exports.Project = {
   createProject: function createProject(url, data) {
-    console.log(data);
-
     var config = {
       headers: { 'content-type': 'application/json' }
     };
-
     return _axios2.default.post(url, data, config);
   }
 };
@@ -31553,11 +31552,13 @@ var NewProject = function (_Component) {
     _this.submitNewProject = function () {
 
       if (_this.validateStep3()) {
+
         if (_this.validateStep2() && _this.validateStep1()) {
           _this.setState(function (prev) {
             prev.formSubmitted = true;
             return prev;
           });
+
           _ajax.Project.createProject(_this.props.createProjectURL, _this.getProject()).then(function (resp) {
             _this.uploadFiles(resp.data.message.projectKey);
           });
@@ -31601,7 +31602,6 @@ var NewProject = function (_Component) {
     };
 
     _this.fileHandler = function (docs) {
-      console.log('fileHandler ', docs);
       _this.setState({
         files: docs
       });
@@ -31842,11 +31842,10 @@ var NewProject = function (_Component) {
 
       this.setState(function (prev) {
         prev.files = docs;
-        prev.showErrorStep3 = !isValid;
         return prev;
-      }, function () {
-        return isValid;
       });
+
+      return isValid;
     }
   }, {
     key: 'isTextValid',
@@ -31860,8 +31859,6 @@ var NewProject = function (_Component) {
   }, {
     key: 'initDocuments',
     value: function initDocuments(projectType) {
-
-      console.log('initDocuments ', projectType, this.state.formerProjectType);
 
       if (projectType !== this.state.formerProjectType) {
 

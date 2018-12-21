@@ -4,7 +4,7 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import {Files, Project} from "../util/ajax";
+import { Files, Project } from "../util/ajax";
 import { span } from 'react-hyperscript-helpers';
 
 class NewProject extends Component {
@@ -46,26 +46,28 @@ class NewProject extends Component {
   submitNewProject = () => {
 
     if (this.validateStep3()) {
-       if (this.validateStep2() && this.validateStep1()) {
-         this.setState(prev => {
-           prev.formSubmitted = true;
-           return prev;
-         });
-         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-           this.uploadFiles(resp.data.message.projectKey);
-         });
-       } else {
-         this.setState(prev => {
-           prev.generalError = true;
-           return prev;
-         });
-       }
+
+      if (this.validateStep2() && this.validateStep1()) {
+        this.setState(prev => {
+          prev.formSubmitted = true;
+          return prev;
+        });
+
+        Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
+          this.uploadFiles(resp.data.message.projectKey);
+        });
+      } else {
+        this.setState(prev => {
+          prev.generalError = true;
+          return prev;
+        });
+      }
     } else {
-       this.setState(prev => {
-         prev.showErrorStep3 = true;
-         return prev;
-       });
-     }
+      this.setState(prev => {
+        prev.showErrorStep3 = true;
+        return prev;
+      });
+    }
   };
 
   getProject() {
@@ -239,7 +241,7 @@ class NewProject extends Component {
           isValid = false;
         } else {
           file.error = false;
-      }
+        }
         docs.push(file);
       });
     }
@@ -249,12 +251,10 @@ class NewProject extends Component {
 
     this.setState(prev => {
       prev.files = docs;
-      prev.showErrorStep3 = !isValid;
       return prev;
-    }, () => {
-      return isValid;
     });
 
+    return isValid;
   }
 
   isTextValid(value) {
@@ -272,12 +272,10 @@ class NewProject extends Component {
     },
       () => {
         this.initDocuments(this.state.determination.projectType);
-    });
+      });
   };
 
   initDocuments(projectType) {
-
-    console.log('initDocuments ', projectType, this.state.formerProjectType);
 
     if (projectType !== this.state.formerProjectType) {
 
@@ -318,10 +316,9 @@ class NewProject extends Component {
   }
 
   fileHandler = (docs) => {
-    console.log('fileHandler ', docs);
     this.setState({
       files: docs
-      });
+    });
   };
 
   static getDerivedStateFromError(error) {
@@ -343,9 +340,9 @@ class NewProject extends Component {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
         window.location.href = this.props.serverURL;
-    }).catch(error => {
-      console.error(error);
-    });
+      }).catch(error => {
+        console.error(error);
+      });
   };
 
   showSubmit = (currentStep) => {
