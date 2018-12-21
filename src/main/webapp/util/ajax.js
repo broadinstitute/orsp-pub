@@ -14,7 +14,7 @@ export const Files = {
     let data = new FormData();
 
     files.forEach(file => {
-      data.append(file.fileKey, file.fileData, file.fileData.name);
+      data.append(file.fileKey, file.file, file.file.name);
     });
 
     data.append('id', projectKey);

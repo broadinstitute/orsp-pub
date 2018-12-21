@@ -32,7 +32,8 @@ class NewProject extends Component {
         pTitle: false,
         subjectProtection: false,
         fundings: false
-      }
+      },
+      formerProjectType: null
     };
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
     this.isValid = this.isValid.bind(this);
@@ -41,8 +42,9 @@ class NewProject extends Component {
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
   }
 
-  submitNewProject = () => {
-     if (this.validateStep3()) {
+  submitNewProject = async () => {
+
+    if (await this.validateStep3()) {
        if (this.validateStep2() && this.validateStep1()) {
          this.setState(prev => {
            prev.formSubmitted = true;
@@ -65,7 +67,7 @@ class NewProject extends Component {
      }
   };
 
-  getProject(){
+  getProject() {
     let project = {};
     project.type = this.getProjectType(project);
     project.status = 'Open';
@@ -117,7 +119,7 @@ class NewProject extends Component {
           question.answer = q.answer;
           questionList.push(question);
         }
-      });  
+      });
     }
     return questionList;
   }
@@ -225,31 +227,31 @@ class NewProject extends Component {
     return isValid;
   }
 
-  validateStep3() {
-    let isValid = false;
+  async validateStep3() {
+    let isValid = true;
+
+    let docs = [];
     if (this.state.files !== null) {
-      if (this.state.determination.projectType === NE &&
-        this.state.files.length > 1 &&
-        this.state.files[0].fileData !== null &&
-        this.state.files[1].fileData !== null) {
-        isValid = true;
-      } else if (this.state.determination.projectType === NHSR &&
-        this.state.files.length === 1 &&
-        this.state.files[0].fileData !== null) {
-        isValid = true;
-      } else if (this.state.determination.projectType === IRB &&
-        this.state.files.length === 2 &&
-        this.state.files[0].fileData !== null &&
-        this.state.files[1].fileData !== null) {
-        isValid = true;
+      this.state.files.forEach(file => {
+        if (file.required === true && file.file === null) {
+          file.error = true;
+          isValid = false;
+        } else {
+          file.error = false;
       }
-    } else {
+        docs.push(file);
+      });
+    }
+    else {
       isValid = false;
     }
-    this.setState(prev => {
+
+    await this.setState(prev => {
+      prev.files = docs;
       prev.showErrorStep3 = !isValid;
       return prev;
     });
+
     return isValid;
   }
 
@@ -265,23 +267,59 @@ class NewProject extends Component {
     this.setState({
       files: [],
       determination: determination
+    },
+      () => {
+        this.initDocuments(this.state.determination.projectType);
     });
   };
+
+  initDocuments(projectType) {
+
+    console.log('initDocuments ', projectType, this.state.formerProjectType);
+
+    if (projectType !== this.state.formerProjectType) {
+
+      let documents = [];
+
+      switch (projectType) {
+        case IRB:
+          documents.push({ required: true, fileKey: 'IRB Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'IRB Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          break;
+
+        case NE:
+          documents.push({ required: true, fileKey: 'NE Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NE Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: false, fileKey: 'NE Consent Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
+          break;
+
+        case NHSR:
+          documents.push({ required: true, fileKey: 'NHSR Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          break;
+
+        default:
+          break;
+      }
+
+      this.setState({
+        files: documents,
+        projectType: projectType,
+        formerProjectType: projectType
+      });
+
+    }
+  }
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
-  fileHandler = (file) => {
-    if (file.fileData !== undefined && file.fileData) {
-      let result = this.state.files.filter(element => element.fileKey !== file.fileKey);
-      result.push(file);
-      this.setState(prev => {
-        prev.files = result;
-        return prev
+  fileHandler = (docs) => {
+    console.log('fileHandler ', docs);
+    this.setState({
+      files: docs
       });
-    }
   };
 
   static getDerivedStateFromError(error) {
@@ -303,7 +341,7 @@ class NewProject extends Component {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
         window.location.href = this.props.serverURL;
-      }).catch(error => {
+    }).catch(error => {
       console.error(error);
     });
   };
