@@ -59,6 +59,8 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (currentSep === 0) {
       isValid = this.isStep1Valid();
+    } else if (currentSep === 1) {
+      isValid = this.validateStep2();
     }
     return isValid;
   };
@@ -94,7 +96,7 @@ class NewConsentGroup extends Component {
     });
   };
 
-  validStep2 = () => {
+  validateStep2 = () => {
     let isValid = true;
 
     let docs = [];
