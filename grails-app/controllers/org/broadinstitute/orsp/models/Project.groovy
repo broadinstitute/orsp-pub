@@ -5,8 +5,13 @@ import org.broadinstitute.orsp.FundingFields
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
-class Project extends IssueDTO{
+class Project {
 
+    String type
+    String status
+    String summary
+    String studyDescription
+    String reporter
     String pTitle
     String pi
     String pm
@@ -33,6 +38,20 @@ class Project extends IssueDTO{
         protocol blank: true, nullable: true
         questions nullable:false
         subjectProtection nullable:false
+    }
+
+    Issue getIssue () {
+        IssueType type = IssueType.valueOfPrefix(this.type)
+        return new Issue(
+                type: type.name,
+                status: this.status,
+                summary: this.summary,
+                description: this.studyDescription,
+                reporter: this.reporter,
+                expirationDate: null,
+                requestDate: new Date(),
+                updateDate: new Date()
+        )
     }
 
     List<Funding> getFundingList(String projectKey) {
