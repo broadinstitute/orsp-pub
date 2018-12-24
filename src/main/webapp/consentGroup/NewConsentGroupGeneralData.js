@@ -10,28 +10,27 @@ import { InstitutionalSource } from '../components/InstitutionalSource';
 import { MultiSelect } from '../components/MultiSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 
-//import { Search } from '../util/ajax';
+import { SampleCollections } from '../util/ajax';
 
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
 
   constructor(props) {
     console.log("Props general data: **** ", props);
     super(props);
-    this.loadUsersOptions = this.loadUsersOptions.bind(this);
+    this.loadSampleCollections = this.loadSampleCollections.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       formData: {
-        investigatorLastName: this.props.user !== undefined ? this.props.user.name : '', // consent
-        institutionProtocolNumber: this.props.user !== undefined ? this.props.user.email : '', //protocol
-        consentGroupName: '', //groupName
+        investigatorLastName: '', // consent
+        institutionProtocolNumber: '', //protocol
         collaboratingInstitution: '', //collInst
         primaryContact: '',  //collContact
         sampleCollections: [],
         describeConsentGroup: '', //consentGroupDescription
         subjectProtection: '', //subjectProtection
         institutionalSources: [{ name: '', country: '' }],
-        startDate: '',
-        endDate: '',
+        startDate: null,
+        endDate: null,
         onGoingProcess: false
       }
     };
@@ -41,8 +40,9 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData))
-  }
+    }, () => this.props.updateForm(this.state.formData, 'institutionalSources'));
+    this.props.removeErrorMessage();
+  };
 
   handleInputChange = (e) => {
     const field = e.target.name;
@@ -50,14 +50,17 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () =>{
+    this.props.updateForm(this.state.formData, field);
+    this.props.removeErrorMessage();
+    })
   };
 
-handleChange(date, id) {
-  this.setState(prev => {
+  handleChange= (id) => (date) => {
+    this.setState(prev => {
       prev.formData[id] = date;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, id));
   };
 
   handleRadioChange = (e, field, value) => {
@@ -70,14 +73,16 @@ handleChange(date, id) {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
   };
 
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
   };
 
   componentDidCatch(error, info) {
@@ -90,51 +95,37 @@ handleChange(date, id) {
     return { hasError: true }
   }
 
-  loadUsersOptions(query, callback) {
-    //   if (query.length > 2) {
-    //     Search.getMatchingUsers(this.props.searchUsersURL, query)
-    //       .then(response => {
-    //         let options = response.data.map(function (item) {
-    //           return {
-    //             key: item.id,
-    //             value: item.value,
-    //             label: item.label
-    //           };
-    //         });
-    //         callback(options);
-    //       });
-    //   }
+  loadSampleCollections(query, callback) {
+     if (query.length > 2) {
+       SampleCollections.getSampleCollections(this.props.sampleSearchUrl, query)
+         .then(response => {
+           let options = response.data.map(function (item) {
+             return {
+               key: item.id,
+               value: item.value,
+               label: item.label
+             };
+           });
+           callback(options);
+         });
+     }
   };
 
   handleSampleCollectionChange = (data, action) => {
     this.setState(prev => {
       prev.formData.sampleCollections = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, "sampleCollections"));
+    this.props.removeErrorMessage();
   };
 
-  handlePIChange = (data, action) => {
-    this.setState(prev => {
-      prev.formData.piName = data;
+  handleCheck = () => {
+    this.setState(prev =>
+    { prev.formData.onGoingProcess = !this.state.formData.onGoingProcess;
+      prev.formData.endDate = null;
       return prev;
     }, () => this.props.updateForm(this.state.formData));
-  }
-
-  handleCheck = () => {
-  let current = this.state.onGoingProcess;
-    this.setState(prev =>
-      { prev.onGoingProcess = !current;
-        return prev;
-      }, () => this.props.updateForm(this.state.formData));
-  }
-
-  stepChanged(previousStep) {
-    console.log("validate");
-    if (previousStep === 0) {
-      // validar
-      console.log("validarrrrr");
-    }
-  }
+  };
 
   render() {
 
@@ -144,7 +135,20 @@ handleChange(date, id) {
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 0, currentStep: this.props.currentStep }, [
+      WizardStep({
+        title: this.props.title, step: 0, currentStep: this.props.currentStep,
+        error: this.props.errors.investigatorLastName ||
+        this.props.errors.institutionProtocolNumber ||
+        this.props.errors.collaboratingInstitution ||
+        this.props.errors.primaryContact ||
+        this.props.errors.sampleCollections ||
+        this.props.errors.describeConsentGroup ||
+        this.props.errors.subjectProtection ||
+        this.props.errors.institutionalSources ||
+        this.props.errors.startDate ||
+        this.props.errors.endDate ||
+        this.props.errors.onGoingProcess,
+        errorMessage: 'Please complete all required fields'}, [
 
         InputFieldText({
           id: "inputInvestigatorLastName",
@@ -153,7 +157,9 @@ handleChange(date, id) {
           value: this.state.formData.investigatorLastName,
           disabled: false,
           required: true,
-          onChange: this.handleInputChange
+          onChange: this.handleInputChange,
+          error:this.props.errors.investigatorLastName,
+          errorMessage: "Required field"
         }),
 
         InputFieldText({
@@ -162,18 +168,22 @@ handleChange(date, id) {
           label: "Collaborating Institution's Protocol Number",
           value: this.state.formData.institutionProtocolNumber,
           disabled: false,
-          required: false,
-          onChange: this.handleInputChange
+          required: true,
+          onChange: this.handleInputChange,
+          error:this.props.errors.institutionProtocolNumber,
+          errorMessage: "Required field"
         }),
 
         InputFieldText({
           id: "inputConsentGroupName",
           name: "consentGroupName",
           label: "Consent Group Name",
-          value: this.state.formData.consentGroupName,
-          disabled: false,
+          value: this.state.formData.institutionProtocolNumber + " | " +  this.state.formData.investigatorLastName,
+          disabled: true,
           required: false,
-          onChange: this.handleInputChange
+          onChange: null,
+          error:this.props.errors.consentGroupName,
+          errorMessage: "Required field"
         }),
 
         InputFieldText({
@@ -183,7 +193,9 @@ handleChange(date, id) {
           value: this.state.formData.collaboratingInstitution,
           disabled: false,
           required: true,
-          onChange: this.handleInputChange
+          onChange: this.handleInputChange,
+          error:this.props.errors.collaboratingInstitution,
+          errorMessage: "Required field"
         }),
 
         InputFieldText({
@@ -193,19 +205,23 @@ handleChange(date, id) {
           moreInfo: "(optional)",
           value: this.state.formData.primaryContact,
           disabled: false,
-          required: false,
-          onChange: this.handleInputChange
+          required: true,
+          onChange: this.handleInputChange,
+          error:this.props.errors.primaryContact,
+          errorMessage: "Required field"
         }),
 
         MultiSelect({
           id: "sampleCollection_select",
           label: "Link Sample Collection to [add here project id]",
           isDisabled: false,
-          loadOptions: this.loadUsersOptions,
+          loadOptions: this.loadSampleCollections,
           handleChange: this.handleSampleCollectionChange,
           value: this.state.formData.sampleCollections,
           placeholder: "Choose a sample collection",
-          isMulti: true
+          isMulti: true,
+          error: this.props.errors.sampleCollections,
+          errorMessage: "Required field"
         }),
 
         InputFieldRadio({
@@ -220,43 +236,58 @@ handleChange(date, id) {
             "I am requesting assistance in updating and existing project"
           ],
           onChange: this.handleRadio2Change,
-          required: false
+          required: true,
+          error:this.props.errors.describeConsentGroup,
+          errorMessage: "Required field"
         }),
 
         Panel({
           title: "Sample Collection Date Range ",
           moreInfo: "(if data will be deposited to GEO, dbGaP, or other federal repository. Optional)",
         }, [
-            div({ className: "row" }, [
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                InputFieldDatePicker({
-                  selected: this.state.startDate,
-                  name: "startDate",
-                  label: "Start Date",
-                  onChange: this.handleChange,
-                  placeholder: "Enter Start Date"
-                })
-              ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                InputFieldDatePicker({
-                  name: "endDate",
-                  label: "End Date",
-                  onChange: this.handleChange,
-                  placeholder: "Enter End Date",
-                  disabled: this.state.onGoingProcess === true
-                })
-              ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
-                input({ type: 'checkbox', id: "onGoingProcess", name: "onGoingProcess", onChange: this.handleCheck, defaultChecked: this.state.onGoingProcess }),
-                label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
-              ])
+          div({ className: "row" }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                selected: this.state.formData.startDate,
+                name: "startDate",
+                label: "Start Date",
+                onChange: this.handleChange,
+                placeholder: "Enter Start Date",
+                error:this.props.errors.startDate,
+                errorMessage: "Required field"
+              })
+            ]),
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                name: "endDate",
+                label: "End Date",
+                selected: this.state.formData.endDate,
+                onChange: this.handleChange,
+                placeholder: "Enter End Date",
+                disabled: this.state.formData.onGoingProcess === true,
+                error:this.props.errors.endDate,
+                errorMessage: "Required field"
+              })
+            ]),
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+              input({
+                type: 'checkbox',
+                id: "onGoingProcess",
+                name: "onGoingProcess",
+                onChange: this.handleCheck,
+                defaultChecked: this.state.formData.onGoingProcess
+              }),
+              label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
             ])
-          ]),
+          ])
+        ]),
 
         Panel({ title: "Institutional Source of Data/Samples and Location*" }, [
           InstitutionalSource({
-            onChange: this.handleUpdateinstitutionalSources,
-            institutionalSources: this.state.formData.institutionalSources
+            updateInstitutionalSource: this.handleUpdateinstitutionalSources,
+            institutionalSources: this.state.formData.institutionalSources,
+            error: this.props.errors.institutionalSources,
+            errorMessage: "Required field"
           })
         ]),
 
@@ -267,7 +298,9 @@ handleChange(date, id) {
           moreInfo: "(Please note that all samples arriving from Dana Farber Cancer Institute now requiere an MTA)",
           value: this.state.formData.subjectProtection,
           onChange: this.handleRadioChange,
-          required: false
+          required: true,
+          error:this.props.errors.subjectProtection,
+          errorMessage: "Required field"
         })
       ])
     )

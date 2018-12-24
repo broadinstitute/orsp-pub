@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h } from 'react-hyperscript-helpers';
+import { hh, h, small } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import AsyncSelect from 'react-select/lib/Async';
 
@@ -13,7 +13,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   render() {
 
     return (
-      InputField({ label: this.props.label }, [
+      InputField({ label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage }, [
         h(AsyncSelect, {
           id: this.props.id,
           isDisabled: this.props.isDisabled,
@@ -25,8 +25,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
           placeholder: this.props.placeholder,
           className: "inputFieldSelect",
           classNamePrefix: "select"
-        })
-
+        }),
       ]))
   }
 });

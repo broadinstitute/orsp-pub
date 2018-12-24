@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, p, h, span, small } from 'react-hyperscript-helpers';
+import { hh, h } from 'react-hyperscript-helpers';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { InputField } from './InputField';
@@ -12,14 +12,6 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
     this.state = {
       selected: null
     };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(date) {
-    console.log(date);
-      this.setState({
-          selected: date
-      }, () => this.props.onChange(date, this.props.name));
   }
 
   render() {
@@ -29,8 +21,8 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
       InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
         h(
           DatePicker, ({
-            selected: this.state.selected,
-            onChange: this.handleChange,
+            selected: this.props.selected,
+            onChange: this.props.onChange(this.props.name),
             showYearDropdown: true,
             dropdownMode: "select",
             isClearable: true,

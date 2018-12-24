@@ -7,6 +7,8 @@ ReactDOM.render(
     <NewConsentGroup
         user = {component.user}
         searchUsersURL = {component.searchUsersURL}
+        sampleSearchUrl = {component.sampleSearchUrl}
+        consentNamesSearchURL = {component.consentNamesSearchURL}
         attachDocumentsURL = {component.attachDocumentsURL}
         createProjectURL = {component.createProjectURL}
         serverURL = {component.serverURL}

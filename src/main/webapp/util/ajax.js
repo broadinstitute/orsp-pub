@@ -8,6 +8,19 @@ export const Search = {
 
 };
 
+export const SampleCollections = {
+
+  getSampleCollections(url, query) {
+    return axios.get(url + '?term=' + query);
+  }
+};
+
+export const ConsentGroup = {
+  getConsentGroupNames(url, query) {
+    return axios.get(url + '?term=' + query);
+  }
+}
+
 export const Files = {
 
   upload(url, files, projectKey, displayName, userName) {
