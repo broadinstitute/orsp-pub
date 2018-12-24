@@ -36,7 +36,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       yesOutput: 2,
       noOutput: EXIT,
       answer: null,
-      progress: 17,
+      progress: 0,
       id: 1
     });
 
@@ -45,7 +45,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       yesOutput: 3,
       noOutput: EXIT,
       answer: null,
-      progress: 34,
+      progress: 17,
       id: 2
     });
 
@@ -54,7 +54,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       yesOutput: DPA,
       noOutput: 4,
       answer: null,
-      progress: 50,
+      progress: 34,
       id: 3
     });
 
@@ -63,7 +63,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       yesOutput: 5,
       noOutput: RA,
       answer: null,
-      progress: 67,
+      progress: 50,
       id: 4
     });
 
@@ -72,7 +72,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       yesOutput: OSAP,
       noOutput: 6,
       answer: null,
-      progress: 83,
+      progress: 67,
       id: 5
     });
 
@@ -81,7 +81,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       yesOutput: EXIT,
       noOutput: CTC,
       answer: null,
-      progress: 100,
+      progress: 83,
       id: 6
     });
 
