@@ -10,7 +10,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   };
 
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
+    console.log('----------------------- error ----------------------');
     console.log(error, info);
   }
 
@@ -20,8 +20,8 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   }
 
   setFilesToUpload = (docs, ix) => (e) => {
-    let selectedFile = e.target.files[0];
-    docs[ix].file = selectedFile;
+    console.log('setFilesToUpload', e.target.files, ix);
+    docs[ix].file = e.target.files[0];
     docs[ix].error = false;
     this.props.fileHandler(docs);
   };

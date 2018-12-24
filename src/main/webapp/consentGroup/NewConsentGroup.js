@@ -28,20 +28,24 @@ class NewConsentGroup extends Component {
         pTitle: false,
         subjectProtection: false
       }
-    }
+    };
 
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
   }
 
+  componentDidMount() {
+    this.initDocuments();
+  }
+
   submitNewConsentGroup = (xxx) => {
     console.log('submitNewConsentGroup');
-  }
+  };
 
   stepChanged = (newStep) => {
     this.setState({
       currentStep: newStep
     });
-  }
+  };
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
@@ -57,7 +61,7 @@ class NewConsentGroup extends Component {
       isValid = this.isStep1Valid();
     }
     return isValid;
-  }
+  };
 
   isStep1Valid() {
     let isValid = true;
@@ -77,7 +81,7 @@ class NewConsentGroup extends Component {
       files: [],
       determination: determination
     });
-  }
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- new consent group error ----------------------')
@@ -85,14 +89,36 @@ class NewConsentGroup extends Component {
   }
 
   fileHandler = (file) => {
-    if (file.fileData !== undefined && file.fileData) {
-      let result = this.state.files.filter(element => element.fileKey !== file.fileKey);
-      result.push(file);
-      this.setState(prev => {
-        prev.files = result;
-        return prev
+    this.setState({
+      files: file
+    });
+  };
+
+  validStep2 = () => {
+    let isValid = true;
+
+    let docs = [];
+    if (this.state.files !== null) {
+      this.state.files.forEach(file => {
+        if (file.required === true && file.file === null) {
+          file.error = true;
+          isValid = false;
+        } else {
+          file.error = false;
+        }
+        docs.push(file);
       });
     }
+    else {
+      isValid = false;
+    }
+
+    this.setState(prev => {
+      prev.files = docs;
+      return prev;
+    });
+
+    return isValid;
   };
 
   static getDerivedStateFromError(error) {
@@ -104,8 +130,6 @@ class NewConsentGroup extends Component {
     this.setState(prev => {
       prev.step1FormData = updatedForm;
       return prev;
-    }, () => {
-      this.initDocuments()
     });
   };
 
@@ -130,7 +154,7 @@ class NewConsentGroup extends Component {
     });
 
     documents.push({
-      required: true,
+      required: false,
       fileKey: 'Sample Providers Permission',
       label: span({}, ["Upload the ", span({className: "bold"}, ["Sample Provider's Permission to add cohort "]), "to this Broad project (DFCI IRB only. Optional):"]),
       file: null,
@@ -138,7 +162,7 @@ class NewConsentGroup extends Component {
       error: false
     });
     documents.push({
-      required: true,
+      required: false,
       fileKey: 'Data Use Letter',
       label: span({}, ["Upload the ", span({className: "bold"}, ["Data Use Letter "]), "here (optional):"]),
       file: null,
