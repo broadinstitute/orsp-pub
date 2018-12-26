@@ -26,6 +26,7 @@ class NewConsentGroup extends Component {
         investigatorLastName: '',
         institutionProtocolNumber:''
       },
+      step4FormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -40,11 +41,16 @@ class NewConsentGroup extends Component {
         institutionalSources: false,
         startDate: false,
         endDate: false,
-        onGoingProcess: false
+        onGoingProcess: false,
+        pii: false,
+        compliance: false,
+        sensitive: false,
+        accessible: false
       }
     };
 
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
+    this.updateStep4FormData = this.updateStep4FormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
   }
@@ -90,6 +96,8 @@ class NewConsentGroup extends Component {
       isValid = this.validateStep1(field);
     } else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
+    } else if (this.state.currentStep === 3) {
+      isValid = this.validateStep4();
     }
     return isValid;
   };
@@ -284,6 +292,61 @@ validateStep1(field) {
     return isValid;
   };
 
+    validateStep4(field) {
+      let pii = false;
+      let compliance = false;
+      let sensitive = false;
+      let accessible = false;
+      let isValid = true;
+
+      if (this.state.step4FormData.pii !== true && this.state.step4FormData.pii !== false) {
+          pii = true;
+          isValid = false;
+      }
+      if (this.state.step4FormData.compliance !== true && this.state.step4FormData.compliance !== false) {
+          compliance = true;
+          isValid = false;
+      }
+      if (this.state.step4FormData.sensitive !== true && this.state.step4FormData.sensitive !== false) {
+          sensitive = true;
+          isValid = false;
+      }
+      if (this.state.step4FormData.accessible !== true && this.state.step4FormData.accessible !== false) {
+          accessible = true;
+          isValid = false;
+      }
+
+      if (field === undefined || field === null || field === 0) {
+         this.setState(prev => {
+           prev.errors.pii = pii;
+           prev.errors.compliance = compliance;
+           prev.errors.sensitive = sensitive;
+           prev.errors.accessible = accessible;
+           return prev;
+         });
+      }
+      else if (field === 'pii' || field === 'compliance' || field === 'sensitive' || field === 'accessible' ) {
+
+         this.setState(prev => {
+           if (field === 'pii') {
+             prev.errors.pii = pii;
+           }
+           else if (field === 'compliance') {
+             prev.errors.compliance = compliance;
+           }
+           else if (field === 'sensitive') {
+             prev.errors.sensitive = sensitive;
+           }
+           else if (field === 'accessible') {
+             prev.errors.accessible = accessible;
+           }
+           return prev;
+         });
+      }
+
+      return isValid;
+    }
+
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
@@ -308,6 +371,18 @@ validateStep1(field) {
       return prev;
     });
   }
+
+  updateStep4FormData = (updatedForm, field) => {
+      if (this.currentStep === 3) {
+        this.validateStep4(field);
+      }
+      this.setState(prev => {
+        prev.step4FormData = updatedForm;
+        return prev;
+      }, () => {
+        this.isValid(field);
+        })
+  };
 
   initDocuments() {
     let documents = [];
@@ -369,7 +444,7 @@ validateStep1(field) {
         NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination }),
-        NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
+        NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
       ])
     );
