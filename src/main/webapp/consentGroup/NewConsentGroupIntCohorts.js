@@ -98,7 +98,8 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [
+      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep,
+       questionnaireStep: true, error: this.props.errors, errorMessage: ' Please answer all questions to continue'}, [
         QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })
       ])
     )

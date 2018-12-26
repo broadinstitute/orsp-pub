@@ -13,6 +13,7 @@ class NewConsentGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showErrorStep3: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -102,6 +103,8 @@ class NewConsentGroup extends Component {
       isValid = this.validateStep1(field);
     } else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
+    } else if (this.state.currentStep === 2) {
+      isValid = this.validateStep3();
     } else if (this.state.currentStep === 3) {
       isValid = this.validateStep4(field);
     } else if (this.state.currentStep === 4) {
@@ -257,7 +260,6 @@ validateStep1(field) {
 
   determinationHandler = (determination) => {
     this.setState({
-      files: [],
       determination: determination
     });
   };
@@ -299,6 +301,18 @@ validateStep1(field) {
 
     return isValid;
   };
+
+  validateStep3() {
+    let isValid = true;
+    if (this.state.determination.requiredError || this.state.determination.endState == false) {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.showErrorStep3 = !isValid;
+      return prev;
+    });
+    return isValid;
+  }
 
   validateStep4(field) {
       let pii = false;
@@ -522,7 +536,7 @@ validateStep1(field) {
       Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit }, [
         NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
-        NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination }),
+        NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
       ])
