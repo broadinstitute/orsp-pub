@@ -26,6 +26,8 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
             showYearDropdown: true,
             dropdownMode: "select",
             isClearable: true,
+            minDate: this.props.minDate,
+            maxDate: this.props.maxDate,
             disabled: this.props.disabled,
             placeholderText: this.props.placeholder,
             className: "inputFieldDatePicker"

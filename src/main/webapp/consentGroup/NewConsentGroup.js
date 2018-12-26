@@ -22,11 +22,7 @@ class NewConsentGroup extends Component {
         nextQuestionIndex: 1,
         endState: false
       },
-      consentGroupName:'',
-      step1FormData: {
-        investigatorLastName: '',
-        institutionProtocolNumber:''
-      },
+      step1FormData: {},
       step4FormData: {},
       step5FormData: {},
       currentStep: 0,
@@ -65,16 +61,20 @@ class NewConsentGroup extends Component {
 
   componentDidMount() {
     this.initDocuments();
+    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
+        resp => this.setState({existingGroupNames:resp.data}));
   }
 
-  submitNewConsentGroup = (xxx) => {
-    console.log('submitNewConsentGroup');
-  };
+  submitNewConsentGroup = () => {
+    console.log(this.getConsentGroup());
+    };
 
   getConsentGroup() {
     // Build Json
     let consentGroup = {};
     consentGroup.summary = this.state.step1FormData.groupName;
+    consentGroup.startDate = this.parseDate(this.state.step1FormData.startDate);
+    consentGroup.endDate = this.parseDate(this.state.step1FormData.endDate);
     // consentGroup.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
     // consentGroup.protocol = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
     // consentGroup.requireMta = this.state.step1FormData.requireMta !== '' ? this.state.step1FormData.requireMta : null;
@@ -102,6 +102,7 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateStep1(field);
+      console.log(this.getConsentGroup());
     } else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
     } else if (this.state.currentStep === 2) {
@@ -115,18 +116,8 @@ class NewConsentGroup extends Component {
   };
 
   consentGroupNameExists () {
-  // TODO: add here check if consent group name already exists to validations
-    let match = [];
-//    console.log("URL = ", this.props.sampleSearchUrl, "consentGroup ", this.state.consentGroupName)
-    let consentGroupNames = ["Janeway / 123", "Church / 123", "123 / Leo"]; // Check order for name composition
-    match.push(consentGroupNames.find(element => {return element === this.state.consentGroupName }));
-    //    let consentGroupNames = ConsentGroup.getConsentGroupNames(this.props.sampleSearchUrl, this.state.step1FormData.consentGroupName);
-//    console.log("consent Groups Names ", consentGroupNames)
-//    console.log("match? =  ", match);
-    return match.length > 1;
-//    return false;
+    return this.state.existingGroupNames.indexOf(this.state.step1FormData.consentGroupName) > -1;
   }
-
 
 validateStep1(field) {
     let investigatorLastName = false;
@@ -141,8 +132,7 @@ validateStep1(field) {
     let startDate = false;
     let endDate = false;
     let isValid = true;
-
-    if (!this.isTextValid(this.state.step1FormData.consentGroupName) && this.consentGroupNameExists()) {
+    if (field === "consentGroupName" && this.consentGroupNameExists()) {
       consentGroupName = true;
       isValid = false;
     }
@@ -175,7 +165,7 @@ validateStep1(field) {
       startDate = true;
       isValid = false;
     }
-    if (!this.state.step1FormData.onGoingProcess  && !this.isTextValid(this.state.step1FormData.startDate)) {
+    if (!this.state.step1FormData.onGoingProcess  && !this.isTextValid(this.state.step1FormData.endDate)) {
       endDate = true;
       isValid = false;
     }
@@ -441,17 +431,9 @@ validateStep1(field) {
       prev.step1FormData = updatedForm;
       return prev;
     }, () => {
-      this.setGroupName(); // improve this
       this.isValid(field);
       })
   };
-
-  setGroupName () {
-    this.setState(prev => {
-      prev.consentGroupName = [this.state.step1FormData.institutionProtocolNumber.concat(), this.state.step1FormData.investigatorLastName].join(" / ");
-      return prev;
-    });
-  }
 
   updateStep4FormData = (updatedForm, field) => {
       if (this.state.currentStep === 3) {
@@ -530,6 +512,11 @@ validateStep1(field) {
       prev.generalError = false;
       return prev;
     });
+  }
+
+  parseDate(date) {
+    let d = new Date(date);
+    return [d.getFullYear(), d.getMonth()+1, d.getDate()].join("-");
   }
 
   render() {

@@ -16,7 +16,8 @@ export const InputFieldText = hh(class InputFieldText extends Component {
                 value: this.props.value,
                 disabled: this.props.disabled,
                 required: this.props.required,
-                onChange: this.props.onChange })
+                onChange: this.props.onChange,
+                onBlur: this.props.focusOut})
       ])
     )
   }

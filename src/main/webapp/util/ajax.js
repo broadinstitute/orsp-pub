@@ -16,8 +16,8 @@ export const SampleCollections = {
 };
 
 export const ConsentGroup = {
-  getConsentGroupNames(url, query) {
-    return axios.get(url + '?term=' + query);
+  getConsentGroupNames(url) {
+    return axios.get(url);
   }
 };
 

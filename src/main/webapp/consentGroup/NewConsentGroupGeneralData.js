@@ -21,15 +21,16 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       formData: {
-        investigatorLastName: '', // consent
-        institutionProtocolNumber: '', //protocol
-        collaboratingInstitution: '', //collInst
-        primaryContact: '',  //collContact
+        investigatorLastName: '',
+        institutionProtocolNumber: '',
+        consentGroupName: '',
+        collaboratingInstitution: '',
+        primaryContact: '',
         sampleCollections: [],
-        describeConsentGroup: '', //consentGroupDescription
-        requireMta: '', //requireMta
+        describeConsentGroup: '',
+        requireMta: '',
         institutionalSources: [{ name: '', country: '' }],
-        startDate: null,
+        startDate: null, // aaaa-mm-dd
         endDate: null,
         onGoingProcess: false
       }
@@ -127,6 +128,16 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     }, () => this.props.updateForm(this.state.formData));
   };
 
+  checkGroupName = () => {
+  if (this.state.formData.investigatorLastName !== '' && this.state.formData.institutionProtocolNumber !== '') {
+      this.setState(prev => {
+        prev.formData.consentGroupName = [this.state.formData.investigatorLastName, this.state.formData.institutionProtocolNumber].join(" / ");
+        return prev;
+      }, () => this.props.updateForm(this.state.formData, "consentGroupName"));
+      this.props.removeErrorMessage();
+    }
+  }
+
   render() {
 
     if (this.state.hasError) {
@@ -158,6 +169,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           disabled: false,
           required: true,
           onChange: this.handleInputChange,
+          focusOut : this.checkGroupName,
           error:this.props.errors.investigatorLastName,
           errorMessage: "Required field"
         }),
@@ -170,6 +182,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           disabled: false,
           required: true,
           onChange: this.handleInputChange,
+          focusOut : this.checkGroupName,
           error:this.props.errors.institutionProtocolNumber,
           errorMessage: "Required field"
         }),
@@ -183,7 +196,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           required: false,
           onChange: null,
           error:this.props.errors.consentGroupName,
-          errorMessage: "Required field"
+          errorMessage: "An existing Consent Group with this protocol exists. Please choose a different one."
         }),
 
         InputFieldText({
@@ -230,7 +243,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           label: "Please choose one of the following to describe this proposed Consent Group: ",
           moreInfo: "",
           value: this.state.formData.describeConsentGroup,
-          optionValues: ["o1", "02"],
+          optionValues: ["01", "02"],
           optionLabels: [
             "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
             "I am requesting assistance in updating and existing project"
@@ -253,18 +266,21 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 label: "Start Date",
                 onChange: this.handleChange,
                 placeholder: "Enter Start Date",
+                maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null,
                 error:this.props.errors.startDate,
                 errorMessage: "Required field"
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
+                startDate: this.state.formData.startDate,
                 name: "endDate",
                 label: "End Date",
                 selected: this.state.formData.endDate,
                 onChange: this.handleChange,
                 placeholder: "Enter End Date",
-                disabled: this.state.formData.onGoingProcess === true,
+                disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
+                minDate: this.state.formData.startDate,
                 error:this.props.errors.endDate,
                 errorMessage: "Required field"
               })
