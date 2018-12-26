@@ -39,7 +39,6 @@ class NewConsentGroup extends Component {
         institutionalSources: false,
         startDate: false,
         endDate: false,
-        onGoingProcess: false,
         pii: false,
         compliance: false,
         sensitive: false,
@@ -165,7 +164,7 @@ validateStep1(field) {
       startDate = true;
       isValid = false;
     }
-    if (!this.state.step1FormData.onGoingProcess  && !this.isTextValid(this.state.step1FormData.endDate)) {
+    if (!this.state.step1FormData.onGoingProcess && !this.isTextValid(this.state.step1FormData.endDate)) {
       endDate = true;
       isValid = false;
     }

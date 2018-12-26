@@ -62,6 +62,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
       prev.formData[id] = date;
       return prev;
     }, () => this.props.updateForm(this.state.formData, id));
+    this.props.removeErrorMessage();
   };
 
   handleRadioChange = (e, field, value) => {
@@ -125,7 +126,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     { prev.formData.onGoingProcess = !this.state.formData.onGoingProcess;
       prev.formData.endDate = null;
       return prev;
-    }, () => this.props.updateForm(this.state.formData));
+    }, () => this.props.updateForm(this.state.formData, "onGoingProcess"));
+    this.props.removeErrorMessage();
   };
 
   checkGroupName = () => {
