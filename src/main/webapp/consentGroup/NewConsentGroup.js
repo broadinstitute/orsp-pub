@@ -38,7 +38,7 @@ class NewConsentGroup extends Component {
         primaryContact: false,
         sampleCollections: false,
         describeConsentGroup: false,
-        subjectProtection: false,
+        requireMta: false,
         institutionalSources: false,
         startDate: false,
         endDate: false,
@@ -75,7 +75,7 @@ class NewConsentGroup extends Component {
     consentGroup.summary = this.state.step1FormData.groupName;
     // consentGroup.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
     // consentGroup.protocol = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
-    // consentGroup.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
+    // consentGroup.requireMta = this.state.step1FormData.requireMta !== '' ? this.state.step1FormData.requireMta : null;
     // consentGroup.questions = this.getQuestions(this.state.determination.questions);
     // consentGroup.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
     // consentGroup.fundings = this.getFundings(this.state.step1FormData.fundings);
@@ -132,7 +132,7 @@ validateStep1(field) {
     let primaryContact = false;
     let sampleCollections = false;
     let describeConsentGroup = false;
-    let subjectProtection = false;
+    let requireMta = false;
     let institutionalSources = false;
     let startDate = false;
     let endDate = false;
@@ -159,8 +159,8 @@ validateStep1(field) {
       sampleCollections = true;
       isValid = false;
     }
-    if (this.state.step1FormData.subjectProtection !== true && this.state.step1FormData.subjectProtection !== false) {
-      subjectProtection = true;
+    if (this.state.step1FormData.requireMta !== true && this.state.step1FormData.requireMta !== false) {
+      requireMta = true;
       isValid = false;
     }
     if (!this.isTextValid(this.state.step1FormData.collaboratingInstitution)) {
@@ -201,7 +201,7 @@ validateStep1(field) {
         prev.errors.primaryContact = primaryContact;
         prev.errors.sampleCollections = sampleCollections;
         prev.errors.describeConsentGroup = describeConsentGroup;
-        prev.errors.subjectProtection = subjectProtection;
+        prev.errors.requireMta = requireMta;
         prev.errors.institutionalSources = institutionalSources;
         prev.errors.startDate = startDate;
         prev.errors.endDate = endDate;
@@ -213,7 +213,7 @@ validateStep1(field) {
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' ||
       field === 'primaryContact' || field === 'sampleCollections' ||
-      field === 'describeConsentGroup' || field === 'subjectProtection' ||
+      field === 'describeConsentGroup' || field === 'requireMta' ||
       field === 'institutionalSources' || field === 'startDate' ||
       field === 'endDate') {
 
@@ -232,8 +232,8 @@ validateStep1(field) {
           prev.errors.sampleCollections = sampleCollections;
         } else if (field === 'describeConsentGroup') {
           prev.errors.describeConsentGroup = describeConsentGroup;
-        } else if (field === 'subjectProtection') {
-          prev.errors.subjectProtection = subjectProtection;
+        } else if (field === 'requireMta') {
+          prev.errors.requireMta = requireMta;
         } else if (field === 'institutionalSources') {
           prev.errors.institutionalSources = institutionalSources;
         } else if (field === 'startDate') {

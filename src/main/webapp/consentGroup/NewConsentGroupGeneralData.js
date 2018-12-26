@@ -27,7 +27,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         primaryContact: '',  //collContact
         sampleCollections: [],
         describeConsentGroup: '', //consentGroupDescription
-        subjectProtection: '', //subjectProtection
+        requireMta: '', //requireMta
         institutionalSources: [{ name: '', country: '' }],
         startDate: null,
         endDate: null,
@@ -143,7 +143,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         this.props.errors.primaryContact ||
         this.props.errors.sampleCollections ||
         this.props.errors.describeConsentGroup ||
-        this.props.errors.subjectProtection ||
+        this.props.errors.requireMta ||
         this.props.errors.institutionalSources ||
         this.props.errors.startDate ||
         this.props.errors.endDate ||
@@ -178,7 +178,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           id: "inputConsentGroupName",
           name: "consentGroupName",
           label: "Consent Group Name",
-          value: this.state.formData.institutionProtocolNumber + " | " +  this.state.formData.investigatorLastName,
+          value: this.state.formData.investigatorLastName + " / " + this.state.formData.institutionProtocolNumber ,
           disabled: true,
           required: false,
           onChange: null,
@@ -292,14 +292,14 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         ]),
 
         InputYesNo({
-          id: "radioSubjectProtection",
-          name: "subjectProtection",
+          id: "radioRequireMta",
+          name: "requireMta",
           label: "Does the institution providing samples/data to the Broad require a Material or Data Transfer Agreement (MTA)?",
           moreInfo: "(Please note that all samples arriving from Dana Farber Cancer Institute now requiere an MTA)",
-          value: this.state.formData.subjectProtection,
+          value: this.state.formData.requireMta,
           onChange: this.handleRadioChange,
           required: true,
-          error:this.props.errors.subjectProtection,
+          error:this.props.errors.requireMta,
           errorMessage: "Required field"
         })
       ])
