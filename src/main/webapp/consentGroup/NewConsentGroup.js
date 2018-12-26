@@ -27,6 +27,7 @@ class NewConsentGroup extends Component {
         institutionProtocolNumber:''
       },
       step4FormData: {},
+      step5FormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -48,12 +49,14 @@ class NewConsentGroup extends Component {
         accessible: false,
         textCompliance: false,
         textSensitive: false,
-        textAccessible: false
+        textAccessible: false,
+        sharingPlan: false
       }
     };
 
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
     this.updateStep4FormData = this.updateStep4FormData.bind(this);
+    this.updateStep5FormData = this.updateStep5FormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
   }
@@ -101,6 +104,8 @@ class NewConsentGroup extends Component {
       isValid = this.validateStep2();
     } else if (this.state.currentStep === 3) {
       isValid = this.validateStep4(field);
+    } else if (this.state.currentStep === 4) {
+      isValid = this.validateStep5(field);
     }
     return isValid;
   };
@@ -377,6 +382,33 @@ validateStep1(field) {
       return isValid;
   }
 
+  validateStep5(field) {
+      let sharingPlan = false;
+      let isValid = true;
+
+      if (!this.isTextValid(this.state.step5FormData.sharingPlan)) {
+          sharingPlan = true;
+          isValid = false;
+      }
+
+      if (field === undefined || field === null || field === 4) {
+         this.setState(prev => {
+           prev.errors.sharingPlan = sharingPlan;
+           return prev;
+         });
+      }
+      else if (field === 'sharingPlan') {
+
+         this.setState(prev => {
+           if (field === 'sharingPlan') {
+             prev.errors.sharingPlan = sharingPlan;
+           }
+           return prev;
+         });
+      }
+      return isValid;
+  }
+
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
@@ -408,6 +440,18 @@ validateStep1(field) {
       }
       this.setState(prev => {
         prev.step4FormData = updatedForm;
+        return prev;
+      }, () => {
+        this.isValid(field);
+        })
+  };
+
+  updateStep5FormData = (updatedForm, field) => {
+      if (this.state.currentStep === 4) {
+        this.validateStep5(field);
+      }
+      this.setState(prev => {
+        prev.step5FormData = updatedForm;
         return prev;
       }, () => {
         this.isValid(field);
@@ -475,7 +519,7 @@ validateStep1(field) {
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
+        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
       ])
     );
   }
