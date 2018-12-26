@@ -262,7 +262,8 @@ validateStep1(field) {
   determinationHandler = (determination) => {
     console.log(determination);
     this.setState({
-      determination: determination
+      determination: determination,
+      showErrorStep3: false
     });
   };
 
