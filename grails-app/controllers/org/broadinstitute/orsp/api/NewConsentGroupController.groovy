@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
@@ -23,6 +24,31 @@ class NewConsentGroupController extends AuthenticatedController {
         if(source != null) {
             issue.setRequestDate(new Date())
             Issue consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
+
+            try {
+                // If any sample collections were linked, we need to add them to the consent group.
+                def sampleCollectionIds = []
+                if (issue.getSamples()) { sampleCollectionIds.addAll(issue.getSamples()) }
+                if (sampleCollectionIds.isEmpty()) {
+                    new ConsentCollectionLink(
+                            projectKey: source.projectKey,
+                            consentKey: consent.projectKey,
+                            sampleCollectionId: null,
+                            creationDate: new Date()
+                    ).save(flush: true)
+                } else {
+                    sampleCollectionIds.each {
+                        new ConsentCollectionLink(
+                                projectKey: source.projectKey,
+                                consentKey: consent.projectKey,
+                                sampleCollectionId: it,
+                                creationDate: new Date()
+                        ).save(flush: true)
+                    }
+                }
+            } catch (Exception e) {
+                flash.error = e.getMessage()
+            }
             consent.status = 201
             render([message: consent] as JSON)
         } else {

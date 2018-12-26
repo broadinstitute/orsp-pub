@@ -31,9 +31,10 @@ class Issue {
 
     // Transients
 
-    static transients = ["actors", "attachments"]
+    static transients = ["actors", "attachments", "samples"]
     Collection<String> actors
     Collection<StorageDocument> attachments
+    Collection<String> samples
 
     transient Boolean isLocked() { isFlagSet(IssueExtraProperty.LOCKED) }
 
