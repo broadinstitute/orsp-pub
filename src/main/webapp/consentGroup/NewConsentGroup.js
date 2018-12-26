@@ -97,7 +97,7 @@ class NewConsentGroup extends Component {
     } else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
     } else if (this.state.currentStep === 3) {
-      isValid = this.validateStep4();
+      isValid = this.validateStep4(field);
     }
     return isValid;
   };
@@ -299,24 +299,24 @@ validateStep1(field) {
       let accessible = false;
       let isValid = true;
 
-      if (this.state.step4FormData.pii !== true && this.state.step4FormData.pii !== false) {
+      if (!this.isTextValid(this.state.step4FormData.pii)) {
           pii = true;
           isValid = false;
       }
-      if (this.state.step4FormData.compliance !== true && this.state.step4FormData.compliance !== false) {
+      if (!this.isTextValid(this.state.step4FormData.compliance)) {
           compliance = true;
           isValid = false;
       }
-      if (this.state.step4FormData.sensitive !== true && this.state.step4FormData.sensitive !== false) {
+      if (!this.isTextValid(this.state.step4FormData.sensitive)) {
           sensitive = true;
           isValid = false;
       }
-      if (this.state.step4FormData.accessible !== true && this.state.step4FormData.accessible !== false) {
+      if (!this.isTextValid(this.state.step4FormData.accessible)) {
           accessible = true;
           isValid = false;
       }
 
-      if (field === undefined || field === null || field === 0) {
+      if (field === undefined || field === null || field === 3) {
          this.setState(prev => {
            prev.errors.pii = pii;
            prev.errors.compliance = compliance;
@@ -325,7 +325,7 @@ validateStep1(field) {
            return prev;
          });
       }
-      else if (field === 'pii' || field === 'compliance' || field === 'sensitive' || field === 'accessible' ) {
+      else if (field === 'pii' || field === 'compliance'  || field === 'sensitive' || field === 'accessible' ) {
 
          this.setState(prev => {
            if (field === 'pii') {
@@ -343,7 +343,6 @@ validateStep1(field) {
            return prev;
          });
       }
-
       return isValid;
     }
 
@@ -353,7 +352,7 @@ validateStep1(field) {
   }
 
   updateStep1FormData = (updatedForm, field) => {
-    if (this.currentStep === 0) {
+    if (this.state.currentStep === 0) {
       this.validateStep1(field);
     }
     this.setState(prev => {
@@ -373,7 +372,7 @@ validateStep1(field) {
   }
 
   updateStep4FormData = (updatedForm, field) => {
-      if (this.currentStep === 3) {
+      if (this.state.currentStep === 3) {
         this.validateStep4(field);
       }
       this.setState(prev => {
