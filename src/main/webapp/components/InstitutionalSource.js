@@ -12,17 +12,21 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   state = {
-    institutionalSources: [{ name: '', country: '' }]
+    institutionalSources: this.props.institutionalSources,
+    error: false,
+    errorMessage: 'Requiered field'
   };
 
   addInstitutionalSources() {
-    console.log("add");
-    this.setState(prev => {
-      let institutionalSources = prev.institutionalSources;
-      institutionalSources.push({ name: '', country: '' });
-      prev.institutionalSources = institutionalSources;
-      return prev;
-    });
+    if (this.state.institutionalSources[0].name !== '') {
+      this.setState(prev => {
+        let institutionalSources = prev.institutionalSources;
+        institutionalSources.splice(0, 0, { name: '', country: '' });
+        prev.institutionalSources = institutionalSources;
+        prev.error = false;
+        return prev;
+      }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+    }
   }
 
   removeInstitutionalSources = (e) => (Index) => {
@@ -34,7 +38,17 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         return prev;
       });
     }
-  }
+  };
+
+  handleInstitutionalChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    const id = e.target.id;
+    this.setState(prev => {
+      prev.institutionalSources[id][field] = value;
+      return prev;
+    }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+  };
 
   render() {
 
@@ -58,31 +72,40 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
         hr({ className: "fullWidth" }),
 
-        this.state.institutionalSources.map((rd, Index) => {
-          return h(Fragment, { key: Index }, [
+        this.state.institutionalSources.map((rd, index) => {
+          return h(Fragment, { key: index }, [
 
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
                     InputFieldText({
-                      value: this.props.value,
-                      onChange: this.props.onChange,
-                      value: rd.name })
+                      id: index,
+                      name: "name",
+                      label: "",
+                      value: this.state.institutionalSources[index].name,
+                      disabled: false,
+                      required: true,
+                      onChange: this.handleInstitutionalChange
+                    })
                   ]),
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
                     InputFieldText({
-                      value: this.props.value,
-                      onChange: this.props.onChange,
-                      value: rd.country })
+                      id: index,
+                      name: "country",
+                      value: this.state.institutionalSources[index].country,
+                      disabled: false,
+                      required: true,
+                      onChange: this.handleInstitutionalChange
+                    })
                   ])
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(Index) }, disabled: !this.state.institutionalSources.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeInstitutionalSources(index) }, disabled: !this.state.institutionalSources.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])
+            small({ isRendered: this.props.error && index === 0, className: "errorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])

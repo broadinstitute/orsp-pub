@@ -1,16 +1,21 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1 } from 'react-hyperscript-helpers';
+import { hh, h, h1, a } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
+import { Files } from "../util/ajax";
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
 
+  constructor(props) {
+    super(props);
+    this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
+  }
   state = {
     documents: []
   };
 
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
+    console.log('----------------------- error ----------------------');
     console.log(error, info);
   }
 
@@ -20,10 +25,13 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   }
 
   setFilesToUpload = (docs, ix) => (e) => {
-    let selectedFile = e.target.files[0];
-    docs[ix].file = selectedFile;
+    docs[ix].file = e.target.files[0];
     docs[ix].error = false;
     this.props.fileHandler(docs);
+  };
+
+  downloadFillablePDF = () => {
+    Files.downloadFillable(this.props.fillablePdfURL);
   };
 
   render() {
@@ -42,22 +50,27 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
     return (
 
+      a({onClick: this.downloadFillablePDF}, ['download PDF']),
       WizardStep({
         title: this.props.title, step: 1, currentStep: this.props.currentStep,
         errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps',
         error: errors || this.props.generalError
       }, [
         documents.map((document, index) => {
-          return h(Fragment, { key: index }, [
-            InputFieldFile({
-              label: document.label,
-              callback: this.setFilesToUpload(documents, index),
-              fileName: (document.file != null ? document.file.name : ''),
-              required: document.required,
-              error: document.error,
-              errorMessage: "Required field"
-            }),
-          ])
+          if (index === 3) {
+            return a({ key: index, onClick: this.downloadFillablePDF }, [document.text])
+          } else {
+            return h(Fragment, { key: index }, [
+              InputFieldFile({
+                label: document.label,
+                callback: this.setFilesToUpload(documents, index),
+                fileName: (document.file != null ? document.file.name : ''),
+                required: document.required,
+                error: document.error,
+                errorMessage: "Required field"
+              }),
+            ])
+          }
         })
       ])
     )
