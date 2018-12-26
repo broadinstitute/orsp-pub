@@ -7,7 +7,7 @@ import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
 
-import { ConsentGroup } from '../util/ajax'
+import {ConsentGroup, Files} from '../util/ajax'
 class NewConsentGroup extends Component {
 
   constructor(props) {
@@ -60,6 +60,7 @@ class NewConsentGroup extends Component {
     this.updateStep5FormData = this.updateStep5FormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
+    this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
   }
 
   componentDidMount() {
@@ -259,8 +260,12 @@ validateStep1(field) {
   };
 
   determinationHandler = (determination) => {
-    this.setState({
-      determination: determination
+    this.setState(prev => {
+      prev.determination = determination;
+      if (this.state.determination.projectType !== null && this.state.showErrorStep3 === true) {
+        prev.showErrorStep3 = false;
+      }
+      return prev;
     });
   };
 
@@ -502,22 +507,23 @@ validateStep1(field) {
     });
 
     documents.push({
-      text: 'Download fillable PDF here.'
-    });
-
-    documents.push({
       required: false,
       fileKey: 'Data Use Letter',
       label: span({}, ["Upload the ", span({className: "bold"}, ["Data Use Letter "]), "here (optional):"]),
       file: null,
       fileName: null,
-      error: false
+      error: false,
+      link: a({onClick: this.downloadFillablePDF}, ["Download fillable PDF here."])
     });
 
     this.setState({
       files: documents
     });
   }
+
+  downloadFillablePDF = () => {
+    Files.downloadFillable(this.props.fillablePdfURL);
+  };
 
   removeErrorMessage() {
     this.setState(prev => {

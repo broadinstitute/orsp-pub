@@ -6,10 +6,6 @@ import { Files } from "../util/ajax";
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
 
-  constructor(props) {
-    super(props);
-    this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
-  }
   state = {
     documents: []
   };
@@ -28,10 +24,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     docs[ix].file = e.target.files[0];
     docs[ix].error = false;
     this.props.fileHandler(docs);
-  };
-
-  downloadFillablePDF = () => {
-    Files.downloadFillable(this.props.fillablePdfURL);
   };
 
   render() {
@@ -57,23 +49,19 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
         error: errors || this.props.generalError
       }, [
         documents.map((document, index) => {
-          if (index === 3) {
-            return a({ key: index, onClick: this.downloadFillablePDF }, [document.text])
-          } else {
-            return h(Fragment, { key: index }, [
-              InputFieldFile({
-                label: document.label,
-                callback: this.setFilesToUpload(documents, index),
-                fileName: (document.file != null ? document.file.name : ''),
-                required: document.required,
-                error: document.error,
-                errorMessage: "Required field"
-              }),
-            ])
-          }
+          return h(Fragment, { key: index }, [
+            document.link != null ? document.link: null,
+            InputFieldFile({
+              label: document.label,
+              callback: this.setFilesToUpload(documents, index),
+              fileName: (document.file != null ? document.file.name : ''),
+              required: document.required,
+              error: document.error,
+              errorMessage: "Required field"
+            }),
+          ])
         })
       ])
     )
   }
 });
-
