@@ -69,6 +69,7 @@ class IssueExtraProperty {
     String name
     String value
     String projectKey
+    List<IssueExtraProperty> values
 
     Issue issue
 

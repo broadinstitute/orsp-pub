@@ -3,7 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.models.Project
+
 import org.broadinstitute.orsp.utils.IssueUtils
 
 /**
@@ -167,41 +167,48 @@ class IssueService {
 
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
-        issue.setUpdateDate(new Date())
-        if (issue.hasErrors()) {
-            throw new DomainException(issue.getErrors())
+        List<IssueExtraProperty> extraProperties = issue.getAllExtraProperties()
+        List<Funding> fundings = issue.getAllFundings()
+        Issue newIssue = initIssue(issue, type)
+        if (newIssue.hasErrors()) {
+            throw new DomainException(newIssue.getErrors())
         } else {
-            issue.save(flush: true)
+            newIssue.save(flush: true)
         }
-        issue.setProjectKey(issue.projectKey + issue.id)
-        issue.save(flush: true)
-        issue
+        newIssue.setProjectKey(newIssue.projectKey + newIssue.id)
+        newIssue.save(flush: true)
+        saveExtraProperties(newIssue, extraProperties)
+        saveFundings(newIssue, fundings)
+        newIssue.save(flush: true)
+        newIssue
     }
 
-    Issue createProject(Issue issue, Project project) throws DomainException {
-        IssueType type = IssueType.valueOfName(issue.type)
-        createIssue(type, issue);
-        def fundingList = project.getFundingList(issue.getProjectKey())
-        fundingList.each {
+    void saveExtraProperties(Issue issue, List<IssueExtraProperty> extraProperties) {
+        extraProperties?.each {
+            it.issue = issue
+            it.projectKey = issue.projectKey
+            it.save(flush: true)
+        }
+    }
+
+    void saveFundings(Issue issue, List<Funding> fundings) {
+        fundings?.each {
+            it.setCreated(new Date())
+            it.setProjectKey(issue.projectKey)
             issue.addToFundings(it)
-            it.save()
+            it.save(flush: true)
         }
-        issue.setExpirationDate(null)
+    }
 
-        Collection<IssueExtraProperty> propsToSave = getExtraPropertiesIndividual(issue, project)
-        propsToSave.addAll(getExtraPropertiesColletion(issue, project))
-
-        propsToSave.each {
-            it.save()
-        }
-
-        if (issue.hasErrors()) {
-            throw new DomainException(issue.getErrors())
-        }
-        else {
-            issue.save(flush: true)
-        }
-        issue
+    Issue initIssue(Issue issue, IssueType type) {
+        Issue newIssue = issue
+        newIssue.setRequestDate(new Date())
+        newIssue.setUpdateDate(new Date())
+        newIssue.type = type.name
+        newIssue.status = IssueStatus.Open.name
+        newIssue.extraProperties = null
+        newIssue.fundings = null
+        newIssue
     }
 
     @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
@@ -267,36 +274,4 @@ class IssueService {
         props
     }
 
-    @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
-    Collection<IssueExtraProperty> getExtraPropertiesColletion(Issue issue, Project project) {
-        Collection<IssueExtraProperty> props = this.multiValuedPropertyKeys.collect { name ->
-            if (project.getProperties().containsKey(name)) {
-                if( name != IssueExtraProperty.PROJECT_QUESTIONARE) {
-                    project.getProperty(name)?.collect {
-                        value ->
-                            Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
-                    }
-                } else {
-                    ((List<String>) project.getProperty(name))?.collect {
-                        new IssueExtraProperty(issue: issue, name: it.key, value: it.answer, projectKey: issue.projectKey)
-                    }
-                }
-            }
-        }.flatten().findAll { it != null }
-        props
-    }
-
-    @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
-    private Collection<IssueExtraProperty> getExtraPropertiesIndividual(Issue issue, Project project) {
-        Collection<IssueExtraProperty> props = this.singleValuedPropertyKeys.collect {
-            name ->
-                if (project.getProperties().containsKey(name)) {
-                    def value = project.getProperty(name)
-                    if (value && value instanceof String) {
-                        Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
-                    }
-                }
-        }.flatten().findAll { it != null }
-        props
-    }
 }
