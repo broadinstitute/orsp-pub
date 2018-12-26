@@ -69,17 +69,40 @@ class NewConsentGroup extends Component {
     };
 
   getConsentGroup() {
-    // Build Json
+    // step 1
     let consentGroup = {};
-    consentGroup.summary = this.state.step1FormData.groupName;
-    consentGroup.startDate = this.parseDate(this.state.step1FormData.startDate);
-    consentGroup.endDate = this.parseDate(this.state.step1FormData.endDate);
-    // consentGroup.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
-    // consentGroup.protocol = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
-    // consentGroup.requireMta = this.state.step1FormData.requireMta !== '' ? this.state.step1FormData.requireMta : null;
-    // consentGroup.questions = this.getQuestions(this.state.determination.questions);
-    // consentGroup.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
-    // consentGroup.fundings = this.getFundings(this.state.step1FormData.fundings);
+    consentGroup.summary = this.state.step1FormData.consentGroupName;
+    consentGroup.reporter = this.props.user.userName;
+    // consentGroup.samples = this.state.step1FormData.sampleCollections;
+    let extraProperties = [];
+    extraProperties.push({name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate)});
+    extraProperties.push({name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess});
+    // extraProperties.push({name: 'source', value: });
+    extraProperties.push({name: 'collInst', value: this.state.step1FormData.collaboratingInstitution});
+    extraProperties.push({name: 'collContact', value: this.state.step1FormData.primaryContact});
+    extraProperties.push({name: 'consent', value: this.state.step1FormData.investigatorLastName});
+    extraProperties.push({name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber});
+    extraProperties.push({name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources)});
+    extraProperties.push({name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup});
+    extraProperties.push({name: 'requireMta', value: this.state.step1FormData.requireMta});
+    if(this.state.step1FormData.endDate !== null) {
+      extraProperties.push({name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate)});
+    }
+    // step 2
+
+    // step 3
+
+    // step 4
+    extraProperties.push({name: 'pii', value: this.state.step4FormData.pii});
+    extraProperties.push({name: 'compliance', value: this.state.step4FormData.compliance});
+    extraProperties.push({name: 'textCompliance', value: this.state.step4FormData.textCompliance});
+    extraProperties.push({name: 'sensitive', value: this.state.step4FormData.sensitive});
+    extraProperties.push({name: 'textSensitive', value: this.state.step4FormData.textSensitive});
+    extraProperties.push({name: 'accessible', value: this.state.step4FormData.accessible});
+    extraProperties.push({name: 'sensitive', value: this.state.step4FormData.sensitive});
+    extraProperties.push({name: 'textAccessible', value: this.state.step4FormData.textAccessible});
+    // step 5
+    extraProperties.push({name: 'sharingPlan', value: this.state.step5FormData.sharingPlan});
     return consentGroup;
   }
 
@@ -514,8 +537,10 @@ validateStep1(field) {
   }
 
   parseDate(date) {
-    let d = new Date(date);
-    return [d.getFullYear(), d.getMonth()+1, d.getDate()].join("-");
+      if(date !== null) {
+        let d = new Date(date);
+        return [d.getFullYear(), d.getMonth()+1, d.getDate()].join("-");
+      }
   }
 
   render() {
