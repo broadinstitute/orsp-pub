@@ -70,12 +70,12 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
         title: this.props.title, step: 3, currentStep: this.props.currentStep,
         error: this.props.errors.pii || this.props.errors.compliance
         || this.props.errors.sensitive || this.props.errors.accessible
-        || this.props.errors.textCompliance,
+        || this.props.errors.textCompliance || this.props.errors.textSensitive || this.props.errors.textAccessible,
         errorMessage: 'Please complete all required fields'}, [
         InputFieldRadio({
           id: "radioPII",
           name: "pii",
-          label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)? ",
+          label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
           moreInfo: span({}, ["For a list of what constitutes PII and PHI, visit this ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target:"_blank" }, ["link"]), "."]),
           value: this.state.formData.pii,
           optionValues: ["01", "02"],
@@ -91,7 +91,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
         InputFieldRadio({
           id: "radioCompliance",
           name: "compliance",
-          label: "Are you bound by any regulatory compliance (FISMA, CLIA, etc.)? ",
+          label: "Are you bound by any regulatory compliance (FISMA, CLIA, etc.)?* ",
           moreInfo: "If so which, one?",
           value: this.state.formData.compliance,
           optionValues: ["01", "02", "03"],
@@ -109,16 +109,18 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           isRendered: this.state.formData.compliance === "01",
           id: "inputCompliance",
           name: "textCompliance",
-          label: "Add regulatory compliance:",
-//          value: this.state.formData.textCompliance,
+          label: "Add regulatory compliance:*",
+          value: this.state.formData.textCompliance,
           disabled: false,
           required: false,
-//          onChange: this.handleInputChange
+          onChange: this.handleInputChange,
+          error:this.props.errors.textCompliance,
+          errorMessage: "Required field"
         }),
         InputFieldRadio({
           id: "radioSensitive",
           name: "sensitive",
-          label: "Is this data “sensitive” for any reason? ",
+          label: "Is this data “sensitive” for any reason?* ",
           moreInfo: "If yes, please explain",
           value: this.state.formData.sensitive,
           optionValues: ["01", "02", "03"],
@@ -136,16 +138,18 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           isRendered: this.state.formData.sensitive === "01",
           id: "inputSensitive",
           name: "textSensitive",
-          label: "Please explain:",
-//          value: this.state.formData.textSensitive,
+          label: "Please explain:*",
+          value: this.state.formData.textSensitive,
           disabled: false,
           required: false,
-//          onChange: this.handleInputChange
+          onChange: this.handleInputChange,
+          error:this.props.errors.textSensitive,
+          errorMessage: "Required field"
         }),
         InputFieldRadio({
           id: "radioAccessible",
           name: "accessible",
-          label: "Will your data be accessible on the Internet (even if authenticated)? ",
+          label: "Will your data be accessible on the Internet (even if authenticated)?* ",
           moreInfo: "If yes, please explain",
           value: this.state.formData.accessible,
           optionValues: ["01", "02", "03"],
@@ -163,11 +167,13 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           isRendered: this.state.formData.accessible === "01",
           id: "inputAccessible",
           name: "textAccessible",
-          label: "Please explain:",
-//          value: this.state.formData.textAccessible,
+          label: "Please explain:*",
+          value: this.state.formData.textAccessible,
           disabled: false,
           required: false,
-//          onChange: this.handleInputChange
+          onChange: this.handleInputChange,
+          error:this.props.errors.textAccessible,
+          errorMessage: "Required field"
         })
       ])
     )

@@ -45,7 +45,10 @@ class NewConsentGroup extends Component {
         pii: false,
         compliance: false,
         sensitive: false,
-        accessible: false
+        accessible: false,
+        textCompliance: false,
+        textSensitive: false,
+        textAccessible: false
       }
     };
 
@@ -292,12 +295,15 @@ validateStep1(field) {
     return isValid;
   };
 
-    validateStep4(field) {
+  validateStep4(field) {
       let pii = false;
       let compliance = false;
       let sensitive = false;
       let accessible = false;
       let isValid = true;
+      let textCompliance = false;
+      let textSensitive = false;
+      let textAccessible = false;
 
       if (!this.isTextValid(this.state.step4FormData.pii)) {
           pii = true;
@@ -307,12 +313,24 @@ validateStep1(field) {
           compliance = true;
           isValid = false;
       }
+      if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "01" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
+          textCompliance = true;
+          isValid = false;
+      }
       if (!this.isTextValid(this.state.step4FormData.sensitive)) {
           sensitive = true;
           isValid = false;
       }
+      if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "01" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
+          textSensitive = true;
+          isValid = false;
+      }
       if (!this.isTextValid(this.state.step4FormData.accessible)) {
           accessible = true;
+          isValid = false;
+      }
+      if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "01" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
+          textAccessible = true;
           isValid = false;
       }
 
@@ -322,10 +340,14 @@ validateStep1(field) {
            prev.errors.compliance = compliance;
            prev.errors.sensitive = sensitive;
            prev.errors.accessible = accessible;
+           prev.errors.textCompliance = textCompliance;
+           prev.errors.textSensitive = textSensitive;
+           prev.errors.textAccessible = textAccessible;
            return prev;
          });
       }
-      else if (field === 'pii' || field === 'compliance'  || field === 'sensitive' || field === 'accessible' ) {
+      else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive'
+                || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible'  ) {
 
          this.setState(prev => {
            if (field === 'pii') {
@@ -334,17 +356,26 @@ validateStep1(field) {
            else if (field === 'compliance') {
              prev.errors.compliance = compliance;
            }
+           else if (field === 'textCompliance') {
+             prev.errors.textCompliance = textCompliance;
+           }
            else if (field === 'sensitive') {
              prev.errors.sensitive = sensitive;
            }
+           else if (field === 'textSensitive') {
+             prev.errors.textSensitive = textSensitive;
+           }
            else if (field === 'accessible') {
              prev.errors.accessible = accessible;
+           }
+           else if (field === 'textAccessible') {
+             prev.errors.textAccessible = textAccessible;
            }
            return prev;
          });
       }
       return isValid;
-    }
+  }
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
