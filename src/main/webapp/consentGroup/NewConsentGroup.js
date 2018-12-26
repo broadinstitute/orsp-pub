@@ -5,7 +5,7 @@ import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
-import { span } from 'react-hyperscript-helpers';
+import { span, a } from 'react-hyperscript-helpers';
 
 import { ConsentGroup } from '../util/ajax'
 class NewConsentGroup extends Component {
@@ -337,6 +337,11 @@ validateStep1(field) {
       fileName: null,
       error: false
     });
+
+    documents.push({
+      text: 'Download fillable PDF here.'
+    });
+
     documents.push({
       required: false,
       fileKey: 'Data Use Letter',
@@ -367,7 +372,7 @@ validateStep1(field) {
     return (
       Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit }, [
         NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }),
+        NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
         NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }),
