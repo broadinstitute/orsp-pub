@@ -6,7 +6,6 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
-import org.broadinstitute.orsp.models.ConsentGroup
 
 import javax.ws.rs.core.Response
 
@@ -19,10 +18,11 @@ class NewConsentGroupController extends AuthenticatedController {
 
     def save() {
         Gson gson = new Gson()
-        ConsentGroup consentGroup = gson.fromJson(gson.toJson(request.JSON), ConsentGroup.class)
-        Issue source = queryService.findByKey(consentGroup.source)
+        Issue issue = gson.fromJson(gson.toJson(request.JSON), Issue.class)
+        Issue source = queryService.findByKey(issue.getSource())
         if(source != null) {
-            Issue consent = issueService.createIssue(IssueType.CONSENT_GROUP, consentGroup.getIssue())
+            issue.setRequestDate(new Date())
+            Issue consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
             consent.status = 201
             render([message: consent] as JSON)
         } else {

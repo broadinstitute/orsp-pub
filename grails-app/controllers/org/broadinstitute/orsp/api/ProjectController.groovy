@@ -1,18 +1,19 @@
-package org.broadinstitute.orsp
+package org.broadinstitute.orsp.api
 
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
-import groovy.util.logging.Slf4j
-import org.springframework.web.multipart.MultipartFile
-import org.broadinstitute.orsp.models.Project
+import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 
-@Slf4j
+import org.springframework.web.multipart.MultipartFile
+
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ProjectController extends AuthenticatedController {
 
     def pages() {
-      render(view: "/newProject/index")
+        render(view: "/newProject/index")
     }
 
     @Override
@@ -24,9 +25,9 @@ class ProjectController extends AuthenticatedController {
 
     def save() {
         Gson gson = new Gson()
-        Project project = gson.fromJson(gson.toJson(request.JSON), Project.class)
+        Issue project = gson.fromJson(gson.toJson(request.JSON), Issue.class)
 
-        Issue response = issueService.createProject(project.getIssue(), project)
+        Issue response = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
 
         response.status = 201
         render([message: response] as JSON)
@@ -57,3 +58,4 @@ class ProjectController extends AuthenticatedController {
     }
 
 }
+

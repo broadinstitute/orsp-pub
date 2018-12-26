@@ -106,4 +106,25 @@ class Issue {
                 getExtraProperties()*.value
     }
 
+    transient List<IssueExtraProperty> getAllExtraProperties() {
+        List<IssueExtraProperty> properties = new ArrayList<>();
+        getExtraProperties().each({
+            if(it.values != null) {
+                it.values.each({
+                    properties.add(it)
+                })
+            } else {
+                properties.add(it)
+            }
+        })
+        properties
+    }
+
+    transient List<Funding> getAllFundings() {
+        List<Funding> fundings = new ArrayList<>();
+        getFundings().each({
+            fundings.add(it)
+        })
+        fundings
+    }
 }
