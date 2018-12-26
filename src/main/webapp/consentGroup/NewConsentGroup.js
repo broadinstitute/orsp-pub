@@ -260,10 +260,12 @@ validateStep1(field) {
   };
 
   determinationHandler = (determination) => {
-    console.log(determination);
-    this.setState({
-      determination: determination,
-      showErrorStep3: false
+    this.setState(prev => {
+      prev.determination = determination;
+      if (this.state.determination.projectType !== null && this.state.showErrorStep3 === true) {
+        prev.showErrorStep3 = false;
+      }
+      return prev;
     });
   };
 
