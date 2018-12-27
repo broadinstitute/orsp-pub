@@ -268,7 +268,6 @@ class NewProject extends Component {
     this.setState(prev => {
         prev.files = [];
         prev.determination = determination;
-        console.log(prev.determination.projectType);
         if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
           prev.showErrorStep2 = false;
         }
