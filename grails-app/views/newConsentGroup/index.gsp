@@ -22,9 +22,9 @@
             sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
             consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
             attachDocumentsURL: "${createLink(controller: 'project', action: 'attachDocument', uri: '/api/project/attach-document', method: 'POST')}",
-            createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consentGroup', method: 'POST')}",
+            createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/newConsentGroup', method: 'POST')}",
             serverURL: "${webRequest.baseUrl}",
-            fillablePdfURL : "${createLink(controller: 'NewConsentGroup', action: 'downloadFillablePDF')}",
+            fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF')}",
             projectKey: "${params.projectKey}"
         };
     </script>

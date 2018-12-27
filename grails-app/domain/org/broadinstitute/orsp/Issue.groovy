@@ -1,6 +1,9 @@
 package org.broadinstitute.orsp
 
+import liquibase.util.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
+
+import java.util.stream.Collectors
 
 class Issue {
 
@@ -112,10 +115,14 @@ class Issue {
         getExtraProperties().each({
             if(it.values != null) {
                 it.values.each({
-                    properties.add(it)
+                    if(StringUtils.isNotEmpty(it.value)) {
+                        properties.add(it)
+                    }
                 })
             } else {
-                properties.add(it)
+                if(StringUtils.isNotEmpty(it.value)) {
+                    properties.add(it)
+                }
             }
         })
         properties

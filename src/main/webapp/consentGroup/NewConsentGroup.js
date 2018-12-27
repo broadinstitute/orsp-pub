@@ -56,6 +56,7 @@ class NewConsentGroup extends Component {
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
+    this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
   }
 
   componentDidMount() {
@@ -86,14 +87,14 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
     extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
     extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
-    extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
+    extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.step1FormData.institutionalSources) });
     extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
     extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
     if (this.state.step1FormData.endDate !== null) {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
     }
     // step 3
-    extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
+    extraProperties.push({ name: 'questions', values: this.getQuestions(this.state.determination.questions) });
     // step 4
     extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
@@ -101,12 +102,12 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
     extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
     extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
-    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
     extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
     // step 5
     extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
-    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
-    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
+    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.databaseControlled });
+    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.databaseOpen });
+    consentGroup.extraProperties = extraProperties;
     return consentGroup;
   }
 

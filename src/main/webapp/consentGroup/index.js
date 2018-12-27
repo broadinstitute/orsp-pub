@@ -10,7 +10,7 @@ ReactDOM.render(
         sampleSearchUrl = {component.sampleSearchUrl}
         consentNamesSearchURL = {component.consentNamesSearchURL}
         attachDocumentsURL = {component.attachDocumentsURL}
-        createProjectURL = {component.createProjectURL}
+        createConsentGroupURL = {component.createConsentGroupURL}
         serverURL = {component.serverURL}
         fillablePdfURL = {component.fillablePdfURL}
         projectKey = {component.projectKey}

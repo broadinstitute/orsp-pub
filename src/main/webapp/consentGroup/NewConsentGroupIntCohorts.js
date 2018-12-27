@@ -37,6 +37,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: EXIT,
       answer: null,
       progress: 0,
+      key: 'individualDataSourced', 
       id: 1
     });
 
@@ -46,6 +47,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: EXIT,
       answer: null,
       progress: 17,
+      key: 'isLinkMaintained',
       id: 2
     });
 
@@ -55,6 +57,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: 4,
       answer: null,
       progress: 34,
+      key: 'isFeeForService',
       id: 3
     });
 
@@ -64,6 +67,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: RA,
       answer: null,
       progress: 50,
+      key: 'areSamplesComingFromEEAA',
       id: 4
     });
 
@@ -73,6 +77,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: 6,
       answer: null,
       progress: 67,
+      key: 'isCollaboratorProvidingGoodService',
       id: 5
     });
 
@@ -82,6 +87,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: CTC,
       answer: null,
       progress: 83,
+      key: 'isConsentUnambiguous',
       id: 6
     });
 
