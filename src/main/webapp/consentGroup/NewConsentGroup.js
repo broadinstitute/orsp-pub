@@ -73,11 +73,11 @@ class NewConsentGroup extends Component {
     let consentGroup = {};
     consentGroup.summary = this.state.step1FormData.consentGroupName;
     consentGroup.reporter = this.props.user.userName;
-    // consentGroup.samples = this.state.step1FormData.sampleCollections;
+    consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
     extraProperties.push({name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate)});
     extraProperties.push({name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess});
-    // extraProperties.push({name: 'source', value: });
+    extraProperties.push({name: 'source', value: this.props.projectKey});
     extraProperties.push({name: 'collInst', value: this.state.step1FormData.collaboratingInstitution});
     extraProperties.push({name: 'collContact', value: this.state.step1FormData.primaryContact});
     extraProperties.push({name: 'consent', value: this.state.step1FormData.investigatorLastName});
@@ -104,6 +104,17 @@ class NewConsentGroup extends Component {
     // step 5
     extraProperties.push({name: 'sharingPlan', value: this.state.step5FormData.sharingPlan});
     return consentGroup;
+  }
+
+  getSampleCollections() {
+    let sampleCollections = this.state.step1FormData.sampleCollections;
+      let sampleCollectionList = [];
+        if (sampleCollections !== null && sampleCollections.length > 0) {
+          sampleCollections.map((sc, idx) => {
+            sampleCollectionList.push(sc.value);
+          });
+        }
+        return sampleCollectionList;
   }
 
   stepChanged = (newStep) => {
