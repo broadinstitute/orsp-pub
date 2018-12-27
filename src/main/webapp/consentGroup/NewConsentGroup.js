@@ -6,8 +6,8 @@ import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
+import { Files, ConsentGroup } from "../util/ajax";
 
-import {ConsentGroup, Files} from '../util/ajax'
 class NewConsentGroup extends Component {
 
   constructor(props) {
@@ -61,49 +61,76 @@ class NewConsentGroup extends Component {
   componentDidMount() {
     this.initDocuments();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
-        resp => this.setState({existingGroupNames:resp.data}));
+      resp => this.setState({ existingGroupNames: resp.data }));
   }
 
   submitNewConsentGroup = () => {
-    console.log(this.getConsentGroup());
-    };
+    if(this.isValid()) {
+      ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
+        console.log("creadoooooooooooooo");
+      });
+    }   
+  };
 
   getConsentGroup() {
     // step 1
     let consentGroup = {};
     consentGroup.summary = this.state.step1FormData.consentGroupName;
     consentGroup.reporter = this.props.user.userName;
-    // consentGroup.samples = this.state.step1FormData.sampleCollections;
+    consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
-    extraProperties.push({name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate)});
-    extraProperties.push({name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess});
-    // extraProperties.push({name: 'source', value: });
-    extraProperties.push({name: 'collInst', value: this.state.step1FormData.collaboratingInstitution});
-    extraProperties.push({name: 'collContact', value: this.state.step1FormData.primaryContact});
-    extraProperties.push({name: 'consent', value: this.state.step1FormData.investigatorLastName});
-    extraProperties.push({name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber});
-    extraProperties.push({name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources)});
-    extraProperties.push({name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup});
-    extraProperties.push({name: 'requireMta', value: this.state.step1FormData.requireMta});
-    if(this.state.step1FormData.endDate !== null) {
-      extraProperties.push({name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate)});
+    extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
+    extraProperties.push({ name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess });
+    extraProperties.push({ name: 'source', value: this.props.projectKey });
+    extraProperties.push({ name: 'collInst', value: this.state.step1FormData.collaboratingInstitution });
+    extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
+    extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
+    extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
+    extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
+    extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
+    extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
+    if (this.state.step1FormData.endDate !== null) {
+      extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
     }
-    // step 2
-
     // step 3
-
+    extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
     // step 4
-    extraProperties.push({name: 'pii', value: this.state.step4FormData.pii});
-    extraProperties.push({name: 'compliance', value: this.state.step4FormData.compliance});
-    extraProperties.push({name: 'textCompliance', value: this.state.step4FormData.textCompliance});
-    extraProperties.push({name: 'sensitive', value: this.state.step4FormData.sensitive});
-    extraProperties.push({name: 'textSensitive', value: this.state.step4FormData.textSensitive});
-    extraProperties.push({name: 'accessible', value: this.state.step4FormData.accessible});
-    extraProperties.push({name: 'sensitive', value: this.state.step4FormData.sensitive});
-    extraProperties.push({name: 'textAccessible', value: this.state.step4FormData.textAccessible});
+    extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
+    extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
+    extraProperties.push({ name: 'textCompliance', value: this.state.step4FormData.textCompliance });
+    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+    extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
+    extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
+    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+    extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
     // step 5
-    extraProperties.push({name: 'sharingPlan', value: this.state.step5FormData.sharingPlan});
+    extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
+    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
+    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
     return consentGroup;
+  }
+
+  getQuestions(questions) {
+    let questionList = [];
+    if (questions !== undefined && questions !== null && questions.length > 1) {
+      questions.map((q, idx) => {
+        if (q.answer !== null) {
+          questionList.push({ name: q.key, value: q.answer });
+        }
+      });
+    }
+    return questionList;
+  }
+
+  getSampleCollections() {
+    let sampleCollections = this.state.step1FormData.sampleCollections;
+    let sampleCollectionList = [];
+    if (sampleCollections !== null && sampleCollections.length > 0) {
+      sampleCollections.map((sc, idx) => {
+        sampleCollectionList.push(sc.value);
+      });
+    }
+    return sampleCollectionList;
   }
 
   stepChanged = (newStep) => {
@@ -114,7 +141,7 @@ class NewConsentGroup extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 5) {
+    if (currentStep === 4) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -124,7 +151,6 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateStep1(field);
-      console.log(this.getConsentGroup());
     } else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
     } else if (this.state.currentStep === 2) {
@@ -137,11 +163,11 @@ class NewConsentGroup extends Component {
     return isValid;
   };
 
-  consentGroupNameExists () {
+  consentGroupNameExists() {
     return this.state.existingGroupNames.indexOf(this.state.step1FormData.consentGroupName) > -1;
   }
 
-validateStep1(field) {
+  validateStep1(field) {
     let investigatorLastName = false;
     let institutionProtocolNumber = false;
     let consentGroupName = false;
@@ -201,7 +227,7 @@ validateStep1(field) {
     } else {
       this.state.step1FormData.institutionalSources.forEach(institutionalSource => {
         if (!this.isTextValid(institutionalSource.name)
-            || !this.isTextValid(institutionalSource.country)) {
+          || !this.isTextValid(institutionalSource.country)) {
           institutionalSources = true;
           isValid = false;
         }
@@ -332,112 +358,112 @@ validateStep1(field) {
   }
 
   validateStep4(field) {
-      let pii = false;
-      let compliance = false;
-      let sensitive = false;
-      let accessible = false;
-      let isValid = true;
-      let textCompliance = false;
-      let textSensitive = false;
-      let textAccessible = false;
+    let pii = false;
+    let compliance = false;
+    let sensitive = false;
+    let accessible = false;
+    let isValid = true;
+    let textCompliance = false;
+    let textSensitive = false;
+    let textAccessible = false;
 
-      if (!this.isTextValid(this.state.step4FormData.pii)) {
-          pii = true;
-          isValid = false;
-      }
-      if (!this.isTextValid(this.state.step4FormData.compliance)) {
-          compliance = true;
-          isValid = false;
-      }
-      if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "01" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
-          textCompliance = true;
-          isValid = false;
-      }
-      if (!this.isTextValid(this.state.step4FormData.sensitive)) {
-          sensitive = true;
-          isValid = false;
-      }
-      if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "01" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
-          textSensitive = true;
-          isValid = false;
-      }
-      if (!this.isTextValid(this.state.step4FormData.accessible)) {
-          accessible = true;
-          isValid = false;
-      }
-      if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "01" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
-          textAccessible = true;
-          isValid = false;
-      }
+    if (!this.isTextValid(this.state.step4FormData.pii)) {
+      pii = true;
+      isValid = false;
+    }
+    if (!this.isTextValid(this.state.step4FormData.compliance)) {
+      compliance = true;
+      isValid = false;
+    }
+    if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "01" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
+      textCompliance = true;
+      isValid = false;
+    }
+    if (!this.isTextValid(this.state.step4FormData.sensitive)) {
+      sensitive = true;
+      isValid = false;
+    }
+    if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "01" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
+      textSensitive = true;
+      isValid = false;
+    }
+    if (!this.isTextValid(this.state.step4FormData.accessible)) {
+      accessible = true;
+      isValid = false;
+    }
+    if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "01" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
+      textAccessible = true;
+      isValid = false;
+    }
 
-      if (field === undefined || field === null || field === 3) {
-         this.setState(prev => {
-           prev.errors.pii = pii;
-           prev.errors.compliance = compliance;
-           prev.errors.sensitive = sensitive;
-           prev.errors.accessible = accessible;
-           prev.errors.textCompliance = textCompliance;
-           prev.errors.textSensitive = textSensitive;
-           prev.errors.textAccessible = textAccessible;
-           return prev;
-         });
-      }
-      else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive'
-                || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible'  ) {
+    if (field === undefined || field === null || field === 3) {
+      this.setState(prev => {
+        prev.errors.pii = pii;
+        prev.errors.compliance = compliance;
+        prev.errors.sensitive = sensitive;
+        prev.errors.accessible = accessible;
+        prev.errors.textCompliance = textCompliance;
+        prev.errors.textSensitive = textSensitive;
+        prev.errors.textAccessible = textAccessible;
+        return prev;
+      });
+    }
+    else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive'
+      || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible') {
 
-         this.setState(prev => {
-           if (field === 'pii') {
-             prev.errors.pii = pii;
-           }
-           else if (field === 'compliance') {
-             prev.errors.compliance = compliance;
-           }
-           else if (field === 'textCompliance') {
-             prev.errors.textCompliance = textCompliance;
-           }
-           else if (field === 'sensitive') {
-             prev.errors.sensitive = sensitive;
-           }
-           else if (field === 'textSensitive') {
-             prev.errors.textSensitive = textSensitive;
-           }
-           else if (field === 'accessible') {
-             prev.errors.accessible = accessible;
-           }
-           else if (field === 'textAccessible') {
-             prev.errors.textAccessible = textAccessible;
-           }
-           return prev;
-         });
-      }
-      return isValid;
+      this.setState(prev => {
+        if (field === 'pii') {
+          prev.errors.pii = pii;
+        }
+        else if (field === 'compliance') {
+          prev.errors.compliance = compliance;
+        }
+        else if (field === 'textCompliance') {
+          prev.errors.textCompliance = textCompliance;
+        }
+        else if (field === 'sensitive') {
+          prev.errors.sensitive = sensitive;
+        }
+        else if (field === 'textSensitive') {
+          prev.errors.textSensitive = textSensitive;
+        }
+        else if (field === 'accessible') {
+          prev.errors.accessible = accessible;
+        }
+        else if (field === 'textAccessible') {
+          prev.errors.textAccessible = textAccessible;
+        }
+        return prev;
+      });
+    }
+    return isValid;
   }
 
   validateStep5(field) {
-      let sharingPlan = false;
-      let isValid = true;
+    let sharingPlan = false;
+    let isValid = true;
 
-      if (!this.isTextValid(this.state.step5FormData.sharingPlan)) {
-          sharingPlan = true;
-          isValid = false;
-      }
+    if (!this.isTextValid(this.state.step5FormData.sharingPlan)) {
+      sharingPlan = true;
+      isValid = false;
+    }
 
-      if (field === undefined || field === null || field === 4) {
-         this.setState(prev => {
-           prev.errors.sharingPlan = sharingPlan;
-           return prev;
-         });
-      }
-      else if (field === 'sharingPlan') {
+    if (field === undefined || field === null || field === 4) {
+      this.setState(prev => {
+        prev.errors.sharingPlan = sharingPlan;
+        return prev;
+      });
+    }
+    else if (field === 'sharingPlan') {
 
-         this.setState(prev => {
-           if (field === 'sharingPlan') {
-             prev.errors.sharingPlan = sharingPlan;
-           }
-           return prev;
-         });
-      }
-      return isValid;
+      this.setState(prev => {
+        if (field === 'sharingPlan') {
+          prev.errors.sharingPlan = sharingPlan;
+        }
+        return prev;
+      });
+    }
+    return isValid;
   }
 
   static getDerivedStateFromError(error) {
@@ -454,31 +480,31 @@ validateStep1(field) {
       return prev;
     }, () => {
       this.isValid(field);
-      })
+    })
   };
 
   updateStep4FormData = (updatedForm, field) => {
-      if (this.state.currentStep === 3) {
-        this.validateStep4(field);
-      }
-      this.setState(prev => {
-        prev.step4FormData = updatedForm;
-        return prev;
-      }, () => {
-        this.isValid(field);
-        })
+    if (this.state.currentStep === 3) {
+      this.validateStep4(field);
+    }
+    this.setState(prev => {
+      prev.step4FormData = updatedForm;
+      return prev;
+    }, () => {
+      this.isValid(field);
+    })
   };
 
   updateStep5FormData = (updatedForm, field) => {
-      if (this.state.currentStep === 4) {
-        this.validateStep5(field);
-      }
-      this.setState(prev => {
-        prev.step5FormData = updatedForm;
-        return prev;
-      }, () => {
-        this.isValid(field);
-        })
+    if (this.state.currentStep === 4) {
+      this.validateStep5(field);
+    }
+    this.setState(prev => {
+      prev.step5FormData = updatedForm;
+      return prev;
+    }, () => {
+      this.isValid(field);
+    })
   };
 
   initDocuments() {
@@ -487,7 +513,7 @@ validateStep1(field) {
     documents.push({
       required: true,
       fileKey: 'Consent Document',
-      label: span({}, ["Upload the ", span({className: "bold"}, ["Consent Document "]), "for this Consent Group here:"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here:"]),
       file: null,
       fileName: null,
       error: false
@@ -495,7 +521,7 @@ validateStep1(field) {
     documents.push({
       required: true,
       fileKey: 'IRB approval',
-      label: span({}, ["Upload local ", span({className: "bold"}, ["IRB approval "]), "document (required for DFCI & MIT IRBs only):"]),
+      label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document (required for DFCI & MIT IRBs only):"]),
       file: null,
       fileName: null,
       error: false
@@ -504,7 +530,7 @@ validateStep1(field) {
     documents.push({
       required: false,
       fileKey: 'Sample Providers Permission',
-      label: span({}, ["Upload the ", span({className: "bold"}, ["Sample Provider's Permission to add cohort "]), "to this Broad project (DFCI IRB only. Optional):"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Sample Provider's Permission to add cohort "]), "to this Broad project (DFCI IRB only. Optional):"]),
       file: null,
       fileName: null,
       error: false
@@ -513,11 +539,11 @@ validateStep1(field) {
     documents.push({
       required: false,
       fileKey: 'Data Use Letter',
-      label: span({}, ["Upload the ", span({className: "bold"}, ["Data Use Letter "]), "here (optional):"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Data Use Letter "]), "here (optional):"]),
       file: null,
       fileName: null,
       error: false,
-      link: a({onClick: this.downloadFillablePDF}, ["Download fillable PDF here."])
+      link: a({ onClick: this.downloadFillablePDF }, ["Download fillable PDF here."])
     });
 
     this.setState({
@@ -546,10 +572,10 @@ validateStep1(field) {
   }
 
   parseDate(date) {
-      if(date !== null) {
-        let d = new Date(date);
-        return [d.getFullYear(), d.getMonth()+1, d.getDate()].join("-");
-      }
+    if (date !== null) {
+      let d = new Date(date);
+      return [d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-");
+    }
   }
 
   render() {
@@ -559,7 +585,7 @@ validateStep1(field) {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit }, [
+      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup }, [
         NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),

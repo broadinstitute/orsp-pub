@@ -19,10 +19,10 @@
         const component = {
             user: user,
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-            sampleSearchUrl: "${createLink(controller: 'admin', action: 'getMatchingSampleCollections')}",
+            sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
             consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
             attachDocumentsURL: "${createLink(controller: 'project', action: 'attachDocument', uri: '/api/project/attach-document', method: 'POST')}",
-            createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
+            createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consentGroup', method: 'POST')}",
             serverURL: "${webRequest.baseUrl}",
             fillablePdfURL : "${createLink(controller: 'NewConsentGroup', action: 'downloadFillablePDF')}",
             projectKey: "${params.projectKey}"

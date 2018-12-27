@@ -908,7 +908,7 @@ module.exports = g;
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_create_emotion__ = __webpack_require__(340);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_create_emotion__ = __webpack_require__(341);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flush", function() { return flush; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hydrate", function() { return hydrate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cx", function() { return cx; });
@@ -2439,7 +2439,7 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(343);
+var content = __webpack_require__(344);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -2481,7 +2481,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _AlertMessage = __webpack_require__(179);
+var _AlertMessage = __webpack_require__(180);
 
 __webpack_require__(265);
 
@@ -3602,7 +3602,8 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
         value: this.props.value,
         disabled: this.props.disabled,
         required: this.props.required,
-        onChange: this.props.onChange })]);
+        onChange: this.props.onChange,
+        onBlur: this.props.focusOut })]);
     }
   }]);
 
@@ -25441,7 +25442,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-__webpack_require__(571);
+__webpack_require__(572);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29147,19 +29148,104 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 };
 
 /***/ }),
-/* 169 */,
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Project = exports.Files = exports.ConsentGroup = exports.SampleCollections = exports.Search = undefined;
+
+var _axios = __webpack_require__(91);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Search = exports.Search = {
+  getMatchingUsers: function getMatchingUsers(url, query) {
+    return _axios2.default.get(url + '?term=' + query);
+  }
+};
+
+var SampleCollections = exports.SampleCollections = {
+  getSampleCollections: function getSampleCollections(url, query) {
+    return _axios2.default.get(url + '?term=' + query);
+  }
+};
+
+var ConsentGroup = exports.ConsentGroup = {
+  getConsentGroupNames: function getConsentGroupNames(url) {
+    return _axios2.default.get(url);
+  },
+  create: function create(url, data) {
+    var config = {
+      headers: { 'content-type': 'application/json' }
+    };
+    return _axios2.default.post(url, data, config);
+  }
+};
+
+var Files = exports.Files = {
+  upload: function upload(url, files, projectKey, displayName, userName) {
+    var data = new FormData();
+
+    files.forEach(function (file) {
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
+    });
+
+    data.append('id', projectKey);
+    data.append('displayName', displayName);
+    data.append('userName', userName);
+
+    var config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+
+    return _axios2.default.post(url, data, config);
+  },
+  downloadFillable: function downloadFillable(pdfUrl) {
+    (0, _axios2.default)({ url: pdfUrl, method: 'GET', responseType: 'blob' }).then(function (response) {
+      var url = window.URL.createObjectURL(new Blob([response.data]));
+      var link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf');
+      document.body.appendChild(link);
+      link.click();
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
+};
+
+var Project = exports.Project = {
+  createProject: function createProject(url, data) {
+    var config = {
+      headers: { 'content-type': 'application/json' }
+    };
+    return _axios2.default.post(url, data, config);
+  }
+};
+
+/***/ }),
 /* 170 */,
 /* 171 */,
 /* 172 */,
 /* 173 */,
 /* 174 */,
-/* 175 */
+/* 175 */,
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(314);
+module.exports = __webpack_require__(315);
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var _Object$keys = __webpack_require__(284);
@@ -29184,9 +29270,9 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 module.exports = _objectWithoutPropertiesLoose;
 
 /***/ }),
-/* 177 */,
 /* 178 */,
-/* 179 */
+/* 179 */,
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29203,11 +29289,11 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _Alert = __webpack_require__(531);
+var _Alert = __webpack_require__(532);
 
 var _Alert2 = _interopRequireDefault(_Alert);
 
-__webpack_require__(577);
+__webpack_require__(578);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29254,7 +29340,7 @@ var AlertMessage = exports.AlertMessage = (0, _reactHyperscriptHelpers.hh)(funct
 }(_react.Component));
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29271,7 +29357,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-__webpack_require__(578);
+__webpack_require__(579);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -29303,73 +29389,6 @@ var Btn = exports.Btn = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
 
   return Btn;
 }(_react.Component));
-
-/***/ }),
-/* 181 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Project = exports.Files = exports.ConsentGroup = exports.SampleCollections = exports.Search = undefined;
-
-var _axios = __webpack_require__(91);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Search = exports.Search = {
-  getMatchingUsers: function getMatchingUsers(url, query) {
-    return _axios2.default.get(url + '?term=' + query);
-  }
-};
-
-var SampleCollections = exports.SampleCollections = {
-  getSampleCollections: function getSampleCollections(url, query) {
-    return _axios2.default.get(url + '?term=' + query);
-  }
-};
-
-var ConsentGroup = exports.ConsentGroup = {
-  getConsentGroupNames: function getConsentGroupNames(url, query) {
-    return _axios2.default.get(url + '?term=' + query);
-  }
-};
-
-var Files = exports.Files = {
-  upload: function upload(url, files, projectKey, displayName, userName) {
-    var data = new FormData();
-
-    files.forEach(function (file) {
-      if (file.file != null) {
-        data.append(file.fileKey, file.file, file.file.name);
-      }
-    });
-
-    data.append('id', projectKey);
-    data.append('displayName', displayName);
-    data.append('userName', userName);
-
-    var config = {
-      headers: { 'content-type': 'multipart/form-data' }
-    };
-
-    return _axios2.default.post(url, data, config);
-  }
-};
-
-var Project = exports.Project = {
-  createProject: function createProject(url, data) {
-    var config = {
-      headers: { 'content-type': 'application/json' }
-    };
-    return _axios2.default.post(url, data, config);
-  }
-};
 
 /***/ }),
 /* 182 */,
@@ -33203,7 +33222,7 @@ var IndicatorsContainer = exports.IndicatorsContainer = function IndicatorsConta
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(347);
+var content = __webpack_require__(348);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -33235,7 +33254,7 @@ if(false) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(348);
+var content = __webpack_require__(349);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -33314,7 +33333,7 @@ function index (resultFn, isEqual) {
 /* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(472)
+/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(473)
   , root = typeof window === 'undefined' ? global : window
   , vendors = ['moz', 'webkit']
   , suffix = 'AnimationFrame'
@@ -33673,7 +33692,7 @@ exports.default = AutosizeInput;
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(344);
+var content = __webpack_require__(345);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -33715,25 +33734,25 @@ module.exports = __webpack_require__(111);
 /* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(309);
+module.exports = __webpack_require__(310);
 
 /***/ }),
 /* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(310);
+module.exports = __webpack_require__(311);
 
 /***/ }),
 /* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(311);
+module.exports = __webpack_require__(312);
 
 /***/ }),
 /* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(312);
+module.exports = __webpack_require__(313);
 
 /***/ }),
 /* 285 */
@@ -34647,6 +34666,61 @@ var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(f
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.InputFieldRadio = undefined;
+
+var _react = __webpack_require__(0);
+
+var _reactHyperscriptHelpers = __webpack_require__(7);
+
+__webpack_require__(276);
+
+var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) {
+
+  var selectOption = function selectOption(e, value) {
+    e.preventDefault();
+    props.onChange(e, props.name, value);
+  };
+
+  var id = props.id,
+      name = props.name,
+      _props$optionValues = props.optionValues,
+      optionValues = _props$optionValues === undefined ? ['true', 'false'] : _props$optionValues,
+      _props$optionLabels = props.optionLabels,
+      optionLabels = _props$optionLabels === undefined ? ['Yes', 'No'] : _props$optionLabels,
+      value = props.value;
+
+
+  var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : value;
+
+  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
+    return (0, _reactHyperscriptHelpers.label)({
+      key: id + ix,
+      onClick: function onClick(e) {
+        return selectOption(e, optionValues[ix]);
+      },
+      id: "lbl_" + props.id + "_" + ix,
+      className: "radioOptions"
+    }, [(0, _reactHyperscriptHelpers.input)({
+      type: "radio",
+      id: "rad_" + id + "_" + ix,
+      name: name,
+      value: optionValues[ix],
+      checked: normValue === optionValues[ix],
+      onChange: function onChange() {}
+    }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
+  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
+};
+
+/***/ }),
+/* 296 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.MultiSelect = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -34657,7 +34731,7 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _InputField = __webpack_require__(70);
 
-var _Async = __webpack_require__(552);
+var _Async = __webpack_require__(553);
 
 var _Async2 = _interopRequireDefault(_Async);
 
@@ -34712,7 +34786,7 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
 }(_react.Component));
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34729,11 +34803,11 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-__webpack_require__(579);
+__webpack_require__(580);
 
-var _Btn = __webpack_require__(180);
+var _Btn = __webpack_require__(181);
 
-var _AlertMessage = __webpack_require__(179);
+var _AlertMessage = __webpack_require__(180);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -34803,7 +34877,7 @@ var Panel = exports.Panel = (0, _reactHyperscriptHelpers.hh)(function (_Componen
 }(_react.Component));
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34820,7 +34894,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _ProgressBar = __webpack_require__(533);
+var _ProgressBar = __webpack_require__(534);
 
 var _ProgressBar2 = _interopRequireDefault(_ProgressBar);
 
@@ -34853,7 +34927,7 @@ var QuestionnaireProgressBar = exports.QuestionnaireProgressBar = (0, _reactHype
 }(_react.Component));
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34872,9 +34946,9 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _InputYesNo = __webpack_require__(168);
 
-var _QuestionnaireProgressBar = __webpack_require__(297);
+var _QuestionnaireProgressBar = __webpack_require__(298);
 
-__webpack_require__(580);
+__webpack_require__(581);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -35072,7 +35146,7 @@ var QuestionnaireWorkflow = exports.QuestionnaireWorkflow = (0, _reactHyperscrip
 }(_react.Component));
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35192,7 +35266,6 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 }(_react.Component));
 
 /***/ }),
-/* 300 */,
 /* 301 */,
 /* 302 */,
 /* 303 */,
@@ -35201,10 +35274,11 @@ var Wizard = exports.Wizard = (0, _reactHyperscriptHelpers.hh)(function (_Compon
 /* 306 */,
 /* 307 */,
 /* 308 */,
-/* 309 */
+/* 309 */,
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(328);
+__webpack_require__(329);
 var $Object = __webpack_require__(9).Object;
 module.exports = function defineProperty(it, key, desc) {
   return $Object.defineProperty(it, key, desc);
@@ -35212,22 +35286,11 @@ module.exports = function defineProperty(it, key, desc) {
 
 
 /***/ }),
-/* 310 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(335);
-module.exports = __webpack_require__(9).Object.entries;
-
-
-/***/ }),
 /* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(329);
-var $Object = __webpack_require__(9).Object;
-module.exports = function getOwnPropertyDescriptor(it, key) {
-  return $Object.getOwnPropertyDescriptor(it, key);
-};
+__webpack_require__(336);
+module.exports = __webpack_require__(9).Object.entries;
 
 
 /***/ }),
@@ -35235,20 +35298,30 @@ module.exports = function getOwnPropertyDescriptor(it, key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(330);
+var $Object = __webpack_require__(9).Object;
+module.exports = function getOwnPropertyDescriptor(it, key) {
+  return $Object.getOwnPropertyDescriptor(it, key);
+};
+
+
+/***/ }),
+/* 313 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(331);
 module.exports = __webpack_require__(9).Object.keys;
 
 
 /***/ }),
-/* 313 */,
-/* 314 */
+/* 314 */,
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(336);
+__webpack_require__(337);
 module.exports = __webpack_require__(9).Object.values;
 
 
 /***/ }),
-/* 315 */,
 /* 316 */,
 /* 317 */,
 /* 318 */,
@@ -35261,7 +35334,8 @@ module.exports = __webpack_require__(9).Object.values;
 /* 325 */,
 /* 326 */,
 /* 327 */,
-/* 328 */
+/* 328 */,
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(16);
@@ -35270,7 +35344,7 @@ $export($export.S + $export.F * !__webpack_require__(13), 'Object', { defineProp
 
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
@@ -35285,7 +35359,7 @@ __webpack_require__(190)('getOwnPropertyDescriptor', function () {
 
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
@@ -35300,11 +35374,11 @@ __webpack_require__(190)('keys', function () {
 
 
 /***/ }),
-/* 331 */,
 /* 332 */,
 /* 333 */,
 /* 334 */,
-/* 335 */
+/* 335 */,
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
@@ -35319,7 +35393,7 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
@@ -35334,10 +35408,10 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 337 */,
 /* 338 */,
 /* 339 */,
-/* 340 */
+/* 340 */,
+/* 341 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -35345,7 +35419,7 @@ $export($export.S, 'Object', {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__emotion_unitless__ = __webpack_require__(293);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__emotion_hash__ = __webpack_require__(290);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__emotion_stylis__ = __webpack_require__(292);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet__ = __webpack_require__(581);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet__ = __webpack_require__(582);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_stylis_rule_sheet__);
 
 
@@ -35870,7 +35944,7 @@ function createEmotion(context, options) {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35884,7 +35958,7 @@ exports.push([module.i, ".alertMessage.alert {\n  width: 100%;\n  background-ima
 
 
 /***/ }),
-/* 342 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35898,7 +35972,7 @@ exports.push([module.i, ".btnPrimary{\r\n  color: #f5f5f5;\r\n  display: inline-
 
 
 /***/ }),
-/* 343 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35912,7 +35986,7 @@ exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inp
 
 
 /***/ }),
-/* 344 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35926,7 +36000,7 @@ exports.push([module.i, ".radioContainer {\n  margin: 15px 0;\n}\n\n.radioOption
 
 
 /***/ }),
-/* 345 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35940,7 +36014,7 @@ exports.push([module.i, "\r\n.panelContainer {\r\n  margin-bottom: 20px;\r\n  ba
 
 
 /***/ }),
-/* 346 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35954,7 +36028,7 @@ exports.push([module.i, ".questionnaireContainer {\n  position: relative;\n  mar
 
 
 /***/ }),
-/* 347 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35968,7 +36042,7 @@ exports.push([module.i, ".wizardWrapper {\r\n  height: 100%;\r\n  width: 100%;\r
 
 
 /***/ }),
-/* 348 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(undefined);
@@ -35982,7 +36056,6 @@ exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', s
 
 
 /***/ }),
-/* 349 */,
 /* 350 */,
 /* 351 */,
 /* 352 */,
@@ -36105,7 +36178,8 @@ exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', s
 /* 469 */,
 /* 470 */,
 /* 471 */,
-/* 472 */
+/* 472 */,
+/* 473 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
@@ -36148,7 +36222,6 @@ exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', s
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 473 */,
 /* 474 */,
 /* 475 */,
 /* 476 */,
@@ -36206,7 +36279,8 @@ exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', s
 /* 528 */,
 /* 529 */,
 /* 530 */,
-/* 531 */
+/* 531 */,
+/* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36217,11 +36291,11 @@ var _interopRequireDefault = __webpack_require__(54);
 exports.__esModule = true;
 exports.default = void 0;
 
-var _values = _interopRequireDefault(__webpack_require__(175));
+var _values = _interopRequireDefault(__webpack_require__(176));
 
 var _extends3 = _interopRequireDefault(__webpack_require__(89));
 
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(176));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(177));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(90));
 
@@ -36235,7 +36309,7 @@ var _bootstrapUtils = __webpack_require__(250);
 
 var _StyleConfig = __webpack_require__(148);
 
-var _CloseButton = _interopRequireDefault(__webpack_require__(532));
+var _CloseButton = _interopRequireDefault(__webpack_require__(533));
 
 var propTypes = {
   onDismiss: _propTypes.default.func,
@@ -36293,7 +36367,7 @@ exports.default = _default;
 module.exports = exports["default"];
 
 /***/ }),
-/* 532 */
+/* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36354,7 +36428,7 @@ exports.default = _default;
 module.exports = exports["default"];
 
 /***/ }),
-/* 533 */
+/* 534 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36367,11 +36441,11 @@ var _interopRequireDefault = __webpack_require__(54);
 exports.__esModule = true;
 exports.default = void 0;
 
-var _values = _interopRequireDefault(__webpack_require__(175));
+var _values = _interopRequireDefault(__webpack_require__(176));
 
 var _extends3 = _interopRequireDefault(__webpack_require__(89));
 
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(176));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(177));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(90));
 
@@ -36385,7 +36459,7 @@ var _bootstrapUtils = __webpack_require__(250);
 
 var _StyleConfig = __webpack_require__(148);
 
-var _ValidComponentChildren = _interopRequireDefault(__webpack_require__(534));
+var _ValidComponentChildren = _interopRequireDefault(__webpack_require__(535));
 
 var ROUND_PRECISION = 1000;
 /**
@@ -36550,7 +36624,7 @@ exports.default = _default;
 module.exports = exports["default"];
 
 /***/ }),
-/* 534 */
+/* 535 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36753,7 +36827,7 @@ exports.default = _default;
 module.exports = exports["default"];
 
 /***/ }),
-/* 535 */
+/* 536 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36826,7 +36900,6 @@ function (_React$Component) {
 
 
 /***/ }),
-/* 536 */,
 /* 537 */,
 /* 538 */,
 /* 539 */,
@@ -36842,7 +36915,8 @@ function (_React$Component) {
 /* 549 */,
 /* 550 */,
 /* 551 */,
-/* 552 */
+/* 552 */,
+/* 553 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36861,13 +36935,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Select = __webpack_require__(553);
+var _Select = __webpack_require__(554);
 
 var _Select2 = _interopRequireDefault(_Select);
 
 var _utils = __webpack_require__(158);
 
-var _stateManager = __webpack_require__(568);
+var _stateManager = __webpack_require__(569);
 
 var _stateManager2 = _interopRequireDefault(_stateManager);
 
@@ -37061,7 +37135,7 @@ exports.makeAsyncSelect = makeAsyncSelect;
 exports.default = makeAsyncSelect((0, _stateManager2.default)(_Select2.default));
 
 /***/ }),
-/* 553 */
+/* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37088,25 +37162,25 @@ var _memoizeOne2 = _interopRequireDefault(_memoizeOne);
 
 var _Menu = __webpack_require__(155);
 
-var _reactFastCompare = __webpack_require__(567);
+var _reactFastCompare = __webpack_require__(568);
 
 var _reactFastCompare2 = _interopRequireDefault(_reactFastCompare);
 
-var _filters = __webpack_require__(558);
+var _filters = __webpack_require__(559);
 
-var _index = __webpack_require__(566);
+var _index = __webpack_require__(567);
 
-var _index2 = __webpack_require__(554);
+var _index2 = __webpack_require__(555);
 
 var _utils = __webpack_require__(158);
 
-var _builtins = __webpack_require__(555);
+var _builtins = __webpack_require__(556);
 
-var _index3 = __webpack_require__(556);
+var _index3 = __webpack_require__(557);
 
-var _styles = __webpack_require__(569);
+var _styles = __webpack_require__(570);
 
-var _theme = __webpack_require__(570);
+var _theme = __webpack_require__(571);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38876,7 +38950,7 @@ var _initialiseProps = function _initialiseProps() {
 exports.default = Select;
 
 /***/ }),
-/* 554 */
+/* 555 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38934,7 +39008,7 @@ var resultsAriaMessage = exports.resultsAriaMessage = function resultsAriaMessag
 };
 
 /***/ }),
-/* 555 */
+/* 556 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38960,7 +39034,7 @@ var isOptionDisabled = exports.isOptionDisabled = function isOptionDisabled(opti
 };
 
 /***/ }),
-/* 556 */
+/* 557 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39046,7 +39120,7 @@ var defaultComponents = exports.defaultComponents = function defaultComponents(p
 };
 
 /***/ }),
-/* 557 */
+/* 558 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39065,7 +39139,7 @@ var stripDiacritics = exports.stripDiacritics = function stripDiacritics(str) {
 };
 
 /***/ }),
-/* 558 */
+/* 559 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39078,7 +39152,7 @@ exports.createFilter = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _diacritics = __webpack_require__(557);
+var _diacritics = __webpack_require__(558);
 
 var trimString = function trimString(str) {
   return str.replace(/^\s+|\s+$/g, '');
@@ -39117,7 +39191,7 @@ var createFilter = exports.createFilter = function createFilter(config) {
 };
 
 /***/ }),
-/* 559 */
+/* 560 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39159,7 +39233,7 @@ var A11yText = function A11yText(props) {
 exports.default = A11yText;
 
 /***/ }),
-/* 560 */
+/* 561 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39244,7 +39318,7 @@ var DummyInput = function (_Component) {
 exports.default = DummyInput;
 
 /***/ }),
-/* 561 */
+/* 562 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39266,7 +39340,7 @@ var _NodeResolver = __webpack_require__(157);
 
 var _NodeResolver2 = _interopRequireDefault(_NodeResolver);
 
-var _index = __webpack_require__(564);
+var _index = __webpack_require__(565);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -39360,7 +39434,7 @@ var ScrollBlock = function (_PureComponent) {
 exports.default = ScrollBlock;
 
 /***/ }),
-/* 562 */
+/* 563 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39554,7 +39628,7 @@ ScrollCaptorSwitch.defaultProps = { isEnabled: true };
 exports.default = ScrollCaptorSwitch;
 
 /***/ }),
-/* 563 */
+/* 564 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39573,7 +39647,7 @@ var LOCK_STYLES = exports.LOCK_STYLES = {
 };
 
 /***/ }),
-/* 564 */
+/* 565 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39587,9 +39661,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _constants = __webpack_require__(563);
+var _constants = __webpack_require__(564);
 
-var _utils = __webpack_require__(565);
+var _utils = __webpack_require__(566);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -39729,7 +39803,7 @@ ScrollLock.defaultProps = {
 exports.default = ScrollLock;
 
 /***/ }),
-/* 565 */
+/* 566 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39769,7 +39843,7 @@ function isTouchDevice() {
 }
 
 /***/ }),
-/* 566 */
+/* 567 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39779,7 +39853,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _A11yText = __webpack_require__(559);
+var _A11yText = __webpack_require__(560);
 
 Object.defineProperty(exports, 'A11yText', {
   enumerable: true,
@@ -39788,7 +39862,7 @@ Object.defineProperty(exports, 'A11yText', {
   }
 });
 
-var _DummyInput = __webpack_require__(560);
+var _DummyInput = __webpack_require__(561);
 
 Object.defineProperty(exports, 'DummyInput', {
   enumerable: true,
@@ -39806,7 +39880,7 @@ Object.defineProperty(exports, 'NodeResolver', {
   }
 });
 
-var _ScrollBlock = __webpack_require__(561);
+var _ScrollBlock = __webpack_require__(562);
 
 Object.defineProperty(exports, 'ScrollBlock', {
   enumerable: true,
@@ -39815,7 +39889,7 @@ Object.defineProperty(exports, 'ScrollBlock', {
   }
 });
 
-var _ScrollCaptor = __webpack_require__(562);
+var _ScrollCaptor = __webpack_require__(563);
 
 Object.defineProperty(exports, 'ScrollCaptor', {
   enumerable: true,
@@ -39827,7 +39901,7 @@ Object.defineProperty(exports, 'ScrollCaptor', {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 567 */
+/* 568 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39930,7 +40004,7 @@ function exportedEqual(a, b) {
 };
 
 /***/ }),
-/* 568 */
+/* 569 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40057,7 +40131,7 @@ var manageState = function manageState(SelectComponent) {
 exports.default = manageState;
 
 /***/ }),
-/* 569 */
+/* 570 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40141,7 +40215,7 @@ function mergeStyles(source) {
 }
 
 /***/ }),
-/* 570 */
+/* 571 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40190,25 +40264,25 @@ var defaultTheme = exports.defaultTheme = {
 };
 
 /***/ }),
-/* 571 */
+/* 572 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 /***/ }),
-/* 572 */,
 /* 573 */,
 /* 574 */,
 /* 575 */,
 /* 576 */,
-/* 577 */
+/* 577 */,
+/* 578 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(341);
+var content = __webpack_require__(342);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -40233,13 +40307,13 @@ if(false) {
 }
 
 /***/ }),
-/* 578 */
+/* 579 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(342);
+var content = __webpack_require__(343);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -40255,37 +40329,6 @@ if(false) {
 	if(!content.locals) {
 		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./Btn.css", function() {
 			var newContent = require("!!../../../../node_modules/css-loader/index.js!./Btn.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 579 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(345);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(24)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./Panel.css", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!./Panel.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -40315,6 +40358,37 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./Panel.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./Panel.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 581 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(347);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(24)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
 		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./QuestionnaireWorkflow.css", function() {
 			var newContent = require("!!../../../../node_modules/css-loader/index.js!./QuestionnaireWorkflow.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
@@ -40326,7 +40400,7 @@ if(false) {
 }
 
 /***/ }),
-/* 581 */
+/* 582 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (factory) {
@@ -40380,66 +40454,11 @@ if(false) {
 
 
 /***/ }),
-/* 582 */,
 /* 583 */,
 /* 584 */,
 /* 585 */,
 /* 586 */,
-/* 587 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InputFieldRadio = undefined;
-
-var _react = __webpack_require__(0);
-
-var _reactHyperscriptHelpers = __webpack_require__(7);
-
-__webpack_require__(276);
-
-var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) {
-
-  var selectOption = function selectOption(e, value) {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
-  };
-
-  var id = props.id,
-      name = props.name,
-      _props$optionValues = props.optionValues,
-      optionValues = _props$optionValues === undefined ? ['true', 'false'] : _props$optionValues,
-      _props$optionLabels = props.optionLabels,
-      optionLabels = _props$optionLabels === undefined ? ['Yes', 'No'] : _props$optionLabels,
-      value = props.value;
-
-
-  var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : value;
-
-  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
-    return (0, _reactHyperscriptHelpers.label)({
-      key: id + ix,
-      onClick: function onClick(e) {
-        return selectOption(e, optionValues[ix]);
-      },
-      id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions"
-    }, [(0, _reactHyperscriptHelpers.input)({
-      type: "radio",
-      id: "rad_" + id + "_" + ix,
-      name: name,
-      value: optionValues[ix],
-      checked: normValue === optionValues[ix],
-      onChange: function onChange() {}
-    }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
-  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
-};
-
-/***/ }),
+/* 587 */,
 /* 588 */,
 /* 589 */,
 /* 590 */,
@@ -40533,7 +40552,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _Wizard = __webpack_require__(299);
+var _Wizard = __webpack_require__(300);
 
 var _NewConsentGroupDataSharing = __webpack_require__(662);
 
@@ -40547,7 +40566,7 @@ var _NewConsentGroupSecurity = __webpack_require__(666);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _ajax = __webpack_require__(181);
+var _ajax = __webpack_require__(169);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -40563,8 +40582,12 @@ var NewConsentGroup = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (NewConsentGroup.__proto__ || Object.getPrototypeOf(NewConsentGroup)).call(this, props));
 
-    _this.submitNewConsentGroup = function (xxx) {
-      console.log('submitNewConsentGroup');
+    _this.submitNewConsentGroup = function () {
+      if (_this.isValid()) {
+        _ajax.ConsentGroup.create(_this.props.createConsentGroupURL, _this.getConsentGroup()).then(function (resp) {
+          console.log("creadoooooooooooooo");
+        });
+      }
     };
 
     _this.stepChanged = function (newStep) {
@@ -40575,7 +40598,7 @@ var NewConsentGroup = function (_Component) {
 
     _this.showSubmit = function (currentStep) {
       var renderSubmit = false;
-      if (currentStep === 5) {
+      if (currentStep === 4) {
         renderSubmit = true;
       }
       return renderSubmit;
@@ -40587,14 +40610,23 @@ var NewConsentGroup = function (_Component) {
         isValid = _this.validateStep1(field);
       } else if (_this.state.currentStep === 1) {
         isValid = _this.validateStep2();
+      } else if (_this.state.currentStep === 2) {
+        isValid = _this.validateStep3();
+      } else if (_this.state.currentStep === 3) {
+        isValid = _this.validateStep4(field);
+      } else if (_this.state.currentStep === 4) {
+        isValid = _this.validateStep5(field);
       }
       return isValid;
     };
 
     _this.determinationHandler = function (determination) {
-      _this.setState({
-        files: [],
-        determination: determination
+      _this.setState(function (prev) {
+        prev.determination = determination;
+        if (_this.state.determination.projectType !== null && _this.state.showErrorStep3 === true) {
+          prev.showErrorStep3 = false;
+        }
+        return prev;
       });
     };
 
@@ -40631,19 +40663,47 @@ var NewConsentGroup = function (_Component) {
     };
 
     _this.updateStep1FormData = function (updatedForm, field) {
-      if (_this.currentStep === 0) {
+      if (_this.state.currentStep === 0) {
         _this.validateStep1(field);
       }
       _this.setState(function (prev) {
         prev.step1FormData = updatedForm;
         return prev;
       }, function () {
-        _this.setGroupName(); // improve this
         _this.isValid(field);
       });
     };
 
+    _this.updateStep4FormData = function (updatedForm, field) {
+      if (_this.state.currentStep === 3) {
+        _this.validateStep4(field);
+      }
+      _this.setState(function (prev) {
+        prev.step4FormData = updatedForm;
+        return prev;
+      }, function () {
+        _this.isValid(field);
+      });
+    };
+
+    _this.updateStep5FormData = function (updatedForm, field) {
+      if (_this.state.currentStep === 4) {
+        _this.validateStep5(field);
+      }
+      _this.setState(function (prev) {
+        prev.step5FormData = updatedForm;
+        return prev;
+      }, function () {
+        _this.isValid(field);
+      });
+    };
+
+    _this.downloadFillablePDF = function () {
+      _ajax.Files.downloadFillable(_this.props.fillablePdfURL);
+    };
+
     _this.state = {
+      showErrorStep3: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -40652,11 +40712,9 @@ var NewConsentGroup = function (_Component) {
         nextQuestionIndex: 1,
         endState: false
       },
-      consentGroupName: '',
-      step1FormData: {
-        investigatorLastName: '',
-        institutionProtocolNumber: ''
-      },
+      step1FormData: {},
+      step4FormData: {},
+      step5FormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -40667,56 +40725,108 @@ var NewConsentGroup = function (_Component) {
         primaryContact: false,
         sampleCollections: false,
         describeConsentGroup: false,
-        subjectProtection: false,
+        requireMta: false,
         institutionalSources: false,
         startDate: false,
         endDate: false,
-        onGoingProcess: false
+        pii: false,
+        compliance: false,
+        sensitive: false,
+        accessible: false,
+        textCompliance: false,
+        textSensitive: false,
+        textAccessible: false,
+        sharingPlan: false
       }
     };
 
     _this.updateStep1FormData = _this.updateStep1FormData.bind(_this);
+    _this.updateStep4FormData = _this.updateStep4FormData.bind(_this);
+    _this.updateStep5FormData = _this.updateStep5FormData.bind(_this);
     _this.isValid = _this.isValid.bind(_this);
     _this.removeErrorMessage = _this.removeErrorMessage.bind(_this);
+    _this.downloadFillablePDF = _this.downloadFillablePDF.bind(_this);
     return _this;
   }
 
   _createClass(NewConsentGroup, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.initDocuments();
+      _ajax.ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(function (resp) {
+        return _this2.setState({ existingGroupNames: resp.data });
+      });
     }
   }, {
     key: 'getConsentGroup',
     value: function getConsentGroup() {
-      // Build Json
+      // step 1
       var consentGroup = {};
-      consentGroup.summary = this.state.step1FormData.groupName;
-      // consentGroup.pTitle = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
-      // consentGroup.protocol = this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null;
-      // consentGroup.subjectProtection = this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null;
-      // consentGroup.questions = this.getQuestions(this.state.determination.questions);
-      // consentGroup.collaborators = this.getCollaborators(this.state.step1FormData.collaborators);
-      // consentGroup.fundings = this.getFundings(this.state.step1FormData.fundings);
+      consentGroup.summary = this.state.step1FormData.consentGroupName;
+      consentGroup.reporter = this.props.user.userName;
+      consentGroup.samples = this.getSampleCollections();
+      var extraProperties = [];
+      extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
+      extraProperties.push({ name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess });
+      extraProperties.push({ name: 'source', value: this.props.projectKey });
+      extraProperties.push({ name: 'collInst', value: this.state.step1FormData.collaboratingInstitution });
+      extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
+      extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
+      extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
+      extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
+      extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
+      extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
+      if (this.state.step1FormData.endDate !== null) {
+        extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
+      }
+      // step 3
+      extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
+      // step 4
+      extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
+      extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
+      extraProperties.push({ name: 'textCompliance', value: this.state.step4FormData.textCompliance });
+      extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+      extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
+      extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
+      extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+      extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
+      // step 5
+      extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
+      extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
+      extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
       return consentGroup;
+    }
+  }, {
+    key: 'getQuestions',
+    value: function getQuestions(questions) {
+      var questionList = [];
+      if (questions !== undefined && questions !== null && questions.length > 1) {
+        questions.map(function (q, idx) {
+          if (q.answer !== null) {
+            questionList.push({ name: q.key, value: q.answer });
+          }
+        });
+      }
+      return questionList;
+    }
+  }, {
+    key: 'getSampleCollections',
+    value: function getSampleCollections() {
+      var sampleCollections = this.state.step1FormData.sampleCollections;
+      var sampleCollectionList = [];
+      if (sampleCollections !== null && sampleCollections.length > 0) {
+        sampleCollections.map(function (sc, idx) {
+          sampleCollectionList.push(sc.value);
+        });
+      }
+      return sampleCollectionList;
     }
   }, {
     key: 'consentGroupNameExists',
     value: function consentGroupNameExists() {
-      var _this2 = this;
-
-      // TODO: add here check if consent group name already exists to validations
-      var match = [];
-      //    console.log("URL = ", this.props.sampleSearchUrl, "consentGroup ", this.state.consentGroupName)
-      var consentGroupNames = ["Janeway / 123", "Church / 123", "123 / Leo"];
-      match.push(consentGroupNames.find(function (element) {
-        return element === _this2.state.consentGroupName;
-      }));
-      //    let consentGroupNames = ConsentGroup.getConsentGroupNames(this.props.sampleSearchUrl, this.state.step1FormData.consentGroupName);
-      //    console.log("consent Groups Names ", consentGroupNames)
-      console.log("match? =  ", match);
-      return match.length > 1;
-      //    return false;
+      return this.state.existingGroupNames.indexOf(this.state.step1FormData.consentGroupName) > -1;
     }
   }, {
     key: 'validateStep1',
@@ -40730,13 +40840,12 @@ var NewConsentGroup = function (_Component) {
       var primaryContact = false;
       var sampleCollections = false;
       var describeConsentGroup = false;
-      var subjectProtection = false;
+      var requireMta = false;
       var institutionalSources = false;
       var startDate = false;
       var endDate = false;
       var isValid = true;
-
-      if (!this.isTextValid(this.state.step1FormData.consentGroupName) && this.consentGroupNameExists()) {
+      if (field === "consentGroupName" && this.consentGroupNameExists()) {
         consentGroupName = true;
         isValid = false;
       }
@@ -40757,8 +40866,8 @@ var NewConsentGroup = function (_Component) {
         sampleCollections = true;
         isValid = false;
       }
-      if (this.state.step1FormData.subjectProtection !== true && this.state.step1FormData.subjectProtection !== false) {
-        subjectProtection = true;
+      if (this.state.step1FormData.requireMta !== true && this.state.step1FormData.requireMta !== false) {
+        requireMta = true;
         isValid = false;
       }
       if (!this.isTextValid(this.state.step1FormData.collaboratingInstitution)) {
@@ -40769,7 +40878,7 @@ var NewConsentGroup = function (_Component) {
         startDate = true;
         isValid = false;
       }
-      if (!this.state.step1FormData.onGoingProcess && !this.isTextValid(this.state.step1FormData.startDate)) {
+      if (!this.state.step1FormData.onGoingProcess && !this.isTextValid(this.state.step1FormData.endDate)) {
         endDate = true;
         isValid = false;
       }
@@ -40798,14 +40907,14 @@ var NewConsentGroup = function (_Component) {
           prev.errors.primaryContact = primaryContact;
           prev.errors.sampleCollections = sampleCollections;
           prev.errors.describeConsentGroup = describeConsentGroup;
-          prev.errors.subjectProtection = subjectProtection;
+          prev.errors.requireMta = requireMta;
           prev.errors.institutionalSources = institutionalSources;
           prev.errors.startDate = startDate;
           prev.errors.endDate = endDate;
           prev.errors.isValid = isValid;
           return prev;
         });
-      } else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' || field === 'consentGroupName' || field === 'collaboratingInstitution' || field === 'primaryContact' || field === 'sampleCollections' || field === 'describeConsentGroup' || field === 'subjectProtection' || field === 'institutionalSources' || field === 'startDate' || field === 'endDate') {
+      } else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' || field === 'consentGroupName' || field === 'collaboratingInstitution' || field === 'primaryContact' || field === 'sampleCollections' || field === 'describeConsentGroup' || field === 'requireMta' || field === 'institutionalSources' || field === 'startDate' || field === 'endDate') {
 
         this.setState(function (prev) {
           if (field === 'investigatorLastName') {
@@ -40822,8 +40931,8 @@ var NewConsentGroup = function (_Component) {
             prev.errors.sampleCollections = sampleCollections;
           } else if (field === 'describeConsentGroup') {
             prev.errors.describeConsentGroup = describeConsentGroup;
-          } else if (field === 'subjectProtection') {
-            prev.errors.subjectProtection = subjectProtection;
+          } else if (field === 'requireMta') {
+            prev.errors.requireMta = requireMta;
           } else if (field === 'institutionalSources') {
             prev.errors.institutionalSources = institutionalSources;
           } else if (field === 'startDate') {
@@ -40852,14 +40961,119 @@ var NewConsentGroup = function (_Component) {
       console.log(error, info);
     }
   }, {
-    key: 'setGroupName',
-    value: function setGroupName() {
-      var _this4 = this;
-
+    key: 'validateStep3',
+    value: function validateStep3() {
+      var isValid = true;
+      if (this.state.determination.requiredError || this.state.determination.endState == false) {
+        isValid = false;
+      }
       this.setState(function (prev) {
-        prev.consentGroupName = [_this4.state.step1FormData.institutionProtocolNumber.concat(), _this4.state.step1FormData.investigatorLastName].join(" / ");
+        prev.showErrorStep3 = !isValid;
         return prev;
       });
+      return isValid;
+    }
+  }, {
+    key: 'validateStep4',
+    value: function validateStep4(field) {
+      var pii = false;
+      var compliance = false;
+      var sensitive = false;
+      var accessible = false;
+      var isValid = true;
+      var textCompliance = false;
+      var textSensitive = false;
+      var textAccessible = false;
+
+      if (!this.isTextValid(this.state.step4FormData.pii)) {
+        pii = true;
+        isValid = false;
+      }
+      if (!this.isTextValid(this.state.step4FormData.compliance)) {
+        compliance = true;
+        isValid = false;
+      }
+      if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "01" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
+        textCompliance = true;
+        isValid = false;
+      }
+      if (!this.isTextValid(this.state.step4FormData.sensitive)) {
+        sensitive = true;
+        isValid = false;
+      }
+      if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "01" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
+        textSensitive = true;
+        isValid = false;
+      }
+      if (!this.isTextValid(this.state.step4FormData.accessible)) {
+        accessible = true;
+        isValid = false;
+      }
+      if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "01" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
+        textAccessible = true;
+        isValid = false;
+      }
+
+      if (field === undefined || field === null || field === 3) {
+        this.setState(function (prev) {
+          prev.errors.pii = pii;
+          prev.errors.compliance = compliance;
+          prev.errors.sensitive = sensitive;
+          prev.errors.accessible = accessible;
+          prev.errors.textCompliance = textCompliance;
+          prev.errors.textSensitive = textSensitive;
+          prev.errors.textAccessible = textAccessible;
+          return prev;
+        });
+      } else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive' || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible') {
+
+        this.setState(function (prev) {
+          if (field === 'pii') {
+            prev.errors.pii = pii;
+          } else if (field === 'compliance') {
+            prev.errors.compliance = compliance;
+          } else if (field === 'textCompliance') {
+            prev.errors.textCompliance = textCompliance;
+          } else if (field === 'sensitive') {
+            prev.errors.sensitive = sensitive;
+          } else if (field === 'textSensitive') {
+            prev.errors.textSensitive = textSensitive;
+          } else if (field === 'accessible') {
+            prev.errors.accessible = accessible;
+          } else if (field === 'textAccessible') {
+            prev.errors.textAccessible = textAccessible;
+          }
+          return prev;
+        });
+      }
+      return isValid;
+    }
+  }, {
+    key: 'validateStep5',
+    value: function validateStep5(field) {
+      var sharingPlan = false;
+      var isValid = true;
+
+      if (!this.isTextValid(this.state.step5FormData.sharingPlan)) {
+        sharingPlan = true;
+        isValid = false;
+      }
+
+      if (field === undefined || field === null || field === 4) {
+        this.setState(function (prev) {
+          prev.errors.sharingPlan = sharingPlan;
+          return prev;
+        });
+      } else if (field === 'sharingPlan') {
+
+        this.setState(function (prev) {
+          if (field === 'sharingPlan') {
+            prev.errors.sharingPlan = sharingPlan;
+          }
+          return prev;
+        });
+      }
+      return isValid;
     }
   }, {
     key: 'initDocuments',
@@ -40891,13 +41105,15 @@ var NewConsentGroup = function (_Component) {
         fileName: null,
         error: false
       });
+
       documents.push({
         required: false,
         fileKey: 'Data Use Letter',
         label: (0, _reactHyperscriptHelpers.span)({}, ["Upload the ", (0, _reactHyperscriptHelpers.span)({ className: "bold" }, ["Data Use Letter "]), "here (optional):"]),
         file: null,
         fileName: null,
-        error: false
+        error: false,
+        link: (0, _reactHyperscriptHelpers.a)({ onClick: this.downloadFillablePDF }, ["Download fillable PDF here."])
       });
 
       this.setState({
@@ -40913,6 +41129,14 @@ var NewConsentGroup = function (_Component) {
       });
     }
   }, {
+    key: 'parseDate',
+    value: function parseDate(date) {
+      if (date !== null) {
+        var d = new Date(date);
+        return [d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-");
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _state = this.state,
@@ -40922,7 +41146,7 @@ var NewConsentGroup = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDocuments.NewConsentGroupDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files }), (0, _NewConsentGroupIntCohorts.NewConsentGroupIntCohorts)({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors })]);
+      return (0, _Wizard.Wizard)({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDocuments.NewConsentGroupDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }), (0, _NewConsentGroupIntCohorts.NewConsentGroupIntCohorts)({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -41035,6 +41259,8 @@ var InputFieldDatePicker = exports.InputFieldDatePicker = (0, _reactHyperscriptH
         showYearDropdown: true,
         dropdownMode: "select",
         isClearable: true,
+        minDate: this.props.minDate,
+        maxDate: this.props.maxDate,
         disabled: this.props.disabled,
         placeholderText: this.props.placeholder,
         className: "inputFieldDatePicker"
@@ -41067,7 +41293,7 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _InputFieldText = __webpack_require__(109);
 
-var _Btn = __webpack_require__(180);
+var _Btn = __webpack_require__(181);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -41187,7 +41413,7 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _WizardStep = __webpack_require__(74);
 
-var _InputFieldRadio = __webpack_require__(587);
+var _InputFieldRadio = __webpack_require__(295);
 
 var _InputFieldText = __webpack_require__(109);
 
@@ -41207,16 +41433,35 @@ var NewConsentGroupDataSharing = exports.NewConsentGroupDataSharing = (0, _react
 
     _this.state = {};
 
-    _this.handleRadioChange = function (e, field, value) {
+    _this.handleRadio2Change = function (e, field, value) {
+      _this.setState(function (prev) {
+        prev.formData[field] = value;
+        prev.formData.databaseControlled = '';
+        prev.formData.databaseOpen = '';
+        return prev;
+      }, function () {
+        return _this.props.updateForm(_this.state.formData, field);
+      });
+      _this.props.removeErrorMessage();
+    };
+
+    _this.handleInputChange = function (e) {
+      var field = e.target.name;
+      var value = e.target.value;
       _this.setState(function (prev) {
         prev.formData[field] = value;
         return prev;
+      }, function () {
+        _this.props.updateForm(_this.state.formData, field);
+        _this.props.removeErrorMessage();
       });
     };
 
     _this.state = {
       formData: {
-        sharingplan: null
+        sharingPlan: '',
+        databaseControlled: '',
+        databaseOpen: ''
       }
     };
 
@@ -41238,36 +41483,38 @@ var NewConsentGroupDataSharing = exports.NewConsentGroupDataSharing = (0, _react
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 4, currentStep: this.props.currentStep }, [(0, _InputFieldRadio.InputFieldRadio)({
-        id: "radioSharingplan",
-        name: "sharingplan",
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 4, currentStep: this.props.currentStep,
+        error: this.props.errors.sharingPlan,
+        errorMessage: 'Please complete all required fields' }, [(0, _InputFieldRadio.InputFieldRadio)({
+        id: "radioSharingPlan",
+        name: "sharingPlan",
         label: "What is your Data Sharing plan?",
         moreInfo: "",
         optionValues: ["controlled", "open", "none", "undetermined"],
         optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
-        value: this.state.formData.sharingplan,
-        onChange: this.handleRadioChange,
-        required: false,
-        error: this.props.subjectProtection,
+        value: this.state.formData.sharingPlan,
+        onChange: this.handleRadio2Change,
+        required: true,
+        error: this.props.errors.sharingPlan,
         errorMessage: "Required field"
       }), (0, _InputFieldText.InputFieldText)({
-        isRendered: this.state.formData.sharingplan === "controlled",
+        isRendered: this.state.formData.sharingPlan === "controlled",
         id: "inputDatabaseControlled",
         name: "databaseControlled",
         label: "Name of Database(s)",
         moreInfo: "Data Use Letter NR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available",
         value: this.state.formData.databaseControlled,
         disabled: false,
-        required: true,
+        required: false,
         onChange: this.handleInputChange
       }), (0, _InputFieldText.InputFieldText)({
-        isRendered: this.state.formData.sharingplan === "open",
+        isRendered: this.state.formData.sharingPlan === "open",
         id: "inputDatabaseOpen",
         name: "databaseOpen",
         label: "Last Name of Investigator Listed on the Consent Form",
         value: this.state.formData.databaseOpen,
         disabled: false,
-        required: true,
+        required: false,
         onChange: this.handleInputChange
       })]);
     }
@@ -41303,6 +41550,8 @@ var _WizardStep = __webpack_require__(74);
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _InputFieldFile = __webpack_require__(294);
+
+var _ajax = __webpack_require__(169);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -41358,12 +41607,12 @@ var NewConsentGroupDocuments = exports.NewConsentGroupDocuments = (0, _reactHype
         errors = errors || doc.error;
       });
 
-      return (0, _WizardStep.WizardStep)({
+      return (0, _reactHyperscriptHelpers.a)({ onClick: this.downloadFillablePDF }, ['download PDF']), (0, _WizardStep.WizardStep)({
         title: this.props.title, step: 1, currentStep: this.props.currentStep,
         errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps',
         error: errors || this.props.generalError
       }, [documents.map(function (document, index) {
-        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: index }, [(0, _InputFieldFile.InputFieldFile)({
+        return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: index }, [document.link != null ? document.link : null, (0, _InputFieldFile.InputFieldFile)({
           label: document.label,
           callback: _this2.setFilesToUpload(documents, index),
           fileName: document.file != null ? document.file.name : '',
@@ -41404,21 +41653,21 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _WizardStep = __webpack_require__(74);
 
-var _Panel = __webpack_require__(296);
+var _Panel = __webpack_require__(297);
 
 var _InputFieldText = __webpack_require__(109);
 
-var _InputFieldRadio = __webpack_require__(587);
+var _InputFieldRadio = __webpack_require__(295);
 
 var _InputYesNo = __webpack_require__(168);
 
 var _InstitutionalSource = __webpack_require__(661);
 
-var _MultiSelect = __webpack_require__(295);
+var _MultiSelect = __webpack_require__(296);
 
 var _InputFieldDatePicker = __webpack_require__(658);
 
-var _ajax = __webpack_require__(181);
+var _ajax = __webpack_require__(169);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -41431,8 +41680,6 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
 
   function NewConsentGroupGeneralData(props) {
     _classCallCheck(this, NewConsentGroupGeneralData);
-
-    console.log("Props general data: **** ", props);
 
     var _this = _possibleConstructorReturn(this, (NewConsentGroupGeneralData.__proto__ || Object.getPrototypeOf(NewConsentGroupGeneralData)).call(this, props));
 
@@ -41466,6 +41713,7 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         }, function () {
           return _this.props.updateForm(_this.state.formData, id);
         });
+        _this.props.removeErrorMessage();
       };
     };
 
@@ -41511,21 +41759,35 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         prev.formData.endDate = null;
         return prev;
       }, function () {
-        return _this.props.updateForm(_this.state.formData);
+        return _this.props.updateForm(_this.state.formData, "onGoingProcess");
       });
+      _this.props.removeErrorMessage();
+    };
+
+    _this.checkGroupName = function () {
+      if (_this.state.formData.investigatorLastName !== '' && _this.state.formData.institutionProtocolNumber !== '') {
+        _this.setState(function (prev) {
+          prev.formData.consentGroupName = [_this.state.formData.investigatorLastName, _this.state.formData.institutionProtocolNumber].join(" / ");
+          return prev;
+        }, function () {
+          return _this.props.updateForm(_this.state.formData, "consentGroupName");
+        });
+        _this.props.removeErrorMessage();
+      }
     };
 
     _this.loadSampleCollections = _this.loadSampleCollections.bind(_this);
     _this.handleChange = _this.handleChange.bind(_this);
     _this.state = {
       formData: {
-        investigatorLastName: '', // consent
-        institutionProtocolNumber: '', //protocol
-        collaboratingInstitution: '', //collInst
-        primaryContact: '', //collContact
+        investigatorLastName: '',
+        institutionProtocolNumber: '',
+        consentGroupName: '',
+        collaboratingInstitution: '',
+        primaryContact: '',
         sampleCollections: [],
-        describeConsentGroup: '', //consentGroupDescription
-        subjectProtection: '', //subjectProtection
+        describeConsentGroup: '',
+        requireMta: '',
         institutionalSources: [{ name: '', country: '' }],
         startDate: null,
         endDate: null,
@@ -41549,8 +41811,8 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
           var options = response.data.map(function (item) {
             return {
               key: item.id,
-              value: item.value,
-              label: item.label
+              value: item.collectionId,
+              label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
             };
           });
           callback(options);
@@ -41568,7 +41830,7 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
 
       return (0, _WizardStep.WizardStep)({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.investigatorLastName || this.props.errors.institutionProtocolNumber || this.props.errors.collaboratingInstitution || this.props.errors.primaryContact || this.props.errors.sampleCollections || this.props.errors.describeConsentGroup || this.props.errors.subjectProtection || this.props.errors.institutionalSources || this.props.errors.startDate || this.props.errors.endDate || this.props.errors.onGoingProcess,
+        error: this.props.errors.investigatorLastName || this.props.errors.institutionProtocolNumber || this.props.errors.collaboratingInstitution || this.props.errors.primaryContact || this.props.errors.sampleCollections || this.props.errors.describeConsentGroup || this.props.errors.requireMta || this.props.errors.institutionalSources || this.props.errors.startDate || this.props.errors.endDate || this.props.errors.onGoingProcess,
         errorMessage: 'Please complete all required fields' }, [(0, _InputFieldText.InputFieldText)({
         id: "inputInvestigatorLastName",
         name: "investigatorLastName",
@@ -41577,6 +41839,7 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         disabled: false,
         required: true,
         onChange: this.handleInputChange,
+        focusOut: this.checkGroupName,
         error: this.props.errors.investigatorLastName,
         errorMessage: "Required field"
       }), (0, _InputFieldText.InputFieldText)({
@@ -41587,18 +41850,19 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         disabled: false,
         required: true,
         onChange: this.handleInputChange,
+        focusOut: this.checkGroupName,
         error: this.props.errors.institutionProtocolNumber,
         errorMessage: "Required field"
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputConsentGroupName",
         name: "consentGroupName",
         label: "Consent Group Name",
-        value: this.state.formData.institutionProtocolNumber + " | " + this.state.formData.investigatorLastName,
+        value: this.state.formData.investigatorLastName + " / " + this.state.formData.institutionProtocolNumber,
         disabled: true,
         required: false,
         onChange: null,
         error: this.props.errors.consentGroupName,
-        errorMessage: "Required field"
+        errorMessage: "An existing Consent Group with this protocol exists. Please choose a different one."
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputCollaboratingInstitution",
         name: "collaboratingInstitution",
@@ -41637,7 +41901,7 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         label: "Please choose one of the following to describe this proposed Consent Group: ",
         moreInfo: "",
         value: this.state.formData.describeConsentGroup,
-        optionValues: ["o1", "02"],
+        optionValues: ["01", "02"],
         optionLabels: ["I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record", "I am requesting assistance in updating and existing project"],
         onChange: this.handleRadio2Change,
         required: true,
@@ -41652,15 +41916,18 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         label: "Start Date",
         onChange: this.handleChange,
         placeholder: "Enter Start Date",
+        maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null,
         error: this.props.errors.startDate,
         errorMessage: "Required field"
       })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldDatePicker.InputFieldDatePicker)({
+        startDate: this.state.formData.startDate,
         name: "endDate",
         label: "End Date",
         selected: this.state.formData.endDate,
         onChange: this.handleChange,
         placeholder: "Enter End Date",
-        disabled: this.state.formData.onGoingProcess === true,
+        disabled: this.state.formData.onGoingProcess === true || this.state.formData.startDate === null,
+        minDate: this.state.formData.startDate,
         error: this.props.errors.endDate,
         errorMessage: "Required field"
       })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [(0, _reactHyperscriptHelpers.input)({
@@ -41675,14 +41942,14 @@ var NewConsentGroupGeneralData = exports.NewConsentGroupGeneralData = (0, _react
         error: this.props.errors.institutionalSources,
         errorMessage: "Required field"
       })]), (0, _InputYesNo.InputYesNo)({
-        id: "radioSubjectProtection",
-        name: "subjectProtection",
+        id: "radioRequireMta",
+        name: "requireMta",
         label: "Does the institution providing samples/data to the Broad require a Material or Data Transfer Agreement (MTA)?",
         moreInfo: "(Please note that all samples arriving from Dana Farber Cancer Institute now requiere an MTA)",
-        value: this.state.formData.subjectProtection,
+        value: this.state.formData.requireMta,
         onChange: this.handleRadioChange,
         required: true,
-        error: this.props.errors.subjectProtection,
+        error: this.props.errors.requireMta,
         errorMessage: "Required field"
       })]);
     }
@@ -41717,7 +41984,7 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 var _WizardStep = __webpack_require__(74);
 
-var _QuestionnaireWorkflow = __webpack_require__(298);
+var _QuestionnaireWorkflow = __webpack_require__(299);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -41823,7 +42090,8 @@ var NewConsentGroupIntCohorts = exports.NewConsentGroupIntCohorts = (0, _reactHy
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 2, currentStep: this.props.currentStep }, [(0, _QuestionnaireWorkflow.QuestionnaireWorkflow)({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })]);
+      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 2, currentStep: this.props.currentStep,
+        questionnaireStep: true, error: this.props.errors, errorMessage: ' Please answer all questions to continue' }, [(0, _QuestionnaireWorkflow.QuestionnaireWorkflow)({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -41860,6 +42128,10 @@ var _InputYesNo = __webpack_require__(168);
 
 var _InputFieldText = __webpack_require__(109);
 
+var _InputFieldRadio = __webpack_require__(295);
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -41872,35 +42144,44 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
   _inherits(NewConsentGroupSecurity, _Component);
 
   function NewConsentGroupSecurity(props) {
+    var _formData;
+
     _classCallCheck(this, NewConsentGroupSecurity);
 
     var _this = _possibleConstructorReturn(this, (NewConsentGroupSecurity.__proto__ || Object.getPrototypeOf(NewConsentGroupSecurity)).call(this, props));
 
     _this.state = {};
 
-    _this.handleRadioChange = function (e, field, value) {
-      if (value === 'true') {
-        value = true;
-      } else if (value === 'false') {
-        value = false;
-      }
-
+    _this.handleRadio2Change = function (e, field, value) {
       _this.setState(function (prev) {
         prev.formData[field] = value;
         return prev;
+      }, function () {
+        return _this.props.updateForm(_this.state.formData, field);
+      });
+      _this.props.removeErrorMessage();
+    };
+
+    _this.handleInputChange = function (e) {
+      var field = e.target.name;
+      var value = e.target.value;
+      _this.setState(function (prev) {
+        prev.formData[field] = value;
+        return prev;
+      }, function () {
+        _this.props.updateForm(_this.state.formData, field);
+        _this.props.removeErrorMessage();
       });
     };
 
     _this.state = {
-      formData: {
-        pii: null,
-        compliance: null,
-        sensitive: null,
-        accesible: null,
+      formData: (_formData = {
+        pii: '',
+        compliance: '',
         textCompliance: '',
-        textSensitive: '',
-        textAccesible: ''
-      }
+        sensitive: '',
+        accessible: ''
+      }, _defineProperty(_formData, 'textCompliance', ''), _defineProperty(_formData, 'textSensitive', ''), _defineProperty(_formData, 'textAccessible', ''), _formData)
     };
     return _this;
   }
@@ -41920,73 +42201,90 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
-      return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 3, currentStep: this.props.currentStep }, [(0, _InputYesNo.InputYesNo)({
+      return (0, _WizardStep.WizardStep)({
+        title: this.props.title, step: 3, currentStep: this.props.currentStep,
+        error: this.props.errors.pii || this.props.errors.compliance || this.props.errors.sensitive || this.props.errors.accessible || this.props.errors.textCompliance || this.props.errors.textSensitive || this.props.errors.textAccessible,
+        errorMessage: 'Please complete all required fields' }, [(0, _InputFieldRadio.InputFieldRadio)({
         id: "radioPII",
         name: "pii",
-        label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)? ",
-        moreInfo: "For a list of what constitues PII and PHI, visit this link.",
+        label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
+        moreInfo: (0, _reactHyperscriptHelpers.span)({}, ["For a list of what constitutes PII and PHI, visit this ", (0, _reactHyperscriptHelpers.a)({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["link"]), "."]),
         value: this.state.formData.pii,
-        onChange: this.handleRadioChange,
-        required: false,
-        error: this.props.subjectProtection,
+        optionValues: ["01", "02"],
+        optionLabels: ["Yes", "No"],
+        onChange: this.handleRadio2Change,
+        required: true,
+        error: this.props.errors.pii,
         errorMessage: "Required field"
-      }), (0, _InputYesNo.InputYesNo)({
+      }), (0, _InputFieldRadio.InputFieldRadio)({
         id: "radioCompliance",
         name: "compliance",
-        label: "Are you bound by any regulatory compliance (FISMA, CLIA, etc.)? ",
+        label: "Are you bound by any regulatory compliance (FISMA, CLIA, etc.)?* ",
         moreInfo: "If so which, one?",
         value: this.state.formData.compliance,
-        onChange: this.handleRadioChange,
-        required: false,
-        error: this.props.subjectProtection,
+        optionValues: ["01", "02", "03"],
+        optionLabels: ["Yes", "No", "Uncertain"],
+        onChange: this.handleRadio2Change,
+        required: true,
+        error: this.props.errors.compliance,
         errorMessage: "Required field"
       }), (0, _InputFieldText.InputFieldText)({
-        isRendered: this.state.formData.compliance === true,
+        isRendered: this.state.formData.compliance === "01",
         id: "inputCompliance",
         name: "textCompliance",
-        label: "Add regulatory compliance:",
+        label: "Add regulatory compliance:*",
         value: this.state.formData.textCompliance,
         disabled: false,
-        required: true,
-        onChange: this.handleInputChange
-      }), (0, _InputYesNo.InputYesNo)({
+        required: false,
+        onChange: this.handleInputChange,
+        error: this.props.errors.textCompliance,
+        errorMessage: "Required field"
+      }), (0, _InputFieldRadio.InputFieldRadio)({
         id: "radioSensitive",
         name: "sensitive",
-        label: "Is this data “sensitive” for any reason? ",
+        label: "Is this data “sensitive” for any reason?* ",
         moreInfo: "If yes, please explain",
         value: this.state.formData.sensitive,
-        onChange: this.handleRadioChange,
-        required: false,
-        error: this.props.subjectProtection,
+        optionValues: ["01", "02", "03"],
+        optionLabels: ["Yes", "No", "Uncertain"],
+        onChange: this.handleRadio2Change,
+        required: true,
+        error: this.props.errors.sensitive,
         errorMessage: "Required field"
       }), (0, _InputFieldText.InputFieldText)({
-        isRendered: this.state.formData.sensitive === true,
+        isRendered: this.state.formData.sensitive === "01",
         id: "inputSensitive",
         name: "textSensitive",
-        label: "Please explain:",
+        label: "Please explain:*",
         value: this.state.formData.textSensitive,
         disabled: false,
-        required: true,
-        onChange: this.handleInputChange
-      }), (0, _InputYesNo.InputYesNo)({
-        id: "radioAccesible",
-        name: "accesible",
-        label: "Will your data be accessible on the Internet (even if authenticated)? ",
-        moreInfo: "If yes, please explain",
-        value: this.state.formData.accesible,
-        onChange: this.handleRadioChange,
         required: false,
-        error: this.props.subjectProtection,
+        onChange: this.handleInputChange,
+        error: this.props.errors.textSensitive,
+        errorMessage: "Required field"
+      }), (0, _InputFieldRadio.InputFieldRadio)({
+        id: "radioAccessible",
+        name: "accessible",
+        label: "Will your data be accessible on the Internet (even if authenticated)?* ",
+        moreInfo: "If yes, please explain",
+        value: this.state.formData.accessible,
+        optionValues: ["01", "02", "03"],
+        optionLabels: ["Yes", "No", "Uncertain"],
+        onChange: this.handleRadio2Change,
+        required: true,
+        error: this.props.errors.accessible,
         errorMessage: "Required field"
       }), (0, _InputFieldText.InputFieldText)({
-        isRendered: this.state.formData.accesible === true,
-        id: "inputAccesible",
-        name: "textAccesible",
-        label: "Please explain:",
-        value: this.state.formData.textAccesible,
+        isRendered: this.state.formData.accessible === "01",
+        id: "inputAccessible",
+        name: "textAccessible",
+        label: "Please explain:*",
+        value: this.state.formData.textAccessible,
         disabled: false,
-        required: true,
-        onChange: this.handleInputChange
+        required: false,
+        onChange: this.handleInputChange,
+        error: this.props.errors.textAccessible,
+        errorMessage: "Required field"
       })]);
     }
   }], [{
@@ -42030,7 +42328,9 @@ _reactDom2.default.render(_react2.default.createElement(_NewConsentGroup2.defaul
     consentNamesSearchURL: component.consentNamesSearchURL,
     attachDocumentsURL: component.attachDocumentsURL,
     createProjectURL: component.createProjectURL,
-    serverURL: component.serverURL
+    serverURL: component.serverURL,
+    fillablePdfURL: component.fillablePdfURL,
+    projectKey: component.projectKey
 }), document.getElementById('newConsentGroup'));
 
 /***/ }),
@@ -51396,7 +51696,7 @@ var PRESELECT_CHANGE_VIA_NAVIGATE = 'navigate';
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_popper_js__ = __webpack_require__(222);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Manager__ = __webpack_require__(535);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Manager__ = __webpack_require__(536);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__utils__ = __webpack_require__(627);
 /* unused harmony export InnerPopper */
 /* unused harmony export placements */
@@ -51613,7 +51913,7 @@ function Popper(_ref) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_warning__ = __webpack_require__(772);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Manager__ = __webpack_require__(535);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Manager__ = __webpack_require__(536);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils__ = __webpack_require__(627);
 /* harmony export (immutable) */ __webpack_exports__["a"] = Reference;
 
@@ -51674,7 +51974,7 @@ function Reference(props) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Popper__ = __webpack_require__(769);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Manager__ = __webpack_require__(535);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Manager__ = __webpack_require__(536);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Reference__ = __webpack_require__(770);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Popper__["a"]; });
 /* unused harmony reexport placements */
