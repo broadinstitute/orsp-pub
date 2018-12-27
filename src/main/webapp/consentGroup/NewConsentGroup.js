@@ -526,7 +526,16 @@ validateStep1(field) {
   }
 
   downloadFillablePDF = () => {
-    Files.downloadFillable(this.props.fillablePdfURL);
+    Files.downloadFillable(this.props.fillablePdfURL).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf');
+      document.body.appendChild(link);
+      link.click();
+    }).catch(error => {
+      console.error(error);
+    });
   };
 
   removeErrorMessage() {
