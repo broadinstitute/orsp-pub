@@ -65,7 +65,7 @@ class NewConsentGroup extends Component {
   }
 
   submitNewConsentGroup = () => {
-    console.log(this.getConsentGroup());
+//    console.log(this.getConsentGroup());
     };
 
   getConsentGroup() {
@@ -135,7 +135,6 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateStep1(field);
-      console.log(this.getConsentGroup());
     } else if (this.state.currentStep === 1) {
       isValid = this.validateStep2();
     } else if (this.state.currentStep === 2) {
