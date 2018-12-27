@@ -7,7 +7,7 @@
 <body>
 
 <button class="btn btn-default" data-toggle="modal" data-target=".add-new-consent-modal">Add Consent Group</button>
-<a type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey])}, relativeUri" >New Add Consent Group</a>
+<a id="" type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey])}" >New Add Consent Group</a>
 <button class="btn btn-default" data-toggle="modal" data-target=".use-existing-consent-modal">Use Existing Consent Group</button>
 
 <g:if test="${consentGroups}">
