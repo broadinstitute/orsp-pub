@@ -78,7 +78,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
           moreInfo: span({}, ["For a list of what constitutes PII and PHI, visit this ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target:"_blank" }, ["link"]), "."]),
           value: this.state.formData.pii,
-          optionValues: ["01", "02"],
+          optionValues: ["true", "false"],
           optionLabels: [
             "Yes",
             "No"
@@ -94,7 +94,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           label: "Are you bound by any regulatory compliance (FISMA, CLIA, etc.)?* ",
           moreInfo: "If so which, one?",
           value: this.state.formData.compliance,
-          optionValues: ["01", "02", "03"],
+          optionValues: ["true", "false", "uncertain"],
           optionLabels: [
             "Yes",
             "No",
@@ -123,7 +123,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           label: "Is this data “sensitive” for any reason?* ",
           moreInfo: "If yes, please explain",
           value: this.state.formData.sensitive,
-          optionValues: ["01", "02", "03"],
+          optionValues: ["true", "false", "uncertain"],
           optionLabels: [
             "Yes",
             "No",
@@ -152,7 +152,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           label: "Will your data be accessible on the Internet (even if authenticated)?* ",
           moreInfo: "If yes, please explain",
           value: this.state.formData.accessible,
-          optionValues: ["01", "02", "03"],
+          optionValues: ["true", "false", "uncertain"],
           optionLabels: [
             "Yes",
             "No",

@@ -21,10 +21,10 @@
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
             sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
             consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
+            createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/newConsentGroup', method: 'POST')}",
             attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-            createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consentGroup', method: 'POST')}",
             serverURL: "${webRequest.baseUrl}",
-            fillablePdfURL : "${createLink(controller: 'NewConsentGroup', action: 'downloadFillablePDF')}",
+            fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF')}",
             projectKey: "${params.projectKey}"
         };
     </script>
