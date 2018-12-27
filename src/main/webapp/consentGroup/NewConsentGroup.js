@@ -72,7 +72,7 @@ class NewConsentGroup extends Component {
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
-        this.uploadFiles(this.props.projectKey);
+        this.uploadFiles(resp.data.message.projectKey);
       });
     } else {
       this.setState(prev => {
