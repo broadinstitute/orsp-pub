@@ -40583,9 +40583,23 @@ var NewConsentGroup = function (_Component) {
     var _this = _possibleConstructorReturn(this, (NewConsentGroup.__proto__ || Object.getPrototypeOf(NewConsentGroup)).call(this, props));
 
     _this.submitNewConsentGroup = function () {
-      if (_this.isValid()) {
+
+      if (!(_this.validateStep1() || _this.validateStep2() || _this.validateStep3() || _this.validateStep4() || _this.validateStep5())) {
+        console.log("PASO BIEN");
+
+        _this.setState(function (prev) {
+          prev.formSubmitted = true;
+          return prev;
+        });
+
         _ajax.ConsentGroup.create(_this.props.createConsentGroupURL, _this.getConsentGroup()).then(function (resp) {
           console.log("creadoooooooooooooo");
+        });
+      } else {
+        console.log("algo esta mal");
+        _this.setState(function (prev) {
+          prev.generalError = true;
+          return prev;
         });
       }
     };
@@ -40704,6 +40718,7 @@ var NewConsentGroup = function (_Component) {
 
     _this.state = {
       showErrorStep3: false,
+      generalError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -40762,41 +40777,41 @@ var NewConsentGroup = function (_Component) {
   }, {
     key: 'getConsentGroup',
     value: function getConsentGroup() {
-      // step 1
-      var consentGroup = {};
-      consentGroup.summary = this.state.step1FormData.consentGroupName;
-      consentGroup.reporter = this.props.user.userName;
-      consentGroup.samples = this.getSampleCollections();
-      var extraProperties = [];
-      extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
-      extraProperties.push({ name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess });
-      extraProperties.push({ name: 'source', value: this.props.projectKey });
-      extraProperties.push({ name: 'collInst', value: this.state.step1FormData.collaboratingInstitution });
-      extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
-      extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
-      extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
-      extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
-      extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
-      extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
-      if (this.state.step1FormData.endDate !== null) {
-        extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
-      }
-      // step 3
-      extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
-      // step 4
-      extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
-      extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
-      extraProperties.push({ name: 'textCompliance', value: this.state.step4FormData.textCompliance });
-      extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
-      extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
-      extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
-      extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
-      extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
-      // step 5
-      extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
-      extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
-      extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
-      return consentGroup;
+      //    // step 1
+      //    let consentGroup = {};
+      //    consentGroup.summary = this.state.step1FormData.consentGroupName;
+      //    consentGroup.reporter = this.props.user.userName;
+      //    consentGroup.samples = this.getSampleCollections();
+      //    let extraProperties = [];
+      //    extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
+      //    extraProperties.push({ name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess });
+      //    extraProperties.push({ name: 'source', value: this.props.projectKey });
+      //    extraProperties.push({ name: 'collInst', value: this.state.step1FormData.collaboratingInstitution });
+      //    extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
+      //    extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
+      //    extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
+      //    extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
+      //    extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
+      //    extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
+      //    if (this.state.step1FormData.endDate !== null) {
+      //      extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
+      //    }
+      //    // step 3
+      //    extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
+      //    // step 4
+      //    extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
+      //    extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
+      //    extraProperties.push({ name: 'textCompliance', value: this.state.step4FormData.textCompliance });
+      //    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+      //    extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
+      //    extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
+      //    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+      //    extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
+      //    // step 5
+      //    extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
+      //    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
+      //    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
+      //    return consentGroup;
     }
   }, {
     key: 'getQuestions',
@@ -40822,6 +40837,18 @@ var NewConsentGroup = function (_Component) {
         });
       }
       return sampleCollectionList;
+    }
+  }, {
+    key: 'getRedirectUrl',
+    value: function getRedirectUrl() {
+      var projectKey = this.props.projectKey.split("-");
+      var projectType = '';
+      if (projectKey.length === 3) {
+        projectType = projectKey[1].toLowerCase();
+      } else {
+        projectType = projectKey[0].toLowerCase();
+      }
+      return [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
     }
   }, {
     key: 'consentGroupNameExists',
@@ -41146,7 +41173,7 @@ var NewConsentGroup = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDocuments.NewConsentGroupDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }), (0, _NewConsentGroupIntCohorts.NewConsentGroupIntCohorts)({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage })]);
+      return (0, _Wizard.Wizard)({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDocuments.NewConsentGroupDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }), (0, _NewConsentGroupIntCohorts.NewConsentGroupIntCohorts)({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -41484,8 +41511,8 @@ var NewConsentGroupDataSharing = exports.NewConsentGroupDataSharing = (0, _react
       }
 
       return (0, _WizardStep.WizardStep)({ title: this.props.title, step: 4, currentStep: this.props.currentStep,
-        error: this.props.errors.sharingPlan,
-        errorMessage: 'Please complete all required fields' }, [(0, _InputFieldRadio.InputFieldRadio)({
+        error: this.props.errors.sharingPlan || this.props.generalError,
+        errorMessage: !this.props.generalError ? 'Please complete all required fields' : 'Please check previous steps' }, [(0, _InputFieldRadio.InputFieldRadio)({
         id: "radioSharingPlan",
         name: "sharingPlan",
         label: "What is your Data Sharing plan?",

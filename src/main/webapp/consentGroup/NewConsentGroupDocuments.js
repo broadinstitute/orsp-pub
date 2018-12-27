@@ -2,7 +2,6 @@ import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
 import { hh, h, h1, a } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
-import { Files } from "../util/ajax";
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
 
@@ -34,7 +33,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     }
 
     let documents = this.props.files;
-
     let errors = false;
     documents.forEach(doc => {
       errors = errors || doc.error;
@@ -42,7 +40,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
     return (
 
-      a({onClick: this.downloadFillablePDF}, ['download PDF']),
       WizardStep({
         title: this.props.title, step: 1, currentStep: this.props.currentStep,
         errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps',

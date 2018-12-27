@@ -14,6 +14,7 @@ class NewConsentGroup extends Component {
     super(props);
     this.state = {
       showErrorStep3: false,
+      generalError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -57,6 +58,7 @@ class NewConsentGroup extends Component {
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
     this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
+    this.uploadFiles = this.uploadFiles.bind(this);
   }
 
   componentDidMount() {
@@ -66,11 +68,31 @@ class NewConsentGroup extends Component {
   }
 
   submitNewConsentGroup = () => {
-    if(this.isValid()) {
+
+    if (this.validateStep1() && this.validateStep2() &&
+      this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
-        console.log("creadoooooooooooooo");
+        this.uploadFiles(this.props.projectKey);
       });
-    }   
+    } else {
+      this.setState(prev => {
+        prev.generalError = true;
+        return prev;
+      });
+    }
+  };
+
+  uploadFiles = (projectKey) => {
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+      .then(resp => {
+        window.location.href = this.getRedirectUrl(projectKey);
+        this.setState(prev => {
+          prev.formSubmitted = true;
+          return prev;
+        });
+      }).catch(error => {
+        console.error(error);
+      });
   };
 
   getConsentGroup() {
@@ -109,6 +131,7 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.databaseOpen });
     consentGroup.extraProperties = extraProperties;
     return consentGroup;
+
   }
 
   getQuestions(questions) {
@@ -147,6 +170,17 @@ class NewConsentGroup extends Component {
     }
     return renderSubmit;
   };
+
+  getRedirectUrl() {
+    let projectKey = this.props.projectKey.split("-");
+    let projectType = '';
+    if (projectKey.length === 3) {
+      projectType = projectKey[1].toLowerCase();
+    } else {
+      projectType = projectKey[0].toLowerCase();
+    }
+    return [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+  }
 
   isValid = (field) => {
     let isValid = true;
@@ -553,7 +587,16 @@ class NewConsentGroup extends Component {
   }
 
   downloadFillablePDF = () => {
-    Files.downloadFillable(this.props.fillablePdfURL);
+    Files.downloadFillable(this.props.fillablePdfURL).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf');
+      document.body.appendChild(link);
+      link.click();
+    }).catch(error => {
+      console.error(error);
+    });
   };
 
   removeErrorMessage() {
@@ -582,7 +625,7 @@ class NewConsentGroup extends Component {
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
+        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError }),
       ])
     );
   }

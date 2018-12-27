@@ -268,7 +268,6 @@ class NewProject extends Component {
     this.setState(prev => {
         prev.files = [];
         prev.determination = determination;
-        console.log(prev.determination.projectType);
         if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
           prev.showErrorStep2 = false;
         }
@@ -343,7 +342,8 @@ class NewProject extends Component {
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
-        window.location.href = this.props.serverURL;
+        window.location.href = this.getRedirectUrl(projectKey);
+
       }).catch(error => {
         console.error(error);
       });
@@ -369,6 +369,17 @@ class NewProject extends Component {
       prev.generalError = false;
       return prev;
     });
+  }
+
+  getRedirectUrl(projectKey) {
+    let key = projectKey.split("-");
+    let projectType = '';
+    if (key.length === 3) {
+      projectType = key[1].toLowerCase();
+    } else {
+      projectType = key[0].toLowerCase();
+    }
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=details"].join("/");
   }
 
   render() {
