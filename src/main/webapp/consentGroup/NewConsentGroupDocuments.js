@@ -32,6 +32,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
       return h1({}, ["Something went wrong."]);
     }
 
+    let documents = this.props.files;
     let errors = false;
     documents.forEach(doc => {
       errors = errors || doc.error;
