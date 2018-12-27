@@ -220,14 +220,12 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           value: this.state.formData.primaryContact,
           disabled: false,
           required: true,
-          onChange: this.handleInputChange,
-          error:this.props.errors.primaryContact,
-          errorMessage: "Required field"
+          onChange: this.handleInputChange
         }),
 
         MultiSelect({
           id: "sampleCollection_select",
-          label: "Link Sample Collection to [add here project id]",
+          label: "Link Sample Collection to " + this.props.projectKey,
           isDisabled: false,
           loadOptions: this.loadSampleCollections,
           handleChange: this.handleSampleCollectionChange,
@@ -267,9 +265,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 label: "Start Date",
                 onChange: this.handleChange,
                 placeholder: "Enter Start Date",
-                maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null,
-                error:this.props.errors.startDate,
-                errorMessage: "Required field"
+                maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -281,9 +277,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 onChange: this.handleChange,
                 placeholder: "Enter End Date",
                 disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
-                minDate: this.state.formData.startDate,
-                error:this.props.errors.endDate,
-                errorMessage: "Required field"
+                minDate: this.state.formData.startDate
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [

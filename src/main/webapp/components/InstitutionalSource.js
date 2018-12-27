@@ -95,7 +95,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       name: "country",
                       value: this.state.institutionalSources[index].country,
                       disabled: false,
-                      required: true,
+                      required: false,
                       onChange: this.handleInstitutionalChange
                     })
                   ])

@@ -33,13 +33,10 @@ class NewConsentGroup extends Component {
         institutionProtocolNumber: false,
         consentGroupName: false,
         collaboratingInstitution: false,
-        primaryContact: false,
         sampleCollections: false,
         describeConsentGroup: false,
         requireMta: false,
         institutionalSources: false,
-        startDate: false,
-        endDate: false,
         pii: false,
         compliance: false,
         sensitive: false,
@@ -71,6 +68,8 @@ class NewConsentGroup extends Component {
 
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
+      this.removeErrorMessage();
+
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
         this.uploadFiles(resp.data.message.projectKey);
       });
@@ -207,13 +206,10 @@ class NewConsentGroup extends Component {
     let institutionProtocolNumber = false;
     let consentGroupName = false;
     let collaboratingInstitution = false;
-    let primaryContact = false;
     let sampleCollections = false;
     let describeConsentGroup = false;
     let requireMta = false;
     let institutionalSources = false;
-    let startDate = false;
-    let endDate = false;
     let isValid = true;
     if (field === "consentGroupName" && this.consentGroupNameExists()) {
       consentGroupName = true;
@@ -228,10 +224,6 @@ class NewConsentGroup extends Component {
       institutionProtocolNumber = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.primaryContact)) {
-      primaryContact = true;
-      isValid = false;
-    }
     if (this.state.step1FormData.sampleCollections === undefined || !this.state.step1FormData.sampleCollections.length > 0) {
       sampleCollections = true;
       isValid = false;
@@ -244,14 +236,6 @@ class NewConsentGroup extends Component {
       collaboratingInstitution = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.startDate)) {
-      startDate = true;
-      isValid = false;
-    }
-    if (!this.state.step1FormData.onGoingProcess && !this.isTextValid(this.state.step1FormData.endDate)) {
-      endDate = true;
-      isValid = false;
-    }
     if (!this.isTextValid(this.state.step1FormData.describeConsentGroup)) {
       describeConsentGroup = true;
       isValid = false;
@@ -261,8 +245,7 @@ class NewConsentGroup extends Component {
       isValid = false;
     } else {
       this.state.step1FormData.institutionalSources.forEach(institutionalSource => {
-        if (!this.isTextValid(institutionalSource.name)
-          || !this.isTextValid(institutionalSource.country)) {
+        if (!this.isTextValid(institutionalSource.name)) {
           institutionalSources = true;
           isValid = false;
         }
@@ -275,13 +258,10 @@ class NewConsentGroup extends Component {
         prev.errors.institutionProtocolNumber = institutionProtocolNumber;
         prev.errors.consentGroupName = consentGroupName;
         prev.errors.collaboratingInstitution = collaboratingInstitution;
-        prev.errors.primaryContact = primaryContact;
         prev.errors.sampleCollections = sampleCollections;
         prev.errors.describeConsentGroup = describeConsentGroup;
         prev.errors.requireMta = requireMta;
         prev.errors.institutionalSources = institutionalSources;
-        prev.errors.startDate = startDate;
-        prev.errors.endDate = endDate;
         prev.errors.isValid = isValid;
         return prev;
       });
@@ -289,10 +269,8 @@ class NewConsentGroup extends Component {
 
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' ||
-      field === 'primaryContact' || field === 'sampleCollections' ||
-      field === 'describeConsentGroup' || field === 'requireMta' ||
-      field === 'institutionalSources' || field === 'startDate' ||
-      field === 'endDate') {
+      field === 'sampleCollections' || field === 'describeConsentGroup' ||
+      field === 'requireMta' || field === 'institutionalSources') {
 
       this.setState(prev => {
         if (field === 'investigatorLastName') {
@@ -303,8 +281,6 @@ class NewConsentGroup extends Component {
           prev.errors.consentGroupName = consentGroupName;
         } else if (field === 'collaboratingInstitution') {
           prev.errors.collaboratingInstitution = collaboratingInstitution;
-        } else if (field === 'primaryContact') {
-          prev.errors.primaryContact = primaryContact;
         } else if (field === 'sampleCollections') {
           prev.errors.sampleCollections = sampleCollections;
         } else if (field === 'describeConsentGroup') {
@@ -313,10 +289,6 @@ class NewConsentGroup extends Component {
           prev.errors.requireMta = requireMta;
         } else if (field === 'institutionalSources') {
           prev.errors.institutionalSources = institutionalSources;
-        } else if (field === 'startDate') {
-          prev.errors.startDate = startDate;
-        } else if (field === 'endDate') {
-          prev.errors.endDate = endDate;
         }
         return prev;
       });
@@ -621,7 +593,7 @@ class NewConsentGroup extends Component {
 
     return (
       Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup }, [
-        NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
+        NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
