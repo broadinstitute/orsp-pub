@@ -14,6 +14,7 @@ class NewConsentGroup extends Component {
     super(props);
     this.state = {
       showErrorStep3: false,
+      generalError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -65,49 +66,60 @@ class NewConsentGroup extends Component {
   }
 
   submitNewConsentGroup = () => {
-    if(this.isValid()) {
-      ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
-        console.log("creadoooooooooooooo");
-      });
-    }   
+
+
+      if (!(this.validateStep1() || this.validateStep2() || this.validateStep3() || this.validateStep4() || this.validateStep5())) {
+        this.setState(prev => {
+          prev.formSubmitted = true;
+          return prev;
+        });
+
+        ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
+        });
+      } else {
+        this.setState(prev => {
+          prev.generalError = true;
+          return prev;
+        });
+      }
   };
 
   getConsentGroup() {
-    // step 1
-    let consentGroup = {};
-    consentGroup.summary = this.state.step1FormData.consentGroupName;
-    consentGroup.reporter = this.props.user.userName;
-    consentGroup.samples = this.getSampleCollections();
-    let extraProperties = [];
-    extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
-    extraProperties.push({ name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess });
-    extraProperties.push({ name: 'source', value: this.props.projectKey });
-    extraProperties.push({ name: 'collInst', value: this.state.step1FormData.collaboratingInstitution });
-    extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
-    extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
-    extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
-    extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
-    extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
-    extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
-    if (this.state.step1FormData.endDate !== null) {
-      extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
-    }
-    // step 3
-    extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
-    // step 4
-    extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
-    extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
-    extraProperties.push({ name: 'textCompliance', value: this.state.step4FormData.textCompliance });
-    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
-    extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
-    extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
-    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
-    extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
-    // step 5
-    extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
-    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
-    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
-    return consentGroup;
+//    // step 1
+//    let consentGroup = {};
+//    consentGroup.summary = this.state.step1FormData.consentGroupName;
+//    consentGroup.reporter = this.props.user.userName;
+//    consentGroup.samples = this.getSampleCollections();
+//    let extraProperties = [];
+//    extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
+//    extraProperties.push({ name: 'onGoingProcess', value: this.state.step1FormData.onGoingProcess });
+//    extraProperties.push({ name: 'source', value: this.props.projectKey });
+//    extraProperties.push({ name: 'collInst', value: this.state.step1FormData.collaboratingInstitution });
+//    extraProperties.push({ name: 'collContact', value: this.state.step1FormData.primaryContact });
+//    extraProperties.push({ name: 'consent', value: this.state.step1FormData.investigatorLastName });
+//    extraProperties.push({ name: 'protocol', value: this.state.step1FormData.institutionProtocolNumber });
+//    extraProperties.push({ name: 'institutionalSources', value: JSON.parse(this.state.step1FormData.institutionalSources) });
+//    extraProperties.push({ name: 'describeConsentGroup', value: this.state.step1FormData.describeConsentGroup });
+//    extraProperties.push({ name: 'requireMta', value: this.state.step1FormData.requireMta });
+//    if (this.state.step1FormData.endDate !== null) {
+//      extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
+//    }
+//    // step 3
+//    extraProperties.push({ name: 'questions', value: this.getQuestions(this.state.determination.questions) });
+//    // step 4
+//    extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
+//    extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
+//    extraProperties.push({ name: 'textCompliance', value: this.state.step4FormData.textCompliance });
+//    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+//    extraProperties.push({ name: 'textSensitive', value: this.state.step4FormData.textSensitive });
+//    extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
+//    extraProperties.push({ name: 'sensitive', value: this.state.step4FormData.sensitive });
+//    extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
+//    // step 5
+//    extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
+//    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.sharingPlan });
+//    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.sharingPlan });
+//    return consentGroup;
   }
 
   getQuestions(questions) {
@@ -146,6 +158,17 @@ class NewConsentGroup extends Component {
     }
     return renderSubmit;
   };
+
+  getRedirectUrl() {
+    let projectKey = this.props.projectKey.split("-");
+    let projectType = '';
+    if (projectKey.length === 3) {
+      projectType = projectKey[1].toLowerCase();
+    } else {
+      projectType = projectKey[0].toLowerCase();
+    }
+    return [this.props.serverURL, projectType, "show", this.props.projectKey,"?tab=consent-groups"].join("/");
+  }
 
   isValid = (field) => {
     let isValid = true;
@@ -581,7 +604,7 @@ class NewConsentGroup extends Component {
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
+        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError }),
       ])
     );
   }
