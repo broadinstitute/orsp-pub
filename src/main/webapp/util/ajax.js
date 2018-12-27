@@ -18,6 +18,13 @@ export const SampleCollections = {
 export const ConsentGroup = {
   getConsentGroupNames(url) {
     return axios.get(url);
+  },
+  
+  create(url, data) {
+    const config = {
+      headers: { 'content-type': 'application/json' }
+    };
+    return axios.post(url, data, config);
   }
 };
 
