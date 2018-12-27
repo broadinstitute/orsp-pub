@@ -13,7 +13,9 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
     super(props);
     this.state = {
       formData: {
-        sharingPlan: ''
+        sharingPlan: '',
+        databaseControlled: '',
+        databaseOpen: ''
       }
     }
 
@@ -32,9 +34,23 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
+      prev.formData.databaseControlled = '';
+      prev.formData.databaseOpen = '';
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
     this.props.removeErrorMessage();
+  };
+
+  handleInputChange = (e) => {
+      const field = e.target.name;
+      const value = e.target.value;
+      this.setState(prev => {
+        prev.formData[field] = value;
+        return prev;
+      }, () =>{
+      this.props.updateForm(this.state.formData, field);
+      this.props.removeErrorMessage();
+      })
   };
 
   render() {
