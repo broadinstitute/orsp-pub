@@ -265,10 +265,15 @@ class NewProject extends Component {
   };
 
   determinationHandler = (determination) => {
-    this.setState({
-      files: [],
-      determination: determination
-    },
+    this.setState(prev => {
+        prev.files = [];
+        prev.determination = determination;
+        console.log(prev.determination.projectType);
+        if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
+          prev.showErrorStep2 = false;
+        }
+        return prev;
+      },
       () => {
         this.initDocuments(this.state.determination.projectType);
       });
