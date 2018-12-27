@@ -57,6 +57,7 @@ class NewConsentGroup extends Component {
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
+    this.uploadFiles = this.uploadFiles.bind(this);
   }
 
   componentDidMount() {
@@ -67,7 +68,6 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = () => {
 
-
       if (!(this.validateStep1() || this.validateStep2() || this.validateStep3() || this.validateStep4() || this.validateStep5())) {
         this.setState(prev => {
           prev.formSubmitted = true;
@@ -75,6 +75,7 @@ class NewConsentGroup extends Component {
         });
 
         ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
+          this.uploadFiles(this.props.projectKey);
         });
       } else {
         this.setState(prev => {
@@ -82,6 +83,15 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }
+  };
+
+  uploadFiles = (projectKey) => {
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+      .then(resp => {
+        window.location.href = this.getRedirectUrl(projectKey);
+      }).catch(error => {
+      console.error(error);
+    });
   };
 
   getConsentGroup() {
