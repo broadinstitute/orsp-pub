@@ -15,7 +15,6 @@ import { SampleCollections } from '../util/ajax';
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
 
   constructor(props) {
-    console.log("Props general data: **** ", props);
     super(props);
     this.loadSampleCollections = this.loadSampleCollections.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -30,7 +29,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         describeConsentGroup: '',
         requireMta: '',
         institutionalSources: [{ name: '', country: '' }],
-        startDate: null, // aaaa-mm-dd
+        startDate: null,
         endDate: null,
         onGoingProcess: false
       }
@@ -104,8 +103,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
            let options = response.data.map(function (item) {
              return {
                key: item.id,
-               value: item.value,
-               label: item.label
+               value: item.collectionId,
+               label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
              };
            });
            callback(options);
