@@ -13,8 +13,6 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
   state = {
     institutionalSources: this.props.institutionalSources,
-    error: false,
-    errorMessage: 'Requiered field'
   };
 
   addInstitutionalSources() {
@@ -25,15 +23,15 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         prev.institutionalSources = institutionalSources;
         prev.error = false;
         return prev;
-      }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+      });
     }
   }
 
-  removeInstitutionalSources = (e) => (Index) => {
+  removeInstitutionalSources = (index) => (e) => {
     if (this.state.institutionalSources.length > 1) {
       this.setState(prev => {
         let institutionalSources = prev.institutionalSources;
-        institutionalSources.splice(Index, 1);
+        institutionalSources.splice(index, 1);
         prev.institutionalSources = institutionalSources;
         return prev;
       });
@@ -47,7 +45,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.setState(prev => {
       prev.institutionalSources[id][field] = value;
       return prev;
-    }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+    }, () => this.props.updateInstitutionalSource(this.state.institutionalSources, field));
   };
 
   render() {
@@ -84,9 +82,11 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       name: "name",
                       label: "",
                       value: this.state.institutionalSources[index].name,
-                      disabled: false,
+                      disabled: index > 0,
                       required: true,
-                      onChange: this.handleInstitutionalChange
+                      onChange: this.handleInstitutionalChange,
+                      error: this.props.errorName && index === 0,
+                      errorMessage: this.props.errorMessage
                     })
                   ]),
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
@@ -94,18 +94,19 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index,
                       name: "country",
                       value: this.state.institutionalSources[index].country,
-                      disabled: false,
+                      disabled: index > 0,
                       required: true,
-                      onChange: this.handleInstitutionalChange
+                      onChange: this.handleInstitutionalChange,
+                      error: this.props.errorCountry && index === 0,
+                      errorMessage: this.props.errorMessage
                     })
                   ])
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeInstitutionalSources(index) }, disabled: !this.state.institutionalSources.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(index) }, disabled: !this.state.institutionalSources.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error && index === 0, className: "errorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])

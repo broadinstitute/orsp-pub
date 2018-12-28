@@ -42,7 +42,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
       WizardStep({
         title: this.props.title, step: 1, currentStep: this.props.currentStep,
-        errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps',
+        errorMessage: 'Please upload all required documents',
         error: errors || this.props.generalError
       }, [
         documents.map((document, index) => {

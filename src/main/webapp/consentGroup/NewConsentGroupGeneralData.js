@@ -36,11 +36,11 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     };
   }
 
-  handleUpdateinstitutionalSources = (updated) => {
+  handleUpdateinstitutionalSources = (updated, field) => {
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'institutionalSources'));
+    }, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
     this.props.removeErrorMessage();
   };
 
@@ -156,7 +156,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         this.props.errors.sampleCollections ||
         this.props.errors.describeConsentGroup ||
         this.props.errors.requireMta ||
-        this.props.errors.institutionalSources ||
+        this.props.errors.institutionalSourcesName ||
+        this.props.errors.institutionalSourcesCountry ||
         this.props.errors.startDate ||
         this.props.errors.endDate ||
         this.props.errors.onGoingProcess,
@@ -220,14 +221,12 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           value: this.state.formData.primaryContact,
           disabled: false,
           required: true,
-          onChange: this.handleInputChange,
-          error:this.props.errors.primaryContact,
-          errorMessage: "Required field"
+          onChange: this.handleInputChange
         }),
 
         MultiSelect({
           id: "sampleCollection_select",
-          label: "Link Sample Collection to [add here project id]",
+          label: "Link Sample Collection to " + this.props.projectKey,
           isDisabled: false,
           loadOptions: this.loadSampleCollections,
           handleChange: this.handleSampleCollectionChange,
@@ -267,9 +266,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 label: "Start Date",
                 onChange: this.handleChange,
                 placeholder: "Enter Start Date",
-                maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null,
-                error:this.props.errors.startDate,
-                errorMessage: "Required field"
+                maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -281,9 +278,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 onChange: this.handleChange,
                 placeholder: "Enter End Date",
                 disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
-                minDate: this.state.formData.startDate,
-                error:this.props.errors.endDate,
-                errorMessage: "Required field"
+                minDate: this.state.formData.startDate
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
@@ -303,7 +298,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: this.state.formData.institutionalSources,
-            error: this.props.errors.institutionalSources,
+            errorName: this.props.errors.institutionalSourcesName,
+            errorCountry: this.props.errors.institutionalSourcesCountry,
             errorMessage: "Required field"
           })
         ]),
