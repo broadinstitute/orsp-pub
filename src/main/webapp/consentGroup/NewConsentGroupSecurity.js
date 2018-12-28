@@ -106,7 +106,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           errorMessage: "Required field"
         }),
         InputFieldText({
-          isRendered: this.state.formData.compliance === "01",
+          isRendered: this.state.formData.compliance === "true",
           id: "inputCompliance",
           name: "textCompliance",
           label: "Add regulatory compliance:*",
@@ -135,7 +135,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           errorMessage: "Required field"
         }),
         InputFieldText({
-          isRendered: this.state.formData.sensitive === "01",
+          isRendered: this.state.formData.sensitive === "true",
           id: "inputSensitive",
           name: "textSensitive",
           label: "Please explain:*",
@@ -164,7 +164,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
           errorMessage: "Required field"
         }),
         InputFieldText({
-          isRendered: this.state.formData.accessible === "01",
+          isRendered: this.state.formData.accessible === "true",
           id: "inputAccessible",
           name: "textAccessible",
           label: "Please explain:*",

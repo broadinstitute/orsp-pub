@@ -382,7 +382,7 @@ class NewConsentGroup extends Component {
       compliance = true;
       isValid = false;
     }
-    if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "01" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
+    if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "true" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
       textCompliance = true;
       isValid = false;
     }
@@ -390,7 +390,7 @@ class NewConsentGroup extends Component {
       sensitive = true;
       isValid = false;
     }
-    if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "01" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
+    if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "true" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
       textSensitive = true;
       isValid = false;
     }
@@ -398,7 +398,7 @@ class NewConsentGroup extends Component {
       accessible = true;
       isValid = false;
     }
-    if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "01" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
+    if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "true" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
       textAccessible = true;
       isValid = false;
     }
