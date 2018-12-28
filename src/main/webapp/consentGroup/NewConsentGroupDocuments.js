@@ -1,7 +1,9 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, a } from 'react-hyperscript-helpers';
+import { hh, h, h1, a, div } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
+import { Btn } from '../components/Btn';
+
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
 
@@ -24,6 +26,12 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     docs[ix].error = false;
     this.props.fileHandler(docs);
   };
+
+  removeFile = (docs, index) => {
+    docs[index].file = [];
+    docs[index].error = false;
+    this.props.fileHandler(docs);
+  }
 
   render() {
 
@@ -54,8 +62,9 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               fileName: (document.file != null ? document.file.name : ''),
               required: document.required,
               error: document.error,
-              errorMessage: "Required field"
-            }),
+              errorMessage: "Required field",
+              removeHandler:() => this.removeFile(documents, index)
+            })
           ])
         })
       ])

@@ -74,6 +74,18 @@
   margin: 8px 5px 0 5px;
 }
 
+.fileNameClear {
+  top: 10px;
+  right: 5px;
+  position: absolute;
+  color: black;
+  cursor: pointer;
+}
+
+.fileNameClear:hover {
+  text-decoration: none;
+}
+
 .inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {
   position: relative;
   width: 100%;

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { input, hh, p, div, small, } from 'react-hyperscript-helpers';
+import { input, hh, p, div, small, a } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
 
@@ -15,7 +15,8 @@ export const InputFieldFile = hh(class InputFieldFile extends Component {
             input({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })
           ]),
           div({ className: "fileNameContainer col-lg-10 col-md-9 col-sm-9 col-12" }, [
-            p({ className: "fileName" }, [this.props.fileName != null ? this.props.fileName : ''])
+            p({ className: "fileName" }, [this.props.fileName != null ? this.props.fileName : '']),
+            a({ className: "fileNameClear glyphicon glyphicon-remove", onClick: this.props.removeHandler }, [])
           ])
         ])
       ])
