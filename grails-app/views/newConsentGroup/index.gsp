@@ -24,7 +24,7 @@
             createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/newConsentGroup', method: 'POST')}",
             attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
             serverURL: "${webRequest.baseUrl}",
-            fillablePdfURL : "${createLink(controller:'newConsentGroup', action: 'downloadFillablePDF', uri: '/api/newConsentGroup')}",
+            fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
             projectKey: "${params.projectKey}"
         };
     </script>

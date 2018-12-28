@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class NewConsentGroupController extends AuthenticatedController {
 
+    def fileName = 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf'
+
     def show() {
         render(view: "/newConsentGroup/index")
     }
