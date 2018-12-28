@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1 } from 'react-hyperscript-helpers';
+import { hh, h1, span } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 
@@ -32,17 +32,17 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
     let questions = [];
 
     questions.push({
-      question: 'Are samples or individual-level data sourced from a country in the European Economic Area? [provide link to list of countries included]',
+      question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
       yesOutput: 2,
       noOutput: EXIT,
       answer: null,
       progress: 0,
-      key: 'individualDataSourced', 
+      key: 'individualDataSourced',
       id: 1
     });
 
     questions.push({
-      question: 'Is a link maintained (by anyone) between samples/data being sent to the Broad and the identities of living EEA subjects?',
+      question: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
       yesOutput: 3,
       noOutput: EXIT,
       answer: null,
@@ -72,7 +72,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
     });
 
     questions.push({
-      question: 'Is Broad or the EEA collaborator providing goods/services (including routine return of research results) to EEA subjects, or engaging in ongoing monitoring of them (e.g. via use of a FitBit)?',
+      question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
       yesOutput: OSAP,
       noOutput: 6,
       answer: null,
@@ -82,7 +82,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
     });
 
     questions.push({
-      question: 'GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous (identifies transfer to the US, and risks associated with less stringent data protections here)?',
+      question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
       yesOutput: EXIT,
       noOutput: CTC,
       answer: null,
@@ -104,10 +104,12 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
     }
 
     return (
-      WizardStep({ title: this.props.title, step: 2, currentStep: this.props.currentStep,
-       questionnaireStep: true, error: this.props.errors, errorMessage: ' Please answer all questions to continue'}, [
-        QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })
-      ])
+      WizardStep({
+        title: this.props.title, step: 2, currentStep: this.props.currentStep,
+        questionnaireStep: true, error: this.props.errors, errorMessage: ' Please answer all questions to continue'
+      }, [
+          QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })
+        ])
     )
   }
 });

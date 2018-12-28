@@ -75,8 +75,8 @@
 }
 
 .fileNameClear {
-  top: 10px;
-  right: 5px;
+  top: 12px;
+  right: 10px;
   position: absolute;
   color: black;
   cursor: pointer;
@@ -110,4 +110,8 @@
 .inputField .react-datepicker__close-icon {
   top: 12px;
   right: 35px !important;
+}
+
+textarea:disabled, input:disabled {
+  background-color: rgb(235, 235, 228);
 }

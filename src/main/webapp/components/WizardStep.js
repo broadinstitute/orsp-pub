@@ -52,7 +52,7 @@ export const WizardStep = hh(class WizardStep extends Component {
             this.props.title
           ])
         ]),
-        this.props.children,
+        div({ className: "wizardStepContent" }, [this.props.children] ), 
         AlertMessage({
           msg: this.props.errorMessage,
           show: this.props.error

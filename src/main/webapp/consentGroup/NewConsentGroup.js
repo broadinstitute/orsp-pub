@@ -216,7 +216,6 @@ class NewConsentGroup extends Component {
     let sampleCollections = false;
     let describeConsentGroup = false;
     let requireMta = false;
-//    let institutionalSources = false;
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
 
@@ -538,7 +537,7 @@ class NewConsentGroup extends Component {
     documents.push({
       required: true,
       fileKey: 'Consent Document',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here:"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" },["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
       file: null,
       fileName: null,
       error: false
@@ -546,7 +545,7 @@ class NewConsentGroup extends Component {
     documents.push({
       required: true,
       fileKey: 'IRB approval',
-      label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document (required for DFCI & MIT IRBs only):"]),
+      label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document ", span({ className: "italic" }, ["(required for DFCI & MIT IRBs only):"])]),
       file: null,
       fileName: null,
       error: false
@@ -555,7 +554,7 @@ class NewConsentGroup extends Component {
     documents.push({
       required: false,
       fileKey: 'Sample Providers Permission',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Sample Provider's Permission to add cohort "]), "to this Broad project (DFCI IRB only. Optional):"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Sample Provider's Permission to add cohort "]), "to this Broad project ", span({ className: "italic" }, ["(DFCI IRB only. Optional):"])]),
       file: null,
       fileName: null,
       error: false
@@ -564,11 +563,11 @@ class NewConsentGroup extends Component {
     documents.push({
       required: false,
       fileKey: 'Data Use Letter',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Data Use Letter "]), "here (optional):"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Data Use Letter "]), "here ", span({ className: "italic" }, ["(optional):"])]),
       file: null,
       fileName: null,
       error: false,
-      link: a({ onClick: this.downloadFillablePDF }, ["Download fillable PDF here."])
+      link: a({ className: "link", onClick: this.downloadFillablePDF, style: {'position' : 'absolute', 'right' : '20px'} }, ["Download fillable PDF here"])
     });
 
     this.setState({

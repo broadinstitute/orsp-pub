@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1 } from 'react-hyperscript-helpers';
+import { hh, h1, div } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -42,15 +42,15 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
   };
 
   handleInputChange = (e) => {
-      const field = e.target.name;
-      const value = e.target.value;
-      this.setState(prev => {
-        prev.formData[field] = value;
-        return prev;
-      }, () =>{
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, () => {
       this.props.updateForm(this.state.formData, field);
       this.props.removeErrorMessage();
-      })
+    })
   };
 
   render() {
@@ -81,8 +81,8 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
           isRendered: this.state.formData.sharingPlan === "controlled",
           id: "inputDatabaseControlled",
           name: "databaseControlled",
-          label: "Name of Database(s)",
-          moreInfo: "Data Use Letter NR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available",
+          label: "Name of Database(s) ",
+          moreInfo: "(Data Use LetterNR/link, consent or waiver of consent)",
           value: this.state.formData.databaseControlled,
           disabled: false,
           required: false,
@@ -92,7 +92,8 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
           isRendered: this.state.formData.sharingPlan === "open",
           id: "inputDatabaseOpen",
           name: "databaseOpen",
-          label: "Last Name of Investigator Listed on the Consent Form",
+          label: "Name of Database(s) ",
+          moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
           value: this.state.formData.databaseOpen,
           disabled: false,
           required: false,

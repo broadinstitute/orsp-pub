@@ -1,5 +1,9 @@
 .radioContainer {
-  margin: 15px 0;
+  margin: 20px 0;
+}
+
+.radioContainer p {
+  font-size: 1.1rem;
 }
 
 .radioOptions {
