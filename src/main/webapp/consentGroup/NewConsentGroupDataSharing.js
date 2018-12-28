@@ -63,7 +63,7 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
     return (
       WizardStep({ title: this.props.title, step: 4, currentStep: this.props.currentStep,
        error: this.props.errors.sharingPlan || this.props.generalError,
-       errorMessage: !this.props.generalError ? 'Please complete all required fields' : 'Please check previous steps'}, [
+       errorMessage: this.props.generalError && this.props.errors.sharingPlan ? 'Please complete all required fields' : 'Please check previous steps' }, [
        InputFieldRadio({
           id: "radioSharingPlan",
           name: "sharingPlan",
