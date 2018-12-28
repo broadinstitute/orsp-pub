@@ -17,6 +17,19 @@ class NewConsentGroupController extends AuthenticatedController {
         render(view: "/newConsentGroup/index")
     }
 
+    def downloadFillablePDF () {
+        try {
+            def resource = this.class.classLoader.getResource(fileName)
+            response.setHeader('Content-disposition', "attachment; ${fileName}")
+            response.setHeader('Content-Length', 'file-size')
+            response.setContentType('application/pdf')
+            response.outputStream << resource.openStream()
+        } catch (Exception e){
+            response.status = 500
+            render([error: "${e}"] as JSON)
+        }
+    }
+
     def save() {
         Gson gson = new Gson()
         Issue issue = gson.fromJson(gson.toJson(request.JSON), Issue.class)
