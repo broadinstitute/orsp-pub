@@ -2481,7 +2481,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _AlertMessage = __webpack_require__(180);
+var _AlertMessage = __webpack_require__(179);
 
 __webpack_require__(265);
 
@@ -3602,7 +3602,8 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
         value: this.props.value,
         disabled: this.props.disabled,
         required: this.props.required,
-        onChange: this.props.onChange })]);
+        onChange: this.props.onChange,
+        onBlur: this.props.focusOut })]);
     }
   }]);
 
@@ -28788,89 +28789,10 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 };
 
 /***/ }),
-/* 169 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Project = exports.Files = exports.ConsentGroup = exports.SampleCollections = exports.Search = undefined;
-
-var _axios = __webpack_require__(91);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Search = exports.Search = {
-  getMatchingUsers: function getMatchingUsers(url, query) {
-    return _axios2.default.get(url + '?term=' + query);
-  }
-};
-
-var SampleCollections = exports.SampleCollections = {
-  getSampleCollections: function getSampleCollections(url, query) {
-    return _axios2.default.get(url + '?term=' + query);
-  }
-};
-
-var ConsentGroup = exports.ConsentGroup = {
-  getConsentGroupNames: function getConsentGroupNames(url, query) {
-    return _axios2.default.get(url + '?term=' + query);
-  }
-};
-
-var Files = exports.Files = {
-  upload: function upload(url, files, projectKey, displayName, userName) {
-    var data = new FormData();
-
-    files.forEach(function (file) {
-      if (file.file != null) {
-        data.append(file.fileKey, file.file, file.file.name);
-      }
-    });
-
-    data.append('id', projectKey);
-    data.append('displayName', displayName);
-    data.append('userName', userName);
-
-    var config = {
-      headers: { 'content-type': 'multipart/form-data' }
-    };
-
-    return _axios2.default.post(url, data, config);
-  },
-  downloadFillable: function downloadFillable(pdfUrl) {
-    (0, _axios2.default)({ url: pdfUrl, method: 'GET', responseType: 'blob' }).then(function (response) {
-      var url = window.URL.createObjectURL(new Blob([response.data]));
-      var link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf');
-      document.body.appendChild(link);
-      link.click();
-    }).catch(function (error) {
-      console.error(error);
-    });
-  }
-};
-
-var Project = exports.Project = {
-  createProject: function createProject(url, data) {
-    var config = {
-      headers: { 'content-type': 'application/json' }
-    };
-    return _axios2.default.post(url, data, config);
-  }
-};
-
-/***/ }),
+/* 169 */,
 /* 170 */,
 /* 171 */,
-/* 172 */,
-/* 173 */
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29037,15 +28959,15 @@ function polyfill(Component) {
 
 
 /***/ }),
+/* 173 */,
 /* 174 */,
-/* 175 */,
-/* 176 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(315);
 
 /***/ }),
-/* 177 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var _Object$keys = __webpack_require__(284);
@@ -29070,9 +28992,9 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 module.exports = _objectWithoutPropertiesLoose;
 
 /***/ }),
+/* 177 */,
 /* 178 */,
-/* 179 */,
-/* 180 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29140,7 +29062,7 @@ var AlertMessage = exports.AlertMessage = (0, _reactHyperscriptHelpers.hh)(funct
 }(_react.Component));
 
 /***/ }),
-/* 181 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29189,6 +29111,82 @@ var Btn = exports.Btn = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
 
   return Btn;
 }(_react.Component));
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Project = exports.Files = exports.ConsentGroup = exports.SampleCollections = exports.Search = undefined;
+
+var _axios = __webpack_require__(91);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Search = exports.Search = {
+  getMatchingUsers: function getMatchingUsers(url, query) {
+    return _axios2.default.get(url + '?term=' + query);
+  }
+};
+
+var SampleCollections = exports.SampleCollections = {
+  getSampleCollections: function getSampleCollections(url, query) {
+    return _axios2.default.get(url + '?term=' + query);
+  }
+};
+
+var ConsentGroup = exports.ConsentGroup = {
+  getConsentGroupNames: function getConsentGroupNames(url) {
+    return _axios2.default.get(url);
+  },
+  create: function create(url, data) {
+    var config = {
+      headers: { 'content-type': 'application/json' }
+    };
+    return _axios2.default.post(url, data, config);
+  }
+};
+
+var Files = exports.Files = {
+  upload: function upload(url, files, projectKey, displayName, userName) {
+    var data = new FormData();
+
+    files.forEach(function (file) {
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
+    });
+
+    data.append('id', projectKey);
+    data.append('displayName', displayName);
+    data.append('userName', userName);
+
+    var config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+
+    return _axios2.default.post(url, data, config);
+  },
+  downloadFillable: function downloadFillable(pdfUrl) {
+    return (0, _axios2.default)({ url: pdfUrl, method: 'GET', responseType: 'blob' });
+  }
+};
+
+var Project = exports.Project = {
+  createProject: function createProject(url, data) {
+    var config = {
+      headers: { 'content-type': 'application/json' }
+    };
+    return _axios2.default.post(url, data, config);
+  }
+};
 
 /***/ }),
 /* 182 */,
@@ -31780,9 +31778,9 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 __webpack_require__(580);
 
-var _Btn = __webpack_require__(181);
+var _Btn = __webpack_require__(180);
 
-var _AlertMessage = __webpack_require__(180);
+var _AlertMessage = __webpack_require__(179);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -33266,11 +33264,11 @@ var _interopRequireDefault = __webpack_require__(54);
 exports.__esModule = true;
 exports.default = void 0;
 
-var _values = _interopRequireDefault(__webpack_require__(176));
+var _values = _interopRequireDefault(__webpack_require__(175));
 
 var _extends3 = _interopRequireDefault(__webpack_require__(89));
 
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(177));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(176));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(90));
 
@@ -33416,11 +33414,11 @@ var _interopRequireDefault = __webpack_require__(54);
 exports.__esModule = true;
 exports.default = void 0;
 
-var _values = _interopRequireDefault(__webpack_require__(176));
+var _values = _interopRequireDefault(__webpack_require__(175));
 
 var _extends3 = _interopRequireDefault(__webpack_require__(89));
 
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(177));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(176));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(90));
 
@@ -37417,7 +37415,7 @@ var _react = _interopRequireDefault(__webpack_require__(0));
 
 var _reactDom = _interopRequireDefault(__webpack_require__(5));
 
-var _reactLifecyclesCompat = __webpack_require__(173);
+var _reactLifecyclesCompat = __webpack_require__(172);
 
 var _PropTypes = __webpack_require__(630);
 
@@ -38024,7 +38022,7 @@ var _propTypes = _interopRequireDefault(__webpack_require__(1));
 
 var _react = _interopRequireDefault(__webpack_require__(0));
 
-var _reactLifecyclesCompat = __webpack_require__(173);
+var _reactLifecyclesCompat = __webpack_require__(172);
 
 var _ChildMapping = __webpack_require__(777);
 
@@ -38149,6 +38147,11 @@ function (_React$Component) {
 
   _proto.componentDidMount = function componentDidMount() {
     this.appeared = true;
+    this.mounted = true;
+  };
+
+  _proto.componentWillUnmount = function componentWillUnmount() {
+    this.mounted = false;
   };
 
   TransitionGroup.getDerivedStateFromProps = function getDerivedStateFromProps(nextProps, _ref) {
@@ -38169,14 +38172,16 @@ function (_React$Component) {
       child.props.onExited(node);
     }
 
-    this.setState(function (state) {
-      var children = _extends({}, state.children);
+    if (this.mounted) {
+      this.setState(function (state) {
+        var children = _extends({}, state.children);
 
-      delete children[child.key];
-      return {
-        children: children
-      };
-    });
+        delete children[child.key];
+        return {
+          children: children
+        };
+      });
+    }
   };
 
   _proto.render = function render() {
@@ -38299,7 +38304,7 @@ var _NewProjectDetermination = __webpack_require__(668);
 
 var _NewProjectDocuments = __webpack_require__(669);
 
-var _ajax = __webpack_require__(169);
+var _ajax = __webpack_require__(181);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
@@ -38322,13 +38327,13 @@ var NewProject = function (_Component) {
       if (_this.validateStep3()) {
 
         if (_this.validateStep2() && _this.validateStep1()) {
-          _this.setState(function (prev) {
-            prev.formSubmitted = true;
-            return prev;
-          });
+          _this.changeStateSubmitButton();
 
           _ajax.Project.createProject(_this.props.createProjectURL, _this.getProject()).then(function (resp) {
             _this.uploadFiles(resp.data.message.projectKey);
+          }).catch(function (error) {
+            _this.changeStateSubmitButton();
+            console.error(error);
           });
         } else {
           _this.setState(function (prev) {
@@ -38342,6 +38347,13 @@ var NewProject = function (_Component) {
           return prev;
         });
       }
+    };
+
+    _this.changeStateSubmitButton = function () {
+      _this.setState(function (prev) {
+        prev.formSubmitted = !prev.formSubmitted;
+        return prev;
+      });
     };
 
     _this.stepChanged = function (newStep) {
@@ -38361,9 +38373,13 @@ var NewProject = function (_Component) {
     };
 
     _this.determinationHandler = function (determination) {
-      _this.setState({
-        files: [],
-        determination: determination
+      _this.setState(function (prev) {
+        prev.files = [];
+        prev.determination = determination;
+        if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
+          prev.showErrorStep2 = false;
+        }
+        return prev;
       }, function () {
         _this.initDocuments(_this.state.determination.projectType);
       });
@@ -38389,8 +38405,9 @@ var NewProject = function (_Component) {
 
     _this.uploadFiles = function (projectKey) {
       _ajax.Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey, _this.props.user.displayName, _this.props.user.userName).then(function (resp) {
-        window.location.href = _this.props.serverURL;
+        window.location.href = _this.getRedirectUrl(projectKey);
       }).catch(function (error) {
+        _this.changeStateSubmitButton();
         console.error(error);
       });
     };
@@ -38440,6 +38457,7 @@ var NewProject = function (_Component) {
     _this.submitNewProject = _this.submitNewProject.bind(_this);
     _this.uploadFiles = _this.uploadFiles.bind(_this);
     _this.removeErrorMessage = _this.removeErrorMessage.bind(_this);
+    _this.changeStateSubmitButton = _this.changeStateSubmitButton.bind(_this);
     return _this;
   }
 
@@ -38673,6 +38691,18 @@ var NewProject = function (_Component) {
       });
     }
   }, {
+    key: 'getRedirectUrl',
+    value: function getRedirectUrl(projectKey) {
+      var key = projectKey.split("-");
+      var projectType = '';
+      if (key.length === 3) {
+        projectType = key[1].toLowerCase();
+      } else {
+        projectType = key[0].toLowerCase();
+      }
+      return [this.props.serverURL, projectType, "show", projectKey, "?tab=details"].join("/");
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _state = this.state,
@@ -38746,7 +38776,7 @@ var _InputFieldText = __webpack_require__(109);
 
 var _InputFieldSelect = __webpack_require__(659);
 
-var _Btn = __webpack_require__(181);
+var _Btn = __webpack_require__(180);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -38804,9 +38834,7 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
     _this.removeFundings = _this.removeFundings.bind(_this);
     _this.handleFundingSelect = _this.handleFundingSelect.bind(_this);
     _this.state = {
-      fundings: _this.props.fundings,
-      error: false,
-      errorMessage: 'Requiered field'
+      fundings: _this.props.fundings
     };
     return _this;
   }
@@ -38814,8 +38842,6 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
   _createClass(Fundings, [{
     key: 'addFundings',
     value: function addFundings() {
-      var _this2 = this;
-
       if (this.state.fundings[0].source !== '') {
         this.setState(function (prev) {
           var fundings = prev.fundings;
@@ -38823,15 +38849,13 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
           prev.fundings = fundings;
           prev.error = false;
           return prev;
-        }, function () {
-          return _this2.props.updateFundings(_this2.state.fundings);
         });
       }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this2 = this;
 
       return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Funding Source"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Prime Sponsor Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Award Number/Identifier"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.props.fundings.map(function (rd, Index) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: Index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldSelect.InputFieldSelect)({
@@ -38839,27 +38863,31 @@ var Fundings = exports.Fundings = (0, _reactHyperscriptHelpers.hh)(function (_Co
           id: Index,
           name: "source",
           options: fundingOptions,
-          value: _this3.state.fundings[Index].source,
-          onChange: _this3.handleFundingSelect
+          value: _this2.state.fundings[Index].source,
+          onChange: _this2.handleFundingSelect,
+          error: _this2.props.error && Index === 0,
+          errorMessage: _this2.props.errorMessage
         })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldText.InputFieldText)({
           id: Index,
           name: "sponsor",
           label: "",
-          value: _this3.state.fundings[Index].sponsor,
+          value: _this2.state.fundings[Index].sponsor,
           disabled: false,
           required: false,
-          onChange: _this3.handleFundingChange
+          onChange: _this2.handleFundingChange
         })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [(0, _InputFieldText.InputFieldText)({
           id: Index,
           name: "identifier",
           label: "",
-          value: _this3.state.fundings[Index].identifier,
+          value: _this2.state.fundings[Index].identifier,
           disabled: false,
           required: false,
-          onChange: _this3.handleFundingChange
+          onChange: _this2.handleFundingChange
         })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: function handler(e) {
-              return _this3.removeFundings(Index);
-            } }, disabled: !_this3.state.fundings.length > 1 })])]), (0, _reactHyperscriptHelpers.small)({ isRendered: _this3.props.error && Index === 0, className: "errorMessage" }, [_this3.props.errorMessage])]);
+              return _this2.removeFundings(Index);
+            } }, disabled: !_this2.state.fundings.length > 1 })])])]
+        //            small({ isRendered: this.props.error && Index === 0, className: "errorMessage" }, [this.props.errorMessage])
+        );
       })]);
     }
   }]);
@@ -38916,7 +38944,7 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _createClass(InputFieldSelect, [{
     key: 'render',
     value: function render() {
-      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo }, [_react2.default.createElement(_reactSelect2.default, {
+      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [_react2.default.createElement(_reactSelect2.default, {
         id: this.props.id,
         name: this.props.name,
         value: this.props.value,
@@ -39295,7 +39323,7 @@ var _Fundings = __webpack_require__(657);
 
 var _MultiSelect = __webpack_require__(296);
 
-var _ajax = __webpack_require__(169);
+var _ajax = __webpack_require__(181);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
