@@ -51,20 +51,23 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
         errorMessage: 'Please upload all required documents',
         error: errors || this.props.generalError
       }, [
-        documents.map((document, index) => {
-          return h(Fragment, { key: index }, [
-            document.link != null ? document.link: null,
-            InputFieldFile({
-              label: document.label,
-              callback: this.setFilesToUpload(documents, index),
-              fileName: (document.file != null ? document.file.name : ''),
-              required: document.required,
-              error: document.error,
-              errorMessage: "Required field",
-              removeHandler:() => this.removeFile(documents, index)
-            })
-          ])
-        })
+        div({ style: {'position': 'relative'}}, [
+          documents.map((document, index) => {
+            return h(Fragment, { key: index }, [
+              InputFieldFile({
+                label: document.label,
+                callback: this.setFilesToUpload(documents, index),
+                fileName: (document.file != null ? document.file.name : ''),
+                required: document.required,
+                error: document.error,
+                errorMessage: "Required field",
+                removeHandler:() => this.removeFile(documents, index)
+              }),
+              document.link != null ? document.link: null
+            ])
+          })
+      ])
+
       ])
     )
   }

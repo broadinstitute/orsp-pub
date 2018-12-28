@@ -567,7 +567,7 @@ class NewConsentGroup extends Component {
       file: null,
       fileName: null,
       error: false,
-      link: a({ className: "link", onClick: this.downloadFillablePDF, style: {'position' : 'absolute', 'right' : '20px'} }, ["Download fillable PDF here"])
+      link: a({ className: "link", onClick: this.downloadFillablePDF, style: {'position' : 'absolute', 'right' : '0', 'bottom' : '60px'} }, ["Download fillable PDF here"])
     });
 
     this.setState({
