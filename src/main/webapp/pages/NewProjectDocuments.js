@@ -27,8 +27,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   };
 
   removeFile = (docs, index) => {
-    docs[index].file = [];
-    docs[index].error = false;
+    docs[index].file = null;
     this.props.fileHandler(docs);
   }
 
