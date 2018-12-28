@@ -2,7 +2,6 @@ import { Component, React } from 'react';
 import { hh, h1, span, a } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
-import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 
@@ -18,7 +17,6 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
       formData: {
         pii: '',
         compliance: '',
-        textCompliance: '',
         sensitive: '',
         accessible: '',
         textCompliance: '',

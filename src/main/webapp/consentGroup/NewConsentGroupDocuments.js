@@ -2,7 +2,6 @@ import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
 import { hh, h, h1, a, div } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
-import { Btn } from '../components/Btn';
 
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
