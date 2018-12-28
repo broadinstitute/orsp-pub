@@ -26,6 +26,11 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     this.props.fileHandler(docs);
   };
 
+  removeFile = (docs, index) => {
+    docs[index].file = null;
+    this.props.fileHandler(docs);
+  }
+
   render() {
 
     if (this.state.hasError) {
@@ -55,7 +60,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
                 fileName: (document.file != null ? document.file.name : ''),
                 required: document.required,
                 error: document.error,
-                errorMessage: "Required field"
+                errorMessage: "Required field",
+                removeHandler:() => this.removeFile(documents, index)
               }),
           ])
         })
