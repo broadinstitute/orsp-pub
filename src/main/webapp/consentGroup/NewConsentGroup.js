@@ -15,6 +15,7 @@ class NewConsentGroup extends Component {
     this.state = {
       showErrorStep3: false,
       generalError: false,
+      formSubmitted: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -69,6 +70,11 @@ class NewConsentGroup extends Component {
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       this.removeErrorMessage();
+
+      this.setState(prev => {
+        prev.formSubmitted = true;
+        return prev;
+      });
 
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
         this.uploadFiles(resp.data.message.projectKey);
@@ -592,7 +598,7 @@ class NewConsentGroup extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup }, [
+      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup, disabledSubmit: this.state.formSubmitted }, [
         NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
