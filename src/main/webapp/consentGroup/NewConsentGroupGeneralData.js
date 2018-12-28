@@ -36,11 +36,11 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     };
   }
 
-  handleUpdateinstitutionalSources = (updated) => {
+  handleUpdateinstitutionalSources = (updated, field) => {
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'institutionalSources'));
+    }, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
     this.props.removeErrorMessage();
   };
 
@@ -156,7 +156,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         this.props.errors.sampleCollections ||
         this.props.errors.describeConsentGroup ||
         this.props.errors.requireMta ||
-        this.props.errors.institutionalSources ||
+        this.props.errors.institutionalSourcesName ||
+        this.props.errors.institutionalSourcesCountry ||
         this.props.errors.startDate ||
         this.props.errors.endDate ||
         this.props.errors.onGoingProcess,
@@ -297,7 +298,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: this.state.formData.institutionalSources,
-            error: this.props.errors.institutionalSources,
+            errorName: this.props.errors.institutionalSourcesName,
+            errorCountry: this.props.errors.institutionalSourcesCountry,
             errorMessage: "Required field"
           })
         ]),

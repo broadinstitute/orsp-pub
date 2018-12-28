@@ -25,9 +25,7 @@ export const Fundings = hh(class Fundings extends Component {
     this.removeFundings = this.removeFundings.bind(this);
     this.handleFundingSelect = this.handleFundingSelect.bind(this);
     this.state = {
-      fundings: this.props.fundings,
-      error: false,
-      errorMessage: 'Requiered field'
+      fundings: this.props.fundings
     };
   }
 
@@ -39,7 +37,7 @@ export const Fundings = hh(class Fundings extends Component {
         prev.fundings = fundings;
         prev.error = false;
         return prev;
-      }, () => this.props.updateFundings(this.state.fundings));
+      });
     }
   }
 
@@ -109,7 +107,9 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "source",
                       options: fundingOptions,
                       value: this.state.fundings[Index].source,
-                      onChange: this.handleFundingSelect
+                      onChange: this.handleFundingSelect,
+                      error: this.props.error && Index === 0,
+                      errorMessage: this.props.errorMessage
                     })
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -140,7 +140,7 @@ export const Fundings = hh(class Fundings extends Component {
                 Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
               ])
             ]),
-            small({ isRendered: this.props.error && Index === 0, className: "errorMessage" }, [this.props.errorMessage])
+//            small({ isRendered: this.props.error && Index === 0, className: "errorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])

@@ -37,7 +37,8 @@ class NewConsentGroup extends Component {
         sampleCollections: false,
         describeConsentGroup: false,
         requireMta: false,
-        institutionalSources: false,
+        institutionalSourcesName: false,
+        institutionalSourcesCountry: false,
         pii: false,
         compliance: false,
         sensitive: false,
@@ -215,7 +216,10 @@ class NewConsentGroup extends Component {
     let sampleCollections = false;
     let describeConsentGroup = false;
     let requireMta = false;
-    let institutionalSources = false;
+//    let institutionalSources = false;
+    let institutionalSourcesName = false;
+    let institutionalSourcesCountry = false;
+
     let isValid = true;
     if (field === "consentGroupName" && this.consentGroupNameExists()) {
       consentGroupName = true;
@@ -247,12 +251,17 @@ class NewConsentGroup extends Component {
       isValid = false;
     }
     if (this.state.step1FormData.institutionalSources === undefined) {
-      institutionalSources = true;
+      institutionalSourcesName = true;
+      institutionalSourcesCountry = true;
       isValid = false;
     } else {
       this.state.step1FormData.institutionalSources.forEach(institutionalSource => {
         if (!this.isTextValid(institutionalSource.name)) {
-          institutionalSources = true;
+          institutionalSourcesName = true;
+          isValid = false;
+        }
+        if (!this.isTextValid(institutionalSource.country)) {
+          institutionalSourcesCountry = true;
           isValid = false;
         }
       });
@@ -267,7 +276,8 @@ class NewConsentGroup extends Component {
         prev.errors.sampleCollections = sampleCollections;
         prev.errors.describeConsentGroup = describeConsentGroup;
         prev.errors.requireMta = requireMta;
-        prev.errors.institutionalSources = institutionalSources;
+        prev.errors.institutionalSourcesName = institutionalSourcesName;
+        prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.isValid = isValid;
         return prev;
       });
@@ -276,7 +286,7 @@ class NewConsentGroup extends Component {
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' ||
       field === 'sampleCollections' || field === 'describeConsentGroup' ||
-      field === 'requireMta' || field === 'institutionalSources') {
+      field === 'requireMta' || field === 'nameInstitutional'|| field === 'countryInstitutional') {
 
       this.setState(prev => {
         if (field === 'investigatorLastName') {
@@ -293,8 +303,10 @@ class NewConsentGroup extends Component {
           prev.errors.describeConsentGroup = describeConsentGroup;
         } else if (field === 'requireMta') {
           prev.errors.requireMta = requireMta;
-        } else if (field === 'institutionalSources') {
-          prev.errors.institutionalSources = institutionalSources;
+        } else if (field === 'nameInstitutional') {
+          prev.errors.institutionalSourcesName = institutionalSourcesName;
+        } else if (field === 'countryInstitutional') {
+          prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         }
         return prev;
       });
@@ -586,8 +598,8 @@ class NewConsentGroup extends Component {
 
   parseDate(date) {
     if (date !== null) {
-      let d = new Date(date);
-      return [d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-");
+      let d = new Date(date).toISOString();
+      return d.slice(0, d.indexOf("T"));
     }
   }
 

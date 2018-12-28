@@ -57,7 +57,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.fundings = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'fundings'))
+    }, () => this.props.updateForm(this.state.formData, 'fundings'));
     this.props.removeErrorMessage();
   };
 

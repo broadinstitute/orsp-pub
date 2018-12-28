@@ -9,7 +9,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
   render() {
     return (
-      InputField({ label: this.props.label, moreInfo: this.props.moreInfo }, [
+      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
         <Select
           id={this.props.id}
           name={this.props.name}
