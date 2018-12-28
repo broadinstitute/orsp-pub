@@ -41,6 +41,7 @@ class NewProject extends Component {
     this.submitNewProject = this.submitNewProject.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
+    this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
   }
 
   submitNewProject = () => {
@@ -48,13 +49,13 @@ class NewProject extends Component {
     if (this.validateStep3()) {
 
       if (this.validateStep2() && this.validateStep1()) {
-        this.setState(prev => {
-          prev.formSubmitted = true;
-          return prev;
-        });
+        this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
           this.uploadFiles(resp.data.message.projectKey);
+        }).catch(error => {
+          this.changeStateSubmitButton();
+          console.error(error);
         });
       } else {
         this.setState(prev => {
@@ -68,6 +69,13 @@ class NewProject extends Component {
         return prev;
       });
     }
+  };
+
+  changeStateSubmitButton = () => {
+    this.setState(prev => {
+      prev.formSubmitted = !prev.formSubmitted;
+      return prev;
+    });
   };
 
   getProject() {
