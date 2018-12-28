@@ -353,6 +353,7 @@ class NewProject extends Component {
         window.location.href = this.getRedirectUrl(projectKey);
 
       }).catch(error => {
+        this.changeStateSubmitButton();
         console.error(error);
       });
   };
