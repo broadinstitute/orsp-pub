@@ -13,14 +13,13 @@ import javax.ws.rs.core.Response
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class NewConsentGroupController extends AuthenticatedController {
 
-    def fileName = 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf'
-
     def show() {
         render(view: "/newConsentGroup/index")
     }
 
     def downloadFillablePDF () {
         try {
+            String fileName = 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf'
             def resource = this.class.classLoader.getResource(fileName)
             response.setHeader('Content-disposition', "attachment; ${fileName}")
             response.setHeader('Content-Length', 'file-size')

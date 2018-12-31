@@ -122,7 +122,14 @@ class NewConsentGroup extends Component {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.step1FormData.endDate) });
     }
     // step 3
-    extraProperties.push({ name: 'questions', values: this.getQuestions(this.state.determination.questions) });
+    let questions = this.state.determination.questions;
+    if (questions !== null && questions.length > 1) {
+     questions.map((q, idx) => {
+        if (q.answer !== null) {
+          extraProperties.push({name: q.key, value: q.answer});
+        }
+     });
+    }
     // step 4
     extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.step4FormData.compliance });
@@ -138,18 +145,6 @@ class NewConsentGroup extends Component {
     consentGroup.extraProperties = extraProperties;
     return consentGroup;
 
-  }
-
-  getQuestions(questions) {
-    let questionList = [];
-    if (questions !== undefined && questions !== null && questions.length > 1) {
-      questions.map((q, idx) => {
-        if (q.answer !== null) {
-          questionList.push({ name: q.key, value: q.answer });
-        }
-      });
-    }
-    return questionList;
   }
 
   getSampleCollections() {

@@ -48,7 +48,6 @@ class IssueService {
             IssueExtraProperty.SOURCE,
             IssueExtraProperty.SUBMISSION_TYPE,
             IssueExtraProperty.PROJECT_TITLE,
-            IssueExtraProperty.IRB_PROTOCOL_ID,
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PI,
             IssueExtraProperty.PM
@@ -56,7 +55,7 @@ class IssueService {
 
 
     Collection<String> multiValuedPropertyKeys = [
-            IssueExtraProperty.PROJECT_QUESTIONARE,
+            IssueExtraProperty.PROJECT_QUESTIONNAIRE,
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
@@ -167,8 +166,8 @@ class IssueService {
 
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
-        List<IssueExtraProperty> extraProperties = issue.getAllExtraProperties()
-        List<Funding> fundings = issue.getAllFundings()
+        List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
+        Collection<Funding> fundings = issue.getFundings()
         Issue newIssue = initIssue(issue, type)
         if (newIssue.hasErrors()) {
             throw new DomainException(newIssue.getErrors())
@@ -191,7 +190,7 @@ class IssueService {
         }
     }
 
-    void saveFundings(Issue issue, List<Funding> fundings) {
+    void saveFundings(Issue issue, Collection<Funding> fundings) {
         fundings?.each {
             it.setCreated(new Date())
             it.setProjectKey(issue.projectKey)

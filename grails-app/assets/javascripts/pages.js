@@ -2481,7 +2481,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _AlertMessage = __webpack_require__(179);
+var _AlertMessage = __webpack_require__(178);
 
 __webpack_require__(265);
 
@@ -2543,7 +2543,7 @@ var WizardStep = exports.WizardStep = (0, _reactHyperscriptHelpers.hh)(function 
 
 
       if (currentStep === step) {
-        view = (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.h2)({ className: "wizardStepTitle " + (questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12') }, [(0, _reactHyperscriptHelpers.small)({}, ["Step " + (step + 1)]), this.props.title])]), this.props.children, (0, _AlertMessage.AlertMessage)({
+        view = (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContainer" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.h2)({ className: "wizardStepTitle " + (questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12') }, [(0, _reactHyperscriptHelpers.small)({}, ["Step " + (step + 1)]), this.props.title])]), (0, _reactHyperscriptHelpers.div)({ className: "wizardStepContent" }, [this.props.children]), (0, _AlertMessage.AlertMessage)({
           msg: this.props.errorMessage,
           show: this.props.error
         })]);
@@ -28734,65 +28734,10 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 168 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InputYesNo = undefined;
-
-var _react = __webpack_require__(0);
-
-var _reactHyperscriptHelpers = __webpack_require__(7);
-
-__webpack_require__(276);
-
-var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
-
-  var selectOption = function selectOption(e, value) {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
-  };
-
-  var id = props.id,
-      name = props.name,
-      _props$optionValues = props.optionValues,
-      optionValues = _props$optionValues === undefined ? ['true', 'false'] : _props$optionValues,
-      _props$optionLabels = props.optionLabels,
-      optionLabels = _props$optionLabels === undefined ? ['Yes', 'No'] : _props$optionLabels,
-      value = props.value;
-
-
-  var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
-
-  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
-    return (0, _reactHyperscriptHelpers.label)({
-      key: id + ix,
-      onClick: function onClick(e) {
-        return selectOption(e, optionValues[ix]);
-      },
-      id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions"
-    }, [(0, _reactHyperscriptHelpers.input)({
-      type: "radio",
-      id: "rad_" + id + "_" + ix,
-      name: name,
-      value: optionValues[ix],
-      checked: normValue === optionValues[ix],
-      onChange: function onChange() {}
-    }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
-  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
-};
-
-/***/ }),
+/* 168 */,
 /* 169 */,
 /* 170 */,
-/* 171 */,
-/* 172 */
+/* 171 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28959,15 +28904,15 @@ function polyfill(Component) {
 
 
 /***/ }),
+/* 172 */,
 /* 173 */,
-/* 174 */,
-/* 175 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(315);
 
 /***/ }),
-/* 176 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var _Object$keys = __webpack_require__(284);
@@ -28992,9 +28937,9 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 module.exports = _objectWithoutPropertiesLoose;
 
 /***/ }),
+/* 176 */,
 /* 177 */,
-/* 178 */,
-/* 179 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29062,7 +29007,7 @@ var AlertMessage = exports.AlertMessage = (0, _reactHyperscriptHelpers.hh)(funct
 }(_react.Component));
 
 /***/ }),
-/* 180 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29111,6 +29056,61 @@ var Btn = exports.Btn = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
 
   return Btn;
 }(_react.Component));
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InputYesNo = undefined;
+
+var _react = __webpack_require__(0);
+
+var _reactHyperscriptHelpers = __webpack_require__(7);
+
+__webpack_require__(276);
+
+var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
+
+  var selectOption = function selectOption(e, value) {
+    e.preventDefault();
+    props.onChange(e, props.name, value);
+  };
+
+  var id = props.id,
+      name = props.name,
+      _props$optionValues = props.optionValues,
+      optionValues = _props$optionValues === undefined ? ['true', 'false'] : _props$optionValues,
+      _props$optionLabels = props.optionLabels,
+      optionLabels = _props$optionLabels === undefined ? ['Yes', 'No'] : _props$optionLabels,
+      value = props.value;
+
+
+  var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
+
+  return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
+    return (0, _reactHyperscriptHelpers.label)({
+      key: id + ix,
+      onClick: function onClick(e) {
+        return selectOption(e, optionValues[ix]);
+      },
+      id: "lbl_" + props.id + "_" + ix,
+      className: "radioOptions"
+    }, [(0, _reactHyperscriptHelpers.input)({
+      type: "radio",
+      id: "rad_" + id + "_" + ix,
+      name: name,
+      value: optionValues[ix],
+      checked: normValue === optionValues[ix],
+      onChange: function onChange() {}
+    }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
+  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
+};
 
 /***/ }),
 /* 181 */
@@ -31676,7 +31676,7 @@ var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(f
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputFileContainer" }, [(0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-2 col-md-3 col-sm-3 col-12 btn buttonSecondary buttonUpload" }, ["Select File", (0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })]), (0, _reactHyperscriptHelpers.div)({ className: "fileNameContainer col-lg-10 col-md-9 col-sm-9 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "fileName" }, [this.props.fileName != null ? this.props.fileName : ''])])])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputFileContainer" }, [(0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-2 col-md-3 col-sm-3 col-12 btn buttonSecondary buttonUpload" }, ["Select File", (0, _reactHyperscriptHelpers.input)({ type: 'file', onChange: this.props.callback, className: "inputFieldFile" })]), (0, _reactHyperscriptHelpers.div)({ className: "fileNameContainer col-lg-10 col-md-9 col-sm-9 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "fileName" }, [this.props.fileName != null ? this.props.fileName : '']), (0, _reactHyperscriptHelpers.a)({ className: "fileNameClear glyphicon glyphicon-remove", onClick: this.props.removeHandler }, [])])])]);
     }
   }]);
 
@@ -31778,9 +31778,9 @@ var _reactHyperscriptHelpers = __webpack_require__(7);
 
 __webpack_require__(580);
 
-var _Btn = __webpack_require__(180);
+var _Btn = __webpack_require__(179);
 
-var _AlertMessage = __webpack_require__(179);
+var _AlertMessage = __webpack_require__(178);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -31917,7 +31917,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
-var _InputYesNo = __webpack_require__(168);
+var _InputYesNo = __webpack_require__(180);
 
 var _QuestionnaireProgressBar = __webpack_require__(298);
 
@@ -32953,7 +32953,7 @@ exports = module.exports = __webpack_require__(23)(undefined);
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.inputFileContainer:last-child {\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  margin: 8px 5px 0 5px;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.inputFileContainer:last-child {\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}", ""]);
 
 // exports
 
@@ -32967,7 +32967,7 @@ exports = module.exports = __webpack_require__(23)(undefined);
 
 
 // module
-exports.push([module.i, ".radioContainer {\n  margin: 15px 0;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 3px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
+exports.push([module.i, ".radioContainer {\n  margin: 20px 0;\n}\n\n.radioContainer p {\n  font-size: 1.1rem;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 3px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
 
 // exports
 
@@ -32995,7 +32995,7 @@ exports = module.exports = __webpack_require__(23)(undefined);
 
 
 // module
-exports.push([module.i, ".questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.questionnaireContainer .radioContainer p {\n  font-size: 1.1rem;\n}\n\n.questionnaireContainer .buttonContainer {\n  margin: 25px 0 0 0;\n}\n\n.questionnaireProgressBar {\n  position: absolute;\n  right: 0;\n  top: -65px;\n  padding: 0;\n}\n\n.questionnaireProgressBar p {\n  text-align: right;\n}\n\n.questionnaireProgressBar .progress {\n  height: 12px;\n  margin-bottom: 0 !important;\n  border-radius: 2px;\n}\n\n.questionnaireProgressBar .progress-bar {\n  background-color: #2c3e50;\n  background-image: linear-gradient(to bottom,#395266 0,#2c3e50 100%);\n}\n\n.questionnaireProgressBar .progress.complete .progress-bar {\n  background-color: #2a631e;\n  background-image: linear-gradient(to bottom,#2fb20f 0,#339314 100%);\n}\n", ""]);
+exports.push([module.i, ".questionnaireContainer .buttonContainer {\n  margin: 25px 0 0 0;\n}\n\n.questionnaireProgressBar {\n  position: absolute;\n  right: 0;\n  top: -65px;\n  padding: 0;\n}\n\n.questionnaireProgressBar p {\n  text-align: right;\n}\n\n.questionnaireProgressBar .progress {\n  height: 12px;\n  margin-bottom: 0 !important;\n  border-radius: 2px;\n}\n\n.questionnaireProgressBar .progress-bar {\n  background-color: #2c3e50;\n  background-image: linear-gradient(to bottom,#395266 0,#2c3e50 100%);\n}\n\n.questionnaireProgressBar .progress.complete .progress-bar {\n  background-color: #2a631e;\n  background-image: linear-gradient(to bottom,#2fb20f 0,#339314 100%);\n}\n", ""]);
 
 // exports
 
@@ -33009,7 +33009,7 @@ exports = module.exports = __webpack_require__(23)(undefined);
 
 
 // module
-exports.push([module.i, ".wizardWrapper {\r\n  height: 100%;\r\n  width: 100%;\r\n  padding: 20px 0;\r\n  display: inline-table;\r\n}\r\n\r\n.wizardTitle {\r\n  font-weight: 400;\r\n  margin: 20px 0 10px 0;\r\n}\r\n\r\n.wizardContainer {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 100%;\r\n  min-height: 80vh;\r\n  border: 1px solid #e3e3e3;\r\n  border-radius: 4px;\r\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n}\r\n\r\n.tabContainer {\r\n  display: block;\r\n  width: 100%;\r\n  min-height: 40px;\r\n  margin: 12px 3px;\r\n}\r\n\r\n.tabStep {\r\n  margin: 2px 1px 10px 1px;\r\n  padding: .5em 1em;\r\n  display: inline;\r\n  cursor: pointer;\r\n  font-size: 1.2rem;\r\n  border: 1px solid #d3d3d3;\r\n  color: #555555;\r\n  background: #e6e6e6;\r\n}\r\n\r\n.tabStep:first-child {\r\n  border-radius: 3px 0 0 0;\r\n}\r\n\r\n.tabStep:last-child {\r\n  border-radius: 0 3px 0 0;\r\n}\r\n\r\n.tabStep.active {\r\n  border: 1px solid #aaaaaa;\r\n  border-bottom: none;\r\n  color: #212121;\r\n  background: white;\r\n}\r\n\r\n.wizardStepContainer {\r\n  padding: 0 20px;\r\n  margin-bottom: 75px;\r\n}\r\n\r\n.wizardStepTitle {\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.wizardStepTitle small {\r\n  font-style: italic;\r\n  display: block;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.wizardButtonContainer {\r\n  position: absolute;\r\n  width: 100%;\r\n  bottom: 0;\r\n  margin: 0 !important;\r\n  padding: 0 20px 20px 20px;\r\n}\r\n", ""]);
+exports.push([module.i, ".wizardWrapper {\r\n  height: 100%;\r\n  width: 100%;\r\n  padding: 0 0 20px 0;\r\n  display: inline-table;\r\n}\r\n\r\n.wizardTitle {\r\n  font-weight: 700;\r\n  margin: 20px 0;\r\n}\r\n\r\n.wizardContainer {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 100%;\r\n  min-height: 80vh;\r\n  border: 1px solid #e3e3e3;\r\n  border-radius: 4px;\r\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);\r\n}\r\n\r\n.tabContainer {\r\n  display: block;\r\n  width: 100%;\r\n  min-height: 40px;\r\n  margin: 12px 3px;\r\n}\r\n\r\n.tabStep {\r\n  margin: 2px 1px 10px 1px;\r\n  padding: .5em 1em;\r\n  display: inline;\r\n  cursor: pointer;\r\n  font-size: 1.2rem;\r\n  border: 1px solid #d3d3d3;\r\n  color: #555555;\r\n  background: #e6e6e6;\r\n}\r\n\r\n.tabStep:first-child {\r\n  border-radius: 3px 0 0 0;\r\n}\r\n\r\n.tabStep:last-child {\r\n  border-radius: 0 3px 0 0;\r\n}\r\n\r\n.tabStep.active {\r\n  border: 1px solid #aaaaaa;\r\n  border-bottom: none;\r\n  color: #212121;\r\n  background: white;\r\n}\r\n\r\n.wizardStepContainer {\r\n  padding: 0 20px;\r\n  margin-bottom: 75px;\r\n}\r\n\r\n.wizardStepTitle {\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.wizardStepTitle small {\r\n  font-style: italic;\r\n  display: block;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.wizardButtonContainer {\r\n  position: absolute;\r\n  width: 100%;\r\n  bottom: 0;\r\n  margin: 0 !important;\r\n  padding: 0 20px 20px 20px;\r\n}\r\n", ""]);
 
 // exports
 
@@ -33020,10 +33020,10 @@ exports.push([module.i, ".wizardWrapper {\r\n  height: 100%;\r\n  width: 100%;\r
 
 exports = module.exports = __webpack_require__(23)(undefined);
 // imports
-
+exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i);", ""]);
 
 // module
-exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.2rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
+exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -33264,11 +33264,11 @@ var _interopRequireDefault = __webpack_require__(54);
 exports.__esModule = true;
 exports.default = void 0;
 
-var _values = _interopRequireDefault(__webpack_require__(175));
+var _values = _interopRequireDefault(__webpack_require__(174));
 
 var _extends3 = _interopRequireDefault(__webpack_require__(89));
 
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(176));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(175));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(90));
 
@@ -33414,11 +33414,11 @@ var _interopRequireDefault = __webpack_require__(54);
 exports.__esModule = true;
 exports.default = void 0;
 
-var _values = _interopRequireDefault(__webpack_require__(175));
+var _values = _interopRequireDefault(__webpack_require__(174));
 
 var _extends3 = _interopRequireDefault(__webpack_require__(89));
 
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(176));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(175));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(90));
 
@@ -37415,7 +37415,7 @@ var _react = _interopRequireDefault(__webpack_require__(0));
 
 var _reactDom = _interopRequireDefault(__webpack_require__(5));
 
-var _reactLifecyclesCompat = __webpack_require__(172);
+var _reactLifecyclesCompat = __webpack_require__(171);
 
 var _PropTypes = __webpack_require__(630);
 
@@ -38022,7 +38022,7 @@ var _propTypes = _interopRequireDefault(__webpack_require__(1));
 
 var _react = _interopRequireDefault(__webpack_require__(0));
 
-var _reactLifecyclesCompat = __webpack_require__(172);
+var _reactLifecyclesCompat = __webpack_require__(171);
 
 var _ChildMapping = __webpack_require__(777);
 
@@ -38147,11 +38147,6 @@ function (_React$Component) {
 
   _proto.componentDidMount = function componentDidMount() {
     this.appeared = true;
-    this.mounted = true;
-  };
-
-  _proto.componentWillUnmount = function componentWillUnmount() {
-    this.mounted = false;
   };
 
   TransitionGroup.getDerivedStateFromProps = function getDerivedStateFromProps(nextProps, _ref) {
@@ -38172,16 +38167,14 @@ function (_React$Component) {
       child.props.onExited(node);
     }
 
-    if (this.mounted) {
-      this.setState(function (state) {
-        var children = _extends({}, state.children);
+    this.setState(function (state) {
+      var children = _extends({}, state.children);
 
-        delete children[child.key];
-        return {
-          children: children
-        };
-      });
-    }
+      delete children[child.key];
+      return {
+        children: children
+      };
+    });
   };
 
   _proto.render = function render() {
@@ -38473,12 +38466,24 @@ var NewProject = function (_Component) {
       var extraProperties = [];
       extraProperties.push({ name: 'pm', value: this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null });
       extraProperties.push({ name: 'pi', value: this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.key : null });
-      extraProperties.push({ name: 'pTitle', value: this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null });
+      extraProperties.push({ name: 'projectTitle', value: this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null });
       extraProperties.push({ name: 'protocol', value: this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null });
       extraProperties.push({ name: 'description', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null });
-      extraProperties.push({ name: 'collaborators', values: this.getCollaborators(this.state.step1FormData.collaborators) });
       extraProperties.push({ name: 'subjectProtection', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null });
-      extraProperties.push({ name: 'questions', values: this.getQuestions(this.state.determination.questions) });
+      var collaborators = this.state.step1FormData.collaborators;
+      if (collaborators !== null && collaborators.length > 0) {
+        collaborators.map(function (collaborator, idx) {
+          extraProperties.push({ name: 'collaborator', value: collaborator.key });
+        });
+      }
+      var questions = this.state.determination.questions;
+      if (questions !== null && questions.length > 1) {
+        questions.map(function (q, idx) {
+          if (q.answer !== null) {
+            extraProperties.push({ name: q.key, value: q.answer });
+          }
+        });
+      }
       project.extraProperties = extraProperties;
       return project;
     }
@@ -38496,30 +38501,6 @@ var NewProject = function (_Component) {
         });
       }
       return fundingList;
-    }
-  }, {
-    key: 'getCollaborators',
-    value: function getCollaborators(collaborators) {
-      var collaboratorList = [];
-      if (collaborators !== null && collaborators.length > 0) {
-        collaborators.map(function (collaborator, idx) {
-          collaboratorList.push({ name: 'collaborator', value: collaborator.key });
-        });
-      }
-      return collaboratorList;
-    }
-  }, {
-    key: 'getQuestions',
-    value: function getQuestions(questions) {
-      var questionList = [];
-      if (questions !== undefined && questions !== null && questions.length > 1) {
-        questions.map(function (q, idx) {
-          if (q.answer !== null) {
-            questionList.push({ name: q.key, value: q.answer });
-          }
-        });
-      }
-      return questionList;
     }
   }, {
     key: 'getProjectType',
@@ -38776,7 +38757,7 @@ var _InputFieldText = __webpack_require__(109);
 
 var _InputFieldSelect = __webpack_require__(659);
 
-var _Btn = __webpack_require__(180);
+var _Btn = __webpack_require__(179);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -39239,6 +39220,9 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
         docs[ix].error = false;
         _this.props.fileHandler(docs);
       };
+    }, _this.removeFile = function (docs, index) {
+      docs[index].file = null;
+      _this.props.fileHandler(docs);
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -39276,7 +39260,10 @@ var NewProjectDocuments = exports.NewProjectDocuments = (0, _reactHyperscriptHel
           fileName: document.file != null ? document.file.name : '',
           required: document.required,
           error: document.error,
-          errorMessage: "Required field"
+          errorMessage: "Required field",
+          removeHandler: function removeHandler() {
+            return _this2.removeFile(documents, index);
+          }
         })]);
       })]);
     }
@@ -39317,7 +39304,7 @@ var _InputFieldText = __webpack_require__(109);
 
 var _InputFieldTextArea = __webpack_require__(660);
 
-var _InputYesNo = __webpack_require__(168);
+var _InputYesNo = __webpack_require__(180);
 
 var _Fundings = __webpack_require__(657);
 

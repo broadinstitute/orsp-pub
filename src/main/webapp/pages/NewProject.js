@@ -88,12 +88,24 @@ class NewProject extends Component {
     let extraProperties = [];
     extraProperties.push({name: 'pm', value: this.state.step1FormData.projectManager !== '' ? this.state.step1FormData.projectManager.key : null});
     extraProperties.push({name: 'pi', value: this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.key : null});
-    extraProperties.push({name: 'pTitle', value: this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null});
+    extraProperties.push({name: 'projectTitle', value: this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null});
     extraProperties.push({name: 'protocol', value: this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null});
     extraProperties.push({name: 'description', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
-    extraProperties.push({name: 'collaborators', values: this.getCollaborators(this.state.step1FormData.collaborators)});
     extraProperties.push({name: 'subjectProtection', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
-    extraProperties.push({name: 'questions', values: this.getQuestions(this.state.determination.questions)});
+    let collaborators = this.state.step1FormData.collaborators;
+    if (collaborators !== null && collaborators.length > 0) {
+        collaborators.map((collaborator, idx) => {
+          extraProperties.push({name: 'collaborator', value: collaborator.key});
+        });
+    }
+    let questions = this.state.determination.questions;
+    if (questions !== null && questions.length > 1) {
+        questions.map((q, idx) => {
+          if (q.answer !== null) {
+            extraProperties.push({name: q.key, value: q.answer});
+          }
+        });
+    }
     project.extraProperties = extraProperties;
     return project;
   }
@@ -110,28 +122,6 @@ class NewProject extends Component {
       });
     }
     return fundingList;
-  }
-
-  getCollaborators(collaborators) {
-    let collaboratorList = [];
-    if (collaborators !== null && collaborators.length > 0) {
-      collaborators.map((collaborator, idx) => {
-        collaboratorList.push({name: 'collaborator', value: collaborator.key});
-      });
-    }
-    return collaboratorList;
-  }
-
-  getQuestions(questions) {
-    let questionList = [];
-    if (questions !== undefined && questions !== null && questions.length > 1) {
-      questions.map((q, idx) => {
-        if (q.answer !== null) {
-          questionList.push({name: q.key, value: q.answer});
-        }
-      });
-    }
-    return questionList;
   }
 
   getProjectType(project) {
