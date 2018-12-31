@@ -94,8 +94,8 @@ export const Fundings = hh(class Fundings extends Component {
 
         hr({ className: "fullWidth" }),
 
-        this.props.fundings.map((rd, Index) => {
-          return h(Fragment, { key: Index }, [
+        this.props.fundings.map((rd, idx) => {
+          return h(Fragment, { key: idx }, [
 
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
@@ -103,21 +103,21 @@ export const Fundings = hh(class Fundings extends Component {
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldSelect({
                       label: "",
-                      id: Index,
+                      id: idx,
                       name: "source",
                       options: fundingOptions,
-                      value: this.state.fundings[Index].source,
+                      value: this.state.fundings[idx].source,
                       onChange: this.handleFundingSelect,
-                      error: this.props.error && Index === 0,
+                      error: this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage
                     })
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldText({
-                      id: Index,
+                      id: idx,
                       name: "sponsor",
                       label: "",
-                      value: this.state.fundings[Index].sponsor,
+                      value: this.state.fundings[idx].sponsor,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange
@@ -125,10 +125,10 @@ export const Fundings = hh(class Fundings extends Component {
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldText({
-                      id: Index,
+                      id: idx,
                       name: "identifier",
                       label: "",
-                      value: this.state.fundings[Index].identifier,
+                      value: this.state.fundings[idx].identifier,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange
@@ -137,10 +137,9 @@ export const Fundings = hh(class Fundings extends Component {
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(Index) }, disabled: !this.state.fundings.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) }, disabled: !this.state.fundings.length > 1 }),
               ])
             ]),
-//            small({ isRendered: this.props.error && Index === 0, className: "errorMessage" }, [this.props.errorMessage])
           ]);
         })
       ])
