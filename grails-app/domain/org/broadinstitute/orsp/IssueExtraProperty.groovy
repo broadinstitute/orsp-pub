@@ -27,8 +27,8 @@ class IssueExtraProperty {
     public static final String PM = "pm"
     public static final String SOURCE = "source"
     public static final String ACTOR = "actor"
-    public static final String PROJECT_QUESTIONARE = "questions"
-    public static final String PROJECT_TITLE = "pTitle"
+    public static final String PROJECT_QUESTIONNAIRE = "questions"
+    public static final String PROJECT_TITLE = "projectTitle"
     public static final String IDENTIFIABLE = "identifiable"
     public static final String DECEASED = "deceased"
     public static final String SUBMISSION_TYPE = "submissionType"
@@ -43,8 +43,6 @@ class IssueExtraProperty {
     public static final String DATA_SHARING_COMMENTS = "dataSharingComments"
     public static final String DATA_SHARING_NIH = "dataSharingNih"
     public static final String COLLABORATORS = "collaborators"
-    public static final String PROJECT_MANAGER = "pm"
-    public static final String IRB_PROTOCOL_ID = "protocol"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
 
     // Status Flags
@@ -69,7 +67,6 @@ class IssueExtraProperty {
     String name
     String value
     String projectKey
-    List<IssueExtraProperty> values
 
     Issue issue
 
