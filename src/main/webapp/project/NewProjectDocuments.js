@@ -21,6 +21,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
   setFilesToUpload = (docs, ix) => (e) => {
     let selectedFile = e.target.files[0];
+    e.target.value = '';
     docs[ix].file = selectedFile;
     docs[ix].error = false;
     this.props.fileHandler(docs);

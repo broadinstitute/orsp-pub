@@ -23,6 +23,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   setFilesToUpload = (docs, ix) => (e) => {
     docs[ix].file = e.target.files[0];
     docs[ix].error = false;
+    e.target.value = '';
     this.props.fileHandler(docs);
   };
 
