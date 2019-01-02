@@ -1,17 +1,16 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, a, div } from 'react-hyperscript-helpers';
+import { hh, h, h1, span } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 
-
-export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
+export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
 
   state = {
     documents: []
   };
 
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
+    console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
@@ -21,7 +20,8 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   }
 
   setFilesToUpload = (docs, ix) => (e) => {
-    docs[ix].file = e.target.files[0];
+    let selectedFile = e.target.files[0];
+    docs[ix].file = selectedFile;
     docs[ix].error = false;
     this.props.fileHandler(docs);
   };
@@ -39,6 +39,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     }
 
     let documents = this.props.files;
+
     let errors = false;
     documents.forEach(doc => {
       errors = errors || doc.error;
@@ -47,8 +48,8 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     return (
 
       WizardStep({
-        title: this.props.title, step: 1, currentStep: this.props.currentStep,
-        errorMessage: 'Please upload all required documents',
+        title: this.props.title, step: 2, currentStep: this.props.currentStep,
+        errorMessage: !this.props.generalError ? 'Please upload all required documents' : 'Please check previous steps',
         error: errors || this.props.generalError
       }, [
           div({ className: "positionRelative" }, [
@@ -62,8 +63,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
                   error: document.error,
                   errorMessage: "Required field",
                   removeHandler: () => this.removeFile(documents, index)
-                }),
-                document.link != null ? document.link : null
+                })
               ])
             })
           ])
