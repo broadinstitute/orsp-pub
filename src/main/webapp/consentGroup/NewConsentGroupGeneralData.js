@@ -308,8 +308,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputYesNo({
             id: "radioRequireMta",
             name: "requireMta",
-            label: "Does the institution providing samples/data to the Broad require a Material or Data Transfer Agreement (MTA)? ",
-            moreInfo: span({ className: "italic" }, ["(Please note that all samples arriving from Dana Farber Cancer Institute now require an MTA)*"]),
+            label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
+            moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
             value: this.state.formData.requireMta,
             onChange: this.handleRadioChange,
             required: true,
