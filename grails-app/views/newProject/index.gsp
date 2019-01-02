@@ -31,8 +31,8 @@
 </head>
 <body>
 
-<div id="pages"></div>
-<asset:javascript src="pages.js"/>
+<div id="project"></div>
+<asset:javascript src="project.js"/>
 
 </body>
 </html>
