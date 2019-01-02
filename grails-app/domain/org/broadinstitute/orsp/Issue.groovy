@@ -3,8 +3,6 @@ package org.broadinstitute.orsp
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
-import java.util.stream.Collectors
-
 class Issue {
 
     Integer id
@@ -129,60 +127,36 @@ class Issue {
 
     transient String getSource() { getExtraProperties().find { it.name == IssueExtraProperty.SOURCE }?.value }
 
-    transient String getIdentifiable() {
-        getExtraProperties().find { it.name == IssueExtraProperty.IDENTIFIABLE }?.value
-    }
+    transient String getIdentifiable() { getExtraProperties().find { it.name == IssueExtraProperty.IDENTIFIABLE }?.value }
 
     transient String getDeceased() { getExtraProperties().find { it.name == IssueExtraProperty.DECEASED }?.value }
 
-    transient String getSubmissionType() {
-        getExtraProperties().find { it.name == IssueExtraProperty.SUBMISSION_TYPE }?.value
-    }
+    transient String getSubmissionType() { getExtraProperties().find { it.name == IssueExtraProperty.SUBMISSION_TYPE }?.value }
 
-    transient String getFeeForService() {
-        getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value
-    }
+    transient String getFeeForService() { getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value }
 
-    transient String getCollHasIdentity() {
-        getExtraProperties().find { it.name == IssueExtraProperty.COLL_HAS_IDENTITY }?.value
-    }
+    transient String getCollHasIdentity() { getExtraProperties().find { it.name == IssueExtraProperty.COLL_HAS_IDENTITY }?.value }
 
-    transient String getReviewCategory() {
-        getExtraProperties().find { it.name == IssueExtraProperty.REVIEW_CATEGORY }?.value
-    }
+    transient String getReviewCategory() { getExtraProperties().find { it.name == IssueExtraProperty.REVIEW_CATEGORY }?.value }
 
-    transient String getCommerciallyAvailable() {
-        getExtraProperties().find { it.name == IssueExtraProperty.COMMERCIALLY_AVAILABLE }?.value
-    }
+    transient String getCommerciallyAvailable() { getExtraProperties().find { it.name == IssueExtraProperty.COMMERCIALLY_AVAILABLE }?.value }
 
     transient String getInteract() { getExtraProperties().find { it.name == IssueExtraProperty.INTERACT }?.value }
 
-    transient Collection<String> getActorUsernames() {
-        getExtraProperties().findAll { it.name == IssueExtraProperty.ACTOR }.collect { it.value }
-    }
+    transient Collection<String> getActorUsernames() { getExtraProperties().findAll { it.name == IssueExtraProperty.ACTOR }.collect { it.value } }
 
-    transient Collection<String> getPIs() {
-        getExtraProperties().findAll { it.name == IssueExtraProperty.PI }.collect { it.value }
-    }
+    transient Collection<String> getPIs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PI }.collect { it.value } }
 
-    transient Collection<String> getPMs() {
-        getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value }
-    }
+    transient Collection<String> getPMs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value } }
 
-    transient Collection<String> getAffiliations() {
-        getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS }.collect { it.value }
-    }
+    transient Collection<String> getAffiliations() { getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS }.collect { it.value } }
 
-    transient Collection<String> getNotResearch() {
-        getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value }
-    }
+    transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
 
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.
 
-    transient Collection<String> getAllIRBValues() {
-        PreferredIrb.values().findAll { getIrb()?.contains(it.key) }.label
-    }
+    transient Collection<String> getAllIRBValues() { PreferredIrb.values().findAll { getIrb()?.contains(it.key) }.label }
 
     transient Collection<String> getAllExtraPropertyValues() {
         getAllIRBValues() +
