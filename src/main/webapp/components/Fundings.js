@@ -55,20 +55,20 @@ export const Fundings = hh(class Fundings extends Component {
   handleFundingChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    const id = e.target.id;
+    const index = e.target.getAttribute('index');
     this.setState(prev => {
-      prev.fundings[id][field] = value;
+      prev.fundings[index][field] = value;
       return prev;
     }, () => this.props.updateFundings(this.state.fundings));
   };
 
-  handleFundingSelect = (id) => (selectedOption) => {
+  handleFundingSelect = (index) => (selectedOption) => {
     this.setState(prev => {
-      prev.fundings[id].source = selectedOption;
+      prev.fundings[index].source = selectedOption;
       return prev;
     }, () => this.props.updateFundings(this.state.fundings)
     )
-  }
+  };
 
   render() {
     return (
@@ -103,7 +103,8 @@ export const Fundings = hh(class Fundings extends Component {
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldSelect({
                       label: "",
-                      id: idx,
+                      id: idx + "-source",
+                      index: idx,
                       name: "source",
                       options: fundingOptions,
                       value: this.state.fundings[idx].source,
@@ -114,7 +115,8 @@ export const Fundings = hh(class Fundings extends Component {
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldText({
-                      id: idx,
+                      id: idx + "-sponsor",
+                      index: idx,
                       name: "sponsor",
                       label: "",
                       value: this.state.fundings[idx].sponsor,
@@ -125,7 +127,8 @@ export const Fundings = hh(class Fundings extends Component {
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldText({
-                      id: idx,
+                      id: idx + "-identifier",
+                      index: idx,
                       name: "identifier",
                       label: "",
                       value: this.state.fundings[idx].identifier,

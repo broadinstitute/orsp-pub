@@ -11,6 +11,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
       InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage}, [
         input({ type: 'text',
                 id: this.props.id,
+                index: this.props.index,
                 name: this.props.name,
                 className: "form-control inputFieldText",
                 value: this.props.value,

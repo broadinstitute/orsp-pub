@@ -41,9 +41,9 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   handleInstitutionalChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    const id = e.target.id;
+    const index = e.target.getAttribute('index');
     this.setState(prev => {
-      prev.institutionalSources[id][field] = value;
+      prev.institutionalSources[index][field] = value;
       return prev;
     }, () => this.props.updateInstitutionalSource(this.state.institutionalSources, field));
   };
@@ -78,7 +78,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                 div({ className: "row" }, [
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
                     InputFieldText({
-                      id: index,
+                      index: index,
+                      id: index + "name",
                       name: "name",
                       label: "",
                       value: this.state.institutionalSources[index].name,
@@ -91,7 +92,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                   ]),
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
                     InputFieldText({
-                      id: index,
+                      id: index + "country",
+                      index: index,
                       name: "country",
                       value: this.state.institutionalSources[index].country,
                       disabled: index > 0,
