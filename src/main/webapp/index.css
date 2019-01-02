@@ -163,6 +163,10 @@ input[type=checkbox]:checked+label:before {
   float: right;
 }
 
+.positionRelative {
+  position: relative;
+}
+
 .noMargin {
   margin: 0;
 }

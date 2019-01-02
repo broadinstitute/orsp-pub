@@ -43,10 +43,6 @@
   margin-bottom: 20px;
 }
 
-.inputFileContainer:last-child {
-  margin-bottom: 0;
-}
-
 .fileNameContainer {
   border: 1px solid #ced4da;
   position: relative;
