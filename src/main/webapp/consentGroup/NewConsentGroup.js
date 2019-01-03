@@ -6,7 +6,7 @@ import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
-import { Files, ConsentGroup } from "../util/ajax";
+import { Files, ConsentGroup, SampleCollections } from "../util/ajax";
 
 class NewConsentGroup extends Component {
 
@@ -64,6 +64,19 @@ class NewConsentGroup extends Component {
     this.initDocuments();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
+
+    SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
+      resp => {
+        const sampleCollections = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.collectionId,
+            label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+          };
+        })
+        this.setState({ sampleCollectionList: sampleCollections })
+      }
+    );
   }
 
   submitNewConsentGroup = () => {
@@ -605,7 +618,7 @@ class NewConsentGroup extends Component {
 
     return (
       Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup, disabledSubmit: this.state.formSubmitted }, [
-        NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey }),
+        NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey, sampleCollectionList: this.state.sampleCollectionList }),
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
