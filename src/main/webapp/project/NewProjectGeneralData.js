@@ -230,7 +230,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             required: false,
             onChange: this.handleInputChange,
             error: this.props.errors.pTitle,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            readOnly: true
           }),
           InputFieldText({
             id: "inputIrbProtocolId",
