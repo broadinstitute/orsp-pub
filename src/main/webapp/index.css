@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i');
+
+html, body {
+  height: 100%;
+  font-family: 'Lato', sans-serif !important;
+  font-size: 14px;
+}
+
+p {
+  font-size: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+hr {
+  margin: 5px 0;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.questionnaireContainer {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 5px 20px 25px 20px;
+  border: 1px solid darkgray;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.buttonContainer {
+  display: block;
+  min-height: 40px;
+  margin: 20px 20px 40px 20px;
+}
+
+.buttonPrimary, .buttonSecondary {
+  color: white !important;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none !important;
+}
+
+.buttonPrimary {
+  background-color: #2c3e50;
+  border-color: #2c3e50;
+}
+
+.buttonPrimary:hover {
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.buttonSecondary {
+  background-color: #94a4a5;
+  border-color: #94a4a5;
+}
+
+.buttonSecondary:hover {
+  color: #2c3e50 !important;
+  background-color: #e6e6e5;
+  border-color: #aeaeae;
+}
+
+.circleBtn {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+
+.regular-checkbox {
+  cursor: pointer;
+  position: relative;
+  padding-left: 25px !important;
+  margin-right: 15px;
+  font-size: 1rem;
+}
+
+.regular-checkbox:before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  background-color: #ffffff;
+  border-radius: 3px;
+  border: 1px solid #999999;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+input[type=checkbox]:checked+label:before {
+  content: "\2713";
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+  color: #ffffff;
+  background: #2FA4E7;
+  border: 1px solid #2FA4E7;
+  text-align: center;
+  line-height: 1.2rem;
+}
+
+.checkbox[disabled] .regular-checkbox {
+  cursor: not-allowed !important;
+  opacity: 0.65;
+}
+
+.checkbox[disabled] .regular-checkbox:before {
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+
+.col, [class*="col-"] {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.row {
+  margin-right: -5px;
+  margin-left: -5px;
+}
+
+.normal {
+  font-weight: 400;
+}
+
+.light {
+  font-weight: 300;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.floatLeft {
+  float: left;
+}
+
+.floatRight {
+  float: right;
+}
+
+.positionRelative {
+  position: relative;
+}
+
+.noMargin {
+  margin: 0;
+}
+
+.fullWidth {
+  width: 100%;
+}

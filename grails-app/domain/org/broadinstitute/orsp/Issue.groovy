@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
 class Issue {
@@ -31,9 +32,10 @@ class Issue {
 
     // Transients
 
-    static transients = ["actors", "attachments"]
+    static transients = ["actors", "attachments", "samples"]
     Collection<String> actors
     Collection<StorageDocument> attachments
+    Collection<String> samples
 
     transient Boolean isLocked() { isFlagSet(IssueExtraProperty.LOCKED) }
 
@@ -44,7 +46,9 @@ class Issue {
             options -= existingFileTypes
         }
         if (type == IssueType.CONSENT_GROUP.name) {
-            if (!options.contains(ConsentGroupController.IC_LETTER)) { options += ConsentGroupController.IC_LETTER }
+            if (!options.contains(ConsentGroupController.IC_LETTER)) {
+                options += ConsentGroupController.IC_LETTER
+            }
             options += ConsentGroupController.ADDTL_ATTACHMENT_TYPES
         }
         return options
@@ -60,50 +64,114 @@ class Issue {
     }
 
     transient isFlagSet(name) { getExtraProperties().find { (it.name == name) }?.value == "Yes" ?: false }
+
     transient String getConsent() { getExtraProperties().find { it.name == IssueExtraProperty.CONSENT }?.value }
-    transient String getProtocol() { getExtraProperties().find{ it.name == IssueExtraProperty.PROTOCOL }?.value }
-    transient String getCollInst() { getExtraProperties().find{ it.name == IssueExtraProperty.COLL_INST }?.value }
-    transient String getCollContact() { getExtraProperties().find{ it.name == IssueExtraProperty.COLL_CONTACT }?.value }
-    transient String getCollPublication() { BooleanOptions.getLabelForKey(getExtraProperties().find{ it.name == IssueExtraProperty.COLL_PUBLICATION }?.value?.toString()) }
-    transient String getCodedNotIdentifiable() { getExtraProperties().find{ it.name == IssueExtraProperty.CODED_NOT_IDENTIFIABLE }?.value }
-    transient String getDataSharingBroad() { getExtraProperties().find{ it.name == IssueExtraProperty.DATA_SHARING_BROAD }?.value }
-    transient String getDataSharingComments() { getExtraProperties().find{ it.name == IssueExtraProperty.DATA_SHARING_COMMENTS }?.value }
-    transient String getDataSharingNih() { getExtraProperties().find{ it.name == IssueExtraProperty.DATA_SHARING_NIH }?.value }
-    transient String getAwardNihHhs() { getExtraProperties().find{ it.name == IssueExtraProperty.AWARD_NIH_HHS }?.value }
-    transient String getNotHSR() { getExtraProperties().find{ it.name == IssueExtraProperty.NOT_HSR }?.value }
-    transient String getAccurate() { BooleanOptions.getLabelForKey(getExtraProperties().find{ it.name == IssueExtraProperty.ACCURATE }?.value?.toString()) }
-    transient String getAffiliationOther() { getExtraProperties().find{ it.name == IssueExtraProperty.AFFILIATION_OTHER }?.value }
-    transient String getDbgap() { getExtraProperties().find{ it.name == IssueExtraProperty.DBGAP }?.value?.toString() }
-    transient String getCodes() { getExtraProperties().find{ it.name == IssueExtraProperty.CODES }?.value }
-    transient String getIrb() { getExtraProperties().find{ it.name == IssueExtraProperty.IRB }?.value }
-    transient String getRationale() { getExtraProperties().find{ it.name == IssueExtraProperty.RATIONALE }?.value }
-    transient String getResearch() { getExtraProperties().find{ it.name == IssueExtraProperty.RESEARCH }?.value }
-    transient String getResponsible() { getExtraProperties().find{ it.name == IssueExtraProperty.RESPONSIBLE }?.value }
-    transient String getSource() { getExtraProperties().find{ it.name == IssueExtraProperty.SOURCE }?.value }
-    transient String getIdentifiable() { getExtraProperties().find{ it.name == IssueExtraProperty.IDENTIFIABLE }?.value }
-    transient String getDeceased() { getExtraProperties().find{ it.name == IssueExtraProperty.DECEASED }?.value }
-    transient String getSubmissionType() { getExtraProperties().find{ it.name == IssueExtraProperty.SUBMISSION_TYPE }?.value }
-    transient String getFeeForService() { getExtraProperties().find{ it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value }
-    transient String getCollHasIdentity() { getExtraProperties().find{ it.name == IssueExtraProperty.COLL_HAS_IDENTITY }?.value }
-    transient String getReviewCategory() { getExtraProperties().find{ it.name == IssueExtraProperty.REVIEW_CATEGORY }?.value }
-    transient String getCommerciallyAvailable() { getExtraProperties().find{ it.name == IssueExtraProperty.COMMERCIALLY_AVAILABLE }?.value }
-    transient String getInteract() { getExtraProperties().find{ it.name == IssueExtraProperty.INTERACT }?.value }
-    transient Collection<String> getActorUsernames() { getExtraProperties().findAll{ it.name == IssueExtraProperty.ACTOR }.collect {it.value} }
-    transient Collection<String> getPIs() { getExtraProperties().findAll{ it.name == IssueExtraProperty.PI }.collect {it.value} }
-    transient Collection<String> getPMs() { getExtraProperties().findAll{ it.name == IssueExtraProperty.PM }.collect {it.value} }
-    transient Collection<String> getAffiliations() { getExtraProperties().findAll{ it.name == IssueExtraProperty.AFFILIATIONS }.collect {it.value} }
-    transient Collection<String> getNotResearch() { getExtraProperties().findAll{ it.name == IssueExtraProperty.NOT_RESEARCH }.collect {it.value} }
+
+    transient String getProtocol() { getExtraProperties().find { it.name == IssueExtraProperty.PROTOCOL }?.value }
+
+    transient String getCollInst() { getExtraProperties().find { it.name == IssueExtraProperty.COLL_INST }?.value }
+
+    transient String getCollContact() {
+        getExtraProperties().find { it.name == IssueExtraProperty.COLL_CONTACT }?.value
+    }
+
+    transient String getCollPublication() {
+        BooleanOptions.getLabelForKey(getExtraProperties().find {
+            it.name == IssueExtraProperty.COLL_PUBLICATION
+        }?.value?.toString())
+    }
+
+    transient String getCodedNotIdentifiable() {
+        getExtraProperties().find { it.name == IssueExtraProperty.CODED_NOT_IDENTIFIABLE }?.value
+    }
+
+    transient String getDataSharingBroad() {
+        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_BROAD }?.value
+    }
+
+    transient String getDataSharingComments() {
+        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_COMMENTS }?.value
+    }
+
+    transient String getDataSharingNih() {
+        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_NIH }?.value
+    }
+
+    transient String getAwardNihHhs() {
+        getExtraProperties().find { it.name == IssueExtraProperty.AWARD_NIH_HHS }?.value
+    }
+
+    transient String getNotHSR() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_HSR }?.value }
+
+    transient String getAccurate() {
+        BooleanOptions.getLabelForKey(getExtraProperties().find {
+            it.name == IssueExtraProperty.ACCURATE
+        }?.value?.toString())
+    }
+
+    transient String getAffiliationOther() {
+        getExtraProperties().find { it.name == IssueExtraProperty.AFFILIATION_OTHER }?.value
+    }
+
+    transient String getDbgap() { getExtraProperties().find { it.name == IssueExtraProperty.DBGAP }?.value?.toString() }
+
+    transient String getCodes() { getExtraProperties().find { it.name == IssueExtraProperty.CODES }?.value }
+
+    transient String getIrb() { getExtraProperties().find { it.name == IssueExtraProperty.IRB }?.value }
+
+    transient String getRationale() { getExtraProperties().find { it.name == IssueExtraProperty.RATIONALE }?.value }
+
+    transient String getResearch() { getExtraProperties().find { it.name == IssueExtraProperty.RESEARCH }?.value }
+
+    transient String getResponsible() { getExtraProperties().find { it.name == IssueExtraProperty.RESPONSIBLE }?.value }
+
+    transient String getSource() { getExtraProperties().find { it.name == IssueExtraProperty.SOURCE }?.value }
+
+    transient String getIdentifiable() { getExtraProperties().find { it.name == IssueExtraProperty.IDENTIFIABLE }?.value }
+
+    transient String getDeceased() { getExtraProperties().find { it.name == IssueExtraProperty.DECEASED }?.value }
+
+    transient String getSubmissionType() { getExtraProperties().find { it.name == IssueExtraProperty.SUBMISSION_TYPE }?.value }
+
+    transient String getFeeForService() { getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value }
+
+    transient String getCollHasIdentity() { getExtraProperties().find { it.name == IssueExtraProperty.COLL_HAS_IDENTITY }?.value }
+
+    transient String getReviewCategory() { getExtraProperties().find { it.name == IssueExtraProperty.REVIEW_CATEGORY }?.value }
+
+    transient String getCommerciallyAvailable() { getExtraProperties().find { it.name == IssueExtraProperty.COMMERCIALLY_AVAILABLE }?.value }
+
+    transient String getInteract() { getExtraProperties().find { it.name == IssueExtraProperty.INTERACT }?.value }
+
+    transient Collection<String> getActorUsernames() { getExtraProperties().findAll { it.name == IssueExtraProperty.ACTOR }.collect { it.value } }
+
+    transient Collection<String> getPIs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PI }.collect { it.value } }
+
+    transient Collection<String> getPMs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value } }
+
+    transient Collection<String> getAffiliations() { getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS }.collect { it.value } }
+
+    transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
 
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.
 
-    transient Collection<String> getAllIRBValues() {
-        PreferredIrb.values().findAll { getIrb()?.contains(it.key) }.label
-    }
+    transient Collection<String> getAllIRBValues() { PreferredIrb.values().findAll { getIrb()?.contains(it.key) }.label }
 
     transient Collection<String> getAllExtraPropertyValues() {
-                getAllIRBValues() +
+        getAllIRBValues() +
                 getExtraProperties()*.value
+    }
+
+    transient List<IssueExtraProperty> getNonEmptyExtraProperties() {
+        List<IssueExtraProperty> properties = new ArrayList<>();
+        getExtraProperties().each({
+            if (StringUtils.isNotEmpty(it.value)) {
+                properties.add(it)
+            }
+
+        })
+        properties
     }
 
 }

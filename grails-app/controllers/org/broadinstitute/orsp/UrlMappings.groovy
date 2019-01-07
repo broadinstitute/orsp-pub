@@ -14,7 +14,9 @@ class UrlMappings {
         "/api/report/funding"(controller: 'report', action: "funding")
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
-
+        '/api/project'(resource: 'project')
+        '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
+        '/api/consent-group'(resource: 'newConsentGroup')
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

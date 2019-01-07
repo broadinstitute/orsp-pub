@@ -1,0 +1,82 @@
+.radioContainer {
+  margin: 20px 0;
+}
+
+.radioContainer p {
+  font-size: 1.1rem;
+}
+
+.radioOptions {
+  display: block;
+  position: relative;
+  padding-left: 28px;
+  margin-right: 20px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radioOptions input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  display: none;
+}
+
+.radioLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  vertical-align: sub;
+}
+
+.radioCheck {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: 1px solid #999999;
+}
+
+/* On mouse-over */
+.radioOptions:hover input~.radioCheck {
+  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);
+}
+
+/* When the radio button is checked */
+.radioOptions input:checked ~ .radioCheck {
+  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.radioCheck:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radioOptions input:checked~.radioCheck:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radioOptions .radioCheck:after {
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #2196F3;
+}
+
+fieldset[disabled] .radioOptions {
+  opacity: 0.65 !important;
+  cursor: not-allowed;
+}

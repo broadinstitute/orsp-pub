@@ -1,0 +1,35 @@
+
+.panelContainer {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid darkgray;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.panelHeader {
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 3px 3px 0 0;
+}
+
+.panelTitle {
+  margin: 2px 0 0 0;
+  font-weight: 700;
+}
+
+.panelTitleMoreInfo {
+  font-weight: 400;
+  font-style: italic;
+}
+
+.panelTitle .btnPrimary {
+  margin-left: 8px;
+}
+
+.panelContent {
+  padding: 15px;
+}

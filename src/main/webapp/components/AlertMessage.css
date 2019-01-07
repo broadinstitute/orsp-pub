@@ -1,0 +1,29 @@
+.alertMessage.alert {
+  width: 100%;
+  background-image: none;
+}
+
+.alertMessage.alert-dismissable .close, .alertMessage.alert-dismissible .close {
+  position: relative;
+  float: right;
+  margin-right: 20px;
+  outline: none;
+}
+
+.alertMessageContent {
+  margin-right: 20px;
+}
+
+.alertMessageContent ul {
+  margin: 0 20px 0 -20px;
+}
+
+.panelHeader .alertMessage.alert {
+  margin: 15px 0 5px 0;
+}
+
+.alertMessage.alert-danger {
+  color: red;
+  background-color: #f9dcdc;
+  border-color: #f9cdcd;
+}

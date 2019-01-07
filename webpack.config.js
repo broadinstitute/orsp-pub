@@ -6,7 +6,10 @@ module.exports = {
   },
   entry: {
     collectionLinks: './src/main/webapp/collectionLinks/index.js',
-    search: './src/main/webapp/search/index.js'
+    search: './src/main/webapp/search/index.js',
+    project: './src/main/webapp/project/index.js',
+    consentGroup: './src/main/webapp/consentGroup/index.js'
+
   },
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts'),

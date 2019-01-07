@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+
 import org.broadinstitute.orsp.utils.IssueUtils
 
 /**
@@ -45,14 +46,21 @@ class IssueService {
             IssueExtraProperty.RESPONSIBLE,
             IssueExtraProperty.REVIEW_CATEGORY,
             IssueExtraProperty.SOURCE,
-            IssueExtraProperty.SUBMISSION_TYPE]
+            IssueExtraProperty.SUBMISSION_TYPE,
+            IssueExtraProperty.PROJECT_TITLE,
+            IssueExtraProperty.SUBJECT_PROTECTION,
+            IssueExtraProperty.PI,
+            IssueExtraProperty.PM
+    ]
+
 
     Collection<String> multiValuedPropertyKeys = [
+            IssueExtraProperty.PROJECT_QUESTIONNAIRE,
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
-            IssueExtraProperty.PI,
-            IssueExtraProperty.PM]
+            IssueExtraProperty.COLLABORATORS
+    ]
 
     /**
      * Persist a new, unsaved issue
@@ -154,6 +162,52 @@ class IssueService {
             issue.save(flush: true)
         }
         issue
+    }
+
+    Issue createIssue(IssueType type, Issue issue) throws DomainException {
+        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
+        List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
+        Collection<Funding> fundings = issue.getFundings()
+        Issue newIssue = initIssue(issue, type)
+        if (newIssue.hasErrors()) {
+            throw new DomainException(newIssue.getErrors())
+        } else {
+            newIssue.save(flush: true)
+        }
+        newIssue.setProjectKey(newIssue.projectKey + newIssue.id)
+        newIssue.save(flush: true)
+        saveExtraProperties(newIssue, extraProperties)
+        saveFundings(newIssue, fundings)
+        newIssue.save(flush: true)
+        newIssue
+    }
+
+    void saveExtraProperties(Issue issue, List<IssueExtraProperty> extraProperties) {
+        extraProperties?.each {
+            it.issue = issue
+            it.projectKey = issue.projectKey
+            it.save(flush: true)
+        }
+    }
+
+    void saveFundings(Issue issue, Collection<Funding> fundings) {
+        fundings?.each {
+            it.setCreated(new Date())
+            it.setProjectKey(issue.projectKey)
+            issue.addToFundings(it)
+            it.save(flush: true)
+        }
+    }
+
+    Issue initIssue(Issue issue, IssueType type) {
+        Issue newIssue = issue
+        newIssue.setRequestDate(new Date())
+        newIssue.setUpdateDate(new Date())
+        newIssue.type = type.name
+        newIssue.status = IssueStatus.Open.name
+        newIssue.extraProperties = null
+        newIssue.fundings = null
+        newIssue
     }
 
     @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
