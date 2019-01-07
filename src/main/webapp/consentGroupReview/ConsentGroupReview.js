@@ -11,7 +11,7 @@ import { InstitutionalSource } from '../components/InstitutionalSource';
 import { ConsentGroup } from "../util/ajax";
 
 
-class ProjectReview extends Component {
+class ConsentGroupReview extends Component {
 
   constructor(props) {
     super(props);
@@ -22,7 +22,7 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.consentKey);
+    console.log("Consent Key", this.props.consentKey);
 
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
         element =>
@@ -274,4 +274,4 @@ class ProjectReview extends Component {
   }
 }
 
-export default ProjectReview;
+export default ConsentGroupReview;

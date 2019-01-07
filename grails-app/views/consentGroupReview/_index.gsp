@@ -7,5 +7,5 @@
 
 </g:javascript>
 
-<div id="consentReview"></div>
-<asset:javascript src="consentReview.js"/>
+<div id="consentGroupReview"></div>
+<asset:javascript src="consentGroupReview.js"/>

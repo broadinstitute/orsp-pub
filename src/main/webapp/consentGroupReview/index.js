@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ConsentGroupReview from './consentGroupReview';
+import ConsentGroupReview from './ConsentGroupReview';
 import '../index.css';
 
 ReactDOM.render(
