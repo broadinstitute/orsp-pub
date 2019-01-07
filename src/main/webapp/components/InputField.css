@@ -19,6 +19,19 @@
   min-height: 38px;
 }
 
+.inputField .inputFieldText.readOnly, .inputField .inputFieldTextarea.readOnly, .inputField .inputFieldSelect.readOnly div, .inputField .inputFieldDatePicker.readOnly{
+  border: none;
+  font-size: 1.1rem;
+  box-shadow: none;
+  pointer-events: none;
+  padding-left: 0;
+  color: black;
+}
+
+.inputField .inputFieldSelect.readOnly div .css-1wy0on6 {
+  display: none; /*removes select arrow in readOnly mode*/
+}
+
 .inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {
   border: 1px solid red !important;
 }

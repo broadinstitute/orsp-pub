@@ -29,7 +29,8 @@ export const InputYesNo = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions"
+            className: "radioOptions",
+            disabled: props.readOnly
           }, [
               input({
                 type: "radio",
