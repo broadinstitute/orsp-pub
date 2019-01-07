@@ -65,6 +65,10 @@ class AuthenticatedController implements Interceptor, UserInfo {
         userService.findUsers(pis)
     }
 
+    protected User getRequestorForIssue(Issue issue) {
+        userService.findUser(issue.reporter) ?: null
+    }
+
     String getType() {
         throw new Error("sub-class must implement getType for fully typed issues")
     }

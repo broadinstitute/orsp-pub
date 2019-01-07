@@ -4,9 +4,11 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.User
 
 
@@ -33,6 +35,23 @@ class ProjectController extends AuthenticatedController {
         issue.status = 201
         render([message: issue] as JSON)
     }
+
+    def getproject() {
+        Issue issue = queryService.findByKey(params.id)
+
+        Collection<Funding> fundingList = issue.getFundings()
+        Collection<StorageDocument> storageDocuments = queryService.getDocumentsForProject(issue.projectKey)
+
+        render([issue             : issue,
+                requestor         : getRequestorForIssue(issue),
+                pms               : getProjectManagersForIssue(issue).getAt(0),
+                pis               : getPIsForIssue(issue).getAt(0),
+                fundings          : fundingList,
+                extraProperties   : issue.getExtraPropertiesMap(),
+                storageDocuments  : storageDocuments,
+        ] as JSON)
+    }
+
     //NE y NHSR
     @Override
     handleIntake(String key) {

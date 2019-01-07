@@ -174,4 +174,10 @@ class Issue {
         properties
     }
 
+    transient LinkedHashMap<String, IssueExtraProperty> getExtraPropertiesMap() {
+        LinkedHashMap<String, IssueExtraProperty> extraproperties = new LinkedHashMap<>()
+        extraproperties.putAll(getExtraProperties().collectEntries{[(it.name):it]})
+        extraproperties
+    }
+
 }

@@ -53,7 +53,12 @@
         <li><a href="#details">Broad Project Information</a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
+        <li><a href="#review">Project Review</a></li>
     </ul>
+
+    <div id="review">
+        <g:render template="/projectReview/index" model="[issue: issue]"/>
+    </div>
 
     <div id="workspace">
         <g:if test="${!workspaceTemplate.isEmpty()}">
