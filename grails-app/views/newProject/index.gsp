@@ -1,6 +1,4 @@
 <%@ page import="org.broadinstitute.orsp.IssueStatus" %>
-<%@ page import="org.broadinstitute.orsp.IssueType" %>
-<%@ page import="org.broadinstitute.orsp.PreferredIrb" %>
 
 <!DOCTYPE html>
 <html>
