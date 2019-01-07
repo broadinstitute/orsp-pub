@@ -409,10 +409,40 @@ class NewProject extends Component {
     const { user = { email: 'test@broadinstitute.org' } } = this.props;
     let projectType = determination.projectType;
     return (
-      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [
-        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
-        NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError, submitError: this.state.submitError }),
+      Wizard({
+        title: "New Project",
+        stepChanged: this.stepChanged,
+        isValid: this.isValid,
+        submitHandler: this.submitNewProject,
+        showSubmit: this.showSubmit,
+        disabledSubmit: this.state.formSubmitted
+      }, [
+        NewProjectGeneralData({
+          title: "General Data",
+          currentStep: currentStep,
+          user: user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateStep1FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage
+        }),
+        NewProjectDetermination({
+          title: "Determination Questions",
+          currentStep: currentStep,
+          determination: this.state.determination,
+          handler: this.determinationHandler,
+          errors: this.state.showErrorStep2
+        }),
+        NewProjectDocuments({
+          title: "Documents",
+          currentStep: currentStep,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          files: this.state.files,
+          errors: this.state.showErrorStep3,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError
+        }),
       ])
     );
   }
