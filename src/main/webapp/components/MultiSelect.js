@@ -23,7 +23,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
           onChange: (option) => this.props.handleChange(option),
           value: this.props.value,
           placeholder: this.props.placeholder,
-          className: "inputFieldSelect",
+          className: "inputFieldSelect" + (this.props.readOnly ? " readOnly" : ""),
           classNamePrefix: "select"
         }),
       ]))

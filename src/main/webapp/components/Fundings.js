@@ -88,7 +88,11 @@ export const Fundings = hh(class Fundings extends Component {
             ])
           ]),
           div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
-            Btn({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false }),
+            Btn({
+              action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings },
+              disabled: false,
+              isRendered: !this.props.readOnly
+            }),
           ])
         ]),
 
@@ -140,7 +144,10 @@ export const Fundings = hh(class Fundings extends Component {
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) }, disabled: !this.state.fundings.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
+                  disabled: !this.state.fundings.length > 1,
+                  isRendered: !this.props.readOnly
+                }),
               ])
             ]),
           ]);

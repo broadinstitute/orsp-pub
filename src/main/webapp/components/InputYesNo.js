@@ -1,12 +1,13 @@
-import { Component } from 'react';
 import { input, hh, div, label, span, p, small } from 'react-hyperscript-helpers';
 import './InputYesNo.css';
 
 export const InputYesNo = (props) => {
 
   let selectOption = (e, value) => {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
+    if (!props.readOnly) {
+      e.preventDefault();
+      props.onChange(e, props.name, value);
+    }
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;

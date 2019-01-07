@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import React from 'react';
 import Select from 'react-select';
 import { hh, h } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
@@ -15,7 +14,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
             index: this.props.index,
             name: this.props.name,
             value: this.props.value,
-            className: "inputFieldSelect",
+            className: "inputFieldSelect" + (this.props.readOnly ? " readOnly" : ""),
             onChange: this.props.onChange(this.props.index),
             options: this.props.options,
             placeholder: this.props.placeholder,

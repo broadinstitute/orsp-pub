@@ -1,12 +1,13 @@
-import { Component } from 'react';
 import { input, hh, div, label, span, p, small } from 'react-hyperscript-helpers';
 import './InputYesNo.css';
 
 export const InputFieldRadio = (props) => {
 
   let selectOption = (e, value) => {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
+    if (!props.readOnly) {
+      e.preventDefault();
+      props.onChange(e, props.name, value);
+    }
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
@@ -28,7 +29,7 @@ export const InputFieldRadio = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions"
+            className: "radioOptions" + (props.readOnly ? " readOnly" : "")
           }, [
               input({
                 type: "radio",
