@@ -623,12 +623,60 @@ class NewConsentGroup extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup, disabledSubmit: this.state.formSubmitted, loadingImage: this.props.loadingImage }, [
-        NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey, sampleCollectionList: this.state.sampleCollectionList }),
-        NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
-        NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
-        NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError }),
+      Wizard({
+        title: "New Consent Group",
+        stepChanged: this.stepChanged,
+        isValid: this.isValid,
+        showSubmit: this.showSubmit,
+        submitHandler: this.submitNewConsentGroup,
+        disabledSubmit: this.state.formSubmitted,
+        loadingImage: this.props.loadingImage
+      }, [
+        NewConsentGroupGeneralData({
+          title: "General Data",
+          currentStep: currentStep,
+          user: this.props.user,
+          sampleSearchUrl: this.props.sampleSearchUrl,
+          updateForm: this.updateStep1FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          projectKey: this.props.projectKey,
+          sampleCollectionList: this.state.sampleCollectionList
+        }),
+        NewConsentGroupDocuments({
+          title: "Documents",
+          currentStep: currentStep,
+          fileHandler: this.fileHandler,
+          projectType: projectType, files:
+          this.state.files, fillablePdfURL:
+          this.props.fillablePdfURL
+        }),
+        NewConsentGroupIntCohorts({
+          title: "International Cohorts",
+          currentStep: currentStep,
+          handler: this.determinationHandler,
+          determination: this.state.determination,
+          errors: this.state.showErrorStep3
+        }),
+        NewConsentGroupSecurity({
+          title: "Security",
+          currentStep: currentStep,
+          user: this.props.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateStep4FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage
+        }),
+        NewConsentGroupDataSharing({
+          title: "Data Sharing",
+          currentStep: currentStep,
+          user: this.props.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateStep5FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          generalError: this.state.generalError
+        }),
       ])
     );
   }
