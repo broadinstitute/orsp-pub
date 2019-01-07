@@ -19,7 +19,7 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
           onChange: this.props.onChange,
           required: this.props.required,
           disabled: this.props.disabled,
-          value: this.props.value
+          value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
         })
       ])
     )

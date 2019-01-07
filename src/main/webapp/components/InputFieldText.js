@@ -14,7 +14,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
                 index: this.props.index,
                 name: this.props.name,
                 className: "form-control inputFieldText",
-                value: this.props.value,
+                value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
                 disabled: this.props.disabled,
                 required: this.props.required,
                 onChange: this.props.onChange,
