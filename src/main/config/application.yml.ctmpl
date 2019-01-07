@@ -22,6 +22,7 @@ environments:
       apiKey: key
       fromAddress: orsp-dev@broadinstitute.org
       defaultRecipient: orsp-dev@broadinstitute.org
+      adminRecipient: orsp-dev@broadinstitute.org
       orspSpecialRecipients: [saltzman@broadinstitute.org, lipscomb@broadinstitute.org, sweisenb@broadinstitute.org, grushton@broadinstitute.org]
       bccRecipients: [grushton@broadinstitute.org]
       replyToRecipient: orsp-dev@broadinstitute.org
@@ -73,6 +74,7 @@ environments:
       apiKey: {{$orsp.Data.sendgrid_api}}
       fromAddress: orsp-dev@broadinstitute.org
       defaultRecipient: orsp-dev@broadinstitute.org
+      adminRecipient: orsp-dev@broadinstitute.org
       orspSpecialRecipients: [grushton@broadinstitute.org]
       bccRecipients: [grushton@broadinstitute.org]
       replyToRecipient: orsp-dev@broadinstitute.org
@@ -141,6 +143,7 @@ environments:
       apiKey: {{$orsp.Data.sendgrid_api}}
       fromAddress: orsp-portal@broadinstitute.org
       defaultRecipient: orsp-portal@broadinstitute.org
+      adminRecipient: orsp@broadinstitute.org
       orspSpecialRecipients: [orsp-portal@broadinstitute.org]
       bccRecipients: []
       replyToRecipient: orsp-portal@broadinstitute.org

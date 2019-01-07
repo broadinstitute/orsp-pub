@@ -333,4 +333,17 @@ class AuthenticatedController implements Interceptor, UserInfo {
         groupedSubmissions
     }
 
+    def sendAdminNotification(String type, Issue issue) {
+        notifyService.sendApplicationSubmitToAdmins(
+                new NotifyArguments(
+                        toAddresses:Collections.singletonList(notifyService.getAdminRecipient()),
+                        fromAddress: notifyService.getDefaultFromAddress(),
+                        subject: "A new " + type + " has been created in BERT.",
+                        details: type,
+                        user: userService.findUser(issue.reporter),
+                        issue: issue))
+
+
+    }
+
 }

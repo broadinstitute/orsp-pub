@@ -30,10 +30,11 @@ class ProjectController extends AuthenticatedController {
 
         Issue issue = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
         handleIntake(issue.projectKey)
+        sendAdminNotification("Project Type", issue)
         issue.status = 201
         render([message: issue] as JSON)
     }
-    //NE y NHSR
+
     @Override
     handleIntake(String key) {
         Issue issue = queryService.findByKey(key)

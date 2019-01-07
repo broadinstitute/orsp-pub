@@ -63,6 +63,7 @@ class NewConsentGroupController extends AuthenticatedController {
             } catch (Exception e) {
                 flash.error = e.getMessage()
             }
+            sendAdminNotification("Consent Group", consent)
             consent.status = 201
             render([message: consent] as JSON)
         } else {

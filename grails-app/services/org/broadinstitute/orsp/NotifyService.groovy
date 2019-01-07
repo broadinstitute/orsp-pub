@@ -51,6 +51,10 @@ class NotifyService implements SendgridSupport, Status  {
         notifyConfiguration.sendGridStatusUrl
     }
 
+    String getAdminRecipient() {
+        notifyConfiguration.adminRecipient
+    }
+
     /**
      * Utility method to remove ORSP from recipients and if it is there, swap it out for the email addresses
      * of the individual team members. The full ORSP email address is used as the address of an RT group so we don't
@@ -425,6 +429,18 @@ class NotifyService implements SendgridSupport, Status  {
     Map<Boolean, String> sendWithdrawn(NotifyArguments arguments) {
         arguments.view = "/notify/withdrawn"
         arguments.subject = "Withdrawn: " + arguments.issue.projectKey
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    /**
+     * Send message to admins when project or consent group is created
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendApplicationSubmitToAdmins(NotifyArguments arguments) {
+        arguments.view = "/notify/creation"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
