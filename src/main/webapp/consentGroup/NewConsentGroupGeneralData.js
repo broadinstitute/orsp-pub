@@ -5,9 +5,9 @@ import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
+import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
-import { MultiSelect } from '../components/MultiSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 
 import { SampleCollections } from '../util/ajax';
@@ -16,7 +16,6 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
 
   constructor(props) {
     super(props);
-    this.loadSampleCollections = this.loadSampleCollections.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       formData: {
@@ -96,23 +95,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     return { hasError: true }
   }
 
-  loadSampleCollections(query, callback) {
-    if (query.length > 2) {
-      SampleCollections.getSampleCollections(this.props.sampleSearchUrl, query)
-        .then(response => {
-          let options = response.data.map(function (item) {
-            return {
-              key: item.id,
-              value: item.collectionId,
-              label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-            };
-          });
-          callback(options);
-        });
-    }
-  };
-
-  handleSampleCollectionChange = (data, action) => {
+  handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
       prev.formData.sampleCollections = data;
       return prev;
@@ -225,12 +208,12 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleInputChange
           }),
 
-          MultiSelect({
+          InputFieldSelect({
             id: "sampleCollection_select",
             label: "Link Sample Collection to " + this.props.projectKey + "*",
             isDisabled: false,
-            loadOptions: this.loadSampleCollections,
-            handleChange: this.handleSampleCollectionChange,
+            options: this.props.sampleCollectionList,
+            onChange: this.handleSampleCollectionChange,
             value: this.state.formData.sampleCollections,
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
