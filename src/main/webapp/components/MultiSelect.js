@@ -21,7 +21,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
           isClearable: true,
           loadOptions: (query, callback) => this.props.loadOptions(query, callback),
           onChange: (option) => this.props.handleChange(option),
-          value: this.props.value,
+          value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
           placeholder: this.props.placeholder,
           className: "inputFieldSelect" + (this.props.readOnly ? " readOnly" : ""),
           classNamePrefix: "select"
