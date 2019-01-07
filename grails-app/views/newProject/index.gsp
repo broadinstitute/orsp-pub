@@ -1,5 +1,3 @@
-<%@ page import="org.broadinstitute.orsp.IssueStatus" %>
-
 <!DOCTYPE html>
 <html>
 <head>
