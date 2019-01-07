@@ -25,6 +25,11 @@ export const ConsentGroup = {
       headers: { 'content-type': 'application/json' }
     };
     return axios.post(url, data, config);
+  },
+
+  getConsentGroup(url, consentKey) {
+      console.log("url ", url, "consentKey ", consentKey);
+      return axios.get(url+ '?id=' + consentKey );
   }
 };
 

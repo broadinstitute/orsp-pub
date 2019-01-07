@@ -33,6 +33,7 @@
     <ul>
         <li><a href="#documents">Documents</a></li>
         <li><a href="#details">Details</a></li>
+        <li><a href="#consentGroupReview">Details + </a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
         %{--<auth:isOrsp>--}%
@@ -118,6 +119,10 @@
             </div>
         </div>
         </g:if>
+    </div>
+
+    <div id="consentGroupReview">
+            <g:render template="/consentGroupReview/index" model="[issue: issue]"/>
     </div>
 
 

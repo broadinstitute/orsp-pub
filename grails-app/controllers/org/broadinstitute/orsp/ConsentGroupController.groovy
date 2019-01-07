@@ -2,6 +2,8 @@ package org.broadinstitute.orsp
 
 import grails.converters.JSON
 import org.springframework.web.multipart.MultipartFile
+import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.utils.IssueUtils
 
 /**
  * Handle all functions related to Consent Groups
@@ -317,6 +319,17 @@ class ConsentGroupController extends AuthenticatedController {
             ]
         }
         render data as JSON
+    }
+
+    def getConsentGroup(){
+        Issue issue = queryService.findByKey(params.id)
+        def collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
+        render(
+                [issue: issue,
+                 collectionLinks: collectionLinks,
+                 extraProperties   : issue.getExtraProperties()
+                ] as JSON
+        )
     }
 
     def unConsentedSampleCollections() {
