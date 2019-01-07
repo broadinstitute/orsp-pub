@@ -6,6 +6,7 @@ import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { Files, Project } from "../util/ajax";
 import { span } from 'react-hyperscript-helpers';
+import { spinnerService } from "../util/spinner-service";
 
 class NewProject extends Component {
 
@@ -52,8 +53,10 @@ class NewProject extends Component {
         this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
+          spinnerService.showAll();
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
+          spinnerService.hideAll();
           this.changeStateSubmitButton();
           console.error(error);
         });
@@ -343,6 +346,7 @@ class NewProject extends Component {
         window.location.href = this.getRedirectUrl(projectKey);
 
       }).catch(error => {
+        spinnerService.hideAll();
         this.changeStateSubmitButton();
         console.error(error);
       });
@@ -387,7 +391,7 @@ class NewProject extends Component {
     const { user = { email: 'test@broadinstitute.org' } } = this.props;
     let projectType = determination.projectType;
     return (
-      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [
+      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted, loadingImage: this.props.loadingImage}, [
         NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
         NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
         NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError }),

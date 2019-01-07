@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import NewProject from './NewProject';
 import '../index.css';
@@ -10,6 +9,7 @@ ReactDOM.render(
         attachDocumentsURL = {component.attachDocumentsURL}
         createProjectURL = {component.createProjectURL}
         serverURL = {component.serverURL}
+        loadingImage = {component.loadingImage}
      />,
     document.getElementById('project')
 );
