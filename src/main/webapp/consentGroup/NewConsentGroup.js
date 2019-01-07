@@ -16,6 +16,7 @@ class NewConsentGroup extends Component {
       showErrorStep3: false,
       generalError: false,
       formSubmitted: false,
+      submitError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -58,6 +59,8 @@ class NewConsentGroup extends Component {
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
     this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
+    this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
+    this.toggleSubmitError = this.toggleSubmitError.bind(this);
   }
 
   componentDidMount() {
@@ -81,17 +84,22 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = () => {
 
+    this.setState(prev => {
+      prev.submitError = false;
+      return prev;
+    });
+
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       this.removeErrorMessage();
 
-      this.setState(prev => {
-        prev.formSubmitted = true;
-        return prev;
-      });
-
+      this.changeStateSubmitButton();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
         this.uploadFiles(resp.data.message.projectKey);
+      }).catch(error => {
+        console.error(error);
+        this.toggleSubmitError();
+        this.changeStateSubmitButton();
       });
     } else {
       this.setState(prev => {
@@ -101,17 +109,30 @@ class NewConsentGroup extends Component {
     }
   };
 
+  changeStateSubmitButton = () => {
+    this.setState(prev => {
+      prev.formSubmitted = !prev.formSubmitted;
+      return prev;
+    });
+  };
+
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
-        this.setState(prev => {
-          prev.formSubmitted = true;
-          return prev;
-        });
       }).catch(error => {
+        this.changeStateSubmitButton();
         console.error(error);
+        this.toggleSubmitError();
       });
+  };
+
+  toggleSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = true;
+      prev.generalError = true;
+      return prev;
+    });
   };
 
   getConsentGroup() {
@@ -622,7 +643,7 @@ class NewConsentGroup extends Component {
         NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
         NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
         NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError }),
+        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError, submitError: this.state.submitError }),
       ])
     );
   }
