@@ -28,7 +28,6 @@ export const ConsentGroup = {
   },
 
   getConsentGroup(url, consentKey) {
-      console.log("url ", url, "consentKey ", consentKey);
       return axios.get(url+ '?id=' + consentKey );
   }
 };

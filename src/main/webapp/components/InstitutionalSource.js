@@ -9,11 +9,11 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     super(props);
     this.addInstitutionalSources = this.addInstitutionalSources.bind(this);
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
-  }
+    this.state = {
+        institutionalSources: [ {name: '', country: ''}],
+    };
 
-  state = {
-    institutionalSources: this.props.institutionalSources,
-  };
+  }
 
   addInstitutionalSources() {
     if (this.state.institutionalSources[0].name !== '') {
@@ -42,14 +42,16 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     const field = e.target.name;
     const value = e.target.value;
     const index = e.target.getAttribute('index');
+    console.log('handleInstitutionalChange ', field, value, index, this.state.institutionalSources);
     this.setState(prev => {
       prev.institutionalSources[index][field] = value;
       return prev;
-    }, () => this.props.updateInstitutionalSource(this.state.institutionalSources, field));
+    }, () =>
+    this.props.updateInstitutionalSource(this.state.institutionalSources, field));
   };
 
   render() {
-
+    const { institutionalSources = [] } = this.props;
     return (
       h(Fragment, {}, [
         div({ className: "row" }, [
@@ -70,7 +72,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
         hr({ className: "fullWidth" }),
 
-        this.state.institutionalSources.map((rd, index) => {
+        institutionalSources.map((rd, index) => {
+
           return h(Fragment, { key: index }, [
 
             div({ className: "row" }, [
@@ -82,7 +85,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index + "name",
                       name: "name",
                       label: "",
-                      value: this.state.institutionalSources[index].name,
+                      value: rd.name,
                       disabled: index > 0,
                       required: true,
                       onChange: this.handleInstitutionalChange,
@@ -95,7 +98,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index + "country",
                       index: index,
                       name: "country",
-                      value: this.state.institutionalSources[index].country,
+                      value: rd.country,
                       disabled: index > 0,
                       required: true,
                       onChange: this.handleInstitutionalChange,

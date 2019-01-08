@@ -36,7 +36,8 @@ class ConsentGroupReview extends Component {
         textAccessible: '',
         textCompliance: '',
         textSensitive: '',
-        individualDataSourced: ''
+        individualDataSourced: '',
+        instSources: []
       }
     }
   }
@@ -66,6 +67,7 @@ class ConsentGroupReview extends Component {
   }
 
   render() {
+
     const endDate = this.state.consentExtraProps.endDate;
     return (
       div({}, [
@@ -168,7 +170,7 @@ class ConsentGroupReview extends Component {
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
             updateInstitutionalSource: () => console.log("Institutional Sources"),
-            institutionalSources: [this.state.instSources],
+            institutionalSources: this.state.instSources,
             readOnly: true
           })
         ]),
