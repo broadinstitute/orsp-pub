@@ -327,7 +327,7 @@ class ConsentGroupController extends AuthenticatedController {
         render(
                 [issue: issue,
                  collectionLinks: collectionLinks,
-                 extraProperties   : issue.getExtraProperties()
+                 extraProperties: issue.getExtraPropertiesMap()
                 ] as JSON
         )
     }

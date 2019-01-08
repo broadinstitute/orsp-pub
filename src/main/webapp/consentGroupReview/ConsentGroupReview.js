@@ -16,8 +16,27 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      consentForm: {},
-      consentExtraProps:[]
+      consentForm: {
+      summary: ''
+      },
+      consentExtraProps:{
+      consent: '',
+      protocol: '',
+      collInst: '',
+      collContact: '',
+      describeConsentGroup: '',
+      requireMta: '',
+      startDate: '',
+      endDate: '',
+      onGoingProcess: '',
+      pii: '',
+      accessible: '',
+      compliance: '',
+      sensitive: '',
+      textAccessible: '',
+      textCompliance: '',
+      textSensitive: ''
+      }
     }
   }
 
@@ -29,11 +48,20 @@ class ConsentGroupReview extends Component {
         this.setState(prev => {
             prev.consentForm = element.data.issue;
             prev.consentExtraProps = element.data.extraProperties;
+            prev.collectionLinks = element.data.collectionLinks;
+        return prev;
         }, ()=> console.log("Consent Review State ", this.state))
     );
   }
 
+  parseBool(){
+    let stringValue = this.state.consentExtraProps.onGoingProcess;
+    let boolValue = stringValue.toLowerCase() == 'true' ? true : false;
+    return boolValue;
+  }
+
   render() {
+    const endDate = this.state.consentExtraProps.endDate;
     return (
         div({}, [
           h1({},["Consent Group: " + this.props.consentKey]),
@@ -43,47 +71,52 @@ class ConsentGroupReview extends Component {
                 id: "inputConsentGroupName",
                 name: "consentGroupName",
                 label: "Consent Group Name",
-                //value: this.investigatorLastName + " / " + this.institutionProtocolNumber,
-                readOnly: true
+                value: this.state.consentForm.summary,
+                readOnly: true,
+                disabled: true
             }),
 
             InputFieldText({
                 id: "inputInvestigatorLastName",
                 name: "investigatorLastName",
                 label: "Last Name of Investigator Listed on the Consent Form",
-                value: this.state.consentForm.consent,
+                value: this.state.consentExtraProps.consent,
                 readOnly: true,
+                disabled: true
             }),
 
             InputFieldText({
                 id: "inputInstitutionProtocolNumber",
                 name: "institutionProtocolNumber",
                 label: "Collaborating Institution's Protocol Number",
-                //VALUE
-                readOnly: true
+                value: this.state.consentExtraProps.protocol,
+                readOnly: true,
+                disabled: true
             }),
 
             InputFieldText({
                 id: "inputCollaboratingInstitution",
                 name: "collaboratingInstitution",
                 label: "Collaborating Institution",
-                //VALUE
-                readOnly: true
+                value: this.state.consentExtraProps.collInst,
+                readOnly: true,
+                disabled: true
             }),
 
             InputFieldText({
                 id: "inputprimaryContact",
                 name: "primaryContact",
                 label: "Primary Contact at Collaborating Institution ",
-                //VALUE
+                value: this.state.consentExtraProps.collContact,
                 readOnly: true,
+                disabled: true
             }),
 
             InputFieldRadio({
                 id: "radioDescribeConsentGroup",
                 name: "describeConsentGroup",
                 label: "Please choose one of the following to describe this proposed Consent Group: ",
-                value: "01",
+                value: this.state.consentExtraProps.describeConsentGroup,
                 optionValues: ["01", "02"],
                 optionLabels: [
                     "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
@@ -97,7 +130,7 @@ class ConsentGroupReview extends Component {
                 name: "requireMta",
                 label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
                 moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)"]),
-                value: "true",
+                value: this.state.consentExtraProps.requireMta,
                 readOnly: true
             })
           ]),
@@ -109,12 +142,11 @@ class ConsentGroupReview extends Component {
               div({ className: "row" }, [
                 div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                   InputFieldDatePicker({
-                    selected: this.startDate,
+                    selected: new Date(this.state.consentExtraProps.startDate),
                     name: "startDate",
                     label: "Start Date",
                     onChange: () => console.log("startDate"),
-                    placeholder: "Enter Start Date",
-                    //maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
+                    readOnly: true
                   })
                 ]),
                 div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -122,11 +154,10 @@ class ConsentGroupReview extends Component {
                     startDate: this.startDate,
                     name: "endDate",
                     label: "End Date",
-                    selected: this.endDate,
+                    selected: (endDate === undefined || endDate === '') ? null : new Date(endDate),
                     onChange: () => console.log("endDate"),
-                    placeholder: "Enter End Date",
-                    //disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
-                    //minDate: this.state.formData.startDate
+                    disabled: (this.state.consentExtraProps.onGoingProcess === "true"),
+                    readOnly: true
                   })
                 ]),
                 div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
@@ -134,7 +165,9 @@ class ConsentGroupReview extends Component {
                     type: 'checkbox',
                     id: "onGoingProcess",
                     name: "onGoingProcess",
-                    //defaultChecked: this.state.formData.onGoingProcess
+                    checked: this.parseBool(),
+                    onChange: () => console.log("checkbox"),
+                    readOnly: true
                   }),
                   label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
                 ])
@@ -161,7 +194,7 @@ class ConsentGroupReview extends Component {
               name: "pii",
               label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)? ",
               moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
-              value: "true",
+              value: this.state.consentExtraProps.pii,
               optionValues: ["true", "false"],
               optionLabels: [
                 "Yes",
@@ -173,7 +206,7 @@ class ConsentGroupReview extends Component {
               id: "radioCompliance",
               name: "compliance",
               label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?"]),
-              value: "true",
+              value: this.state.consentExtraProps.compliance,
               optionValues: ["true", "false", "uncertain"],
               optionLabels: [
                 "Yes",
@@ -183,18 +216,18 @@ class ConsentGroupReview extends Component {
               readOnly: true
             }),
             InputFieldText({
-              isRendered: this.compliance === "true",
+              isRendered: this.state.consentExtraProps.compliance === "true",
               id: "inputCompliance",
               name: "textCompliance",
               label: "Add regulatory compliance",
-              value: "Value",
+              value: this.state.consentExtraProps.textCompliance,
               readOnly: true
             }),
             InputFieldRadio({
               id: "radioSensitive",
               name: "sensitive",
               label: span({}, ["Is this data ", span({ className: 'italic' }, ["“sensitive” "]), "for any reason?"]),
-              value: "true",
+              value: this.state.consentExtraProps.sensitive,
               optionValues: ["true", "false", "uncertain"],
               optionLabels: [
                 "Yes",
@@ -204,18 +237,18 @@ class ConsentGroupReview extends Component {
               readOnly: true
             }),
             InputFieldText({
-              isRendered: this.sensitive === "true",
+              isRendered: this.state.consentExtraProps.sensitive === "true",
               id: "inputSensitive",
               name: "textSensitive",
               label: "Please explain",
-              value: "value",
+              value: this.state.consentExtraProps.textSensitive,
               readOnly: true
             }),
             InputFieldRadio({
               id: "radioAccessible",
               name: "accessible",
               label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?"]),
-              value: "true",
+              value: this.state.consentExtraProps.accessible,
               optionValues: ["true", "false", "uncertain"],
               optionLabels: [
                 "Yes",
@@ -225,11 +258,11 @@ class ConsentGroupReview extends Component {
               readOnly: true
             }),
             InputFieldText({
-              isRendered: this.accessible === "true",
+              isRendered: this.state.consentExtraProps.accessible === "true",
               id: "inputAccessible",
               name: "textAccessible",
               label: "Please explain",
-              value: "value",
+              value: this.state.consentExtraProps.textAccessible,
               readOnly: true
             })
 
@@ -244,26 +277,26 @@ class ConsentGroupReview extends Component {
               moreInfo: "",
               optionValues: ["controlled", "open", "none", "undetermined"],
               optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
-              value: "controlled",
+              value: this.state.consentExtraProps.sharingPlan,
               onChange: () => console.log("radio"),
               readOnly: true
             }),
             InputFieldText({
-              isRendered: this.sharingPlan === "controlled",
+              isRendered: this.state.consentExtraProps.sharingPlan === "controlled",
               id: "inputDatabaseControlled",
               name: "databaseControlled",
               label: "Name of Database(s) ",
               moreInfo: "(Data Use LetterNR/link, consent or waiver of consent)",
-              value: "Value",
+              value: this.state.consentExtraProps.databaseControlled,
               readOnly: true
             }),
             InputFieldText({
-              isRendered: this.sharingPlan === "open",
+              isRendered: this.state.consentExtraProps.sharingPlan === "open",
               id: "inputDatabaseOpen",
               name: "databaseOpen",
               label: "Name of Database(s) ",
               moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
-              value: "Value",
+              value: this.state.consentExtraProps.databaseOpen,
               readOnly: true
             })
 
