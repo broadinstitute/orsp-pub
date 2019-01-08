@@ -72,8 +72,6 @@ export const Fundings = hh(class Fundings extends Component {
   };
 
   render() {
-//   if (state.fundings === []) {
-//   } else {
      return (
        h(Fragment, {}, [
          div({ className: "row" }, [
@@ -90,7 +88,7 @@ export const Fundings = hh(class Fundings extends Component {
                ])
              ])
            ]),
-           div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
+           div({isRendered: !this.props.readOnly, className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
              Btn({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false }),
            ])
          ]),
@@ -99,7 +97,6 @@ export const Fundings = hh(class Fundings extends Component {
 
          this.props.fundings.map((rd, idx) => {
            return h(Fragment, { key: idx }, [
-
              div({ className: "row" }, [
                div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                  div({ className: "row" }, [
@@ -110,7 +107,7 @@ export const Fundings = hh(class Fundings extends Component {
                        index: idx,
                        name: "source",
                        options: fundingOptions,
-                       value: this.state.fundings[idx].source,
+                       value: this.props.fundings[idx].source,
                        onChange: this.handleFundingSelect,
                        error: this.props.error && idx === 0,
                        errorMessage: this.props.errorMessage
@@ -122,7 +119,7 @@ export const Fundings = hh(class Fundings extends Component {
                        index: idx,
                        name: "sponsor",
                        label: "",
-                       value: this.state.fundings[idx].sponsor,
+                       value: this.props.fundings[idx].sponsor,
                        disabled: false,
                        required: false,
                        onChange: this.handleFundingChange
@@ -134,7 +131,7 @@ export const Fundings = hh(class Fundings extends Component {
                        index: idx,
                        name: "identifier",
                        label: "",
-                       value: this.state.fundings[idx].identifier,
+                       value: this.props.fundings[idx].identifier,
                        disabled: false,
                        required: false,
                        onChange: this.handleFundingChange
@@ -142,7 +139,7 @@ export const Fundings = hh(class Fundings extends Component {
                    ])
                  ])
                ]),
-               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
+               div({isRendered: !this.props.readOnly, className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                  Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) }, disabled: !this.state.fundings.length > 1 }),
                ])
              ]),
@@ -150,8 +147,5 @@ export const Fundings = hh(class Fundings extends Component {
          })
        ])
      )
-
-//   }
-
   }
 });

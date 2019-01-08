@@ -25,7 +25,7 @@ class ProjectReview extends Component {
       piList: { key: '', label: '', value: '' },
       pmList: { key: '', label: '', value: '' },
       fundings: [{ source: '', sponsor: '', identifier: '' }],
-      collaborators: [],
+      collaborators: [{ key: '', label: '', value: '' }],
       requestor: {
         displayName: '',
         emailAddress: ''
@@ -39,25 +39,30 @@ class ProjectReview extends Component {
         this.setState(prev => {
           prev.projectForm = element.data.issue;
           prev.projectExtraProps = element.data.extraProperties;
-
-          prev.piList.key = element.data.pis.userName;
-          prev.piList.label = element.data.pis.displayName + " (" + element.data.pis.emailAddress + ") ";
-          prev.piList.value = element.data.pis.displayName;
-
-          prev.pmList.key = element.data.pms.userName;
-          prev.pmList.label = element.data.pms.displayName + " (" + element.data.pms.emailAddress + ") ";
-          prev.pmList.value = element.data.pms.displayName;
-
-          let elementCollaborators = [];
-          element.data.collaborators.map(coll => {
-            elementCollaborators.push({
-              key: coll.userName,
-              label:coll.displayName + " (" + coll.emailAddress + ") ",
-              value: coll.displayName
+          console.log("Pis", element.data.pis)
+          if (element.data.pis !== null) {
+            prev.piList.key = element.data.pis.userName;
+            prev.piList.label = element.data.pis.displayName + " (" + element.data.pis.emailAddress + ") ";
+            prev.piList.value = element.data.pis.displayName;
+          }
+          console.log("PMLIST", element.data.pmList)
+          if (element.data.pmList !== null) {
+            prev.pmList.key = element.data.pms.userName;
+            prev.pmList.label = element.data.pms.displayName + " (" + element.data.pms.emailAddress + ") ";
+            prev.pmList.value = element.data.pms.displayName;
+          }
+          console.log("Colls ", element.data.collaborators)
+          if (element.data.collaborators !== null) {
+            let elementCollaborators = [];
+            element.data.collaborators.map(coll => {
+              elementCollaborators.push({
+                key: coll.userName,
+                label:coll.displayName + " (" + coll.emailAddress + ") ",
+                value: coll.displayName
+              });
             });
-          });
-          prev.collaborators = elementCollaborators;
-
+            prev.collaborators = elementCollaborators;
+          }
           let elementFundings = [];
           element.data.fundings.map(funding => {
               elementFundings.push({ source:{ label: funding.source, value: funding.source.split(" ").join("_").toLowerCase()}, sponsor: funding.name, identifier: funding.awardNumber });
@@ -129,8 +134,7 @@ class ProjectReview extends Component {
 
         Panel({ title: "Funding" }, [
           Fundings({
-            fundings: this.state.fundings.source !== undefined ? this.state.fundings : [],
-//            fundings: this.state.fundings,
+            fundings: this.state.fundings,
             updateFundings: null,
             readOnly: true,
             error: false,
