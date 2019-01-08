@@ -81,25 +81,15 @@ class Issue {
         }?.value?.toString())
     }
 
-    transient String getCodedNotIdentifiable() {
-        getExtraProperties().find { it.name == IssueExtraProperty.CODED_NOT_IDENTIFIABLE }?.value
-    }
+    transient String getCodedNotIdentifiable() { getExtraProperties().find { it.name == IssueExtraProperty.CODED_NOT_IDENTIFIABLE }?.value }
 
-    transient String getDataSharingBroad() {
-        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_BROAD }?.value
-    }
+    transient String getDataSharingBroad() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_BROAD }?.value }
 
-    transient String getDataSharingComments() {
-        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_COMMENTS }?.value
-    }
+    transient String getDataSharingComments() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_COMMENTS }?.value }
 
-    transient String getDataSharingNih() {
-        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_NIH }?.value
-    }
+    transient String getDataSharingNih() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_NIH }?.value }
 
-    transient String getAwardNihHhs() {
-        getExtraProperties().find { it.name == IssueExtraProperty.AWARD_NIH_HHS }?.value
-    }
+    transient String getAwardNihHhs() { getExtraProperties().find { it.name == IssueExtraProperty.AWARD_NIH_HHS }?.value }
 
     transient String getNotHSR() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_HSR }?.value }
 
@@ -109,9 +99,7 @@ class Issue {
         }?.value?.toString())
     }
 
-    transient String getAffiliationOther() {
-        getExtraProperties().find { it.name == IssueExtraProperty.AFFILIATION_OTHER }?.value
-    }
+    transient String getAffiliationOther() { getExtraProperties().find { it.name == IssueExtraProperty.AFFILIATION_OTHER }?.value }
 
     transient String getDbgap() { getExtraProperties().find { it.name == IssueExtraProperty.DBGAP }?.value?.toString() }
 
@@ -152,6 +140,29 @@ class Issue {
     transient Collection<String> getAffiliations() { getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS }.collect { it.value } }
 
     transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
+
+    transient String getMTA() { getExtraProperties().find { it.name == IssueExtraProperty.REQUIRE_MTA }?.value }
+
+    transient String areSamplesComingFromEEA() { getExtraProperties().find { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEA }?.value }
+
+    transient String isCollaboratorProvidingGoodService() { getExtraProperties().find { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE }?.value }
+
+    transient String isConsentUnambiguous() { getExtraProperties().find { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS }?.value }
+
+    transient String getPII() { getExtraProperties().find { it.name == IssueExtraProperty.PII }?.value }
+
+    transient String getCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.COMPLIANCE }?.value }
+
+    transient String getTextCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_COMPLIANCE }?.value }
+
+    transient String getSensitive() { getExtraProperties().find { it.name == IssueExtraProperty.SENSITIVE }?.value }
+
+    transient String getTextSensitive() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_SENSITIVE }?.value }
+
+    transient String getAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.ACCESSIBLE }?.value }
+
+    transient String getTextAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_ACCESSIBLE }?.value }
+
 
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.

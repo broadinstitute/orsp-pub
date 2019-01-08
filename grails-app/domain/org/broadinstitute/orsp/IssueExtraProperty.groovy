@@ -44,6 +44,17 @@ class IssueExtraProperty {
     public static final String DATA_SHARING_NIH = "dataSharingNih"
     public static final String COLLABORATORS = "collaborators"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
+    public static final String REQUIRE_MTA = "requireMta"
+    public static final String ARE_SAMPLES_COMING_FROM_EEA = "areSamplesComingFromEEAA"
+    public static final String IS_COLLABORATOR_PROVIDING_GOOD_SERVICE = "isCollaboratorProvidingGoodService"
+    public static final String IS_CONSENT_UNAMBIGUOUS = "isConsentUnambiguous"
+    public static final String PII = "pii"
+    public static final String COMPLIANCE = "compliance"
+    public static final String TEXT_COMPLIANCE = "textCompliance"
+    public static final String SENSITIVE = "sensitive"
+    public static final String TEXT_SENSITIVE = "textSensitive"
+    public static final String ACCESSIBLE = "accessible"
+    public static final String TEXT_ACCESSIBLE = "textAccessible"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

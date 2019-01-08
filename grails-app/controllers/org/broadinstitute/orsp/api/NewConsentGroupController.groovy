@@ -6,7 +6,10 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.NotifyArguments
+import org.broadinstitute.orsp.User
 
 import javax.ws.rs.core.Response
 
@@ -64,6 +67,8 @@ class NewConsentGroupController extends AuthenticatedController {
                 flash.error = e.getMessage()
             }
             sendAdminNotification("Consent Group", consent)
+            notifyService.sendConsentGroupSecurityInfo(issue, user)
+            notifyService.sendConsentGroupRequirementsInfo(issue, user)
             consent.status = 201
             render([message: consent] as JSON)
         } else {
@@ -72,5 +77,6 @@ class NewConsentGroupController extends AuthenticatedController {
             render([message: response] as JSON)
         }
     }
+
 }
 
