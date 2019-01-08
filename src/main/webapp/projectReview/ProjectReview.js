@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, p, div, h1, span, a, button } from 'react-hyperscript-helpers';
+import { hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -48,7 +48,7 @@ class ProjectReview extends Component {
 
           let elementFundings = [];
           element.data.fundings.map(funding => {
-              elementFundings.push({ source: funding.source, sponsor: funding.name, identifier: funding.awardNumber });
+            elementFundings.push({ source: funding.source, sponsor: funding.name, identifier: funding.awardNumber });
           });
           prev.fundings = elementFundings;
 
@@ -63,10 +63,9 @@ class ProjectReview extends Component {
   render() {
     return (
       div({}, [
+        h2({ className: "stepTitle" }, ["Project Information"]),
 
-        h1({}, ["Broad Project Details"]),
-        Panel({ title: "Requestor Information ", moreInfo: "", tooltipLabel: "?", tooltipMsg: "Project info" }, [
-
+        Panel({ title: "Requestor" }, [
           InputFieldText({
             id: "inputRequestorName",
             name: "requestorName",
@@ -77,7 +76,6 @@ class ProjectReview extends Component {
             required: true,
             onChange: () => console.log("input")
           }),
-
           InputFieldText({
             id: "inputRequestorEmail",
             name: "requestorEmail",
@@ -90,7 +88,7 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Pi Information " }, [
+        Panel({ title: "Principal Investigator" }, [
           MultiSelect({
             id: "pi_select",
             label: "Broad PI",
@@ -112,11 +110,10 @@ class ProjectReview extends Component {
             value: this.state.pmList,
             placeholder: "Start typing the Project Manager Name",
             isMulti: false
-          }),
-
+          })
         ]),
 
-        Panel({ title: "Funding Sources " }, [
+        Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.fundings,
             updateFundings: null,
@@ -126,12 +123,11 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Project Description " }, [
+        Panel({ title: "Project Summary" }, [
           InputFieldTextArea({
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
-            label: "Describe Broad study activities* ",
-            moreInfo: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            label: "Broad study activities",
             value: this.state.projectForm.summary,
             disabled: true,
             readOnly: true,
@@ -155,7 +151,7 @@ class ProjectReview extends Component {
           InputFieldText({
             id: "inputPTitle",
             name: "pTitle",
-            label: "Title of project/protocol*",
+            label: "Title of project/protocol",
             value: "Project title",
             //value: this.state.,
             disabled: true,
@@ -169,7 +165,6 @@ class ProjectReview extends Component {
             id: "inputIrbProtocolId",
             name: "irbProtocolId",
             label: "Protocol # at Broad IRB-of-record ",
-            moreInfo: "(if applicable/available)",
             value: "protocol id",
             disabled: true,
             readOnly: true,
@@ -180,7 +175,7 @@ class ProjectReview extends Component {
             id: "radioSubjectProtection",
             name: "subjectProtection",
             label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
-            moreInfo: "i.e. responsible for oversight and submissions? *",
+            moreInfo: "i.e. responsible for oversight and submissions?",
             value: true,
             onChange: () => console.log("input"),
             required: false,
@@ -190,7 +185,7 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Determination Questions " }, [
+        Panel({ title: "Determination Questions" }, [
           InputFieldRadio({
             id: "radioPII",
             name: "pii",
@@ -199,8 +194,8 @@ class ProjectReview extends Component {
             value: true,
             //optionValues: ["true", "false"],
             optionLabels: [
-                "Yes",
-                "No"
+              "Yes",
+              "No"
             ],
             onChange: () => console.log("radio"),
             required: false,
@@ -217,24 +212,20 @@ class ProjectReview extends Component {
             readOnly: true,
             //optionValues: ["true", "false"],
             optionLabels: [
-                "Yes",
-                "No"
+              "Yes",
+              "No"
             ],
             onChange: () => console.log("radio"),
             required: false,
             readOnly: true,
             error: false,
             errorMessage: "Required field"
-          }),
+          })
+        ]),
 
-        ]),
-        div({ className: "buttonContainer " }, [
-          button({
-            className: "btn buttonSecondary floatLeft",
-            onClick: () => console.log("edit"),
-            isRendered: true
-          }, ["Edit"]),
-        ]),
+        div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
+          button({ className: "btn buttonPrimary floatRight", onClick: () => console.log("edit"), isRendered: true }, ["Approve"]),
+        ])
       ])
     )
   }

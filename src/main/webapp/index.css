@@ -30,6 +30,10 @@ hr {
   color: red;
 }
 
+.stepTitle {
+  margin-bottom: 15px;
+}
+
 .questionnaireContainer {
   position: relative;
   margin-bottom: 20px;

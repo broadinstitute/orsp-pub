@@ -7,8 +7,12 @@
     border: 1px solid #d3d3d3;
 }
 
-.ui-widget {
-    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+.ui-widget,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+	font-family: 'Lato', sans-serif !important;
     font-size: 15px;
 }
 
