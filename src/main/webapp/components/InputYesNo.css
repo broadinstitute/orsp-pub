@@ -55,9 +55,9 @@
 }
 
 /* When radioOptions is in readOnly mode*/
-.radiooOptionsReadOnly:hover,
-.radiooOptionsReadOnly:hover input~.radioCheck,
-.radiooOptionsReadOnlyinput:checked ~ .radioCheck {
+.radioOptionsReadOnly:hover,
+.radioOptionsReadOnly:hover input~.radioCheck,
+.radioOptionsReadOnlyinput:checked ~ .radioCheck {
   box-shadow: none;
 }
 

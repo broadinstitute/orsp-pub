@@ -29,7 +29,7 @@ export const InputFieldRadio = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions " + (props.readOnly ? 'radiooOptionsReadOnly' : ''),
+            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : ''),
             disabled: props.readOnly 
           }, [
               input({
