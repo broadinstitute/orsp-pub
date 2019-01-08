@@ -13,19 +13,18 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   render() {
 
     return (
-      InputField({ label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage }, [
-        h(AsyncSelect, {
-          id: this.props.id,
-          isDisabled: this.props.isDisabled,
-          isMulti: this.props.isMulti,
-          isClearable: true,
-          loadOptions: (query, callback) => this.props.loadOptions(query, callback),
-          onChange: (option) => this.props.handleChange(option),
-          value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
-          placeholder: this.props.placeholder,
-          className: "inputFieldSelect" + (this.props.readOnly ? " readOnly" : ""),
-          classNamePrefix: "select"
-        }),
+      InputField({ label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [h(AsyncSelect, {
+        id: this.props.id,
+        isDisabled: this.props.isDisabled,
+        isMulti: this.props.isMulti,
+        isClearable: true,
+        loadOptions: (query, callback) => this.props.loadOptions(query, callback),
+        onChange: (option) => this.props.handleChange(option),
+        value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
+        placeholder: this.props.placeholder,
+        className: "inputFieldSelect",
+        classNamePrefix: "select"
+      }),
       ]))
   }
 });

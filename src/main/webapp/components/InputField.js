@@ -12,7 +12,7 @@ export const InputField = hh(class InputField extends Component {
   render() {
 
     return (
-      div({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [
+      div({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
         p({ className: "inputFieldLabel" }, [
           this.props.label,
           span({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])

@@ -54,6 +54,13 @@
   box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);
 }
 
+/* When radioOptions is in readOnly mode*/
+.radiooOptionsReadOnly:hover,
+.radiooOptionsReadOnly:hover input~.radioCheck,
+.radiooOptionsReadOnlyinput:checked ~ .radioCheck {
+  box-shadow: none;
+}
+
 /* Create the indicator (the dot/circle - hidden when not checked) */
 .radioCheck:after {
   content: "";
