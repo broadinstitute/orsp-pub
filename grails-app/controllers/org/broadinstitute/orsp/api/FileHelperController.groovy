@@ -57,7 +57,7 @@ class FileHelperController extends AuthenticatedController{
                 document.save(flush: true)
                 render(['document': document] as JSON)
             } else {
-                response.status = 500
+                response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
         } catch (Exception e) {
@@ -74,7 +74,7 @@ class FileHelperController extends AuthenticatedController{
                 document.save(flush: true)
                 render(['document': document] as JSON)
             } else {
-                response.status = 500
+                response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
         } catch (Exception e) {
