@@ -10,22 +10,26 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Project } from "../util/ajax";
 
-
 class ProjectReview extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       projectForm: {},
-      projectExtraProps: [],
+      projectExtraProps: {
+        projectTitle: '',
+        protocol: '',
+        subjectProtection: ''
+
+      },
       piList: { key: '', label: '', value: '' },
       pmList: { key: '', label: '', value: '' },
       fundings: [{ source: '', sponsor: '', identifier: '' }],
+      collaborators: [],
       requestor: {
         displayName: '',
         emailAddress: ''
-      },
-      storageDocuments: []
+      }
     }
   }
 
@@ -44,21 +48,31 @@ class ProjectReview extends Component {
           prev.pmList.label = element.data.pms.displayName + " (" + element.data.pms.emailAddress + ") ";
           prev.pmList.value = element.data.pms.displayName;
 
-          //        prev.fundings = element.data.fundings;
+          let elementCollaborators = [];
+          element.data.collaborators.map(coll => {
+            elementCollaborators.push({
+              key: coll.userName,
+              label:coll.displayName + " (" + coll.emailAddress + ") ",
+              value: coll.displayName
+            });
+          });
+          prev.collaborators = elementCollaborators;
 
           let elementFundings = [];
           element.data.fundings.map(funding => {
-            elementFundings.push({ source: funding.source, sponsor: funding.name, identifier: funding.awardNumber });
+              elementFundings.push({ source:{ label: funding.source, value: funding.source.split(" ").join("_").toLowerCase()}, sponsor: funding.name, identifier: funding.awardNumber });
           });
           prev.fundings = elementFundings;
 
-          prev.storageDocuments = element.data.storageDocuments;
           prev.requestor = element.data.requestor;
           return prev;
-        }, () => console.log("Project Review State ", this.state))
-    );
+        }, () => {})
+      );
   }
 
+  isEmpty(value) {
+    return value === '' || value === null || value === undefined;
+  }
 
   render() {
     return (
@@ -74,7 +88,7 @@ class ProjectReview extends Component {
             disabled: true,
             readOnly: true,
             required: true,
-            onChange: () => console.log("input")
+            onChange: null
           }),
           InputFieldText({
             id: "inputRequestorEmail",
@@ -84,7 +98,7 @@ class ProjectReview extends Component {
             disabled: true,
             readOnly: true,
             required: true,
-            onChange: () => console.log("input")
+            onChange: null
           })
         ]),
 
@@ -115,7 +129,8 @@ class ProjectReview extends Component {
 
         Panel({ title: "Funding" }, [
           Fundings({
-            fundings: this.state.fundings,
+            fundings: this.state.fundings.source !== undefined ? this.state.fundings : [],
+//            fundings: this.state.fundings,
             updateFundings: null,
             readOnly: true,
             error: false,
@@ -128,11 +143,11 @@ class ProjectReview extends Component {
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
             label: "Broad study activities",
-            value: this.state.projectForm.summary,
+            value: this.state.projectForm.description,
             disabled: true,
             readOnly: true,
             required: false,
-            onChange: () => console.log("input"),
+            onChange: null,
             error: false,
             errorMessage: "Required field"
           }),
@@ -142,9 +157,8 @@ class ProjectReview extends Component {
             isDisabled: true,
             readOnly: true,
             loadOptions: [],
-            handleChange: () => console.log("input"),
-            //value: this.state.formData.collaborators,
-            value: "collaborators here",
+            handleChange: null,
+            value: this.state.collaborators,
             placeholder: "Start typing collaborator names",
             isMulti: true
           }),
@@ -152,8 +166,7 @@ class ProjectReview extends Component {
             id: "inputPTitle",
             name: "pTitle",
             label: "Title of project/protocol",
-            value: "Project title",
-            //value: this.state.,
+            value: this.state.projectExtraProps.projectTitle,
             disabled: true,
             readOnly: true,
             required: false,
@@ -165,19 +178,19 @@ class ProjectReview extends Component {
             id: "inputIrbProtocolId",
             name: "irbProtocolId",
             label: "Protocol # at Broad IRB-of-record ",
-            value: "protocol id",
+            value: this.state.projectExtraProps.protocol,
             disabled: true,
             readOnly: true,
             required: false,
-            onChange: () => console.log("input")
+            onChange: null
           }),
           InputYesNo({
             id: "radioSubjectProtection",
             name: "subjectProtection",
             label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
             moreInfo: "i.e. responsible for oversight and submissions?",
-            value: true,
-            onChange: () => console.log("input"),
+            value: this.state.projectExtraProps.subjectProtection,
+            onChange: null,
             required: false,
             readOnly: true,
             error: false,
@@ -185,42 +198,84 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Determination Questions" }, [
-          InputFieldRadio({
+        Panel({ title: "Determination Questions " }, [
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.feeForService)},[
+          InputYesNo({
             id: "radioPII",
-            name: "pii",
             label: 'Is this a "fee-for-service" project? ',
-            moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
-            value: true,
-            //optionValues: ["true", "false"],
-            optionLabels: [
-              "Yes",
-              "No"
-            ],
-            onChange: () => console.log("radio"),
-            required: false,
+            moreInfo: '(commercial service only, no Broad publication privileges)',
+            value: this.state.projectExtraProps.feeForService,
             readOnly: true,
-            error: false,
-            errorMessage: "Required field"
+            onChange: () => {}
           }),
-          InputFieldRadio({
-            id: "radioPII",
-            name: "pii",
-            label: 'Is this a "fee-for-service" project? ',
-            moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
-            value: true,
+        ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.broadInvestigator)},[
+          InputYesNo({
+            id: "broadInvestigator",
+            value: this.state.projectExtraProps.broadInvestigator,
+            moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+            label: 'Is a Broad investigator conducting research ',
             readOnly: true,
-            //optionValues: ["true", "false"],
-            optionLabels: [
-              "Yes",
-              "No"
-            ],
-            onChange: () => console.log("radio"),
-            required: false,
-            readOnly: true,
-            error: false,
-            errorMessage: "Required field"
+            onChange: () => {}
           })
+          ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.subjectsDeceased)},[
+          InputYesNo({
+            id: "subjectsDeceased",
+            value: this.state.projectExtraProps.subjectsDeceased,
+            label: 'Are all subjects who provided samples and/or data now deceased?',
+            readOnly: true,
+            onChange: () => {}
+          })
+          ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.sensitiveInformationSource)},[
+          InputYesNo({
+            id: "sensitiveInformationSource",
+            value: this.state.projectExtraProps.sensitiveInformationSource,
+            moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
+            label: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
+            readOnly: true,
+            onChange: () => {}
+          })
+          ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.interactionSource)},[
+          InputYesNo({
+            id: "interactionSource",
+            value: this.state.projectExtraProps.interactionSource,
+            moreInfo: '(i.e. is conductin HSR)?',
+            label: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
+            readOnly: true,
+            onChange: () => {}
+          })
+          ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.isIdReceive)},[
+          InputYesNo({
+            id: "isIdReceive",
+            value: this.state.projectExtraProps.isIdReceive,
+            label: 'Is the Broad receiving subject identifiers?',
+            readOnly: true,
+            onChange: () => {}
+          })
+          ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.isCoPublishing)},[
+          InputYesNo({
+            id: "isCoPublishing",
+            value: this.state.projectExtraProps.isCoPublishing,
+            label: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
+            readOnly: true,
+            onChange: () => {}
+          })
+          ]),
+        div({isRendered: !this.isEmpty(this.state.projectExtraProps.federalFunding)},[
+          InputYesNo({
+            id: "federalFunding",
+            value: this.state.projectExtraProps.federalFunding,
+            label: 'Is Broad receiving direct federal funding?',
+            readOnly: true,
+            onChange: () => {}
+          })
+          ]),
+
         ]),
 
         div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [

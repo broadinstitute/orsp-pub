@@ -6,6 +6,7 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
@@ -40,15 +41,15 @@ class ProjectController extends AuthenticatedController {
         Issue issue = queryService.findByKey(params.id)
 
         Collection<Funding> fundingList = issue.getFundings()
-        Collection<StorageDocument> storageDocuments = queryService.getDocumentsForProject(issue.projectKey)
-
+        LinkedHashMap<String, Object> extraProperties =  issue.getExtraPropertiesMap()
+        Collection<User> colls = getCollcaborators(extraProperties.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
                 pms               : getProjectManagersForIssue(issue).getAt(0),
                 pis               : getPIsForIssue(issue).getAt(0),
                 fundings          : fundingList,
-                extraProperties   : issue.getExtraPropertiesMap(),
-                storageDocuments  : storageDocuments,
+                extraProperties   : extraProperties,
+                collaborators     : colls
         ] as JSON)
     }
 

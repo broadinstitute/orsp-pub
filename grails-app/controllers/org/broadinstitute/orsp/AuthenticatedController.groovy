@@ -69,6 +69,15 @@ class AuthenticatedController implements Interceptor, UserInfo {
         userService.findUser(issue.reporter) ?: null
     }
 
+    protected Collection<User> getCollcaborators(Collection<String> collaboratorsList) {
+        Collection<User> colls = userService.findUsers(collaboratorsList) ?: new ArrayList<>()
+//        if (colls.isEmpty()) {
+//            User reporter = userService.findUser(issue.reporter)
+//            if (reporter) { colls.add(reporter) }
+//        }
+        colls
+    }
+
     String getType() {
         throw new Error("sub-class must implement getType for fully typed issues")
     }
