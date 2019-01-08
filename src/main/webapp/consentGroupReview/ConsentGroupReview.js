@@ -35,7 +35,8 @@ class ConsentGroupReview extends Component {
       sensitive: '',
       textAccessible: '',
       textCompliance: '',
-      textSensitive: ''
+      textSensitive: '',
+      individualDataSourced: ''
       }
     }
   }
@@ -49,8 +50,9 @@ class ConsentGroupReview extends Component {
             prev.consentForm = element.data.issue;
             prev.consentExtraProps = element.data.extraProperties;
             prev.collectionLinks = element.data.collectionLinks;
+            prev.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
         return prev;
-        }, ()=> console.log("Consent Review State ", this.state))
+        }, ()=> console.log("Consent Review State ", this.state.instSources))
     );
   }
 
@@ -58,6 +60,9 @@ class ConsentGroupReview extends Component {
     let stringValue = this.state.consentExtraProps.onGoingProcess;
     let boolValue = stringValue.toLowerCase() == 'true' ? true : false;
     return boolValue;
+  }
+
+  isEmpty(value){
   }
 
   render() {
@@ -72,8 +77,7 @@ class ConsentGroupReview extends Component {
                 name: "consentGroupName",
                 label: "Consent Group Name",
                 value: this.state.consentForm.summary,
-                readOnly: true,
-                disabled: true
+                readOnly: true
             }),
 
             InputFieldText({
@@ -81,8 +85,7 @@ class ConsentGroupReview extends Component {
                 name: "investigatorLastName",
                 label: "Last Name of Investigator Listed on the Consent Form",
                 value: this.state.consentExtraProps.consent,
-                readOnly: true,
-                disabled: true
+                readOnly: true
             }),
 
             InputFieldText({
@@ -90,8 +93,7 @@ class ConsentGroupReview extends Component {
                 name: "institutionProtocolNumber",
                 label: "Collaborating Institution's Protocol Number",
                 value: this.state.consentExtraProps.protocol,
-                readOnly: true,
-                disabled: true
+                readOnly: true
             }),
 
             InputFieldText({
@@ -99,8 +101,7 @@ class ConsentGroupReview extends Component {
                 name: "collaboratingInstitution",
                 label: "Collaborating Institution",
                 value: this.state.consentExtraProps.collInst,
-                readOnly: true,
-                disabled: true
+                readOnly: true
             }),
 
             InputFieldText({
@@ -108,8 +109,7 @@ class ConsentGroupReview extends Component {
                 name: "primaryContact",
                 label: "Primary Contact at Collaborating Institution ",
                 value: this.state.consentExtraProps.collContact,
-                readOnly: true,
-                disabled: true
+                readOnly: true
             }),
 
             InputFieldRadio({
@@ -160,7 +160,7 @@ class ConsentGroupReview extends Component {
                     readOnly: true
                   })
                 ]),
-                div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+                div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox checkboxReadOnly", style: { 'marginTop': '32px' } }, [
                   input({
                     type: 'checkbox',
                     id: "onGoingProcess",
@@ -177,14 +177,61 @@ class ConsentGroupReview extends Component {
           Panel({ title: "Institutional Source of Data/Samples and Location" }, [
             InstitutionalSource({
               updateInstitutionalSource: () => console.log("Institutional Sources"),
-              institutionalSources: [],
+              institutionalSources: [this.state.instSources],
               readOnly: true
             })
           ]),
 
 
           Panel({title: "International Cohorts"},[
-            p({}, ["International Cohorts Questions"])
+            div({isRendered: this.state.consentExtraProps.individualDataSourced !== ''},[
+                InputYesNo({
+                  id: "radioQuestion1",
+                  value: this.state.consentExtraProps.individualDataSourced,
+                  label: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? "]),
+                  readOnly: true
+                }),
+            ]),
+            div({isRendered: this.state.consentExtraProps.isLinkMaintained !== ''},[
+                InputYesNo({
+                  id: "radioQuestion2",
+                  value: this.state.consentExtraProps.isLinkMaintained,
+                  label: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
+                  readOnly: true
+                }),
+            ]),
+            div({isRendered: this.state.consentExtraProps.isFeeForService !== ''},[
+                InputYesNo({
+                  id: "radioQuestion3",
+                  value: this.state.consentExtraProps.isFeeForService,
+                  label: 'Is the Broad work being performed as fee-for-service?',
+                  readOnly: true
+                }),
+            ]),
+            div({isRendered: this.state.consentExtraProps.areSamplesComingFromEEAA !== ''},[
+                InputYesNo({
+                  id: "radioQuestion4",
+                  value: this.state.consentExtraProps.areSamplesComingFromEEAA,
+                  label: 'Are samples/data coming directly to the Broad from the EEA?',
+                  readOnly: true
+                }),
+            ]),
+            div({isRendered: this.state.consentExtraProps.isCollaboratorProvidingGoodService !== ''},[
+                InputYesNo({
+                  id: "radioQuestion5",
+                  value: this.state.consentExtraProps.isCollaboratorProvidingGoodService,
+                  label: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
+                  readOnly: true
+                }),
+            ]),
+            div({isRendered: this.state.consentExtraProps.isConsentUnambiguous !== ''},[
+                InputYesNo({
+                  id: "radioQuestion6",
+                  value: this.state.consentExtraProps.isConsentUnambiguous,
+                  label: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
+                  readOnly: true
+                }),
+            ])
           ]),
 
           Panel({title: "Security"},[
