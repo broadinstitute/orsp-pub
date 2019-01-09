@@ -67,8 +67,11 @@ export const Project = {
   },
 
   getProject(url, projectkey) {
-    console.log("url ", url, "projectKey ", projectkey);
     return axios.get(url+ '?id=' + projectkey );
+  },
+
+  addExtraProperties(url, projectKey, data) {
+    return axios.post(url+ '?id=' + projectKey, data );
   }
 
 };

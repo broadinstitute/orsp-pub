@@ -8,6 +8,8 @@ ReactDOM.render(
     issue = {component.issue}
     projectKey = {component.projectKey}
     projectUrl = {component.projectUrl}
+    addExtraProprUrl = {urls.saveExtraPropUrl}
+    roles = {component.roles}
   />,
   document.getElementById('projectReview')
 );

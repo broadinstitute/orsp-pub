@@ -44,6 +44,7 @@ class IssueExtraProperty {
     public static final String DATA_SHARING_NIH = "dataSharingNih"
     public static final String COLLABORATORS = "collaborators"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
+    public static final String PROJECT_REVIEW_APPROVED = "projectReviewApproved"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

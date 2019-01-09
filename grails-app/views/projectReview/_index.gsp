@@ -2,10 +2,14 @@
 
 
     const component = {
-    issue: '${issue.requestDate}',
-    projectKey:'${issue.projectKey}',
+        issue: '${issue.requestDate}',
+        projectKey:'${issue.projectKey}',
+        projectUrl: "${createLink(controller: 'project', action: 'getproject')}",
+        roles: '${session.roles}'.replace(/\s+/g, '').replace("[", "").replace("]", "").split(","),
+    };
 
-    projectUrl: "${createLink(controller: 'project', action: 'getproject')}"
+    const urls = {
+        saveExtraPropUrl: "${createLink(controller: 'project', action: 'addExtraProperties')}"
     };
 
 </g:javascript>

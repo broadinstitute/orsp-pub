@@ -37,6 +37,39 @@ class ProjectController extends AuthenticatedController {
         render([message: issue] as JSON)
     }
 
+    def addExtraProperties() {
+        Issue issue = queryService.findByKey(params.id)
+        Issue updatedIssue = null
+        Gson gson = new Gson()
+        Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
+
+        Collection<IssueExtraProperty> newProperties = issueService.getSingleValuedPropsForSaving(issue, input)
+        newProperties.addAll(issueService.getMultiValuedPropsForSaving(issue, input))
+
+        newProperties.collect {
+            property ->
+                if (!issue.getExtraPropertiesMap().containsKey(property.name)) {
+                    updatedIssue = addNewExtraProperties(issue, property)
+                } else {
+                    // update
+                    updatedIssue
+                }
+        }
+
+        if (!updatedIssue.equals(null)) {
+            updatedIssue.save(flush: true)
+            response.status = 200
+        }
+
+        render([message: updatedIssue] as JSON)
+    }
+
+    static Issue addNewExtraProperties(Issue issue, IssueExtraProperty property) {
+        Issue updatedIssue = issue
+        updatedIssue.extraProperties.add(property)
+        updatedIssue
+    }
+
     def getproject() {
         Issue issue = queryService.findByKey(params.id)
 

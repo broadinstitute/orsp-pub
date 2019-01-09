@@ -19,7 +19,8 @@ class ProjectReview extends Component {
       projectExtraProps: {
         projectTitle: '',
         protocol: '',
-        subjectProtection: ''
+        subjectProtection: '',
+        projectReviewApproved: false
 
       },
       piList: { key: '', label: '', value: '' },
@@ -39,19 +40,16 @@ class ProjectReview extends Component {
         this.setState(prev => {
           prev.projectForm = element.data.issue;
           prev.projectExtraProps = element.data.extraProperties;
-          console.log("Pis", element.data.pis)
           if (element.data.pis !== null) {
             prev.piList.key = element.data.pis.userName;
             prev.piList.label = element.data.pis.displayName + " (" + element.data.pis.emailAddress + ") ";
             prev.piList.value = element.data.pis.displayName;
           }
-          console.log("PMLIST", element.data.pmList)
           if (element.data.pmList !== null) {
             prev.pmList.key = element.data.pms.userName;
             prev.pmList.label = element.data.pms.displayName + " (" + element.data.pms.emailAddress + ") ";
             prev.pmList.value = element.data.pms.displayName;
           }
-          console.log("Colls ", element.data.collaborators)
           if (element.data.collaborators !== null) {
             let elementCollaborators = [];
             element.data.collaborators.map(coll => {
@@ -79,6 +77,15 @@ class ProjectReview extends Component {
     return value === '' || value === null || value === undefined;
   }
 
+  isAdmin = (e) => {
+    return this.props.roles.indexOf("orsp") > -1;
+  }
+
+  approveRevision = (e) => () => {
+    const data = { projectReviewApproved : true }
+    Project.addExtraProperties(this.props.addExtraProprUrl, this.props.projectKey, data).then(response => console.log(response));
+  }
+
   render() {
     return (
       div({}, [
@@ -90,20 +97,18 @@ class ProjectReview extends Component {
             name: "requestorName",
             label: "Requestor Name",
             value: this.state.requestor.displayName,
-            disabled: true,
             readOnly: true,
             required: true,
-            onChange: null
+            onChange: () => { }
           }),
           InputFieldText({
             id: "inputRequestorEmail",
             name: "requestorEmail",
             label: "Requestor Email Address",
             value: this.state.requestor.emailAddress,
-            disabled: true,
             readOnly: true,
             required: true,
-            onChange: null
+            onChange: () => { }
           })
         ]),
 
@@ -111,7 +116,6 @@ class ProjectReview extends Component {
           MultiSelect({
             id: "pi_select",
             label: "Broad PI",
-            isDisabled: true,
             readOnly: true,
             loadOptions: [],
             handleChange: null,
@@ -122,7 +126,6 @@ class ProjectReview extends Component {
           MultiSelect({
             id: "inputProjectManager",
             label: "Broad Project Manager",
-            isDisabled: true,
             readOnly: true,
             loadOptions: [],
             handleChange: null,
@@ -148,17 +151,15 @@ class ProjectReview extends Component {
             name: "studyDescription",
             label: "Broad study activities",
             value: this.state.projectForm.description,
-            disabled: true,
             readOnly: true,
             required: false,
-            onChange: null,
+            onChange: () => { },
             error: false,
             errorMessage: "Required field"
           }),
           MultiSelect({
             id: "collaborator_select",
             label: "Individuals who require access to this project record",
-            isDisabled: true,
             readOnly: true,
             loadOptions: [],
             handleChange: null,
@@ -171,10 +172,9 @@ class ProjectReview extends Component {
             name: "pTitle",
             label: "Title of project/protocol",
             value: this.state.projectExtraProps.projectTitle,
-            disabled: true,
             readOnly: true,
             required: false,
-            onChange: null,
+            onChange: () => { },
             error: false,
             errorMessage: "Required field"
           }),
@@ -183,10 +183,9 @@ class ProjectReview extends Component {
             name: "irbProtocolId",
             label: "Protocol # at Broad IRB-of-record ",
             value: this.state.projectExtraProps.protocol,
-            disabled: true,
             readOnly: true,
             required: false,
-            onChange: null
+            onChange: () => { }
           }),
           InputYesNo({
             id: "radioSubjectProtection",
@@ -283,7 +282,7 @@ class ProjectReview extends Component {
         ]),
 
         div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
-          button({ className: "btn buttonPrimary floatRight", onClick: () => console.log("edit"), isRendered: true }, ["Approve"]),
+          button({ className: "btn buttonPrimary floatRight", onClick: this.approveRevision(), isRendered: this.isAdmin && !this.state.projectExtraProps.projectReviewApproved }, ["Approve"]),
         ])
       ])
     )

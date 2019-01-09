@@ -50,7 +50,8 @@ class IssueService {
             IssueExtraProperty.PROJECT_TITLE,
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PI,
-            IssueExtraProperty.PM
+            IssueExtraProperty.PM,
+            IssueExtraProperty.PROJECT_REVIEW_APPROVED
     ]
 
 
