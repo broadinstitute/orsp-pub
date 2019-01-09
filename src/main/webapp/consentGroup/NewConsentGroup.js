@@ -59,8 +59,6 @@ class NewConsentGroup extends Component {
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
     this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
-    this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
-    this.toggleSubmitError = this.toggleSubmitError.bind(this);
   }
 
   componentDidMount() {
@@ -84,22 +82,19 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = () => {
 
-    this.setState(prev => {
-      prev.submitError = false;
-      return prev;
-    });
+    this.setState({submitError: false});
 
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       this.removeErrorMessage();
 
-      this.changeStateSubmitButton();
+      this.changeSubmitState();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
         this.uploadFiles(resp.data.message.projectKey);
       }).catch(error => {
         console.error(error);
         this.toggleSubmitError();
-        this.changeStateSubmitButton();
+        this.changeSubmitState();
       });
     } else {
       this.setState(prev => {
@@ -109,7 +104,7 @@ class NewConsentGroup extends Component {
     }
   };
 
-  changeStateSubmitButton = () => {
+  changeSubmitState = () => {
     this.setState(prev => {
       prev.formSubmitted = !prev.formSubmitted;
       return prev;
@@ -121,7 +116,7 @@ class NewConsentGroup extends Component {
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
       }).catch(error => {
-        this.changeStateSubmitButton();
+        this.changeSubmitState();
         console.error(error);
         this.toggleSubmitError();
       });
