@@ -64,7 +64,11 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
             ])
           ]),
           div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
-            Btn({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addInstitutionalSources }, disabled: false }),
+            Btn({
+              action: { labelClass: "glyphicon glyphicon-plus", handler: this.addInstitutionalSources },
+              disabled: false,
+              isRendered: !this.props.readOnly
+            }),
           ])
         ]),
 
@@ -87,7 +91,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       required: true,
                       onChange: this.handleInstitutionalChange,
                       error: this.props.errorName && index === 0,
-                      errorMessage: this.props.errorMessage
+                      errorMessage: this.props.errorMessage,
+                      readOnly: this.props.readOnly
                     })
                   ]),
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
@@ -106,7 +111,10 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(index) }, disabled: !this.state.institutionalSources.length > 1 }),
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(index) },
+                  disabled: !this.state.institutionalSources.length > 1,
+                  isRendered: !this.props.readOnly
+                }),
               ])
             ]),
           ]);
