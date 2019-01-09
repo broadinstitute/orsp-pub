@@ -18,7 +18,7 @@
                 <li> <a href="#">Research Attestation</a>  (Please have the sample provider sign this document and return to OSAP by responding to this email) </li>
            </g:if>
 
-           <g:if test="${values.get("isCollaboratorProvidingGoodService")?.equals("true")}">
+           <g:if test="${values.get("isConsentUnambiguous")?.equals("true")}">
                 <li> <a href="#">Controller-to-Controller</a>  clauses (Please have the EEA collaborator sign this document and return to OSAP by responding to this email)  </li>
            </g:if>
 
