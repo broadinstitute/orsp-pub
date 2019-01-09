@@ -25,9 +25,6 @@ class FileHelperController extends AuthenticatedController{
             files.forEach {
                 names.push(it.name)
                 if (!files.empty) {
-                    println it.contentType
-                    println it.originalFilename
-                    println it.name
                     def document = new StorageDocument(
                             projectKey: issue.projectKey,
                             fileName: it.originalFilename,
