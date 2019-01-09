@@ -18,7 +18,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
 
     return (
 
-      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
+      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [
         h(
           DatePicker, ({
             selected: this.props.selected,
