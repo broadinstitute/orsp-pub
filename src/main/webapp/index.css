@@ -129,6 +129,11 @@ input[type=checkbox]:checked+label:before {
   border: 1px solid #ccc;
 }
 
+.checkboxReadOnly {
+  box-shadow: none;
+  pointer-events: none;
+}
+
 .col, [class*="col-"] {
   padding-right: 5px;
   padding-left: 5px;

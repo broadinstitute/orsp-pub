@@ -72,80 +72,88 @@ export const Fundings = hh(class Fundings extends Component {
   };
 
   render() {
-     return (
-       h(Fragment, {}, [
-         div({ className: "row" }, [
-           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
-             div({ className: "row" }, [
-               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                 p({ className: "noMargin" }, ["Funding Source"])
-               ]),
-               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                 p({ className: "noMargin" }, ["Prime Sponsor Name"])
-               ]),
-               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                 p({ className: "noMargin" }, ["Award Number/Identifier"])
-               ])
-             ])
-           ]),
-           div({isRendered: !this.props.readOnly, className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
-             Btn({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings }, disabled: false }),
-           ])
-         ]),
+    return (
+      h(Fragment, {}, [
+        div({ className: "row" }, [
+          div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
+            div({ className: "row" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                p({ className: "noMargin" }, ["Funding Source"])
+              ]),
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                p({ className: "noMargin" }, ["Prime Sponsor Name"])
+              ]),
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                p({ className: "noMargin" }, ["Award Number/Identifier"])
+              ])
+            ])
+          ]),
+          div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
+            Btn({
+              action: { labelClass: "glyphicon glyphicon-plus", handler: this.addFundings },
+              disabled: false,
+              isRendered: !this.props.readOnly
+            }),
+          ])
+        ]),
 
          hr({ className: "fullWidth" }),
 
-         this.props.fundings.map((rd, idx) => {
-           return h(Fragment, { key: idx }, [
-             div({ className: "row" }, [
-               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
-                 div({ className: "row" }, [
-                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                     InputFieldSelect({
-                       label: "",
-                       id: idx + "-source",
-                       index: idx,
-                       name: "source",
-                       options: fundingOptions,
-                       value: this.props.fundings[idx].source,
-                       onChange: this.handleFundingSelect,
-                       error: this.props.error && idx === 0,
-                       errorMessage: this.props.errorMessage
-                     })
-                   ]),
-                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                     InputFieldText({
-                       id: idx + "-sponsor",
-                       index: idx,
-                       name: "sponsor",
-                       label: "",
-                       value: this.props.fundings[idx].sponsor,
-                       disabled: false,
-                       required: false,
-                       onChange: this.handleFundingChange
-                     })
-                   ]),
-                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                     InputFieldText({
-                       id: idx + "-identifier",
-                       index: idx,
-                       name: "identifier",
-                       label: "",
-                       value: this.props.fundings[idx].identifier,
-                       disabled: false,
-                       required: false,
-                       onChange: this.handleFundingChange
-                     })
-                   ])
-                 ])
-               ]),
-               div({isRendered: !this.props.readOnly, className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                 Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) }, disabled: !this.state.fundings.length > 1 }),
-               ])
-             ]),
-           ]);
-         })
-       ])
-     )
+        this.props.fundings.map((rd, idx) => {
+          return h(Fragment, { key: idx }, [
+
+            div({ className: "row" }, [
+              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
+                div({ className: "row" }, [
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                    InputFieldSelect({
+                      label: "",
+                      id: idx + "-source",
+                      index: idx,
+                      name: "source",
+                      options: fundingOptions,
+                      value: this.props.fundings[idx].source,
+                      onChange: this.handleFundingSelect,
+                      error: this.props.error && idx === 0,
+                      errorMessage: this.props.errorMessage
+                    })
+                  ]),
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                    InputFieldText({
+                      id: idx + "-sponsor",
+                      index: idx,
+                      name: "sponsor",
+                      label: "",
+                      value: this.props.fundings[idx].sponsor,
+                      disabled: false,
+                      required: false,
+                      onChange: this.handleFundingChange
+                    })
+                  ]),
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                    InputFieldText({
+                      id: idx + "-identifier",
+                      index: idx,
+                      name: "identifier",
+                      label: "",
+                      value: this.props.fundings[idx].identifier,
+                      disabled: false,
+                      required: false,
+                      onChange: this.handleFundingChange
+                    })
+                  ])
+                ])
+              ]),
+              div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
+                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
+                  disabled: !this.state.fundings.length > 1,
+                  isRendered: !this.props.readOnly
+                }),
+              ])
+            ]),
+          ]);
+        })
+      ])
+    )
   }
 });

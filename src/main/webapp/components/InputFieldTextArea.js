@@ -9,8 +9,7 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
   render() {
 
     return (
-
-      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [
+      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [
         textarea({
           name: this.props.name,
           id: "txt_description",
@@ -19,7 +18,7 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
           onChange: this.props.onChange,
           required: this.props.required,
           disabled: this.props.disabled,
-          value: this.props.value
+          value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
         })
       ])
     )
