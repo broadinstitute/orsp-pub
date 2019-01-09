@@ -490,20 +490,23 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> sendConsentGroupSecurityInfo(Issue issue, User user) {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
+
         if (Boolean.valueOf(issue.getMTA())) {
-            values.put("showMTA", "true")
+            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
         }
         if (issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
-            values.put("showDPA", "true")
-
-        } else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
-            values.put("showRA", "true")
-        } else if (issue.isCollaboratorProvidingGoodService() != null && Boolean.valueOf(issue.isCollaboratorProvidingGoodService())) {
-            values.put("showCTC", "true")
-
-        } else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
-            values.put("showConsentAnambiguous", "true")
+            values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
+        else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
+            values.put(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEA, "true")
+        }
+        else if (issue.isCollaboratorProvidingGoodService() != null && Boolean.valueOf(issue.isCollaboratorProvidingGoodService())) {
+            values.put(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, "true")
+        }
+        else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
+            values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
+        }
+
         if (!values.isEmpty()) {
             NotifyArguments arguments =
                     new NotifyArguments(
@@ -550,6 +553,5 @@ class NotifyService implements SendgridSupport, Status {
         }
         result
     }
-
 
 }

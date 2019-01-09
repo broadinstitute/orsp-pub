@@ -6,10 +6,8 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
-import org.broadinstitute.orsp.NotifyArguments
-import org.broadinstitute.orsp.User
+
 
 import javax.ws.rs.core.Response
 

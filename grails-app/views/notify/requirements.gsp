@@ -6,19 +6,19 @@
 </p>
     <div>
         <ul>
-           <g:if test="${values.get("showMTA")?.equals("true")}">
+           <g:if test="${values.get("requireMta")?.equals("true")}">
               <li> Material Transfer Agreement </li>
            </g:if>
 
-           <g:if test="${values.get("showDPA")?.equals("true")}">
+           <g:if test="${values.get("feeForService")?.equals("true")}">
                 <li> <a href="#">Data Processing Agreement</a>  (Please have the customer sign this document and return to OSAP by responding to this email) </li>
            </g:if>
 
-           <g:if test="${values.get("showRA")?.equals("true")}">
+           <g:if test="${values.get("areSamplesComingFromEEAA")?.equals("true")}">
                 <li> <a href="#">Research Attestation</a>  (Please have the sample provider sign this document and return to OSAP by responding to this email) </li>
            </g:if>
 
-           <g:if test="${values.get("showCTC")?.equals("true")}">
+           <g:if test="${values.get("isCollaboratorProvidingGoodService")?.equals("true")}">
                 <li> <a href="#">Controller-to-Controller</a>  clauses (Please have the EEA collaborator sign this document and return to OSAP by responding to this email)  </li>
            </g:if>
 
