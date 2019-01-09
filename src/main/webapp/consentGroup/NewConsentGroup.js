@@ -665,9 +665,6 @@ class NewConsentGroup extends Component {
           title: "Documents",
           currentStep: currentStep,
           fileHandler: this.fileHandler,
-          projectType: projectType, files:
-          this.state.files, fillablePdfURL:
-          this.props.fillablePdfURL,
           projectType: projectType,
           files: this.state.files,
           fillablePdfURL: this.props.fillablePdfURL

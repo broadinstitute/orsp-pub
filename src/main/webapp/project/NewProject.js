@@ -421,7 +421,6 @@ class NewProject extends Component {
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage,
-        disabledSubmit: this.state.formSubmitted
       }, [
         NewProjectGeneralData({
           title: "General Data",

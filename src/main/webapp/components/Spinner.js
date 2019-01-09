@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { spinnerService } from '../util/spinner-service';
 
-export class SpinnerComponent extends React.Component {
+export class Spinner extends React.Component {
 
   constructor(props, context) {
     super(props, context);
@@ -44,16 +44,19 @@ export class SpinnerComponent extends React.Component {
   }
 
   render() {
-    let divStyle = { 'position': 'fixed', 'top': '30vh', 'left': '50vw', 'marginLeft': '-30px', 'zIndex': '10000' };
+    let containerStyle = { 'position': 'fixed', 'top': '0', 'left': '0', 'width': '100%', 'height': '100%', 'background': 'rgba(255, 255, 255, 0.3)', 'zIndex': '9000' };
+    let spinnerStyle = { 'position': 'fixed', 'top': '30vh', 'left': '50vw', 'marginLeft': '-30px', 'zIndex': '10000' };
     if (this.state.show) {
       const { loadingImage } = this.props;
       return (
-        <div style={divStyle}>
-        {loadingImage && <img src={loadingImage} alt='spinner' />}
-      {this.props.children}
-    </div>
+        <div style={containerStyle}>
+          <div style={spinnerStyle}>
+            {loadingImage && <img src={loadingImage} alt='spinner' />}
+            {this.props.children}
+          </div>
+        </div>
     );
     }
-    return (<div style={divStyle}></div>);
+    return null;
   }
 }

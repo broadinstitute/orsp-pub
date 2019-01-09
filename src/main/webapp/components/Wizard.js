@@ -1,7 +1,7 @@
 import { Component, Fragment } from 'react';
 import { div, hh, h2, h, button, h1, p } from 'react-hyperscript-helpers';
 import './Wizard.css';
-import { SpinnerComponent as Spinner } from './SpinnerComponent';
+import { Spinner } from './Spinner';
 
 export const Wizard = hh(class Wizard extends Component {
 
