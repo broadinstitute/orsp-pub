@@ -60,11 +60,23 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
       return h1({}, ["Something went wrong."]);
     }
 
+    let errorText = '';
+
+    if (this.props.generalError && this.props.errors.sharingPlan) {
+      errorText = 'Please complete all required fields';
+    } else {
+      errorText = 'Please check previous steps';
+    }
+
+    if (this.props.submitError) {
+      errorText = 'Something went wrong in the server. Please try again later.';
+    }
+
     return (
       WizardStep({
         title: this.props.title, step: 4, currentStep: this.props.currentStep,
         error: this.props.errors.sharingPlan || this.props.generalError,
-        errorMessage: this.props.generalError && this.props.errors.sharingPlan ? 'Please complete all required fields' : 'Please check previous steps'
+        errorMessage: errorText
       }, [
           div({ className: "questionnaireContainer" }, [
 
