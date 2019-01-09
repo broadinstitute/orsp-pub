@@ -45,7 +45,7 @@ class IssueExtraProperty {
     public static final String COLLABORATORS = "collaborators"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
     public static final String REQUIRE_MTA = "requireMta"
-    public static final String ARE_SAMPLES_COMING_FROM_EEA = "areSamplesComingFromEEAA"
+    public static final String ARE_SAMPLES_COMING_FROM_EEAA = "areSamplesComingFromEEAA"
     public static final String IS_COLLABORATOR_PROVIDING_GOOD_SERVICE = "isCollaboratorProvidingGoodService"
     public static final String IS_CONSENT_UNAMBIGUOUS = "isConsentUnambiguous"
     public static final String PII = "pii"

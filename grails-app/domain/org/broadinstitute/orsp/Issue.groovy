@@ -143,7 +143,7 @@ class Issue {
 
     transient String getMTA() { getExtraProperties().find { it.name == IssueExtraProperty.REQUIRE_MTA }?.value }
 
-    transient String areSamplesComingFromEEA() { getExtraProperties().find { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEA }?.value }
+    transient String areSamplesComingFromEEA() { getExtraProperties().find { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA }?.value }
 
     transient String isCollaboratorProvidingGoodService() { getExtraProperties().find { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE }?.value }
 
