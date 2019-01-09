@@ -71,7 +71,7 @@ class NotifyService implements SendgridSupport, Status {
      * into the full ORSP email address, so we hook into that here.
      *
      * @param recipients Unfiltered recipients
-     * @return Filtered , unique list of recipients
+     * @return Filtered, unique list of recipients
      */
     private List<String> filterRecipients(Collection<String> recipients) {
         if (recipients?.contains(ORSP_ADDRESS)) {
@@ -246,7 +246,7 @@ class NotifyService implements SendgridSupport, Status {
                         comment  : comment,
                         details  : details,
                         issueLink: issueLink,
-                        values: values ])
+                        values   : values])
         content
     }
 
@@ -459,11 +459,11 @@ class NotifyService implements SendgridSupport, Status {
         values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
         values.put(IssueExtraProperty.SENSITIVE, getValue(issue.getSensitive()))
         values.put(IssueExtraProperty.ACCESSIBLE, getValue(issue.getAccessible()))
-        if(StringUtils.isNotEmpty(issue.getTextSensitive()))
+        if (StringUtils.isNotEmpty(issue.getTextSensitive()))
             values.put(IssueExtraProperty.TEXT_SENSITIVE, issue.getTextSensitive())
-        if(StringUtils.isNotEmpty(issue.getTextCompliance()))
+        if (StringUtils.isNotEmpty(issue.getTextCompliance()))
             values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
-        if(StringUtils.isNotEmpty(issue.getTextAccessible()))
+        if (StringUtils.isNotEmpty(issue.getTextAccessible()))
             values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
 
         NotifyArguments arguments =
