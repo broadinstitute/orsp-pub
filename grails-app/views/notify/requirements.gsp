@@ -6,20 +6,20 @@
 </p>
     <div>
         <ul>
-           <g:if test=" ${values.get("showMTA") == "true"}">
+           <g:if test="${values.get("showMTA")?.equals("true")}">
               <li> Material Transfer Agreement </li>
            </g:if>
 
-           <g:if test=" ${values.get("showDPA") == "true"}">
-                <li> Data Processing Agreement (Please have the customer sign this document and return to OSAP by responding to this email) </li>
+           <g:if test="${values.get("showDPA")?.equals("true")}">
+                <li> <a href="#">Data Processing Agreement</a>  (Please have the customer sign this document and return to OSAP by responding to this email) </li>
            </g:if>
 
-           <g:if test=" ${values.get("showRA") == "true"} ">
-                <li> Research Attestation (Please have the sample provider sign this document and return to OSAP by responding to this email) </li>
+           <g:if test="${values.get("showRA")?.equals("true")}">
+                <li> <a href="#">Research Attestation</a>  (Please have the sample provider sign this document and return to OSAP by responding to this email) </li>
            </g:if>
 
-           <g:if test=" ${values.get("showCTC") == "true"}">
-                <li> Controller-to-Controller clauses (Please have the EEA collaborator sign this document and return to OSAP by responding to this email)  </li>
+           <g:if test="${values.get("showCTC")?.equals("true")}">
+                <li> <a href="#">Controller-to-Controller</a>  clauses (Please have the EEA collaborator sign this document and return to OSAP by responding to this email)  </li>
            </g:if>
 
         </ul>

@@ -5,6 +5,7 @@ import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
+import liquibase.util.StringUtils
 import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
@@ -445,17 +446,6 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    /**
-     * Send message to admins when project or consent group is created
-     *
-     * @param arguments NotifyArguments
-     * @return Response is a map entry with true/false and a reason for failure, if failed.
-     */
-    Map<Boolean, String> sendApplicationSubmitToAdmins(NotifyArguments arguments) {
-        arguments.view = "/notify/creation"
-        Mail mail = populateMailFromArguments(arguments)
-        sendMail(mail, getApiKey(), getSendGridUrl())
-    }
 
     /**
      * Send message to security team with all the questions and answers where the user answered
@@ -467,11 +457,14 @@ class NotifyService implements SendgridSupport, Status {
         Map<String, String> values = new HashMap<>()
         values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
         values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
-        values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
         values.put(IssueExtraProperty.SENSITIVE, getValue(issue.getSensitive()))
-        values.put(IssueExtraProperty.TEXT_SENSITIVE, issue.getTextSensitive())
         values.put(IssueExtraProperty.ACCESSIBLE, getValue(issue.getAccessible()))
-        values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
+        if(StringUtils.isNotEmpty(issue.getTextSensitive()))
+            values.put(IssueExtraProperty.TEXT_SENSITIVE, issue.getTextSensitive())
+        if(StringUtils.isNotEmpty(issue.getTextCompliance()))
+            values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
+        if(StringUtils.isNotEmpty(issue.getTextAccessible()))
+            values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
 
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -526,6 +519,26 @@ class NotifyService implements SendgridSupport, Status {
             result = sendMail(mail, getApiKey(), getSendGridUrl())
         }
         result
+    }
+
+    /**
+     * Send message to admins when project or consent group is created
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    def sendAdminNotification(String type, Issue issue) {
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(notifyService.getAdminRecipient()),
+                        fromAddress: notifyService.getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        details: type,
+                        user: userService.findUser(issue.reporter),
+                        issue: issue)
+        arguments.view = "/notify/creation"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
     private String getValue(String value) {

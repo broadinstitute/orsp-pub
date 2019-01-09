@@ -333,17 +333,4 @@ class AuthenticatedController implements Interceptor, UserInfo {
         groupedSubmissions
     }
 
-    def sendAdminNotification(String type, Issue issue) {
-        notifyService.sendApplicationSubmitToAdmins(
-                new NotifyArguments(
-                        toAddresses: Collections.singletonList(notifyService.getAdminRecipient()),
-                        fromAddress: notifyService.getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your ORSP Review is Required",
-                        details: type,
-                        user: userService.findUser(issue.reporter),
-                        issue: issue))
-
-
-    }
-
 }
