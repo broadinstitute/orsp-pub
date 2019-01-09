@@ -31,7 +31,7 @@ class FileHelperController extends AuthenticatedController{
                             creator: params.displayName,
                             username: params.userName,
                             creationDate: new SimpleDateFormat().format(new Date()),
-                            status: DocumentStatus.PENDING.toString()
+                            status: DocumentStatus.PENDING.status
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                 }
@@ -47,7 +47,7 @@ class FileHelperController extends AuthenticatedController{
         StorageDocument document = StorageDocument.findByUuid(params.uuid)
         try {
             if (document != null) {
-                document.setStatus(DocumentStatus.REJECTED.status.toString())
+                document.setStatus(DocumentStatus.REJECTED.status)
                 document.save(flush: true)
                 render(['document': document] as JSON)
             } else {
