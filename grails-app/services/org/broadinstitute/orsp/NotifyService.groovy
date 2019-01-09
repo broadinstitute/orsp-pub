@@ -5,7 +5,7 @@ import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
-import liquibase.util.StringUtils
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
@@ -493,7 +493,7 @@ class NotifyService implements SendgridSupport, Status {
         if (Boolean.valueOf(issue.getMTA())) {
             values.put("showMTA", "true")
         }
-        if (Boolean.valueOf(issue.getFeeForService())) {
+        if (issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put("showDPA", "true")
 
         } else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
@@ -530,8 +530,8 @@ class NotifyService implements SendgridSupport, Status {
     def sendAdminNotification(String type, Issue issue) {
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(notifyService.getAdminRecipient()),
-                        fromAddress: notifyService.getDefaultFromAddress(),
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your ORSP Review is Required",
                         details: type,
                         user: userService.findUser(issue.reporter),
