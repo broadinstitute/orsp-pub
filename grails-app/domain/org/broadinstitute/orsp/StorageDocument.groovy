@@ -12,6 +12,7 @@ class StorageDocument {
     String creator
     String username
     String creationDate
+    String status
 
     InputStream inputStream
     Integer statusCode
@@ -27,6 +28,7 @@ class StorageDocument {
         creator nullable: false
         username nullable: false
         creationDate nullable: true
+        status nullable: false
     }
 
     static transients = ['inputStream', 'statusCode', 'statusMessage', 'createDate']
