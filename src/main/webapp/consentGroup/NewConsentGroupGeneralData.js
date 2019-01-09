@@ -295,9 +295,9 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleRadio2Change,
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
-              "Yes [Yes, the provider does require an MTA/DTA.]",
-              "No [No, the provider does not require an MTA/DTA.]",
-              "Uncertain [Not sure]"
+              "Yes, the provider does require an MTA/DTA.",
+              "No, the provider does not require an MTA/DTA.",
+              "Not sure"
             ],
             required: true,
             error: this.props.errors.requireMta,

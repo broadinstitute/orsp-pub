@@ -245,7 +245,6 @@ class NewConsentGroup extends Component {
       sampleCollections = true;
       isValid = false;
     }
-    console.log(this.state.step1FormData.requireMta);
     if (this.state.step1FormData.requireMta === undefined) {
       requireMta = true;
       isValid = false;
