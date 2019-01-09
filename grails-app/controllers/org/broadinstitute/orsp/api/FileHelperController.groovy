@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.api
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.StorageDocument
 import org.springframework.web.multipart.MultipartFile
 
@@ -10,10 +11,6 @@ import java.text.SimpleDateFormat
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
-    private static final String APPROVED = "Approved"
-    private static final String REJECTED = "Rejected"
-    private static final String PENDING = "Pending"
-
 
     def attachDocument() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
@@ -25,7 +22,7 @@ class FileHelperController extends AuthenticatedController{
             files.forEach {
                 names.push(it.name)
                 if (!files.empty) {
-                    def document = new StorageDocument(
+                    StorageDocument document = new StorageDocument(
                             projectKey: issue.projectKey,
                             fileName: it.originalFilename,
                             fileType: it.name,
@@ -34,7 +31,7 @@ class FileHelperController extends AuthenticatedController{
                             creator: params.displayName,
                             username: params.userName,
                             creationDate: new SimpleDateFormat().format(new Date()),
-                            status: PENDING
+                            status: DocumentStatus.PENDING.toString()
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                 }
@@ -50,7 +47,7 @@ class FileHelperController extends AuthenticatedController{
         StorageDocument document = StorageDocument.findByUuid(params.uuid)
         try {
             if (document != null) {
-                document.setStatus(REJECTED)
+                document.setStatus(DocumentStatus.REJECTED.status.toString())
                 document.save(flush: true)
                 render(['document': document] as JSON)
             } else {
@@ -67,7 +64,7 @@ class FileHelperController extends AuthenticatedController{
         StorageDocument document = StorageDocument.findByUuid(params.uuid)
         try {
             if (document != null) {
-                document.setStatus(APPROVED)
+                document.setStatus(DocumentStatus.APPROVED.status)
                 document.save(flush: true)
                 render(['document': document] as JSON)
             } else {
