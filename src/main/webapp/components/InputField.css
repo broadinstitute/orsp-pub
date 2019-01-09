@@ -19,6 +19,21 @@
   min-height: 38px;
 }
 
+.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
+  border: none;
+  font-size: 1.1rem;
+  box-shadow: none;
+  pointer-events: none;
+  padding-left: 0;
+  color: black;
+}
+
+.inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,
+.inputFieldReadOnly .inputFieldDatePicker+button,
+.inputFieldReadOnly .react-datepicker__input-container::after {
+  display: none;
+}
+
 .inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {
   border: 1px solid red !important;
 }
