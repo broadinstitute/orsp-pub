@@ -17,6 +17,7 @@ class NewConsentGroup extends Component {
       showErrorStep3: false,
       generalError: false,
       formSubmitted: false,
+      submitError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -82,21 +83,21 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = () => {
 
+    this.setState({submitError: false});
+
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       this.removeErrorMessage();
 
-      this.setState(prev => {
-        prev.formSubmitted = true;
-        return prev;
-      });
-
+      this.changeSubmitState();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
         spinnerService.showAll();
         this.uploadFiles(resp.data.message.projectKey);
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
+        this.toggleSubmitError();
+        this.changeSubmitState();
       });
     } else {
       this.setState(prev => {
@@ -104,6 +105,13 @@ class NewConsentGroup extends Component {
         return prev;
       });
     }
+  };
+
+  changeSubmitState = () => {
+    this.setState(prev => {
+      prev.formSubmitted = !prev.formSubmitted;
+      return prev;
+    });
   };
 
   uploadFiles = (projectKey) => {
@@ -116,8 +124,18 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }).catch(error => {
+        this.changeSubmitState();
         console.error(error);
+        this.toggleSubmitError();
       });
+  };
+
+  toggleSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = true;
+      prev.generalError = true;
+      return prev;
+    });
   };
 
   getConsentGroup() {
@@ -649,7 +667,10 @@ class NewConsentGroup extends Component {
           fileHandler: this.fileHandler,
           projectType: projectType, files:
           this.state.files, fillablePdfURL:
-          this.props.fillablePdfURL
+          this.props.fillablePdfURL,
+          projectType: projectType,
+          files: this.state.files,
+          fillablePdfURL: this.props.fillablePdfURL
         }),
         NewConsentGroupIntCohorts({
           title: "International Cohorts",
@@ -675,7 +696,8 @@ class NewConsentGroup extends Component {
           updateForm: this.updateStep5FormData,
           errors: this.state.errors,
           removeErrorMessage: this.removeErrorMessage,
-          generalError: this.state.generalError
+          generalError: this.state.generalError,
+          submitError: this.state.submitError
         }),
       ])
     );

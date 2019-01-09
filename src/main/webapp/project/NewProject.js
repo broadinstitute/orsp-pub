@@ -18,6 +18,7 @@ class NewProject extends Component {
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
+      submitError: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -43,9 +44,12 @@ class NewProject extends Component {
     this.uploadFiles = this.uploadFiles.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
+    this.toggleTrueSubmitError = this.toggleTrueSubmitError.bind(this);
+    this.toggleFalseSubmitError = this.toggleFalseSubmitError.bind(this);
   }
 
   submitNewProject = () => {
+    this.toggleFalseSubmitError();
 
     if (this.validateStep3()) {
 
@@ -58,6 +62,7 @@ class NewProject extends Component {
         }).catch(error => {
           spinnerService.hideAll();
           this.changeStateSubmitButton();
+          this.toggleTrueSubmitError();
           console.error(error);
         });
       } else {
@@ -72,6 +77,22 @@ class NewProject extends Component {
         return prev;
       });
     }
+  };
+
+  toggleTrueSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = true;
+      prev.generalError = true;
+      return prev;
+    });
+  };
+
+  toggleFalseSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = false;
+      prev.generalError = false;
+      return prev;
+    });
   };
 
   changeStateSubmitButton = () => {
@@ -347,6 +368,7 @@ class NewProject extends Component {
 
       }).catch(error => {
         spinnerService.hideAll();
+        this.toggleTrueSubmitError();
         this.changeStateSubmitButton();
         console.error(error);
       });
@@ -398,7 +420,8 @@ class NewProject extends Component {
         submitHandler: this.submitNewProject,
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage
+        loadingImage: this.props.loadingImage,
+        disabledSubmit: this.state.formSubmitted
       }, [
         NewProjectGeneralData({
           title: "General Data",
@@ -423,7 +446,8 @@ class NewProject extends Component {
           projectType: projectType,
           files: this.state.files,
           errors: this.state.showErrorStep3,
-          generalError: this.state.generalError
+          generalError: this.state.generalError,
+          submitError: this.state.submitError
         }),
       ])
     );
