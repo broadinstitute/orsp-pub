@@ -16,6 +16,8 @@ class UrlMappings {
         '/api/swagger/**'(controller: 'api', action: 'swagger')
         '/api/project'(resource: 'project')
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
+        '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
+        '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
         '/api/consent-group'(resource: 'newConsentGroup')
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
