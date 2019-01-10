@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import grails.plugin.json.builder.StreamingJsonBuilder
 import org.springframework.web.multipart.MultipartFile
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.utils.IssueUtils
@@ -324,11 +325,20 @@ class ConsentGroupController extends AuthenticatedController {
     def getConsentGroup(){
         Issue issue = queryService.findByKey(params.id)
         def collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
+        def collectionIds = queryService.findAllSampleCollectionIdsForConsent(issue.projectKey)
+        Collection<SampleCollection> sampleCollections
+        if (!collectionIds.isEmpty()) {
+            sampleCollections = SampleCollection.findAllByCollectionIdInList(collectionIds)
+        } else {
+            sampleCollections = Collections.emptyList()
+        }
+        
         render(
-                [issue: issue,
-                 collectionLinks: collectionLinks,
-                 extraProperties: issue.getExtraPropertiesMap()
-                ] as JSON
+            [issue            : issue,
+             collectionLinks  : collectionLinks,
+             sampleCollections: sampleCollections,
+             extraProperties  : issue.getExtraPropertiesMap()
+            ] as JSON
         )
     }
 
