@@ -11,6 +11,7 @@ class NotifyArguments {
     List<String> ccAddresses
     String fromAddress
     String details
+    Map<String, String> values
 
     User user
     Issue issue
@@ -29,6 +30,7 @@ class NotifyArguments {
                 details this.details
                 userEmail this.user?.emailAddress
                 issue this.issue?.projectKey
+                values new JsonBuilder(this.values).toString()
             }
         }
         JsonOutput.prettyPrint(builder.toString())

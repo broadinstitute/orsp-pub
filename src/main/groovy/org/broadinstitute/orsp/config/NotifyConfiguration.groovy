@@ -14,4 +14,7 @@ class NotifyConfiguration {
     List<String> bccRecipients
     String replyToRecipient
     String sendGridStatusUrl
+    String adminRecipient
+    String securityRecipient
+    String agreementsRecipient
 }
