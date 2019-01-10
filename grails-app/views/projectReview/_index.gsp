@@ -1,6 +1,4 @@
 <g:javascript>
-
-
     const component = {
         issue: '${issue.requestDate}',
         projectKey:'${issue.projectKey}',
@@ -9,9 +7,8 @@
     };
 
     const urls = {
-        saveExtraPropUrl: "${createLink(controller: 'project', action: 'addExtraProperties')}"
+        saveExtraPropUrl: "${createLink(controller: 'project', action: 'modifyExtraProperties')}"
     };
-
 </g:javascript>
 
 <div id="projectReview"></div>
