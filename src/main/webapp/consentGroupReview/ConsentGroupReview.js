@@ -53,7 +53,7 @@ class ConsentGroupReview extends Component {
           prev.collectionLinks = element.data.collectionLinks;
           prev.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
           return prev;
-        }, () => console.log("Consent Review State ", this.state.instSources))
+        }, () => console.log("Consent Review State ", this.state.collectionLinks))
     );
   }
 
@@ -79,6 +79,7 @@ class ConsentGroupReview extends Component {
             name: "consentGroupName",
             label: "Consent Group Name",
             value: this.state.consentForm.summary,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldText({
@@ -86,6 +87,7 @@ class ConsentGroupReview extends Component {
             name: "investigatorLastName",
             label: "Last Name of Investigator Listed on the Consent Form",
             value: this.state.consentExtraProps.consent,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldText({
@@ -93,6 +95,7 @@ class ConsentGroupReview extends Component {
             name: "institutionProtocolNumber",
             label: "Collaborating Institution's Protocol Number",
             value: this.state.consentExtraProps.protocol,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldText({
@@ -100,6 +103,7 @@ class ConsentGroupReview extends Component {
             name: "collaboratingInstitution",
             label: "Collaborating Institution",
             value: this.state.consentExtraProps.collInst,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldText({
@@ -107,6 +111,7 @@ class ConsentGroupReview extends Component {
             name: "primaryContact",
             label: "Primary Contact at Collaborating Institution ",
             value: this.state.consentExtraProps.collContact,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldRadio({
@@ -119,6 +124,7 @@ class ConsentGroupReview extends Component {
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
               "I am requesting assistance in updating and existing project"
             ],
+            onChange: () => {},
             readOnly: true
           }),
           InputYesNo({
@@ -127,8 +133,13 @@ class ConsentGroupReview extends Component {
             label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
             moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)"]),
             value: this.state.consentExtraProps.requireMta,
+            onChange: () => {},
             readOnly: true
           })
+        ]),
+
+        Panel({ title: "Sample Collections" }, [
+
         ]),
 
         Panel({ title: "Sample Collection Date Range" }, [
@@ -138,7 +149,7 @@ class ConsentGroupReview extends Component {
                 selected: new Date(this.state.consentExtraProps.startDate),
                 name: "startDate",
                 label: "Start Date",
-                onChange: () => console.log("startDate"),
+                onChange: () => {},
                 readOnly: true
               })
             ]),
@@ -148,7 +159,7 @@ class ConsentGroupReview extends Component {
                 name: "endDate",
                 label: "End Date",
                 selected: (endDate === undefined || endDate === '') ? null : new Date(endDate),
-                onChange: () => console.log("endDate"),
+                onChange: () => {},
                 disabled: (this.state.consentExtraProps.onGoingProcess === "true"),
                 readOnly: true
               })
@@ -159,7 +170,7 @@ class ConsentGroupReview extends Component {
                 id: "onGoingProcess",
                 name: "onGoingProcess",
                 checked: this.parseBool(),
-                onChange: () => console.log("checkbox"),
+                onChange: () => {},
                 readOnly: true
               }),
               label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
@@ -169,14 +180,14 @@ class ConsentGroupReview extends Component {
 
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
-            updateInstitutionalSource: () => console.log("Institutional Sources"),
+            updateInstitutionalSource: () => {},
             institutionalSources: this.state.instSources,
             readOnly: true
           })
         ]),
 
         Panel({ title: "International Cohorts" }, [
-          div({ isRendered: this.state.consentExtraProps.individualDataSourced !== '', className: "firstRadioGroup" }, [
+          div({ isRendered: this.state.consentExtraProps.individualDataSourced !== undefined, className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioQuestion1",
               value: this.state.consentExtraProps.individualDataSourced,
@@ -184,7 +195,7 @@ class ConsentGroupReview extends Component {
               readOnly: true
             })
           ]),
-          div({ isRendered: this.state.consentExtraProps.isLinkMaintained !== '' }, [
+          div({ isRendered: this.state.consentExtraProps.isLinkMaintained !== undefined }, [
             InputYesNo({
               id: "radioQuestion2",
               value: this.state.consentExtraProps.isLinkMaintained,
@@ -192,7 +203,7 @@ class ConsentGroupReview extends Component {
               readOnly: true
             })
           ]),
-          div({ isRendered: this.state.consentExtraProps.isFeeForService !== '' }, [
+          div({ isRendered: this.state.consentExtraProps.isFeeForService !== undefined }, [
             InputYesNo({
               id: "radioQuestion3",
               value: this.state.consentExtraProps.isFeeForService,
@@ -200,7 +211,7 @@ class ConsentGroupReview extends Component {
               readOnly: true
             })
           ]),
-          div({ isRendered: this.state.consentExtraProps.areSamplesComingFromEEAA !== '' }, [
+          div({ isRendered: this.state.consentExtraProps.areSamplesComingFromEEAA !== undefined }, [
             InputYesNo({
               id: "radioQuestion4",
               value: this.state.consentExtraProps.areSamplesComingFromEEAA,
@@ -208,7 +219,7 @@ class ConsentGroupReview extends Component {
               readOnly: true
             })
           ]),
-          div({ isRendered: this.state.consentExtraProps.isCollaboratorProvidingGoodService !== '' }, [
+          div({ isRendered: this.state.consentExtraProps.isCollaboratorProvidingGoodService !== undefined }, [
             InputYesNo({
               id: "radioQuestion5",
               value: this.state.consentExtraProps.isCollaboratorProvidingGoodService,
@@ -216,7 +227,7 @@ class ConsentGroupReview extends Component {
               readOnly: true
             })
           ]),
-          div({ isRendered: this.state.consentExtraProps.isConsentUnambiguous !== '' }, [
+          div({ isRendered: this.state.consentExtraProps.isConsentUnambiguous !== undefined }, [
             InputYesNo({
               id: "radioQuestion6",
               value: this.state.consentExtraProps.isConsentUnambiguous,

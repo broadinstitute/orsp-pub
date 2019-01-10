@@ -108,7 +108,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       required: true,
                       onChange: this.handleInstitutionalChange,
                       error: this.props.errorCountry && index === 0,
-                      errorMessage: this.props.errorMessage
+                      errorMessage: this.props.errorMessage,
+                      readOnly: this.props.readOnly
                     })
                   ])
                 ])
