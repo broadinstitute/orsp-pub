@@ -270,6 +270,7 @@ class ConsentGroupReview extends Component {
             name: "textCompliance",
             label: "Add regulatory compliance",
             value: this.state.consentExtraProps.textCompliance,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldRadio({
@@ -291,6 +292,7 @@ class ConsentGroupReview extends Component {
             name: "textSensitive",
             label: "Please explain",
             value: this.state.consentExtraProps.textSensitive,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldRadio({
@@ -312,6 +314,7 @@ class ConsentGroupReview extends Component {
             name: "textAccessible",
             label: "Please explain",
             value: this.state.consentExtraProps.textAccessible,
+            onChange: () => {},
             readOnly: true
           })
         ]),
@@ -335,6 +338,7 @@ class ConsentGroupReview extends Component {
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent)",
             value: this.state.consentExtraProps.databaseControlled,
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldText({
@@ -344,6 +348,7 @@ class ConsentGroupReview extends Component {
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
             value: this.state.consentExtraProps.databaseOpen,
+            onChange: () => {},
             readOnly: true
           })
         ]),
