@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
+
 import javax.ws.rs.core.Response
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -63,6 +64,9 @@ class NewConsentGroupController extends AuthenticatedController {
             } catch (Exception e) {
                 flash.error = e.getMessage()
             }
+            notifyService.sendAdminNotification("Consent Group", consent)
+            notifyService.sendConsentGroupSecurityInfo(issue, user)
+            notifyService.sendConsentGroupRequirementsInfo(issue, user)
             consent.status = 201
             render([message: consent] as JSON)
         } else {
@@ -71,5 +75,6 @@ class NewConsentGroupController extends AuthenticatedController {
             render([message: response] as JSON)
         }
     }
+
 }
 

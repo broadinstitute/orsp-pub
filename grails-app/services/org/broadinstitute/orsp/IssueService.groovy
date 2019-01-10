@@ -179,6 +179,7 @@ class IssueService {
         saveExtraProperties(newIssue, extraProperties)
         saveFundings(newIssue, fundings)
         newIssue.save(flush: true)
+        newIssue.extraProperties = extraProperties
         newIssue
     }
 

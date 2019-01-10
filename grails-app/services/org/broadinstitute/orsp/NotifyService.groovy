@@ -5,13 +5,14 @@ import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
 import org.springframework.http.MediaType
 
 @Slf4j
-class NotifyService implements SendgridSupport, Status  {
+class NotifyService implements SendgridSupport, Status {
 
     public static final String ORSP_ADDRESS = "orsp-portal@broadinstitute.org"
     PageRenderer groovyPageRenderer
@@ -49,6 +50,18 @@ class NotifyService implements SendgridSupport, Status  {
 
     String getSendGridStatusUrl() {
         notifyConfiguration.sendGridStatusUrl
+    }
+
+    String getAdminRecipient() {
+        notifyConfiguration.adminRecipient
+    }
+
+    String getSecurityRecipient() {
+        notifyConfiguration.securityRecipient
+    }
+
+    String getAgreementsRecipient() {
+        notifyConfiguration.agreementsRecipient
     }
 
     /**
@@ -131,7 +144,8 @@ class NotifyService implements SendgridSupport, Status  {
                 getShowIssueLink(arguments.issue),
                 arguments.comment,
                 arguments.details,
-                recipients)
+                recipients,
+                arguments.values)
 
         // If entered by ORSP, then all email should only go to the ORSP team
         if (arguments.issue.isFlagSet(IssueExtraProperty.ORSP_ENTERED_FLAG)) {
@@ -167,7 +181,9 @@ class NotifyService implements SendgridSupport, Status  {
             allRecipients.add(getDefaultRecipient())
         }
 
-        Map<String, String> emailToDisplayNameMap = userService.findUsers(allRecipients).collectEntries {  [(it.emailAddress): it.displayName] }
+        Map<String, String> emailToDisplayNameMap = userService.findUsers(allRecipients).collectEntries {
+            [(it.emailAddress): it.displayName]
+        }
         Mail mail = generateEmailMessage(
                 arguments.subject,
                 recipients,
@@ -197,18 +213,18 @@ class NotifyService implements SendgridSupport, Status  {
             String replyTo) {
         groovyPageRenderer.render(
                 template: "/notify/originalHeaders",
-                model: [to: toAddresses?.join(","),
-                        from: fromAddress,
-                        cc: ccAddresses?.join(","),
-                        bcc: bccAddresses?.join(","),
+                model: [to     : toAddresses?.join(","),
+                        from   : fromAddress,
+                        cc     : ccAddresses?.join(","),
+                        bcc    : bccAddresses?.join(","),
                         replyTo: replyTo,
                         subject: subject])
     }
 
-
     /*
      * Populate the provided view with content.
      */
+
     private String generateMessageContent(
             String view,
             Issue issue,
@@ -216,19 +232,21 @@ class NotifyService implements SendgridSupport, Status  {
             String issueLink,
             String comment,
             String details,
-            List<String> recipients) {
+            List<String> recipients,
+            Map<String, String> values) {
         if (issue.isFlagSet(IssueExtraProperty.ORSP_ENTERED_FLAG)) {
             details +=
                     "This project is only being sent to ORSP because it has been entered by ORSP. " +
-                    "Normally, the recipients would have been: " + recipients?.join(", ")
+                            "Normally, the recipients would have been: " + recipients?.join(", ")
         }
         String content = groovyPageRenderer.render(
                 view: view,
-                model: [user: user,
-                        issue: issue,
-                        comment: comment,
-                        details: details,
-                        issueLink: issueLink])
+                model: [user     : user,
+                        issue    : issue,
+                        comment  : comment,
+                        details  : details,
+                        issueLink: issueLink,
+                        values   : values])
         content
     }
 
@@ -247,7 +265,7 @@ class NotifyService implements SendgridSupport, Status  {
         Map<String, SendgridSubsystem> statusMap = new HashMap<>()
         try {
             http.get() {
-                response.success {resp, json ->
+                response.success { resp, json ->
                     json.components?.each {
                         SendgridSubsystem subsystem =
                                 new SendgridSubsystem(
@@ -263,8 +281,7 @@ class NotifyService implements SendgridSupport, Status  {
         }
         if (statusMap.isEmpty()) {
             new SubsystemStatus(ok: false, messages: ["No status available from Notifications Service"])
-        }
-        else if (statusMap.values.every { it.healthy }) {
+        } else if (statusMap.values.every { it.healthy }) {
             new SubsystemStatus(ok: true)
         } else {
             new SubsystemStatus(ok: false, messages: statusMap.values*.name)
@@ -427,6 +444,114 @@ class NotifyService implements SendgridSupport, Status  {
         arguments.subject = "Withdrawn: " + arguments.issue.projectKey
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+
+    /**
+     * Send message to security team with all the questions and answers where the user answered
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user) {
+        Map<String, String> values = new HashMap<>()
+        values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
+        values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
+        values.put(IssueExtraProperty.SENSITIVE, getValue(issue.getSensitive()))
+        values.put(IssueExtraProperty.ACCESSIBLE, getValue(issue.getAccessible()))
+        if (StringUtils.isNotEmpty(issue.getTextSensitive()))
+            values.put(IssueExtraProperty.TEXT_SENSITIVE, issue.getTextSensitive())
+        if (StringUtils.isNotEmpty(issue.getTextCompliance()))
+            values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
+        if (StringUtils.isNotEmpty(issue.getTextAccessible()))
+            values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
+
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getSecurityRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                        subject: issue.projectKey + " - Required OSAP Follow-up",
+                        user: user,
+                        issue: issue,
+                        values: values)
+
+        arguments.view = "/notify/generalInfo"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    /**
+     * Send message to the user and cc’ing Agreements@ which provides requirements
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendConsentGroupSecurityInfo(Issue issue, User user) {
+        Map<String, String> values = new HashMap<>()
+        Map<Boolean, String> result = new HashMap<>()
+
+        if (Boolean.valueOf(issue.getMTA())) {
+            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
+        }
+        if (issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
+            values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
+        }
+        else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
+            values.put(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, "true")
+        }
+        else if (issue.isCollaboratorProvidingGoodService() != null && Boolean.valueOf(issue.isCollaboratorProvidingGoodService())) {
+            values.put(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, "true")
+        }
+        else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
+            values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
+        }
+
+        if (!values.isEmpty()) {
+            NotifyArguments arguments =
+                    new NotifyArguments(
+                            toAddresses: Collections.singletonList(user.getEmailAddress()),
+                            fromAddress: getDefaultFromAddress(),
+                            ccAddresses: Collections.singletonList(getAgreementsRecipient()),
+                            subject: issue.projectKey + " - Required InfoSec Follow-up",
+                            user: user,
+                            issue: issue,
+                            values: values)
+            arguments.view = "/notify/requirements"
+            Mail mail = populateMailFromArguments(arguments)
+            result = sendMail(mail, getApiKey(), getSendGridUrl())
+        }
+        result
+    }
+
+    /**
+     * Send message to admins when project or consent group is created
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    def sendAdminNotification(String type, Issue issue) {
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        details: type,
+                        user: userService.findUser(issue.reporter),
+                        issue: issue)
+        arguments.view = "/notify/creation"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    private String getValue(String value) {
+        String result = "Uncertain"
+        if (value == "false") {
+            result = "No"
+        } else if (value == "true") {
+            result = "Yes"
+        }
+        result
     }
 
 }
