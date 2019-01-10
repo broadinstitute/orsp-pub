@@ -57,7 +57,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
       noOutput: 4,
       answer: null,
       progress: 34,
-      key: 'isFeeForService',
+      key: 'feeForService',
       id: 3
     });
 
