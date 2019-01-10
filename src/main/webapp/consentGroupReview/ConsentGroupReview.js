@@ -8,6 +8,7 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
+import { Table } from '../components/Table';
 import { ConsentGroup } from "../util/ajax";
 
 
@@ -46,14 +47,15 @@ class ConsentGroupReview extends Component {
     console.log("Consent Key", this.props.consentKey);
 
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
-      element =>
+      element =>{
         this.setState(prev => {
           prev.consentForm = element.data.issue;
           prev.consentExtraProps = element.data.extraProperties;
-          prev.collectionLinks = element.data.collectionLinks;
+          prev.sampleCollectionLinks = element.data.collectionLinks;
           prev.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
           return prev;
-        }, () => console.log("Consent Review State ", this.state.collectionLinks))
+        }, () => console.log("Consent Review State ", this.state))
+        }
     );
   }
 
@@ -68,6 +70,7 @@ class ConsentGroupReview extends Component {
 
   render() {
 
+    const headers = [{name: 'ID', value: 'id'}]; //, {name: 'Name', value: 'name'}, {name: 'Category', value: 'category'}, {name: 'Group', value: 'group'}];
     const endDate = this.state.consentExtraProps.endDate;
     return (
       div({}, [
@@ -139,7 +142,13 @@ class ConsentGroupReview extends Component {
         ]),
 
         Panel({ title: "Sample Collections" }, [
-
+          Table({
+              headers: headers,
+              //data: this.state.collectionLinks,
+              search: false,
+              sizePerPage: 5,
+              paginationSize: 10
+          })
         ]),
 
         Panel({ title: "Sample Collection Date Range" }, [
