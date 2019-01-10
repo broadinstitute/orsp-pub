@@ -168,8 +168,8 @@ class ConsentGroupReview extends Component {
               headers: headers,
               data: this.state.sampleCollections,
               search: false,
-              sizePerPage: 5,
-              paginationSize: 5
+              pagination: false,
+              sizePerPage: 15,
           })
         ]),
 

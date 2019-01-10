@@ -15,7 +15,7 @@ export const Table = hh(class Table extends Component {
         striped
         hover
         search={this.props.search}
-        pagination={true}
+        pagination={this.props.pagination}
         options={{
           paginationSize: this.props.paginationSize,
           paginationPosition: 'bottom',
