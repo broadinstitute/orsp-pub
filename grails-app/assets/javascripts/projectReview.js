@@ -43078,12 +43078,19 @@ var ProjectReview = function (_Component) {
     _this.approveRevision = function (e) {
       return function () {
         var data = { projectReviewApproved: true };
-        _ajax.Project.addExtraProperties(_this.props.addExtraPropUrl, _this.props.projectKey, data);
+        _ajax.Project.addExtraProperties(_this.props.addExtraPropUrl, _this.props.projectKey, data).then(function () {
+          return _this.setState(function (prev) {
+            prev.projectExtraProps.projectReviewApproved = true;
+            return prev;
+          });
+        });
       };
     };
 
     _this.state = {
-      projectForm: {},
+      projectForm: {
+        description: ''
+      },
       projectExtraProps: {
         projectTitle: '',
         protocol: '',
@@ -43196,7 +43203,7 @@ var ProjectReview = function (_Component) {
         id: "inputStudyActivitiesDescription",
         name: "studyDescription",
         label: "Broad study activities",
-        value: this.state.projectForm.description,
+        value: this.state.projectForm.description.replace(/<\/?[^>]+(>|$)/g, ""),
         readOnly: true,
         required: false,
         onChange: function onChange() {},

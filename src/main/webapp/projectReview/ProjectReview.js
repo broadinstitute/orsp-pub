@@ -15,7 +15,9 @@ class ProjectReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projectForm: {},
+      projectForm: {
+        description: ''
+      },
       projectExtraProps: {
         projectTitle: '',
         protocol: '',
@@ -83,7 +85,12 @@ class ProjectReview extends Component {
 
   approveRevision = (e) => () => {
     const data = { projectReviewApproved : true }
-    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data);
+    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
+      () => this.setState( prev => {
+        prev.projectExtraProps.projectReviewApproved = true;
+        return prev;
+       })
+    );
   }
 
   render() {
@@ -150,7 +157,7 @@ class ProjectReview extends Component {
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
             label: "Broad study activities",
-            value: this.state.projectForm.description,
+            value: this.state.projectForm.description.replace(/<\/?[^>]+(>|$)/g, ""),
             readOnly: true,
             required: false,
             onChange: () => { },
