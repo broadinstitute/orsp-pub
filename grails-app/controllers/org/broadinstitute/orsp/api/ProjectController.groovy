@@ -6,10 +6,8 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
-import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.User
 
 
@@ -38,44 +36,21 @@ class ProjectController extends AuthenticatedController {
     }
 
     def addExtraProperties() {
-        Issue issue = queryService.findByKey(params.id)
-        Issue updatedIssue = null
+        String projectKey = params.id
+        Issue issue = queryService.findByKey(projectKey)
         Gson gson = new Gson()
         Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
-
-        Collection<IssueExtraProperty> newProperties = issueService.getSingleValuedPropsForSaving(issue, input)
-        newProperties.addAll(issueService.getMultiValuedPropsForSaving(issue, input))
-
-        newProperties.collect {
-            property ->
-                if (!issue.getExtraPropertiesMap().containsKey(property.name)) {
-                    updatedIssue = addNewExtraProperties(issue, property)
-                } else {
-                    // update
-                    updatedIssue
-                }
-        }
-
-        if (!updatedIssue.equals(null)) {
-            updatedIssue.save(flush: true)
-            response.status = 200
-        }
-
+        Issue updatedIssue = issueService.modifyExtraProperties(issue, input)
         render([message: updatedIssue] as JSON)
     }
 
-    static Issue addNewExtraProperties(Issue issue, IssueExtraProperty property) {
-        Issue updatedIssue = issue
-        updatedIssue.extraProperties.add(property)
-        updatedIssue
-    }
-
-    def getproject() {
-        Issue issue = queryService.findByKey(params.id)
-
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    def getProject() {
+        String projectKey = params.id
+        Issue issue = queryService.findByKey(projectKey)
         Collection<Funding> fundingList = issue.getFundings()
         LinkedHashMap<String, Object> extraProperties =  issue.getExtraPropertiesMap()
-        Collection<User> colls = getCollcaborators(extraProperties.collaborators)
+        Collection<User> colls = getCollaborators(extraProperties.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
                 pms               : getProjectManagersForIssue(issue).getAt(0),

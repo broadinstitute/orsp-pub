@@ -191,6 +191,48 @@ class IssueService {
         }
     }
 
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Issue modifyExtraProperties(Issue issue, Object input) {
+        Collection<IssueExtraProperty> newProperties = getSingleValuedPropsForSaving(issue, input)
+        Issue updateProperty = null
+        Issue createProperty = null
+        newProperties.collect {
+            property ->
+                if (!issue.getExtraPropertiesMap().containsKey(property.name)) {
+                    createProperty = addNewExtraProperty(issue, property)
+                } else {
+                    updateProperty = updateExtraProperty(issue, property)
+                }
+        }
+
+        if (updateProperty != null) {
+            updateProperty.save(flush: true)
+            updateProperty
+        } else if(createProperty != null) {
+            createProperty.save(flush: true)
+            createProperty
+        }
+        return null
+    }
+
+    static Issue addNewExtraProperty(Issue issue, IssueExtraProperty property) {
+        Issue updatedIssue = issue
+        updatedIssue.extraProperties.add(property)
+        updatedIssue
+    }
+
+    static Issue updateExtraProperty(Issue issue, IssueExtraProperty property) {
+        Issue updatedIssue = issue
+        updatedIssue.extraProperties.collect{
+            prop ->
+                if (prop.name == property.name && prop.value != property.value) {
+                    prop.value = property.value
+                    prop
+                }
+        }
+        updatedIssue
+    }
+
     void saveFundings(Issue issue, Collection<Funding> fundings) {
         fundings?.each {
             it.setCreated(new Date())

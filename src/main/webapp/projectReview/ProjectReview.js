@@ -83,7 +83,7 @@ class ProjectReview extends Component {
 
   approveRevision = (e) => () => {
     const data = { projectReviewApproved : true }
-    Project.addExtraProperties(this.props.addExtraProprUrl, this.props.projectKey, data).then(response => console.log(response));
+    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data);
   }
 
   render() {

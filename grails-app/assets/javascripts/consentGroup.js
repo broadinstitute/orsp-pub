@@ -2454,7 +2454,7 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
     key: 'render',
     value: function render() {
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])]), this.props.children, (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : this.props.readOnly ? 'inputFieldReadOnly' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])]), this.props.children, (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])]);
     }
   }]);
 
@@ -26889,16 +26889,18 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.input)({ type: 'text',
+      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [(0, _reactHyperscriptHelpers.input)({
+        type: 'text',
         id: this.props.id,
         index: this.props.index,
         name: this.props.name,
         className: "form-control inputFieldText",
-        value: this.props.value,
+        value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
         disabled: this.props.disabled,
         required: this.props.required,
         onChange: this.props.onChange,
-        onBlur: this.props.focusOut })]);
+        onBlur: this.props.focusOut
+      })]);
     }
   }]);
 
@@ -28387,8 +28389,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InputYesNo = undefined;
 
-var _react = __webpack_require__(0);
-
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
 __webpack_require__(268);
@@ -28396,8 +28396,10 @@ __webpack_require__(268);
 var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 
   var selectOption = function selectOption(e, value) {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
+    if (!props.readOnly) {
+      e.preventDefault();
+      props.onChange(e, props.name, value);
+    }
   };
 
   var id = props.id,
@@ -28418,7 +28420,8 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions"
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : ''),
+      disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
       id: "rad_" + id + "_" + ix,
@@ -28505,8 +28508,10 @@ var Project = exports.Project = {
     return _axios2.default.post(url, data, config);
   },
   getProject: function getProject(url, projectkey) {
-    console.log("url ", url, "projectKey ", projectkey);
     return _axios2.default.get(url + '?id=' + projectkey);
+  },
+  addExtraProperties: function addExtraProperties(url, projectKey, data) {
+    return _axios2.default.post(url + '?id=' + projectKey, data);
   }
 };
 
@@ -28568,7 +28573,7 @@ exports = module.exports = __webpack_require__(19)(undefined);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i);", ""]);
 
 // module
-exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.stepTitle {\n  margin-bottom: 15px;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.positionRelative {\n  position: relative;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
+exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.stepTitle {\n  margin-bottom: 15px;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.checkboxReadOnly {\n  box-shadow: none;\n  pointer-events: none;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.positionRelative {\n  position: relative;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -33858,8 +33863,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InputFieldRadio = undefined;
 
-var _react = __webpack_require__(0);
-
 var _reactHyperscriptHelpers = __webpack_require__(7);
 
 __webpack_require__(268);
@@ -33867,8 +33870,10 @@ __webpack_require__(268);
 var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) {
 
   var selectOption = function selectOption(e, value) {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
+    if (!props.readOnly) {
+      e.preventDefault();
+      props.onChange(e, props.name, value);
+    }
   };
 
   var id = props.id,
@@ -33889,7 +33894,8 @@ var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) 
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions"
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : ''),
+      disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
       id: "rad_" + id + "_" + ix,
@@ -33916,8 +33922,6 @@ exports.InputFieldSelect = undefined;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
 
 var _reactSelect = __webpack_require__(548);
 
@@ -33949,11 +33953,11 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _createClass(InputFieldSelect, [{
     key: 'render',
     value: function render() {
-      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
+      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
         id: this.props.id,
         index: this.props.index,
         name: this.props.name,
-        value: this.props.value,
+        value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
         className: "inputFieldSelect",
         onChange: this.props.onChange(this.props.index),
         options: this.props.options,
@@ -35161,7 +35165,7 @@ exports = module.exports = __webpack_require__(19)(undefined);
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  font-size: 1.1rem;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n  padding-left: 0;\r\n  color: black;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,\r\n.inputFieldReadOnly .inputFieldDatePicker+button,\r\n.inputFieldReadOnly .react-datepicker__input-container::after {\r\n  display: none;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}", ""]);
 
 // exports
 
@@ -35175,7 +35179,7 @@ exports = module.exports = __webpack_require__(19)(undefined);
 
 
 // module
-exports.push([module.i, ".radioContainer {\n  margin: 20px 0;\n}\n\n.radioContainer p {\n  font-size: 1.1rem;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 3px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
+exports.push([module.i, ".radioContainer {\n  margin: 20px 0;\n}\n\n.radioContainer p {\n  font-size: 1.1rem;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 3px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When radioOptions is in readOnly mode*/\n.radioOptionsReadOnly:hover,\n.radioOptionsReadOnly:hover input~.radioCheck,\n.radioOptionsReadOnlyinput:checked ~ .radioCheck {\n  box-shadow: none;\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
 
 // exports
 
@@ -41918,16 +41922,18 @@ var NewConsentGroup = function (_Component) {
 
     _this.submitNewConsentGroup = function () {
 
+      _this.setState({ submitError: false });
+
       if (_this.validateStep1() && _this.validateStep2() && _this.validateStep3() && _this.validateStep4() && _this.validateStep5()) {
         _this.removeErrorMessage();
 
-        _this.setState(function (prev) {
-          prev.formSubmitted = true;
-          return prev;
-        });
-
+        _this.changeSubmitState();
         _ajax.ConsentGroup.create(_this.props.createConsentGroupURL, _this.getConsentGroup()).then(function (resp) {
           _this.uploadFiles(resp.data.message.projectKey);
+        }).catch(function (error) {
+          console.error(error);
+          _this.toggleSubmitError();
+          _this.changeSubmitState();
         });
       } else {
         _this.setState(function (prev) {
@@ -41937,15 +41943,28 @@ var NewConsentGroup = function (_Component) {
       }
     };
 
+    _this.changeSubmitState = function () {
+      _this.setState(function (prev) {
+        prev.formSubmitted = !prev.formSubmitted;
+        return prev;
+      });
+    };
+
     _this.uploadFiles = function (projectKey) {
       _ajax.Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey, _this.props.user.displayName, _this.props.user.userName).then(function (resp) {
         window.location.href = _this.getRedirectUrl(projectKey);
-        _this.setState(function (prev) {
-          prev.formSubmitted = true;
-          return prev;
-        });
       }).catch(function (error) {
+        _this.changeSubmitState();
         console.error(error);
+        _this.toggleSubmitError();
+      });
+    };
+
+    _this.toggleSubmitError = function () {
+      _this.setState(function (prev) {
+        prev.submitError = true;
+        prev.generalError = true;
+        return prev;
       });
     };
 
@@ -42074,6 +42093,7 @@ var NewConsentGroup = function (_Component) {
       showErrorStep3: false,
       generalError: false,
       formSubmitted: false,
+      submitError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -42519,7 +42539,55 @@ var NewConsentGroup = function (_Component) {
 
       var projectType = determination.projectType;
 
-      return (0, _Wizard.Wizard)({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup, disabledSubmit: this.state.formSubmitted }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey, sampleCollectionList: this.state.sampleCollectionList }), (0, _NewConsentGroupDocuments.NewConsentGroupDocuments)({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }), (0, _NewConsentGroupIntCohorts.NewConsentGroupIntCohorts)({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError })]);
+      return (0, _Wizard.Wizard)({
+        title: "New Consent Group",
+        stepChanged: this.stepChanged,
+        isValid: this.isValid,
+        showSubmit: this.showSubmit,
+        submitHandler: this.submitNewConsentGroup,
+        disabledSubmit: this.state.formSubmitted
+      }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({
+        title: "General Data",
+        currentStep: currentStep,
+        user: this.props.user,
+        sampleSearchUrl: this.props.sampleSearchUrl,
+        updateForm: this.updateStep1FormData,
+        errors: this.state.errors,
+        removeErrorMessage: this.removeErrorMessage,
+        projectKey: this.props.projectKey,
+        sampleCollectionList: this.state.sampleCollectionList
+      }), (0, _NewConsentGroupDocuments.NewConsentGroupDocuments)({
+        title: "Documents",
+        currentStep: currentStep,
+        fileHandler: this.fileHandler,
+        projectType: projectType,
+        files: this.state.files,
+        fillablePdfURL: this.props.fillablePdfURL
+      }), (0, _NewConsentGroupIntCohorts.NewConsentGroupIntCohorts)({
+        title: "International Cohorts",
+        currentStep: currentStep,
+        handler: this.determinationHandler,
+        determination: this.state.determination,
+        errors: this.state.showErrorStep3
+      }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({
+        title: "Security",
+        currentStep: currentStep,
+        user: this.props.user,
+        searchUsersURL: this.props.searchUsersURL,
+        updateForm: this.updateStep4FormData,
+        errors: this.state.errors,
+        removeErrorMessage: this.removeErrorMessage
+      }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({
+        title: "Data Sharing",
+        currentStep: currentStep,
+        user: this.props.user,
+        searchUsersURL: this.props.searchUsersURL,
+        updateForm: this.updateStep5FormData,
+        errors: this.state.errors,
+        removeErrorMessage: this.removeErrorMessage,
+        generalError: this.state.generalError,
+        submitError: this.state.submitError
+      })]);
     }
   }], [{
     key: 'getDerivedStateFromError',
@@ -42626,7 +42694,7 @@ var InputFieldDatePicker = exports.InputFieldDatePicker = (0, _reactHyperscriptH
     key: 'render',
     value: function render() {
 
-      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage }, [(0, _reactHyperscriptHelpers.h)(_reactDatepicker2.default, {
+      return (0, _InputField.InputField)({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [(0, _reactHyperscriptHelpers.h)(_reactDatepicker2.default, {
         selected: this.props.selected,
         onChange: this.props.onChange(this.props.name),
         showYearDropdown: true,
@@ -42733,7 +42801,11 @@ var InstitutionalSource = exports.InstitutionalSource = (0, _reactHyperscriptHel
     value: function render() {
       var _this2 = this;
 
-      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Country"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addInstitutionalSources }, disabled: false })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.state.institutionalSources.map(function (rd, index) {
+      return (0, _reactHyperscriptHelpers.h)(_react.Fragment, {}, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Name"])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [(0, _reactHyperscriptHelpers.p)({ className: "noMargin" }, ["Country"])])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [(0, _Btn.Btn)({
+        action: { labelClass: "glyphicon glyphicon-plus", handler: this.addInstitutionalSources },
+        disabled: false,
+        isRendered: !this.props.readOnly
+      })])]), (0, _reactHyperscriptHelpers.hr)({ className: "fullWidth" }), this.state.institutionalSources.map(function (rd, index) {
         return (0, _reactHyperscriptHelpers.h)(_react.Fragment, { key: index }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [(0, _reactHyperscriptHelpers.div)({ className: "row" }, [(0, _reactHyperscriptHelpers.div)({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [(0, _InputFieldText.InputFieldText)({
           index: index,
           id: index + "name",
@@ -42744,7 +42816,8 @@ var InstitutionalSource = exports.InstitutionalSource = (0, _reactHyperscriptHel
           required: true,
           onChange: _this2.handleInstitutionalChange,
           error: _this2.props.errorName && index === 0,
-          errorMessage: _this2.props.errorMessage
+          errorMessage: _this2.props.errorMessage,
+          readOnly: _this2.props.readOnly
         })]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [(0, _InputFieldText.InputFieldText)({
           id: index + "country",
           index: index,
@@ -42755,7 +42828,10 @@ var InstitutionalSource = exports.InstitutionalSource = (0, _reactHyperscriptHel
           onChange: _this2.handleInstitutionalChange,
           error: _this2.props.errorCountry && index === 0,
           errorMessage: _this2.props.errorMessage
-        })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this2.removeInstitutionalSources(index) }, disabled: !_this2.state.institutionalSources.length > 1 })])])]);
+        })])])]), (0, _reactHyperscriptHelpers.div)({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [(0, _Btn.Btn)({ action: { labelClass: "glyphicon glyphicon-remove", handler: _this2.removeInstitutionalSources(index) },
+          disabled: !_this2.state.institutionalSources.length > 1,
+          isRendered: !_this2.props.readOnly
+        })])])]);
       })]);
     }
   }]);
@@ -42854,10 +42930,22 @@ var NewConsentGroupDataSharing = exports.NewConsentGroupDataSharing = (0, _react
         return (0, _reactHyperscriptHelpers.h1)({}, ["Something went wrong."]);
       }
 
+      var errorText = '';
+
+      if (this.props.generalError && this.props.errors.sharingPlan) {
+        errorText = 'Please complete all required fields';
+      } else {
+        errorText = 'Please check previous steps';
+      }
+
+      if (this.props.submitError) {
+        errorText = 'Something went wrong in the server. Please try again later.';
+      }
+
       return (0, _WizardStep.WizardStep)({
         title: this.props.title, step: 4, currentStep: this.props.currentStep,
         error: this.props.errors.sharingPlan || this.props.generalError,
-        errorMessage: this.props.generalError && this.props.errors.sharingPlan ? 'Please complete all required fields' : 'Please check previous steps'
+        errorMessage: errorText
       }, [(0, _reactHyperscriptHelpers.div)({ className: "questionnaireContainer" }, [(0, _InputFieldRadio.InputFieldRadio)({
         id: "radioSharingPlan",
         name: "sharingPlan",

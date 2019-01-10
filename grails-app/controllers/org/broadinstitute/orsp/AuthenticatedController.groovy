@@ -69,13 +69,9 @@ class AuthenticatedController implements Interceptor, UserInfo {
         userService.findUser(issue.reporter) ?: null
     }
 
-    protected Collection<User> getCollcaborators(Collection<String> collaboratorsList) {
-        Collection<User> colls = userService.findUsers(collaboratorsList) ?: new ArrayList<>()
-//        if (colls.isEmpty()) {
-//            User reporter = userService.findUser(issue.reporter)
-//            if (reporter) { colls.add(reporter) }
-//        }
-        colls
+    protected Collection<User> getCollaborators(Collection<String> collaboratorsList) {
+        Collection<User> collaborators = userService.findUsers(collaboratorsList) ?: new ArrayList<>()
+        collaborators
     }
 
     String getType() {
