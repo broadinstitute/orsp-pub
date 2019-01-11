@@ -68,7 +68,7 @@
                     <tbody>
                     <g:each in="${collectionLinks}" var="link" status="index">
                         <tr>
-                            <td>${link.sampleCollection?.id}</td>
+                            <td>${link.sampleCollection?.collectionId}</td>
                             <td>${link.sampleCollection?.name}</td>
                             <td>${link.sampleCollection?.category}</td>
                             <td>${link.sampleCollection?.groupName}</td>
