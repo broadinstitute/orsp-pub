@@ -21,7 +21,8 @@
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
             attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
             createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
-            serverURL: "${webRequest.baseUrl}"
+            serverURL: "${webRequest.baseUrl}",
+            loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
         };
     </script>
 </head>

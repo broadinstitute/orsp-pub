@@ -9,8 +9,8 @@ module.exports = {
     search: './src/main/webapp/search/index.js',
     project: './src/main/webapp/project/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
-    consentGroupReview: './src/main/webapp/consentGroupReview/index.js'
-
+    consentGroupReview: './src/main/webapp/consentGroupReview/index.js',
+    projectReview: './src/main/webapp/projectReview/index.js'
   },
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts'),

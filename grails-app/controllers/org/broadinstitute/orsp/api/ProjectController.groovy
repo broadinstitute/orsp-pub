@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
@@ -35,6 +36,32 @@ class ProjectController extends AuthenticatedController {
         render([message: issue] as JSON)
     }
 
+    def modifyExtraProperties() {
+        String projectKey = params.id
+        Gson gson = new Gson()
+        Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
+        Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
+        render([message: updatedIssue] as JSON)
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    def getProject() {
+        String projectKey = params.id
+        Issue issue = queryService.findByKey(projectKey)
+        Collection<Funding> fundingList = issue.getFundings()
+        LinkedHashMap<String, Object> extraProperties =  issue.getExtraPropertiesMap()
+        Collection<User> colls = getCollaborators(extraProperties.collaborators)
+        render([issue             : issue,
+                requestor         : getRequestorForIssue(issue),
+                pms               : getProjectManagersForIssue(issue),
+                pis               : getPIsForIssue(issue),
+                fundings          : fundingList,
+                extraProperties   : extraProperties,
+                collaborators     : colls
+        ] as JSON)
+    }
+
+    //NE y NHSR
     @Override
     handleIntake(String key) {
         Issue issue = queryService.findByKey(key)

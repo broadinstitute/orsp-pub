@@ -111,10 +111,11 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "source",
                       options: fundingOptions,
-                      value: this.state.fundings[idx].source,
+                      value: this.props.fundings[idx].source,
                       onChange: this.handleFundingSelect,
                       error: this.props.error && idx === 0,
-                      errorMessage: this.props.errorMessage
+                      errorMessage: this.props.errorMessage,
+                      readOnly: this.props.readOnly
                     })
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -123,10 +124,11 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
-                      value: this.state.fundings[idx].sponsor,
+                      value: this.props.fundings[idx].sponsor,
                       disabled: false,
                       required: false,
-                      onChange: this.handleFundingChange
+                      onChange: this.handleFundingChange,
+                      readOnly: this.props.readOnly
                     })
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -135,10 +137,11 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      value: this.state.fundings[idx].identifier,
+                      value: this.props.fundings[idx].identifier,
                       disabled: false,
                       required: false,
-                      onChange: this.handleFundingChange
+                      onChange: this.handleFundingChange,
+                      readOnly: this.props.readOnly
                     })
                   ])
                 ])

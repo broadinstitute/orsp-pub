@@ -50,7 +50,8 @@ class IssueService {
             IssueExtraProperty.PROJECT_TITLE,
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PI,
-            IssueExtraProperty.PM
+            IssueExtraProperty.PM,
+            IssueExtraProperty.PROJECT_REVIEW_APPROVED
     ]
 
 
@@ -189,6 +190,16 @@ class IssueService {
             it.projectKey = issue.projectKey
             it.save(flush: true)
         }
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Issue modifyExtraProperties(Object input, String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        Collection<IssueExtraProperty> extraPropertiesList = getSingleValuedPropsForSaving(issue, input)
+        if (!extraPropertiesList.isEmpty()) {
+            saveExtraProperties(issue, extraPropertiesList)
+        }
+        issue
     }
 
     void saveFundings(Issue issue, Collection<Funding> fundings) {
