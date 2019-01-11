@@ -185,4 +185,21 @@ class Issue {
         properties
     }
 
+    transient LinkedHashMap<String, Object> getExtraPropertiesMap() {
+        LinkedHashMap<String, Object> extraproperties = new LinkedHashMap<>()
+        Collection<String> collaborators = new ArrayList<String>()
+        getExtraProperties().collect {
+            if ( it.name != "collaborator") {
+                extraproperties.put(it.name, it.value)
+            } else {
+                collaborators.add(it.value)
+            }
+        }
+
+        if (!collaborators.isEmpty()) {
+            extraproperties.put("collaborators",  collaborators)
+        }
+        extraproperties
+    }
+
 }

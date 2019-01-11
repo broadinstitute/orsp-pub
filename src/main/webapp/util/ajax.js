@@ -64,6 +64,14 @@ export const Project = {
       headers: { 'content-type': 'application/json' }
     };
     return axios.post(url, data, config);
+  },
+
+  getProject(url, projectkey) {
+    return axios.get(url+ '?id=' + projectkey );
+  },
+
+  addExtraProperties(url, projectKey, data) {
+    return axios.post(url+ '?id=' + projectKey, data );
   }
 
 };

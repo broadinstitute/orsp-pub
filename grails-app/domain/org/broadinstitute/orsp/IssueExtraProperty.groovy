@@ -55,6 +55,7 @@ class IssueExtraProperty {
     public static final String TEXT_SENSITIVE = "textSensitive"
     public static final String ACCESSIBLE = "accessible"
     public static final String TEXT_ACCESSIBLE = "textAccessible"
+    public static final String PROJECT_REVIEW_APPROVED = "projectReviewApproved"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"
