@@ -7,6 +7,7 @@ import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
 
 class NewConsentGroup extends Component {
 
@@ -82,6 +83,7 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = () => {
 
+    spinnerService.showAll();
     this.setState({submitError: false});
 
     if (this.validateStep1() && this.validateStep2() &&
@@ -93,13 +95,18 @@ class NewConsentGroup extends Component {
         this.uploadFiles(resp.data.message.projectKey);
       }).catch(error => {
         console.error(error);
+        spinnerService.hideAll();
         this.toggleSubmitError();
         this.changeSubmitState();
+      }).finally( () => {
+        spinnerService.hideAll();
       });
     } else {
       this.setState(prev => {
         prev.generalError = true;
         return prev;
+      }, () => {
+        spinnerService.hideAll();
       });
     }
   };
@@ -115,6 +122,11 @@ class NewConsentGroup extends Component {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
+        spinnerService.hideAll();
+        this.setState(prev => {
+          prev.formSubmitted = true;
+          return prev;
+        });
       }).catch(error => {
         this.changeSubmitState();
         console.error(error);
@@ -309,7 +321,7 @@ class NewConsentGroup extends Component {
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' ||
       field === 'sampleCollections' || field === 'describeConsentGroup' ||
-      field === 'requireMta' || field === 'nameInstitutional'|| field === 'countryInstitutional') {
+      field === 'requireMta' || field === 'nameInstitutional' || field === 'countryInstitutional') {
 
       this.setState(prev => {
         if (field === 'investigatorLastName') {
@@ -561,7 +573,7 @@ class NewConsentGroup extends Component {
     documents.push({
       required: true,
       fileKey: 'Consent Document',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" },["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" }, ["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
       file: null,
       fileName: null,
       error: false
@@ -639,7 +651,8 @@ class NewConsentGroup extends Component {
         isValid: this.isValid,
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
-        disabledSubmit: this.state.formSubmitted
+        disabledSubmit: this.state.formSubmitted,
+        loadingImage: this.props.loadingImage
       }, [
         NewConsentGroupGeneralData({
           title: "General Data",

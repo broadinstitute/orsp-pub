@@ -1,6 +1,7 @@
 import { Component, Fragment } from 'react';
-import { div, hh, h2, h, button, h1,  p } from 'react-hyperscript-helpers';
+import { div, hh, h2, h, button, h1, p } from 'react-hyperscript-helpers';
 import './Wizard.css';
+import { Spinner } from './Spinner';
 
 export const Wizard = hh(class Wizard extends Component {
 
@@ -80,7 +81,7 @@ export const Wizard = hh(class Wizard extends Component {
           div({ className: "tabContainer" }, [
             this.props.children.map((child, idx) => {
               return h(Fragment, { key: idx }, [
-                div({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: this.goStep(idx) }, [child.props.title])
+                div({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: this.goStep(idx)}, [child.props.title])
               ])
             })
           ]),
@@ -89,7 +90,10 @@ export const Wizard = hh(class Wizard extends Component {
             button({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep, isRendered: (this.state.currentStepIndex > 0)}, ["Previous Step"]),
             button({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]),
             button({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit, disabled: this.props.disabledSubmit}, ["SUBMIT"]),
-          ])
+          ]),
+          h(Spinner, {
+            name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          })
         ])
       ])
     );
