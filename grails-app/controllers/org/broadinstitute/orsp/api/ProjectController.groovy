@@ -53,8 +53,8 @@ class ProjectController extends AuthenticatedController {
         Collection<User> colls = getCollaborators(extraProperties.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
-                pms               : getProjectManagersForIssue(issue)[0],
-                pis               : getPIsForIssue(issue)[0],
+                pms               : getProjectManagersForIssue(issue),
+                pis               : getPIsForIssue(issue),
                 fundings          : fundingList,
                 extraProperties   : extraProperties,
                 collaborators     : colls

@@ -62,11 +62,10 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     protected Collection<User> getPIsForIssue(Issue issue) {
         Collection<String> pis = IssueExtraProperty.findAllByProjectKeyAndName(issue.projectKey, IssueExtraProperty.PI)*.value
-        Collection<User> pisForUsers = new ArrayList<>()
-        if (!pis.isEmpty()) {
-            pisForUsers.addAll(userService.findUsers(pis))
-        } else {
-            pisForUsers.add(userService.findUser(issue.reporter))
+        Collection<User> pisForUsers = userService.findUsers(pis) ?: new ArrayList<>()
+        if (pis.isEmpty()) {
+            User reporter = userService.findUser(issue.reporter)
+            if (reporter) { pisForUsers.add(reporter) }
         }
         pisForUsers
     }

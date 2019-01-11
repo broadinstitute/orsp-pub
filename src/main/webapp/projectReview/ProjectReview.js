@@ -10,24 +10,23 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Project } from "../util/ajax";
 
+const ORSP_ROLE = "orsp";
+
 class ProjectReview extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      projectForm: {
-        description: ''
-      },
-      projectExtraProps: {
+        description: '',
+        projectExtraProps: {
         projectTitle: '',
         protocol: '',
         subjectProtection: '',
         projectReviewApproved: false
-
       },
-      piList: { key: '', label: '', value: '' },
-      pmList: { key: '', label: '', value: '' },
-      fundings: [{ source: '', sponsor: '', identifier: '' }],
+      piList: [{ key: '', label: '', value: '' }],
+      pmList: [{ key: '', label: '', value: '' }],
+      fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
       collaborators: [{ key: '', label: '', value: '' }],
       requestor: {
         displayName: '',
@@ -40,39 +39,47 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       element =>
         this.setState(prev => {
-          prev.projectForm = element.data.issue;
+          prev.description = element.data.issue.description;
           prev.projectExtraProps = element.data.extraProperties;
-          if (element.data.pis !== null) {
-            prev.piList.key = element.data.pis.userName;
-            prev.piList.label = element.data.pis.displayName + " (" + element.data.pis.emailAddress + ") ";
-            prev.piList.value = element.data.pis.displayName;
-          }
-          if (element.data.pmList !== null) {
-            prev.pmList.key = element.data.pms.userName;
-            prev.pmList.label = element.data.pms.displayName + " (" + element.data.pms.emailAddress + ") ";
-            prev.pmList.value = element.data.pms.displayName;
-          }
-          if (element.data.collaborators !== null) {
-            let elementCollaborators = [];
-            element.data.collaborators.map(coll => {
-              elementCollaborators.push({
-                key: coll.userName,
-                label:coll.displayName + " (" + coll.emailAddress + ") ",
-                value: coll.displayName
-              });
-            });
-            prev.collaborators = elementCollaborators;
-          }
-          let elementFundings = [];
-          element.data.fundings.map(funding => {
-              elementFundings.push({ source:{ label: funding.source, value: funding.source.split(" ").join("_").toLowerCase()}, sponsor: funding.name, identifier: funding.awardNumber });
-          });
-          prev.fundings = elementFundings;
-
-          prev.requestor = element.data.requestor;
+          prev.piList = this.getUsersArray(element.data.pis);
+          prev.pmList = this.getUsersArray(element.data.pms);
+          prev.collaborators = this.getUsersArray(element.data.collaborators);
+          prev.fundings = this.getFundingsArray(element.data.fundings);
+          prev.requestor = element.data.requestor !== null ? element.data.requestor : this.state.requestor;
           return prev;
         }, () => {})
       );
+  }
+
+  getUsersArray (array) {
+    let usersArray = [];
+    if (array !== undefined  && array !== null && array.length > 0) {
+      array.map(element => {
+        usersArray.push({
+          key: element.userName,
+          label: element.displayName + " (" + element.emailAddress + ") ",
+          value: element.displayName
+        });
+      });
+    }
+    return usersArray
+  }
+
+  getFundingsArray (fundings) {
+    let fundingsArray = [];
+    if (fundings !== undefined && fundings !== null && fundings.length > 0) {
+      fundings.map(funding => {
+        fundingsArray.push({
+          source:{
+            label: funding.source,
+            value: funding.source.split(" ").join("_").toLowerCase()
+          },
+          sponsor: funding.name,
+          identifier: funding.awardNumber !== null ? funding.awardNumber : ''
+        });
+      });
+    }
+    return fundingsArray;
   }
 
   isEmpty(value) {
@@ -80,7 +87,7 @@ class ProjectReview extends Component {
   }
 
   isAdmin = (e) => {
-    return this.props.roles.indexOf("orsp") > -1;
+    return this.props.roles.indexOf(ORSP_ROLE) > -1;
   }
 
   approveRevision = (e) => () => {
@@ -127,8 +134,7 @@ class ProjectReview extends Component {
             loadOptions: [],
             handleChange: null,
             value: this.state.piList,
-            placeholder: "Start typing the PI Name",
-            isMulti: false
+            isMulti: this.state.piList.length > 1
           }),
           MultiSelect({
             id: "inputProjectManager",
@@ -137,8 +143,7 @@ class ProjectReview extends Component {
             loadOptions: [],
             handleChange: null,
             value: this.state.pmList,
-            placeholder: "Start typing the Project Manager Name",
-            isMulti: false
+            isMulti: this.state.pmList.length > 1
           })
         ]),
 
@@ -157,7 +162,7 @@ class ProjectReview extends Component {
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
             label: "Broad study activities",
-            value: this.state.projectForm.description.replace(/<\/?[^>]+(>|$)/g, ""),
+            value: this.state.description.replace(/<\/?[^>]+(>|$)/g, ""),
             readOnly: true,
             required: false,
             onChange: () => { },
@@ -171,7 +176,6 @@ class ProjectReview extends Component {
             loadOptions: [],
             handleChange: null,
             value: this.state.collaborators,
-            placeholder: "Start typing collaborator names",
             isMulti: true
           }),
           InputFieldText({
