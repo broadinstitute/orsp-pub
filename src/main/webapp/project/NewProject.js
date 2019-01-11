@@ -51,19 +51,20 @@ class NewProject extends Component {
   submitNewProject = () => {
     this.toggleFalseSubmitError();
 
+    spinnerService.showAll();
     if (this.validateStep3()) {
 
       if (this.validateStep2() && this.validateStep1()) {
         this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-          spinnerService.showAll();
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
-          spinnerService.hideAll();
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           console.error(error);
+        }).finally( () => {
+          spinnerService.hideAll();
         });
       } else {
         this.setState(prev => {
@@ -75,6 +76,8 @@ class NewProject extends Component {
       this.setState(prev => {
         prev.showErrorStep3 = true;
         return prev;
+      }, () => {
+        spinnerService.hideAll();
       });
     }
   };

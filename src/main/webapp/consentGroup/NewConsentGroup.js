@@ -83,6 +83,7 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = () => {
 
+    spinnerService.showAll();
     this.setState({submitError: false});
 
     if (this.validateStep1() && this.validateStep2() &&
@@ -91,18 +92,21 @@ class NewConsentGroup extends Component {
 
       this.changeSubmitState();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
-        spinnerService.showAll();
         this.uploadFiles(resp.data.message.projectKey);
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
         this.toggleSubmitError();
         this.changeSubmitState();
+      }).finally( () => {
+        spinnerService.hideAll();
       });
     } else {
       this.setState(prev => {
         prev.generalError = true;
         return prev;
+      }, () => {
+        spinnerService.hideAll();
       });
     }
   };
