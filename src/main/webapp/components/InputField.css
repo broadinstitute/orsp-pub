@@ -6,6 +6,20 @@
   margin-top: 0;
 }
 
+.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
+  border: none;
+  font-size: 1.1rem;
+  box-shadow: none;
+  pointer-events: none;
+  padding-left: 0;
+  color: black;
+}
+
+.inputFieldReadOnly .inputFieldLabel,
+.inputFieldReadOnly label {
+  font-weight: 700;
+} 
+
 .inputFieldLabel {
   font-weight: 400;
   margin-bottom: 3px;

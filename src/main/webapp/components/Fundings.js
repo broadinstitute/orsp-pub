@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, div, p, hr, small } from 'react-hyperscript-helpers';
+import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
@@ -75,15 +75,15 @@ export const Fundings = hh(class Fundings extends Component {
       h(Fragment, {}, [
         div({ className: "row" }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
-            div({ className: "row" }, [
+            div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                p({ className: "noMargin" }, ["Funding Source"])
+                label({ className: "noMargin" }, ["Funding Source"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                p({ className: "noMargin" }, ["Prime Sponsor Name"])
+                label({ className: "noMargin" }, ["Prime Sponsor Name"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                p({ className: "noMargin" }, ["Award Number/Identifier"])
+                label({ className: "noMargin" }, ["Award Number/Identifier"])
               ])
             ])
           ]),
@@ -144,7 +144,8 @@ export const Fundings = hh(class Fundings extends Component {
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
+                Btn({
+                  action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
                   disabled: !this.state.fundings.length > 1,
                   isRendered: !this.props.readOnly
                 }),
@@ -154,5 +155,5 @@ export const Fundings = hh(class Fundings extends Component {
         })
       ])
     )
-  } 
+  }
 });

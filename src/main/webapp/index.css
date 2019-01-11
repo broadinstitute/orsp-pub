@@ -179,3 +179,7 @@ input[type=checkbox]:checked+label:before {
 .fullWidth {
   width: 100%;
 }
+
+.tableContainer .table {
+  margin-bottom: 0;
+}
