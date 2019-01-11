@@ -6,6 +6,7 @@ import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { Files, Project } from "../util/ajax";
 import { span } from 'react-hyperscript-helpers';
+import { spinnerService } from "../util/spinner-service";
 
 class NewProject extends Component {
 
@@ -50,6 +51,7 @@ class NewProject extends Component {
   submitNewProject = () => {
     this.toggleFalseSubmitError();
 
+    spinnerService.showAll();
     if (this.validateStep3()) {
 
       if (this.validateStep2() && this.validateStep1()) {
@@ -61,6 +63,8 @@ class NewProject extends Component {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           console.error(error);
+        }).finally( () => {
+          spinnerService.hideAll();
         });
       } else {
         this.setState(prev => {
@@ -72,6 +76,8 @@ class NewProject extends Component {
       this.setState(prev => {
         prev.showErrorStep3 = true;
         return prev;
+      }, () => {
+        spinnerService.hideAll();
       });
     }
   };
@@ -364,6 +370,7 @@ class NewProject extends Component {
         window.location.href = this.getRedirectUrl(projectKey);
 
       }).catch(error => {
+        spinnerService.hideAll();
         this.toggleTrueSubmitError();
         this.changeStateSubmitButton();
         console.error(error);
@@ -415,7 +422,8 @@ class NewProject extends Component {
         isValid: this.isValid,
         submitHandler: this.submitNewProject,
         showSubmit: this.showSubmit,
-        disabledSubmit: this.state.formSubmitted
+        disabledSubmit: this.state.formSubmitted,
+        loadingImage: this.props.loadingImage,
       }, [
         NewProjectGeneralData({
           title: "General Data",

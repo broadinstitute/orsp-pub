@@ -10,6 +10,7 @@ ReactDOM.render(
         attachDocumentsURL = {component.attachDocumentsURL}
         createProjectURL = {component.createProjectURL}
         serverURL = {component.serverURL}
+        loadingImage = {component.loadingImage}
      />,
     document.getElementById('project')
 );

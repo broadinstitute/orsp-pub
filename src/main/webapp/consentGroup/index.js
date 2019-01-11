@@ -14,6 +14,7 @@ ReactDOM.render(
         serverURL = {component.serverURL}
         fillablePdfURL = {component.fillablePdfURL}
         projectKey = {component.projectKey}
+        loadingImage = {component.loadingImage}
      />,
     document.getElementById('newConsentGroup')
 );

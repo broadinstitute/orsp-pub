@@ -25,7 +25,8 @@
             attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
             serverURL: "${webRequest.baseUrl}",
             fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
-            projectKey: "${params.projectKey}"
+            projectKey: "${params.projectKey}",
+            loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
         };
     </script>
 </head>
