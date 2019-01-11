@@ -189,14 +189,14 @@ class Issue {
         LinkedHashMap<String, Object> extraproperties = new LinkedHashMap<>()
         Collection<String> collaborators = new ArrayList<String>()
         getExtraProperties().collect {
-            if( it.name != "collaborator") {
+            if ( it.name != "collaborator") {
                 extraproperties.put(it.name, it.value)
             } else {
                 collaborators.add(it.value)
             }
         }
 
-        if (collaborators.size() > 0 ) {
+        if (!collaborators.isEmpty()) {
             extraproperties.put("collaborators",  collaborators)
         }
         extraproperties

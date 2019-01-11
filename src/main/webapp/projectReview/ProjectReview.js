@@ -17,8 +17,8 @@ class ProjectReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        description: '',
-        projectExtraProps: {
+      description: '',
+      projectExtraProps: {
         projectTitle: '',
         protocol: '',
         subjectProtection: '',

@@ -96,7 +96,7 @@ export const Fundings = hh(class Fundings extends Component {
           ])
         ]),
 
-         hr({ className: "fullWidth" }),
+        hr({ className: "fullWidth" }),
 
         this.props.fundings.map((rd, idx) => {
           return h(Fragment, { key: idx }, [

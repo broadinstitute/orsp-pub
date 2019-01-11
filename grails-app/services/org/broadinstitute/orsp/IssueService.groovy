@@ -195,14 +195,8 @@ class IssueService {
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     Issue modifyExtraProperties(Object input, String projectKey) {
         Issue issue = queryService.findByKey(projectKey)
-        Collection<IssueExtraProperty> newProperties = getSingleValuedPropsForSaving(issue, input)
-        List<IssueExtraProperty> extraPropertiesList = new ArrayList<>()
-        newProperties.collect {
-            property ->
-                extraPropertiesList.add(property)
-        }
-
-        if (extraPropertiesList.size() > 0 ) {
+        Collection<IssueExtraProperty> extraPropertiesList = getSingleValuedPropsForSaving(issue, input)
+        if (!extraPropertiesList.isEmpty()) {
             saveExtraProperties(issue, extraPropertiesList)
         }
         issue
