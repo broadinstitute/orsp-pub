@@ -12,6 +12,7 @@ class Issue {
     String summary
     String description
     String reporter
+    String approvalStatus
     Date requestDate
     Date updateDate
     Date expirationDate
@@ -28,6 +29,7 @@ class Issue {
         requestDate nullable: false
         updateDate nullable: true
         expirationDate nullable: true
+        approvalStatus blank: false, nullale: false
     }
 
     // Transients
@@ -163,6 +165,7 @@ class Issue {
 
     transient String getTextAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_ACCESSIBLE }?.value }
 
+    transient String getApproval() { getExtraProperties().find { it.name == IssueExtraProperty.APPROVAL }?.value }
 
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.

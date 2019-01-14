@@ -122,7 +122,8 @@
     </div>
 
     <div id="consentGroupReview">
-            <g:render template="/consentGroupReview/index" model="[issue: issue]"/>
+        <g:render template="/consentGroupReview/index" model="[issue: issue]"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     </div>
 
 

@@ -63,6 +63,7 @@ class NewConsentGroup extends Component {
   }
 
   componentDidMount() {
+  this.getRedirectUrl();
     this.initDocuments();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
@@ -214,14 +215,8 @@ class NewConsentGroup extends Component {
   };
 
   getRedirectUrl() {
-    let projectKey = this.props.projectKey.split("-");
-    let projectType = '';
-    if (projectKey.length === 3) {
-      projectType = projectKey[1].toLowerCase();
-    } else {
-      projectType = projectKey[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+    let type = this.props.projectType.split(" ")[0].toLowerCase();
+    return [this.props.serverURL, type, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
   }
 
   isValid = (field) => {

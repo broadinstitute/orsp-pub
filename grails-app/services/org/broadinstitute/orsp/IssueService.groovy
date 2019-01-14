@@ -51,7 +51,8 @@ class IssueService {
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PI,
             IssueExtraProperty.PM,
-            IssueExtraProperty.PROJECT_REVIEW_APPROVED
+            IssueExtraProperty.PROJECT_REVIEW_APPROVED,
+            IssueExtraProperty.APPROVAL
     ]
 
 
@@ -109,30 +110,7 @@ class IssueService {
         // Funding:
         def fundingParams = (GrailsParameterMap) input.get('funding')
         def propList = IssueUtils.convertNestedParamsToPropertyList(fundingParams)
-        def newFundingList = propList.collect { p ->
-            Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
-            Funding f = (fundingID > 0) ? Funding.findById(fundingID) : new Funding()
-            if (!f.getCreated()) f.setCreated(new Date())
-            if (f.id) f.setUpdated(new Date())
-            f.setSource(p.get("source").toString())
-            f.setName(p.get("name").toString())
-            f.setAwardNumber(p.get("award").toString())
-            f.setProjectKey(issue.projectKey)
-            f
-        }
-        newFundingList.each {
-            issue.addToFundings(it)
-            it.save()
-        }
-        def newFundingIdList = newFundingList*.id
-        def oldFundingList = queryService.findFundingsByProject(issue.projectKey)
-
-        // Remove the existing ones missing from the list of updated/new fundings:
-        def deletableFundings = oldFundingList.findAll { !newFundingIdList.contains(it.id) }
-        deletableFundings.each {
-            issue.removeFromFundings(it)
-            it.delete()
-        }
+        updateFundings(propList, issue)
 
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
@@ -160,6 +138,57 @@ class IssueService {
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
+            issue.save(flush: true)
+        }
+        issue
+    }
+
+    private void updateFundings(List<Map<String, Object>> propList, Issue issue) {
+        def newFundingList = propList.collect { p ->
+            Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
+            Funding f = (fundingID > 0) ? Funding.findById(fundingID) : new Funding()
+            if (!f.getCreated()) f.setCreated(new Date())
+            if (f.id) f.setUpdated(new Date())
+            f.setSource(p.get("source").toString())
+            f.setName(p.get("name").toString())
+            f.setAwardNumber(p.get("award").toString())
+            f.setProjectKey(issue.projectKey)
+            f
+        }
+        newFundingList.each {
+            issue.addToFundings(it)
+            it.save()
+        }
+        def newFundingIdList = newFundingList*.id
+        def oldFundingList = queryService.findFundingsByProject(issue.projectKey)
+
+        // Remove the existing ones missing from the list of updated/new fundings:
+        def deletableFundings = oldFundingList.findAll { !newFundingIdList.contains(it.id) }
+        deletableFundings.each {
+            issue.removeFromFundings(it)
+            it.delete()
+        }
+    }
+
+    @Transactional
+    Issue newUpdateIssue (String projectKey, Object input) throws DomainException {
+        Issue issue = queryService.findByKey(projectKey)
+
+        if (issue != null) {
+            issue = modifyIssueProperties(issue, input)
+
+            issue.setUpdateDate(new Date())
+//            def fundingParams = input.get('fundings')
+//            List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
+//            def propList = IssueUtils.convertNestedParamsToPropertyList(fundingParams)
+//            Collection<Funding> fundings = updateFundings(fundingParams, issue)
+
+            if (issue.hasErrors()) {
+                throw new DomainException(issue.getErrors())
+            }
+
+//            saveExtraProperties(issue, extraProperties)
+//            saveFundings(issue, fundings)
             issue.save(flush: true)
         }
         issue
@@ -202,6 +231,17 @@ class IssueService {
         issue
     }
 
+    @SuppressWarnings(["GroovyMissingReturnStatement"])
+    Issue modifyIssueProperties (Issue issue, Object input) {
+        Issue updatedIssue = issue
+        input.collect { element ->
+            if ( issue.getProperties().get(element.key) != null ) {
+                updatedIssue.(element.key) = element.value
+            }
+        }
+        updatedIssue
+    }
+
     void saveFundings(Issue issue, Collection<Funding> fundings) {
         fundings?.each {
             it.setCreated(new Date())
@@ -215,6 +255,7 @@ class IssueService {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
+        newIssue.setApprovalStatus("Pending")
         newIssue.type = type.name
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null

@@ -26,7 +26,9 @@
             serverURL: "${webRequest.baseUrl}",
             fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
             projectKey: "${params.projectKey}",
-            loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+            loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+            projectType: '${params.type}'
+
         };
     </script>
 </head>

@@ -44,8 +44,6 @@ class ConsentGroupReview extends Component {
   }
 
   componentDidMount() {
-    console.log("Consent Key", this.props.consentKey);
-
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element =>{
         this.setState(prev => {
@@ -61,7 +59,7 @@ class ConsentGroupReview extends Component {
             prev.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
           }
           return prev;
-        }, () => console.log("Consent Review State ", this.state))
+        })
         }
     );
   }
@@ -81,6 +79,11 @@ class ConsentGroupReview extends Component {
   hasDate(date) {
     if (this.state.consentExtraProps[date] !== undefined)
     return true
+  }
+
+  approveConsentGroup = () => {
+    const data = { approvalStatus: "Approved", fundings : [{ identifier: "identi", source: { label:"Purchase Order", value:"purchase_order"}, sponsor: "sponsor"}]}
+    ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(response => console.log("Respuesta ", response));
   }
 
   render() {
@@ -359,7 +362,7 @@ class ConsentGroupReview extends Component {
             optionValues: ["controlled", "open", "none", "undetermined"],
             optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
             value: this.state.consentExtraProps.sharingPlan,
-            onChange: () => console.log("radio"),
+            onChange: () => {},
             readOnly: true
           }),
           InputFieldText({
@@ -384,7 +387,7 @@ class ConsentGroupReview extends Component {
           })
         ]),
         div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
-          button({ className: "btn buttonPrimary floatRight", onClick: () => console.log("approve"), isRendered: true }, ["Approve"]),
+          button({ className: "btn buttonPrimary floatRight", onClick: this.approveConsentGroup, isRendered: true }, ["Approve"]),
         ])
       ])
     )
