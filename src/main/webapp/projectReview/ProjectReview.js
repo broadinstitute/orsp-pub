@@ -297,7 +297,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
-            disable: this.state.disableApproveButton,
+            disabled: this.state.disableApproveButton,
             isRendered: this.isAdmin && !this.state.projectExtraProps.projectReviewApproved
           }, ["Approve"]),
         ])
