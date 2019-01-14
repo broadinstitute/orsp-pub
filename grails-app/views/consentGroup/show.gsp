@@ -193,7 +193,7 @@
                                         class="btn btn-default btn-sm">Remove</a>
                                 </td>
                             </auth:isOrsp>
-                            <td>${link.sampleCollection?.id}</td>
+                            <td>${link.sampleCollection?.collectionId}</td>
                             <td>${link.sampleCollection?.name}</td>
                             <td>${link.sampleCollection?.category}</td>
                             <td>${link.sampleCollection?.groupName}</td>
