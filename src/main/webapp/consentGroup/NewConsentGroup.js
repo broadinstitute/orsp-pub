@@ -63,7 +63,6 @@ class NewConsentGroup extends Component {
   }
 
   componentDidMount() {
-  this.getRedirectUrl();
     this.initDocuments();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
@@ -122,7 +121,7 @@ class NewConsentGroup extends Component {
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
       .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
+        window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
@@ -215,8 +214,7 @@ class NewConsentGroup extends Component {
   };
 
   getRedirectUrl() {
-    let type = this.props.projectType.split(" ")[0].toLowerCase();
-    return [this.props.serverURL, type, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+    return [this.props.serverURL, this.props.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
   }
 
   isValid = (field) => {

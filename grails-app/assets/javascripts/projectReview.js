@@ -43085,8 +43085,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ORSP_ROLE = "orsp";
-
 var ProjectReview = function (_Component) {
   _inherits(ProjectReview, _Component);
 
@@ -43094,10 +43092,6 @@ var ProjectReview = function (_Component) {
     _classCallCheck(this, ProjectReview);
 
     var _this = _possibleConstructorReturn(this, (ProjectReview.__proto__ || Object.getPrototypeOf(ProjectReview)).call(this, props));
-
-    _this.isAdmin = function (e) {
-      return _this.props.roles.indexOf(ORSP_ROLE) > -1;
-    };
 
     _this.approveRevision = function (e) {
       return function () {
@@ -43188,6 +43182,11 @@ var ProjectReview = function (_Component) {
     key: 'isEmpty',
     value: function isEmpty(value) {
       return value === '' || value === null || value === undefined;
+    }
+  }, {
+    key: 'isAdmin',
+    value: function isAdmin() {
+      return this.props.isAdmin === "true";
     }
   }, {
     key: 'render',
@@ -43333,7 +43332,7 @@ var ProjectReview = function (_Component) {
         className: "btn buttonPrimary floatRight",
         onClick: this.approveRevision(),
         disabled: this.state.disableApproveButton,
-        isRendered: this.isAdmin && !this.state.projectExtraProps.projectReviewApproved
+        isRendered: this.isAdmin() && !this.state.projectExtraProps.projectReviewApproved
       }, ["Approve"])])]);
     }
   }]);
@@ -43397,7 +43396,7 @@ _reactDom2.default.render(_react2.default.createElement(_ProjectReview2.default,
   projectKey: component.projectKey,
   projectUrl: component.projectUrl,
   addExtraPropUrl: urls.saveExtraPropUrl,
-  roles: component.roles
+  isAdmin: component.isAdmin
 }), document.getElementById('projectReview'));
 
 /***/ })

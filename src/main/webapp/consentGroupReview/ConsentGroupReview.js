@@ -17,8 +17,10 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      disableApproveButton: false,
       consentForm: {
-        summary: ''
+        summary: '',
+        approvalStatus: 'Pending'
       },
       consentExtraProps: {
         consent: '',
@@ -82,8 +84,31 @@ class ConsentGroupReview extends Component {
   }
 
   approveConsentGroup = () => {
-    const data = { approvalStatus: "Approved", fundings : [{ identifier: "identi", source: { label:"Purchase Order", value:"purchase_order"}, sponsor: "sponsor"}]}
-    ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(response => console.log("Respuesta ", response));
+    this.setState({ disableApproveButton: true })
+    const data = { approvalStatus: "Approved" }
+    ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(
+    () =>
+      this.setState( prev => {
+        prev.consentForm.approvalStatus = data.approvalStatus;
+        return prev;
+      })
+    );
+  }
+
+
+    approveRevision = (e) => () => {
+      this.setState({ disableApproveButton: true })
+      const data = { projectReviewApproved : true }
+      Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
+        () => this.setState( prev => {
+          prev.projectExtraProps.projectReviewApproved = true;
+          return prev;
+         })
+      );
+    }
+
+  isAdmin() {
+    return this.props.isAdmin === "true";
   }
 
   render() {
@@ -387,7 +412,12 @@ class ConsentGroupReview extends Component {
           })
         ]),
         div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
-          button({ className: "btn buttonPrimary floatRight", onClick: this.approveConsentGroup, isRendered: true }, ["Approve"]),
+          button({
+            className: "btn buttonPrimary floatRight",
+            onClick: this.approveConsentGroup,
+            isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.isAdmin(),
+            disabled: this.state.disableApproveButton
+          }, ["Approve"]),
         ])
       ])
     )

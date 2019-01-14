@@ -28,7 +28,6 @@
             projectKey: "${params.projectKey}",
             loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
             projectType: '${params.type}'
-
         };
     </script>
 </head>

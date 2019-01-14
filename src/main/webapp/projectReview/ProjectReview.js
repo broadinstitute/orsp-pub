@@ -10,8 +10,6 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Project } from "../util/ajax";
 
-const ORSP_ROLE = "orsp";
-
 class ProjectReview extends Component {
 
   constructor(props) {
@@ -87,8 +85,8 @@ class ProjectReview extends Component {
     return value === '' || value === null || value === undefined;
   }
 
-  isAdmin = (e) => {
-    return this.props.roles.indexOf(ORSP_ROLE) > -1;
+  isAdmin() {
+    return this.props.isAdmin === "true";
   }
 
   approveRevision = (e) => () => {
@@ -298,7 +296,7 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && !this.state.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && !this.state.projectExtraProps.projectReviewApproved
           }, ["Approve"]),
         ])
       ])

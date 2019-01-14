@@ -110,7 +110,30 @@ class IssueService {
         // Funding:
         def fundingParams = (GrailsParameterMap) input.get('funding')
         def propList = IssueUtils.convertNestedParamsToPropertyList(fundingParams)
-        updateFundings(propList, issue)
+        def newFundingList = propList.collect { p ->
+            Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
+            Funding f = (fundingID > 0) ? Funding.findById(fundingID) : new Funding()
+            if (!f.getCreated()) f.setCreated(new Date())
+            if (f.id) f.setUpdated(new Date())
+            f.setSource(p.get("source").toString())
+            f.setName(p.get("name").toString())
+            f.setAwardNumber(p.get("award").toString())
+            f.setProjectKey(issue.projectKey)
+            f
+        }
+        newFundingList.each {
+            issue.addToFundings(it)
+            it.save()
+        }
+        def newFundingIdList = newFundingList*.id
+        def oldFundingList = queryService.findFundingsByProject(issue.projectKey)
+
+        // Remove the existing ones missing from the list of updated/new fundings:
+        def deletableFundings = oldFundingList.findAll { !newFundingIdList.contains(it.id) }
+        deletableFundings.each {
+            issue.removeFromFundings(it)
+            it.delete()
+        }
 
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
@@ -143,53 +166,19 @@ class IssueService {
         issue
     }
 
-    private void updateFundings(List<Map<String, Object>> propList, Issue issue) {
-        def newFundingList = propList.collect { p ->
-            Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
-            Funding f = (fundingID > 0) ? Funding.findById(fundingID) : new Funding()
-            if (!f.getCreated()) f.setCreated(new Date())
-            if (f.id) f.setUpdated(new Date())
-            f.setSource(p.get("source").toString())
-            f.setName(p.get("name").toString())
-            f.setAwardNumber(p.get("award").toString())
-            f.setProjectKey(issue.projectKey)
-            f
-        }
-        newFundingList.each {
-            issue.addToFundings(it)
-            it.save()
-        }
-        def newFundingIdList = newFundingList*.id
-        def oldFundingList = queryService.findFundingsByProject(issue.projectKey)
-
-        // Remove the existing ones missing from the list of updated/new fundings:
-        def deletableFundings = oldFundingList.findAll { !newFundingIdList.contains(it.id) }
-        deletableFundings.each {
-            issue.removeFromFundings(it)
-            it.delete()
-        }
-    }
-
+    /* TODO Add logic to update fundings */
     @Transactional
-    Issue newUpdateIssue (String projectKey, Object input) throws DomainException {
+    Issue updateIssueParam (String projectKey, Object input) throws DomainException {
         Issue issue = queryService.findByKey(projectKey)
-
         if (issue != null) {
+            modifyExtraProperties(input, projectKey)
             issue = modifyIssueProperties(issue, input)
-
             issue.setUpdateDate(new Date())
-//            def fundingParams = input.get('fundings')
-//            List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
-//            def propList = IssueUtils.convertNestedParamsToPropertyList(fundingParams)
-//            Collection<Funding> fundings = updateFundings(fundingParams, issue)
 
             if (issue.hasErrors()) {
                 throw new DomainException(issue.getErrors())
             }
-
-//            saveExtraProperties(issue, extraProperties)
-//            saveFundings(issue, fundings)
-            issue.save(flush: true)
+            issue.save(flush:true)
         }
         issue
     }
@@ -235,7 +224,7 @@ class IssueService {
     Issue modifyIssueProperties (Issue issue, Object input) {
         Issue updatedIssue = issue
         input.collect { element ->
-            if ( issue.getProperties().get(element.key) != null ) {
+            if (issue.getProperties().get(element.key) != null) {
                 updatedIssue.(element.key) = element.value
             }
         }

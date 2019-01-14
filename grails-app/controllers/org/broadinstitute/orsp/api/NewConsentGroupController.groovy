@@ -3,7 +3,6 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
-import grails.web.servlet.mvc.GrailsParameterMap
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
@@ -77,25 +76,12 @@ class NewConsentGroupController extends AuthenticatedController {
         }
     }
 
-
+    /* TODO Add logic to update fundings */
     def updateConsentGroup() {
         String projectKey = params.id
         Gson gson = new Gson()
         Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
-
-//        Issue issue = queryService.findByKey(projectKey)
-        Issue updatedIssue = issueService.newUpdateIssue(projectKey, input)
-        render ([updated: updatedIssue] as JSON)
+        issueService.updateIssueParam(projectKey, input)
+        render ([])
     }
-
-    /** Verify if project general data is approved,
-     * if consent group name is approved
-     * if all key documents are approved (project and consent group)
-     * */
-
-    def generalApprove() {
-
-    }
-
 }
-
