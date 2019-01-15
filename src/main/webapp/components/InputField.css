@@ -20,9 +20,14 @@
 }
 
 .inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,
+.inputFieldReadOnly .inputFieldSelect .select__multi-value__remove,
 .inputFieldReadOnly .inputFieldDatePicker+button,
 .inputFieldReadOnly .react-datepicker__input-container::after {
   display: none;
+}
+
+.inputFieldReadOnly .inputFieldSelect .select__multi-value {
+  padding: 3px 5px;
 }
 
 .inputFieldReadOnly .inputFieldLabel,
