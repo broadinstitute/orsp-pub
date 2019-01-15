@@ -63,8 +63,6 @@ class NewProject extends Component {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           console.error(error);
-        }).finally( () => {
-          spinnerService.hideAll();
         });
       } else {
         this.setState(prev => {
