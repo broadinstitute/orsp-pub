@@ -42,7 +42,6 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     const field = e.target.name;
     const value = e.target.value;
     const index = e.target.getAttribute('index');
-    console.log('handleInstitutionalChange ', field, value, index, this.state.institutionalSources);
     this.setState(prev => {
       prev.institutionalSources[index][field] = value;
       return prev;
