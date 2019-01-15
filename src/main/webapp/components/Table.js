@@ -79,7 +79,6 @@ import './Table.css';
                                         dataField={header.value}
                                         dataFormat={this.formaUrlDocument}
                                         dataSort={true}>{header.name}</TableHeaderColumn>
-
             } else {
               return <TableHeaderColumn key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
             }
