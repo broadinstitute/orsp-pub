@@ -13,6 +13,7 @@ import '../index.css';
         rejectDocumentUrl = {component.rejectDocumentUrl}
         isAdmin = {component.isAdmin}
         component = {component}
+        downloadDocumentUrl = {component.downloadDocumentUrl}
         user = {component.user}
       />,
     document.getElementById('projectDocument')

@@ -30,7 +30,8 @@ import { Panel } from './Panel';
           data: this.props.keyDocuments,
           sizePerPage: 10,
           paginationSize: 10,
-          handleDialogConfirm: this.props.handleDialogConfirm
+          handleDialogConfirm: this.props.handleDialogConfirm,
+          downloadDocumentUrl: this.props.downloadDocumentUrl
         })
       ]),
 
@@ -40,7 +41,8 @@ import { Panel } from './Panel';
           data: this.props.additionalDocuments,
           sizePerPage: 10,
           paginationSize: 10,
-          handleDialogConfirm: this.props.handleDialogConfirm
+          handleDialogConfirm: this.props.handleDialogConfirm,
+          downloadDocumentUrl: this.props.downloadDocumentUrl
         })
       ])
     ]);
