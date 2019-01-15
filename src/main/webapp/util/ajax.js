@@ -75,3 +75,16 @@ export const Project = {
   }
 
 };
+export const DocumentHandler = {
+  approveDocument(url, uuid) {
+    return axios.put(`${url}?uuid=${uuid}`);
+  },
+
+   rejectDocument(url, uuid) {
+    return axios.put(`${url}?uuid=${uuid}`);
+  },
+
+   attachedDocuments(url, issueKey) {
+    return axios.get(`${url}?issueKey=${issueKey}`);
+  }
+};
