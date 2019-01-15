@@ -46,13 +46,13 @@ class ProjectReview extends Component {
           prev.fundings = this.getFundingsArray(element.data.fundings);
           prev.requestor = element.data.requestor !== null ? element.data.requestor : this.state.requestor;
           return prev;
-        }, () => {})
-      );
+        }, () => { })
+    );
   }
 
-  getUsersArray (array) {
+  getUsersArray(array) {
     let usersArray = [];
-    if (array !== undefined  && array !== null && array.length > 0) {
+    if (array !== undefined && array !== null && array.length > 0) {
       array.map(element => {
         usersArray.push({
           key: element.userName,
@@ -64,12 +64,12 @@ class ProjectReview extends Component {
     return usersArray
   }
 
-  getFundingsArray (fundings) {
+  getFundingsArray(fundings) {
     let fundingsArray = [];
     if (fundings !== undefined && fundings !== null && fundings.length > 0) {
       fundings.map(funding => {
         fundingsArray.push({
-          source:{
+          source: {
             label: funding.source,
             value: funding.source.split(" ").join("_").toLowerCase()
           },
@@ -91,12 +91,12 @@ class ProjectReview extends Component {
 
   approveRevision = (e) => () => {
     this.setState({ disableApproveButton: true })
-    const data = { projectReviewApproved : true }
+    const data = { projectReviewApproved: true }
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
-      () => this.setState( prev => {
+      () => this.setState(prev => {
         prev.projectExtraProps.projectReviewApproved = true;
         return prev;
-       })
+      })
     );
   }
 
@@ -212,81 +212,81 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Determination Questions " }, [
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.feeForService)},[
+        Panel({ title: "Determination Questions" }, [
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioPII",
               label: 'Is this a "fee-for-service" project? ',
               moreInfo: '(commercial service only, no Broad publication privileges)',
               value: this.state.projectExtraProps.feeForService,
               readOnly: true,
-              onChange: () => {}
-            }),
+              onChange: () => { }
+            })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.broadInvestigator)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.broadInvestigator) }, [
             InputYesNo({
               id: "broadInvestigator",
               value: this.state.projectExtraProps.broadInvestigator,
               moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
               label: 'Is a Broad investigator conducting research ',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.subjectsDeceased)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.subjectsDeceased) }, [
             InputYesNo({
               id: "subjectsDeceased",
               value: this.state.projectExtraProps.subjectsDeceased,
               label: 'Are all subjects who provided samples and/or data now deceased?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.sensitiveInformationSource)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.sensitiveInformationSource) }, [
             InputYesNo({
               id: "sensitiveInformationSource",
               value: this.state.projectExtraProps.sensitiveInformationSource,
               moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
               label: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.interactionSource)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.interactionSource) }, [
             InputYesNo({
               id: "interactionSource",
               value: this.state.projectExtraProps.interactionSource,
               moreInfo: '(i.e. is conductin HSR)?',
               label: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.isIdReceive)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.isIdReceive) }, [
             InputYesNo({
               id: "isIdReceive",
               value: this.state.projectExtraProps.isIdReceive,
               label: 'Is the Broad receiving subject identifiers?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.isCoPublishing)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.isCoPublishing) }, [
             InputYesNo({
               id: "isCoPublishing",
               value: this.state.projectExtraProps.isCoPublishing,
               label: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
-          div({isRendered: !this.isEmpty(this.state.projectExtraProps.federalFunding)},[
+          div({ isRendered: !this.isEmpty(this.state.projectExtraProps.federalFunding) }, [
             InputYesNo({
               id: "federalFunding",
               value: this.state.projectExtraProps.federalFunding,
               label: 'Is Broad receiving direct federal funding?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ])
         ]),

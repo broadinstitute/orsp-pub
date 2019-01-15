@@ -47,7 +47,7 @@ class ConsentGroupReview extends Component {
 
   componentDidMount() {
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
-      element =>{
+      element => {
         this.setState(prev => {
           prev.consentForm = element.data.issue;
           prev.consentExtraProps = element.data.extraProperties;
@@ -62,15 +62,15 @@ class ConsentGroupReview extends Component {
           }
           return prev;
         })
-        }
+      }
     );
   }
 
   parseBool() {
     if (this.state.consentExtraProps.onGoingProcess !== undefined) {
-        let stringValue = this.state.consentExtraProps.onGoingProcess;
-        let boolValue = stringValue.toLowerCase() == 'true' ? true : false;
-        return boolValue;
+      let stringValue = this.state.consentExtraProps.onGoingProcess;
+      let boolValue = stringValue.toLowerCase() == 'true' ? true : false;
+      return boolValue;
     }
   }
 
@@ -80,32 +80,32 @@ class ConsentGroupReview extends Component {
 
   hasDate(date) {
     if (this.state.consentExtraProps[date] !== undefined)
-    return true
+      return true
   }
 
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true })
     const data = { approvalStatus: "Approved" }
     ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(
-    () =>
-      this.setState( prev => {
-        prev.consentForm.approvalStatus = data.approvalStatus;
-        return prev;
-      })
+      () =>
+        this.setState(prev => {
+          prev.consentForm.approvalStatus = data.approvalStatus;
+          return prev;
+        })
     );
   }
 
 
-    approveRevision = (e) => () => {
-      this.setState({ disableApproveButton: true })
-      const data = { projectReviewApproved : true }
-      Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
-        () => this.setState( prev => {
-          prev.projectExtraProps.projectReviewApproved = true;
-          return prev;
-         })
-      );
-    }
+  approveRevision = (e) => () => {
+    this.setState({ disableApproveButton: true })
+    const data = { projectReviewApproved: true }
+    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
+      () => this.setState(prev => {
+        prev.projectExtraProps.projectReviewApproved = true;
+        return prev;
+      })
+    );
+  }
 
   isAdmin() {
     return this.props.isAdmin === "true";
@@ -113,7 +113,7 @@ class ConsentGroupReview extends Component {
 
   render() {
 
-    const headers = [{name: 'ID', value: 'id'}, {name: 'Name', value: 'name'}, {name: 'Category', value: 'category'}, {name: 'Group', value: 'groupName'}];
+    const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
     const endDate = this.state.consentExtraProps.endDate;
     const startDate = this.state.consentExtraProps.startDate;
     return (
@@ -126,7 +126,7 @@ class ConsentGroupReview extends Component {
             name: "consentGroupName",
             label: "Consent Group Name",
             value: this.state.consentForm.summary,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldText({
@@ -134,7 +134,7 @@ class ConsentGroupReview extends Component {
             name: "investigatorLastName",
             label: "Last Name of Investigator Listed on the Consent Form",
             value: this.state.consentExtraProps.consent,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldText({
@@ -142,7 +142,7 @@ class ConsentGroupReview extends Component {
             name: "institutionProtocolNumber",
             label: "Collaborating Institution's Protocol Number",
             value: this.state.consentExtraProps.protocol,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldText({
@@ -150,7 +150,7 @@ class ConsentGroupReview extends Component {
             name: "collaboratingInstitution",
             label: "Collaborating Institution",
             value: this.state.consentExtraProps.collInst,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldText({
@@ -158,7 +158,7 @@ class ConsentGroupReview extends Component {
             name: "primaryContact",
             label: "Primary Contact at Collaborating Institution ",
             value: this.state.consentExtraProps.collContact,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldRadio({
@@ -171,7 +171,7 @@ class ConsentGroupReview extends Component {
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
               "I am requesting assistance in updating and existing project"
             ],
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldRadio({
@@ -186,18 +186,18 @@ class ConsentGroupReview extends Component {
               "No, the provider does not require an MTA/DTA.",
               "Not sure"
             ],
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           })
         ]),
 
         Panel({ title: "Sample Collections" }, [
           Table({
-              headers: headers,
-              data: this.state.sampleCollections,
-              search: false,
-              pagination: false,
-              sizePerPage: 15,
+            headers: headers,
+            data: this.state.sampleCollections,
+            search: false,
+            pagination: false,
+            sizePerPage: 15,
           })
         ]),
 
@@ -205,10 +205,10 @@ class ConsentGroupReview extends Component {
           div({ className: "row" }, [
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                selected: this.hasDate("startDate") ? new Date(startDate.substr(0,4), startDate.substr(5,2) - 1, startDate.substr(8,2)) : null,
+                selected: this.hasDate("startDate") ? new Date(startDate.substr(0, 4), startDate.substr(5, 2) - 1, startDate.substr(8, 2)) : null,
                 name: "startDate",
                 label: "Start Date",
-                onChange: () => {},
+                onChange: () => { },
                 readOnly: true
               })
             ]),
@@ -217,8 +217,8 @@ class ConsentGroupReview extends Component {
                 startDate: this.startDate,
                 name: "endDate",
                 label: "End Date",
-                selected: this.hasDate("endDate") ? new Date(endDate.substr(0,4), endDate.substr(5,2) - 1, endDate.substr(8,2)) : null,
-                onChange: () => {},
+                selected: this.hasDate("endDate") ? new Date(endDate.substr(0, 4), endDate.substr(5, 2) - 1, endDate.substr(8, 2)) : null,
+                onChange: () => { },
                 disabled: (this.state.consentExtraProps.onGoingProcess === "true"),
                 readOnly: true
               })
@@ -229,7 +229,7 @@ class ConsentGroupReview extends Component {
                 id: "onGoingProcess",
                 name: "onGoingProcess",
                 checked: this.parseBool(),
-                onChange: () => {},
+                onChange: () => { },
                 readOnly: true
               }),
               label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
@@ -239,7 +239,7 @@ class ConsentGroupReview extends Component {
 
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
-            updateInstitutionalSource: () => {},
+            updateInstitutionalSource: () => { },
             institutionalSources: this.state.instSources,
             readOnly: true
           })
@@ -329,7 +329,7 @@ class ConsentGroupReview extends Component {
             name: "textCompliance",
             label: "Add regulatory compliance",
             value: this.state.consentExtraProps.textCompliance,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldRadio({
@@ -351,7 +351,7 @@ class ConsentGroupReview extends Component {
             name: "textSensitive",
             label: "Please explain",
             value: this.state.consentExtraProps.textSensitive,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldRadio({
@@ -373,7 +373,7 @@ class ConsentGroupReview extends Component {
             name: "textAccessible",
             label: "Please explain",
             value: this.state.consentExtraProps.textAccessible,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           })
         ]),
@@ -387,7 +387,7 @@ class ConsentGroupReview extends Component {
             optionValues: ["controlled", "open", "none", "undetermined"],
             optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
             value: this.state.consentExtraProps.sharingPlan,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldText({
@@ -397,7 +397,7 @@ class ConsentGroupReview extends Component {
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent)",
             value: this.state.consentExtraProps.databaseControlled,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           }),
           InputFieldText({
@@ -407,7 +407,7 @@ class ConsentGroupReview extends Component {
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
             value: this.state.consentExtraProps.databaseOpen,
-            onChange: () => {},
+            onChange: () => { },
             readOnly: true
           })
         ]),
