@@ -75,7 +75,7 @@ import '../index.css';
 
    rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
-      this.handleChangeStatus(uuid, 'Reject');
+      this.handleChangeStatus(uuid, 'Rejected');
     });
   };
 
@@ -92,7 +92,7 @@ import '../index.css';
       case 'Approve':
         this.approveDocument(this.state.uuid);
         break;
-      case 'Reject':
+      case 'Rejected':
         this.rejectDocument(this.state.uuid);
         break;
     }
