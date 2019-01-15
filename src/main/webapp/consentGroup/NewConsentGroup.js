@@ -98,8 +98,6 @@ class NewConsentGroup extends Component {
         spinnerService.hideAll();
         this.toggleSubmitError();
         this.changeSubmitState();
-      }).finally( () => {
-        spinnerService.hideAll();
       });
     } else {
       this.setState(prev => {
