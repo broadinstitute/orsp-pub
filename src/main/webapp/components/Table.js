@@ -45,6 +45,13 @@ import './Table.css';
     this.props.handleDialogConfirm(uuid, 'Reject');
   };
 
+   formaUrlDocument = (cell, row) => {
+     return a({
+       href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
+       target: '_blank'
+     }, [row.fileName])
+   };
+
    render() {
     return (
 
@@ -67,6 +74,12 @@ import './Table.css';
                                         dataField={header.value}
                                         dataFormat={this.formatStatusColumn}
                                         dataSort={true}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'fileName') {
+              return <TableHeaderColumn key={header.name}
+                                        dataField={header.value}
+                                        dataFormat={this.formaUrlDocument}
+                                        dataSort={true}>{header.name}</TableHeaderColumn>
+
             } else {
               return <TableHeaderColumn key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
             }

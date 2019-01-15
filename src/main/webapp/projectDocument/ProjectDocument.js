@@ -115,7 +115,8 @@ import { h } from 'react-hyperscript-helpers';
           keyDocuments: this.state.keyDocuments,
           additionalDocuments: this.state.additionalDocuments,
           handleDialogConfirm: this.handleDialog,
-          isAdmin: this.props.isAdmin
+          isAdmin: this.props.isAdmin,
+          downloadDocumentUrl: this.props.downloadDocumentUrl
         })
       ])
     )}

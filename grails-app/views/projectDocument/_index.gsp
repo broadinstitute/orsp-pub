@@ -11,9 +11,10 @@
       projectKey:'${issue.projectKey}',
       attachedDocumentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
       attachDocumentsUrl: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-        issue: '${issue.requestDate}',
-        projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-        roles: '${session.roles}'.replace(/\s+/g, '').replace("[", "").replace("]", "").split(","),
+      issue: '${issue.requestDate}',
+      projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+      roles: '${session.roles}'.replace(/\s+/g, '').replace("[", "").replace("]", "").split(","),
+      downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}"
     };
 
  </g:javascript>

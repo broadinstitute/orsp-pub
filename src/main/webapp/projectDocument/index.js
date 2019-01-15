@@ -10,6 +10,7 @@ import '../index.css';
         attachDocumentsUrl = {component.attachDocumentsUrl}
         attachedDocumentsUrl = {component.attachedDocumentsUrl}
         component = {component}
+        downloadDocumentUrl = {component.downloadDocumentUrl}
 
       />,
     document.getElementById('projectDocument')
