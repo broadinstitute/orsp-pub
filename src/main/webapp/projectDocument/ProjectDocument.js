@@ -108,9 +108,10 @@ import { h } from 'react-hyperscript-helpers';
           closeModal: this.closeModal,
           show: this.state.showDialog,
           handleOkAction: this.handleAction,
+          title: this.state.action + ' Confirmation',
           bodyText: 'Are you sure yo want to ' + this.state.action + ' this document?',
-          title: this.state.action
-        }, []),
+          actionLabel: 'Yes'
+          }, []),
         Documents({
           keyDocuments: this.state.keyDocuments,
           additionalDocuments: this.state.additionalDocuments,

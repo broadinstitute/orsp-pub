@@ -11,9 +11,12 @@
       projectKey:'${issue.projectKey}',
       attachedDocumentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
       attachDocumentsUrl: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-        issue: '${issue.requestDate}',
-        projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-        roles: '${session.roles}'.replace(/\s+/g, '').replace("[", "").replace("]", "").split(","),
+      issue: '${issue.requestDate}',
+      projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+      roles: '${session.roles}'.replace(/\s+/g, '').replace("[", "").replace("]", "").split(","),
+      rejectDocumentUrl: "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
+      approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
+      isAdmin: JSON.parse("${session.isAdmin}")
     };
 
  </g:javascript>
