@@ -9,9 +9,12 @@ import '../index.css';
         projectKey = {component.projectKey}
         attachDocumentsUrl = {component.attachDocumentsUrl}
         attachedDocumentsUrl = {component.attachedDocumentsUrl}
+        approveDocumentUrl = {component.approveDocumentUrl}
+        rejectDocumentUrl = {component.rejectDocumentUrl}
+        isAdmin = {component.isAdmin}
         component = {component}
         downloadDocumentUrl = {component.downloadDocumentUrl}
-
+        user = {component.user}
       />,
     document.getElementById('projectDocument')
 );

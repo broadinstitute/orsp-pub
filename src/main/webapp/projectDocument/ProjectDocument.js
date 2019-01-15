@@ -73,7 +73,7 @@ import { h } from 'react-hyperscript-helpers';
 
    rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
-      this.handleChangeStatus(uuid, 'Reject');
+      this.handleChangeStatus(uuid, 'Rejected');
     });
   };
 
@@ -90,7 +90,7 @@ import { h } from 'react-hyperscript-helpers';
       case 'Approve':
         this.approveDocument(this.state.uuid);
         break;
-      case 'Reject':
+      case 'Rejected':
         this.rejectDocument(this.state.uuid);
         break;
     }
@@ -108,9 +108,10 @@ import { h } from 'react-hyperscript-helpers';
           closeModal: this.closeModal,
           show: this.state.showDialog,
           handleOkAction: this.handleAction,
+          title: this.state.action + ' Confirmation',
           bodyText: 'Are you sure yo want to ' + this.state.action + ' this document?',
-          title: this.state.action
-        }, []),
+          actionLabel: 'Yes'
+          }, []),
         Documents({
           keyDocuments: this.state.keyDocuments,
           additionalDocuments: this.state.additionalDocuments,

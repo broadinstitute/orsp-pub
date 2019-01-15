@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { hh, div, h } from 'react-hyperscript-helpers';
-import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody, Button } from 'react-bootstrap';
+import { hh, div, h, button } from 'react-hyperscript-helpers';
+import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
+import './ConfirmationDialog.css';
 
  export const ConfirmationDialog = hh(class ConfirmationDialog extends Component {
   constructor(props) {
@@ -21,27 +22,17 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody, Button } from '
       h(Modal, {
         show: this.props.show
       }, [
-        h(ModalHeader, {}, [
-          h(ModalTitle, {}, [
-            this.props.title
-          ])
-        ]),
-        h(ModalBody, {}, [
-          this.props.bodyText
-        ]),
-        h(ModalFooter, {}, [
-          h(Button, {
-            onClick: this.handleClose
-          }, [
-            'Cancel'
+          h(ModalHeader, {}, [
+            h(ModalTitle, { className: "dialogTitle" }, [this.props.title])
           ]),
-          h(Button, {
-            onClick: this.handleOkAction
-          }, [
-            'Ok'
+
+           h(ModalBody, { className: "dialogBody" }, [this.props.bodyText]),
+
+           h(ModalFooter, {}, [
+            button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Cancel"]),
+            button({ className: "btn buttonPrimary", onClick: this.handleOkAction }, [this.props.actionLabel]),
           ])
         ])
-      ])
     )
   }
 });
