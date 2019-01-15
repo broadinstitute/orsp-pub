@@ -76,12 +76,12 @@ class NewConsentGroupController extends AuthenticatedController {
         }
     }
 
-    /* TODO Add logic to update fundings */
-    def updateConsentGroup() {
-        String projectKey = params.id
+    def approveConsentGroup() {
         Gson gson = new Gson()
         Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
-        issueService.updateIssueParam(projectKey, input)
-        render ([])
+        String projectKey = params.id
+        Issue issue = queryService.findByKey(projectKey)
+        Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
+        render([])
     }
 }

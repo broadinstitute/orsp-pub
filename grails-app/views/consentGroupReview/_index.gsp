@@ -7,7 +7,7 @@
     };
 
     const urls = {
-        approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'updateConsentGroup')}"
+        approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}"
     };
 
 </g:javascript>

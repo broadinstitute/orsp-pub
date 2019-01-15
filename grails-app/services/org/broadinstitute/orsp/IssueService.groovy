@@ -166,23 +166,6 @@ class IssueService {
         issue
     }
 
-    /* TODO Add logic to update fundings */
-    @Transactional
-    Issue updateIssueParam (String projectKey, Object input) throws DomainException {
-        Issue issue = queryService.findByKey(projectKey)
-        if (issue != null) {
-            modifyExtraProperties(input, projectKey)
-            issue = modifyIssueProperties(issue, input)
-            issue.setUpdateDate(new Date())
-
-            if (issue.hasErrors()) {
-                throw new DomainException(issue.getErrors())
-            }
-            issue.save(flush:true)
-        }
-        issue
-    }
-
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
@@ -220,14 +203,16 @@ class IssueService {
         issue
     }
 
+    // Todo This method doesn't handle funding changes. We should handle it when implementing edit functions
     @SuppressWarnings(["GroovyMissingReturnStatement"])
     Issue modifyIssueProperties (Issue issue, Object input) {
         Issue updatedIssue = issue
         input.collect { element ->
-            if (issue.getProperties().get(element.key) != null) {
+            if (issue.getProperties().get(element.key) != null && element.key != "fundings") {
                 updatedIssue.(element.key) = element.value
             }
         }
+        updatedIssue.save(flush:true)
         updatedIssue
     }
 
