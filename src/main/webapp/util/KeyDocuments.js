@@ -8,7 +8,7 @@ export const ProjectKeyDocuments = [
 ];
 
  export const ConsentGroupKeyDocuments = [
-  'Approval Memmo',
+  'Approval Memo',
   'Consent Document',
   'Data Use Letter'
 ];

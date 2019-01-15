@@ -90,7 +90,7 @@ import { h } from 'react-hyperscript-helpers';
       case 'Approve':
         this.approveDocument(this.state.uuid);
         break;
-      case 'Rejected':
+      case 'Reject':
         this.rejectDocument(this.state.uuid);
         break;
     }
