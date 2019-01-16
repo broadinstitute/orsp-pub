@@ -6,9 +6,9 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import '../index.css';
 
- class ConsentGroupDocuments extends Component {
+class ConsentGroupDocuments extends Component {
 
-   constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       documentsCollection: [],
@@ -20,11 +20,11 @@ import '../index.css';
     };
   }
 
-   componentDidMount() {
+  componentDidMount() {
     this.getAttachedDocuments();
   }
 
-   getAttachedDocuments = () => {
+  getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachmentsUrl, this.props.projectKey).then(resp => {
       this.setKeyDocuments(JSON.parse(resp.data.documents));
     }).catch(error => {
@@ -32,7 +32,7 @@ import '../index.css';
     });
   };
 
-   setKeyDocuments = (documentsCollection) => {
+  setKeyDocuments = (documentsCollection) => {
     const keyDocuments = [];
     const additionalDocuments = [];
     documentsCollection.forEach(documentData => {
@@ -43,13 +43,13 @@ import '../index.css';
       }
     });
 
-     this.setState({
+    this.setState({
       keyDocuments: keyDocuments,
       additionalDocuments: additionalDocuments
     })
   };
 
-   handleChangeStatus = (uuid, status) => {
+  handleChangeStatus = (uuid, status) => {
     const formerStateKeyDoc = this.state.keyDocuments.slice();
     formerStateKeyDoc.forEach(doc => {
       if (uuid === doc.uuid) {
@@ -58,7 +58,7 @@ import '../index.css';
     });
     this.setState({ keyDocuments: formerStateKeyDoc });
 
-     const formerAdditionalDoc = this.state.additionalDocuments.slice();
+    const formerAdditionalDoc = this.state.additionalDocuments.slice();
     formerAdditionalDoc.forEach(doc => {
       if (uuid === doc.uuid) {
         doc.status = status;
@@ -67,19 +67,19 @@ import '../index.css';
     this.setState({ additionalDocuments: formerAdditionalDoc });
   };
 
-   approveDocument = (uuid) => {
+  approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Approved');
     });
   };
 
-   rejectDocument = (uuid) => {
+  rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Rejected');
     });
   };
 
-   handleDialog = (uuid, action) => {
+  handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
       action: action,
@@ -87,7 +87,7 @@ import '../index.css';
     });
   };
 
-   handleAction = () => {
+  handleAction = () => {
     switch (this.state.action) {
       case 'Approve':
         this.approveDocument(this.state.uuid);
@@ -99,11 +99,11 @@ import '../index.css';
     this.closeModal();
   };
 
-   closeModal = () => {
+  closeModal = () => {
     this.setState({ showDialog: !this.state.showDialog });
   };
 
-   render() {
+  render() {
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
