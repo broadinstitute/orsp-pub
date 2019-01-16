@@ -13,7 +13,6 @@ class StorageDocument {
     String username
     String creationDate
     String status
-    Integer version
 
     InputStream inputStream
     Integer statusCode
@@ -30,10 +29,6 @@ class StorageDocument {
         username nullable: false
         creationDate nullable: true
         status nullable: false
-    }
-
-    static mapping = {
-        version column: '`version`'
     }
 
     static transients = ['inputStream', 'statusCode', 'statusMessage', 'createDate']

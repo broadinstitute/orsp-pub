@@ -8,7 +8,6 @@ import { Panel } from './Panel';
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
     { name: 'Author', value: 'creator' },
-    { name: 'Version', value: 'version' },
     { name: 'Status', value: 'status' },
     { name: 'Created', value: 'creationDate' }
   ];

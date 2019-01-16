@@ -1,14 +1,5 @@
 <g:javascript>
-    const user = {
-        <g:if test="${session?.user}">
-            displayName: "${session.user.displayName}",
-            email: "${session.user.emailAddress}",
-            userName: "${session.user.userName}"
-        </g:if>
-    };
     const component = {
-        user: user,
-        issue: '${issue.requestDate}',
         projectKey:'${issue.projectKey}',
         attachmentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
         serverURL: "${webRequest.baseUrl}",

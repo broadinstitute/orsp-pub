@@ -79,7 +79,7 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def attachedDocuments() {
-        def documents = queryService.getDocumentsForProject(params.issueKey)
+        Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
         Gson gson = new Gson()
         String doc = gson.toJson(documents)
         render ([documents : doc] as JSON)

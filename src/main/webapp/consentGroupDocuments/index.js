@@ -6,7 +6,7 @@ import ConsentGroupDocuments from './ConsentGroupDocuments';
   <ConsentGroupDocuments
     attachmentsUrl = {component.attachmentsUrl}
     serverURL = {component.serverURL}
-    user = {component.user}
+    userUrl = {component.userUrl}
     attachDocumentsUrl = {component.attachDocumentsUrl}
     projectKey = {component.projectKey}
     approveDocumentUrl = {component.approveDocumentUrl}
