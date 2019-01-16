@@ -1,17 +1,17 @@
 import { Component } from 'react';
-import { a, hh, h, div, p, hr, small } from 'react-hyperscript-helpers';
+import { a, hh, small } from 'react-hyperscript-helpers';
 import React from 'react';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
 import './Table.css';
 
- export const Table = hh(class Table extends Component {
+export const Table = hh(class Table extends Component {
 
-   constructor(props) {
+  constructor(props) {
     super(props);
   }
 
-   formatStatusColumn = (cell, row) => {
+  formatStatusColumn = (cell, row) => {
     if (row.status === 'Pending' && this.props.isAdmin) {
       return this.renderDropdownButton(row.uuid);
     } else {
@@ -19,7 +19,7 @@ import './Table.css';
     }
   };
 
-   renderDropdownButton = (uuid) => {
+  renderDropdownButton = (uuid) => {
     return (
       <ButtonToolbar>
         <DropdownButton
@@ -35,27 +35,28 @@ import './Table.css';
       </ButtonToolbar>
     );
 
-   };
+  };
 
-   actionApprove = (uuid) => {
+  actionApprove = (uuid) => {
     this.props.handleDialogConfirm(uuid, 'Approve');
   };
 
-   actionReject = (uuid) => {
+  actionReject = (uuid) => {
     this.props.handleDialogConfirm(uuid, 'Reject');
   };
 
-   formaUrlDocument = (cell, row) => {
-     return a({
-       href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
-       target: '_blank'
-     }, [row.fileName])
-   };
+  formatUrlDocument = (cell, row) => {
+    return a({
+      href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
+      target: '_blank'
+    }, [row.fileName])
+  };
 
-   render() {
+  render() {
+    let isKey = false;
+
     return (
-
-       <BootstrapTable data={this.props.data}
+      <BootstrapTable data={this.props.data}
                       striped
                       hover
                       className='tableContainer'
@@ -67,9 +68,8 @@ import './Table.css';
                       }}>
         {
           this.props.headers.map((header, index) => {
-            if (index === 0) {
-              return <TableHeaderColumn key={header.name} isKey dataField={header.value} dataSort={true}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'status') {
+            isKey = (index === 0);
+            if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
                                         dataField={header.value}
                                         dataFormat={this.formatStatusColumn}
@@ -77,10 +77,10 @@ import './Table.css';
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                                         dataField={header.value}
-                                        dataFormat={this.formaUrlDocument}
+                                        dataFormat={this.formatUrlDocument}
                                         dataSort={true}>{header.name}</TableHeaderColumn>
             } else {
-              return <TableHeaderColumn key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
+              return <TableHeaderColumn isKey={isKey} key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
             }
           })
         }

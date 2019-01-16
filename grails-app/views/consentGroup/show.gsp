@@ -43,7 +43,6 @@
 
     <div id="consentGroupDocuments">
         <g:render template="/consentGroupDocuments/index" model="[issue: issue, attachedDocuments: attachedDocuments]" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     </div>
 
 

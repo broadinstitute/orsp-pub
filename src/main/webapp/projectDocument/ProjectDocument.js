@@ -5,9 +5,9 @@ import { ProjectKeyDocuments } from '../util/KeyDocuments';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 
- class ProjectDocument extends Component {
+class ProjectDocument extends Component {
 
-   constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       documentsCollection: [],
@@ -19,11 +19,11 @@ import { h } from 'react-hyperscript-helpers';
     };
   }
 
-   componentDidMount() {
+  componentDidMount() {
     this.getAttachedDocuments();
   }
 
-   getAttachedDocuments = () => {
+  getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachedDocumentsUrl, this.props.projectKey).then(resp => {
       this.setKeyDocuments(JSON.parse(resp.data.documents));
     }).catch(error => {
@@ -31,7 +31,7 @@ import { h } from 'react-hyperscript-helpers';
     });
   };
 
-   setKeyDocuments = (documentsCollection) => {
+  setKeyDocuments = (documentsCollection) => {
     const keyDocuments = [];
     const additionalDocuments = [];
     documentsCollection.forEach(documentData => {
@@ -47,7 +47,7 @@ import { h } from 'react-hyperscript-helpers';
     })
   };
 
-   handleChangeStatus = (uuid, status) => {
+  handleChangeStatus = (uuid, status) => {
     const formerStateKeyDoc = this.state.keyDocuments.slice();
     formerStateKeyDoc.forEach(doc => {
       if (uuid === doc.uuid){
@@ -56,7 +56,7 @@ import { h } from 'react-hyperscript-helpers';
     });
     this.setState({keyDocuments: formerStateKeyDoc});
 
-     const formerAdditionalDoc = this.state.additionalDocuments.slice();
+    const formerAdditionalDoc = this.state.additionalDocuments.slice();
     formerAdditionalDoc.forEach(doc => {
       if (uuid === doc.uuid){
         doc.status = status;
@@ -65,19 +65,19 @@ import { h } from 'react-hyperscript-helpers';
     this.setState({additionalDocuments: formerAdditionalDoc});
   };
 
-   approveDocument = (uuid) => {
+  approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Approved');
     });
   };
 
-   rejectDocument = (uuid) => {
+  rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Rejected');
     });
   };
 
-   handleDialog = (uuid, action) => {
+  handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
       action: action,
@@ -85,7 +85,7 @@ import { h } from 'react-hyperscript-helpers';
     });
   };
 
-   handleAction = () => {
+  handleAction = () => {
     switch (this.state.action) {
       case 'Approve':
         this.approveDocument(this.state.uuid);
@@ -97,13 +97,12 @@ import { h } from 'react-hyperscript-helpers';
     this.closeModal();
   };
 
-   closeModal = () => {
+  closeModal = () => {
     this.setState({showDialog: !this.state.showDialog});
   };
 
-   render() {
-    console.log("IS ADMINNN:  - ", this.props.isAdmin);
-    return (      
+  render() {
+    return (
       h( Fragment, {},[
         ConfirmationDialog({
           closeModal: this.closeModal,
@@ -112,7 +111,7 @@ import { h } from 'react-hyperscript-helpers';
           title: this.state.action + ' Confirmation',
           bodyText: 'Are you sure yo want to ' + this.state.action + ' this document?',
           actionLabel: 'Yes'
-          }, []),
+        }, []),
         Documents({
           keyDocuments: this.state.keyDocuments,
           additionalDocuments: this.state.additionalDocuments,
@@ -123,5 +122,5 @@ import { h } from 'react-hyperscript-helpers';
       ])
     )}
 
- }
+}
 export default ProjectDocument
