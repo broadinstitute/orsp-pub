@@ -2,7 +2,6 @@
 <head>
     <meta name="layout" content="main">
     <title>${issue.typeLabel} ${issue?.projectKey}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     <style>
     .ui-dialog-titlebar {
         display:none;

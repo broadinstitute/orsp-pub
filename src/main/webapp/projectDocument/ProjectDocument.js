@@ -5,6 +5,7 @@ import { User } from "../util/ajax";
 import { ProjectKeyDocuments } from '../util/KeyDocuments';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
+import { AlertMessage } from "../components/AlertMessage";
 
 class ProjectDocument extends Component {
 
@@ -17,7 +18,11 @@ class ProjectDocument extends Component {
       showDialog: false,
       action: '',
       uuid: '',
+<<<<<<< HEAD
       isAdmin: false
+=======
+      serverError: false
+>>>>>>> 0de3ddb95e146908f2a0356631a68fafe9eeffe8
     };
   }
 
@@ -36,6 +41,7 @@ class ProjectDocument extends Component {
     DocumentHandler.attachedDocuments(this.props.attachedDocumentsUrl, this.props.projectKey).then(resp => {
       this.setKeyDocuments(JSON.parse(resp.data.documents));
     }).catch(error => {
+      this.setState({serverError: true});
       console.error(error);
     });
   };
@@ -77,12 +83,18 @@ class ProjectDocument extends Component {
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Approved');
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
     });
   };
 
   rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Rejected');
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
     });
   };
 
@@ -127,6 +139,10 @@ class ProjectDocument extends Component {
           handleDialogConfirm: this.handleDialog,
           isAdmin: this.state.isAdmin,
           downloadDocumentUrl: this.props.downloadDocumentUrl
+        }),
+        AlertMessage({
+          msg: 'Something went wrong in the server. Please try again later.',
+          show: this.state.serverError
         })
       ])
     )}
