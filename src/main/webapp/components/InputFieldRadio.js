@@ -11,7 +11,8 @@ export const InputFieldRadio = (props) => {
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
-
+  const { currentValue = null } = props;
+  
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : value;
 
@@ -45,6 +46,7 @@ export const InputFieldRadio = (props) => {
             ])
         )
       }),
+      small({ isRendered: props.value != currentValue, className: "formerValue" }, [currentValue]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
   )

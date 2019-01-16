@@ -11,6 +11,8 @@ export const InputField = hh(class InputField extends Component {
 
   render() {
 
+    const { currentValue = null } = this.props;
+
     return (
       div({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
         p({ className: "inputFieldLabel" }, [
@@ -18,7 +20,7 @@ export const InputField = hh(class InputField extends Component {
           span({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])
         ]),
         this.props.children,
-        small({ isRendered: this.props.value != this.props.currentValue, className: "errorMessage" }, [this.props.currentValue]),
+        small({ isRendered: this.props.value != currentValue, className: "formerValue" }, [currentValue]),
         small({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])
       ])
     )

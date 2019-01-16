@@ -8,8 +8,11 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
   render() {
     return (
-      InputField({ label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [
-        h(Select,{
+      InputField({
+        label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
+        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+      }, [
+          h(Select, {
             id: this.props.id,
             index: this.props.index,
             name: this.props.name,

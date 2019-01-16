@@ -13,7 +13,10 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   render() {
 
     return (
-      InputField({ label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly }, [h(AsyncSelect, {
+      InputField({
+        label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
+        currentValue: this.props.currentValue
+      }, [h(AsyncSelect, {
         id: this.props.id,
         isDisabled: this.props.isDisabled,
         isMulti: this.props.isMulti,
@@ -25,6 +28,6 @@ export const MultiSelect = hh(class MultiSelect extends Component {
         className: "inputFieldSelect",
         classNamePrefix: "select"
       }),
-      ]))
+        ]))
   }
 });

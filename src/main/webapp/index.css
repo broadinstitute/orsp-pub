@@ -30,6 +30,10 @@ hr {
   color: red;
 }
 
+.formerValue {
+  color: rgb(68, 175, 46);
+}
+
 .stepTitle {
   margin-bottom: 15px;
 }
