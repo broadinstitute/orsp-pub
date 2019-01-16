@@ -5,6 +5,7 @@ import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import '../index.css';
+import { AlertMessage } from "../components/AlertMessage";
 
 class ConsentGroupDocuments extends Component {
 
@@ -16,7 +17,8 @@ class ConsentGroupDocuments extends Component {
       additional: [],
       showDialog: false,
       action: '',
-      uuid: ''
+      uuid: '',
+      serverError: false
     };
   }
 
@@ -28,6 +30,7 @@ class ConsentGroupDocuments extends Component {
     DocumentHandler.attachedDocuments(this.props.attachmentsUrl, this.props.projectKey).then(resp => {
       this.setKeyDocuments(JSON.parse(resp.data.documents));
     }).catch(error => {
+      this.setState({serverError: true});
       console.error(error);
     });
   };
@@ -70,12 +73,18 @@ class ConsentGroupDocuments extends Component {
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Approved');
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
     });
   };
 
   rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
       this.handleChangeStatus(uuid, 'Rejected');
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
     });
   };
 
@@ -119,6 +128,10 @@ class ConsentGroupDocuments extends Component {
         handleDialogConfirm: this.handleDialog,
         isAdmin: this.props.isAdmin,
         downloadDocumentUrl: this.props.downloadDocumentUrl
+      }),
+      AlertMessage({
+        msg: 'Something went wrong in the server. Please try again later.',
+        show: this.state.serverError
       })
     ])
   }
