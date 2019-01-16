@@ -18,11 +18,8 @@ class ProjectDocument extends Component {
       showDialog: false,
       action: '',
       uuid: '',
-<<<<<<< HEAD
-      isAdmin: false
-=======
+      isAdmin: false,
       serverError: false
->>>>>>> 0de3ddb95e146908f2a0356631a68fafe9eeffe8
     };
   }
 

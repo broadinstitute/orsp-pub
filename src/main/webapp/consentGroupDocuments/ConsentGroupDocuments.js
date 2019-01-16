@@ -19,7 +19,7 @@ class ConsentGroupDocuments extends Component {
       showDialog: false,
       action: '',
       uuid: '',
-      isAdmin: false
+      isAdmin: false,
       serverError: false
     };
   }
