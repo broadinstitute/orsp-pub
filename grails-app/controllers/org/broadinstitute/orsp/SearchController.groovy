@@ -118,6 +118,10 @@ class SearchController {
     }
 
     def generalReactTablesJsonSearch() {
+        def user = session.user
+        def userName = session.user?.userName
+        def userRoles = session.user?.roles
+        System.out.println("user is : " + userName)
         QueryOptions options = new QueryOptions()
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)
@@ -140,6 +144,9 @@ class SearchController {
                 [
                         link: link,
                         key: it.projectKey,
+                        reporter: it.reporter,
+                        extraProperties: it.extraProperties,
+//                        collaborators: getCollaborators(it.extraProperties),
                         title: it.summary,
                         type: it.type,
                         status: it.status,
@@ -199,5 +206,9 @@ class SearchController {
             [key: it.projectKey, summary: it.summary]
         }
         render([text: data as JSON, contentType: "application/json"])
+    }
+
+    def getCollaborators(props) {
+        props.findAll { it.name == 'collaborator' || it.name == 'actor' || it.name == 'pm' || it.name == 'pi' }
     }
 }

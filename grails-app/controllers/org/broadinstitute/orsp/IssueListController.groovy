@@ -19,8 +19,13 @@ class IssueListController extends AuthenticatedController {
         if (isORSP()) {
             users.add(SupplementalRole.ORSP)
         }
+
         if (isComplianceOffice()) {
             users.add(SupplementalRole.COMPLIANCE_OFFICE)
+        }
+
+        if (isReadOnlyAdmin()) {
+            users.add(SupplementalRole.RONLY_ADMIN)
         }
 
         Integer limit = null

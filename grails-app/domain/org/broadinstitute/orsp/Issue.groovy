@@ -149,6 +149,8 @@ class Issue {
 
     transient Collection<String> getPMs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value } }
 
+    transient Collection<String> getCollaborators() { getExtraProperties().findAll { it.name == "collaborator" }.collect { it.value } }
+
     transient Collection<String> getAffiliations() { getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS }.collect { it.value } }
 
     transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }

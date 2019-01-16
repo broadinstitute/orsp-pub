@@ -30,6 +30,14 @@ trait UserInfo implements ServletAttributes {
         }
     }
 
+    boolean isReadOnlyAdmin() {
+        if (session["roles"]) {
+            SupplementalRole.isReadOnlyAdmin(session["roles"] as Collection<String>)
+        } else {
+            false
+        }
+    }
+
     User getUser() {
         if (session["user"]) {
             (User) session["user"]
