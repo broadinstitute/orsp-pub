@@ -54,6 +54,7 @@
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
         <li><a href="#review">Project Review</a></li>
+        <li><a href="#documentsNew">Documents New</a></li>
     </ul>
 
     <div id="review">
@@ -66,7 +67,16 @@
         </g:if>
     </div>
 
-    <div id="documents">
+   <div id="documents">
+        <g:render template="/common/documentsPanel" model="${[
+          controller        : issue.controller,
+          issue             : issue,
+          attachmentTypes   : attachmentTypes,
+          storageDocuments  : storageDocuments
+        ]}"/>
+    </div>
+
+    <div id="documentsNew">
         <g:render template="/projectDocument/index" model="[
                 controller        : issue.controller,
                 issue             : issue,

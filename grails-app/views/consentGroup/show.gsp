@@ -38,7 +38,7 @@
         %{--<auth:isOrsp>--}%
             %{--<li><a href="#checklist">Reviewer Checklist</a></li>--}%
         %{--</auth:isOrsp>--}%
-        <li><a href="#consentGroupDocuments">Documents</a></li>
+        <li><a href="#consentGroupDocuments">Documents New</a></li>
     </ul>
 
     <div id="consentGroupDocuments">
