@@ -288,6 +288,9 @@ class AuthenticatedController implements Interceptor, UserInfo {
         }
     }
 
+    def isCurrentUserAdmin() {
+        render([isAdmin: isAdmin()] as JSON)
+    }
     /**
      * This should not be necessary as we also catch errors at the UI level.
      * However, keeping this here for double checking at the server-side level

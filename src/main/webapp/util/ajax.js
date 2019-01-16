@@ -88,3 +88,18 @@ export const DocumentHandler = {
     return axios.get(`${url}?issueKey=${issueKey}`);
   }
 };
+export const User = {
+
+  isCurrentUserAdmin(url) {
+    return axios.get(url);
+  },
+
+  getProject(url, projectkey) {
+    return axios.get(url+ '?id=' + projectkey );
+  },
+
+  addExtraProperties(url, projectKey, data) {
+    return axios.post(url+ '?id=' + projectKey, data );
+  }
+
+};

@@ -8,7 +8,8 @@
       rejectDocumentUrl: "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
       approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
       isAdmin: JSON.parse("${session.isAdmin}"),
-      downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}"
+      downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
+      isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}"
     };
 
  </g:javascript>

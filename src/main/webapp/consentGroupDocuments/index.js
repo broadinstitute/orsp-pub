@@ -11,7 +11,7 @@ import ConsentGroupDocuments from './ConsentGroupDocuments';
     projectKey = {component.projectKey}
     approveDocumentUrl = {component.approveDocumentUrl}
     rejectDocumentUrl = {component.rejectDocumentUrl}
-    isAdmin = {component.isAdmin}
+    isAdminUrl = {component.isAdminUrl}
     downloadDocumentUrl = {component.downloadDocumentUrl}
   />,
   document.getElementById('consentGroupDocuments')
