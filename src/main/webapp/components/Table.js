@@ -45,7 +45,7 @@ import './Table.css';
     this.props.handleDialogConfirm(uuid, 'Reject');
   };
 
-   formaUrlDocument = (cell, row) => {
+   formatUrlDocument = (cell, row) => {
      return a({
        href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
        target: '_blank'
@@ -53,8 +53,9 @@ import './Table.css';
    };
 
    render() {
-    return (
+     let isKey = false;
 
+    return (
        <BootstrapTable data={this.props.data}
                       striped
                       hover
@@ -67,9 +68,8 @@ import './Table.css';
                       }}>
         {
           this.props.headers.map((header, index) => {
-            if (index === 0) {
-              return <TableHeaderColumn key={header.name} isKey dataField={header.value} dataSort={true}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'status') {
+            isKey = (index === 0);
+            if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
                                         dataField={header.value}
                                         dataFormat={this.formatStatusColumn}
@@ -77,10 +77,10 @@ import './Table.css';
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                                         dataField={header.value}
-                                        dataFormat={this.formaUrlDocument}
+                                        dataFormat={this.formatUrlDocument}
                                         dataSort={true}>{header.name}</TableHeaderColumn>
             } else {
-              return <TableHeaderColumn key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
+              return <TableHeaderColumn isKey={isKey} key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
             }
           })
         }
