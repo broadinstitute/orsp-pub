@@ -3,7 +3,7 @@ import { input, hh, h, div, p, hr, small, button } from 'react-hyperscript-helpe
 import { Table } from './Table';
 import { Panel } from './Panel';
 
- const headers =
+const headers =
   [
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
@@ -13,16 +13,16 @@ import { Panel } from './Panel';
     { name: 'Created', value: 'creationDate' }
   ];
 
- export const Documents = hh(class Documents extends Component {
+export const Documents = hh(class Documents extends Component {
 
-   constructor(props) {
+  constructor(props) {
     super(props);
   }
 
-   addDocument = (e) => {
+  addDocument = (e) => {
   };
 
-   render() {
+  render() {
     return div({}, [
       Panel({ title: "Key Documents" }, [
         Table({
@@ -36,7 +36,7 @@ import { Panel } from './Panel';
         })
       ]),
 
-       Panel({ title: "Additional Documents" }, [
+      Panel({ title: "Additional Documents" }, [
         Table({
           headers: headers,
           data: this.props.additionalDocuments,
