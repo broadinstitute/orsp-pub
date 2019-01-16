@@ -6,7 +6,7 @@
         attachDocumentsUrl: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
         rejectDocumentUrl: "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
         approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
-        isAdmin: JSON.parse("${session.isAdmin}"),
+         isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}"
     };
 </g:javascript>

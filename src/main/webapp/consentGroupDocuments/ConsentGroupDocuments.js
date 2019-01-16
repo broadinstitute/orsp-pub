@@ -1,5 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
+import { User } from "../util/ajax";
 import { DocumentHandler } from "../util/ajax";
 import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
@@ -16,12 +17,20 @@ class ConsentGroupDocuments extends Component {
       additional: [],
       showDialog: false,
       action: '',
-      uuid: ''
+      uuid: '',
+      isAdmin: false
     };
   }
 
   componentDidMount() {
     this.getAttachedDocuments();
+    this.isCurrentUserAdmin();
+  }
+
+  isCurrentUserAdmin() {
+    User.isCurrentUserAdmin(this.props.isAdminUrl).then(resp => {
+        this.setState({isAdmin: resp.data.isAdmin});
+    });
   }
 
   getAttachedDocuments = () => {
@@ -117,7 +126,7 @@ class ConsentGroupDocuments extends Component {
         keyDocuments: this.state.keyDocuments,
         additionalDocuments: this.state.additionalDocuments,
         handleDialogConfirm: this.handleDialog,
-        isAdmin: this.props.isAdmin,
+        isAdmin: this.state.isAdmin,
         downloadDocumentUrl: this.props.downloadDocumentUrl
       })
     ])

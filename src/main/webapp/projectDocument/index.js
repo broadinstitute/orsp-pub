@@ -11,10 +11,9 @@ import '../index.css';
         attachedDocumentsUrl = {component.attachedDocumentsUrl}
         approveDocumentUrl = {component.approveDocumentUrl}
         rejectDocumentUrl = {component.rejectDocumentUrl}
-        isAdmin = {component.isAdmin}
+        isAdminUrl = {component.isAdminUrl}
         component = {component}
         downloadDocumentUrl = {component.downloadDocumentUrl}
-        user = {component.user}
       />,
     document.getElementById('projectDocument')
 );
