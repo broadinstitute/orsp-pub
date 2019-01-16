@@ -12,7 +12,7 @@ import './Table.css';
   }
 
    formatStatusColumn = (cell, row) => {
-    if (row.status === 'Pending') {
+    if (row.status === 'Pending' && this.props.isAdmin) {
       return this.renderDropdownButton(row.uuid);
     } else {
       return row.status;

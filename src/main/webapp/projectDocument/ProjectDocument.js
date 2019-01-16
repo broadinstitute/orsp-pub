@@ -102,7 +102,8 @@ import { h } from 'react-hyperscript-helpers';
   };
 
    render() {
-    return (
+    console.log("IS ADMINNN:  - ", this.props.isAdmin);
+    return (      
       h( Fragment, {},[
         ConfirmationDialog({
           closeModal: this.closeModal,
