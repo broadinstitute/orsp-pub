@@ -15,11 +15,12 @@ class IssueReviewService {
 
 
     void delete(String projectKey) throws DomainException {
-        //TODO
+        IssueReview ir = findByProjectKey(projectKey)
+        ir.delete(flush: true)
     }
 
-    IssueReview findByProjectKey(String projectKey) {
-
+    static IssueReview findByProjectKey(String projectKey) {
+        return IssueReview.findByProjectKey(projectKey)
     }
 
 }
