@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { hh, h1, span, a, div, p } from 'react-hyperscript-helpers';
+import { hh, h1, span, a, div } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { InputFieldText } from '../components/InputFieldText';
@@ -106,7 +106,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
               isRendered: this.state.formData.compliance === "true",
               id: "inputCompliance",
               name: "textCompliance",
-              label: "Add regulatory compliance*",
+              label: "Please specify which regulations must be adhered to below:*",
               value: this.state.formData.textCompliance,
               disabled: false,
               required: false,
@@ -114,11 +114,6 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
               error: this.props.errors.textCompliance,
               errorMessage: "Required field"
             }),
-            div({},[
-              p({ className: "bold" }, [
-                span({}, ["Please specify which regulations must be adhered to below: "])
-              ])
-            ]),
             InputFieldRadio({
               id: "radioSensitive",
               name: "sensitive",

@@ -43945,14 +43945,14 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
         isRendered: this.state.formData.compliance === "true",
         id: "inputCompliance",
         name: "textCompliance",
-        label: "Add regulatory compliance*",
+        label: "Please specify which regulations must be adhered to below:*",
         value: this.state.formData.textCompliance,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
         error: this.props.errors.textCompliance,
         errorMessage: "Required field"
-      }), (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [(0, _reactHyperscriptHelpers.span)({}, ["Please specify which regulations must be adhered to below: "])])]), (0, _InputFieldRadio.InputFieldRadio)({
+      }), (0, _InputFieldRadio.InputFieldRadio)({
         id: "radioSensitive",
         name: "sensitive",
         label: (0, _reactHyperscriptHelpers.span)({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
