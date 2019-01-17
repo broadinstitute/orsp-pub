@@ -43437,7 +43437,7 @@ var ProjectReview = function (_Component) {
         loadOptions: this.loadUsersOptions,
         handleChange: this.handleProjectManagerChange,
         value: this.state.formData.pmList,
-        currentValue: this.state.current.pnList,
+        currentValue: this.state.current.pmList,
         isMulti: true // this.state.formData.pmList.length > 1
       })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _Fundings.Fundings)({
         fundings: this.state.formData.fundings,
