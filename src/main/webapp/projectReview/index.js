@@ -9,7 +9,7 @@ ReactDOM.render(
     projectKey = {projectReviewValues.projectKey}
     projectUrl = {projectReviewValues.projectUrl}
     addExtraPropUrl = {urls.saveExtraPropUrl}
-    roles = {projectReviewValues.roles}
+    isAdmin = {projectReviewValues.isAdmin}
   />,
   document.getElementById('projectReview')
 );

@@ -79,8 +79,10 @@
     <div id="documentsNew">
         <g:render template="/projectDocument/index" model="[
                 controller        : issue.controller,
-                issue             : issue
+                issue             : issue,
+                attachmentTypes   : attachmentTypes
                 ]"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     </div>
 
     <div id="submissions">

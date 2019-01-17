@@ -25,6 +25,14 @@ export const ConsentGroup = {
       headers: { 'content-type': 'application/json' }
     };
     return axios.post(url, data, config);
+  },
+
+  getConsentGroup(url, consentKey) {
+    return axios.get(url+ '?id=' + consentKey);
+  },
+
+  approve(url, consentKey, data) {
+    return axios.post(url+ '?id=' + consentKey, data);
   }
 };
 
@@ -75,6 +83,7 @@ export const Project = {
   }
 
 };
+
 export const DocumentHandler = {
   approveDocument(url, uuid) {
     return axios.put(`${url}?uuid=${uuid}`);
@@ -88,18 +97,20 @@ export const DocumentHandler = {
     return axios.get(`${url}?issueKey=${issueKey}`);
   }
 };
+
 export const User = {
 
   isCurrentUserAdmin(url) {
     return axios.get(url);
   },
 
-  getProject(url, projectkey) {
-    return axios.get(url+ '?id=' + projectkey );
-  },
-
   addExtraProperties(url, projectKey, data) {
     return axios.post(url+ '?id=' + projectKey, data );
+  },
+
+  getUserSession(url) {
+    return axios.get(url)
   }
 
 };
+

@@ -288,9 +288,6 @@ class AuthenticatedController implements Interceptor, UserInfo {
         }
     }
 
-    def isCurrentUserAdmin() {
-        render([isAdmin: isAdmin()] as JSON)
-    }
     /**
      * This should not be necessary as we also catch errors at the UI level.
      * However, keeping this here for double checking at the server-side level
@@ -350,4 +347,12 @@ class AuthenticatedController implements Interceptor, UserInfo {
         groupedSubmissions
     }
 
+
+    def isCurrentUserAdmin() {
+        render([isAdmin: isAdmin()] as JSON)
+    }
+
+    User getSessionUser() {
+        render([getUser()] as JSON)
+    }
 }
