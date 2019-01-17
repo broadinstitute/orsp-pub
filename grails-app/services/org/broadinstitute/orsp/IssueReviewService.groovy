@@ -6,6 +6,7 @@ class IssueReviewService {
 
     IssueReview create(IssueReview issueReview) throws DomainException {
         issueReview.save(flush: true)
+        issueReview
     }
 
 

@@ -3,7 +3,6 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import groovy.util.logging.Slf4j
-import javassist.NotFoundException
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
@@ -18,11 +17,15 @@ class IssueReviewController extends AuthenticatedController {
         Gson gson = new Gson()
         IssueReview issueReview = gson.fromJson(gson.toJson(request.JSON), IssueReview.class)
         Issue issue = queryService.findByKey(issueReview.projectKey)
-        if(issue == null) {
-            throw new NotFoundException()
+        if (issue == null) {
+            response.status = 404
+            render([message: "Project key does not exist"] as JSON)
+        } else {
+            issueReviewService.create(issueReview)
+            response.status = 201
+            render([message: issueReview] as JSON)
         }
-        issueReviewService.create(issueReview)
-        response.status = 201
+
     }
 
     def delete() {
@@ -32,7 +35,11 @@ class IssueReviewController extends AuthenticatedController {
 
     def show() {
         IssueReview issueReview = issueReviewService.findByProjectKey(params.projectKey)
-        issueReview.status = 200
+        if (issueReview == null) {
+            response.status = 404
+            render([message: "Issue review does not exist"] as JSON)
+        }
+        response.status = 200
         render([message: issueReview] as JSON)
     }
 
