@@ -347,12 +347,24 @@ class AuthenticatedController implements Interceptor, UserInfo {
         groupedSubmissions
     }
 
-
+    @Deprecated
+    /**
+     * Use getSessionUser().isAdmin instead
+     */
     def isCurrentUserAdmin() {
         render([isAdmin: isAdmin()] as JSON)
     }
 
-    User getSessionUser() {
-        render([getUser()] as JSON)
+    def getSessionUser() {
+        User user = getUser()
+        render([
+            'displayName': user.displayName,
+            'emailAddress': user.emailAddress,
+            'userName': user.userName,
+            'isAdmin': isAdmin(),
+            'isORSP': isORSP(),
+            'isComplianceOffice': isComplianceOffice(),
+        ] as JSON)
     }
+
 }
