@@ -19,7 +19,7 @@ export const ConsentGroup = {
   getConsentGroupNames(url) {
     return axios.get(url);
   },
-  
+
   create(url, data) {
     const config = {
       headers: { 'content-type': 'application/json' }
@@ -51,7 +51,7 @@ export const Files = {
   },
 
   downloadFillable(pdfUrl) {
-    return axios({url: pdfUrl, method: 'GET', responseType: 'blob'});
+    return axios({ url: pdfUrl, method: 'GET', responseType: 'blob' });
   }
 
 
@@ -67,11 +67,13 @@ export const Project = {
   },
 
   getProject(url, projectkey) {
-    return axios.get(url+ '?id=' + projectkey );
+    let project = axios.get(url + '?id=' + projectkey);
+    console.log('getProject --------------------> ', project);
+    return project;
   },
 
   addExtraProperties(url, projectKey, data) {
-    return axios.post(url+ '?id=' + projectKey, data );
+    return axios.post(url + '?id=' + projectKey, data);;
   }
 
 };

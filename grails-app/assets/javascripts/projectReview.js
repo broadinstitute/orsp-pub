@@ -1827,11 +1827,27 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
   }, {
     key: 'render',
     value: function render() {
-      var _props$currentValue = this.props.currentValue,
-          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+      var _props = this.props,
+          value = _props.value,
+          label = _props.label,
+          error = _props.error,
+          errorMessage = _props.errorMessage,
+          moreInfo = _props.moreInfo,
+          children = _props.children,
+          readOnly = _props.readOnly,
+          _props$currentValue = _props.currentValue,
+          currentValue = _props$currentValue === undefined ? null : _props$currentValue,
+          currentValueStr = _props.currentValueStr;
 
+      var edited = this.props.value !== currentValue && currentValue != null;
 
-      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : this.props.readOnly ? 'inputFieldReadOnly' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [this.props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])]), this.props.children, (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.value != currentValue, className: "formerValue" }, [currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])]);
+      return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [label, (0, _reactHyperscriptHelpers.span)({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])]), children, (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "inputFieldCurrent" }, [currentValueStr != null ? currentValueStr : currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: error, className: "errorMessage" }, [errorMessage])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -2462,7 +2478,7 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
-      }, [(0, _reactHyperscriptHelpers.input)({
+      }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldWrapper" }, [(0, _reactHyperscriptHelpers.input)({
         type: 'text',
         id: this.props.id,
         index: this.props.index,
@@ -2473,7 +2489,7 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
         required: this.props.required,
         onChange: this.props.onChange,
         onBlur: this.props.focusOut
-      })]);
+      })])]);
     }
   }]);
 
@@ -30243,6 +30259,8 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 
   var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
 
+  var edited = props.value !== currentValue && currentValue != null;
+
   return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
     return (0, _reactHyperscriptHelpers.label)({
       key: id + ix,
@@ -30250,7 +30268,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : ''),
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : '') + (edited ? 'radioOptionsUpdated' : ''),
       disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
@@ -30260,7 +30278,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
       checked: normValue === optionValues[ix],
       onChange: function onChange() {}
     }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
-  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.value != currentValue, className: "formerValue" }, [currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
+  }), (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "radioOptionsCurrent" }, [(0, _reactHyperscriptHelpers.span)({ className: "italic" }, ["Previous value: "]), currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
 };
 
 /***/ }),
@@ -30338,10 +30356,12 @@ var Project = exports.Project = {
     return _axios2.default.post(url, data, config);
   },
   getProject: function getProject(url, projectkey) {
-    return _axios2.default.get(url + '?id=' + projectkey);
+    var project = _axios2.default.get(url + '?id=' + projectkey);
+    console.log('getProject --------------------> ', project);
+    return project;
   },
   addExtraProperties: function addExtraProperties(url, projectKey, data) {
-    return _axios2.default.post(url + '?id=' + projectKey, data);
+    return _axios2.default.post(url + '?id=' + projectKey, data);;
   }
 };
 
@@ -31164,6 +31184,8 @@ var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) 
 
   var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : value;
 
+  var edited = props.value !== currentValue && currentValue != null;
+
   return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
     return (0, _reactHyperscriptHelpers.label)({
       key: id + ix,
@@ -31171,7 +31193,7 @@ var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) 
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : ''),
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : '') + (edited ? 'radioOptionsUpdated' : ''),
       disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
@@ -31181,7 +31203,7 @@ var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) 
       checked: normValue === optionValues[ix],
       onChange: function onChange() {}
     }), (0, _reactHyperscriptHelpers.span)({ className: "radioCheck" }), (0, _reactHyperscriptHelpers.span)({ className: "radioLabel" }, [optionLabels[ix]])]);
-  }), (0, _reactHyperscriptHelpers.small)({ isRendered: props.value != currentValue, className: "formerValue" }, [currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
+  }), (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "radioOptionsCurrent" }, [(0, _reactHyperscriptHelpers.span)({ className: "italic" }, ["Previous value: "]), currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])]);
 };
 
 /***/ }),
@@ -31233,7 +31255,7 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
-      }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
+      }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
         id: this.props.id,
         index: this.props.index,
         name: this.props.name,
@@ -31243,7 +31265,7 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
         options: this.props.options,
         placeholder: this.props.placeholder,
         isMulti: this.props.isMulti
-      })]);
+      })])]);
     }
   }]);
 
@@ -32320,7 +32342,7 @@ exports = module.exports = __webpack_require__(13)(undefined);
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  font-size: 1.1rem;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n  padding-left: 0;\r\n  color: black;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,\r\n.inputFieldReadOnly .inputFieldDatePicker+button,\r\n.inputFieldReadOnly .react-datepicker__input-container::after {\r\n  display: none;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n  position: relative;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n/* Read Only Mode*/\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  font-size: 1.1rem;\r\n  box-shadow: none;\r\n  padding-left: 0;\r\n  color: black;\r\n  cursor: default;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  pointer-events: none;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,\r\n.inputFieldReadOnly .inputFieldSelect .select__multi-value__remove,\r\n.inputFieldReadOnly .inputFieldDatePicker+button,\r\n.inputFieldReadOnly .react-datepicker__input-container::after {\r\n  display: none;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect .select__multi-value {\r\n  padding: 3px 5px;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldLabel,\r\n.inputFieldReadOnly label {\r\n  font-weight: 700;\r\n} \r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n/*Input file*/\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}\r\n\r\n/*Comparison Mode*/\r\n\r\n.inputFieldUpdated .inputFieldText,\r\n.inputFieldUpdated .inputFieldTextarea,\r\n.inputFieldUpdated .inputFieldSelect div,\r\n.inputFieldUpdated .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  box-shadow: none;\r\n  background: #FFF4BD;\r\n  color: black;\r\n}\r\n\r\n.inputFieldUpdated.inputFieldReadOnly .inputFieldText,\r\n.inputFieldUpdated.inputFieldReadOnly .inputFieldTextarea,\r\n.inputFieldUpdated.inputFieldReadOnly .inputFieldSelect>div,\r\n.inputFieldUpdated.inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  padding-left: 12px;\r\n}\r\n\r\n.inputFieldCurrent {\r\n  position: relative;\r\n  width: 100%;\r\n  margin: 5px 0;\r\n  min-height: 38px;\r\n  background: #EAEAEA;\r\n  font-size: 1rem;\r\n  padding: 9px 40px 9px 12px;\r\n}\r\n\r\n.inputFieldWrapper,\r\n.inputFieldSelectWrapper {\r\n  position: relative;\r\n}\r\n\r\n.inputFieldCurrent:after,\r\n.inputFieldUpdated .inputFieldWrapper:after,\r\n.inputFieldUpdated.inputFieldReadOnly .inputFieldSelectWrapper:after {\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 8px; \r\n  display: block;\r\n  content: '';\r\n  background-size: 36px 18px;\r\n  height: 18px;\r\n  width: 36px;\r\n}\r\n\r\n.inputFieldCurrent:after {\r\n  background: url(" + __webpack_require__(764) + ") no-repeat;  \r\n}\r\n\r\n.inputFieldUpdated .inputFieldWrapper:after, \r\n.inputFieldUpdated .inputFieldSelectWrapper:after {\r\n  background: url(" + __webpack_require__(763) + ") no-repeat;\r\n}\r\n", ""]);
 
 // exports
 
@@ -32334,7 +32356,7 @@ exports = module.exports = __webpack_require__(13)(undefined);
 
 
 // module
-exports.push([module.i, ".radioContainer {\n  margin: 20px 0;\n}\n\n.radioContainer p {\n  font-size: 1.1rem;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding-left: 28px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: sub;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 3px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When radioOptions is in readOnly mode*/\n.radioOptionsReadOnly:hover,\n.radioOptionsReadOnly:hover input~.radioCheck,\n.radioOptionsReadOnlyinput:checked ~ .radioCheck {\n  box-shadow: none;\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n", ""]);
+exports.push([module.i, ".radioContainer {\n  margin: 20px 0;\n}\n\n.radioContainer p {\n  font-size: 1.1rem;\n}\n\n.radioOptions {\n  display: block;\n  position: relative;\n  padding: 3px 10px 3px 30px;\n  margin-right: 20px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n\n/* Hide the browser's default radio button */\n.radioOptions input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  display: none;\n}\n\n.radioLabel {\n  font-size: 14px;\n  font-weight: 500;\n  color: #333333;\n  vertical-align: middle;\n}\n\n.radioCheck {\n  position: absolute;\n  top: 5px;\n  left: 0;\n  height: 18px;\n  width: 18px;\n  background-color: #ffffff;\n  border-radius: 50%;\n  border: 1px solid #999999;\n}\n\n/* On mouse-over */\n.radioOptions:hover input~.radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* When the radio button is checked */\n.radioOptions input:checked ~ .radioCheck {\n  box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);\n}\n\n/* Create the indicator (the dot/circle - hidden when not checked) */\n.radioCheck:after {\n  content: \"\";\n  position: absolute;\n  display: none;\n}\n\n/* Show the indicator (dot/circle) when checked */\n.radioOptions input:checked~.radioCheck:after {\n  display: block;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptions .radioCheck:after {\n  top: 3px;\n  left: 3px;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: #2196F3;\n}\n\nfieldset[disabled] .radioOptions {\n  opacity: 0.65 !important;\n  cursor: not-allowed;\n}\n\n.radioOptionsReadOnly {\n  pointer-events: none;\n}\n\n/* When radioOptions is in readOnly mode*/\n.radioOptionsReadOnly:hover,\n.radioOptionsReadOnly:hover input~.radioCheck,\n.radioOptionsReadOnly input:checked ~ .radioCheck {\n  box-shadow: none;\n}\n\n/* Style the indicator (dot/circle) */\n.radioOptionsReadOnly .radioCheck:after {\n  background-color: #777777;\n}\n\n/*Comparison Mode*/\n.radioOptionsUpdated {\n  width: 100%;\n  background: #FFF4BD;\n}\n\n.radioOptionsUpdated .radioCheck{\n  left: 5px;\n}\n\n.radioOptionsCurrent {\n  position: relative;\n  width: 100%;\n  margin: 10px 0 5px 0;\n  min-height: 38px;\n  background: #EAEAEA;\n  font-size: 1rem;\n  padding: 9px 40px 9px 12px;\n}\n\n.radioOptionsCurrent:after,\n.radioOptionsUpdated:after {\n  position: absolute;\n  right: 8px; \n  display: block;\n  content: '';\n  background-size: 36px 18px;\n  height: 18px;\n  width: 36px;\n}\n\n.radioOptionsCurrent:after {\n  top: 10px;\n  background: url(" + __webpack_require__(764) + ") no-repeat;  \n}\n\n.radioOptionsUpdated:after {\n  top: 5px;\n  background: url(" + __webpack_require__(763) + ") no-repeat;\n}\n\n", ""]);
 
 // exports
 
@@ -32360,9 +32382,10 @@ exports.push([module.i, "\r\n.panelContainer {\r\n  margin-bottom: 20px;\r\n  ba
 exports = module.exports = __webpack_require__(13)(undefined);
 // imports
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i);", ""]);
+exports.push([module.i, "@import url(https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css);", ""]);
 
 // module
-exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.formerValue {\n  color: rgb(68, 175, 46);\n}\n\n.stepTitle {\n  margin-bottom: 15px;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.checkboxReadOnly {\n  box-shadow: none;\n  pointer-events: none;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.positionRelative {\n  position: relative;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n", ""]);
+exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.stepTitle {\n  margin-bottom: 15px;\n  display: inline-block;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n  cursor: pointer;\n}\n\n.buttonPrimary.floatRight,\n.buttonSecondary.floatRight {\n  margin-left: 15px;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.checkboxReadOnly {\n  box-shadow: none;\n  pointer-events: none;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.positionRelative {\n  position: relative;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n\n.tableContainer .table {\n  margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -39286,7 +39309,7 @@ var InputFieldTextArea = exports.InputFieldTextArea = (0, _reactHyperscriptHelpe
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
-      }, [(0, _reactHyperscriptHelpers.textarea)({
+      }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldWrapper" }, [(0, _reactHyperscriptHelpers.textarea)({
         name: this.props.name,
         id: "txt_description",
         rows: "5",
@@ -39295,7 +39318,7 @@ var InputFieldTextArea = exports.InputFieldTextArea = (0, _reactHyperscriptHelpe
         required: this.props.required,
         disabled: this.props.disabled,
         value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value
-      })]);
+      })])]);
     }
   }]);
 
@@ -39354,10 +39377,21 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
     value: function render() {
       var _this2 = this;
 
+      var _props$currentValue = this.props.currentValue,
+          currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
+
+
+      var values = [];
+      currentValue.forEach(function (value) {
+        values.push(value.label);
+      });
+
+      var currentValueStr = values.join(',');
+
       return (0, _InputField.InputField)({
         label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
-        currentValue: this.props.currentValue
-      }, [(0, _reactHyperscriptHelpers.h)(_Async2.default, {
+        currentValue: currentValue, currentValueStr: currentValueStr
+      }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_Async2.default, {
         id: this.props.id,
         isDisabled: this.props.isDisabled,
         isMulti: this.props.isMulti,
@@ -39372,7 +39406,13 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
         placeholder: this.props.placeholder !== undefined ? this.props.placeholder : '--',
         className: "inputFieldSelect",
         classNamePrefix: "select"
-      })]);
+      })])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -43074,6 +43114,14 @@ var ProjectReview = function (_Component) {
       };
     };
 
+    _this.discardEdits = function (e) {
+      return function () {};
+    };
+
+    _this.approveEdits = function (e) {
+      return function () {};
+    };
+
     _this.enableEdit = function (e) {
       return function () {
         _this.setState({
@@ -43085,6 +43133,7 @@ var ProjectReview = function (_Component) {
     _this.cancelEdit = function (e) {
       return function () {
         _this.setState({
+          formData: _this.state.suggestionsCopy,
           readOnly: true
         });
       };
@@ -43098,23 +43147,46 @@ var ProjectReview = function (_Component) {
       };
     };
 
+    _this.loadUsersOptions = function (query, callback) {
+      if (query.length > 2) {
+        _ajax.Search.getMatchingUsers(_this.props.searchUsersURL, query).then(function (response) {
+          var options = response.data.map(function (item) {
+            return {
+              key: item.id,
+              value: item.value,
+              label: item.label
+            };
+          });
+          callback(options);
+        });
+      }
+    };
+
+    _this.handleUpdateFundings = function (updated) {
+      _this.setState(function (prev) {
+        prev.formData.fundings = updated;
+        return prev;
+      }); //, () => this.props.updateForm(this.state.formData, 'fundings'));
+      //this.props.removeErrorMessage();
+    };
+
     _this.handleProjectCollaboratorChange = function (data, action) {
       _this.setState(function (prev) {
-        prev.collaborators = data;
+        prev.formData.collaborators = data;
         return prev;
       }); //, () => this.props.updateForm(this.state.formData, 'collaborators'));
     };
 
     _this.handlePIChange = function (data, action) {
       _this.setState(function (prev) {
-        prev.piList = data;
+        prev.formData.piList = data;
         return prev;
       }); //, () => this.props.updateForm(this.state.formData, 'piName'));
     };
 
     _this.handleProjectManagerChange = function (data, action) {
       _this.setState(function (prev) {
-        prev.pmList = data;
+        prev.formData.pmList = data;
         return prev;
       }); //, () => this.props.updateForm(this.state.formData, 'projectManager'));
       //this.props.removeErrorMessage();
@@ -43125,26 +43197,47 @@ var ProjectReview = function (_Component) {
       var value = e.target.value;
       console.log('handleInputChange', field, value);
       _this.setState(function (prev) {
-        if (prev.formerData[field] == null) {
-          prev.formerData[field] = prev[field] === undefined ? null : prev[field];
-        }
-        prev[field] = value;
+        prev.formData[field] = value;
         return prev;
       }); // , () => this.props.updateForm(this.state.formData, field));
       //this.props.removeErrorMessage();
     };
 
+    _this.handleRadioChange = function (e, field, value) {
+      if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
+
+      _this.setState(function (prev) {
+        prev.formData[field] = value;
+        return prev;
+      }); //, () => this.props.updateForm(this.state.formData, field));
+      //this.props.removeErrorMessage();
+    };
+
+    _this.handleProjectExtraPropsChangeRadio = function (e, field, value) {
+      if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
+      console.log('handleProjectExtraPropsChangeRadio', field, value);
+
+      _this.setState(function (prev) {
+        prev.formData.projectExtraProps[field] = value;
+        return prev;
+      }); //, () => this.props.updateForm(this.state.formData, field));
+      //this.props.removeErrorMessage();
+    };
+
     _this.handleProjectExtraPropsChange = function (e) {
-      var field = e.target.name;
-      var value = e.target.value;
+      var field = e.currentTarget.name;
+      var value = e.currentTarget.value;
       console.log('handleProjectExtraPropsChange', field, value, _this.state);
       _this.setState(function (prev) {
-        // prev.formerData.projectExtraProps[field] = prev.projectExtraProps[field];
-        if (prev.formerData.projectExtraProps[field] == null) {
-          console.log('-------->', prev.projectExtraProps[field]);
-          prev.formerData.projectExtraProps[field] = prev.projectExtraProps[field] === undefined ? null : prev.projectExtraProps[field];
-        }
-        prev.projectExtraProps[field] = value;
+        prev.formData.projectExtraProps[field] = value;
         return prev;
       }); // , () => this.props.updateForm(this.state.formData, field));
       //this.props.removeErrorMessage();
@@ -43152,23 +43245,26 @@ var ProjectReview = function (_Component) {
 
     _this.state = {
       readOnly: true,
-      description: '',
-      projectExtraProps: {
-        projectTitle: '',
-        protocol: '',
-        subjectProtection: '',
-        projectReviewApproved: false
-      },
-      piList: [{ key: '', label: '', value: '' }],
-      pmList: [{ key: '', label: '', value: '' }],
-      fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
-      collaborators: [{ key: '', label: '', value: '' }],
-      requestor: {
-        displayName: '',
-        emailAddress: ''
+      formData: {
+        description: '',
+        projectExtraProps: {
+          projectTitle: '',
+          protocol: '',
+          subjectProtection: null,
+          projectReviewApproved: false
+        },
+        piList: [{ key: '', label: '', value: '' }],
+        pmList: [{ key: '', label: '', value: '' }],
+        fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
+        collaborators: [{ key: '', label: '', value: '' }],
+        requestor: {
+          displayName: '',
+          emailAddress: ''
+        }
       },
       disableApproveButton: false,
-      formerData: {
+
+      current: {
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -43181,13 +43277,12 @@ var ProjectReview = function (_Component) {
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        subjectProtection: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: [],
         projectExtraProps: {
           projectTitle: '',
           protocol: '',
-          subjectProtection: '',
+          subjectProtection: null,
           projectReviewApproved: false
         }
       }
@@ -43206,38 +43301,61 @@ var ProjectReview = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _ajax.Project.getProject(this.props.projectUrl, this.props.projectKey).then(function (element) {
-        return _this2.setState(function (prev) {
-          prev.description = element.data.issue.description;
-          prev.projectExtraProps = element.data.extraProperties;
-          prev.piList = _this2.getUsersArray(element.data.pis);
-          prev.pmList = _this2.getUsersArray(element.data.pms);
-          prev.collaborators = _this2.getUsersArray(element.data.collaborators);
-          prev.fundings = _this2.getFundingsArray(element.data.fundings);
-          prev.requestor = element.data.requestor !== null ? element.data.requestor : _this2.state.requestor;
+      _ajax.Project.getProject(this.props.projectUrl, this.props.projectKey).then(function (issue) {
 
-          // should get this valeus from temporary storage 
-          // prev.formerData.description = element.data.issue.description;
-          // prev.formerData.projectExtraProps = element.data.extraProperties;
-          // prev.formerData.piList = this.getUsersArray(element.data.pis);
-          // prev.formerData.pmList = this.getUsersArray(element.data.pms);
-          // prev.formerData.collaborators = this.getUsersArray(element.data.collaborators);
-          // prev.formerData.fundings = this.getFundingsArray(element.data.fundings);
-          // prev.formerData.requestor = element.data.requestor !== null ? element.data.requestor : this.state.requestor;
+        // store current issue info here ....
+        var current = {};
+        current.description = issue.data.issue.description;
+        current.projectExtraProps = issue.data.extraProperties;
+        current.piList = _this2.getUsersArray(issue.data.pis);
+        current.pmList = _this2.getUsersArray(issue.data.pms);
+        current.collaborators = _this2.getUsersArray(issue.data.collaborators);
+        current.fundings = _this2.getFundingsArray(issue.data.fundings);
+        current.requestor = issue.data.requestor !== null ? issue.data.requestor : _this2.state.requestor;
 
-          prev.formerData.description = null;
-          prev.formerData.projectExtraProps = {};
-          prev.formerData.piList = null;
-          prev.formerData.pmList = null;
-          prev.formerData.collaborators = null;
-          prev.formerData.fundings = null;
-          prev.formerData.requestor = {
-            displayName: '',
-            emailAddress: ''
-          };
+        var currentStr = JSON.stringify(current);
 
+        // read suggestions here ....
+        // ....
+        // Project.getSuggestions(this.props.projectUrl, this.props.projectKey).then(
+        //   edits => {
+
+        var edits = null;
+        var formData = {};
+        var suggestions = {};
+        var suggestionsCopy = {};
+
+        if (edits != null) {
+          // prepare form data here, initially same as current ....
+          var editsStr = JSON.stringify(edits);
+          formData.description = edits.data.issue.description;
+          formData.projectExtraProps = edits.data.extraProperties;
+          formData.piList = _this2.getUsersArray(edits.data.pis);
+          formData.pmList = _this2.getUsersArray(edits.data.pms);
+          formData.collaborators = _this2.getUsersArray(edits.data.collaborators);
+          formData.fundings = _this2.getFundingsArray(edits.data.fundings);
+          formData.requestor = edits.data.requestor !== null ? edits.data.requestor : _this2.state.requestor;
+
+          suggestions = JSON.parse(JSON.stringify(formData));
+          suggestionsCopy = JSON.parse(JSON.stringify(formData));
+        } else {
+          // prepare form data here, initially same as current ....
+          formData = JSON.parse(currentStr);
+          suggestions = JSON.parse(currentStr);
+          suggestionsCopy = JSON.parse(currentStr);
+        }
+
+        // store current issue info here ....
+        _this2.setState(function (prev) {
+          // prepare form data here, initially same as current ....
+          prev.formData = formData;
+          prev.current = current;
+          prev.suggestions = suggestions;
+          prev.suggestionsCopy = suggestionsCopy;
           return prev;
-        }, function () {});
+        });
+
+        // });
       });
     }
   }, {
@@ -43279,32 +43397,16 @@ var ProjectReview = function (_Component) {
       return value === '' || value === null || value === undefined;
     }
   }, {
-    key: 'loadUsersOptions',
-    value: function loadUsersOptions(query, callback) {
-      if (query.length > 2) {
-        _ajax.Search.getMatchingUsers(this.props.searchUsersURL, query).then(function (response) {
-          var options = response.data.map(function (item) {
-            return {
-              key: item.id,
-              value: item.value,
-              label: item.label
-            };
-          });
-          callback(options);
-        });
-      }
-    }
-  }, {
     key: 'render',
     value: function render() {
 
-      console.log(this.state.projectExtraProps.projectTitle, this.state.formerData.projectExtraProps.projectTitle, this.state);
+      console.log('------------------------- RENDER ---------------------------------------------', this.state);
       return (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.h2)({ className: "stepTitle" }, ["Project Information"]), (0, _Panel.Panel)({ title: "Requestor" }, [(0, _InputFieldText.InputFieldText)({
         id: "inputRequestorName",
         name: "requestorName",
         label: "Requestor Name",
-        value: this.state.requestor.displayName,
-        currentValue: this.state.formerData.requestor.displayName,
+        value: this.state.formData.requestor.displayName,
+        currentValue: this.state.current.requestor.displayName,
         readOnly: true,
         required: true,
         onChange: function onChange() {}
@@ -43312,8 +43414,8 @@ var ProjectReview = function (_Component) {
         id: "inputRequestorEmail",
         name: "requestorEmail",
         label: "Requestor Email Address",
-        value: this.state.requestor.emailAddress,
-        currentValue: this.state.formerData.requestor.emailAddress,
+        value: this.state.formData.requestor.emailAddress,
+        currentValue: this.state.current.requestor.emailAddress,
         readOnly: true,
         required: true,
         onChange: function onChange() {}
@@ -43324,9 +43426,9 @@ var ProjectReview = function (_Component) {
         readOnly: this.state.readOnly,
         loadOptions: this.loadUsersOptions,
         handleChange: this.handlePIChange,
-        value: this.state.piList,
-        currentValue: this.state.formerData.piList,
-        isMulti: this.state.piList.length > 1
+        value: this.state.formData.piList,
+        currentValue: this.state.current.piList,
+        isMulti: true // this.state.formData.piList.length > 1
       }), (0, _MultiSelect.MultiSelect)({
         id: "inputProjectManager",
         label: "Broad Project Manager",
@@ -43334,12 +43436,13 @@ var ProjectReview = function (_Component) {
         readOnly: this.state.readOnly,
         loadOptions: this.loadUsersOptions,
         handleChange: this.handleProjectManagerChange,
-        value: this.state.pmList,
-        currentValue: this.state.formerData.pnList,
-        isMulti: this.state.pmList.length > 1
+        value: this.state.formData.pmList,
+        currentValue: this.state.current.pnList,
+        isMulti: true // this.state.formData.pmList.length > 1
       })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _Fundings.Fundings)({
-        fundings: this.state.fundings,
-        updateFundings: null,
+        fundings: this.state.formData.fundings,
+        currentValue: this.state.current.fudings,
+        updateFundings: this.handleUpdateFundings,
         readOnly: this.state.readOnly,
         error: false,
         errorMessage: ""
@@ -43347,8 +43450,8 @@ var ProjectReview = function (_Component) {
         id: "inputStudyActivitiesDescription",
         name: "description",
         label: "Broad study activities",
-        value: this.state.description.replace(/<\/?[^>]+(>|$)/g, ""),
-        currentValue: this.state.formerData.description,
+        value: this.state.formData.description.replace(/<\/?[^>]+(>|$)/g, ""),
+        currentValue: this.state.current.description,
         readOnly: this.state.readOnly,
         required: false,
         onChange: this.handleInputChange,
@@ -43357,19 +43460,20 @@ var ProjectReview = function (_Component) {
       }), (0, _MultiSelect.MultiSelect)({
         id: "collaborator_select",
         label: "Individuals who require access to this project record",
-        name: 'collaborators',
+        isDisabled: false,
         readOnly: this.state.readOnly,
         loadOptions: this.loadUsersOptions,
         handleChange: this.handleProjectCollaboratorChange,
-        value: this.state.collaborators,
-        currentValue: this.state.formerData.collaborators,
+        value: this.state.formData.collaborators,
+        currentValue: this.state.current.collaborators,
+        placeholder: "Start typing collaborator names",
         isMulti: true
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputPTitle",
         name: "projectTitle",
         label: "Title of project/protocol",
-        value: this.state.projectExtraProps.projectTitle,
-        currentValue: this.state.formerData.projectExtraProps.projectTitle,
+        value: this.state.formData.projectExtraProps.projectTitle,
+        currentValue: this.state.current.projectExtraProps.projectTitle,
         readOnly: this.state.readOnly,
         required: false,
         onChange: this.handleProjectExtraPropsChange,
@@ -43379,8 +43483,8 @@ var ProjectReview = function (_Component) {
         id: "inputIrbProtocolId",
         name: "protocol",
         label: "Protocol # at Broad IRB-of-record ",
-        value: this.state.projectExtraProps.protocol,
-        currentValue: this.state.formerData.projectExtraProps.protocol,
+        value: this.state.formData.projectExtraProps.protocol,
+        currentValue: this.state.current.projectExtraProps.protocol,
         readOnly: this.state.readOnly,
         required: false,
         onChange: this.handleProjectExtraPropsChange
@@ -43389,88 +43493,88 @@ var ProjectReview = function (_Component) {
         name: "subjectProtection",
         label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
         moreInfo: "i.e. responsible for oversight and submissions?",
-        value: this.state.projectExtraProps.subjectProtection,
-        currentValue: this.state.formerData.projectExtraProps.subjectProtection,
-        onChange: this.handleProjectExtraPropsChange,
+        value: this.state.formData.projectExtraProps.subjectProtection,
+        currentValue: this.state.current.projectExtraProps.subjectProtection,
+        onChange: this.handleProjectExtraPropsChangeRadio,
         required: false,
         readOnly: this.state.readOnly,
         error: false,
         errorMessage: "Required field"
-      })]), (0, _Panel.Panel)({ title: "Determination Questions " }, [(0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.feeForService) }, [(0, _InputYesNo.InputYesNo)({
+      })]), (0, _Panel.Panel)({ title: "Determination Questions " }, [(0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService) }, [(0, _InputYesNo.InputYesNo)({
         id: "radioPII",
         name: "radioPII",
         label: 'Is this a "fee-for-service" project? ',
         moreInfo: '(commercial service only, no Broad publication privileges)',
-        value: this.state.projectExtraProps.feeForService,
-        currentValue: this.state.formerData.projectExtraProps.feeForService,
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.broadInvestigator) }, [(0, _InputYesNo.InputYesNo)({
+        value: this.state.formData.projectExtraProps.feeForService,
+        currentValue: this.state.current.projectExtraProps.feeForService,
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [(0, _InputYesNo.InputYesNo)({
         id: "broadInvestigator",
         name: "broadInvestigator",
-        value: this.state.projectExtraProps.broadInvestigator,
-        currentValue: this.state.formerData.projectExtraProps.broadInvestigator,
+        value: this.state.formData.projectExtraProps.broadInvestigator,
+        currentValue: this.state.current.projectExtraProps.broadInvestigator,
         moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
         label: 'Is a Broad investigator conducting research ',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.subjectsDeceased) }, [(0, _InputYesNo.InputYesNo)({
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [(0, _InputYesNo.InputYesNo)({
         id: "subjectsDeceased",
         name: "subjectsDeceased",
-        value: this.state.projectExtraProps.subjectsDeceased,
-        currentValue: this.state.formerData.projectExtraProps.subjectsDeceased,
+        value: this.state.formData.projectExtraProps.subjectsDeceased,
+        currentValue: this.state.current.projectExtraProps.subjectsDeceased,
         label: 'Are all subjects who provided samples and/or data now deceased?',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.sensitiveInformationSource) }, [(0, _InputYesNo.InputYesNo)({
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [(0, _InputYesNo.InputYesNo)({
         id: "sensitiveInformationSource",
         name: "sensitiveInformationSource",
-        value: this.state.projectExtraProps.sensitiveInformationSource,
-        currentValue: this.state.formerData.projectExtraProps.sensitiveInformationSource,
+        value: this.state.formData.projectExtraProps.sensitiveInformationSource,
+        currentValue: this.state.current.projectExtraProps.sensitiveInformationSource,
         moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
         label: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.interactionSource) }, [(0, _InputYesNo.InputYesNo)({
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [(0, _InputYesNo.InputYesNo)({
         id: "interactionSource",
         name: "interactionSource",
-        value: this.state.projectExtraProps.interactionSource,
-        currentValue: this.state.formerData.projectExtraProps.interactionSource,
+        value: this.state.formData.projectExtraProps.interactionSource,
+        currentValue: this.state.current.projectExtraProps.interactionSource,
         moreInfo: '(i.e. is conductin HSR)?',
         label: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.isIdReceive) }, [(0, _InputYesNo.InputYesNo)({
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [(0, _InputYesNo.InputYesNo)({
         id: "isIdReceive",
         name: "isIdReceive",
-        value: this.state.projectExtraProps.isIdReceive,
-        currentValue: this.state.formerData.projectExtraProps.isIdReceive,
+        value: this.state.formData.projectExtraProps.isIdReceive,
+        currentValue: this.state.current.projectExtraProps.isIdReceive,
         label: 'Is the Broad receiving subject identifiers?',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.isCoPublishing) }, [(0, _InputYesNo.InputYesNo)({
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [(0, _InputYesNo.InputYesNo)({
         id: "isCoPublishing",
         name: 'isCoPublishing',
-        value: this.state.projectExtraProps.isCoPublishing,
-        currentValue: this.state.formerData.projectExtraProps.isCoPublishing,
+        value: this.state.formData.projectExtraProps.isCoPublishing,
+        currentValue: this.state.current.projectExtraProps.isCoPublishing,
         label: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
-      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.projectExtraProps.federalFunding) }, [(0, _InputYesNo.InputYesNo)({
+        readOnly: true,
+        onChange: function onChange() {}
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.federalFunding) }, [(0, _InputYesNo.InputYesNo)({
         id: "federalFunding",
         name: 'federalFunding',
-        value: this.state.projectExtraProps.federalFunding,
-        currentValue: this.state.formerData.projectExtraProps.federalFunding,
+        value: this.state.formData.projectExtraProps.federalFunding,
+        currentValue: this.state.current.projectExtraProps.federalFunding,
         label: 'Is Broad receiving direct federal funding?',
-        readOnly: this.state.readOnly,
-        onChange: this.handleProjectExtraPropsChange
+        readOnly: true,
+        onChange: function onChange() {}
       })])]), (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer", style: { 'marginRight': '0' } }, [(0, _reactHyperscriptHelpers.button)({
         className: "btn buttonPrimary ",
         onClick: this.enableEdit(),
         disabled: this.state.readOnly === false,
         isRendered: true
       }, ["Edit"]), (0, _reactHyperscriptHelpers.button)({
-        className: "btn buttonPrimary ",
+        className: "btn buttonSecondary ",
         onClick: this.cancelEdit(),
         disabled: this.state.readOnly === true,
         isRendered: true
@@ -43479,11 +43583,21 @@ var ProjectReview = function (_Component) {
         onClick: this.submitEdit(),
         disabled: this.state.readOnly === true,
         isRendered: true
-      }, ["Submit Edtis"]), (0, _reactHyperscriptHelpers.button)({
+      }, ["Submit Edits"]), (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonSecondary ",
+        onClick: this.discardEdits(),
+        disabled: this.state.disableApproveButton,
+        isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+      }, ["Discard Edits "]), (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonPrimary ",
+        onClick: this.approveEdits(),
+        disabled: this.state.disableApproveButton,
+        isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+      }, ["Approve Edits "]), (0, _reactHyperscriptHelpers.button)({
         className: "btn buttonPrimary floatRight",
         onClick: this.approveRevision(),
         disabled: this.state.disableApproveButton,
-        isRendered: this.isAdmin && !this.state.projectExtraProps.projectReviewApproved
+        isRendered: this.isAdmin && !this.state.formData.projectExtraProps.projectReviewApproved
       }, ["Approve"])])]);
     }
   }]);
@@ -43544,11 +43658,141 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_ProjectReview2.default, {
   issue: component.issue,
+  searchUsersURL: component.searchUsersURL,
   projectKey: component.projectKey,
   projectUrl: component.projectUrl,
   addExtraPropUrl: urls.saveExtraPropUrl,
   roles: component.roles
 }), document.getElementById('projectReview'));
+
+/***/ }),
+/* 646 */,
+/* 647 */,
+/* 648 */,
+/* 649 */,
+/* 650 */,
+/* 651 */,
+/* 652 */,
+/* 653 */,
+/* 654 */,
+/* 655 */,
+/* 656 */,
+/* 657 */,
+/* 658 */,
+/* 659 */,
+/* 660 */,
+/* 661 */,
+/* 662 */,
+/* 663 */,
+/* 664 */,
+/* 665 */,
+/* 666 */,
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */,
+/* 671 */,
+/* 672 */,
+/* 673 */,
+/* 674 */,
+/* 675 */,
+/* 676 */,
+/* 677 */,
+/* 678 */,
+/* 679 */,
+/* 680 */,
+/* 681 */,
+/* 682 */,
+/* 683 */,
+/* 684 */,
+/* 685 */,
+/* 686 */,
+/* 687 */,
+/* 688 */,
+/* 689 */,
+/* 690 */,
+/* 691 */,
+/* 692 */,
+/* 693 */,
+/* 694 */,
+/* 695 */,
+/* 696 */,
+/* 697 */,
+/* 698 */,
+/* 699 */,
+/* 700 */,
+/* 701 */,
+/* 702 */,
+/* 703 */,
+/* 704 */,
+/* 705 */,
+/* 706 */,
+/* 707 */,
+/* 708 */,
+/* 709 */,
+/* 710 */,
+/* 711 */,
+/* 712 */,
+/* 713 */,
+/* 714 */,
+/* 715 */,
+/* 716 */,
+/* 717 */,
+/* 718 */,
+/* 719 */,
+/* 720 */,
+/* 721 */,
+/* 722 */,
+/* 723 */,
+/* 724 */,
+/* 725 */,
+/* 726 */,
+/* 727 */,
+/* 728 */,
+/* 729 */,
+/* 730 */,
+/* 731 */,
+/* 732 */,
+/* 733 */,
+/* 734 */,
+/* 735 */,
+/* 736 */,
+/* 737 */,
+/* 738 */,
+/* 739 */,
+/* 740 */,
+/* 741 */,
+/* 742 */,
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */,
+/* 749 */,
+/* 750 */,
+/* 751 */,
+/* 752 */,
+/* 753 */,
+/* 754 */,
+/* 755 */,
+/* 756 */,
+/* 757 */,
+/* 758 */,
+/* 759 */,
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */
+/***/ (function(module, exports) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MS42MSAzMS44Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2Q2YWYwZDt9LmNscy0ye2ZpbGw6I2ZmZjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPm5ldy1vbGQ8L3RpdGxlPjxyZWN0IGNsYXNzPSJjbHMtMSIgd2lkdGg9IjYxLjYxIiBoZWlnaHQ9IjMxLjgiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0xMC4zNiw4Ljg5YS43My43MywwLDAsMSwuMjEuMDYuNjguNjgsMCwwLDEsLjE4LjEzLDEuNSwxLjUsMCwwLDEsLjIuMjJsNy41NCw5LjYxYzAtLjIzLDAtLjQ2LDAtLjY4czAtLjQzLDAtLjYyVjguODdoMi4zNlYyMy4yNEgxOS40YTEuMTksMS4xOSwwLDAsMS0uNTMtLjEsMS4xLDEuMSwwLDAsMS0uNDEtLjM2TDExLDEzLjIxYzAsLjIyLDAsLjQzLjA1LjY0czAsLjM5LDAsLjU3djguODJIOC42NlY4Ljg3aDEuNFoiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMi43NCw4Ljg3VjExSDI2LjM3djRoNVYxN2gtNVYyMS4xaDYuMzd2Mi4xNEgyMy42OFY4Ljg3WiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTMzLjczLDguODdIMzZhMSwxLDAsMCwxLC41OC4xNy43Ni43NiwwLDAsMSwuMzIuNDRsMi40NCw4LjU5Yy4wNi4yMi4xMi40NS4xNy42OXMuMDkuNTIuMTQuNzljLjA1LS4yNy4xMS0uNTQuMTctLjc5cy4xMy0uNDcuMjEtLjY5bDIuODItOC41OWExLDEsMCwwLDEsLjMxLS40Mi44Ny44NywwLDAsMSwuNTctLjE5aC43OWExLDEsMCwwLDEsLjU4LjE3Ljc5Ljc5LDAsMCwxLC4zMS40NGwyLjgxLDguNTlhMTIsMTIsMCwwLDEsLjM3LDEuNDFsLjE1LS43NGMwLS4yNC4xLS40Ni4xNS0uNjdsMi40NS04LjU5YS43NC43NCwwLDAsMSwuMy0uNDMuOTMuOTMsMCwwLDEsLjU4LS4xOGgyLjFMNDkuODIsMjMuMjRINDcuNDFsLTMuMTQtOS44MmMwLS4xMi0uMDgtLjI2LS4xMi0uNHMtLjA5LS4zMS0uMTMtLjQ3TDQzLjksMTNjMCwuMTQtLjA5LjI4LS4xMy40TDQwLjYsMjMuMjRIMzguMTlaIi8+PC9zdmc+"
+
+/***/ }),
+/* 764 */
+/***/ (function(module, exports) {
+
+module.exports = "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MS42MSAzMS44Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6Izg5ODk4OTt9LmNscy0ye2ZpbGw6I2ZmZjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPm5ldy1vbGQ8L3RpdGxlPjxyZWN0IGNsYXNzPSJjbHMtMSIgd2lkdGg9IjYxLjYxIiBoZWlnaHQ9IjMxLjgiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNS41MywxNi4wNkE3Ljk0LDcuOTQsMCwwLDEsMjUsMTlhNi43Nyw2Ljc3LDAsMCwxLTEuNDgsMi4zMyw2LjY1LDYuNjUsMCwwLDEtMi4yOSwxLjU0LDcuNzUsNy43NSwwLDAsMS0zLC41NSw3Ljc0LDcuNzQsMCwwLDEtMy0uNTVBNi42OSw2LjY5LDAsMCwxLDExLjQ5LDE5YTguMzQsOC4zNCwwLDAsMSwwLTUuODUsNi42OSw2LjY5LDAsMCwxLDMuNzktMy44Nyw3LjkzLDcuOTMsMCwwLDEsMy0uNTUsNy43NSw3Ljc1LDAsMCwxLDMsLjU2LDYuNzcsNi43NywwLDAsMSwyLjI5LDEuNTNBNi44Nyw2Ljg3LDAsMCwxLDI1LDEzLjEzLDgsOCwwLDAsMSwyNS41MywxNi4wNlptLTIuNzQsMGE2LjYsNi42LDAsMCwwLS4zMi0yLjEyLDQuNTQsNC41NCwwLDAsMC0uOS0xLjYsMy43OCwzLjc4LDAsMCwwLTEuNDItMSw0Ljc3LDQuNzcsMCwwLDAtMS45LS4zNSw0Ljc1LDQuNzUsMCwwLDAtMS44OS4zNSwzLjc3LDMuNzcsMCwwLDAtMS40NCwxLDQuNTUsNC41NSwwLDAsMC0uOTEsMS42LDYuNiw2LjYsMCwwLDAtLjMyLDIuMTJBNi42NSw2LjY1LDAsMCwwLDE0LDE4LjE4YTQuNiw0LjYsMCwwLDAsLjkxLDEuNTksNCw0LDAsMCwwLDEuNDQsMSw0LjkzLDQuOTMsMCwwLDAsMS44OS4zNCw1LDUsMCwwLDAsMS45LS4zNCw0LDQsMCwwLDAsMS40Mi0xLDQuNTgsNC41OCwwLDAsMCwuOS0xLjU5QTYuNjUsNi42NSwwLDAsMCwyMi43OSwxNi4wNloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMC4zMSwyMWg1Ljc1djIuMjFIMjcuNjRWOC44N2gyLjY3WiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTUwLjY3LDE2LjA2YTcuNzksNy43OSwwLDAsMS0uNTMsMi45LDYuNTMsNi41MywwLDAsMS0zLjc3LDMuNzUsNy45Myw3LjkzLDAsMCwxLTMsLjUzSDM3LjkxVjguODdINDMuNGE4LjEzLDguMTMsMCwwLDEsMywuNTMsNi44LDYuOCwwLDAsMSwyLjI5LDEuNDgsNi42MSw2LjYxLDAsMCwxLDEuNDgsMi4yN0E3Ljg1LDcuODUsMCwwLDEsNTAuNjcsMTYuMDZabS0yLjczLDBhNi42LDYuNiwwLDAsMC0uMzItMi4xMiw0LjQyLDQuNDIsMCwwLDAtLjkxLTEuNTksMy43OCwzLjc4LDAsMCwwLTEuNDItMUE0Ljc1LDQuNzUsMCwwLDAsNDMuNCwxMUg0MC42VjIxLjExaDIuOGE0LjkzLDQuOTMsMCwwLDAsMS44OS0uMzQsNCw0LDAsMCwwLDEuNDItMSw0LjYsNC42LDAsMCwwLC45MS0xLjU5QTYuNjUsNi42NSwwLDAsMCw0Ny45NCwxNi4wNloiLz48L3N2Zz4="
 
 /***/ })
 /******/ ]);

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import Select from 'react-select';
-import { hh, h } from 'react-hyperscript-helpers';
+import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
 
@@ -12,6 +12,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
       }, [
+        div({ className: "inputFieldSelectWrapper" }, [
           h(Select, {
             id: this.props.id,
             index: this.props.index,
@@ -22,9 +23,9 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
             options: this.props.options,
             placeholder: this.props.placeholder,
             isMulti: this.props.isMulti
-          }
-          )
-        ]
-      ))
+          })
+        ])
+      ])
+    )
   }
 });

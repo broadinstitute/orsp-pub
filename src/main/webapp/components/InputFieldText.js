@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { input, hh } from 'react-hyperscript-helpers';
+import { input, hh, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
 
@@ -12,6 +12,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
       }, [
+        div({ className: "inputFieldWrapper" }, [
           input({
             type: 'text',
             id: this.props.id,
@@ -25,6 +26,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
             onBlur: this.props.focusOut
           })
         ])
+      ])
     )
   }
 });

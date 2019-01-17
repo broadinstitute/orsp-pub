@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h } from 'react-hyperscript-helpers';
+import { hh, h, div } from 'react-hyperscript-helpers';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { InputField } from './InputField';
@@ -22,6 +22,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
       }, [
+        div({ className: "inputFieldSelectWrapper" }, [
           h(
             DatePicker, ({
               selected: this.props.selected,
@@ -37,6 +38,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
             })
           )
         ])
+      ])
     )
   }
 

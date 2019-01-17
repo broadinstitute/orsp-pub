@@ -9,7 +9,7 @@
 .radioOptions {
   display: block;
   position: relative;
-  padding-left: 28px;
+  padding: 3px 10px 3px 30px;
   margin-right: 20px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -30,12 +30,12 @@
   font-size: 14px;
   font-weight: 500;
   color: #333333;
-  vertical-align: sub;
+  vertical-align: middle;
 }
 
 .radioCheck {
   position: absolute;
-  top: 3px;
+  top: 5px;
   left: 0;
   height: 18px;
   width: 18px;
@@ -52,13 +52,6 @@
 /* When the radio button is checked */
 .radioOptions input:checked ~ .radioCheck {
   box-shadow: 0 0 2px 2px rgba(47, 164, 231, 0.3);
-}
-
-/* When radioOptions is in readOnly mode*/
-.radioOptionsReadOnly:hover,
-.radioOptionsReadOnly:hover input~.radioCheck,
-.radioOptionsReadOnlyinput:checked ~ .radioCheck {
-  box-shadow: none;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -87,3 +80,61 @@ fieldset[disabled] .radioOptions {
   opacity: 0.65 !important;
   cursor: not-allowed;
 }
+
+.radioOptionsReadOnly {
+  pointer-events: none;
+}
+
+/* When radioOptions is in readOnly mode*/
+.radioOptionsReadOnly:hover,
+.radioOptionsReadOnly:hover input~.radioCheck,
+.radioOptionsReadOnly input:checked ~ .radioCheck {
+  box-shadow: none;
+}
+
+/* Style the indicator (dot/circle) */
+.radioOptionsReadOnly .radioCheck:after {
+  background-color: #777777;
+}
+
+/*Comparison Mode*/
+.radioOptionsUpdated {
+  width: 100%;
+  background: #FFF4BD;
+}
+
+.radioOptionsUpdated .radioCheck{
+  left: 5px;
+}
+
+.radioOptionsCurrent {
+  position: relative;
+  width: 100%;
+  margin: 10px 0 5px 0;
+  min-height: 38px;
+  background: #EAEAEA;
+  font-size: 1rem;
+  padding: 9px 40px 9px 12px;
+}
+
+.radioOptionsCurrent:after,
+.radioOptionsUpdated:after {
+  position: absolute;
+  right: 8px; 
+  display: block;
+  content: '';
+  background-size: 36px 18px;
+  height: 18px;
+  width: 36px;
+}
+
+.radioOptionsCurrent:after {
+  top: 10px;
+  background: url('./old-tag.svg') no-repeat;  
+}
+
+.radioOptionsUpdated:after {
+  top: 5px;
+  background: url('./new-tag.svg') no-repeat;
+}
+
