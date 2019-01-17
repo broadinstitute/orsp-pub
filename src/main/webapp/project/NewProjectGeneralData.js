@@ -32,9 +32,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
       formData: {
-        requestorName: this.props.user !== undefined ? this.props.user.displayName : '',
-        reporter: this.props.user !== undefined ?  this.props.user.userName : '',
-        requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
         studyDescription: '',
@@ -154,7 +151,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorName",
             name: "requestorName",
             label: "Requestor Name",
-            value: this.state.formData.requestorName,
+            value: this.props.user.displayName,
             disabled: true,
             required: true,
             onChange: this.handleInputChange
@@ -163,7 +160,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputRequestorEmail",
             name: "requestorEmail",
             label: "Requestor Email Address",
-            value: this.props.user.email.replace('&#64;', '@'),
+            value: this.props.user.emailAddress.replace('&#64;', '@'),
             disabled: true,
             required: true,
             onChange: this.handleInputChange

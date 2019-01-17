@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import grails.converters.JSON
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import grails.util.Environment
@@ -432,6 +433,24 @@ class QueryService implements Status {
             } else {
                 null
             }
+        } else {
+            null
+        }
+    }
+
+    Collection<SampleCollection> findCollectionByIdInList(Collection<String> idList) {
+        if (!idList.isEmpty()) {
+            final String query = 'select * from sample_collection ' +
+                                 'where lower(collection_id) IN :collectionIds'
+            SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+            final session = sessionFactory.currentSession
+            final SQLQuery sqlQuery = session.createSQLQuery(query)
+            final results = sqlQuery.with {
+                addEntity(SampleCollection)
+                setParameterList('collectionIds', idList)
+                list()
+            }
+            results
         } else {
             null
         }
@@ -898,6 +917,24 @@ class QueryService implements Status {
                 ]
         }
         results
+    }
+
+    LinkedHashMap getConsentGroupByKey(String projectKey) {
+        Issue issue = findByKey(projectKey)
+        Collection<ConsentCollectionLink> collectionLinks = findCollectionLinksByConsentKey(projectKey)
+        Collection<String> collectionIds = findAllSampleCollectionIdsForConsent(projectKey)
+        Collection<SampleCollection> sampleCollections
+        if (!collectionIds.isEmpty()) {
+            sampleCollections = findCollectionByIdInList(collectionIds)
+        } else {
+            sampleCollections = Collections.emptyList()
+        }
+        [
+            issue            : issue,
+            extraProperties  : issue.getExtraPropertiesMap(),
+            collectionLinks  : collectionLinks,
+            sampleCollections: sampleCollections
+        ]
     }
 
     /**

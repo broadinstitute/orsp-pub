@@ -11,8 +11,6 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Project } from "../util/ajax";
 import { Search } from '../util/ajax';
 
-const ORSP_ROLE = "orsp";
-
 class ProjectReview extends Component {
 
   constructor(props) {
@@ -167,8 +165,8 @@ class ProjectReview extends Component {
     return value === '' || value === null || value === undefined;
   }
 
-  isAdmin = (e) => {
-    return this.props.roles.indexOf(ORSP_ROLE) > -1;
+  isAdmin() {
+    return this.props.isAdmin === "true";
   }
 
   approveRevision = (e) => () => {
@@ -439,7 +437,7 @@ class ProjectReview extends Component {
         ]),
 
         Panel({ title: "Determination Questions " }, [
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService) }, [
+          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioPII",
               name: "radioPII",
@@ -448,8 +446,8 @@ class ProjectReview extends Component {
               value: this.state.formData.projectExtraProps.feeForService,
               currentValue: this.state.current.projectExtraProps.feeForService,
               readOnly: true,
-              onChange: () => {}
-            }),
+              onChange: () => { }
+            })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [
             InputYesNo({
@@ -460,7 +458,7 @@ class ProjectReview extends Component {
               moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
               label: 'Is a Broad investigator conducting research ',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
@@ -471,7 +469,7 @@ class ProjectReview extends Component {
               currentValue: this.state.current.projectExtraProps.subjectsDeceased,
               label: 'Are all subjects who provided samples and/or data now deceased?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
@@ -483,7 +481,7 @@ class ProjectReview extends Component {
               moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
               label: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [
@@ -495,7 +493,7 @@ class ProjectReview extends Component {
               moreInfo: '(i.e. is conductin HSR)?',
               label: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
@@ -506,7 +504,7 @@ class ProjectReview extends Component {
               currentValue: this.state.current.projectExtraProps.isIdReceive,
               label: 'Is the Broad receiving subject identifiers?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
@@ -517,7 +515,7 @@ class ProjectReview extends Component {
               currentValue: this.state.current.projectExtraProps.isCoPublishing,
               label: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.federalFunding) }, [
@@ -528,7 +526,7 @@ class ProjectReview extends Component {
               currentValue: this.state.current.projectExtraProps.federalFunding,
               label: 'Is Broad receiving direct federal funding?',
               readOnly: true,
-              onChange: () => {}
+              onChange: () => { }
             })
           ])
         ]),
@@ -571,7 +569,7 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve"]),
         ])
       ])
