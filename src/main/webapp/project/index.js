@@ -5,7 +5,7 @@ import '../index.css';
 
 ReactDOM.render(
     <NewProject
-        user = {component.user}
+        getUserUrl = {component.getUserUrl}
         searchUsersURL = {component.searchUsersURL}
         attachDocumentsURL = {component.attachDocumentsURL}
         createProjectURL = {component.createProjectURL}

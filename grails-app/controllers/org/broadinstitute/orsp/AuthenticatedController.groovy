@@ -347,4 +347,12 @@ class AuthenticatedController implements Interceptor, UserInfo {
         groupedSubmissions
     }
 
+
+    def isCurrentUserAdmin() {
+        render([isAdmin: isAdmin()] as JSON)
+    }
+
+    User getSessionUser() {
+        render([getUser()] as JSON)
+    }
 }
