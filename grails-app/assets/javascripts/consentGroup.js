@@ -41146,11 +41146,17 @@ var InputFieldDatePicker = exports.InputFieldDatePicker = (0, _reactHyperscriptH
     key: 'render',
     value: function render() {
 
+      var selected = void 0;
+
+      if (typeof this.props.selected === 'string') {
+        selected = new Date(this.props.selected);
+      }
+
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, currentValue: this.props.currentValue
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_reactDatepicker2.default, {
-        selected: this.props.selected,
+        selected: selected,
         onChange: this.props.onChange(this.props.name),
         showYearDropdown: true,
         dropdownMode: "select",

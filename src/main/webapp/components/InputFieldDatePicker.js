@@ -16,6 +16,12 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
 
   render() {
 
+    let selected;
+    
+    if (typeof this.props.selected === 'string')  {
+      selected = new Date(this.props.selected);
+    }
+
     return (
 
       InputField({
@@ -25,7 +31,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
         div({ className: "inputFieldSelectWrapper" }, [
           h(
             DatePicker, ({
-              selected: this.props.selected,
+              selected: selected,
               onChange: this.props.onChange(this.props.name),
               showYearDropdown: true,
               dropdownMode: "select",

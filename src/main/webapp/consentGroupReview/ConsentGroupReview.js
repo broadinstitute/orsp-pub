@@ -9,7 +9,7 @@ import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { Table } from '../components/Table';
-import { ConsentGroup, User } from "../util/ajax";
+import { ConsentGroup, SampleCollections, User } from "../util/ajax";
 
 
 class ConsentGroupReview extends Component {
@@ -17,12 +17,14 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      readOnly: true,
       isAdmin: false,
       disableApproveButton: false,
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
       },
+
       consentExtraProps: {
         consent: '',
         protocol: '',
@@ -30,19 +32,37 @@ class ConsentGroupReview extends Component {
         collContact: '',
         describeConsentGroup: '',
         requireMta: '',
-        startDate: '',
-        endDate: '',
-        onGoingProcess: '',
-        pii: '',
-        accessible: '',
-        compliance: '',
-        sensitive: '',
-        textAccessible: '',
-        textCompliance: '',
-        textSensitive: '',
-        individualDataSourced: '',
+
+        startDate: null,
+        endDate: null,
+        onGoingProcess: false,
+
+        individualDataSourced: null,
+        isLinkMaintained: null,
+        isFeeForService: null,
+        areSamplesComingFromEEAA: null,
+        isCollaboratorProvidingGoodService: null,
+        isConsentUnambiguous: null,
+        pii: null,
+        compliance: null,
+        textCompliance: null,
+        sensitive: null,
+        textSensitive: null,
+        accessible: null,
+        textAccessible: null,
+        sharingPlan: null,
+        databaseControlled: null,
+        databaseOpen: null,
+
+
         instSources: []
-      }
+      },
+      errors: {
+        sampleCollections: false
+      },
+      current: {},
+      suggestions: {},
+      suggestionsCopy: {}
     }
   }
 
@@ -50,20 +70,48 @@ class ConsentGroupReview extends Component {
     this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element => {
-        this.setState(prev => {
-          prev.consentForm = element.data.issue;
-          prev.consentExtraProps = element.data.extraProperties;
-          if (element.data.collectionLinks !== undefined) {
-            prev.sampleCollectionLinks = element.data.collectionLinks;
+
+        let sampleCollections = [];
+        SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
+          resp => {
+            sampleCollections = resp.data.map(item => {
+              return {
+                key: item.id,
+                value: item.collectionId,
+                label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+              };
+            });
+
+            this.setState(prev => {
+              prev.sampleCollectionList = sampleCollections;
+              prev.consentForm = element.data.issue;
+              prev.consentExtraProps = element.data.extraProperties;
+              if (element.data.collectionLinks !== undefined) {
+                prev.sampleCollectionLinks = element.data.collectionLinks;
+              }
+              if (element.data.sampleCollections !== undefined) {
+                prev.sampleCollections = element.data.sampleCollections.map(sample => {
+                  return ({
+                    key: sample.id,
+                    value: sample.collectionId,
+                    label: sample.collectionId + ": " + sample.name + " ( " + sample.category + " )"
+                  });
+
+                });
+
+              }
+              if (element.data.extraProperties.institutionalSources !== undefined) {
+                prev.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
+              }
+              prev.current = JSON.parse(JSON.stringify(element.data.extraProperties));
+              prev.suggestions = {};
+              prev.suggestionsCopy = JSON.parse(JSON.stringify(element.data.extraProperties));
+              return prev;
+            });
+
           }
-          if (element.data.sampleCollections !== undefined) {
-            prev.sampleCollections = element.data.sampleCollections;
-          }
-          if (element.data.extraProperties.institutionalSources !== undefined) {
-            prev.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
-          }
-          return prev;
-        })
+        );
+
       }
     );
   }
@@ -72,6 +120,7 @@ class ConsentGroupReview extends Component {
     if (this.state.consentExtraProps.onGoingProcess !== undefined) {
       let stringValue = this.state.consentExtraProps.onGoingProcess;
       let boolValue = stringValue.toLowerCase() == 'true' ? true : false;
+      console.log("parseBool: ", boolValue);
       return boolValue;
     }
   }
@@ -97,7 +146,6 @@ class ConsentGroupReview extends Component {
     );
   }
 
-
   approveRevision = (e) => () => {
     this.setState({ disableApproveButton: true })
     const data = { projectReviewApproved: true }
@@ -115,11 +163,150 @@ class ConsentGroupReview extends Component {
     );
   }
 
+  discardEdits = (e) => () => {
+
+  }
+
+  approveEdits = (e) => () => {
+
+  }
+
+  enableEdit = (e) => () => {
+    this.setState({
+      readOnly: false
+    });
+  }
+
+  cancelEdit = (e) => () => {
+    this.setState({
+      formData: this.state.suggestionsCopy,
+      readOnly: true
+    });
+  }
+
+  submitEdit = (e) => () => {
+    this.setState({
+      readOnly: true
+    });
+  }
+
+  handleSampleCollectionChange = () => (data) => {
+    this.setState(prev => {
+      prev.sampleCollections = data;
+      return prev;
+    }); //, () => this.props.updateForm(this.state.formData, "sampleCollections"));
+    //this.props.removeErrorMessage();
+  };
+
+  handleCheck = (e) => {
+    console.log('handleCheck: ', this.state.consentExtraProps.onGoingProcess, e.target.checked);
+
+    this.setState(prev => {
+      prev.consentExtraProps.onGoingProcess = !this.state.consentExtraProps.onGoingProcess;
+      prev.endDate = null;
+      return prev;
+    }); // , () => this.props.updateForm(this.state.formData, "onGoingProcess"));
+    //this.props.removeErrorMessage();
+  };
+
+  handleUpdateinstitutionalSources = (updated, field) => {
+    this.setState(prev => {
+      prev.institutionalSources = updated;
+      return prev;
+    }); //, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
+    // this.props.removeErrorMessage();
+  };
+
+  handleInputChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev[field] = value;
+      return prev;
+    }); //, () => {
+    //   this.props.updateForm(this.state.formData, field);
+    //   this.props.removeErrorMessage();
+    // })
+  };
+
+  handleExtraPropsInputChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.consentExtraProps[field] = value;
+      return prev;
+    }); //, () => {
+    //   this.props.updateForm(this.state.formData, field);
+    //   this.props.removeErrorMessage();
+    // })
+  };
+
+  handleChange = (id) => (date) => {
+    this.setState(prev => {
+      prev.consentExtraProps[id] = date;
+      return prev;
+    }); //, () => this.props.updateForm(this.state.formData, id));
+    //this.props.removeErrorMessage();
+  };
+
+  handleRadioChange = (e, field, value) => {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }); //, () => this.props.updateForm(this.state.formData, field));
+    // this.props.removeErrorMessage();
+  };
+
+  handleRadio2Change = (e, field, value) => {
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }); //, () => this.props.updateForm(this.state.formData, field));
+    // this.props.removeErrorMessage();
+  };
+
+
   render() {
 
     const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
-    const endDate = this.state.consentExtraProps.endDate;
-    const startDate = this.state.consentExtraProps.startDate;
+    // const endDate = this.state.consentExtraProps.endDate;
+    // const startDate = this.state.consentExtraProps.startDate;
+
+    const { startDate = null, endDate = null } = this.state.consentExtraProps;
+
+    const {
+      consent = '',
+      protocol = '',
+      collInst = '',
+      collContact = '',
+
+      individualDataSourced = '',
+      isLinkMaintained = '',
+      isFeeForService = '',
+      areSamplesComingFromEEAA = '',
+      isCollaboratorProvidingGoodService = '',
+      isConsentUnambiguous = '',
+      pii = '',
+      compliance = '',
+      textCompliance = '',
+      sensitive = '',
+      textSensitive = '',
+      accessible = '',
+      textAccessible = '',
+      sharingPlan = '',
+      databaseControlled = '',
+      databaseOpen = ''
+    } = this.state.consentExtraProps;
+
+
+    console.log('---- RENDER ----', this.state);
+
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
@@ -130,40 +317,40 @@ class ConsentGroupReview extends Component {
             name: "consentGroupName",
             label: "Consent Group Name",
             value: this.state.consentForm.summary,
-            onChange: () => { },
-            readOnly: true
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             id: "inputInvestigatorLastName",
             name: "investigatorLastName",
             label: "Last Name of Investigator Listed on the Consent Form",
-            value: this.state.consentExtraProps.consent,
-            onChange: () => { },
-            readOnly: true
+            value: consent,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             id: "inputInstitutionProtocolNumber",
             name: "institutionProtocolNumber",
             label: "Collaborating Institution's Protocol Number",
-            value: this.state.consentExtraProps.protocol,
-            onChange: () => { },
-            readOnly: true
+            value: protocol,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             id: "inputCollaboratingInstitution",
             name: "collaboratingInstitution",
             label: "Collaborating Institution",
-            value: this.state.consentExtraProps.collInst,
-            onChange: () => { },
-            readOnly: true
+            value: collInst,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             id: "inputprimaryContact",
             name: "primaryContact",
             label: "Primary Contact at Collaborating Institution ",
-            value: this.state.consentExtraProps.collContact,
-            onChange: () => { },
-            readOnly: true
+            value: collContact,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldRadio({
             id: "radioDescribeConsentGroup",
@@ -176,7 +363,7 @@ class ConsentGroupReview extends Component {
               "I am requesting assistance in updating and existing project"
             ],
             onChange: () => { },
-            readOnly: true
+            readOnly: this.state.readOnly
           }),
           InputFieldRadio({
             id: "radioRequireMta",
@@ -191,29 +378,45 @@ class ConsentGroupReview extends Component {
               "Not sure"
             ],
             onChange: () => { },
-            readOnly: true
+            readOnly: this.state.readOnly
           })
         ]),
 
         Panel({ title: "Sample Collections" }, [
-          Table({
-            headers: headers,
-            data: this.state.sampleCollections,
-            search: false,
-            pagination: false,
-            sizePerPage: 15,
-          })
+
+          InputFieldSelect({
+            id: "sampleCollection_select",
+            label: "Link Sample Collection to " + this.props.projectKey + "*",
+            isDisabled: false,
+            options: this.state.sampleCollectionList,
+            onChange: this.handleSampleCollectionChange,
+            value: this.state.sampleCollections,
+            placeholder: "Start typing a Sample Collection",
+            isMulti: true,
+            error: this.state.errors.sampleCollections,
+            errorMessage: "Required field"
+          }),
+
+
+
+          // Table({
+          //   headers: headers,
+          //   data: this.state.sampleCollections,
+          //   search: false,
+          //   pagination: false,
+          //   sizePerPage: 15,
+          // })
         ]),
 
         Panel({ title: "Sample Collection Date Range" }, [
           div({ className: "row" }, [
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                selected: this.hasDate("startDate") ? new Date(startDate.substr(0, 4), startDate.substr(5, 2) - 1, startDate.substr(8, 2)) : null,
+                selected: startDate, //this.hasDate("startDate") ? new Date(startDate.substr(0, 4), startDate.substr(5, 2) - 1, startDate.substr(8, 2)) : null,
                 name: "startDate",
                 label: "Start Date",
-                onChange: () => { },
-                readOnly: true
+                onChange: this.handleChange,
+                readOnly: this.state.readOnly
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -221,10 +424,10 @@ class ConsentGroupReview extends Component {
                 startDate: this.startDate,
                 name: "endDate",
                 label: "End Date",
-                selected: this.hasDate("endDate") ? new Date(endDate.substr(0, 4), endDate.substr(5, 2) - 1, endDate.substr(8, 2)) : null,
-                onChange: () => { },
+                selected: endDate, // this.hasDate("endDate") ? new Date(endDate.substr(0, 4), endDate.substr(5, 2) - 1, endDate.substr(8, 2)) : null,
+                onChange: this.handleChange,
                 disabled: (this.state.consentExtraProps.onGoingProcess === "true"),
-                readOnly: true
+                readOnly: this.state.readOnly
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox checkboxReadOnly", style: { 'marginTop': '32px' } }, [
@@ -232,9 +435,10 @@ class ConsentGroupReview extends Component {
                 type: 'checkbox',
                 id: "onGoingProcess",
                 name: "onGoingProcess",
-                checked: this.parseBool(),
-                onChange: () => { },
-                readOnly: true
+                checked: this.state.consentExtraProps.onGoingProcess === 'true' || this.state.consentExtraProps.onGoingProcess === true,
+                onClick: this.handleCheck,
+                onChange: (e) => { console.log(e.target.name, e.target.checked ) }
+                // readOnly: this.state.readOnly
               }),
               label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
             ])
@@ -245,7 +449,7 @@ class ConsentGroupReview extends Component {
           InstitutionalSource({
             updateInstitutionalSource: () => { },
             institutionalSources: this.state.instSources,
-            readOnly: true
+            readOnly: this.state.readOnly
           })
         ]),
 
@@ -255,7 +459,8 @@ class ConsentGroupReview extends Component {
               id: "radioQuestion1",
               value: this.state.consentExtraProps.individualDataSourced,
               label: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? "]),
-              readOnly: true
+              readOnly: this.state.readOnly,
+              onChange: this.handleExtraPropsInputChange,
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.consentExtraProps.isLinkMaintained) }, [
@@ -263,7 +468,8 @@ class ConsentGroupReview extends Component {
               id: "radioQuestion2",
               value: this.state.consentExtraProps.isLinkMaintained,
               label: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
-              readOnly: true
+              readOnly: this.state.readOnly,
+              onChange: this.handleExtraPropsInputChange,
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.consentExtraProps.isFeeForService) }, [
@@ -271,7 +477,8 @@ class ConsentGroupReview extends Component {
               id: "radioQuestion3",
               value: this.state.consentExtraProps.isFeeForService,
               label: 'Is the Broad work being performed as fee-for-service?',
-              readOnly: true
+              readOnly: this.state.readOnly,
+              onChange: this.handleExtraPropsInputChange,
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.consentExtraProps.areSamplesComingFromEEAA) }, [
@@ -279,7 +486,8 @@ class ConsentGroupReview extends Component {
               id: "radioQuestion4",
               value: this.state.consentExtraProps.areSamplesComingFromEEAA,
               label: 'Are samples/data coming directly to the Broad from the EEA?',
-              readOnly: true
+              readOnly: this.state.readOnly,
+              onChange: this.handleExtraPropsInputChange,
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.consentExtraProps.isCollaboratorProvidingGoodService) }, [
@@ -287,7 +495,8 @@ class ConsentGroupReview extends Component {
               id: "radioQuestion5",
               value: this.state.consentExtraProps.isCollaboratorProvidingGoodService,
               label: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-              readOnly: true
+              readOnly: this.state.readOnly,
+              onChange: this.handleExtraPropsInputChange,
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.consentExtraProps.isConsentUnambiguous) }, [
@@ -295,7 +504,8 @@ class ConsentGroupReview extends Component {
               id: "radioQuestion6",
               value: this.state.consentExtraProps.isConsentUnambiguous,
               label: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-              readOnly: true
+              readOnly: this.state.readOnly,
+              onChange: this.handleExtraPropsInputChange,
             })
           ])
         ]),
@@ -312,7 +522,7 @@ class ConsentGroupReview extends Component {
               "Yes",
               "No"
             ],
-            readOnly: true
+            readOnly: this.state.readOnly
           }),
           InputFieldRadio({
             id: "radioCompliance",
@@ -325,16 +535,16 @@ class ConsentGroupReview extends Component {
               "No",
               "Uncertain"
             ],
-            readOnly: true
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             isRendered: this.state.consentExtraProps.compliance === "true",
             id: "inputCompliance",
             name: "textCompliance",
             label: "Add regulatory compliance",
-            value: this.state.consentExtraProps.textCompliance,
-            onChange: () => { },
-            readOnly: true
+            value: textCompliance,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldRadio({
             id: "radioSensitive",
@@ -347,16 +557,16 @@ class ConsentGroupReview extends Component {
               "No",
               "Uncertain"
             ],
-            readOnly: true
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             isRendered: this.state.consentExtraProps.sensitive === "true",
             id: "inputSensitive",
             name: "textSensitive",
             label: "Please explain",
-            value: this.state.consentExtraProps.textSensitive,
-            onChange: () => { },
-            readOnly: true
+            value: textSensitive,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldRadio({
             id: "radioAccessible",
@@ -369,16 +579,16 @@ class ConsentGroupReview extends Component {
               "No",
               "Uncertain"
             ],
-            readOnly: true
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             isRendered: this.state.consentExtraProps.accessible === "true",
             id: "inputAccessible",
             name: "textAccessible",
             label: "Please explain",
-            value: this.state.consentExtraProps.textAccessible,
-            onChange: () => { },
-            readOnly: true
+            value: textAccessible,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           })
         ]),
 
@@ -392,7 +602,7 @@ class ConsentGroupReview extends Component {
             optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
             value: this.state.consentExtraProps.sharingPlan,
             onChange: () => { },
-            readOnly: true
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             isRendered: this.state.consentExtraProps.sharingPlan === "controlled",
@@ -400,9 +610,9 @@ class ConsentGroupReview extends Component {
             name: "databaseControlled",
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent)",
-            value: this.state.consentExtraProps.databaseControlled,
-            onChange: () => { },
-            readOnly: true
+            value: databaseControlled,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           }),
           InputFieldText({
             isRendered: this.state.consentExtraProps.sharingPlan === "open",
@@ -410,12 +620,46 @@ class ConsentGroupReview extends Component {
             name: "databaseOpen",
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
-            value: this.state.consentExtraProps.databaseOpen,
-            onChange: () => { },
-            readOnly: true
+            value: databaseOpen,
+            currentValue: this.state.current.databaseOpen,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly
           })
         ]),
         div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
+          button({
+            className: "btn buttonPrimary ",
+            onClick: this.enableEdit(),
+            disabled: this.state.readOnly === false,
+            isRendered: true
+          }, ["Edit"]),
+          button({
+            className: "btn buttonSecondary ",
+            onClick: this.cancelEdit(),
+            disabled: this.state.readOnly === true,
+            isRendered: true
+          }, ["Cancel"]),
+          button({
+            className: "btn buttonPrimary ",
+            onClick: this.submitEdit(),
+            disabled: this.state.readOnly === true,
+            isRendered: true
+          }, ["Submit Edits"]),
+
+          button({
+            className: "btn buttonSecondary ",
+            onClick: this.discardEdits(),
+            disabled: this.state.disableApproveButton,
+            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+          }, ["Discard Edits "]),
+
+          button({
+            className: "btn buttonPrimary ",
+            onClick: this.approveEdits(),
+            disabled: this.state.disableApproveButton,
+            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+          }, ["Approve Edits "]),
+
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveConsentGroup,
