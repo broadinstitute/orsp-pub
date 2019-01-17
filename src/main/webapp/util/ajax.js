@@ -83,3 +83,15 @@ export const Project = {
   }
 
 };
+
+export const User = {
+  getUserSession(url) {
+    return axios.get(url)
+  },
+  isCurrentUserAdmin(url) {
+    return axios.get(url);
+  },
+  getProject(url, projectkey) {
+    return axios.get(url+ '?id=' + projectkey );
+  }
+}

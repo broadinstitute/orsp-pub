@@ -9,7 +9,7 @@ import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { Table } from '../components/Table';
-import { ConsentGroup } from "../util/ajax";
+import { ConsentGroup, User } from "../util/ajax";
 
 
 class ConsentGroupReview extends Component {
@@ -17,6 +17,7 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isAdmin: false,
       disableApproveButton: false,
       consentForm: {
         summary: '',
@@ -46,6 +47,7 @@ class ConsentGroupReview extends Component {
   }
 
   componentDidMount() {
+    this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element => {
         this.setState(prev => {
@@ -107,8 +109,10 @@ class ConsentGroupReview extends Component {
     );
   }
 
-  isAdmin() {
-    return this.props.isAdmin === "true";
+  isCurrentUserAdmin() {
+    User.isCurrentUserAdmin(this.props.isAdminUrl).then(
+      resp => this.setState({ isAdmin: resp.data.isAdmin })
+    );
   }
 
   render() {
@@ -415,7 +419,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveConsentGroup,
-            isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.isAdmin(),
+            isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
             disabled: this.state.disableApproveButton
           }, ["Approve"]),
         ])

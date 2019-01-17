@@ -33,7 +33,7 @@
     <ul>
         <li><a href="#documents">Documents</a></li>
         <li><a href="#details">Details</a></li>
-        <li><a href="#consentGroupReview">Details + </a></li>
+        <li><a href="#consentGroupReview">Review</a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
         %{--<auth:isOrsp>--}%
@@ -123,7 +123,6 @@
 
     <div id="consentGroupReview">
         <g:render template="/consentGroupReview/index" model="[issue: issue]"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     </div>
 
 

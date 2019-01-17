@@ -5,7 +5,7 @@ import '../index.css';
 
 ReactDOM.render(
     <NewConsentGroup
-        user = {component.user}
+        getUserUrl = {component.getUserUrl}
         searchUsersURL = {component.searchUsersURL}
         sampleSearchUrl = {component.sampleSearchUrl}
         consentNamesSearchURL = {component.consentNamesSearchURL}

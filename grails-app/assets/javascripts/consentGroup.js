@@ -29967,7 +29967,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Project = exports.Files = exports.ConsentGroup = exports.SampleCollections = exports.Search = undefined;
+exports.User = exports.Project = exports.Files = exports.ConsentGroup = exports.SampleCollections = exports.Search = undefined;
 
 var _axios = __webpack_require__(78);
 
@@ -30042,6 +30042,18 @@ var Project = exports.Project = {
   },
   addExtraProperties: function addExtraProperties(url, projectKey, data) {
     return _axios2.default.post(url + '?id=' + projectKey, data);
+  }
+};
+
+var User = exports.User = {
+  getUserSession: function getUserSession(url) {
+    return _axios2.default.get(url);
+  },
+  isCurrentUserAdmin: function isCurrentUserAdmin(url) {
+    return _axios2.default.get(url);
+  },
+  getProject: function getProject(url, projectkey) {
+    return _axios2.default.get(url + '?id=' + projectkey);
   }
 };
 
@@ -31773,7 +31785,7 @@ exports = module.exports = __webpack_require__(14)(undefined);
 
 
 // module
-exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  font-size: 1.1rem;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n  padding-left: 0;\r\n  color: black;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldLabel,\r\n.inputFieldReadOnly label {\r\n  font-weight: 700;\r\n} \r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  font-size: 1.1rem;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n  padding-left: 0;\r\n  color: black;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,\r\n.inputFieldReadOnly .inputFieldDatePicker+button,\r\n.inputFieldReadOnly .react-datepicker__input-container::after {\r\n  display: none;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}", ""]);
+exports.push([module.i, ".inputField {\r\n  margin: 15px 0 0 0;\r\n}\r\n\r\n.inputField:first-child {\r\n  margin-top: 0;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  border: none;\r\n  font-size: 1.1rem;\r\n  box-shadow: none;\r\n  padding-left: 0;\r\n  color: black;\r\n  cursor: default;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{\r\n  pointer-events: none;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,\r\n.inputFieldReadOnly .inputFieldSelect .select__multi-value__remove,\r\n.inputFieldReadOnly .inputFieldDatePicker+button,\r\n.inputFieldReadOnly .react-datepicker__input-container::after {\r\n  display: none;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldSelect .select__multi-value {\r\n  padding: 3px 5px;\r\n}\r\n\r\n.inputFieldReadOnly .inputFieldLabel,\r\n.inputFieldReadOnly label {\r\n  font-weight: 700;\r\n} \r\n\r\n.inputFieldLabel {\r\n  font-weight: 400;\r\n  margin-bottom: 3px;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {\r\n  border-radius: 0;\r\n}\r\n\r\n.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {\r\n  min-height: 38px;\r\n}\r\n\r\n.inputFieldError .form-control, .inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect>div, .inputFieldError .inputFieldSelect>div:hover, .inputFieldError .inputFieldSelect .select__control--is-focused {\r\n  border: 1px solid red !important;\r\n}\r\n\r\n.inputFieldSelect .select__control--is-focused, .inputFieldSelect .css-2o5izw {\r\n  box-shadow: none;\r\n}\r\n\r\n.inputFieldError .form-control:hover, .inputFieldError .form-control:focus, .inputFieldError .inputFieldSelect:hover, .inputFieldError .inputFieldSelect:focus {\r\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.25);\r\n}\r\n\r\n.inputField .inputFieldTextarea {\r\n  width: 100%;\r\n  resize: vertical;\r\n}\r\n\r\n.inputFileContainer {\r\n  position: relative !important;\r\n  display: inline-block;\r\n  width: 100%;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.fileNameContainer {\r\n  border: 1px solid #ced4da;\r\n  position: relative;\r\n}\r\n\r\n.buttonUpload {\r\n  position: relative;\r\n  overflow: hidden;\r\n  min-height: 38px;\r\n  padding: 8px 12px 0 12px;\r\n  border-radius: 0;\r\n}\r\n\r\n.buttonUpload input.inputFieldFile {\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  filter: alpha(opacity=0);\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.fileName {\r\n  color: #555;\r\n  padding: 8px 20px 0 5px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 0;\r\n}\r\n\r\n.fileNameClear {\r\n  top: 12px;\r\n  right: 10px;\r\n  position: absolute;\r\n  color: black;\r\n  cursor: pointer;\r\n}\r\n\r\n.fileNameClear:hover {\r\n  text-decoration: none;\r\n}\r\n\r\n.inputField .react-datepicker-wrapper, .inputField .react-datepicker__input-container, .inputField .inputFieldDatePicker {\r\n  position: relative;\r\n  width: 100%;\r\n}\r\n\r\n.inputField .inputFieldDatePicker {\r\n  padding-left: 10px;\r\n  border: 1px solid #ced4da;\r\n  font-size: 1rem;\r\n}\r\n\r\n.inputField .react-datepicker__input-container:after {\r\n  font-family: 'Glyphicons Halflings';\r\n  content: \"\\E109\";\r\n  font-size: 1.2rem;\r\n  color: #555;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 10px;\r\n}\r\n\r\n.inputField .react-datepicker__close-icon {\r\n  top: 12px;\r\n  right: 35px !important;\r\n}\r\n\r\ntextarea:disabled, input:disabled {\r\n  background-color: rgb(235, 235, 228);\r\n}", ""]);
 
 // exports
 
@@ -31813,9 +31825,10 @@ exports.push([module.i, "\r\n.panelContainer {\r\n  margin-bottom: 20px;\r\n  ba
 exports = module.exports = __webpack_require__(14)(undefined);
 // imports
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i);", ""]);
+exports.push([module.i, "@import url(https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css);", ""]);
 
 // module
-exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.stepTitle {\n  margin-bottom: 15px;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.checkboxReadOnly {\n  box-shadow: none;\n  pointer-events: none;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.positionRelative {\n  position: relative;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n\n.tableContainer .table {\n  margin-bottom: 0;\n}", ""]);
+exports.push([module.i, "html, body {\n  height: 100%;\n  font-family: 'Lato', sans-serif !important;\n  font-size: 14px;\n}\n\np {\n  font-size: 1rem;\n}\n\nh1 {\n  font-size: 2.5rem;\n}\n\nh2 {\n  font-size: 1.8rem;\n}\n\nh3 {\n  font-size: 1.2rem;\n}\n\nhr {\n  margin: 5px 0;\n}\n\n.errorMessage {\n  color: red;\n}\n\n.stepTitle {\n  margin-bottom: 15px;\n}\n\n.questionnaireContainer {\n  position: relative;\n  margin-bottom: 20px;\n  padding: 5px 20px 25px 20px;\n  border: 1px solid darkgray;\n  border-radius: 4px;\n  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);\n}\n\n.buttonContainer {\n  display: block;\n  min-height: 40px;\n  margin: 20px 20px 40px 20px;\n}\n\n.buttonPrimary, .buttonSecondary {\n  color: white !important;\n  font-size: 1rem;\n  transition: all 0.3s ease;\n  outline: none !important;\n  cursor: pointer;\n}\n\n.buttonPrimary {\n  background-color: #2c3e50;\n  border-color: #2c3e50;\n}\n\n.buttonPrimary:hover {\n  color: #fff;\n  background-color: #286090;\n  border-color: #204d74;\n}\n\n.buttonSecondary {\n  background-color: #94a4a5;\n  border-color: #94a4a5;\n}\n\n.buttonSecondary:hover {\n  color: #2c3e50 !important;\n  background-color: #e6e6e5;\n  border-color: #aeaeae;\n}\n\n.circleBtn {\n  border-radius: 50%;\n  height: 40px;\n  width: 40px;\n}\n\n.regular-checkbox {\n  cursor: pointer;\n  position: relative;\n  padding-left: 25px !important;\n  margin-right: 15px;\n  font-size: 1rem;\n}\n\n.regular-checkbox:before {\n  content: \"\";\n  width: 18px;\n  height: 18px;\n  margin-right: 10px;\n  position: absolute;\n  left: 0;\n  background-color: #ffffff;\n  border-radius: 3px;\n  border: 1px solid #999999;\n}\n\ninput[type=checkbox] {\n  display: none;\n}\n\ninput[type=checkbox]:checked+label:before {\n  content: \"\\2713\";\n  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);\n  color: #ffffff;\n  background: #2FA4E7;\n  border: 1px solid #2FA4E7;\n  text-align: center;\n  line-height: 1.2rem;\n}\n\n.checkbox[disabled] .regular-checkbox {\n  cursor: not-allowed !important;\n  opacity: 0.65;\n}\n\n.checkbox[disabled] .regular-checkbox:before {\n  background-color: #eee;\n  border: 1px solid #ccc;\n}\n\n.checkboxReadOnly {\n  box-shadow: none;\n  pointer-events: none;\n}\n\n.col, [class*=\"col-\"] {\n  padding-right: 5px;\n  padding-left: 5px;\n}\n\n.row {\n  margin-right: -5px;\n  margin-left: -5px;\n}\n\n.normal {\n  font-weight: 400;\n}\n\n.light {\n  font-weight: 300;\n}\n\n.bold {\n  font-weight: 700;\n}\n\n.italic {\n  font-style: italic;\n}\n\n.link {\n  cursor: pointer;\n}\n\n.floatLeft {\n  float: left;\n}\n\n.floatRight {\n  float: right;\n}\n\n.positionRelative {\n  position: relative;\n}\n\n.noMargin {\n  margin: 0;\n}\n\n.fullWidth {\n  width: 100%;\n}\n\n.tableContainer .table {\n  margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -41015,7 +41028,6 @@ var InstitutionalSource = exports.InstitutionalSource = (0, _reactHyperscriptHel
       var field = e.target.name;
       var value = e.target.value;
       var index = e.target.getAttribute('index');
-      console.log('handleInstitutionalChange ', field, value, index, _this.state.institutionalSources);
       _this.setState(function (prev) {
         prev.institutionalSources[index][field] = value;
         return prev;
@@ -52103,7 +52115,7 @@ var NewConsentGroup = function (_Component) {
     };
 
     _this.uploadFiles = function (projectKey) {
-      _ajax.Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey, _this.props.user.displayName, _this.props.user.userName).then(function (resp) {
+      _ajax.Files.upload(_this.props.attachDocumentsURL, _this.state.files, projectKey, _this.state.user.displayName, _this.state.user.userName).then(function (resp) {
         window.location.href = _this.getRedirectUrl();
         _spinnerService.spinnerService.hideAll();
         _this.setState(function (prev) {
@@ -52247,6 +52259,10 @@ var NewConsentGroup = function (_Component) {
     };
 
     _this.state = {
+      user: {
+        displayName: '',
+        userName: ''
+      },
       showErrorStep3: false,
       generalError: false,
       formSubmitted: false,
@@ -52302,6 +52318,7 @@ var NewConsentGroup = function (_Component) {
       var _this2 = this;
 
       this.initDocuments();
+      this.getUserSession();
       _ajax.ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(function (resp) {
         return _this2.setState({ existingGroupNames: resp.data });
       });
@@ -52318,12 +52335,21 @@ var NewConsentGroup = function (_Component) {
       });
     }
   }, {
+    key: 'getUserSession',
+    value: function getUserSession() {
+      var _this3 = this;
+
+      _ajax.User.getUserSession(this.props.getUserUrl).then(function (resp) {
+        return _this3.setState({ user: resp.data[0] });
+      });
+    }
+  }, {
     key: 'getConsentGroup',
     value: function getConsentGroup() {
       // step 1
       var consentGroup = {};
       consentGroup.summary = this.state.step1FormData.consentGroupName;
-      consentGroup.reporter = this.props.user.userName;
+      consentGroup.reporter = this.state.user.userName;
       consentGroup.samples = this.getSampleCollections();
       var extraProperties = [];
       extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
@@ -52388,7 +52414,7 @@ var NewConsentGroup = function (_Component) {
   }, {
     key: 'validateStep1',
     value: function validateStep1(field) {
-      var _this3 = this;
+      var _this4 = this;
 
       var investigatorLastName = false;
       var institutionProtocolNumber = false;
@@ -52436,11 +52462,11 @@ var NewConsentGroup = function (_Component) {
         isValid = false;
       } else {
         this.state.step1FormData.institutionalSources.forEach(function (institutionalSource) {
-          if (!_this3.isTextValid(institutionalSource.name)) {
+          if (!_this4.isTextValid(institutionalSource.name)) {
             institutionalSourcesName = true;
             isValid = false;
           }
-          if (!_this3.isTextValid(institutionalSource.country)) {
+          if (!_this4.isTextValid(institutionalSource.country)) {
             institutionalSourcesCountry = true;
             isValid = false;
           }
@@ -52700,7 +52726,7 @@ var NewConsentGroup = function (_Component) {
       }, [(0, _NewConsentGroupGeneralData.NewConsentGroupGeneralData)({
         title: "General Data",
         currentStep: currentStep,
-        user: this.props.user,
+        user: this.state.user,
         sampleSearchUrl: this.props.sampleSearchUrl,
         updateForm: this.updateStep1FormData,
         errors: this.state.errors,
@@ -52723,7 +52749,7 @@ var NewConsentGroup = function (_Component) {
       }), (0, _NewConsentGroupSecurity.NewConsentGroupSecurity)({
         title: "Security",
         currentStep: currentStep,
-        user: this.props.user,
+        user: this.state.user,
         searchUsersURL: this.props.searchUsersURL,
         updateForm: this.updateStep4FormData,
         errors: this.state.errors,
@@ -52731,7 +52757,7 @@ var NewConsentGroup = function (_Component) {
       }), (0, _NewConsentGroupDataSharing.NewConsentGroupDataSharing)({
         title: "Data Sharing",
         currentStep: currentStep,
-        user: this.props.user,
+        user: this.state.user,
         searchUsersURL: this.props.searchUsersURL,
         updateForm: this.updateStep5FormData,
         errors: this.state.errors,
@@ -53518,8 +53544,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//import { Search } from '../util/ajax';
-
 var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewConsentGroupSecurity, _Component);
 
@@ -53700,7 +53724,7 @@ __webpack_require__(131);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom2.default.render(_react2.default.createElement(_NewConsentGroup2.default, {
-    user: component.user,
+    getUserUrl: component.getUserUrl,
     searchUsersURL: component.searchUsersURL,
     sampleSearchUrl: component.sampleSearchUrl,
     consentNamesSearchURL: component.consentNamesSearchURL,

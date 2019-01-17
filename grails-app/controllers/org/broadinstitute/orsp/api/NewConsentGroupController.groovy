@@ -81,7 +81,11 @@ class NewConsentGroupController extends AuthenticatedController {
         Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
-        Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
-        render([])
+        try {
+            Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
+            render([message: updatedIssue])
+        } catch(Exception e) {
+            render([error: e.message] as JSON)
+        }
     }
 }

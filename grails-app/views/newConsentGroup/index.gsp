@@ -9,15 +9,9 @@
     <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-typeahead/css/Typeahead.css">
     <title>Consent Group</title>
     <script type="application/javascript">
-        const user = {
-            <g:if test="${session?.user}">
-                displayName: "${session.user.displayName}",
-                email: "${session.user.emailAddress}",
-                userName: "${session.user.userName}"
-            </g:if>
-        };
+
         const component = {
-            user: user,
+            getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
             searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
             sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
             consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",

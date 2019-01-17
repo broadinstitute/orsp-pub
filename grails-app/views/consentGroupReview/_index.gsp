@@ -3,7 +3,7 @@
     const component = {
       consentKey:'${issue.projectKey}',
       consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-      isAdmin: "${session.isAdmin}"
+      isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}"
     };
 
     const urls = {

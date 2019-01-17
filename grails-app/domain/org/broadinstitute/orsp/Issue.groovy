@@ -29,7 +29,7 @@ class Issue {
         requestDate nullable: false
         updateDate nullable: true
         expirationDate nullable: true
-        approvalStatus blank: false, nullale: false
+        approvalStatus blank: false, nullable: false
     }
 
     // Transients
