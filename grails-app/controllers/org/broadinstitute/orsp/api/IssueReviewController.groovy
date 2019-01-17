@@ -30,8 +30,9 @@ class IssueReviewController extends AuthenticatedController {
         response.status = 200
     }
 
-    def findIssueReviewByProjectKey() {
+    def show() {
         IssueReview issueReview = issueReviewService.findByProjectKey(params.projectKey)
+        issueReview.status = 200
         render([message: issueReview] as JSON)
     }
 
