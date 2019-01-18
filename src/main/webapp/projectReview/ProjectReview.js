@@ -24,6 +24,10 @@ class ProjectReview extends Component {
           projectTitle: '',
           protocol: '',
           subjectProtection: null,
+          manageProtocol: null,
+          projectAvailability: null,
+          describeEditType: null,
+          editDescription: null,
           projectReviewApproved: false
         },
         piList: [{ key: '', label: '', value: '' }],
@@ -56,6 +60,10 @@ class ProjectReview extends Component {
           projectTitle: '',
           protocol: '',
           subjectProtection: null,
+          manageProtocol: null,
+          projectAvailability: null,
+          describeEditType: null,
+          editDescription: null,
           projectReviewApproved: false
         }
       }
@@ -106,7 +114,7 @@ class ProjectReview extends Component {
           future.fundings = this.getFundingsArray(edits.data.fundings);
           future.requestor = edits.data.requestor !== null ? edits.data.requestor : this.state.requestor;
           futureStr = JSON.stringify(future);
-          
+
           formData = JSON.parse(futureStr);
           futureCopy = JSON.parse(futureStr);
         } else {
@@ -179,6 +187,10 @@ class ProjectReview extends Component {
         return prev;
       })
     );
+  }
+
+  rejectProject = (e) => () => {
+
   }
 
   discardEdits = (e) => () => {
@@ -443,10 +455,70 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             error: false,
             errorMessage: "Required field"
+          }),
+
+          /*IMPORTANT: These questions will appear on Edit mode, once project has been approved*/
+          InputYesNo({
+            isRendered: false,
+            id: "radioManageProtocol",
+            name: "manageProtocol",
+            label: "Is the Broad Institute managing this protocol? ",
+            value: this.state.formData.projectExtraProps.manageProtocol,
+            currentValue: this.state.current.projectExtraProps.manageProtocol,
+            onChange: this.handleProjectExtraPropsChangeRadio,
+            required: false,
+            readOnly: this.state.readOnly,
+            error: false,
+            errorMessage: "Required field"
+          }),
+
+          InputFieldRadio({
+            isRendered: false,
+            id: "radioProjectAvailability",
+            name: "projectAvailability",
+            label: "Project Availability",
+            // value: this.state.projectExtraProps.projectAvailability,
+            optionValues: ["01", "02"],
+            optionLabels: [
+              "Available",
+              "On Hold"
+            ],
+            onChange: () => { },
+            readOnly: this.state.readOnly
           })
         ]),
 
-        Panel({ title: "Determination Questions " }, [
+        Panel({ title: "Notes to ORSP", isRendered: false, }, [
+          InputFieldRadio({
+            id: "radioDescribeEdits",
+            name: "describeEditType",
+            label: "Please choose one of the following to describe the proposed Edits: ",
+            // value: this.state.projectExtraProps.describeEditType,
+            optionValues: ["01", "02"],
+            optionLabels: [
+              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+              "I am requesting assistance in updating and existing project"
+            ],
+            onChange: () => { },
+            readOnly: this.state.readOnly
+          }),
+
+          InputFieldTextArea({
+            id: "inputDescribeEdits",
+            name: "editDescription",
+            label: "Please use the space below to describe any additional edits or clarifications to the edits above",
+            // value: this.state.formData.editDescription.replace(/<\/?[^>]+(>|$)/g, ""),
+            currentValue: this.state.current.editDescription,
+            readOnly: this.state.readOnly,
+            required: false,
+            onChange: this.handleInputChange,
+            error: false,
+            errorMessage: "Required field"
+          })
+        ]),
+        /*UNTIL HERE*/
+
+        Panel({ title: "Determination Questions", tooltipLabel: "?", tooltipMsg: "If changes need to be made to any of these questions, please submit a new project request" }, [
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioPII",
@@ -577,13 +649,21 @@ class ProjectReview extends Component {
             isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Discard Edits"]),
 
-          /*visible for Admin in readOnly mode and if this is the first revision to approve the project*/
+          /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
             disabled: this.state.disableApproveButton,
             isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve"]),
+
+          /*visible for Admin in readOnly mode and if the project is in "pending" status*/
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.rejectProject(),
+            disabled: this.state.disableApproveButton,
+            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
+          }, ["Reject"])
         ])
       ])
     )

@@ -81476,6 +81476,10 @@ var ConsentGroupReview = function (_Component) {
       };
     };
 
+    _this.rejectConsentGroup = function (e) {
+      return function () {};
+    };
+
     _this.discardEdits = function (e) {
       return function () {};
     };
@@ -82123,13 +82127,21 @@ var ConsentGroupReview = function (_Component) {
         isRendered: this.isAdmin && this.state.formData.consentExtraProps.projectReviewApproved
       }, ["Discard Edits"]),
 
-      /*visible for Admin in readOnly mode and if this is the first revision to approve the project*/
+      /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
       (0, _reactHyperscriptHelpers.button)({
         className: "btn buttonPrimary floatRight",
         onClick: this.approveConsentGroup,
         isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
         disabled: this.state.disableApproveButton
-      }, ["Approve"])])]);
+      }, ["Approve"]),
+
+      /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
+      (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonSecondary floatRight",
+        onClick: this.rejectConsentGroup(),
+        disabled: this.state.disableApproveButton,
+        isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin
+      }, ["Reject"])])]);
     }
   }]);
 
