@@ -11,7 +11,7 @@ class IssueReviewService {
         ir.delete(flush: true)
     }
 
-    static IssueReview findByProjectKey(String projectKey) {
+    IssueReview findByProjectKey(String projectKey) {
         return IssueReview.findByProjectKey(projectKey)
     }
 
