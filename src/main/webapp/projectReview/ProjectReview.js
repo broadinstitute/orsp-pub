@@ -68,11 +68,18 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    let current = {};
+    let currentStr = {};
+    let future = {};
+    let futureCopy = {};
+    let futureStr = {};
+    let formData = {};
+    let formDataStr = {};
+
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
 
         // store current issue info here ....
-        let current = {};
         current.description = issue.data.issue.description;
         current.projectExtraProps = issue.data.extraProperties;
         current.piList = this.getUsersArray(issue.data.pis);
@@ -80,53 +87,47 @@ class ProjectReview extends Component {
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
-
-        let currentStr = JSON.stringify(current);
+        currentStr = JSON.stringify(current);
 
         // read suggestions here ....
         // ....
         // Project.getSuggestions(this.props.projectUrl, this.props.projectKey).then(
         //   edits => {
 
-            let edits = null;
-            let formData = {};
-            let suggestions = {};
-            let suggestionsCopy = {};
+        let edits = null;
 
-            if (edits != null) {
-              // prepare form data here, initially same as current ....
-              let editsStr = JSON.stringify(edits);
-              formData.description = edits.data.issue.description;
-              formData.projectExtraProps = edits.data.extraProperties;
-              formData.piList = this.getUsersArray(edits.data.pis);
-              formData.pmList = this.getUsersArray(edits.data.pms);
-              formData.collaborators = this.getUsersArray(edits.data.collaborators);
-              formData.fundings = this.getFundingsArray(edits.data.fundings);
-              formData.requestor = edits.data.requestor !== null ? edits.data.requestor : this.state.requestor;
+        if (edits != null) {
+          // prepare form data here, initially same as current ....
+          future.description = edits.data.issue.description;
+          future.projectExtraProps = edits.data.extraProperties;
+          future.piList = this.getUsersArray(edits.data.pis);
+          future.pmList = this.getUsersArray(edits.data.pms);
+          future.collaborators = this.getUsersArray(edits.data.collaborators);
+          future.fundings = this.getFundingsArray(edits.data.fundings);
+          future.requestor = edits.data.requestor !== null ? edits.data.requestor : this.state.requestor;
+          futureStr = JSON.stringify(future);
+          
+          formData = JSON.parse(futureStr);
+          futureCopy = JSON.parse(futureStr);
+        } else {
+          // prepare form data here, initially same as current ....
+          formData = JSON.parse(currentStr);
+          current = JSON.parse(currentStr);
+          future = JSON.parse((currentStr));
+          futureCopy = JSON.parse(currentStr);
+        }
 
-              suggestions = JSON.parse(JSON.stringify(formData));
-              suggestionsCopy = JSON.parse(JSON.stringify(formData));
+        // store current issue info here ....
+        this.setState(prev => {
+          // prepare form data here, initially same as current ....
+          prev.formData = formData;
+          prev.current = current;
+          prev.future = future;
+          prev.futureCopy = futureCopy;
+          return prev;
+        });
 
-
-            } else {
-              // prepare form data here, initially same as current ....
-              formData = JSON.parse(currentStr);
-              suggestions = JSON.parse((currentStr));
-              suggestionsCopy = JSON.parse((currentStr));
-            }
-
-            // store current issue info here ....
-            this.setState(prev => {
-              // prepare form data here, initially same as current ....
-              prev.formData = formData;
-              prev.current = current;
-              prev.suggestions = suggestions;
-              prev.suggestionsCopy = suggestionsCopy;
-              return prev;
-
-            });
-
-          // });
+        // });
       });
   }
 
@@ -185,7 +186,7 @@ class ProjectReview extends Component {
   }
 
   approveEdits = (e) => () => {
-    
+
   }
 
 
@@ -197,7 +198,7 @@ class ProjectReview extends Component {
 
   cancelEdit = (e) => () => {
     this.setState({
-      formData: this.state.suggestionsCopy,
+      formData: this.state.futureCopy,
       readOnly: true
     });
   }
@@ -279,7 +280,7 @@ class ProjectReview extends Component {
     //this.props.removeErrorMessage();
   };
 
-  handleProjectExtraPropsChangeRadio  = (e, field, value) => {
+  handleProjectExtraPropsChangeRadio = (e, field, value) => {
     if (value === 'true') {
       value = true;
     } else if (value === 'false') {
@@ -307,7 +308,10 @@ class ProjectReview extends Component {
 
   render() {
 
-    console.log('------------------------- RENDER ---------------------------------------------',this.state);
+    console.log('------------------------- RENDER ---------------------------------------------', this.state);
+    console.log(this.state.formData.piList, this.state.current.piList);
+    console.log('------------------------------------------------------------------------------');
+
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
@@ -557,7 +561,7 @@ class ProjectReview extends Component {
             disabled: this.state.disableApproveButton,
             isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Discard Edits "]),
-          
+
           button({
             className: "btn buttonPrimary ",
             onClick: this.approveEdits(),

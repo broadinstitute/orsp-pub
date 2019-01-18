@@ -2097,9 +2097,12 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
           readOnly = _props.readOnly,
           _props$currentValue = _props.currentValue,
           currentValue = _props$currentValue === undefined ? null : _props$currentValue,
-          currentValueStr = _props.currentValueStr;
+          currentValueStr = _props.currentValueStr,
+          _props$edited = _props.edited,
+          edited = _props$edited === undefined ? false : _props$edited;
+      // const edited = value !== currentValue && currentValue != null;
 
-      var edited = this.props.value !== currentValue && currentValue != null;
+      console.log('edited ? ', label, edited, value, currentValue);
 
       return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [label, (0, _reactHyperscriptHelpers.span)({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])]), children, (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "inputFieldCurrent" }, [currentValueStr != null ? currentValueStr : currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: error, className: "errorMessage" }, [errorMessage])]);
     }
@@ -2804,10 +2807,17 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
   _createClass(InputFieldText, [{
     key: 'render',
     value: function render() {
+      var _props = this.props,
+          value = _props.value,
+          _props$currentValue = _props.currentValue,
+          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+
+
+      var edited = value !== currentValue && currentValue != null;
 
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldWrapper" }, [(0, _reactHyperscriptHelpers.input)({
         type: 'text',
         id: this.props.id,
@@ -33756,9 +33766,17 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _createClass(InputFieldSelect, [{
     key: 'render',
     value: function render() {
+      var _props = this.props,
+          value = _props.value,
+          _props$currentValue = _props.currentValue,
+          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+
+
+      var edited = value !== currentValue && currentValue != null;
+
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
         id: this.props.id,
         index: this.props.index,
@@ -54857,9 +54875,11 @@ var InputFieldDatePicker = exports.InputFieldDatePicker = (0, _reactHyperscriptH
         selected = new Date(this.props.selected);
       }
 
+      var edited = this.props.value !== this.props.currentValue && this.props.currentValue != null;
+
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_reactDatepicker2.default, {
         selected: selected,
         onChange: this.props.onChange(this.props.name),

@@ -1834,9 +1834,12 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
           readOnly = _props.readOnly,
           _props$currentValue = _props.currentValue,
           currentValue = _props$currentValue === undefined ? null : _props$currentValue,
-          currentValueStr = _props.currentValueStr;
+          currentValueStr = _props.currentValueStr,
+          _props$edited = _props.edited,
+          edited = _props$edited === undefined ? false : _props$edited;
+      // const edited = value !== currentValue && currentValue != null;
 
-      var edited = this.props.value !== currentValue && currentValue != null;
+      console.log('edited ? ', label, edited, value, currentValue);
 
       return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [label, (0, _reactHyperscriptHelpers.span)({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])]), children, (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "inputFieldCurrent" }, [currentValueStr != null ? currentValueStr : currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: error, className: "errorMessage" }, [errorMessage])]);
     }
@@ -2474,10 +2477,17 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
   _createClass(InputFieldText, [{
     key: 'render',
     value: function render() {
+      var _props = this.props,
+          value = _props.value,
+          _props$currentValue = _props.currentValue,
+          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+
+
+      var edited = value !== currentValue && currentValue != null;
 
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldWrapper" }, [(0, _reactHyperscriptHelpers.input)({
         type: 'text',
         id: this.props.id,
@@ -30237,9 +30247,17 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _createClass(InputFieldSelect, [{
     key: 'render',
     value: function render() {
+      var _props = this.props,
+          value = _props.value,
+          _props$currentValue = _props.currentValue,
+          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+
+
+      var edited = value !== currentValue && currentValue != null;
+
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
         id: this.props.id,
         index: this.props.index,
@@ -39660,10 +39678,17 @@ var InputFieldTextArea = exports.InputFieldTextArea = (0, _reactHyperscriptHelpe
   _createClass(InputFieldTextArea, [{
     key: 'render',
     value: function render() {
+      var _props = this.props,
+          value = _props.value,
+          _props$currentValue = _props.currentValue,
+          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+
+
+      var edited = value !== currentValue && currentValue != null;
 
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldWrapper" }, [(0, _reactHyperscriptHelpers.textarea)({
         name: this.props.name,
         id: "txt_description",
@@ -39717,9 +39742,36 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
   _inherits(MultiSelect, _Component);
 
   function MultiSelect() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, MultiSelect);
 
-    return _possibleConstructorReturn(this, (MultiSelect.__proto__ || Object.getPrototypeOf(MultiSelect)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MultiSelect.__proto__ || Object.getPrototypeOf(MultiSelect)).call.apply(_ref, [this].concat(args))), _this), _this.sortByKey = function (array, key) {
+      return array.sort(function (a, b) {
+        var x = a[key];var y = b[key];
+        return x < y ? -1 : x > y ? 1 : 0;
+      });
+    }, _this.isEdited = function (current, future) {
+      console.log('isEdited : ', current, future);
+
+      if (current.length !== future.length) {
+        return true;
+      }
+
+      current.forEach(function (element, index) {
+        if (element.key !== future[index].key) {
+          return true;
+        }
+      });
+
+      return false;
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(MultiSelect, [{
@@ -39733,20 +39785,34 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
     value: function render() {
       var _this2 = this;
 
-      var _props$currentValue = this.props.currentValue,
+      var _props = this.props,
+          _props$value = _props.value,
+          value = _props$value === undefined ? [] : _props$value,
+          _props$currentValue = _props.currentValue,
           currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
 
 
-      var values = [];
-      currentValue.forEach(function (value) {
-        values.push(value.label);
+      var currentValues = [];
+      currentValue.forEach(function (item) {
+        currentValues.push(item.label);
       });
 
-      var currentValueStr = values.join(',');
+      var values = [];
+      value.forEach(function (item) {
+        values.push(item.label);
+      });
+
+      var currentKeys = this.sortByKey(currentValue, 'key');
+      var keys = this.sortByKey(value, 'key');
+
+      var currentValueStr = currentValues.join(',');
+
+      // verified if edited ...
+      var edited = this.isEdited(currentKeys, keys);
 
       return (0, _InputField.InputField)({
         label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
-        currentValue: currentValue, currentValueStr: currentValueStr
+        value: this.props.value, currentValue: currentValue, currentValueStr: currentValueStr, edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_Async2.default, {
         id: this.props.id,
         isDisabled: this.props.isDisabled,

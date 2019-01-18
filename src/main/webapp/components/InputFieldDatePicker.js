@@ -22,11 +22,13 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
       selected = new Date(this.props.selected);
     }
 
+    const edited = this.props.value !== this.props.currentValue && this.props.currentValue != null;
+
     return (
 
       InputField({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, currentValue: this.props.currentValue
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [
         div({ className: "inputFieldSelectWrapper" }, [
           h(

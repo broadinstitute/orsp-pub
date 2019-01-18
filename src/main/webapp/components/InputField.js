@@ -15,8 +15,10 @@ export const InputField = hh(class InputField extends Component {
   }
 
   render() {
-    const { value, label, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr } = this.props;
-    const edited = this.props.value !== currentValue && currentValue != null;
+    const { value, label, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
+    // const edited = value !== currentValue && currentValue != null;
+
+    console.log('edited ? ', label, edited, value, currentValue);
 
     return (
       div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [
