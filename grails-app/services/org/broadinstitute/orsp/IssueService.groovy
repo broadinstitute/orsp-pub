@@ -200,6 +200,7 @@ class IssueService {
         if (!extraPropertiesList.isEmpty()) {
             saveExtraProperties(issue, extraPropertiesList)
         }
+        issue.extraProperties.addAll(extraPropertiesList)
         issue
     }
 
@@ -210,10 +211,33 @@ class IssueService {
         input.collect { element ->
             if (issue.getProperties().get(element.key) != null && element.key != "fundings") {
                 updatedIssue.(element.key) = element.value
+                updatedIssue.setUpdateDate(new Date())
             }
         }
         updatedIssue.save(flush:true)
         updatedIssue
+    }
+
+    void projectApproval(Issue issue) {
+        Boolean projectGeneralDataApproved = false
+        Boolean projectDocumentsApproved = false
+
+        if (issue != null && !issue.getAttachments().isEmpty()) {
+            issue.getNonEmptyExtraProperties()?.each{
+                if (it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED) {
+                    projectGeneralDataApproved = it.value
+                }
+            }
+            projectDocumentsApproved = issue.getAttachments().collect {
+                value -> value.status == IssueStatus.Approved.getName()
+            }.flatten().findAll { it == false }.isEmpty()
+        }
+
+        if (projectGeneralDataApproved && projectDocumentsApproved) {
+            issue.setApprovalStatus(IssueStatus.Approved.getName())
+            issue.setUpdateDate(new Date())
+            issue.save(flush:true)
+        }
     }
 
     void saveFundings(Issue issue, Collection<Funding> fundings) {

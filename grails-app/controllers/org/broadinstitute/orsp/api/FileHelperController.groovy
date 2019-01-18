@@ -5,6 +5,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
+import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.StorageDocument
 import org.springframework.web.multipart.MultipartFile
 
@@ -66,6 +67,8 @@ class FileHelperController extends AuthenticatedController{
         try {
             if (document != null) {
                 document.setStatus(DocumentStatus.APPROVED.status)
+                Issue issue = queryService.findByKey(document.projectKey)
+                issueService.projectApproval(issue)
                 document.save(flush: true)
                 render(['document': document] as JSON)
             } else {
