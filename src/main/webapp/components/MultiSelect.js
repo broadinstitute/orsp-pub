@@ -23,13 +23,11 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   }
 
   isEdited = (current, future) => {
-    console.log('isEdited : ', current, future);
-
     if (current.length !== future.length) {
       return true;
     }
 
-    current.forEach( (element, index) => {
+    current.forEach((element, index) => {
       if (element.key !== future[index].key) {
         return true;
       }
@@ -54,7 +52,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
 
     let currentKeys = this.sortByKey(currentValue, 'key');
     let keys = this.sortByKey(value, 'key');
-    
+
     let currentValueStr = currentValues.join(',');
 
     // verified if edited ...
@@ -63,7 +61,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
     return (
       InputField({
         label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
-        value: this.props.value, currentValue: currentValue, currentValueStr: currentValueStr, edited
+        value: this.props.value, currentValue: currentValue, currentValueStr: currentValueStr, edited: edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {

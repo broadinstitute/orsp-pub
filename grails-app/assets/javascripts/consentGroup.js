@@ -1837,9 +1837,7 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
           currentValueStr = _props.currentValueStr,
           _props$edited = _props.edited,
           edited = _props$edited === undefined ? false : _props$edited;
-      // const edited = value !== currentValue && currentValue != null;
 
-      console.log('edited ? ', label, edited, value, currentValue);
 
       return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [label, (0, _reactHyperscriptHelpers.span)({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])]), children, (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "inputFieldCurrent" }, [currentValueStr != null ? currentValueStr : currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: error, className: "errorMessage" }, [errorMessage])]);
     }
@@ -29702,14 +29700,14 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
       optionValues = _props$optionValues === undefined ? ['true', 'false'] : _props$optionValues,
       _props$optionLabels = props.optionLabels,
       optionLabels = _props$optionLabels === undefined ? ['Yes', 'No'] : _props$optionLabels,
-      value = props.value;
-  var _props$currentValue = props.currentValue,
-      currentValue = _props$currentValue === undefined ? 'former value (sample)' : _props$currentValue;
+      value = props.value,
+      _props$currentValue = props.currentValue,
+      currentValue = _props$currentValue === undefined ? null : _props$currentValue;
 
 
   var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
 
-  var edited = props.value !== currentValue && currentValue != null;
+  var edited = normValue !== currentValue && currentValue != null;
 
   return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
     return (0, _reactHyperscriptHelpers.label)({
@@ -29718,7 +29716,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : '') + (edited ? 'radioOptionsUpdated' : ''),
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited ? 'radioOptionsUpdated ' : ''),
       disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
@@ -30693,7 +30691,7 @@ var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) 
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : '') + (edited ? 'radioOptionsUpdated' : ''),
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited ? 'radioOptionsUpdated ' : ''),
       disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",

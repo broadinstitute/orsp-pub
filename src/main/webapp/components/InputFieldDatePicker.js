@@ -17,8 +17,8 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
   render() {
 
     let selected;
-    
-    if (typeof this.props.selected === 'string')  {
+
+    if (typeof this.props.selected === 'string') {
       selected = new Date(this.props.selected);
     }
 
@@ -30,24 +30,23 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
       }, [
-        div({ className: "inputFieldSelectWrapper" }, [
-          h(
-            DatePicker, ({
-              selected: selected,
-              onChange: this.props.onChange(this.props.name),
-              showYearDropdown: true,
-              dropdownMode: "select",
-              isClearable: true,
-              minDate: this.props.minDate,
-              maxDate: this.props.maxDate,
-              disabled: this.props.disabled,
-              placeholderText: this.props.placeholder,
-              className: "inputFieldDatePicker"
-            })
-          )
+          div({ className: "inputFieldSelectWrapper" }, [
+            h(
+              DatePicker, ({
+                selected: selected,
+                onChange: this.props.onChange(this.props.name),
+                showYearDropdown: true,
+                dropdownMode: "select",
+                isClearable: true,
+                minDate: this.props.minDate,
+                maxDate: this.props.maxDate,
+                disabled: this.props.disabled,
+                placeholderText: this.props.placeholder,
+                className: "inputFieldDatePicker"
+              })
+            )
+          ])
         ])
-      ])
     )
   }
-
 });

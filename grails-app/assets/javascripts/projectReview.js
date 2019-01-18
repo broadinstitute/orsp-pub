@@ -1837,9 +1837,7 @@ var InputField = exports.InputField = (0, _reactHyperscriptHelpers.hh)(function 
           currentValueStr = _props.currentValueStr,
           _props$edited = _props.edited,
           edited = _props$edited === undefined ? false : _props$edited;
-      // const edited = value !== currentValue && currentValue != null;
 
-      console.log('edited ? ', label, edited, value, currentValue);
 
       return (0, _reactHyperscriptHelpers.div)({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [(0, _reactHyperscriptHelpers.p)({ className: "inputFieldLabel" }, [label, (0, _reactHyperscriptHelpers.span)({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])]), children, (0, _reactHyperscriptHelpers.div)({ isRendered: edited, className: "inputFieldCurrent" }, [currentValueStr != null ? currentValueStr : currentValue]), (0, _reactHyperscriptHelpers.small)({ isRendered: error, className: "errorMessage" }, [errorMessage])]);
     }
@@ -29179,14 +29177,14 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
       optionValues = _props$optionValues === undefined ? ['true', 'false'] : _props$optionValues,
       _props$optionLabels = props.optionLabels,
       optionLabels = _props$optionLabels === undefined ? ['Yes', 'No'] : _props$optionLabels,
-      value = props.value;
-  var _props$currentValue = props.currentValue,
-      currentValue = _props$currentValue === undefined ? 'former value (sample)' : _props$currentValue;
+      value = props.value,
+      _props$currentValue = props.currentValue,
+      currentValue = _props$currentValue === undefined ? null : _props$currentValue;
 
 
   var normValue = value === 'true' || value === true || value === '1' ? 'true' : value === 'false' || value === false || value === '0' ? 'false' : null;
 
-  var edited = props.value !== currentValue && currentValue != null;
+  var edited = normValue !== currentValue && currentValue != null;
 
   return (0, _reactHyperscriptHelpers.div)({ className: "radioContainer" }, [(0, _reactHyperscriptHelpers.p)({ className: "bold" }, [props.label, (0, _reactHyperscriptHelpers.span)({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])]), optionLabels.map(function (option, ix) {
     return (0, _reactHyperscriptHelpers.label)({
@@ -29195,7 +29193,7 @@ var InputYesNo = exports.InputYesNo = function InputYesNo(props) {
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : '') + (edited ? 'radioOptionsUpdated' : ''),
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited ? 'radioOptionsUpdated ' : ''),
       disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
@@ -30150,7 +30148,7 @@ var InputFieldRadio = exports.InputFieldRadio = function InputFieldRadio(props) 
         return selectOption(e, optionValues[ix]);
       },
       id: "lbl_" + props.id + "_" + ix,
-      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : '') + (edited ? 'radioOptionsUpdated' : ''),
+      className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited ? 'radioOptionsUpdated ' : ''),
       disabled: props.readOnly
     }, [(0, _reactHyperscriptHelpers.input)({
       type: "radio",
@@ -39474,8 +39472,6 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
         return x < y ? -1 : x > y ? 1 : 0;
       });
     }, _this.isEdited = function (current, future) {
-      console.log('isEdited : ', current, future);
-
       if (current.length !== future.length) {
         return true;
       }
@@ -43514,7 +43510,17 @@ var ProjectReview = function (_Component) {
       console.log(this.state.formData.piList, this.state.current.piList);
       console.log('------------------------------------------------------------------------------');
 
-      return (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.h2)({ className: "stepTitle" }, ["Project Information"]), (0, _Panel.Panel)({ title: "Requestor" }, [(0, _InputFieldText.InputFieldText)({
+      return (0, _reactHyperscriptHelpers.div)({}, [(0, _reactHyperscriptHelpers.h2)({ className: "stepTitle" }, ["Project Information"]), (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonPrimary floatRight",
+        style: { 'marginTop': '15px' },
+        onClick: this.enableEdit(),
+        isRendered: this.state.readOnly === true
+      }, ["Edit Information"]), (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonSecondary floatRight",
+        style: { 'marginTop': '15px' },
+        onClick: this.cancelEdit(),
+        isRendered: this.state.readOnly === false
+      }, ["Cancel"]), (0, _Panel.Panel)({ title: "Requestor" }, [(0, _InputFieldText.InputFieldText)({
         id: "inputRequestorName",
         name: "requestorName",
         label: "Requestor Name",
@@ -43681,32 +43687,42 @@ var ProjectReview = function (_Component) {
         label: 'Is Broad receiving direct federal funding?',
         readOnly: true,
         onChange: function onChange() {}
-      })])]), (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer", style: { 'marginRight': '0' } }, [(0, _reactHyperscriptHelpers.button)({
-        className: "btn buttonPrimary ",
+      })])]), (0, _reactHyperscriptHelpers.div)({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [(0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonPrimary floatLeft",
         onClick: this.enableEdit(),
-        disabled: this.state.readOnly === false,
-        isRendered: true
-      }, ["Edit"]), (0, _reactHyperscriptHelpers.button)({
-        className: "btn buttonSecondary ",
+        isRendered: this.state.readOnly === true
+      }, ["Edit Information"]), (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonSecondary",
         onClick: this.cancelEdit(),
-        disabled: this.state.readOnly === true,
-        isRendered: true
-      }, ["Cancel"]), (0, _reactHyperscriptHelpers.button)({
-        className: "btn buttonPrimary ",
+        isRendered: this.state.readOnly === false
+      }, ["Cancel"]),
+
+      /*visible for every user in edit mode and disabled until some edit has been made*/
+      (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonPrimary floatRight",
         onClick: this.submitEdit(),
-        disabled: this.state.readOnly === true,
-        isRendered: true
-      }, ["Submit Edits"]), (0, _reactHyperscriptHelpers.button)({
-        className: "btn buttonSecondary ",
-        onClick: this.discardEdits(),
-        disabled: this.state.disableApproveButton,
-        isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
-      }, ["Discard Edits "]), (0, _reactHyperscriptHelpers.button)({
-        className: "btn buttonPrimary ",
+        // disabled: ,
+        isRendered: this.state.readOnly === false
+      }, ["Submit Edits"]),
+
+      /*visible for Admin in readOnly mode and if there are changes to review*/
+      (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonPrimary floatRight",
         onClick: this.approveEdits(),
         disabled: this.state.disableApproveButton,
         isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
-      }, ["Approve Edits "]), (0, _reactHyperscriptHelpers.button)({
+      }, ["Approve Edits"]),
+
+      /*visible for every user in readOnly mode and if there are changes to review*/
+      (0, _reactHyperscriptHelpers.button)({
+        className: "btn buttonSecondary floatRight",
+        onClick: this.discardEdits(),
+        disabled: this.state.disableApproveButton,
+        isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+      }, ["Discard Edits"]),
+
+      /*visible for Admin in readOnly mode and if this is the first revision to approve the project*/
+      (0, _reactHyperscriptHelpers.button)({
         className: "btn buttonPrimary floatRight",
         onClick: this.approveRevision(),
         disabled: this.state.disableApproveButton,
