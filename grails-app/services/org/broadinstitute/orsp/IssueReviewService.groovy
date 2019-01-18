@@ -1,19 +1,10 @@
 package org.broadinstitute.orsp
 
 class IssueReviewService {
-
-
-
     IssueReview create(IssueReview issueReview) throws DomainException {
         issueReview.save(flush: true)
         issueReview
     }
-
-
-    IssueReview update(IssueReview issueReview) throws DomainException {
-
-    }
-
 
     void delete(String projectKey) throws DomainException {
         IssueReview ir = findByProjectKey(projectKey)
