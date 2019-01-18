@@ -30,7 +30,7 @@ class ConsentGroupDocuments extends Component {
   }
 
   isCurrentUserAdmin() {
-    User.isCurrentUserAdmin(this.props.isAdminUrl).then(resp => {
+    User.getUserSession(this.props.sessionUserUrl).then(resp => {
         this.setState({isAdmin: resp.data.isAdmin});
     });
   }

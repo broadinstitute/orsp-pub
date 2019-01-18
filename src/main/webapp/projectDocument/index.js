@@ -11,7 +11,7 @@ import '../index.css';
         attachedDocumentsUrl = {component.attachedDocumentsUrl}
         approveDocumentUrl = {component.approveDocumentUrl}
         rejectDocumentUrl = {component.rejectDocumentUrl}
-        isAdminUrl = {component.isAdminUrl}
+        sessionUserUrl = {component.sessionUserUrl}
         component = {component}
         downloadDocumentUrl = {component.downloadDocumentUrl}
       />,
