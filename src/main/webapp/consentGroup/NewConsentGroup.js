@@ -109,8 +109,6 @@ class NewConsentGroup extends Component {
         spinnerService.hideAll();
         this.toggleSubmitError();
         this.changeSubmitState();
-      }).finally( () => {
-        spinnerService.hideAll();
       });
     } else {
       this.setState(prev => {
@@ -584,7 +582,7 @@ class NewConsentGroup extends Component {
     });
     documents.push({
       required: true,
-      fileKey: 'IRB approval',
+      fileKey: 'Approval Memo',
       label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document ", span({ className: "italic" }, ["(required for DFCI & MIT IRBs only):"])]),
       file: null,
       fileName: null,
