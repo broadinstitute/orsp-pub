@@ -4,7 +4,7 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import { Files, Project } from "../util/ajax";
+import { Files, Project, User } from "../util/ajax";
 import { span } from 'react-hyperscript-helpers';
 import { spinnerService } from "../util/spinner-service";
 
@@ -13,6 +13,11 @@ class NewProject extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: {
+        displayName: '',
+        userName: '',
+        emailAddress: ''
+      },
       showErrorStep2: false,
       showErrorStep3: false,
       isReadyToSubmit: false,
@@ -48,6 +53,12 @@ class NewProject extends Component {
     this.toggleFalseSubmitError = this.toggleFalseSubmitError.bind(this);
   }
 
+  componentDidMount() {
+     User.getUserSession(this.props.getUserUrl).then(
+       resp => this.setState({ user : resp.data })
+     )
+  }
+
   submitNewProject = () => {
     this.toggleFalseSubmitError();
 
@@ -63,8 +74,6 @@ class NewProject extends Component {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           console.error(error);
-        }).finally( () => {
-          spinnerService.hideAll();
         });
       } else {
         this.setState(prev => {
@@ -109,7 +118,7 @@ class NewProject extends Component {
     let project = {};
     project.type = this.getProjectType(project);
     project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
-    project.reporter = this.props.user.userName;
+    project.reporter = this.state.user.userName;
     project.description = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.step1FormData.fundings);
     let extraProperties = [];
@@ -311,18 +320,18 @@ class NewProject extends Component {
 
       switch (projectType) {
         case IRB:
-          documents.push({ required: true, fileKey: 'IRB Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: true, fileKey: 'IRB Application Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
         case NE:
-          documents.push({ required: true, fileKey: 'NE Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: true, fileKey: 'NE Application Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: false, fileKey: 'NE Consent Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
           break;
 
         case NHSR:
-          documents.push({ required: true, fileKey: 'NHSR Application Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
         default:
@@ -365,7 +374,7 @@ class NewProject extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
 
@@ -413,7 +422,7 @@ class NewProject extends Component {
   render() {
 
     const { currentStep, determination } = this.state;
-    const { user = { email: 'test@broadinstitute.org' } } = this.props;
+    const { user = { emailAddress: 'test@broadinstitute.org', displayName: '' } } = this.state;
     let projectType = determination.projectType;
     return (
       Wizard({
@@ -428,7 +437,7 @@ class NewProject extends Component {
         NewProjectGeneralData({
           title: "General Data",
           currentStep: currentStep,
-          user: user,
+          user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateStep1FormData,
           errors: this.state.errors,

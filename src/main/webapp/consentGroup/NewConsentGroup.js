@@ -6,7 +6,7 @@ import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
-import { Files, ConsentGroup, SampleCollections } from "../util/ajax";
+import { Files, ConsentGroup, SampleCollections, User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 
 class NewConsentGroup extends Component {
@@ -14,6 +14,10 @@ class NewConsentGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: {
+        displayName: '',
+        userName: ''
+      },
       showErrorStep3: false,
       generalError: false,
       formSubmitted: false,
@@ -64,6 +68,7 @@ class NewConsentGroup extends Component {
 
   componentDidMount() {
     this.initDocuments();
+    this.getUserSession();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
 
@@ -79,6 +84,12 @@ class NewConsentGroup extends Component {
         this.setState({ sampleCollectionList: sampleCollections })
       }
     );
+  }
+
+  getUserSession() {
+    User.getUserSession(this.props.getUserUrl).then(
+      resp => this.setState({ user : resp.data })
+    )
   }
 
   submitNewConsentGroup = () => {
@@ -98,8 +109,6 @@ class NewConsentGroup extends Component {
         spinnerService.hideAll();
         this.toggleSubmitError();
         this.changeSubmitState();
-      }).finally( () => {
-        spinnerService.hideAll();
       });
     } else {
       this.setState(prev => {
@@ -119,9 +128,9 @@ class NewConsentGroup extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
       .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
+        window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
@@ -146,7 +155,7 @@ class NewConsentGroup extends Component {
     // step 1
     let consentGroup = {};
     consentGroup.summary = this.state.step1FormData.consentGroupName;
-    consentGroup.reporter = this.props.user.userName;
+    consentGroup.reporter = this.state.user.userName;
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
     extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
@@ -214,14 +223,7 @@ class NewConsentGroup extends Component {
   };
 
   getRedirectUrl() {
-    let projectKey = this.props.projectKey.split("-");
-    let projectType = '';
-    if (projectKey.length === 3) {
-      projectType = projectKey[1].toLowerCase();
-    } else {
-      projectType = projectKey[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+    return [this.props.serverURL, this.props.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
   }
 
   isValid = (field) => {
@@ -580,7 +582,7 @@ class NewConsentGroup extends Component {
     });
     documents.push({
       required: true,
-      fileKey: 'IRB approval',
+      fileKey: 'Approval Memo',
       label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document ", span({ className: "italic" }, ["(required for DFCI & MIT IRBs only):"])]),
       file: null,
       fileName: null,
@@ -657,7 +659,7 @@ class NewConsentGroup extends Component {
         NewConsentGroupGeneralData({
           title: "General Data",
           currentStep: currentStep,
-          user: this.props.user,
+          user: this.state.user,
           sampleSearchUrl: this.props.sampleSearchUrl,
           updateForm: this.updateStep1FormData,
           errors: this.state.errors,
@@ -683,7 +685,7 @@ class NewConsentGroup extends Component {
         NewConsentGroupSecurity({
           title: "Security",
           currentStep: currentStep,
-          user: this.props.user,
+          user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateStep4FormData,
           errors: this.state.errors,
@@ -692,7 +694,7 @@ class NewConsentGroup extends Component {
         NewConsentGroupDataSharing({
           title: "Data Sharing",
           currentStep: currentStep,
-          user: this.props.user,
+          user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateStep5FormData,
           errors: this.state.errors,

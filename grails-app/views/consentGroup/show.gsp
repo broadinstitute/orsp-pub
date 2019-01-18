@@ -2,6 +2,7 @@
 <head>
     <meta name="layout" content="main">
     <title>${issue.type}: ${issue.projectKey}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     <style type="text/css">
         .clear-well {
             background-color: transparent;
@@ -33,12 +34,19 @@
     <ul>
         <li><a href="#documents">Documents</a></li>
         <li><a href="#details">Details</a></li>
+        <li><a href="#consentGroupReview">Review</a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
         %{--<auth:isOrsp>--}%
             %{--<li><a href="#checklist">Reviewer Checklist</a></li>--}%
         %{--</auth:isOrsp>--}%
+        <li><a href="#consentGroupDocuments">Documents New</a></li>
     </ul>
+
+    <div id="consentGroupDocuments">
+        <g:render template="/consentGroupDocuments/index" model="[issue: issue, attachedDocuments: attachedDocuments]" />
+    </div>
+
 
     <div id="documents">
 
@@ -118,6 +126,10 @@
             </div>
         </div>
         </g:if>
+    </div>
+
+    <div id="consentGroupReview">
+        <g:render template="/consentGroupReview/index" model="[issue: issue]"/>
     </div>
 
 

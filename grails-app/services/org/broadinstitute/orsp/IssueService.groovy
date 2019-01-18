@@ -51,7 +51,8 @@ class IssueService {
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PI,
             IssueExtraProperty.PM,
-            IssueExtraProperty.PROJECT_REVIEW_APPROVED
+            IssueExtraProperty.PROJECT_REVIEW_APPROVED,
+            IssueExtraProperty.APPROVAL
     ]
 
 
@@ -202,6 +203,19 @@ class IssueService {
         issue
     }
 
+    // Todo This method doesn't handle funding changes. We should handle it when implementing edit functions
+    @SuppressWarnings(["GroovyMissingReturnStatement"])
+    Issue modifyIssueProperties (Issue issue, Object input) {
+        Issue updatedIssue = issue
+        input.collect { element ->
+            if (issue.getProperties().get(element.key) != null && element.key != "fundings") {
+                updatedIssue.(element.key) = element.value
+            }
+        }
+        updatedIssue.save(flush:true)
+        updatedIssue
+    }
+
     void saveFundings(Issue issue, Collection<Funding> fundings) {
         fundings?.each {
             it.setCreated(new Date())
@@ -215,6 +229,7 @@ class IssueService {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
+        newIssue.setApprovalStatus("Pending")
         newIssue.type = type.name
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null
