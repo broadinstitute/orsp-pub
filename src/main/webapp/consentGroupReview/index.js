@@ -5,11 +5,11 @@ import '../index.css';
 
 ReactDOM.render(
     <ConsentGroupReview
-        consentKey = {component.consentKey}
-        consentGroupUrl = {component.consentGroupUrl}
+        consentKey = {consentGroupReviewComponent.consentKey}
+        consentGroupUrl = {consentGroupReviewComponent.consentGroupUrl}
         approveConsentGroupUrl = {urls.approveConsentGroupUrl}
-        isAdminUrl = {component.isAdminUrl}
-        sampleSearchUrl = {component.sampleSearchUrl}
+        isAdminUrl = {consentGroupReviewComponent.isAdminUrl}
+        sampleSearchUrl = {consentGroupReviewComponent.sampleSearchUrl}
     />,
     document.getElementById('consentGroupReview')
 );

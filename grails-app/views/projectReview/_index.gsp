@@ -1,5 +1,5 @@
 <g:javascript>
-    const component = {
+    const projectReviewValues = {
         issue: '${issue.requestDate}',
         projectKey:'${issue.projectKey}',
         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",

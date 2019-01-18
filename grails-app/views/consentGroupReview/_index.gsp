@@ -1,6 +1,6 @@
 <g:javascript>
 
-    const component = {
+    const consentGroupReviewComponent = {
       consentKey:'${issue.projectKey}',
       consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
       isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",

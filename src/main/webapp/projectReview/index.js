@@ -5,12 +5,12 @@ import '../index.css';
 
 ReactDOM.render(
   <ProjectReview
-    issue = {component.issue}
-    searchUsersURL = {component.searchUsersURL}
-    projectKey = {component.projectKey}
-    projectUrl = {component.projectUrl}
+    issue = {projectReviewValues.issue}
+    searchUsersURL = {projectReviewValues.searchUsersURL}
+    projectKey = {projectReviewValues.projectKey}
+    projectUrl = {projectReviewValues.projectUrl}
     addExtraPropUrl = {urls.saveExtraPropUrl}
-    isAdmin = {component.isAdmin}
+    isAdmin = {projectReviewValues.isAdmin}
   />,
   document.getElementById('projectReview')
 );

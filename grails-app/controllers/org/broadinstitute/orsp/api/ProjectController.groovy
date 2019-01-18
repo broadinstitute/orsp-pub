@@ -61,7 +61,7 @@ class ProjectController extends AuthenticatedController {
         ] as JSON)
     }
 
-    //NE y NHSR
+
     @Override
     handleIntake(String key) {
         Issue issue = queryService.findByKey(key)

@@ -84,14 +84,33 @@ export const Project = {
 
 };
 
-export const User = {
-  getUserSession(url) {
-    return axios.get(url)
+export const DocumentHandler = {
+  approveDocument(url, uuid) {
+    return axios.put(`${url}?uuid=${uuid}`);
   },
+
+   rejectDocument(url, uuid) {
+    return axios.put(`${url}?uuid=${uuid}`);
+  },
+
+   attachedDocuments(url, issueKey) {
+    return axios.get(`${url}?issueKey=${issueKey}`);
+  }
+};
+
+export const User = {
+
   isCurrentUserAdmin(url) {
     return axios.get(url);
   },
-  getProject(url, projectkey) {
-    return axios.get(url+ '?id=' + projectkey );
+
+  addExtraProperties(url, projectKey, data) {
+    return axios.post(url+ '?id=' + projectKey, data );
+  },
+
+  getUserSession(url) {
+    return axios.get(url)
   }
-}
+
+};
+
