@@ -23,7 +23,7 @@ class IssueReviewController extends AuthenticatedController {
         } else {
             issueReviewService.create(issueReview)
             response.status = 201
-            render([message: issueReview] as JSON)
+            render([issueReview] as JSON)
         }
 
     }
@@ -31,6 +31,7 @@ class IssueReviewController extends AuthenticatedController {
     def delete() {
         issueReviewService.delete(params.projectKey)
         response.status = 200
+        response
     }
 
     def show() {
@@ -40,7 +41,7 @@ class IssueReviewController extends AuthenticatedController {
             render([message: "Issue review does not exist"] as JSON)
         }
         response.status = 200
-        render([message: issueReview] as JSON)
+        render([issueReview] as JSON)
     }
 
 }
