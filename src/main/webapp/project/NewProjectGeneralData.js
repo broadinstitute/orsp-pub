@@ -41,6 +41,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
       },
+      formerData: {
+
+      },
       errors: {
         studyDescription: false,
         pTitle: false,
@@ -62,6 +65,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
+      prev.formerData[field] = prev.formData[field];     
       prev.formData[field] = value;
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
@@ -223,6 +227,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             name: "pTitle",
             label: "Title of project/protocol*",
             value: this.state.formData.pTitle,
+            currentValue: this.state.formerData.pTitle,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,

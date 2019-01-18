@@ -10,13 +10,15 @@ export const InputYesNo = (props) => {
     }
   };
 
-  const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
+  const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value, currentValue = null } = props;
 
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
+  const edited = normValue !== currentValue && currentValue != null;
+
   return (
-    
+
     div({ className: "radioContainer" }, [
       p({ className: "bold" }, [
         props.label,
@@ -29,8 +31,8 @@ export const InputYesNo = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly' : ''),
-            disabled: props.readOnly 
+            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited ? 'radioOptionsUpdated ' : ''),
+            disabled: props.readOnly
           }, [
               input({
                 type: "radio",
@@ -45,6 +47,10 @@ export const InputYesNo = (props) => {
             ])
         )
       }),
+      div({ isRendered: edited, className: "radioOptionsCurrent" }, [
+        span({ className: "italic" }, ["Previous value: "]),
+        currentValue
+      ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
   )
