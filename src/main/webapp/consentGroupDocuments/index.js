@@ -4,15 +4,15 @@ import ConsentGroupDocuments from './ConsentGroupDocuments';
 
  ReactDOM.render(
   <ConsentGroupDocuments
-    attachmentsUrl = {component.attachmentsUrl}
-    serverURL = {component.serverURL}
-    userUrl = {component.userUrl}
-    attachDocumentsUrl = {component.attachDocumentsUrl}
-    projectKey = {component.projectKey}
-    approveDocumentUrl = {component.approveDocumentUrl}
-    rejectDocumentUrl = {component.rejectDocumentUrl}
-    isAdminUrl = {component.isAdminUrl}
-    downloadDocumentUrl = {component.downloadDocumentUrl}
+    attachmentsUrl = {consentGroupDocumentsComponent.attachmentsUrl}
+    serverURL = {consentGroupDocumentsComponent.serverURL}
+    userUrl = {consentGroupDocumentsComponent.userUrl}
+    attachDocumentsUrl = {consentGroupDocumentsComponent.attachDocumentsUrl}
+    projectKey = {consentGroupDocumentsComponent.projectKey}
+    approveDocumentUrl = {consentGroupDocumentsComponent.approveDocumentUrl}
+    rejectDocumentUrl = {consentGroupDocumentsComponent.rejectDocumentUrl}
+    isAdminUrl = {consentGroupDocumentsComponent.isAdminUrl}
+    downloadDocumentUrl = {consentGroupDocumentsComponent.downloadDocumentUrl}
   />,
   document.getElementById('consentGroupDocuments')
 );
