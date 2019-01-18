@@ -30180,9 +30180,7 @@ var Project = exports.Project = {
     return _axios2.default.post(url, data, config);
   },
   getProject: function getProject(url, projectkey) {
-    var project = _axios2.default.get(url + '?id=' + projectkey);
-    console.log('getProject --------------------> ', project);
-    return project;
+    return _axios2.default.get(url + '?id=' + projectkey);
   },
   addExtraProperties: function addExtraProperties(url, projectKey, data) {
     return _axios2.default.post(url + '?id=' + projectKey, data);;

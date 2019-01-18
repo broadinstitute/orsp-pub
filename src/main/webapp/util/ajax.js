@@ -75,9 +75,7 @@ export const Project = {
   },
 
   getProject(url, projectkey) {
-    let project = axios.get(url + '?id=' + projectkey);
-    console.log('getProject --------------------> ', project);
-    return project;
+    return axios.get(url + '?id=' + projectkey);
   },
 
   addExtraProperties(url, projectKey, data) {

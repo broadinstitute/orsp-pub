@@ -79,6 +79,7 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
 
+        console.log(issue.data);
         // store current issue info here ....
         current.description = issue.data.issue.description;
         current.projectExtraProps = issue.data.extraProperties;
@@ -307,10 +308,6 @@ class ProjectReview extends Component {
   };
 
   render() {
-
-    console.log('------------------------- RENDER ---------------------------------------------', this.state);
-    console.log(this.state.formData.piList, this.state.current.piList);
-    console.log('------------------------------------------------------------------------------');
 
     return (
       div({}, [

@@ -23,17 +23,22 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   }
 
   isEdited = (current, future) => {
+    console.log(current, future);
     if (current.length !== future.length) {
+      console.log('sale por length ..............');
       return true;
     }
 
+    let edited = false;
     current.forEach((element, index) => {
+      console.log(element, future[index]);
       if (element.key !== future[index].key) {
-        return true;
+        console.log('sale por equals ..............', element.key, future[index].key);
+        edited = true;
       }
     });
 
-    return false;
+    return edited;
   }
 
   render() {

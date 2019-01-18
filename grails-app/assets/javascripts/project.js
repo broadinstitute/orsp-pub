@@ -29384,9 +29384,7 @@ var Project = exports.Project = {
     return _axios2.default.post(url, data, config);
   },
   getProject: function getProject(url, projectkey) {
-    var project = _axios2.default.get(url + '?id=' + projectkey);
-    console.log('getProject --------------------> ', project);
-    return project;
+    return _axios2.default.get(url + '?id=' + projectkey);
   },
   addExtraProperties: function addExtraProperties(url, projectKey, data) {
     return _axios2.default.post(url + '?id=' + projectKey, data);;
@@ -39756,17 +39754,22 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
         return x < y ? -1 : x > y ? 1 : 0;
       });
     }, _this.isEdited = function (current, future) {
+      console.log(current, future);
       if (current.length !== future.length) {
+        console.log('sale por length ..............');
         return true;
       }
 
+      var edited = false;
       current.forEach(function (element, index) {
+        console.log(element, future[index]);
         if (element.key !== future[index].key) {
-          return true;
+          console.log('sale por equals ..............', element.key, future[index].key);
+          edited = true;
         }
       });
 
-      return false;
+      return edited;
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
