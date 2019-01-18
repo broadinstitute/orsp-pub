@@ -223,17 +223,16 @@ class IssueService {
         Boolean projectDocumentsApproved = false
 
         if (issue != null && !issue.getAttachments().isEmpty()) {
-            issue.getNonEmptyExtraProperties()?.each{
-                if (it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED) {
-                    projectGeneralDataApproved = it.value
-                }
-            }
-            projectDocumentsApproved = issue.getAttachments().collect {
-                value -> value.status == IssueStatus.Approved.getName()
-            }.flatten().findAll { it == false }.isEmpty()
+            projectGeneralDataApproved = issue.getNonEmptyExtraProperties().find {
+                it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED
+            }?.value
+
+            projectDocumentsApproved = issue.getAttachments().find {
+                it.status != IssueStatus.Approved.getName()
+            } != null
         }
 
-        if (projectGeneralDataApproved && projectDocumentsApproved) {
+        if (projectGeneralDataApproved == true && projectDocumentsApproved == true ) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)

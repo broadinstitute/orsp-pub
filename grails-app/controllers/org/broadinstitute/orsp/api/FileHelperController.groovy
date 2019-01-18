@@ -67,9 +67,11 @@ class FileHelperController extends AuthenticatedController{
         try {
             if (document != null) {
                 document.setStatus(DocumentStatus.APPROVED.status)
+                document.save(flush: true)
+
                 Issue issue = queryService.findByKey(document.projectKey)
                 issueService.projectApproval(issue)
-                document.save(flush: true)
+
                 render(['document': document] as JSON)
             } else {
                 response.status = 404
