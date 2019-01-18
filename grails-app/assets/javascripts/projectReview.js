@@ -2246,9 +2246,40 @@ if (process.env.NODE_ENV === 'production') {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 60 */,
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(327);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(19)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./InputField.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./InputField.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
 /* 61 */,
-/* 62 */
+/* 62 */,
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2415,38 +2446,7 @@ function polyfill(Component) {
 
 
 /***/ }),
-/* 63 */,
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(327);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(19)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./InputField.css", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!./InputField.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
+/* 64 */,
 /* 65 */,
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -2544,7 +2544,7 @@ var _react = __webpack_require__(0);
 
 var _reactHyperscriptHelpers = __webpack_require__(11);
 
-__webpack_require__(64);
+__webpack_require__(60);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2681,7 +2681,7 @@ var _react = _interopRequireDefault(__webpack_require__(0));
 
 var _reactDom = _interopRequireDefault(__webpack_require__(8));
 
-var _reactLifecyclesCompat = __webpack_require__(62);
+var _reactLifecyclesCompat = __webpack_require__(63);
 
 var _PropTypes = __webpack_require__(124);
 
@@ -28403,7 +28403,7 @@ var _reactHyperscriptHelpers = __webpack_require__(11);
 
 var _InputField = __webpack_require__(73);
 
-__webpack_require__(64);
+__webpack_require__(60);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -28425,9 +28425,7 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
     value: function render() {
       var _props = this.props,
           value = _props.value,
-          _props$currentValue = _props.currentValue,
-          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
-
+          currentValue = _props.currentValue;
 
       var edited = value !== currentValue && currentValue != null;
 
@@ -29440,7 +29438,7 @@ var _propTypes = _interopRequireDefault(__webpack_require__(1));
 
 var _react = _interopRequireDefault(__webpack_require__(0));
 
-var _reactLifecyclesCompat = __webpack_require__(62);
+var _reactLifecyclesCompat = __webpack_require__(63);
 
 var _ChildMapping = __webpack_require__(362);
 
@@ -31151,7 +31149,7 @@ var _reactHyperscriptHelpers = __webpack_require__(11);
 
 var _InputField = __webpack_require__(73);
 
-__webpack_require__(64);
+__webpack_require__(60);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31165,25 +31163,75 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
   _inherits(InputFieldSelect, _Component);
 
   function InputFieldSelect() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, InputFieldSelect);
 
-    return _possibleConstructorReturn(this, (InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).call.apply(_ref, [this].concat(args))), _this), _this.sortByKey = function (array, key) {
+      return array.sort(function (a, b) {
+        var x = a[key];var y = b[key];
+        return x < y ? -1 : x > y ? 1 : 0;
+      });
+    }, _this.isEdited = function (current, future) {
+      if (current.length !== future.length) {
+        return true;
+      }
+
+      var edited = false;
+      current.forEach(function (element, index) {
+        if (element.key !== future[index].key) {
+          edited = true;
+        }
+      });
+
+      return edited;
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(InputFieldSelect, [{
+    key: 'componentDidCatch',
+    value: function componentDidCatch(error, info) {
+      console.log('----------------------- error ----------------------');
+      console.log(error, info);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _props = this.props,
-          value = _props.value,
+          _props$value = _props.value,
+          value = _props$value === undefined ? [] : _props$value,
           _props$currentValue = _props.currentValue,
-          currentValue = _props$currentValue === undefined ? null : _props$currentValue;
+          currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
 
 
-      var edited = value !== currentValue && currentValue != null;
+      var currentValues = [];
+      currentValue.forEach(function (item) {
+        currentValues.push(item.label);
+      });
+
+      var values = [];
+      value.forEach(function (item) {
+        values.push(item.label);
+      });
+
+      var currentKeys = this.sortByKey(currentValue, 'key');
+      var keys = this.sortByKey(value, 'key');
+
+      var currentValueStr = currentValues.join(',');
+
+      // verified if edited ...
+      var edited = this.isEdited(currentKeys, keys);
 
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
+        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, currentValueStr: currentValueStr,
+        edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_reactSelect2.default, {
         id: this.props.id,
         index: this.props.index,
@@ -31195,6 +31243,12 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
         placeholder: this.props.placeholder,
         isMulti: this.props.isMulti
       })])]);
+    }
+  }], [{
+    key: 'getDerivedStateFromError',
+    value: function getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
     }
   }]);
 
@@ -39579,7 +39633,7 @@ var _reactHyperscriptHelpers = __webpack_require__(11);
 
 var _InputField = __webpack_require__(73);
 
-__webpack_require__(64);
+__webpack_require__(60);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -39651,6 +39705,8 @@ var _Async = __webpack_require__(743);
 
 var _Async2 = _interopRequireDefault(_Async);
 
+__webpack_require__(60);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39679,17 +39735,13 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
         return x < y ? -1 : x > y ? 1 : 0;
       });
     }, _this.isEdited = function (current, future) {
-      console.log(current, future);
       if (current.length !== future.length) {
-        console.log('sale por length ..............');
         return true;
       }
 
       var edited = false;
       current.forEach(function (element, index) {
-        console.log(element, future[index]);
         if (element.key !== future[index].key) {
-          console.log('sale por equals ..............', element.key, future[index].key);
           edited = true;
         }
       });
@@ -43504,7 +43556,6 @@ var ProjectReview = function (_Component) {
     _this.handleInputChange = function (e) {
       var field = e.target.name;
       var value = e.target.value;
-      console.log('handleInputChange', field, value);
       _this.setState(function (prev) {
         prev.formData[field] = value;
         return prev;
@@ -43532,7 +43583,6 @@ var ProjectReview = function (_Component) {
       } else if (value === 'false') {
         value = false;
       }
-      console.log('handleProjectExtraPropsChangeRadio', field, value);
 
       _this.setState(function (prev) {
         prev.formData.projectExtraProps[field] = value;
@@ -43544,7 +43594,6 @@ var ProjectReview = function (_Component) {
     _this.handleProjectExtraPropsChange = function (e) {
       var field = e.currentTarget.name;
       var value = e.currentTarget.value;
-      console.log('handleProjectExtraPropsChange', field, value, _this.state);
       _this.setState(function (prev) {
         prev.formData.projectExtraProps[field] = value;
         return prev;
@@ -43620,7 +43669,6 @@ var ProjectReview = function (_Component) {
 
       _ajax.Project.getProject(this.props.projectUrl, this.props.projectKey).then(function (issue) {
 
-        console.log(issue.data);
         // store current issue info here ....
         current.description = issue.data.issue.description;
         current.projectExtraProps = issue.data.extraProperties;

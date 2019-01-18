@@ -79,7 +79,6 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
 
-        console.log(issue.data);
         // store current issue info here ....
         current.description = issue.data.issue.description;
         current.projectExtraProps = issue.data.extraProperties;
@@ -259,7 +258,6 @@ class ProjectReview extends Component {
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    console.log('handleInputChange', field, value);
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
@@ -287,7 +285,6 @@ class ProjectReview extends Component {
     } else if (value === 'false') {
       value = false;
     }
-    console.log('handleProjectExtraPropsChangeRadio', field, value);
 
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
@@ -299,7 +296,6 @@ class ProjectReview extends Component {
   handleProjectExtraPropsChange = (e) => {
     const field = e.currentTarget.name;
     const value = e.currentTarget.value;
-    console.log('handleProjectExtraPropsChange', field, value, this.state);
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
       return prev;

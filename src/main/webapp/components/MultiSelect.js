@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import AsyncSelect from 'react-select/lib/Async';
+import './InputField.css';
 
 export const MultiSelect = hh(class MultiSelect extends Component {
 
@@ -23,17 +24,13 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   }
 
   isEdited = (current, future) => {
-    console.log(current, future);
     if (current.length !== future.length) {
-      console.log('sale por length ..............');
       return true;
     }
 
     let edited = false;
     current.forEach((element, index) => {
-      console.log(element, future[index]);
       if (element.key !== future[index].key) {
-        console.log('sale por equals ..............', element.key, future[index].key);
         edited = true;
       }
     });
