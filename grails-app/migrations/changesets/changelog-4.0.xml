@@ -2,20 +2,11 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet id="changelog-4.0-1" author="tadeork">
-        <createTable tableName="issue_review">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="project_key" type="VARCHAR(255)" >
-                <constraints nullable="false"
-                             unique="true"
-                            foreignKeyName="fk_project_key"
-                            references="issue(project_key)"/>
-            </column>
-            <column name="suggestions" type="TEXT" >
+    <changeSet author="lforconesi" id="changelog-4.0-1">
+        <addColumn tableName="issue">
+            <column name="approval_status" type="VARCHAR(255)" defaultValue="Legacy">
                 <constraints nullable="false"/>
             </column>
-        </createTable>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

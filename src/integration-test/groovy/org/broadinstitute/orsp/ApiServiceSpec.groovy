@@ -44,7 +44,8 @@ class ApiServiceSpec extends Specification {
                 summary: "IRB",
                 description: "IRB",
                 reporter: "Test User",
-                requestDate: new Date())
+                requestDate: new Date(),
+                approvalStatus: 'Pending')
         Map propMap = new HashMap()
         propMap.put(IssueExtraProperty.ACCURATE, "10057")
         GrailsParameterMap params = new GrailsParameterMap(propMap, null)
@@ -56,7 +57,8 @@ class ApiServiceSpec extends Specification {
                 summary: "Consent",
                 description: "Consent",
                 reporter: "Test User",
-                requestDate: new Date())
+                requestDate: new Date(),
+                approvalStatus: 'Pending')
         GrailsParameterMap consentParams = new GrailsParameterMap(new HashMap(), null)
         consent = issueService.addIssue(consent, consentParams)
 

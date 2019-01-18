@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp.api
 
+import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
@@ -75,6 +76,13 @@ class FileHelperController extends AuthenticatedController{
             response.status = 500
             render([error: e.message] as JSON)
         }
+    }
+
+    def attachedDocuments() {
+        Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
+        Gson gson = new Gson()
+        String doc = gson.toJson(documents)
+        render ([documents : doc] as JSON)
     }
 
 }

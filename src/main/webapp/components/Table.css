@@ -1,0 +1,22 @@
+.tableContainer .table  {
+    margin-bottom: 0;
+}
+
+.tableContainer .table-search-form {
+    float: left;
+}
+
+.tableContainer .btn-toolbar {
+    position: absolute;
+    margin-top: -5px;
+}
+
+.tableContainer .btn-toolbar .dropdownButton {
+    box-shadow: none !important;
+    padding: 4px 10px !important;
+    outline: none;
+}
+
+.tableContainer .btn-toolbar .dropdownButton .caret {
+    margin-left: 5px;
+}

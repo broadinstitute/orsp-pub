@@ -9,6 +9,10 @@ module.exports = {
     search: './src/main/webapp/search/index.js',
     project: './src/main/webapp/project/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
+    projectReview: './src/main/webapp/projectReview/index.js',
+    projectDocument: './src/main/webapp/projectDocument/index.js',
+    consentGroupDocuments: './src/main/webapp/consentGroupDocuments/index.js',
+    consentGroupReview: './src/main/webapp/consentGroupReview/index.js',
     projectReview: './src/main/webapp/projectReview/index.js'
   },
   output: {

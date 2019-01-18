@@ -319,6 +319,12 @@ class ConsentGroupController extends AuthenticatedController {
         render data as JSON
     }
 
+    def getConsentGroup(){
+        String projectKey = params.id
+        LinkedHashMap consentGroup = queryService.getConsentGroupByKey(projectKey)
+        render(consentGroup as JSON)
+    }
+
     def unConsentedSampleCollections() {
         render queryService.getUnConsentedSamples() as JSON
     }

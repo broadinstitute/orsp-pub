@@ -5,8 +5,6 @@ import { WizardStep } from '../components/WizardStep';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 
-//import { Search } from '../util/ajax';
-
 export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends Component {
 
   state = {};
@@ -91,7 +89,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
             InputFieldRadio({
               id: "radioCompliance",
               name: "compliance",
-              label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
+              label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
               value: this.state.formData.compliance,
               optionValues: ["true", "false", "uncertain"],
               optionLabels: [
@@ -108,7 +106,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
               isRendered: this.state.formData.compliance === "true",
               id: "inputCompliance",
               name: "textCompliance",
-              label: "Add regulatory compliance*",
+              label: "Please specify which regulations must be adhered to below:*",
               value: this.state.formData.textCompliance,
               disabled: false,
               required: false,
@@ -119,7 +117,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
             InputFieldRadio({
               id: "radioSensitive",
               name: "sensitive",
-              label: span({}, ["Is this data ", span({ className: 'italic' }, ["“sensitive” "]), "for any reason?*"]),
+              label: span({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
               value: this.state.formData.sensitive,
               optionValues: ["true", "false", "uncertain"],
               optionLabels: [
@@ -147,7 +145,7 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
             InputFieldRadio({
               id: "radioAccessible",
               name: "accessible",
-              label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?*"]),
+              label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
               value: this.state.formData.accessible,
               optionValues: ["true", "false", "uncertain"],
               optionLabels: [
