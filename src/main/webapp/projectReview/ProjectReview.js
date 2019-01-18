@@ -315,6 +315,19 @@ class ProjectReview extends Component {
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.enableEdit(),
+          isRendered: this.state.readOnly === true
+        }, ["Edit Information"]),
+
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.cancelEdit(),
+          isRendered: this.state.readOnly === false
+        }, ["Cancel"]),
 
         Panel({ title: "Requestor" }, [
           InputFieldText({
@@ -534,41 +547,44 @@ class ProjectReview extends Component {
             })
           ])
         ]),
-
-        div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
+        div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
-            className: "btn buttonPrimary ",
+            className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            disabled: this.state.readOnly === false,
-            isRendered: true
-          }, ["Edit"]),
+            isRendered: this.state.readOnly === true
+          }, ["Edit Information"]),
+
           button({
-            className: "btn buttonSecondary ",
+            className: "btn buttonSecondary",
             onClick: this.cancelEdit(),
-            disabled: this.state.readOnly === true,
-            isRendered: true
+            isRendered: this.state.readOnly === false
           }, ["Cancel"]),
+
+          /*visible for every user in edit mode and disabled until some edit has been made*/
           button({
-            className: "btn buttonPrimary ",
+            className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.state.readOnly === true,
-            isRendered: true
+            // disabled: ,
+            isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
+          /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
-            className: "btn buttonSecondary ",
-            onClick: this.discardEdits(),
-            disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
-          }, ["Discard Edits "]),
-
-          button({
-            className: "btn buttonPrimary ",
+            className: "btn buttonPrimary floatRight",
             onClick: this.approveEdits(),
             disabled: this.state.disableApproveButton,
             isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
-          }, ["Approve Edits "]),
+          }, ["Approve Edits"]),
 
+          /*visible for every user in readOnly mode and if there are changes to review*/
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.discardEdits(),
+            disabled: this.state.disableApproveButton,
+            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+          }, ["Discard Edits"]),
+
+          /*visible for Admin in readOnly mode and if this is the first revision to approve the project*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
