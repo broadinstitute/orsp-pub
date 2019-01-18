@@ -163,6 +163,10 @@ class ConsentGroupReview extends Component {
     );
   }
 
+  rejectConsentGroup = (e) => () => {
+
+  }
+
   discardEdits = (e) => () => {
 
   }
@@ -409,8 +413,6 @@ class ConsentGroupReview extends Component {
             error: this.state.errors.sampleCollections,
             errorMessage: "Required field"
           }),
-
-
 
           // Table({
           //   headers: headers,
@@ -676,13 +678,21 @@ class ConsentGroupReview extends Component {
             isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Discard Edits"]),
 
-          /*visible for Admin in readOnly mode and if this is the first revision to approve the project*/
+          /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveConsentGroup,
             isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
             disabled: this.state.disableApproveButton
           }, ["Approve"]),
+
+          /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.rejectConsentGroup(),
+            disabled: this.state.disableApproveButton,
+            isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
+          }, ["Reject"])
         ])
       ])
     )
