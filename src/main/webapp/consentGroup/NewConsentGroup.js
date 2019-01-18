@@ -88,7 +88,7 @@ class NewConsentGroup extends Component {
 
   getUserSession() {
     User.getUserSession(this.props.getUserUrl).then(
-      resp => this.setState({ user : resp.data[0] })
+      resp => this.setState({ user : resp.data })
     )
   }
 
