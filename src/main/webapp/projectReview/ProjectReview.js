@@ -88,45 +88,45 @@ class ProjectReview extends Component {
         // Project.getSuggestions(this.props.projectUrl, this.props.projectKey).then(
         //   edits => {
 
-            let edits = null;
-            let formData = {};
-            let suggestions = {};
-            let suggestionsCopy = {};
+        let edits = null;
+        let formData = {};
+        let suggestions = {};
+        let suggestionsCopy = {};
 
-            if (edits != null) {
-              // prepare form data here, initially same as current ....
-              let editsStr = JSON.stringify(edits);
-              formData.description = edits.data.issue.description;
-              formData.projectExtraProps = edits.data.extraProperties;
-              formData.piList = this.getUsersArray(edits.data.pis);
-              formData.pmList = this.getUsersArray(edits.data.pms);
-              formData.collaborators = this.getUsersArray(edits.data.collaborators);
-              formData.fundings = this.getFundingsArray(edits.data.fundings);
-              formData.requestor = edits.data.requestor !== null ? edits.data.requestor : this.state.requestor;
+        if (edits != null) {
+          // prepare form data here, initially same as current ....
+          let editsStr = JSON.stringify(edits);
+          formData.description = edits.data.issue.description;
+          formData.projectExtraProps = edits.data.extraProperties;
+          formData.piList = this.getUsersArray(edits.data.pis);
+          formData.pmList = this.getUsersArray(edits.data.pms);
+          formData.collaborators = this.getUsersArray(edits.data.collaborators);
+          formData.fundings = this.getFundingsArray(edits.data.fundings);
+          formData.requestor = edits.data.requestor !== null ? edits.data.requestor : this.state.requestor;
 
-              suggestions = JSON.parse(JSON.stringify(formData));
-              suggestionsCopy = JSON.parse(JSON.stringify(formData));
+          suggestions = JSON.parse(JSON.stringify(formData));
+          suggestionsCopy = JSON.parse(JSON.stringify(formData));
 
 
-            } else {
-              // prepare form data here, initially same as current ....
-              formData = JSON.parse(currentStr);
-              suggestions = JSON.parse((currentStr));
-              suggestionsCopy = JSON.parse((currentStr));
-            }
+        } else {
+          // prepare form data here, initially same as current ....
+          formData = JSON.parse(currentStr);
+          suggestions = JSON.parse((currentStr));
+          suggestionsCopy = JSON.parse((currentStr));
+        }
 
-            // store current issue info here ....
-            this.setState(prev => {
-              // prepare form data here, initially same as current ....
-              prev.formData = formData;
-              prev.current = current;
-              prev.suggestions = suggestions;
-              prev.suggestionsCopy = suggestionsCopy;
-              return prev;
+        // store current issue info here ....
+        this.setState(prev => {
+          // prepare form data here, initially same as current ....
+          prev.formData = formData;
+          prev.current = current;
+          prev.suggestions = suggestions;
+          prev.suggestionsCopy = suggestionsCopy;
+          return prev;
 
-            });
+        });
 
-          // });
+        // });
       });
   }
 
@@ -185,7 +185,7 @@ class ProjectReview extends Component {
   }
 
   approveEdits = (e) => () => {
-    
+
   }
 
 
@@ -279,7 +279,7 @@ class ProjectReview extends Component {
     //this.props.removeErrorMessage();
   };
 
-  handleProjectExtraPropsChangeRadio  = (e, field, value) => {
+  handleProjectExtraPropsChangeRadio = (e, field, value) => {
     if (value === 'true') {
       value = true;
     } else if (value === 'false') {
@@ -307,10 +307,23 @@ class ProjectReview extends Component {
 
   render() {
 
-    console.log('------------------------- RENDER ---------------------------------------------',this.state);
+    console.log('------------------------- RENDER ---------------------------------------------', this.state);
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.enableEdit(),
+          isRendered: this.state.readOnly === true
+        }, ["Edit Information"]),
+
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.cancelEdit(),
+          isRendered: this.state.readOnly === false
+        }, ["Cancel"]),
 
         Panel({ title: "Requestor" }, [
           InputFieldText({
@@ -530,41 +543,44 @@ class ProjectReview extends Component {
             })
           ])
         ]),
-
-        div({ className: "buttonContainer", style: { 'marginRight': '0' } }, [
+        div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
-            className: "btn buttonPrimary ",
+            className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            disabled: this.state.readOnly === false,
-            isRendered: true
-          }, ["Edit"]),
+            isRendered: this.state.readOnly === true
+          }, ["Edit Information"]),
+
           button({
-            className: "btn buttonSecondary ",
+            className: "btn buttonSecondary",
             onClick: this.cancelEdit(),
-            disabled: this.state.readOnly === true,
-            isRendered: true
+            isRendered: this.state.readOnly === false
           }, ["Cancel"]),
+
+          /*visible for every user in edit mode and disabled until some edit has been made*/
           button({
-            className: "btn buttonPrimary ",
+            className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.state.readOnly === true,
-            isRendered: true
+            // disabled: ,
+            isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
+          /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
-            className: "btn buttonSecondary ",
-            onClick: this.discardEdits(),
-            disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
-          }, ["Discard Edits "]),
-          
-          button({
-            className: "btn buttonPrimary ",
+            className: "btn buttonPrimary floatRight",
             onClick: this.approveEdits(),
             disabled: this.state.disableApproveButton,
             isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
-          }, ["Approve Edits "]),
+          }, ["Approve Edits"]),
 
+          /*visible for every user in readOnly mode and if there are changes to review*/
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.discardEdits(),
+            disabled: this.state.disableApproveButton,
+            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+          }, ["Discard Edits"]),
+
+          /*visible for Admin in readOnly mode and if this is the first revision to approve the project*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
