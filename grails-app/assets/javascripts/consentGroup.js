@@ -53836,8 +53836,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//import { Search } from '../util/ajax';
-
 var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
   _inherits(NewConsentGroupSecurity, _Component);
 
@@ -53918,7 +53916,7 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
       }), (0, _InputFieldRadio.InputFieldRadio)({
         id: "radioCompliance",
         name: "compliance",
-        label: (0, _reactHyperscriptHelpers.span)({}, ["Are you bound by any regulatory compliance ", (0, _reactHyperscriptHelpers.span)({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
+        label: (0, _reactHyperscriptHelpers.span)({}, ["Is this project subject to any regulations with specific data security requirements ", (0, _reactHyperscriptHelpers.span)({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
         value: this.state.formData.compliance,
         optionValues: ["true", "false", "uncertain"],
         optionLabels: ["Yes", "No", "Uncertain"],
@@ -53930,7 +53928,7 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
         isRendered: this.state.formData.compliance === "true",
         id: "inputCompliance",
         name: "textCompliance",
-        label: "Add regulatory compliance*",
+        label: "Please specify which regulations must be adhered to below:*",
         value: this.state.formData.textCompliance,
         disabled: false,
         required: false,
@@ -53940,7 +53938,7 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
       }), (0, _InputFieldRadio.InputFieldRadio)({
         id: "radioSensitive",
         name: "sensitive",
-        label: (0, _reactHyperscriptHelpers.span)({}, ["Is this data ", (0, _reactHyperscriptHelpers.span)({ className: 'italic' }, ["“sensitive” "]), "for any reason?*"]),
+        label: (0, _reactHyperscriptHelpers.span)({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
         value: this.state.formData.sensitive,
         optionValues: ["true", "false", "uncertain"],
         optionLabels: ["Yes", "No", "Uncertain"],
@@ -53962,7 +53960,7 @@ var NewConsentGroupSecurity = exports.NewConsentGroupSecurity = (0, _reactHypers
       }), (0, _InputFieldRadio.InputFieldRadio)({
         id: "radioAccessible",
         name: "accessible",
-        label: (0, _reactHyperscriptHelpers.span)({}, ["Will your data be accessible on the Internet ", (0, _reactHyperscriptHelpers.span)({ className: 'normal' }, ["(even if authenticated)"]), "?*"]),
+        label: (0, _reactHyperscriptHelpers.span)({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", (0, _reactHyperscriptHelpers.span)({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
         value: this.state.formData.accessible,
         optionValues: ["true", "false", "uncertain"],
         optionLabels: ["Yes", "No", "Uncertain"],
