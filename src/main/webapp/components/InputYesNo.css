@@ -9,7 +9,7 @@
 .radioOptions {
   display: block;
   position: relative;
-  padding-left: 28px;
+  padding: 3px 10px 3px 30px;
   margin-right: 20px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -30,12 +30,12 @@
   font-size: 14px;
   font-weight: 500;
   color: #333333;
-  vertical-align: sub;
+  vertical-align: middle;
 }
 
 .radioCheck {
   position: absolute;
-  top: 3px;
+  top: 5px;
   left: 0;
   height: 18px;
   width: 18px;
@@ -95,5 +95,46 @@ fieldset[disabled] .radioOptions {
 /* Style the indicator (dot/circle) */
 .radioOptionsReadOnly .radioCheck:after {
   background-color: #777777;
+}
+
+/*Comparison Mode*/
+.radioOptionsUpdated {
+  width: 100%;
+  background: #FFF4BD;
+}
+
+.radioOptionsUpdated .radioCheck{
+  left: 5px;
+}
+
+.radioOptionsCurrent {
+  position: relative;
+  width: 100%;
+  margin: 10px 0 5px 0;
+  min-height: 38px;
+  background: #EAEAEA;
+  font-size: 1rem;
+  padding: 9px 40px 9px 12px;
+}
+
+.radioOptionsCurrent:after,
+.radioOptionsUpdated:after {
+  position: absolute;
+  right: 8px; 
+  display: block;
+  content: '';
+  background-size: 36px 18px;
+  height: 18px;
+  width: 36px;
+}
+
+.radioOptionsCurrent:after {
+  top: 10px;
+  background: url('./old-tag.svg') no-repeat;  
+}
+
+.radioOptionsUpdated:after {
+  top: 5px;
+  background: url('./new-tag.svg') no-repeat;
 }
 

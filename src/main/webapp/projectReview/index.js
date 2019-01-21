@@ -6,6 +6,7 @@ import '../index.css';
 ReactDOM.render(
   <ProjectReview
     issue = {projectReviewValues.issue}
+    searchUsersURL = {projectReviewValues.searchUsersURL}
     projectKey = {projectReviewValues.projectKey}
     projectUrl = {projectReviewValues.projectUrl}
     addExtraPropUrl = {urls.saveExtraPropUrl}
