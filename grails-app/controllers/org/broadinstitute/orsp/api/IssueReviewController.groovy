@@ -28,6 +28,21 @@ class IssueReviewController extends AuthenticatedController {
 
     }
 
+    def update() {
+        Gson gson = new Gson()
+        IssueReview issueReviewFormer = issueReviewService.findByProjectKey(params.projectKey)
+
+        if (issueReviewFormer == null) {
+            response.status = 404
+            render([message: "Issue review does not exist"] as JSON)
+        }
+
+        issueReviewFormer.suggestions = parseIssueReview(gson.toJson(request.JSON)).suggestions
+        issueReviewFormer.save()
+        response.status = 200
+        render([issueReviewFormer] as JSON)
+    }
+
     def delete() {
         issueReviewService.delete(params.projectKey)
         response.status = 200
