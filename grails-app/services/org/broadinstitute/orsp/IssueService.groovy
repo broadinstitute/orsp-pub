@@ -201,6 +201,9 @@ class IssueService {
             saveExtraProperties(issue, extraPropertiesList)
         }
         issue.extraProperties.addAll(extraPropertiesList)
+        if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED} != null ) {
+            updateProjectApproval(issue)
+        }
         issue
     }
 
@@ -218,21 +221,12 @@ class IssueService {
         updatedIssue
     }
 
-    void projectApproval(Issue issue) {
-        Boolean projectGeneralDataApproved = false
-        Boolean projectDocumentsApproved = false
-
-        if (issue != null && !issue.getAttachments().isEmpty()) {
-            projectGeneralDataApproved = issue.getNonEmptyExtraProperties().find {
-                it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED
-            }?.value
-
-            projectDocumentsApproved = issue.getAttachments().find {
-                it.status != IssueStatus.Approved.getName()
-            } != null
-        }
-
-        if (projectGeneralDataApproved == true && projectDocumentsApproved == true ) {
+    /** updateProjectApproval
+     *  This method will check if a given issue has its general data and each of its attachment Approved,
+     *  if this conditions are met, then we set its general issue status to 'Approved'
+     * */
+    void updateProjectApproval(Issue issue) {
+        if (issue != null && issue.getProjectReviewApproved() && issue.attachmentApproved()) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)

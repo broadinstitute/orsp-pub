@@ -43,9 +43,6 @@ class ProjectController extends AuthenticatedController {
         Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
         try {
             Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
-            if (input.get(IssueExtraProperty.PROJECT_REVIEW_APPROVED)) {
-                issueService.projectApproval(updatedIssue)
-            }
             render([message: updatedIssue] as JSON)
         } catch(Exception e) {
             response.status = 500

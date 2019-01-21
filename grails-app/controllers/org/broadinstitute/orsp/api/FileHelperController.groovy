@@ -70,7 +70,7 @@ class FileHelperController extends AuthenticatedController{
                 document.save(flush: true)
 
                 Issue issue = queryService.findByKey(document.projectKey)
-                issueService.projectApproval(issue)
+                issueService.updateProjectApproval(issue)
 
                 render(['document': document] as JSON)
             } else {
