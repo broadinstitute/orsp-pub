@@ -386,7 +386,7 @@ class ProjectReview extends Component {
         Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.formData.fundings,
-            currentValue: this.state.current.fudings,
+            currentValue: this.state.current.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
             error: false,

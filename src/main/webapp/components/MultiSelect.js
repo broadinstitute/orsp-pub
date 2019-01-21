@@ -40,16 +40,13 @@ export const MultiSelect = hh(class MultiSelect extends Component {
 
   render() {
 
-    const { value = [], currentValue = [] } = this.props;
+    const { currentValue = [] } = this.props;
+    const value = [];
+    value.push(this.props.value);
 
     let currentValues = [];
     currentValue.forEach(item => {
       currentValues.push(item.label);
-    });
-
-    let values = [];
-    value.forEach(item => {
-      values.push(item.label);
     });
 
     let currentKeys = this.sortByKey(currentValue, 'key');

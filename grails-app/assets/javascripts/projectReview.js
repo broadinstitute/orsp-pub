@@ -423,7 +423,7 @@ if (process.env.NODE_ENV === 'production') {
 "use strict";
 
 
-var bind = __webpack_require__(53);
+var bind = __webpack_require__(52);
 var isBuffer = __webpack_require__(117);
 
 /*global toString:true*/
@@ -886,7 +886,7 @@ module.exports = _interopRequireDefault;
 /* 14 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.0' };
+var core = module.exports = { version: '2.6.2' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -1588,10 +1588,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(49);
+    adapter = __webpack_require__(48);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(49);
+    adapter = __webpack_require__(48);
   }
   return adapter;
 }
@@ -1928,8 +1928,7 @@ exports.f = __webpack_require__(30) ? Object.defineProperty : function definePro
 
 /***/ }),
 /* 47 */,
-/* 48 */,
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1940,7 +1939,7 @@ var settle = __webpack_require__(104);
 var buildURL = __webpack_require__(107);
 var parseHeaders = __webpack_require__(113);
 var isURLSameOrigin = __webpack_require__(111);
-var createError = __webpack_require__(52);
+var createError = __webpack_require__(51);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(106);
 
 module.exports = function xhrAdapter(config) {
@@ -2117,7 +2116,7 @@ module.exports = function xhrAdapter(config) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2143,7 +2142,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2155,7 +2154,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2180,7 +2179,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2198,6 +2197,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
+/* 53 */,
 /* 54 */
 /***/ (function(module, exports) {
 
@@ -3407,7 +3407,7 @@ module.exports = __webpack_require__(98);
 
 
 var utils = __webpack_require__(10);
-var bind = __webpack_require__(53);
+var bind = __webpack_require__(52);
 var Axios = __webpack_require__(100);
 var defaults = __webpack_require__(34);
 
@@ -3442,9 +3442,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(50);
+axios.Cancel = __webpack_require__(49);
 axios.CancelToken = __webpack_require__(99);
-axios.isCancel = __webpack_require__(51);
+axios.isCancel = __webpack_require__(50);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -3465,7 +3465,7 @@ module.exports.default = axios;
 "use strict";
 
 
-var Cancel = __webpack_require__(50);
+var Cancel = __webpack_require__(49);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -3676,7 +3676,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(10);
 var transformData = __webpack_require__(105);
-var isCancel = __webpack_require__(51);
+var isCancel = __webpack_require__(50);
 var defaults = __webpack_require__(34);
 var isAbsoluteURL = __webpack_require__(110);
 var combineURLs = __webpack_require__(108);
@@ -3795,7 +3795,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 "use strict";
 
 
-var createError = __webpack_require__(52);
+var createError = __webpack_require__(51);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -25027,42 +25027,21 @@ var ei={default:bi},fi=ei&&bi||ei;module.exports=fi.default||fi;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(process) {
 
 exports.__esModule = true;
-exports.transitionTimeout = transitionTimeout;
 exports.classNamesShape = exports.timeoutsShape = void 0;
 
 var _propTypes = _interopRequireDefault(__webpack_require__(1));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function transitionTimeout(transitionType) {
-  var timeoutPropName = 'transition' + transitionType + 'Timeout';
-  var enabledPropName = 'transition' + transitionType;
-  return function (props) {
-    // If the transition is enabled
-    if (props[enabledPropName]) {
-      // If no timeout duration is provided
-      if (props[timeoutPropName] == null) {
-        return new Error(timeoutPropName + ' wasn\'t supplied to CSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.'); // If the duration isn't a number
-      } else if (typeof props[timeoutPropName] !== 'number') {
-        return new Error(timeoutPropName + ' must be a number (in milliseconds)');
-      }
-    }
-
-    return null;
-  };
-}
-
-var timeoutsShape = _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.shape({
+var timeoutsShape = process.env.NODE_ENV !== 'production' ? _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.shape({
   enter: _propTypes.default.number,
   exit: _propTypes.default.number
-}).isRequired]);
-
+}).isRequired]) : null;
 exports.timeoutsShape = timeoutsShape;
-
-var classNamesShape = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.shape({
+var classNamesShape = process.env.NODE_ENV !== 'production' ? _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.shape({
   enter: _propTypes.default.string,
   exit: _propTypes.default.string,
   active: _propTypes.default.string
@@ -25073,9 +25052,9 @@ var classNamesShape = _propTypes.default.oneOfType([_propTypes.default.string, _
   exit: _propTypes.default.string,
   exitDone: _propTypes.default.string,
   exitActive: _propTypes.default.string
-})]);
-
+})]) : null;
 exports.classNamesShape = classNamesShape;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 125 */
@@ -28288,7 +28267,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__(136) ? 'pure' : 'global',
-  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -29458,57 +29437,6 @@ var values = Object.values || function (obj) {
   });
 };
 
-var propTypes = process.env.NODE_ENV !== "production" ? {
-  /**
-   * `<TransitionGroup>` renders a `<div>` by default. You can change this
-   * behavior by providing a `component` prop.
-   * If you use React v16+ and would like to avoid a wrapping `<div>` element
-   * you can pass in `component={null}`. This is useful if the wrapping div
-   * borks your css styles.
-   */
-  component: _propTypes.default.any,
-
-  /**
-   * A set of `<Transition>` components, that are toggled `in` and out as they
-   * leave. the `<TransitionGroup>` will inject specific transition props, so
-   * remember to spread them through if you are wrapping the `<Transition>` as
-   * with our `<Fade>` example.
-   */
-  children: _propTypes.default.node,
-
-  /**
-   * A convenience prop that enables or disables appear animations
-   * for all children. Note that specifying this will override any defaults set
-   * on individual children Transitions.
-   */
-  appear: _propTypes.default.bool,
-
-  /**
-   * A convenience prop that enables or disables enter animations
-   * for all children. Note that specifying this will override any defaults set
-   * on individual children Transitions.
-   */
-  enter: _propTypes.default.bool,
-
-  /**
-   * A convenience prop that enables or disables exit animations
-   * for all children. Note that specifying this will override any defaults set
-   * on individual children Transitions.
-   */
-  exit: _propTypes.default.bool,
-
-  /**
-   * You may need to apply reactive updates to a child as it is exiting.
-   * This is generally done by using `cloneElement` however in the case of an exiting
-   * child the element has already been removed and not accessible to the consumer.
-   *
-   * If you do need to update a child as it leaves you can provide a `childFactory`
-   * to wrap every child, even the ones that are leaving.
-   *
-   * @type Function(child: ReactElement) -> ReactElement
-   */
-  childFactory: _propTypes.default.func
-} : {};;
 var defaultProps = {
   component: 'div',
   childFactory: function childFactory(child) {
@@ -29624,7 +29552,57 @@ function (_React$Component) {
 TransitionGroup.childContextTypes = {
   transitionGroup: _propTypes.default.object.isRequired
 };
-TransitionGroup.propTypes = process.env.NODE_ENV !== "production" ? propTypes : {};
+TransitionGroup.propTypes = process.env.NODE_ENV !== "production" ? {
+  /**
+   * `<TransitionGroup>` renders a `<div>` by default. You can change this
+   * behavior by providing a `component` prop.
+   * If you use React v16+ and would like to avoid a wrapping `<div>` element
+   * you can pass in `component={null}`. This is useful if the wrapping div
+   * borks your css styles.
+   */
+  component: _propTypes.default.any,
+
+  /**
+   * A set of `<Transition>` components, that are toggled `in` and out as they
+   * leave. the `<TransitionGroup>` will inject specific transition props, so
+   * remember to spread them through if you are wrapping the `<Transition>` as
+   * with our `<Fade>` example.
+   */
+  children: _propTypes.default.node,
+
+  /**
+   * A convenience prop that enables or disables appear animations
+   * for all children. Note that specifying this will override any defaults set
+   * on individual children Transitions.
+   */
+  appear: _propTypes.default.bool,
+
+  /**
+   * A convenience prop that enables or disables enter animations
+   * for all children. Note that specifying this will override any defaults set
+   * on individual children Transitions.
+   */
+  enter: _propTypes.default.bool,
+
+  /**
+   * A convenience prop that enables or disables exit animations
+   * for all children. Note that specifying this will override any defaults set
+   * on individual children Transitions.
+   */
+  exit: _propTypes.default.bool,
+
+  /**
+   * You may need to apply reactive updates to a child as it is exiting.
+   * This is generally done by using `cloneElement` however in the case of an exiting
+   * child the element has already been removed and not accessible to the consumer.
+   *
+   * If you do need to update a child as it leaves you can provide a `childFactory`
+   * to wrap every child, even the ones that are leaving.
+   *
+   * @type Function(child: ReactElement) -> ReactElement
+   */
+  childFactory: _propTypes.default.func
+} : {};
 TransitionGroup.defaultProps = defaultProps;
 
 var _default = (0, _reactLifecyclesCompat.polyfill)(TransitionGroup);
@@ -31174,7 +31152,9 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).call.apply(_ref, [this].concat(args))), _this), _this.sortByKey = function (array, key) {
+      console.log('sortByKey -> ', array, key);
       return array.sort(function (a, b) {
+        console.log(a, b);
         var x = a[key];var y = b[key];
         return x < y ? -1 : x > y ? 1 : 0;
       });
@@ -31201,27 +31181,31 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
       console.log(error, info);
     }
   }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {}
+  }, {
     key: 'render',
     value: function render() {
-      var _props = this.props,
-          _props$value = _props.value,
-          value = _props$value === undefined ? [] : _props$value,
-          _props$currentValue = _props.currentValue,
+      var _props$currentValue = this.props.currentValue,
           currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
 
+      var value = [];
+      value.push(this.props.value);
+      console.log('THIS PROPS CURRENT VALUE', currentValue);
 
       var currentValues = [];
       currentValue.forEach(function (item) {
         currentValues.push(item.label);
       });
 
-      var values = [];
-      value.forEach(function (item) {
-        values.push(item.label);
-      });
+      var currentKeys = [];
+      var keys = [];
 
-      var currentKeys = this.sortByKey(currentValue, 'key');
-      var keys = this.sortByKey(value, 'key');
+      if (value[0].value !== "") {
+        console.log('VALUE', value);
+        currentKeys = this.sortByKey(currentValue, 'key');
+        keys = this.sortByKey(value, 'key');
+      }
 
       var currentValueStr = currentValues.join(',');
 
@@ -37803,9 +37787,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var addClass = function addClass(node, classes) {
   return node && classes && classes.split(' ').forEach(function (c) {
@@ -37818,102 +37802,6 @@ var removeClass = function removeClass(node, classes) {
     return (0, _removeClass.default)(node, c);
   });
 };
-
-var propTypes = process.env.NODE_ENV !== "production" ? _extends({}, _Transition.default.propTypes, {
-  /**
-   * The animation classNames applied to the component as it enters, exits or has finished the transition.
-   * A single name can be provided and it will be suffixed for each stage: e.g.
-   *
-   * `classNames="fade"` applies `fade-enter`, `fade-enter-active`, `fade-enter-done`,
-   * `fade-exit`, `fade-exit-active`, `fade-exit-done`, `fade-appear`, and `fade-appear-active`.
-   * Each individual classNames can also be specified independently like:
-   *
-   * ```js
-   * classNames={{
-   *  appear: 'my-appear',
-   *  appearActive: 'my-active-appear',
-   *  enter: 'my-enter',
-   *  enterActive: 'my-active-enter',
-   *  enterDone: 'my-done-enter',
-   *  exit: 'my-exit',
-   *  exitActive: 'my-active-exit',
-   *  exitDone: 'my-done-exit',
-   * }}
-   * ```
-   *
-   * If you want to set these classes using CSS Modules:
-   *
-   * ```js
-   * import styles from './styles.css';
-   * ```
-   *
-   * you might want to use camelCase in your CSS file, that way could simply spread
-   * them instead of listing them one by one:
-   *
-   * ```js
-   * classNames={{ ...styles }}
-   * ```
-   *
-   * @type {string | {
-   *  appear?: string,
-   *  appearActive?: string,
-   *  enter?: string,
-   *  enterActive?: string,
-   *  enterDone?: string,
-   *  exit?: string,
-   *  exitActive?: string,
-   *  exitDone?: string,
-   * }}
-   */
-  classNames: _PropTypes.classNamesShape,
-
-  /**
-   * A `<Transition>` callback fired immediately after the 'enter' or 'appear' class is
-   * applied.
-   *
-   * @type Function(node: HtmlElement, isAppearing: bool)
-   */
-  onEnter: PropTypes.func,
-
-  /**
-   * A `<Transition>` callback fired immediately after the 'enter-active' or
-   * 'appear-active' class is applied.
-   *
-   * @type Function(node: HtmlElement, isAppearing: bool)
-   */
-  onEntering: PropTypes.func,
-
-  /**
-   * A `<Transition>` callback fired immediately after the 'enter' or
-   * 'appear' classes are **removed** and the `done` class is added to the DOM node.
-   *
-   * @type Function(node: HtmlElement, isAppearing: bool)
-   */
-  onEntered: PropTypes.func,
-
-  /**
-   * A `<Transition>` callback fired immediately after the 'exit' class is
-   * applied.
-   *
-   * @type Function(node: HtmlElement)
-   */
-  onExit: PropTypes.func,
-
-  /**
-   * A `<Transition>` callback fired immediately after the 'exit-active' is applied.
-   *
-   * @type Function(node: HtmlElement
-   */
-  onExiting: PropTypes.func,
-
-  /**
-   * A `<Transition>` callback fired immediately after the 'exit' classes
-   * are **removed** and the `exit-done` class is added to the DOM node.
-   *
-   * @type Function(node: HtmlElement)
-   */
-  onExited: PropTypes.func
-}) : {};;
 /**
  * A `Transition` component using CSS transitions and animations.
  * It's inspired by the excellent [ng-animate](http://www.nganimate.org/) library.
@@ -37927,6 +37815,7 @@ var propTypes = process.env.NODE_ENV !== "production" ? _extends({}, _Transition
  * the `example-enter` CSS class and the `example-enter-active` CSS class
  * added in the next tick. This is a convention based on the `classNames` prop.
  */
+
 
 var CSSTransition =
 /*#__PURE__*/
@@ -37951,7 +37840,7 @@ function (_React$Component) {
       addClass(node, className);
 
       if (_this.props.onEnter) {
-        _this.props.onEnter(node);
+        _this.props.onEnter(node, appearing);
       }
     };
 
@@ -37962,7 +37851,7 @@ function (_React$Component) {
       _this.reflowAndAddClass(node, activeClassName);
 
       if (_this.props.onEntering) {
-        _this.props.onEntering(node);
+        _this.props.onEntering(node, appearing);
       }
     };
 
@@ -37975,7 +37864,7 @@ function (_React$Component) {
       addClass(node, doneClassName);
 
       if (_this.props.onEntered) {
-        _this.props.onEntered(node);
+        _this.props.onEntered(node, appearing);
       }
     };
 
@@ -38075,7 +37964,101 @@ function (_React$Component) {
   return CSSTransition;
 }(_react.default.Component);
 
-CSSTransition.propTypes = process.env.NODE_ENV !== "production" ? propTypes : {};
+CSSTransition.propTypes = process.env.NODE_ENV !== "production" ? _extends({}, _Transition.default.propTypes, {
+  /**
+   * The animation classNames applied to the component as it enters, exits or has finished the transition.
+   * A single name can be provided and it will be suffixed for each stage: e.g.
+   *
+   * `classNames="fade"` applies `fade-enter`, `fade-enter-active`, `fade-enter-done`,
+   * `fade-exit`, `fade-exit-active`, `fade-exit-done`, `fade-appear`, and `fade-appear-active`.
+   * Each individual classNames can also be specified independently like:
+   *
+   * ```js
+   * classNames={{
+   *  appear: 'my-appear',
+   *  appearActive: 'my-active-appear',
+   *  enter: 'my-enter',
+   *  enterActive: 'my-active-enter',
+   *  enterDone: 'my-done-enter',
+   *  exit: 'my-exit',
+   *  exitActive: 'my-active-exit',
+   *  exitDone: 'my-done-exit',
+   * }}
+   * ```
+   *
+   * If you want to set these classes using CSS Modules:
+   *
+   * ```js
+   * import styles from './styles.css';
+   * ```
+   *
+   * you might want to use camelCase in your CSS file, that way could simply spread
+   * them instead of listing them one by one:
+   *
+   * ```js
+   * classNames={{ ...styles }}
+   * ```
+   *
+   * @type {string | {
+   *  appear?: string,
+   *  appearActive?: string,
+   *  enter?: string,
+   *  enterActive?: string,
+   *  enterDone?: string,
+   *  exit?: string,
+   *  exitActive?: string,
+   *  exitDone?: string,
+   * }}
+   */
+  classNames: _PropTypes.classNamesShape,
+
+  /**
+   * A `<Transition>` callback fired immediately after the 'enter' or 'appear' class is
+   * applied.
+   *
+   * @type Function(node: HtmlElement, isAppearing: bool)
+   */
+  onEnter: PropTypes.func,
+
+  /**
+   * A `<Transition>` callback fired immediately after the 'enter-active' or
+   * 'appear-active' class is applied.
+   *
+   * @type Function(node: HtmlElement, isAppearing: bool)
+   */
+  onEntering: PropTypes.func,
+
+  /**
+   * A `<Transition>` callback fired immediately after the 'enter' or
+   * 'appear' classes are **removed** and the `done` class is added to the DOM node.
+   *
+   * @type Function(node: HtmlElement, isAppearing: bool)
+   */
+  onEntered: PropTypes.func,
+
+  /**
+   * A `<Transition>` callback fired immediately after the 'exit' class is
+   * applied.
+   *
+   * @type Function(node: HtmlElement)
+   */
+  onExit: PropTypes.func,
+
+  /**
+   * A `<Transition>` callback fired immediately after the 'exit-active' is applied.
+   *
+   * @type Function(node: HtmlElement)
+   */
+  onExiting: PropTypes.func,
+
+  /**
+   * A `<Transition>` callback fired immediately after the 'exit' classes
+   * are **removed** and the `exit-done` class is added to the DOM node.
+   *
+   * @type Function(node: HtmlElement)
+   */
+  onExited: PropTypes.func
+}) : {};
 var _default = CSSTransition;
 exports.default = _default;
 module.exports = exports["default"];
@@ -38105,13 +38088,6 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-var propTypes = process.env.NODE_ENV !== "production" ? {
-  in: _propTypes.default.bool.isRequired,
-  children: function children(props, propName) {
-    if (_react.default.Children.count(props[propName]) !== 2) return new Error("\"" + propName + "\" must be exactly two transition components.");
-    return null;
-  }
-} : {};;
 /**
  * The `<ReplaceTransition>` component is a specialized `Transition` component
  * that animates between two children.
@@ -38123,7 +38099,6 @@ var propTypes = process.env.NODE_ENV !== "production" ? {
  * </ReplaceTransition>
  * ```
  */
-
 var ReplaceTransition =
 /*#__PURE__*/
 function (_React$Component) {
@@ -38234,7 +38209,13 @@ function (_React$Component) {
   return ReplaceTransition;
 }(_react.default.Component);
 
-ReplaceTransition.propTypes = process.env.NODE_ENV !== "production" ? propTypes : {};
+ReplaceTransition.propTypes = process.env.NODE_ENV !== "production" ? {
+  in: _propTypes.default.bool.isRequired,
+  children: function children(props, propName) {
+    if (_react.default.Children.count(props[propName]) !== 2) return new Error("\"" + propName + "\" must be exactly two transition components.");
+    return null;
+  }
+} : {};
 var _default = ReplaceTransition;
 exports.default = _default;
 module.exports = exports["default"];
@@ -39761,21 +39742,15 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
     value: function render() {
       var _this2 = this;
 
-      var _props = this.props,
-          _props$value = _props.value,
-          value = _props$value === undefined ? [] : _props$value,
-          _props$currentValue = _props.currentValue,
+      var _props$currentValue = this.props.currentValue,
           currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
 
+      var value = [];
+      value.push(this.props.value);
 
       var currentValues = [];
       currentValue.forEach(function (item) {
         currentValues.push(item.label);
-      });
-
-      var values = [];
-      value.forEach(function (item) {
-        values.push(item.label);
       });
 
       var currentKeys = this.sortByKey(currentValue, 'key');
@@ -43829,7 +43804,7 @@ var ProjectReview = function (_Component) {
         isMulti: true // this.state.formData.pmList.length > 1
       })]), (0, _Panel.Panel)({ title: "Funding" }, [(0, _Fundings.Fundings)({
         fundings: this.state.formData.fundings,
-        currentValue: this.state.current.fudings,
+        currentValue: this.state.current.fundings,
         updateFundings: this.handleUpdateFundings,
         readOnly: this.state.readOnly,
         error: false,
