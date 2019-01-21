@@ -33,6 +33,7 @@ hr {
 
 .stepTitle {
   margin-bottom: 15px;
+  display: inline-block;
 }
 
 .questionnaireContainer {
@@ -57,6 +58,11 @@ hr {
   transition: all 0.3s ease;
   outline: none !important;
   cursor: pointer;
+}
+
+.buttonPrimary.floatRight,
+.buttonSecondary.floatRight {
+  margin-left: 15px;
 }
 
 .buttonPrimary {
