@@ -7,7 +7,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
-
+import org.broadinstitute.orsp.StorageDocument
 
 import javax.ws.rs.core.Response
 
@@ -86,6 +86,24 @@ class NewConsentGroupController extends AuthenticatedController {
             render([message: updatedIssue])
         } catch(Exception e) {
             render([error: e.message] as JSON)
+        }
+    }
+
+    def delete() {
+        Issue issue = queryService.findByKey(params.consentKey)
+        if(issue != null) {
+            Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.consentKey)
+            documents?.each {
+                storageProviderService.removeStorageDocument(it, getUser()?.displayName)
+            }
+            def links = ConsentCollectionLink.findAllByProjectKey(params.consentKey)
+            if(links != null) persistenceService.deleteCollectionLinks(links)
+            issueService.deleteIssue(params.consentKey)
+            response.status = 200
+            render([message: 'Consent Group was deleted'] as JSON)
+        } else {
+            response.status = 404
+            render([message: 'Consent Group not found'] as JSON)
         }
     }
 }

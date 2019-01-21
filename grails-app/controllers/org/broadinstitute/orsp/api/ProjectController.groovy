@@ -4,10 +4,12 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.User
 
 
@@ -61,6 +63,23 @@ class ProjectController extends AuthenticatedController {
         ] as JSON)
     }
 
+    def delete() {
+        Issue issue = queryService.findByKey(params.projectKey)
+        if(issue != null) {
+            Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.projectKey)
+            documents?.each {
+                storageProviderService.removeStorageDocument(it, getUser()?.displayName)
+            }
+            def links = ConsentCollectionLink.findAllByProjectKey(params.projectKey)
+            if(links != null) persistenceService.deleteCollectionLinks(links)
+            issueService.deleteIssue(params.projectKey)
+            response.status = 200
+            render([message: 'Project was deleted'] as JSON)
+        } else {
+            response.status = 404
+            render([message: 'Project not found'] as JSON)
+        }
+    }
 
     @Override
     handleIntake(String key) {

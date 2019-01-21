@@ -4,12 +4,15 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
 import { Fundings } from '../components/Fundings';
-
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { spinnerService } from "../util/spinner-service";
 import { Project } from "../util/ajax";
 import { Search } from '../util/ajax';
+import { User } from '../util/ajax';
+
 
 class ProjectReview extends Component {
 
@@ -17,6 +20,8 @@ class ProjectReview extends Component {
     super(props);
 
     this.state = {
+      showDialog: false,
+      isAdmin: false,
       readOnly: true,
       formData: {
         description: '',
@@ -68,6 +73,7 @@ class ProjectReview extends Component {
         }
       }
     }
+    this.rejectProject = this.rejectProject.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -83,7 +89,7 @@ class ProjectReview extends Component {
     let futureStr = {};
     let formData = {};
     let formDataStr = {};
-
+    this.isAdmin();
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
 
@@ -175,7 +181,9 @@ class ProjectReview extends Component {
   }
 
   isAdmin() {
-    return this.props.isAdmin === "true";
+    User.getUserSession(this.props.sessionUserUrl).then(resp => {
+      this.setState({isAdmin: resp.data.isAdmin});
+    });
   }
 
   approveRevision = (e) => () => {
@@ -189,8 +197,12 @@ class ProjectReview extends Component {
     );
   }
 
-  rejectProject = (e) => () => {
-
+  rejectProject() {
+    spinnerService.showAll();
+    Project.rejectProject(this.props.rejectProjectUrl, this.props.projectKey).then(resp => {
+      window.location.href = [this.props.serverURL, "index"].join("/");
+      spinnerService.hideAll();
+    });
   }
 
   discardEdits = (e) => () => {
@@ -315,11 +327,29 @@ class ProjectReview extends Component {
     //this.props.removeErrorMessage();
   };
 
+  closeModal = () => {
+    this.setState({showDialog: !this.state.showDialog});
+  };
+
+  handleDialog = () => {
+    this.setState({
+      showDialog: !this.state.showDialog
+    });
+  };
+
   render() {
 
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
+        ConfirmationDialog({
+          closeModal: this.closeModal,
+          show: this.state.showDialog,
+          handleOkAction: this.rejectProject,
+          title: 'Remove Confirmation',
+          bodyText: 'Are you sure yo want to remove this project?',
+          actionLabel: 'Yes'
+        }, []),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
@@ -638,7 +668,7 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.state.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
@@ -646,7 +676,7 @@ class ProjectReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.discardEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.state.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
@@ -654,15 +684,15 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.state.isAdmin && !this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.rejectProject(),
+            onClick: this.handleDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.state.isAdmin && !this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Reject"])
         ])
       ])
