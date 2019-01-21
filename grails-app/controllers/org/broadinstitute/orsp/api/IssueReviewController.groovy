@@ -15,7 +15,7 @@ class IssueReviewController extends AuthenticatedController {
 
     def save() {
         Gson gson = new Gson()
-        IssueReview issueReview = gson.fromJson(gson.toJson(request.JSON), IssueReview.class)
+        IssueReview issueReview = parseIssueReview(gson.toJson(request.JSON))
         Issue issue = queryService.findByKey(issueReview.projectKey)
         if (issue == null) {
             response.status = 404
@@ -44,4 +44,7 @@ class IssueReviewController extends AuthenticatedController {
         render([issueReview] as JSON)
     }
 
+    private IssueReview parseIssueReview(String json) {
+       new Gson().fromJson(json, IssueReview.class)
+    }
 }
