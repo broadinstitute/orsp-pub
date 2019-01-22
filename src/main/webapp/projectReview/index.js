@@ -10,7 +10,7 @@ ReactDOM.render(
     projectKey = {projectReviewValues.projectKey}
     projectUrl = {projectReviewValues.projectUrl}
     addExtraPropUrl = {urls.saveExtraPropUrl}
-    sessionUserUrl = {projectReviewValues.sessionUserUrl}
+    isAdmin = {projectReviewValues.isAdmin}
     serverURL = {projectReviewValues.serverURL}
     rejectProjectUrl = {projectReviewValues.rejectProjectUrl}
   />,

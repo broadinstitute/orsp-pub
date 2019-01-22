@@ -66,12 +66,6 @@ class ProjectController extends AuthenticatedController {
     def delete() {
         Issue issue = queryService.findByKey(params.projectKey)
         if(issue != null) {
-            Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.projectKey)
-            documents?.each {
-                storageProviderService.removeStorageDocument(it, getUser()?.displayName)
-            }
-            def links = ConsentCollectionLink.findAllByProjectKey(params.projectKey)
-            if(links != null) persistenceService.deleteCollectionLinks(links)
             issueService.deleteIssue(params.projectKey)
             response.status = 200
             render([message: 'Project was deleted'] as JSON)

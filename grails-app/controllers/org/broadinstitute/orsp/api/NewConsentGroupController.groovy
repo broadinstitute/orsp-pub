@@ -92,12 +92,6 @@ class NewConsentGroupController extends AuthenticatedController {
     def delete() {
         Issue issue = queryService.findByKey(params.consentKey)
         if(issue != null) {
-            Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.consentKey)
-            documents?.each {
-                storageProviderService.removeStorageDocument(it, getUser()?.displayName)
-            }
-            def links = ConsentCollectionLink.findAllByProjectKey(params.consentKey)
-            if(links != null) persistenceService.deleteCollectionLinks(links)
             issueService.deleteIssue(params.consentKey)
             response.status = 200
             render([message: 'Consent Group was deleted'] as JSON)
