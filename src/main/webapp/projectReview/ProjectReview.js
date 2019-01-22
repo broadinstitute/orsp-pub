@@ -40,7 +40,7 @@ class ProjectReview extends Component {
         }
       },
       disableApproveButton: false,
-
+      reviewSuggestion: false,
       current: {
         requestor: {
           displayName: '',
@@ -137,6 +137,19 @@ class ProjectReview extends Component {
 
         // });
       });
+
+      Project.getProjectSuggestions(this.props.serverURL, this.props.projectKey).then(
+        data => {
+          if (data !== null) {
+            this.setState(prev => {
+              prev.formData = JSON.parse(data.data.suggestions);
+              prev.reviewSuggestion = true;
+              return prev;
+            });
+          }
+
+        }
+      );
   }
 
   getUsersArray(array) {
@@ -219,6 +232,17 @@ class ProjectReview extends Component {
     this.setState({
       readOnly: true
     });
+
+    const data = {
+      projectKey: this.props.projectKey,
+      suggestions: JSON.stringify(this.state.formData),
+    };
+    if (reviewSuggestion) {
+      Project.updateReview(this.props.serverURL, this.props.projectKey, data);
+    } else {
+      Project.submitReview(this.props.serverURL, this.props.projectKey, data);
+    }
+
   }
 
   loadUsersOptions = (query, callback) => {

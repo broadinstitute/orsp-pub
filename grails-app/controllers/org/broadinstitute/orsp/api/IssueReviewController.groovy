@@ -2,6 +2,7 @@ package org.broadinstitute.orsp.api
 
 import com.google.gson.Gson
 import grails.converters.JSON
+import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
@@ -9,6 +10,7 @@ import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
 
 @Slf4j
+@Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class IssueReviewController extends AuthenticatedController {
 
     IssueReviewService issueReviewService
@@ -50,13 +52,13 @@ class IssueReviewController extends AuthenticatedController {
     }
 
     def show() {
-        IssueReview issueReview = issueReviewService.findByProjectKey(params.projectKey)
+        IssueReview issueReview = issueReviewService.findByProjectKey(params.id)
         if (issueReview == null) {
             response.status = 404
             render([message: "Issue review does not exist"] as JSON)
         }
         response.status = 200
-        render([issueReview] as JSON)
+        render(issueReview as JSON)
     }
 
     private IssueReview parseIssueReview(String json) {

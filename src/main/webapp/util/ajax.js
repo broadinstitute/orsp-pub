@@ -79,9 +79,23 @@ export const Project = {
   },
 
   addExtraProperties(url, projectKey, data) {
-    return axios.post(url + '?id=' + projectKey, data);;
-  }
+    return axios.post(url + '?id=' + projectKey, data);
+  },
 
+  getProjectSuggestions(serverURL, projectKey) {
+    return axios.get(serverURL + '/api/issue-review/show-review?id=' + projectKey);
+  },
+
+  submitReview(serverURL, projectKey, data) {
+    const config = {
+        headers: { 'content-type': 'application/json' }
+    };
+    return axios.post(serverURL + '/api/issue-review/submit-review?id=' + projectKey, data);
+  },
+
+  updateReview() {
+    return axios.put(serverURL + '/api/issue-review/update-review?id=' + projectKey, data);
+  }
 };
 
 export const DocumentHandler = {

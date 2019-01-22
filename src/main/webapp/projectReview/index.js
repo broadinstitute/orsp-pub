@@ -11,6 +11,7 @@ ReactDOM.render(
     projectUrl = {projectReviewValues.projectUrl}
     addExtraPropUrl = {urls.saveExtraPropUrl}
     isAdmin = {projectReviewValues.isAdmin}
+    serverURL = {projectReviewValues.serverURL}
   />,
   document.getElementById('projectReview')
 );
