@@ -9,7 +9,7 @@ import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { Table } from '../components/Table';
-import { ConsentGroup, SampleCollections, User } from "../util/ajax";
+import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
 
 
 class ConsentGroupReview extends Component {
@@ -20,6 +20,7 @@ class ConsentGroupReview extends Component {
       readOnly: true,
       isAdmin: false,
       disableApproveButton: false,
+      reviewSuggestion: false,
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
@@ -125,7 +126,7 @@ class ConsentGroupReview extends Component {
             currentStr = JSON.stringify(current);
 
             // read suggestions here ....
-            // ....
+            this.getReviewSuggestions();
             // ConsentGroup.getSuggestions(this.props.consentGroupUrl, this.props.consentKey).then(
             //   edits => {
 
@@ -169,6 +170,20 @@ class ConsentGroupReview extends Component {
 
       }
     );
+  }
+
+  getReviewSuggestions() {
+    Review.getSuggestions(this.props.serverURL, this.props.consentKey).then(
+      data => {
+        if (data !== null) {
+          this.setState(prev => {
+            prev.formData = JSON.parse(data.data.suggestions);
+            prev.reviewSuggestion = true;
+            return prev;
+          });
+        }
+
+       });
   }
 
   parseBool() {
@@ -246,6 +261,16 @@ class ConsentGroupReview extends Component {
     this.setState({
       readOnly: true
     });
+    const data = {
+      projectKey: this.props.consentKey,
+      suggestions: JSON.stringify(this.state.formData),
+      };
+
+      if (this.state.reviewSuggestion) {
+        Review.updateReview (this.props.serverURL, this.props.consentKey, data);
+      } else {
+        Review.submitReview (this.props.serverURL, data);
+      }
   }
 
   handleSampleCollectionChange = () => (data) => {

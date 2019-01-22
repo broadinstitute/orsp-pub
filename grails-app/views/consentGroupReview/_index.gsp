@@ -4,7 +4,8 @@
       consentKey:'${issue.projectKey}',
       consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
       isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",
-      sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}"
+      sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+      serverURL: "${webRequest.baseUrl}"
     };
 
     const urls = {
