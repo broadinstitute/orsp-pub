@@ -207,14 +207,15 @@ class Issue {
         extraproperties
     }
 
-    /** AttachmentApproved verifies if there's any attachment status different to 'Approved'
-     *  if there is any, it will return a value different to null, meaning it still has attachments unReviewed
+    /**
+     * Determines if there's any status on attachments other than 'Approved', meaning
+     * the issue still has unapproved or unreviewed attachments.
      *
-     * @return Boolean indicating if all attachments have 'Approved' status
+     * @return True if all attachments have the 'Approved' status, false otherwise
      */
-    transient Boolean attachmentApproved(){
-        getAttachments()?.find {
+    transient Boolean attachmentsApproved(){
+        getAttachments()?.collect {
             it.status != IssueStatus.Approved.getName()
-        } == null
+        }?.isEmpty()
     }
 }
