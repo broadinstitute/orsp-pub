@@ -36,7 +36,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
     });
 
     return edited;
-  }
+  };
 
   render() {
 
@@ -62,8 +62,14 @@ export const MultiSelect = hh(class MultiSelect extends Component {
 
     return (
       InputField({
-        label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
-        value: this.props.value, currentValue: currentValue, currentValueStr: currentValueStr, edited: edited
+        label: this.props.label,
+        error: this.props.error,
+        errorMessage: this.props.errorMessage,
+        readOnly: this.props.readOnly,
+        value: this.props.value,
+        currentValue: currentValue,
+        currentValueStr: currentValueStr,
+        edited: edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {

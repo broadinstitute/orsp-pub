@@ -40050,8 +40050,14 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
       var edited = this.isEdited(currentKeys, keys);
 
       return (0, _InputField.InputField)({
-        label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
-        value: this.props.value, currentValue: currentValue, currentValueStr: currentValueStr, edited: edited
+        label: this.props.label,
+        error: this.props.error,
+        errorMessage: this.props.errorMessage,
+        readOnly: this.props.readOnly,
+        value: this.props.value,
+        currentValue: currentValue,
+        currentValueStr: currentValueStr,
+        edited: edited
       }, [(0, _reactHyperscriptHelpers.div)({ className: "inputFieldSelectWrapper" }, [(0, _reactHyperscriptHelpers.h)(_Async2.default, {
         id: this.props.id,
         isDisabled: this.props.isDisabled,
