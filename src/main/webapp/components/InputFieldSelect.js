@@ -20,7 +20,6 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   }
 
   sortByKey = (array, key) => {
-    console.log('sortByKey -> ', array, key);
     return array.sort(function (a, b) {
       console.log(a, b);
       var x = a[key]; var y = b[key];
@@ -48,9 +47,11 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     const { currentValue = [] } = this.props;
     const value = [];
     value.push(this.props.value);
-    console.log('THIS PROPS CURRENT VALUE', currentValue);
 
     let currentValues = [];
+    if (currentValue.length === 0) {
+      currentValue.push("");
+    }
     currentValue.forEach(item => {
       currentValues.push(item.label);
     });
@@ -59,7 +60,6 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     let keys = [];
 
     if (value[0].value !== "") {
-      console.log('VALUE', value);
       currentKeys = this.sortByKey(currentValue, 'key');
       keys = this.sortByKey(value, 'key');
     }

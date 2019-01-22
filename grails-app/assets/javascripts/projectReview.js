@@ -28406,7 +28406,8 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
           value = _props.value,
           currentValue = _props.currentValue;
 
-      var edited = value !== currentValue && currentValue != null;
+      console.log('value ' + value + ', currentValue ' + currentValue);
+      var edited = value !== currentValue && currentValue !== undefined;
 
       return (0, _InputField.InputField)({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
@@ -31152,7 +31153,6 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = InputFieldSelect.__proto__ || Object.getPrototypeOf(InputFieldSelect)).call.apply(_ref, [this].concat(args))), _this), _this.sortByKey = function (array, key) {
-      console.log('sortByKey -> ', array, key);
       return array.sort(function (a, b) {
         console.log(a, b);
         var x = a[key];var y = b[key];
@@ -31191,9 +31191,11 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
 
       var value = [];
       value.push(this.props.value);
-      console.log('THIS PROPS CURRENT VALUE', currentValue);
 
       var currentValues = [];
+      if (currentValue.length === 0) {
+        currentValue.push("");
+      }
       currentValue.forEach(function (item) {
         currentValues.push(item.label);
       });
@@ -31202,7 +31204,6 @@ var InputFieldSelect = exports.InputFieldSelect = (0, _reactHyperscriptHelpers.h
       var keys = [];
 
       if (value[0].value !== "") {
-        console.log('VALUE', value);
         currentKeys = this.sortByKey(currentValue, 'key');
         keys = this.sortByKey(value, 'key');
       }
@@ -39749,6 +39750,9 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
       value.push(this.props.value);
 
       var currentValues = [];
+      if (currentValue.length === 0) {
+        currentValue.push("");
+      }
       currentValue.forEach(function (item) {
         currentValues.push(item.label);
       });

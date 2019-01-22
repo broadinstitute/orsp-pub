@@ -42,7 +42,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         collaborators: []
       },
       formerData: {
-
+        projectManager: '',
+        piName: '',
+        studyDescription: '',
+        pTitle: '',
+        irbProtocolId: '',
+        subjectProtection: '',
+        fundings: [{ source: '', sponsor: '', identifier: '' }],
+        collaborators: []
       },
       errors: {
         studyDescription: false,

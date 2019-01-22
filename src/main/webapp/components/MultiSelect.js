@@ -21,7 +21,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
       var x = a[key]; var y = b[key];
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
-  }
+  };
 
   isEdited = (current, future) => {
     if (current.length !== future.length) {
@@ -45,6 +45,9 @@ export const MultiSelect = hh(class MultiSelect extends Component {
     value.push(this.props.value);
 
     let currentValues = [];
+    if (currentValue.length === 0) {
+      currentValue.push("");
+    }
     currentValue.forEach(item => {
       currentValues.push(item.label);
     });
