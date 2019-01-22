@@ -200,6 +200,10 @@ class IssueService {
         if (!extraPropertiesList.isEmpty()) {
             saveExtraProperties(issue, extraPropertiesList)
         }
+        issue.extraProperties.addAll(extraPropertiesList)
+        if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
+            updateProjectApproval(issue)
+        }
         issue
     }
 
@@ -210,10 +214,23 @@ class IssueService {
         input.collect { element ->
             if (issue.getProperties().get(element.key) != null && element.key != "fundings") {
                 updatedIssue.(element.key) = element.value
+                updatedIssue.setUpdateDate(new Date())
             }
         }
         updatedIssue.save(flush:true)
         updatedIssue
+    }
+
+    /**
+     * Check that an issue has its general data and all of its attachments are in 'Approved' status.
+     * If all conditions are met, then we set its general status to 'Approved'
+     */
+    void updateProjectApproval(Issue issue) {
+        if (issue != null && issue.getProjectReviewApproved() && issue.attachmentsApproved()) {
+            issue.setApprovalStatus(IssueStatus.Approved.getName())
+            issue.setUpdateDate(new Date())
+            issue.save(flush:true)
+        }
     }
 
     void saveFundings(Issue issue, Collection<Funding> fundings) {
