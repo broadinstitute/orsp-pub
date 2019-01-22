@@ -4,12 +4,10 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
-import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
-import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.User
 
 

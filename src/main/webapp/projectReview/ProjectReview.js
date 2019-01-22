@@ -21,7 +21,6 @@ class ProjectReview extends Component {
 
     this.state = {
       showDialog: false,
-      isAdmin: false,
       readOnly: true,
       formData: {
         description: '',
@@ -89,7 +88,6 @@ class ProjectReview extends Component {
     let futureStr = {};
     let formData = {};
     let formDataStr = {};
-    this.isAdmin();
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
 
@@ -145,6 +143,10 @@ class ProjectReview extends Component {
       });
   }
 
+  isAdmin() {
+    return this.props.isAdmin === "true";
+  }
+  
   getUsersArray(array) {
     let usersArray = [];
     if (array !== undefined && array !== null && array.length > 0) {
@@ -178,12 +180,6 @@ class ProjectReview extends Component {
 
   isEmpty(value) {
     return value === '' || value === null || value === undefined;
-  }
-
-  isAdmin() {
-    User.getUserSession(this.props.sessionUserUrl).then(resp => {
-      this.setState({isAdmin: resp.data.isAdmin});
-    });
   }
 
   approveRevision = (e) => () => {
@@ -668,7 +664,7 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
@@ -676,7 +672,7 @@ class ProjectReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.discardEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.isAdmin && this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
@@ -684,7 +680,7 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.isAdmin && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
@@ -692,7 +688,7 @@ class ProjectReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.isAdmin && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Reject"])
         ])
       ])
