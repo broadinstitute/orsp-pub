@@ -343,14 +343,19 @@ class ConsentGroupReview extends Component {
   };
 
   getRedirectUrl(projectKey) {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=consent-groups"].join("/");
+    if(projectKey === "") {
+      return this.props.serverURL + "/search/index";
+    } else {   
+      let key = projectKey.split("-");
+      let projectType = '';
+      if (key.length === 3) {
+        projectType = key[1].toLowerCase();
+      } else {
+        projectType = key[0].toLowerCase();
+      }
+      return [this.props.serverURL, projectType, "show", projectKey,"?tab=consent-groups"].join("/");
+  }
+    
   }
 
   render() {
