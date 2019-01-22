@@ -83,7 +83,6 @@ class ProjectReview extends Component {
     let futureStr = {};
     let formData = {};
     let formDataStr = {};
-
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
 
@@ -98,7 +97,8 @@ class ProjectReview extends Component {
         currentStr = JSON.stringify(current);
 
         // read suggestions here ....
-        // ....
+        this.getReviewSuggestions();
+
         // Project.getSuggestions(this.props.projectUrl, this.props.projectKey).then(
         //   edits => {
 
@@ -137,19 +137,20 @@ class ProjectReview extends Component {
 
         // });
       });
+  }
 
-      Project.getProjectSuggestions(this.props.serverURL, this.props.projectKey).then(
-        data => {
-          if (data !== null) {
-            this.setState(prev => {
-              prev.formData = JSON.parse(data.data.suggestions);
-              prev.reviewSuggestion = true;
-              return prev;
-            });
-          }
-
+  getReviewSuggestions() {
+    Project.getProjectSuggestions(this.props.serverURL, this.props.projectKey).then(
+      data => {
+        if (data !== null) {
+          this.setState(prev => {
+            prev.formData = JSON.parse(data.data.suggestions);
+            prev.reviewSuggestion = true;
+            return prev;
+          });
         }
-      );
+
+      });
   }
 
   getUsersArray(array) {
@@ -237,7 +238,7 @@ class ProjectReview extends Component {
       projectKey: this.props.projectKey,
       suggestions: JSON.stringify(this.state.formData),
     };
-    if (reviewSuggestion) {
+    if (this.state.reviewSuggestion) {
       Project.updateReview(this.props.serverURL, this.props.projectKey, data);
     } else {
       Project.submitReview(this.props.serverURL, this.props.projectKey, data);
@@ -407,16 +408,16 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Funding" }, [
-          Fundings({
-            fundings: this.state.formData.fundings,
-            currentValue: this.state.current.fudings,
-            updateFundings: this.handleUpdateFundings,
-            readOnly: this.state.readOnly,
-            error: false,
-            errorMessage: ""
-          })
-        ]),
+//        Panel({ title: "Funding" }, [
+//          Fundings({
+//            fundings: this.state.formData.fundings,
+//            currentValue: this.state.current.fudings,
+//            updateFundings: this.handleUpdateFundings,
+//            readOnly: this.state.readOnly,
+//            error: false,
+//            errorMessage: ""
+//          })
+//        ]),
 
         Panel({ title: "Project Summary" }, [
           InputFieldTextArea({

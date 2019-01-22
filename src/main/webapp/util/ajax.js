@@ -93,8 +93,8 @@ export const Project = {
     return axios.post(serverURL + '/api/issue-review/submit-review?id=' + projectKey, data);
   },
 
-  updateReview() {
-    return axios.put(serverURL + '/api/issue-review/update-review?id=' + projectKey, data);
+  updateReview(serverURL, projectKey, data) {
+    return axios.put(serverURL + '/api/issue-review/update-review?projectKey=' + projectKey, data);
   }
 };
 

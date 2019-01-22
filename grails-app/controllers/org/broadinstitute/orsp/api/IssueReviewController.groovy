@@ -38,9 +38,9 @@ class IssueReviewController extends AuthenticatedController {
             response.status = 404
             render([message: "Issue review does not exist"] as JSON)
         }
-
-        issueReviewFormer.suggestions = parseIssueReview(gson.toJson(request.JSON)).suggestions
-        issueReviewFormer.save()
+        def suggestions = parseIssueReview(gson.toJson(request.JSON)).suggestions
+        issueReviewFormer.suggestions = suggestions
+        issueReviewFormer.save(flush: true)
         response.status = 200
         render([issueReviewFormer] as JSON)
     }
