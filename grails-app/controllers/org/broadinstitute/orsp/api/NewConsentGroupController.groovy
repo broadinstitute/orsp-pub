@@ -7,7 +7,6 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
-import org.broadinstitute.orsp.StorageDocument
 
 import javax.ws.rs.core.Response
 
