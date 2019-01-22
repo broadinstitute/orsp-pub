@@ -242,12 +242,10 @@ class IssueService {
         if(issue != null) {
             def fundingList = queryService.findFundingsByProject(issue.projectKey)
             fundingList?.each {
-                // issue.removeFromFundings(it)
                 it.delete()
             }
             Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
             issueExtraProperties?.each {
-                // issue.removeFromExtraProperties(it)
                 it.delete()
             }
         }
