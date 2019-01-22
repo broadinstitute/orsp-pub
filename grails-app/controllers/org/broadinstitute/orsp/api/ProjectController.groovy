@@ -6,6 +6,7 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.User
@@ -40,8 +41,14 @@ class ProjectController extends AuthenticatedController {
         String projectKey = params.id
         Gson gson = new Gson()
         Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
-        Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
-        render([message: updatedIssue] as JSON)
+        try {
+            Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
+            render([message: updatedIssue] as JSON)
+        } catch(Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])

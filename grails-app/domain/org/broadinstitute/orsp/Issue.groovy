@@ -167,6 +167,8 @@ class Issue {
 
     transient String getApproval() { getExtraProperties().find { it.name == IssueExtraProperty.APPROVAL }?.value }
 
+    transient Boolean getProjectReviewApproved() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED }?.value }
+
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.
 
@@ -205,4 +207,15 @@ class Issue {
         extraproperties
     }
 
+    /**
+     * Determines if there's any status on attachments other than 'Approved', meaning
+     * the issue still has unapproved or unreviewed attachments.
+     *
+     * @return True if all attachments have the 'Approved' status, false otherwise
+     */
+    transient Boolean attachmentsApproved() {
+        getAttachments()?.collect {
+            it.status != IssueStatus.Approved.getName()
+        }?.isEmpty()
+    }
 }
