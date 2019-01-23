@@ -23,23 +23,23 @@ export const MultiSelect = hh(class MultiSelect extends Component {
     });
   };
 
-  isEdited = (current, future) => {
+  isEdited = (current, futureValue) => {
+    const future = futureValue[0];
     let edited = false;
 
     if (this.props.edit || this.props.edit === undefined) {
-      if (current.length !== future[0].length) {
+      if (current.length !== future.length) {
         edited = true;
       }
 
-      if (future[0].length !== 0 && edited) {
-        current.forEach((element, index) => {
-          if (future[index] !== undefined && element.key !== future[index].key) {
+      current.forEach((element, index) => {
+        if (future[index] !== undefined) {
+          if (element.key !== future[index].key) {
             edited = true;
           }
-        });
-      }
+        }
+      });
     }
-
     return edited;
   };
 
