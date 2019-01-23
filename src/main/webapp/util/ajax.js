@@ -33,7 +33,12 @@ export const ConsentGroup = {
 
   approve(url, consentKey, data) {
     return axios.post(url+ '?id=' + consentKey, data);
-  }
+  },
+  
+  rejectConsent(url, consentKey) {
+    return axios.delete(url + '?consentKey=' + consentKey);
+  }  
+
 };
 
 export const Files = {
@@ -80,6 +85,10 @@ export const Project = {
 
   addExtraProperties(url, projectKey, data) {
     return axios.post(url + '?id=' + projectKey, data);
+  },
+
+  rejectProject(url, projectKey) {
+    return axios.delete(url + '?projectKey=' + projectKey);
   },
 
   getProjectSuggestions(serverURL, projectKey) {

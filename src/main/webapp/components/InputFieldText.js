@@ -8,7 +8,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
   render() {
 
     const { value, currentValue } = this.props;
-    const edited = value !== currentValue && currentValue != null;
+    const edited = value !== currentValue && currentValue !== undefined;
 
     return (
       InputField({

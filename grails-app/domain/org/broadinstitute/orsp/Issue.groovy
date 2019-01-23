@@ -1,9 +1,10 @@
 package org.broadinstitute.orsp
 
+import gorm.logical.delete.LogicalDelete
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
-class Issue {
+class Issue implements LogicalDelete<Issue> {
 
     Integer id
     String projectKey

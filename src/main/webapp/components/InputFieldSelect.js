@@ -21,7 +21,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
       var x = a[key]; var y = b[key];
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
-  }
+  };
 
   isEdited = (current, future) => {
     if (current.length !== future.length) {
@@ -36,24 +36,29 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     });
 
     return edited;
-  }
+  };
 
   render() {
 
-    const { value = [], currentValue = [] } = this.props;
+    const { currentValue = [] } = this.props;
+    const value = [];
+    value.push(this.props.value);
 
     let currentValues = [];
+    if (currentValue.length === 0) {
+      currentValue.push("");
+    }
     currentValue.forEach(item => {
       currentValues.push(item.label);
     });
 
-    let values = [];
-    value.forEach(item => {
-      values.push(item.label);
-    });
+    let currentKeys = [];
+    let keys = [];
 
-    let currentKeys = this.sortByKey(currentValue, 'key');
-    let keys = this.sortByKey(value, 'key');
+    if (value[0].value !== "") {
+      currentKeys = this.sortByKey(currentValue, 'key');
+      keys = this.sortByKey(value, 'key');
+    }
 
     let currentValueStr = currentValues.join(',');
 

@@ -12,6 +12,7 @@ ReactDOM.render(
     addExtraPropUrl = {urls.saveExtraPropUrl}
     isAdmin = {projectReviewValues.isAdmin}
     serverURL = {projectReviewValues.serverURL}
+    rejectProjectUrl = {projectReviewValues.rejectProjectUrl}
   />,
   document.getElementById('projectReview')
 );
