@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
@@ -80,15 +81,23 @@ class ProjectController extends AuthenticatedController {
         }
     }
 
-    @Override
-    handleIntake(String key) {
+
+    def update() {
+        Gson gson = new Gson()
+        Map project = gson.fromJson(gson.toJson(request.JSON), Map.class)
+        Issue issue = Issue.findByProjectKey(params.projectKey)
+        issueService.updateIssue(issue, project)
+        response.status = 200
+        render([message: 'Project was updated'] as JSON)
+    }
+
+    def handleIntake(String key) {
         Issue issue = queryService.findByKey(key)
         Collection<User> actors = getProjectManagersForIssue(issue)
         if(issue.getType() == IssueType.IRB.name) {
             transitionService.handleIntake(issue, actors*.userName, IssueStatus.PreparingApplication.name, getUser()?.displayName)
         } else {
             transitionService.handleIntake(issue, actors*.userName, IssueStatus.SubmittingToORSP.name, getUser()?.displayName)
-
         }
     }
 }

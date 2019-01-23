@@ -99,4 +99,13 @@ class NewConsentGroupController extends AuthenticatedController {
             render([message: 'Consent Group not found'] as JSON)
         }
     }
+
+    def update() {
+        Gson gson = new Gson()
+        Map project = gson.fromJson(gson.toJson(request.JSON), Map.class)
+        Issue issue = Issue.findByProjectKey(params.projectKey)
+        issueService.updateIssue(issue, project)
+        response.status = 200
+        render([message: 'Consent Group was updated'] as JSON)
+    }
 }
