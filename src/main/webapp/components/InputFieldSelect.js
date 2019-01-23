@@ -16,12 +16,8 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     console.log(error, info);
   }
 
-  componentDidMount() {
-  }
-
   sortByKey = (array, key) => {
     return array.sort(function (a, b) {
-      console.log(a, b);
       var x = a[key]; var y = b[key];
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
