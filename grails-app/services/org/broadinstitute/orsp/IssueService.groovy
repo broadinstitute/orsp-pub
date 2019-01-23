@@ -1,11 +1,8 @@
 package org.broadinstitute.orsp
 
-import com.googlecode.concurrentlinkedhashmap.ConcurrentHashMapV8
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-
-import org.broadinstitute.orsp.utils.IssueUtils
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -194,21 +191,6 @@ class IssueService {
             it.save(flush: true)
         }
     }
-
-//    void updateIssue(Issue issue, String projectKey) {
-//        //TODO
-//        Issue existentIssue = Issue.findByProjectKey(projectKey);
-//        if(existentIssue != null) {
-//            issue.setId(existentIssue.getId())
-//            modifyIssueProperties(existentIssue, issue)
-//            modifyExtraProperties(issue.getNonEmptyExtraProperties(), projectKey)
-//            existentIssue.getExtraProperties()?.eac
-//            existentIssue.getFundings()?.each {
-//                it.delete(hard: true)
-//            }
-//            saveFundings(existentIssue, issue.getFundings())
-//        }
-//    }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     Issue modifyExtraProperties(Object input, String projectKey) {
