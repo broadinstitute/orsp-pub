@@ -39717,20 +39717,16 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
       });
     }, _this.isEdited = function (current, future) {
       var edited = false;
+
       if (_this.props.edit || _this.props.edit === undefined) {
         if (current.length !== future[0].length) {
           edited = true;
         }
 
-        console.log(future[0]);
-        if (future[0].length === 0) {
+        if (future[0].length !== 0 && edited) {
           current.forEach(function (element, index) {
-            if (future[index] !== undefined) {
-              if (element.key !== future[index].key) {
-                // if (element.key !== undefined && future[index].key !== undefined) {
-                edited = true;
-                // }
-              }
+            if (future[index] !== undefined && element.key !== future[index].key) {
+              edited = true;
             }
           });
         }
@@ -39778,15 +39774,6 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
       var keys = this.sortByKey(value, 'key');
 
       var currentValueStr = currentValues.join(',');
-
-      // console.log(this.props.label);
-      // console.log('IS', this.props.isMulti? 'multi select' : 'not multi select');
-      // console.log('currentValue', currentValue);
-      // console.log('value', value);
-      // console.log(value.length === currentValue.length);
-      // console.log('currentKey', currentKeys);
-      // console.log('keys', keys);
-      // console.log('------------------------');
 
       // verified if edited ...
       var edited = this.isEdited(currentKeys, keys);

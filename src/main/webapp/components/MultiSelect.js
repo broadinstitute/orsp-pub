@@ -25,20 +25,16 @@ export const MultiSelect = hh(class MultiSelect extends Component {
 
   isEdited = (current, future) => {
     let edited = false;
+
     if (this.props.edit || this.props.edit === undefined) {
       if (current.length !== future[0].length) {
         edited = true;
       }
 
-      console.log(future[0]);
-      if (future[0].length === 0) {
+      if (future[0].length !== 0 && edited) {
         current.forEach((element, index) => {
-          if (future[index] !== undefined) {
-            if (element.key !== future[index].key) {
-              // if (element.key !== undefined && future[index].key !== undefined) {
-              edited = true;
-              // }
-            }
+          if (future[index] !== undefined && element.key !== future[index].key) {
+            edited = true;
           }
         });
       }
