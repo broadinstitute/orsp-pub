@@ -223,6 +223,9 @@ class ConsentGroupReview extends Component {
     ConsentGroup.rejectConsent(this.props.rejectConsentUrl, this.props.consentKey).then(resp => {
       window.location.href = this.getRedirectUrl(this.props.projectKey);
       spinnerService.hideAll();
+    }).catch(error => {
+      spinnerService.hideAll();
+      console.error(error);
     });
   }
 
@@ -333,7 +336,7 @@ class ConsentGroupReview extends Component {
   };
 
   closeModal = () => {
-    this.setState({showDialog: !this.state.showDialog});
+    this.setState({ showDialog: !this.state.showDialog });
   };
 
   handleDialog = () => {
@@ -343,9 +346,9 @@ class ConsentGroupReview extends Component {
   };
 
   getRedirectUrl(projectKey) {
-    if(projectKey === "") {
+    if (projectKey === "") {
       return this.props.serverURL + "/search/index";
-    } else {   
+    } else {
       let key = projectKey.split("-");
       let projectType = '';
       if (key.length === 3) {
@@ -353,9 +356,8 @@ class ConsentGroupReview extends Component {
       } else {
         projectType = key[0].toLowerCase();
       }
-      return [this.props.serverURL, projectType, "show", projectKey,"?tab=consent-groups"].join("/");
-  }
-    
+      return [this.props.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
+    }
   }
 
   render() {
@@ -393,7 +395,7 @@ class ConsentGroupReview extends Component {
     } = this.state.formData.consentExtraProps;
 
 
-     return (
+    return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({

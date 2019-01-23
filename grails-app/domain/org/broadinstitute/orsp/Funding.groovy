@@ -1,6 +1,8 @@
 package org.broadinstitute.orsp
 
-class Funding {
+import gorm.logical.delete.LogicalDelete
+
+class Funding  implements LogicalDelete<Funding> {
 
     String source
     String sourceKey

@@ -1,9 +1,11 @@
 package org.broadinstitute.orsp
 
+import gorm.logical.delete.LogicalDelete
+
 /**
  * Not currently in use. We have some old data in the database so keeping this domain class.
  */
-class ChecklistAnswer {
+class ChecklistAnswer  implements LogicalDelete<ChecklistAnswer> {
 
     String questionId
     String projectKey
