@@ -28406,7 +28406,6 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
           value = _props.value,
           currentValue = _props.currentValue;
 
-      console.log('value ' + value + ', currentValue ' + currentValue);
       var edited = value !== currentValue && currentValue !== undefined;
 
       return (0, _InputField.InputField)({
@@ -39717,16 +39716,25 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
         return x < y ? -1 : x > y ? 1 : 0;
       });
     }, _this.isEdited = function (current, future) {
-      if (current.length !== future.length) {
-        return true;
-      }
-
       var edited = false;
-      current.forEach(function (element, index) {
-        if (element.key !== future[index].key) {
+      if (_this.props.edit || _this.props.edit === undefined) {
+        if (current.length !== future[0].length) {
           edited = true;
         }
-      });
+
+        console.log(future[0]);
+        if (future[0].length === 0) {
+          current.forEach(function (element, index) {
+            if (future[index] !== undefined) {
+              if (element.key !== future[index].key) {
+                // if (element.key !== undefined && future[index].key !== undefined) {
+                edited = true;
+                // }
+              }
+            }
+          });
+        }
+      }
 
       return edited;
     }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -39743,16 +39751,25 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
     value: function render() {
       var _this2 = this;
 
-      var _props$currentValue = this.props.currentValue,
-          currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
-
+      var currentValue = [];
       var value = [];
-      value.push(this.props.value);
 
       var currentValues = [];
-      if (currentValue.length === 0) {
+
+      if (this.props.currentValue === undefined) {
         currentValue.push("");
+      } else if (this.props.currentValue.length === 0) {
+        currentValue.push("");
+      } else {
+        currentValue = this.props.currentValue;
       }
+
+      if (this.props.value.length === 0) {
+        value.push("");
+      } else {
+        value.push(this.props.value);
+      }
+
       currentValue.forEach(function (item) {
         currentValues.push(item.label);
       });
@@ -39761,6 +39778,15 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
       var keys = this.sortByKey(value, 'key');
 
       var currentValueStr = currentValues.join(',');
+
+      // console.log(this.props.label);
+      // console.log('IS', this.props.isMulti? 'multi select' : 'not multi select');
+      // console.log('currentValue', currentValue);
+      // console.log('value', value);
+      // console.log(value.length === currentValue.length);
+      // console.log('currentKey', currentKeys);
+      // console.log('keys', keys);
+      // console.log('------------------------');
 
       // verified if edited ...
       var edited = this.isEdited(currentKeys, keys);

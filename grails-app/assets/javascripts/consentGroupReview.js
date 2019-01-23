@@ -33332,7 +33332,6 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
           value = _props.value,
           currentValue = _props.currentValue;
 
-      console.log('value ' + value + ', currentValue ' + currentValue);
       var edited = value !== currentValue && currentValue !== undefined;
 
       return (0, _InputField.InputField)({

@@ -28406,7 +28406,6 @@ var InputFieldText = exports.InputFieldText = (0, _reactHyperscriptHelpers.hh)(f
           value = _props.value,
           currentValue = _props.currentValue;
 
-      console.log('value ' + value + ', currentValue ' + currentValue);
       var edited = value !== currentValue && currentValue !== undefined;
 
       return (0, _InputField.InputField)({
@@ -40001,16 +40000,25 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
         return x < y ? -1 : x > y ? 1 : 0;
       });
     }, _this.isEdited = function (current, future) {
-      if (current.length !== future.length) {
-        return true;
-      }
-
       var edited = false;
-      current.forEach(function (element, index) {
-        if (element.key !== future[index].key) {
+      if (_this.props.edit || _this.props.edit === undefined) {
+        if (current.length !== future[0].length) {
           edited = true;
         }
-      });
+
+        console.log(future[0]);
+        if (future[0].length === 0) {
+          current.forEach(function (element, index) {
+            if (future[index] !== undefined) {
+              if (element.key !== future[index].key) {
+                // if (element.key !== undefined && future[index].key !== undefined) {
+                edited = true;
+                // }
+              }
+            }
+          });
+        }
+      }
 
       return edited;
     }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -40027,16 +40035,25 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
     value: function render() {
       var _this2 = this;
 
-      var _props$currentValue = this.props.currentValue,
-          currentValue = _props$currentValue === undefined ? [] : _props$currentValue;
-
+      var currentValue = [];
       var value = [];
-      value.push(this.props.value);
 
       var currentValues = [];
-      if (currentValue.length === 0) {
+
+      if (this.props.currentValue === undefined) {
         currentValue.push("");
+      } else if (this.props.currentValue.length === 0) {
+        currentValue.push("");
+      } else {
+        currentValue = this.props.currentValue;
       }
+
+      if (this.props.value.length === 0) {
+        value.push("");
+      } else {
+        value.push(this.props.value);
+      }
+
       currentValue.forEach(function (item) {
         currentValues.push(item.label);
       });
@@ -40045,6 +40062,15 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
       var keys = this.sortByKey(value, 'key');
 
       var currentValueStr = currentValues.join(',');
+
+      // console.log(this.props.label);
+      // console.log('IS', this.props.isMulti? 'multi select' : 'not multi select');
+      // console.log('currentValue', currentValue);
+      // console.log('value', value);
+      // console.log(value.length === currentValue.length);
+      // console.log('currentKey', currentKeys);
+      // console.log('keys', keys);
+      // console.log('------------------------');
 
       // verified if edited ...
       var edited = this.isEdited(currentKeys, keys);
@@ -45697,7 +45723,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.props.user.displayName,
         disabled: true,
         required: true,
-        onChange: this.handleInputChange
+        onChange: this.handleInputChange,
+        edit: false
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputRequestorEmail",
         name: "requestorEmail",
@@ -45705,7 +45732,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.props.user.emailAddress.replace('&#64;', '@'),
         disabled: true,
         required: true,
-        onChange: this.handleInputChange
+        onChange: this.handleInputChange,
+        edit: false
       })]), (0, _Panel.Panel)({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [(0, _MultiSelect.MultiSelect)({
         id: "pi_select",
         label: "Broad PI",
@@ -45714,7 +45742,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         handleChange: this.handlePIChange,
         value: this.state.formData.piName,
         placeholder: "Start typing the PI Name",
-        isMulti: false
+        isMulti: false,
+        edit: false
       }), (0, _MultiSelect.MultiSelect)({
         id: "inputProjectManager",
         label: "Broad Project Manager",
@@ -45723,12 +45752,14 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         handleChange: this.handleProjectManagerChange,
         value: this.state.formData.projectManager,
         placeholder: "Start typing the Project Manager Name",
-        isMulti: false
+        isMulti: false,
+        edit: false
       })]), (0, _Panel.Panel)({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [(0, _Fundings.Fundings)({
         fundings: this.state.formData.fundings,
         updateFundings: this.handleUpdateFundings,
         error: this.props.errors.fundings,
-        errorMessage: "Required field"
+        errorMessage: "Required field",
+        edit: false
       })]), (0, _Panel.Panel)({ title: "Project Summary" }, [(0, _InputFieldTextArea.InputFieldTextArea)({
         id: "inputStudyActivitiesDescription",
         name: "studyDescription",
@@ -45739,7 +45770,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         required: false,
         onChange: this.handleInputChange,
         error: this.props.errors.studyDescription,
-        errorMessage: "Required field"
+        errorMessage: "Required field",
+        edit: false
       }), (0, _MultiSelect.MultiSelect)({
         id: "collaborator_select",
         label: "Individuals who require access to this project record",
@@ -45748,7 +45780,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         handleChange: this.handleProjectCollaboratorChange,
         value: this.state.formData.collaborators,
         placeholder: "Start typing collaborator names",
-        isMulti: true
+        isMulti: true,
+        edit: false
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputPTitle",
         name: "pTitle",
@@ -45759,7 +45792,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         required: false,
         onChange: this.handleInputChange,
         error: this.props.errors.pTitle,
-        errorMessage: "Required field"
+        errorMessage: "Required field",
+        edit: false
       }), (0, _InputFieldText.InputFieldText)({
         id: "inputIrbProtocolId",
         name: "irbProtocolId",
@@ -45768,7 +45802,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.state.formData.irbProtocolId,
         disabled: false,
         required: false,
-        onChange: this.handleInputChange
+        onChange: this.handleInputChange,
+        edit: false
       }), (0, _InputYesNo.InputYesNo)({
         id: "radioSubjectProtection",
         name: "subjectProtection",
@@ -45778,7 +45813,8 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         onChange: this.handleRadioChange,
         required: false,
         error: this.props.errors.subjectProtection,
-        errorMessage: "Required field"
+        errorMessage: "Required field",
+        edit: false
       })])]);
     }
   }], [{

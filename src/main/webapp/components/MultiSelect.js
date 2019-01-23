@@ -24,30 +24,50 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   };
 
   isEdited = (current, future) => {
-    if (current.length !== future.length) {
-      return true;
-    }
-
     let edited = false;
-    current.forEach((element, index) => {
-      if (element.key !== future[index].key) {
+    if (this.props.edit || this.props.edit === undefined) {
+      if (current.length !== future[0].length) {
         edited = true;
       }
-    });
+
+      console.log(future[0]);
+      if (future[0].length === 0) {
+        current.forEach((element, index) => {
+          if (future[index] !== undefined) {
+            if (element.key !== future[index].key) {
+              // if (element.key !== undefined && future[index].key !== undefined) {
+              edited = true;
+              // }
+            }
+          }
+        });
+      }
+    }
 
     return edited;
   };
 
   render() {
 
-    const { currentValue = [] } = this.props;
-    const value = [];
-    value.push(this.props.value);
+    let currentValue  = [];
+    let value = [];
 
     let currentValues = [];
-    if (currentValue.length === 0) {
+
+    if (this.props.currentValue === undefined) {
       currentValue.push("");
+    } else if (this.props.currentValue.length === 0){
+      currentValue.push("");
+    } else {
+      currentValue = this.props.currentValue;
     }
+
+    if (this.props.value.length === 0) {
+      value.push("");
+    } else {
+      value.push(this.props.value);
+    }
+
     currentValue.forEach(item => {
       currentValues.push(item.label);
     });
