@@ -254,6 +254,30 @@ class IssueService {
         newIssue
     }
 
+    void deleteIssue(String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        if (issue != null) {
+            List<ChecklistAnswer> checklistAnswers = ChecklistAnswer.findAllByProjectKey(projectKey)
+            checklistAnswers?.each { it.delete(flush: true) }
+
+            List<Comment> comments = Comment.findAllByProjectKey(projectKey)
+            comments?.each { it.delete(flush: true) }
+
+            List<ConsentCollectionLink> links = ConsentCollectionLink.findAllByProjectKey(projectKey)
+            links?.each { it.delete(flush: true) }
+
+            List<Funding> fundingList = queryService.findFundingsByProject(issue.projectKey)
+            fundingList?.each { it.delete(flush: true) }
+
+            Collection<StorageDocument> documents = queryService.getDocumentsForProject(projectKey)
+            documents?.each { it.delete(flush: true) }
+
+            Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
+            issueExtraProperties?.each { it.delete(flush: true) }
+        }
+        issue.delete(flush: true)
+    }
+
     @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
     private Collection<IssueExtraProperty> findPropsForDeleting(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect {
