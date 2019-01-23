@@ -8,7 +8,6 @@ import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
-
 import javax.ws.rs.core.Response
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -86,6 +85,18 @@ class NewConsentGroupController extends AuthenticatedController {
             render([message: updatedIssue])
         } catch(Exception e) {
             render([error: e.message] as JSON)
+        }
+    }
+
+    def delete() {
+        Issue issue = queryService.findByKey(params.consentKey)
+        if(issue != null) {
+            issueService.deleteIssue(params.consentKey)
+            response.status = 200
+            render([message: 'Consent Group was deleted'] as JSON)
+        } else {
+            response.status = 404
+            render([message: 'Consent Group not found'] as JSON)
         }
     }
 }

@@ -1,8 +1,9 @@
 package org.broadinstitute.orsp
 
 import com.google.common.base.Splitter
+import gorm.logical.delete.LogicalDelete
 
-class Comment {
+class Comment  implements LogicalDelete<Comment> {
 
     String projectKey
     String author
