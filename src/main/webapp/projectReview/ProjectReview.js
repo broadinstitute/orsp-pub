@@ -9,9 +9,7 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { Project } from "../util/ajax";
-import { Search } from '../util/ajax';
-import { User } from '../util/ajax';
+import { Project, Search, User, Review } from "../util/ajax";
 
 class ProjectReview extends Component {
 
@@ -100,11 +98,7 @@ class ProjectReview extends Component {
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         currentStr = JSON.stringify(current);
 
-        // read suggestions here ....
         this.getReviewSuggestions();
-
-        // Project.getSuggestions(this.props.projectUrl, this.props.projectKey).then(
-        //   edits => {
 
         let edits = null;
 
@@ -144,7 +138,7 @@ class ProjectReview extends Component {
   }
 
   getReviewSuggestions() {
-    Project.getProjectSuggestions(this.props.serverURL, this.props.projectKey).then(
+    Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
       data => {
         if (data !== null) {
           this.setState(prev => {
@@ -247,11 +241,10 @@ class ProjectReview extends Component {
       suggestions: JSON.stringify(this.state.formData),
     };
     if (this.state.reviewSuggestion) {
-      Project.updateReview(this.props.serverURL, this.props.projectKey, data);
+      Review.updateReview(this.props.serverURL, this.props.projectKey, data);
     } else {
-      Project.submitReview(this.props.serverURL, this.props.projectKey, data);
+      Review.submitReview(this.props.serverURL, data);
     }
-
   }
 
   loadUsersOptions = (query, callback) => {
@@ -288,13 +281,16 @@ class ProjectReview extends Component {
   handlePIChange = (data, action) => {
     this.setState(prev => {
       prev.formData.piList = data;
+      prev.formData.projectExtraProps.pi = data.map(user => user.key);
       return prev;
     }); //, () => this.props.updateForm(this.state.formData, 'piName'));
   };
 
   handleProjectManagerChange = (data, action) => {
+    const pmUsers = data.map(user => user.key)
     this.setState(prev => {
       prev.formData.pmList = data;
+      prev.formData.projectExtraProps.pm = data.map(user => user.key);
       return prev;
     }); //, () => this.props.updateForm(this.state.formData, 'projectManager'));
     //this.props.removeErrorMessage();
