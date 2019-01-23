@@ -27,7 +27,7 @@
                         </a>
 
                         Consent Group
-                        <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey])}">
+                        <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
                             ${consent.projectKey}: ${consent.summary}
                         </a>
 

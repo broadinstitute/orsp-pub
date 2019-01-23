@@ -68,6 +68,17 @@ class ProjectController extends AuthenticatedController {
         ] as JSON)
     }
 
+    def delete() {
+        Issue issue = queryService.findByKey(params.projectKey)
+        if(issue != null) {
+            issueService.deleteIssue(params.projectKey)
+            response.status = 200
+            render([message: 'Project was deleted'] as JSON)
+        } else {
+            response.status = 404
+            render([message: 'Project not found'] as JSON)
+        }
+    }
 
     @Override
     handleIntake(String key) {

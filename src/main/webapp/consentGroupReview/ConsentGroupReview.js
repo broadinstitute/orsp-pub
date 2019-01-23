@@ -8,9 +8,9 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
-import { Table } from '../components/Table';
 import { ConsentGroup, SampleCollections, User } from "../util/ajax";
-
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { spinnerService } from "../util/spinner-service";
 
 class ConsentGroupReview extends Component {
 
@@ -73,6 +73,7 @@ class ConsentGroupReview extends Component {
       suggestions: {},
       suggestionsCopy: {}
     }
+    this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
 
   componentDidMount() {
@@ -201,8 +202,8 @@ class ConsentGroupReview extends Component {
   }
 
   approveRevision = (e) => () => {
-    this.setState({ disableApproveButton: true })
-    const data = { projectReviewApproved: true }
+    this.setState({ disableApproveButton: true });
+    const data = { projectReviewApproved: true };
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
       () => this.setState(prev => {
         prev.formData.consentExtraProps.projectReviewApproved = true;
@@ -217,8 +218,15 @@ class ConsentGroupReview extends Component {
     );
   }
 
-  rejectConsentGroup = (e) => () => {
-
+  rejectConsentGroup() {
+    spinnerService.showAll();
+    ConsentGroup.rejectConsent(this.props.rejectConsentUrl, this.props.consentKey).then(resp => {
+      window.location.href = this.getRedirectUrl(this.props.projectKey);
+      spinnerService.hideAll();
+    }).catch(error => {
+      spinnerService.hideAll();
+      console.error(error);
+    });
   }
 
   discardEdits = (e) => () => {
@@ -327,6 +335,30 @@ class ConsentGroupReview extends Component {
     // this.props.removeErrorMessage();
   };
 
+  closeModal = () => {
+    this.setState({ showDialog: !this.state.showDialog });
+  };
+
+  handleDialog = () => {
+    this.setState({
+      showDialog: !this.state.showDialog
+    });
+  };
+
+  getRedirectUrl(projectKey) {
+    if (projectKey === "") {
+      return this.props.serverURL + "/search/index";
+    } else {
+      let key = projectKey.split("-");
+      let projectType = '';
+      if (key.length === 3) {
+        projectType = key[1].toLowerCase();
+      } else {
+        projectType = key[0].toLowerCase();
+      }
+      return [this.props.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
+    }
+  }
 
   render() {
 
@@ -363,9 +395,17 @@ class ConsentGroupReview extends Component {
     } = this.state.formData.consentExtraProps;
 
 
-     return (
+    return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
+        ConfirmationDialog({
+          closeModal: this.closeModal,
+          show: this.state.showDialog,
+          handleOkAction: this.rejectConsentGroup,
+          title: 'Remove Confirmation',
+          bodyText: 'Are you sure yo want to remove this consent group?',
+          actionLabel: 'Yes'
+        }, []),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
@@ -770,7 +810,7 @@ class ConsentGroupReview extends Component {
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.rejectConsentGroup(),
+            onClick: this.handleDialog,
             disabled: this.state.disableApproveButton,
             isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
           }, ["Reject"])

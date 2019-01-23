@@ -1,9 +1,11 @@
 package org.broadinstitute.orsp
 
+import gorm.logical.delete.LogicalDelete
+
 /**
  * Properties on an issue.
  */
-class IssueExtraProperty {
+class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
 
     public static final String COMMERCIALLY_AVAILABLE = "commercially-available"
     public static final String REVIEW_CATEGORY = "review-category"
