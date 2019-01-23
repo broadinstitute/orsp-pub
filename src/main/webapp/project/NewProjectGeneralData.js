@@ -42,7 +42,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         collaborators: []
       },
       formerData: {
-
+        projectManager: '',
+        piName: '',
+        studyDescription: '',
+        pTitle: '',
+        irbProtocolId: '',
+        subjectProtection: '',
+        fundings: [{ source: '', sponsor: '', identifier: '' }],
+        collaborators: []
       },
       errors: {
         studyDescription: false,
@@ -154,7 +161,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.props.user.displayName,
             disabled: true,
             required: true,
-            onChange: this.handleInputChange
+            onChange: this.handleInputChange,
+            edit: false
           }),
           InputFieldText({
             id: "inputRequestorEmail",
@@ -163,7 +171,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.props.user.emailAddress.replace('&#64;', '@'),
             disabled: true,
             required: true,
-            onChange: this.handleInputChange
+            onChange: this.handleInputChange,
+            edit: false
           })
         ]),
 
@@ -176,7 +185,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             handleChange: this.handlePIChange,
             value: this.state.formData.piName,
             placeholder: "Start typing the PI Name",
-            isMulti: false
+            isMulti: false,
+            edit: false
           }),
           MultiSelect({
             id: "inputProjectManager",
@@ -186,7 +196,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             handleChange: this.handleProjectManagerChange,
             value: this.state.formData.projectManager,
             placeholder: "Start typing the Project Manager Name",
-            isMulti: false
+            isMulti: false,
+            edit: false
           }),
         ]),
 
@@ -195,7 +206,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             fundings: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
             error: this.props.errors.fundings,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
         ]),
 
@@ -210,7 +222,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             required: false,
             onChange: this.handleInputChange,
             error: this.props.errors.studyDescription,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
           MultiSelect({
             id: "collaborator_select",
@@ -220,7 +233,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
             placeholder: "Start typing collaborator names",
-            isMulti: true
+            isMulti: true,
+            edit: false
           }),
           InputFieldText({
             id: "inputPTitle",
@@ -232,7 +246,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             required: false,
             onChange: this.handleInputChange,
             error: this.props.errors.pTitle,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
           InputFieldText({
             id: "inputIrbProtocolId",
@@ -242,7 +257,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.state.formData.irbProtocolId,
             disabled: false,
             required: false,
-            onChange: this.handleInputChange
+            onChange: this.handleInputChange,
+            edit: false
           }),
           InputYesNo({
             id: "radioSubjectProtection",
@@ -253,7 +269,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleRadioChange,
             required: false,
             error: this.props.errors.subjectProtection,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           })
         ])
       ])

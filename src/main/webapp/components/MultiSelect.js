@@ -21,35 +21,51 @@ export const MultiSelect = hh(class MultiSelect extends Component {
       var x = a[key]; var y = b[key];
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
-  }
+  };
 
   isEdited = (current, future) => {
-    if (current.length !== future.length) {
-      return true;
-    }
-
     let edited = false;
-    current.forEach((element, index) => {
-      if (element.key !== future[index].key) {
+
+    if (this.props.edit || this.props.edit === undefined) {
+      if (current.length !== future[0].length) {
         edited = true;
       }
-    });
+
+      if (future[0].length !== 0 && edited) {
+        current.forEach((element, index) => {
+          if (future[index] !== undefined && element.key !== future[index].key) {
+            edited = true;
+          }
+        });
+      }
+    }
 
     return edited;
-  }
+  };
 
   render() {
 
-    const { value = [], currentValue = [] } = this.props;
+    let currentValue  = [];
+    let value = [];
 
     let currentValues = [];
+
+    if (this.props.currentValue === undefined) {
+      currentValue.push("");
+    } else if (this.props.currentValue.length === 0){
+      currentValue.push("");
+    } else {
+      currentValue = this.props.currentValue;
+    }
+
+    if (this.props.value.length === 0) {
+      value.push("");
+    } else {
+      value.push(this.props.value);
+    }
+
     currentValue.forEach(item => {
       currentValues.push(item.label);
-    });
-
-    let values = [];
-    value.forEach(item => {
-      values.push(item.label);
     });
 
     let currentKeys = this.sortByKey(currentValue, 'key');
@@ -62,8 +78,14 @@ export const MultiSelect = hh(class MultiSelect extends Component {
 
     return (
       InputField({
-        label: this.props.label, error: this.props.error, errorMessage: this.props.errorMessage, readOnly: this.props.readOnly,
-        value: this.props.value, currentValue: currentValue, currentValueStr: currentValueStr, edited: edited
+        label: this.props.label,
+        error: this.props.error,
+        errorMessage: this.props.errorMessage,
+        readOnly: this.props.readOnly,
+        value: this.props.value,
+        currentValue: currentValue,
+        currentValueStr: currentValueStr,
+        edited: edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {
