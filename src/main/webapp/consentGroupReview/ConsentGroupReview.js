@@ -513,7 +513,8 @@ class ConsentGroupReview extends Component {
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
             error: this.state.errors.sampleCollections,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            readOnly: this.state.readOnly
           }),
         ]),
 
