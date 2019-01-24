@@ -94,6 +94,7 @@ class ConsentGroupReview extends Component {
         SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
           resp => {
 
+            console.log(resp.data);
             sampleCollections = resp.data.map(item => {
               return {
                 key: item.id,

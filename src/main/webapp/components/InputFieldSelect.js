@@ -24,41 +24,53 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   };
 
   isEdited = (current, future) => {
-    if (current.length !== future.length) {
-      return true;
-    }
-
     let edited = false;
-    current.forEach((element, index) => {
-      if (element.key !== future[index].key) {
+
+    if (this.props.edit || this.props.edit === undefined) {
+      if (current.length !== future[0].length) {
         edited = true;
       }
-    });
+
+      if (future[0].length !== 0 && edited) {
+        current.forEach((element, index) => {
+          if (future[index] !== undefined && element.key !== future[index].key) {
+            edited = true;
+          }
+        });
+      }
+    }
 
     return edited;
   };
 
   render() {
 
-    const { currentValue = [] } = this.props;
-    const value = [];
-    value.push(this.props.value);
+    console.log(this.props.label);
+    let currentValue  = [];
+    let value = [];
 
     let currentValues = [];
-    if (currentValue.length === 0) {
+
+    if (this.props.currentValue === undefined) {
       currentValue.push("");
+    } else if (this.props.currentValue.length === 0){
+      currentValue.push("");
+    } else {
+      currentValue = this.props.currentValue;
     }
+
+    if (this.props.value.length === 0) {
+      value.push("");
+    } else {
+      value.push(this.props.value);
+    }
+
     currentValue.forEach(item => {
       currentValues.push(item.label);
     });
 
-    let currentKeys = [];
-    let keys = [];
-
-    if (value[0].value !== "") {
-      currentKeys = this.sortByKey(currentValue, 'key');
-      keys = this.sortByKey(value, 'key');
-    }
+    let currentKeys = this.sortByKey(currentValue, 'key');
+    let keys = this.sortByKey(value, 'key');
 
     let currentValueStr = currentValues.join(',');
 
