@@ -62,7 +62,8 @@ class ConsentGroupReview extends Component {
       },
       formData: {
         consentExtraProps: {},
-        consentForm: {}
+        consentForm: {},
+        sampleCollections: [],
       },
       current: {
         consentExtraProps: {
@@ -94,7 +95,6 @@ class ConsentGroupReview extends Component {
         SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
           resp => {
 
-            console.log(resp.data);
             sampleCollections = resp.data.map(item => {
               return {
                 key: item.id,
@@ -362,6 +362,7 @@ class ConsentGroupReview extends Component {
   }
 
   render() {
+    const { sampleCollections = [] } = this.state.formData.sampleCollections;
 
     const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
 
@@ -508,7 +509,7 @@ class ConsentGroupReview extends Component {
             isDisabled: false,
             options: this.state.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
-            value: this.state.formData.sampleCollections,
+            value: sampleCollections,
             currentValue: this.state.current.sampleCollections,
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
