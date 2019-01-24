@@ -23,23 +23,29 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     });
   };
 
-  isEdited = (current, future) => {
+  isEdited = (current, futureValue) => {
     let edited = false;
+    let future = undefined;
+
+    if (futureValue[0] === '') {
+      future = futureValue;
+    } else {
+      future = futureValue[0];
+    }
 
     if (this.props.edit || this.props.edit === undefined) {
-      if (current.length !== future[0].length) {
+      if (current.length !== future.length) {
         edited = true;
       }
 
-      if (future[0].length !== 0 && edited) {
-        current.forEach((element, index) => {
-          if (future[index] !== undefined && element.key !== future[index].key) {
+      current.forEach((element, index) => {
+        if (future[index] !== undefined) {
+          if (element.key !== future[index].key) {
             edited = true;
           }
-        });
-      }
+        }
+      });
     }
-
     return edited;
   };
 

@@ -334,6 +334,8 @@ class ProjectReview extends Component {
   };
 
   render() {
+    console.log('value', this.state.formData.collaborators);
+    console.log('current', this.state.current.collaborators);
 
     return (
       div({}, [
