@@ -1,12 +1,12 @@
 package org.broadinstitute.orsp.api
 
-import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.utils.IssueUtils
 
 import javax.ws.rs.core.Response
 
@@ -32,8 +32,7 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def save() {
-        Gson gson = new Gson()
-        Issue issue = gson.fromJson(gson.toJson(request.JSON), Issue.class)
+        Issue issue = IssueUtils.getJson(Issue.class, request.JSON)
         Issue source = queryService.findByKey(issue.getSource())
         if(source != null) {
             issue.setRequestDate(new Date())
@@ -76,8 +75,7 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def approveConsentGroup() {
-        Gson gson = new Gson()
-        Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
+        Object input = IssueUtils.getJson(Object.class, request.JSON)
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
         try {
@@ -98,5 +96,13 @@ class NewConsentGroupController extends AuthenticatedController {
             response.status = 404
             render([message: 'Consent Group not found'] as JSON)
         }
+    }
+
+    def update() {
+        Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
+        Issue issue = Issue.findByProjectKey(params.projectKey)
+        issueService.updateIssue(issue, project)
+        response.status = 200
+        render([message: 'Consent Group was updated'] as JSON)
     }
 }
