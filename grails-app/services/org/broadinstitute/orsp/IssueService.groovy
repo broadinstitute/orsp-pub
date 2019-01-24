@@ -4,8 +4,6 @@ import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
 
-import org.broadinstitute.orsp.utils.IssueUtils
-
 /**
  * This class handles the general update or creation of issues and nothing more.
  *
@@ -71,6 +69,7 @@ class IssueService {
      * @return Persisted issue
      */
     @Transactional
+    @Deprecated
     Issue addIssue(Issue issue, GrailsParameterMap input) throws DomainException {
         IssueType type = IssueType.valueOfName(issue.type)
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
@@ -91,7 +90,7 @@ class IssueService {
      * @return Persisted issue
      */
     @Transactional
-    Issue updateIssue(Issue issue, GrailsParameterMap input) throws DomainException {
+    Issue updateIssue(Issue issue, Map<String, Object> input) throws DomainException {
         // Top level properties that are set on the Issue object.
         if (input.get(IssueExtraProperty.SUMMARY)) {
             issue.setSummary((String) input.get(IssueExtraProperty.SUMMARY))
@@ -108,9 +107,9 @@ class IssueService {
         // Handle native associations.
 
         // Funding:
-        def fundingParams = (GrailsParameterMap) input.get('funding')
-        def propList = IssueUtils.convertNestedParamsToPropertyList(fundingParams)
-        def newFundingList = propList.collect { p ->
+        def fundingParams = input.get('funding')
+
+        def newFundingList = fundingParams.collect { p ->
             Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
             Funding f = (fundingID > 0) ? Funding.findById(fundingID) : new Funding()
             if (!f.getCreated()) f.setCreated(new Date())
@@ -132,7 +131,7 @@ class IssueService {
         def deletableFundings = oldFundingList.findAll { !newFundingIdList.contains(it.id) }
         deletableFundings.each {
             issue.removeFromFundings(it)
-            it.delete()
+            it.delete(hard: true)
         }
 
         // Remaining properties are IssueExtraProperty associations
@@ -150,7 +149,7 @@ class IssueService {
 
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
-            it.delete()
+            it.delete(hard: true)
         }
 
         propsToSave.each {
