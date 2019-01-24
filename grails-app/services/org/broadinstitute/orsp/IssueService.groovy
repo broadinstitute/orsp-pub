@@ -59,7 +59,9 @@ class IssueService {
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
-            IssueExtraProperty.COLLABORATORS
+            IssueExtraProperty.COLLABORATOR,
+            IssueExtraProperty.PI,
+            IssueExtraProperty.PM
     ]
 
     /**
@@ -299,7 +301,7 @@ class IssueService {
     private Collection<IssueExtraProperty> getSingleValuedPropsForSaving(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = singleValuedPropertyKeys.collect {
             name ->
-                if (input.get(name)) {
+                if (input.get(name) && input.get(name) instanceof List) {
                     def value = (String) input.get(name)
                     if (value) {
                         IssueExtraProperty extraProperty = issue.getExtraProperties().find { it.name == name }

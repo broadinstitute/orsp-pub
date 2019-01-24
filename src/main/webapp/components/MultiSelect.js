@@ -24,14 +24,17 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   };
 
   isEdited = (current, futureValue) => {
-    const future = futureValue[0];
     let edited = false;
-
+    let future = undefined;
+    if (futureValue[0] === '') {
+      future = futureValue;
+    } else {
+      future = futureValue[0];
+    }
     if (this.props.edit || this.props.edit === undefined) {
       if (current.length !== future.length) {
         edited = true;
       }
-
       current.forEach((element, index) => {
         if (future[index] !== undefined) {
           if (element.key !== future[index].key) {

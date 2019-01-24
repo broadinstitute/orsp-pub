@@ -23,21 +23,20 @@ class ProjectReview extends Component {
       showDialog: false,
       showApproveDialog: false,
       readOnly: true,
-      collaborators: [{ key: '', label: '', value: '' }],
       formData: {
         description: '',
+        piList: [{ key: '', label: '', value: '' }],
+        pmList: [{ key: '', label: '', value: '' }],
+        collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
-          projectTitle: '',
+          projectTitle: '',         
           protocol: '',  
           subjectProtection: null,
           manageProtocol: null,
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: false,
-          
-          piList: [{ key: '', label: '', value: '' }],
-          pmList: [{ key: '', label: '', value: '' }]
+          projectReviewApproved: false         
         },       
         fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
         requestor: {
@@ -58,8 +57,10 @@ class ProjectReview extends Component {
         projectManager: '',
         piName: '',
         studyDescription: '',
-        collaborators: [],
+        piList: [{ key: '', label: '', value: '' }],
+        pmList: [{ key: '', label: '', value: '' }],
         fundings: [{ source: '', sponsor: '', identifier: '' }],
+        collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbProtocolId: '',
           projectTitle: '',
@@ -104,10 +105,6 @@ class ProjectReview extends Component {
         currentStr = JSON.stringify(current);
 
         // read suggestions here ....
-        // ....
-        // Project.getSuggestions(this.props.projectUrl, this.props.projectKey).then(
-        //   edits => {
-
         let edits = null;
 
         if (edits != null) {
@@ -120,7 +117,6 @@ class ProjectReview extends Component {
           future.fundings = this.getFundingsArray(edits.data.fundings);
           future.requestor = edits.data.requestor !== null ? edits.data.requestor : this.state.requestor;
           futureStr = JSON.stringify(future);
-
           formData = JSON.parse(futureStr);
           futureCopy = JSON.parse(futureStr);
         } else {
@@ -140,8 +136,6 @@ class ProjectReview extends Component {
           prev.futureCopy = futureCopy;
           return prev;
         });
-
-        // });
       });
   }
 
@@ -189,7 +183,7 @@ class ProjectReview extends Component {
     const data = { projectReviewApproved: true }
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
       () => this.setState(prev => {
-        prev.projectExtraProps.projectReviewApproved = true;
+        prev.formData.projectExtraProps.projectReviewApproved = true;
         return prev;
       })
     );
@@ -209,7 +203,7 @@ class ProjectReview extends Component {
 
   approveEdits() {
     let project = this.getProject();
-    Project.updateProject(this.props.projectUrl, project, this.props.projectKey).then(
+    Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
         window.location.href = [this.props.serverURL, "index"].join("/");
         spinnerService.showAll();
@@ -223,32 +217,37 @@ class ProjectReview extends Component {
   getProject() {
     let project = {};
     project.description = this.state.formData.description;
+    project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
     let extraProperties = [];
-    extraProperties.push({name: 'subjectProtection', value: this.state.formData.projectExtraProps.subjectProtection});
-    extraProperties.push({name: 'projectReviewApproved', value: this.state.formData.projectExtraProps.projectReviewApproved })
-    extraProperties.push({name: 'protocol', value: this.state.formData.projectExtraProps.protocol});
-    extraProperties.push({name: 'feeForService', value: this.state.formData.projectExtraProps.feeForService});
-    extraProperties.push({name: 'projectTitle', value: this.state.formData.projectExtraProps.projectTitle});
-   
-    //list 
-    let collaborators = this.state.formData.projectExtraProps.collaborators;
+    project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
+    project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
+    project.protocol = this.state.formData.projectExtraProps.protocol;
+    project.feeForService = this.state.formData.projectExtraProps.feeForService;
+    project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
+    let collaborators = this.state.formData.collaborators;
+    
     if (this.state.formData.pmList !== null &&this.state.formData.pmList.length > 0) {
+      let pmList = [];
       this.state.formData.pmList.map((pm, idx) => {
-        extraProperties.push({name: 'pm', value: pm.key});
+        pmList.push(pm.key);
       });
+      project.pm = pmList;
     }
-    if (this.state.formData.pmList !== null &&this.state.formData.piList.length > 0) {
+    if (this.state.formData.piList !== null &&this.state.formData.piList.length > 0) {
+      let piList = [];
       this.state.formData.piList.map((pi, idx) => {
-        extraProperties.push({name: 'pi', value: pi.key});
+        piList.push(pi.key);
       });
+      project.pi = piList;
     }
     if (collaborators !== null && collaborators.length > 0) {
+      let collaboratorList = [];
       collaborators.map((collaborator, idx) => {
-        extraProperties.push({name: 'collaborator', value: collaborator.key});
+        collaboratorList.push(collaborator.key);
       });
+      project.collaborator = collaboratorList;
     }
-    project.extraProperties = extraProperties;
     return project;
   }
 
@@ -265,8 +264,6 @@ class ProjectReview extends Component {
     }
     return fundingList;
   }
-  //////////////////////TODOOOO
-
 
   enableEdit = (e) => () => {
     this.setState({
@@ -307,30 +304,28 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.fundings = updated;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, 'fundings'));
-    //this.props.removeErrorMessage();
+    }); 
   };
 
   handleProjectCollaboratorChange = (data, action) => {
     this.setState(prev => {
-      prev.formData.projectExtraProps.collaborators = data;
+      prev.formData.collaborators = data;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, 'collaborators'));
+    });
   };
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
       prev.formData.piList = data;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, 'piName'));
+    }); 
   };
 
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
       prev.formData.pmList = data;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, 'projectManager'));
-    //this.props.removeErrorMessage();
+    }); 
   };
 
   handleInputChange = (e) => {
@@ -339,8 +334,7 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }); // , () => this.props.updateForm(this.state.formData, field));
-    //this.props.removeErrorMessage();
+    }); 
   };
 
   handleRadioChange = (e, field, value) => {
@@ -353,8 +347,7 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, field));
-    //this.props.removeErrorMessage();
+    }); 
   };
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
@@ -367,8 +360,7 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, field));
-    //this.props.removeErrorMessage();
+    }); 
   };
 
   handleProjectExtraPropsChange = (e) => {
@@ -377,8 +369,7 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
       return prev;
-    }); // , () => this.props.updateForm(this.state.formData, field));
-    //this.props.removeErrorMessage();
+    }); 
   };
 
   closeModal = () => {
@@ -394,7 +385,6 @@ class ProjectReview extends Component {
   };
 
   render() {
-
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
@@ -473,7 +463,7 @@ class ProjectReview extends Component {
             handleChange: this.handleProjectManagerChange,
             value: this.state.formData.pmList,
             currentValue: this.state.current.pmList,
-            isMulti: true // this.state.formData.pmList.length > 1
+            isMulti: true 
           })
         ]),
 
@@ -509,8 +499,8 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
-            value: this.state.formData.projectExtraProps.collaborators,
-            currentValue: this.state.current.projectExtraProps.collaborators,
+            value: this.state.formData.collaborators,
+            currentValue: this.state.current.collaborators,
             placeholder: "Start typing collaborator names",
             isMulti: true
           }),
@@ -587,7 +577,6 @@ class ProjectReview extends Component {
             id: "radioDescribeEdits",
             name: "describeEditType",
             label: "Please choose one of the following to describe the proposed Edits: ",
-            // value: this.state.projectExtraProps.describeEditType,
             optionValues: ["01", "02"],
             optionLabels: [
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
@@ -601,7 +590,6 @@ class ProjectReview extends Component {
             id: "inputDescribeEdits",
             name: "editDescription",
             label: "Please use the space below to describe any additional edits or clarifications to the edits above",
-            // value: this.state.formData.editDescription.replace(/<\/?[^>]+(>|$)/g, ""),
             currentValue: this.state.current.editDescription,
             readOnly: this.state.readOnly,
             required: false,
