@@ -45,7 +45,6 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
   render() {
 
-    console.log(this.props.label);
     let currentValue  = [];
     let value = [];
 
