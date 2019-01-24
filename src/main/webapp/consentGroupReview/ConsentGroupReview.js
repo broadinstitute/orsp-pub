@@ -362,7 +362,6 @@ class ConsentGroupReview extends Component {
   }
 
   render() {
-    const { sampleCollections = [] } = this.state.formData.sampleCollections;
 
     const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
 
@@ -509,7 +508,7 @@ class ConsentGroupReview extends Component {
             isDisabled: false,
             options: this.state.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
-            value: sampleCollections,
+            value: this.state.formData.sampleCollections,
             currentValue: this.state.current.sampleCollections,
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
