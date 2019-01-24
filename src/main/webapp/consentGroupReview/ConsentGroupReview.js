@@ -266,6 +266,8 @@ class ConsentGroupReview extends Component {
   };
 
   handleCheck = (e) => {
+    console.log(e);
+
     this.setState(prev => {
       prev.formData.consentExtraProps.onGoingProcess = !this.state.formData.consentExtraProps.onGoingProcess;
       prev.formData.endDate = null;
@@ -523,6 +525,7 @@ class ConsentGroupReview extends Component {
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
                 selected: startDate, //this.hasDate("startDate") ? new Date(startDate.substr(0, 4), startDate.substr(5, 2) - 1, startDate.substr(8, 2)) : null,
+                value: startDate,
                 currentValue: this.state.current.consentExtraProps.startDate,
                 name: "startDate",
                 label: "Start Date",
@@ -532,11 +535,11 @@ class ConsentGroupReview extends Component {
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                startDate: startDate,
+                selected: endDate, // this.hasDate("endDate") ? new Date(endDate.substr(0, 4), endDate.substr(5, 2) - 1, endDate.substr(8, 2)) : null,
+                value: endDate,
+                currentValue: this.state.current.consentExtraProps.endDate,
                 name: "endDate",
                 label: "End Date",
-                selected: endDate, // this.hasDate("endDate") ? new Date(endDate.substr(0, 4), endDate.substr(5, 2) - 1, endDate.substr(8, 2)) : null,
-                currentValue: this.state.current.consentExtraProps.endDate,
                 onChange: this.handleChange,
                 disabled: (this.state.formData.consentExtraProps.onGoingProcess === "true"),
                 readOnly: this.state.readOnly
@@ -549,8 +552,8 @@ class ConsentGroupReview extends Component {
                 name: "onGoingProcess",
                 checked: onGoingProcess === 'true' || onGoingProcess === true,
                 onClick: this.handleCheck,
-                onChange: (e) => { }
-                // readOnly: this.state.readOnly
+                onChange: (e) => { },
+                readOnly: this.state.readOnly
               }),
               label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
             ])
