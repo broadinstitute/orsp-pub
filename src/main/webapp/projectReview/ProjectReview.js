@@ -21,23 +21,25 @@ class ProjectReview extends Component {
 
     this.state = {
       showDialog: false,
+      showApproveDialog: false,
       readOnly: true,
+      collaborators: [{ key: '', label: '', value: '' }],
       formData: {
         description: '',
         projectExtraProps: {
           projectTitle: '',
-          protocol: '',
+          protocol: '',  
           subjectProtection: null,
           manageProtocol: null,
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: false
-        },
-        piList: [{ key: '', label: '', value: '' }],
-        pmList: [{ key: '', label: '', value: '' }],
+          projectReviewApproved: false,
+          
+          piList: [{ key: '', label: '', value: '' }],
+          pmList: [{ key: '', label: '', value: '' }]
+        },       
         fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
-        collaborators: [{ key: '', label: '', value: '' }],
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -56,11 +58,10 @@ class ProjectReview extends Component {
         projectManager: '',
         piName: '',
         studyDescription: '',
-        pTitle: '',
-        irbProtocolId: '',
-        fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: [],
+        fundings: [{ source: '', sponsor: '', identifier: '' }],
         projectExtraProps: {
+          irbProtocolId: '',
           projectTitle: '',
           protocol: '',
           subjectProtection: null,
@@ -68,11 +69,12 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: false
+          projectReviewApproved: false          
         }
       }
     }
     this.rejectProject = this.rejectProject.bind(this);
+    this.approveEdits = this.approveEdits.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -205,9 +207,65 @@ class ProjectReview extends Component {
 
   }
 
-  approveEdits = (e) => () => {
-
+  approveEdits() {
+    let project = this.getProject();
+    Project.updateProject(this.props.projectUrl, project, this.props.projectKey).then(
+      resp => {
+        window.location.href = [this.props.serverURL, "index"].join("/");
+        spinnerService.showAll();
+      })
+      .catch(error => {
+      spinnerService.hideAll();
+      console.error(error);
+    });
   }
+
+  getProject() {
+    let project = {};
+    project.description = this.state.formData.description;
+    project.fundings = this.getFundings(this.state.formData.fundings);
+    let extraProperties = [];
+    extraProperties.push({name: 'subjectProtection', value: this.state.formData.projectExtraProps.subjectProtection});
+    extraProperties.push({name: 'projectReviewApproved', value: this.state.formData.projectExtraProps.projectReviewApproved })
+    extraProperties.push({name: 'protocol', value: this.state.formData.projectExtraProps.protocol});
+    extraProperties.push({name: 'feeForService', value: this.state.formData.projectExtraProps.feeForService});
+    extraProperties.push({name: 'projectTitle', value: this.state.formData.projectExtraProps.projectTitle});
+   
+    //list 
+    let collaborators = this.state.formData.projectExtraProps.collaborators;
+    if (this.state.formData.pmList !== null &&this.state.formData.pmList.length > 0) {
+      this.state.formData.pmList.map((pm, idx) => {
+        extraProperties.push({name: 'pm', value: pm.key});
+      });
+    }
+    if (this.state.formData.pmList !== null &&this.state.formData.piList.length > 0) {
+      this.state.formData.piList.map((pi, idx) => {
+        extraProperties.push({name: 'pi', value: pi.key});
+      });
+    }
+    if (collaborators !== null && collaborators.length > 0) {
+      collaborators.map((collaborator, idx) => {
+        extraProperties.push({name: 'collaborator', value: collaborator.key});
+      });
+    }
+    project.extraProperties = extraProperties;
+    return project;
+  }
+
+  getFundings(fundings) {
+    let fundingList = [];
+    if (fundings !== null && fundings.length > 0) {
+      fundings.map((f, idx) => {
+        let funding = {};
+        funding.source = f.source.label;
+        funding.awardNumber = f.identifier;
+        funding.name = f.sponsor;
+        fundingList.push(funding);
+      });
+    }
+    return fundingList;
+  }
+  //////////////////////TODOOOO
 
 
   enableEdit = (e) => () => {
@@ -255,7 +313,7 @@ class ProjectReview extends Component {
 
   handleProjectCollaboratorChange = (data, action) => {
     this.setState(prev => {
-      prev.formData.collaborators = data;
+      prev.formData.projectExtraProps.collaborators = data;
       return prev;
     }); //, () => this.props.updateForm(this.state.formData, 'collaborators'));
   };
@@ -324,12 +382,14 @@ class ProjectReview extends Component {
   };
 
   closeModal = () => {
-    this.setState({showDialog: !this.state.showDialog});
-  };
-
-  handleDialog = () => {
     this.setState({
       showDialog: !this.state.showDialog
+    });
+  };
+   
+  handleApproveDialog = () => {
+    this.setState({
+      showApproveDialog: !this.state.showApproveDialog
     });
   };
 
@@ -344,6 +404,14 @@ class ProjectReview extends Component {
           handleOkAction: this.rejectProject,
           title: 'Remove Confirmation',
           bodyText: 'Are you sure yo want to remove this project?',
+          actionLabel: 'Yes'
+        }, []),
+        ConfirmationDialog({
+          closeModal: this.handleApproveDialog,
+          show: this.state.showApproveDialog,
+          handleOkAction: this.approveEdits,
+          title: 'Approve Edits Confirmation',
+          bodyText: 'Are you sure yo want to approve this edits?',
           actionLabel: 'Yes'
         }, []),
         button({
@@ -393,7 +461,7 @@ class ProjectReview extends Component {
             handleChange: this.handlePIChange,
             value: this.state.formData.piList,
             currentValue: this.state.current.piList,
-            isMulti: true // this.state.formData.piList.length > 1
+            isMulti: true
           }),
 
           MultiSelect({
@@ -441,8 +509,8 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
-            value: this.state.formData.collaborators,
-            currentValue: this.state.current.collaborators,
+            value: this.state.formData.projectExtraProps.collaborators,
+            currentValue: this.state.current.projectExtraProps.collaborators,
             placeholder: "Start typing collaborator names",
             isMulti: true
           }),
@@ -662,7 +730,7 @@ class ProjectReview extends Component {
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",
-            onClick: this.approveEdits(),
+            onClick: this.handleApproveDialog,
             disabled: this.state.disableApproveButton,
             isRendered: this.isAdmin() && this.state.formData.projectExtraProps.projectReviewApproved
           }, ["Approve Edits"]),
