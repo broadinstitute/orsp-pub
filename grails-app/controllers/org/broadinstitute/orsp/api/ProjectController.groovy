@@ -1,6 +1,5 @@
 package org.broadinstitute.orsp.api
 
-import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
@@ -9,6 +8,7 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.User
+import org.broadinstitute.orsp.utils.IssueUtils
 
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -26,9 +26,7 @@ class ProjectController extends AuthenticatedController {
     }
 
     def save() {
-        Gson gson = new Gson()
-        Issue project = gson.fromJson(gson.toJson(request.JSON), Issue.class)
-
+        Issue project = IssueUtils.getJson(Issue.class, request.JSON)
         Issue issue = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
         handleIntake(issue.projectKey)
         notifyService.sendAdminNotification("Project Type", issue)
@@ -38,8 +36,8 @@ class ProjectController extends AuthenticatedController {
 
     def modifyExtraProperties() {
         String projectKey = params.id
-        Gson gson = new Gson()
-        Object input = gson.fromJson(gson.toJson(request.JSON), Object.class)
+        Object input = IssueUtils.getJson(Object.class, request.JSON)
+
         try {
             Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
             render([message: updatedIssue] as JSON)
@@ -81,8 +79,7 @@ class ProjectController extends AuthenticatedController {
 
 
     def update() {
-        Gson gson = new Gson()
-        Map project = gson.fromJson(gson.toJson(request.JSON), Map.class)
+        Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
         Issue issue = Issue.findByProjectKey(params.projectKey)
         issueService.updateIssue(issue, project)
         response.status = 200

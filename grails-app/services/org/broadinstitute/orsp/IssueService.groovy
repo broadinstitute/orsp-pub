@@ -90,7 +90,7 @@ class IssueService {
      * @return Persisted issue
      */
     @Transactional
-    Issue updateIssue(Issue issue, Map input) throws DomainException {
+    Issue updateIssue(Issue issue, Map<String, Object> input) throws DomainException {
         // Top level properties that are set on the Issue object.
         if (input.get(IssueExtraProperty.SUMMARY)) {
             issue.setSummary((String) input.get(IssueExtraProperty.SUMMARY))
