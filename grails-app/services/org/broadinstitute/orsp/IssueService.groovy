@@ -59,9 +59,7 @@ class IssueService {
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
-            IssueExtraProperty.COLLABORATOR,
-            IssueExtraProperty.PI,
-            IssueExtraProperty.PM
+            IssueExtraProperty.COLLABORATOR
     ]
 
     /**
