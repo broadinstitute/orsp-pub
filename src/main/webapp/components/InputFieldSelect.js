@@ -23,42 +23,59 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     });
   };
 
-  isEdited = (current, future) => {
-    if (current.length !== future.length) {
-      return true;
+  isEdited = (current, futureValue) => {
+    let edited = false;
+    let future = undefined;
+
+    if (futureValue[0] === '') {
+      future = futureValue;
+    } else {
+      future = futureValue[0];
     }
 
-    let edited = false;
-    current.forEach((element, index) => {
-      if (element.key !== future[index].key) {
+    if (this.props.edit || this.props.edit === undefined) {
+      if (current.length !== future.length) {
         edited = true;
       }
-    });
 
+      current.forEach((element, index) => {
+        if (future[index] !== undefined) {
+          if (element.key !== future[index].key) {
+            edited = true;
+          }
+        }
+      });
+    }
     return edited;
   };
 
   render() {
 
-    const { currentValue = [] } = this.props;
-    const value = [];
-    value.push(this.props.value);
+    let currentValue  = [];
+    let value = [];
 
     let currentValues = [];
-    if (currentValue.length === 0) {
+
+    if (this.props.currentValue === undefined) {
       currentValue.push("");
+    } else if (this.props.currentValue.length === 0){
+      currentValue.push("");
+    } else {
+      currentValue = this.props.currentValue;
     }
+
+    if (this.props.value.length === 0) {
+      value.push("");
+    } else {
+      value.push(this.props.value);
+    }
+
     currentValue.forEach(item => {
       currentValues.push(item.label);
     });
 
-    let currentKeys = [];
-    let keys = [];
-
-    if (value[0].value !== "") {
-      currentKeys = this.sortByKey(currentValue, 'key');
-      keys = this.sortByKey(value, 'key');
-    }
+    let currentKeys = this.sortByKey(currentValue, 'key');
+    let keys = this.sortByKey(value, 'key');
 
     let currentValueStr = currentValues.join(',');
 
@@ -67,8 +84,14 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
     return (
       InputField({
-        label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, currentValueStr: currentValueStr, 
+        label: this.props.label,
+        moreInfo: this.props.moreInfo,
+        error: this.props.error,
+        errorMessage: this.props.errorMessage,
+        readOnly: this.props.readOnly,
+        value: this.props.value,
+        currentValue: this.props.currentValue,
+        currentValueStr: currentValueStr,
         edited : edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
