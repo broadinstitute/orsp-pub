@@ -6,6 +6,7 @@
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         isAdmin: "${session.isAdmin}",
         rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
+        updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
         serverURL: "${webRequest.baseUrl}"
     };
 
