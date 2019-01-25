@@ -216,7 +216,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
             error: this.props.errors.sampleCollections,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
 
           InputFieldRadio({
