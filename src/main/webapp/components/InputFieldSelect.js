@@ -84,8 +84,14 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
     return (
       InputField({
-        label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, currentValueStr: currentValueStr, 
+        label: this.props.label,
+        moreInfo: this.props.moreInfo,
+        error: this.props.error,
+        errorMessage: this.props.errorMessage,
+        readOnly: this.props.readOnly,
+        value: this.props.value,
+        currentValue: this.props.currentValue,
+        currentValueStr: currentValueStr,
         edited : edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [

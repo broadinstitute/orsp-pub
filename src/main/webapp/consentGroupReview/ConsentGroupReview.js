@@ -73,7 +73,7 @@ class ConsentGroupReview extends Component {
       },
       suggestions: {},
       suggestionsCopy: {}
-    }
+    };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
 
@@ -90,7 +90,6 @@ class ConsentGroupReview extends Component {
 
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element => {
-
         let sampleCollections = [];
         SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
           resp => {
@@ -266,8 +265,6 @@ class ConsentGroupReview extends Component {
   };
 
   handleCheck = (e) => {
-    console.log(e);
-
     this.setState(prev => {
       prev.formData.consentExtraProps.onGoingProcess = !this.state.formData.consentExtraProps.onGoingProcess;
       prev.formData.endDate = null;
