@@ -103,7 +103,6 @@ class ProjectReview extends Component {
         current.fundings = this.getFundingsArray(issue.data.fundings);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         currentStr = JSON.stringify(current);
-
         // read suggestions here ....
         let edits = null;
 
@@ -219,12 +218,13 @@ class ProjectReview extends Component {
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
-    let extraProperties = [];
     project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
     project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
+    project.manageProtocol = this.state.formData.projectExtraProps.manageProtocol;
+    project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     let collaborators = this.state.formData.collaborators;
     
     if (this.state.formData.pmList !== null &&this.state.formData.pmList.length > 0) {
@@ -561,13 +561,13 @@ class ProjectReview extends Component {
             id: "radioProjectAvailability",
             name: "projectAvailability",
             label: "Project Availability",
-            // value: this.state.projectExtraProps.projectAvailability,
-            optionValues: ["01", "02"],
+            value: this.state.formData.projectExtraProps.projectAvailability,
+            optionValues: ["available", "onHold"],
             optionLabels: [
               "Available",
               "On Hold"
             ],
-            onChange: () => { },
+            onChange: this.handleProjectExtraPropsChangeRadio,
             readOnly: this.state.readOnly
           })
         ]),

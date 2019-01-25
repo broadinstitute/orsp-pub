@@ -50,7 +50,11 @@ class IssueService {
             IssueExtraProperty.PI,
             IssueExtraProperty.PM,
             IssueExtraProperty.PROJECT_REVIEW_APPROVED,
-            IssueExtraProperty.APPROVAL
+            IssueExtraProperty.APPROVAL,
+            IssueExtraProperty.SUBJECT_PROTECTION,
+            IssueExtraProperty.MANAGE_PROTOCOL,
+            IssueExtraProperty.PROJECT_AVAILABILITY
+
     ]
 
 
@@ -59,7 +63,9 @@ class IssueService {
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
-            IssueExtraProperty.COLLABORATOR
+            IssueExtraProperty.COLLABORATOR,
+            IssueExtraProperty.PM,
+            IssueExtraProperty.PI
     ]
 
     /**
@@ -282,8 +288,8 @@ class IssueService {
         Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect {
             name ->
                 if (input.get(name)) {
-                    issue.getExtraProperties().findAll { it.name == name }
-                }
+                     issue.getExtraProperties().findAll { it.name == name }
+               }
         }.flatten().findAll { it != null }
         props
     }
@@ -299,7 +305,7 @@ class IssueService {
     private Collection<IssueExtraProperty> getSingleValuedPropsForSaving(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = singleValuedPropertyKeys.collect {
             name ->
-                if (input.get(name) && input.get(name) instanceof List) {
+                if (input.containsKey(name) && !(input.get(name) instanceof List)) {
                     def value = (String) input.get(name)
                     if (value) {
                         IssueExtraProperty extraProperty = issue.getExtraProperties().find { it.name == name }
@@ -326,7 +332,7 @@ class IssueService {
     private Collection<IssueExtraProperty> getMultiValuedPropsForSaving(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect {
             name ->
-                if (input.get(name)) {
+                if (input.containsKey(name)) {
                     def value = input.get(name)
                     if (value && value instanceof String) {
                         Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
