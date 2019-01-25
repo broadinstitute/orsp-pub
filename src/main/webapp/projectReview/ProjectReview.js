@@ -29,14 +29,14 @@ class ProjectReview extends Component {
         pmList: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
-          projectTitle: '',         
-          protocol: '',  
+          projectTitle: '',
+          protocol: '',
           subjectProtection: null,
           manageProtocol: null,
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: false         
+          projectReviewApproved: false      
         },       
         fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
         requestor: {
@@ -191,8 +191,8 @@ class ProjectReview extends Component {
   rejectProject() {
     spinnerService.showAll();
     Project.rejectProject(this.props.rejectProjectUrl, this.props.projectKey).then(resp => {
-      window.location.href = [this.props.serverURL, "index"].join("/");
-      spinnerService.hideAll();
+        window.location.href = [this.props.serverURL, "index"].join("/");
+        spinnerService.hideAll();
     });
   }
 
