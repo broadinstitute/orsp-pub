@@ -11,6 +11,13 @@ import { InstitutionalSource } from '../components/InstitutionalSource';
 import { ConsentGroup, SampleCollections, User } from "../util/ajax";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
+import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
+
+const EXIT = 500;
+const DPA = 600;
+const RA = 700;
+const CTC = 800;
+const OSAP = 900;
 
 class ConsentGroupReview extends Component {
 
@@ -23,6 +30,14 @@ class ConsentGroupReview extends Component {
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
+      },
+      determination: {
+        projectType: 900,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
       },
 
       consentExtraProps: {
@@ -72,7 +87,8 @@ class ConsentGroupReview extends Component {
         }
       },
       suggestions: {},
-      suggestionsCopy: {}
+      suggestionsCopy: {},
+      questions: []
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
@@ -163,6 +179,7 @@ class ConsentGroupReview extends Component {
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
+              prev.questions = this.initQuestions();
               return prev;
             });
           }
@@ -241,20 +258,20 @@ class ConsentGroupReview extends Component {
     this.setState({
       readOnly: false
     });
-  }
+  };
 
   cancelEdit = (e) => () => {
     this.setState({
       formData: this.state.futureCopy,
       readOnly: true
     });
-  }
+  };
 
   submitEdit = (e) => () => {
     this.setState({
       readOnly: true
     });
-  }
+  };
 
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
@@ -359,6 +376,92 @@ class ConsentGroupReview extends Component {
       return [this.props.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
     }
   }
+
+  initQuestions = () => {
+    let questions = [];
+
+    questions.push({
+      question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
+      yesOutput: 2,
+      noOutput: EXIT,
+      answer: null,
+      progress: 0,
+      key: 'individualDataSourced',
+      id: 1
+    });
+
+    questions.push({
+      question: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
+      yesOutput: 3,
+      noOutput: EXIT,
+      answer: null,
+      progress: 17,
+      key: 'isLinkMaintained',
+      id: 2
+    });
+
+    questions.push({
+      question: 'Is the Broad work being performed as fee-for-service?',
+      yesOutput: DPA,
+      noOutput: 4,
+      answer: null,
+      progress: 34,
+      key: 'feeForService',
+      id: 3
+    });
+
+    questions.push({
+      question: 'Are samples/data coming directly to the Broad from the EEA?',
+      yesOutput: 5,
+      noOutput: RA,
+      answer: null,
+      progress: 50,
+      key: 'areSamplesComingFromEEAA',
+      id: 4
+    });
+
+    questions.push({
+      question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
+      yesOutput: OSAP,
+      noOutput: 6,
+      answer: null,
+      progress: 67,
+      key: 'isCollaboratorProvidingGoodService',
+      id: 5
+    });
+
+    questions.push({
+      question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
+      yesOutput: EXIT,
+      noOutput: CTC,
+      answer: null,
+      progress: 83,
+      key: 'isConsentUnambiguous',
+      id: 6
+    });
+
+    return questions;
+  };
+
+  determinationHandler = (determination) => {
+    console.log(determination.endState);
+    console.log(this.state.current.consentExtraProps);
+    this.setState(prev => {
+      prev.determination = determination;
+      if (this.state.determination.projectType !== null && this.state.showCohortError === true) {
+        prev.showCohortError = false;
+      }
+      determination.questions.forEach(question => {
+        console.log(question);
+        if (question.answer !== null) {
+          prev.current.consentExtraProps[question.key] = question.answer;
+        } else {
+          question.answer = null;
+        }
+      });
+      return prev;
+    });
+  };
 
   render() {
 
@@ -566,7 +669,20 @@ class ConsentGroupReview extends Component {
           })
         ]),
 
-        Panel({ title: "International Cohorts" }, [
+        Panel({
+          title: "International Cohorts",
+          isRendered: !this.state.readOnly,
+        },[
+          QuestionnaireWorkflow({
+            questions: this.state.questions,
+            handler: this.determinationHandler,
+            determination: this.state.determination
+          })
+        ]),
+        Panel({
+          title: "International Cohorts",
+          isRendered: this.state.readOnly
+        }, [
           div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.individualDataSourced), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioQuestion1",
