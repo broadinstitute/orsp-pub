@@ -37,7 +37,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
       if (current.length !== future.length) {
         edited = true;
       }
-      
+
       current.forEach((element, index) => {
         if (future[index] !== undefined) {
           if (element.key !== future[index].key) {
