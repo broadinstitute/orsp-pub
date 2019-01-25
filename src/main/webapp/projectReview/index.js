@@ -13,6 +13,7 @@ ReactDOM.render(
     isAdmin = {projectReviewValues.isAdmin}
     serverURL = {projectReviewValues.serverURL}
     rejectProjectUrl = {projectReviewValues.rejectProjectUrl}
+    updateProjectUrl = {projectReviewValues.updateProjectUrl}
   />,
   document.getElementById('projectReview')
 );

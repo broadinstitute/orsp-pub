@@ -89,6 +89,10 @@ export const Project = {
 
   rejectProject(url, projectKey) {
     return axios.delete(url + '?projectKey=' + projectKey);
+  },
+
+  updateProject(url, data, projectKey) {
+    return axios.put(url + '?projectKey=' + projectKey, data);
   }
 
 };

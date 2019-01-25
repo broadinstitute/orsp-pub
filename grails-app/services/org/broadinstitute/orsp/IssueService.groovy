@@ -4,8 +4,6 @@ import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
 
-import org.broadinstitute.orsp.utils.IssueUtils
-
 /**
  * This class handles the general update or creation of issues and nothing more.
  *
@@ -52,7 +50,11 @@ class IssueService {
             IssueExtraProperty.PI,
             IssueExtraProperty.PM,
             IssueExtraProperty.PROJECT_REVIEW_APPROVED,
-            IssueExtraProperty.APPROVAL
+            IssueExtraProperty.APPROVAL,
+            IssueExtraProperty.SUBJECT_PROTECTION,
+            IssueExtraProperty.MANAGE_PROTOCOL,
+            IssueExtraProperty.PROJECT_AVAILABILITY
+
     ]
 
 
@@ -61,7 +63,9 @@ class IssueService {
             IssueExtraProperty.ACTOR,
             IssueExtraProperty.AFFILIATIONS,
             IssueExtraProperty.NOT_RESEARCH,
-            IssueExtraProperty.COLLABORATORS
+            IssueExtraProperty.COLLABORATOR,
+            IssueExtraProperty.PM,
+            IssueExtraProperty.PI
     ]
 
     /**
@@ -71,6 +75,7 @@ class IssueService {
      * @return Persisted issue
      */
     @Transactional
+    @Deprecated
     Issue addIssue(Issue issue, GrailsParameterMap input) throws DomainException {
         IssueType type = IssueType.valueOfName(issue.type)
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
@@ -91,7 +96,7 @@ class IssueService {
      * @return Persisted issue
      */
     @Transactional
-    Issue updateIssue(Issue issue, GrailsParameterMap input) throws DomainException {
+    Issue updateIssue(Issue issue, Map<String, Object> input) throws DomainException {
         // Top level properties that are set on the Issue object.
         if (input.get(IssueExtraProperty.SUMMARY)) {
             issue.setSummary((String) input.get(IssueExtraProperty.SUMMARY))
@@ -108,9 +113,9 @@ class IssueService {
         // Handle native associations.
 
         // Funding:
-        def fundingParams = (GrailsParameterMap) input.get('funding')
-        def propList = IssueUtils.convertNestedParamsToPropertyList(fundingParams)
-        def newFundingList = propList.collect { p ->
+        def fundingParams = input.get('funding')
+
+        def newFundingList = fundingParams.collect { p ->
             Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
             Funding f = (fundingID > 0) ? Funding.findById(fundingID) : new Funding()
             if (!f.getCreated()) f.setCreated(new Date())
@@ -132,7 +137,7 @@ class IssueService {
         def deletableFundings = oldFundingList.findAll { !newFundingIdList.contains(it.id) }
         deletableFundings.each {
             issue.removeFromFundings(it)
-            it.delete()
+            it.delete(hard: true)
         }
 
         // Remaining properties are IssueExtraProperty associations
@@ -150,7 +155,7 @@ class IssueService {
 
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
-            it.delete()
+            it.delete(hard: true)
         }
 
         propsToSave.each {
@@ -283,8 +288,8 @@ class IssueService {
         Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect {
             name ->
                 if (input.get(name)) {
-                    issue.getExtraProperties().findAll { it.name == name }
-                }
+                     issue.getExtraProperties().findAll { it.name == name }
+               }
         }.flatten().findAll { it != null }
         props
     }
@@ -300,7 +305,7 @@ class IssueService {
     private Collection<IssueExtraProperty> getSingleValuedPropsForSaving(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = singleValuedPropertyKeys.collect {
             name ->
-                if (input.get(name)) {
+                if (input.containsKey(name) && !(input.get(name) instanceof Collection)) {
                     def value = (String) input.get(name)
                     if (value) {
                         IssueExtraProperty extraProperty = issue.getExtraProperties().find { it.name == name }
@@ -327,7 +332,7 @@ class IssueService {
     private Collection<IssueExtraProperty> getMultiValuedPropsForSaving(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect {
             name ->
-                if (input.get(name)) {
+                if (input.containsKey(name)) {
                     def value = input.get(name)
                     if (value && value instanceof String) {
                         Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))

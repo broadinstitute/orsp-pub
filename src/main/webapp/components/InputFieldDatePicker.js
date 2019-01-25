@@ -20,6 +20,8 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
 
     if (typeof this.props.selected === 'string') {
       selected = new Date(this.props.selected);
+    } else {
+      selected = this.props.selected;
     }
 
     const edited = this.props.value !== this.props.currentValue && this.props.currentValue != null;
