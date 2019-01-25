@@ -305,7 +305,7 @@ class IssueService {
     private Collection<IssueExtraProperty> getSingleValuedPropsForSaving(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = singleValuedPropertyKeys.collect {
             name ->
-                if (input.containsKey(name) && !(input.get(name) instanceof List)) {
+                if (input.containsKey(name) && !(input.get(name) instanceof Collection)) {
                     def value = (String) input.get(name)
                     if (value) {
                         IssueExtraProperty extraProperty = issue.getExtraProperties().find { it.name == name }
