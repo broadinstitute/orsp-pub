@@ -54,7 +54,7 @@ class ConsentGroupReview extends Component {
 
         individualDataSourced: null,
         isLinkMaintained: null,
-        isFeeForService: null,
+        feeForService: null,
         areSamplesComingFromEEAA: null,
         isCollaboratorProvidingGoodService: null,
         isConsentUnambiguous: null,
@@ -88,7 +88,8 @@ class ConsentGroupReview extends Component {
       },
       suggestions: {},
       suggestionsCopy: {},
-      questions: []
+      questions: [],
+      questionsIds: []
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
@@ -444,19 +445,16 @@ class ConsentGroupReview extends Component {
   };
 
   determinationHandler = (determination) => {
-    console.log(determination.endState);
-    console.log(this.state.current.consentExtraProps);
     this.setState(prev => {
       prev.determination = determination;
       if (this.state.determination.projectType !== null && this.state.showCohortError === true) {
         prev.showCohortError = false;
       }
       determination.questions.forEach(question => {
-        console.log(question);
         if (question.answer !== null) {
-          prev.current.consentExtraProps[question.key] = question.answer;
+          prev.formData.consentExtraProps[question.key] = question.answer;
         } else {
-          question.answer = null;
+          prev.formData.consentExtraProps[question.key] = null;
         }
       });
       return prev;
@@ -477,7 +475,7 @@ class ConsentGroupReview extends Component {
 
       individualDataSourced = '',
       isLinkMaintained = '',
-      isFeeForService = '',
+      feeForService = '',
       areSamplesComingFromEEAA = '',
       isCollaboratorProvidingGoodService = '',
       isConsentUnambiguous = '',
@@ -703,17 +701,19 @@ class ConsentGroupReview extends Component {
               label: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
               readOnly: this.state.readOnly,
               onChange: this.handleExtraPropsInputChange,
+              valueEdited: this.isEmpty(this.state.current.consentExtraProps.isLinkMaintained) === !this.isEmpty(this.state.formData.consentExtraProps.individualDataSourced)
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.isFeeForService) }, [
+          div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.feeForService) }, [
             InputYesNo({
               id: "radioQuestion3",
-              name: "isFeeForService",
-              value: this.state.formData.consentExtraProps.isFeeForService,
-              currentValue: this.state.current.consentExtraProps.isFeeForService,
+              name: "feeForService",
+              value: this.state.formData.consentExtraProps.feeForService,
+              currentValue: this.state.current.consentExtraProps.feeForService,
               label: 'Is the Broad work being performed as fee-for-service?',
               readOnly: this.state.readOnly,
               onChange: this.handleExtraPropsInputChange,
+              valueEdited: this.isEmpty(this.state.current.consentExtraProps.feeForService) === !this.isEmpty(this.state.formData.consentExtraProps.isLinkMaintained)
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.areSamplesComingFromEEAA) }, [
@@ -725,6 +725,7 @@ class ConsentGroupReview extends Component {
               label: 'Are samples/data coming directly to the Broad from the EEA?',
               readOnly: this.state.readOnly,
               onChange: this.handleExtraPropsInputChange,
+              valueEdited: this.isEmpty(this.state.current.consentExtraProps.areSamplesComingFromEEAA) === !this.isEmpty(this.state.formData.consentExtraProps.feeForService)
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.isCollaboratorProvidingGoodService) }, [
@@ -736,6 +737,7 @@ class ConsentGroupReview extends Component {
               label: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
               readOnly: this.state.readOnly,
               onChange: this.handleExtraPropsInputChange,
+              valueEdited: this.isEmpty(this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) === !this.isEmpty(this.state.formData.consentExtraProps.areSamplesComingFromEEAA)
             })
           ]),
           div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.isConsentUnambiguous) }, [
@@ -747,6 +749,7 @@ class ConsentGroupReview extends Component {
               label: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
               readOnly: this.state.readOnly,
               onChange: this.handleExtraPropsInputChange,
+              valueEdited: this.isEmpty(this.state.current.consentExtraProps.isConsentUnambiguous) === !this.isEmpty(this.state.formData.consentExtraProps.isCollaboratorProvidingGoodService)
             })
           ])
         ]),
