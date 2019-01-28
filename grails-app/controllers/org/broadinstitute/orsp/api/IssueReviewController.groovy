@@ -54,11 +54,11 @@ class IssueReviewController extends AuthenticatedController {
     def show() {
         IssueReview issueReview = issueReviewService.findByProjectKey(params.id)
         if (issueReview == null) {
+            response.status = 204
+        } else {
             response.status = 200
-            render('' )
+            render(issueReview as JSON)
         }
-        response.status = 200
-        render(issueReview as JSON)
     }
 
     private IssueReview parseIssueReview(String json) {
