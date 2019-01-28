@@ -21,9 +21,9 @@ class UrlMappings {
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
         '/api/consent-group'(resource: 'newConsentGroup')
         '/api/issue-review'(resource: 'issueReview')
-        '/api/issue-review/show-review'(controller: 'IssueReview', action: 'show', method: 'GET')
-        '/api/issue-review/submit-review'(controller: 'IssueReview', action: 'save', method: 'POST')
-        '/api/issue-review/update-review'(controller: 'IssueReview', action: 'update', method: 'PUT')
+        '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
+        '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
+        '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

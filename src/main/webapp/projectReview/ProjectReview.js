@@ -551,6 +551,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             required: false,
             onChange: this.handleProjectExtraPropsChange,
+            valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol)
           }),
           InputYesNo({
             id: "radioSubjectProtection",

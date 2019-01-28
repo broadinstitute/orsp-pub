@@ -128,17 +128,17 @@ export const User = {
 
 export const Review = {
   getSuggestions(serverURL, projectKey) {
-    return axios.get(serverURL + '/api/issue-review/show-review?id=' + projectKey);
+    return axios.get(serverURL + '/api/issue-review?id=' + projectKey);
   },
 
   submitReview(serverURL, data) {
     const config = {
         headers: { 'content-type': 'application/json' }
     };
-    return axios.post(serverURL + '/api/issue-review/submit-review?id=', data);
+    return axios.post(serverURL + '/api/issue-review?id=', data);
   },
 
   updateReview(serverURL, projectKey, data) {
-    return axios.put(serverURL + '/api/issue-review/update-review?projectKey=' + projectKey, data);
+    return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
 }
