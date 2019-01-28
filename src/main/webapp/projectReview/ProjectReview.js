@@ -140,14 +140,13 @@ class ProjectReview extends Component {
   getReviewSuggestions() {
     Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
       data => {
-        if (data !== null) {
+        if (data.data !== '') {
           this.setState(prev => {
             prev.formData = JSON.parse(data.data.suggestions);
             prev.reviewSuggestion = true;
             return prev;
           });
         }
-
       });
   }
 

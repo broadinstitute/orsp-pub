@@ -92,7 +92,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         value: this.props.value,
         currentValue: this.props.currentValue,
         currentValueStr: currentValueStr,
-        edited : edited
+        edited : false //edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(Select, {
