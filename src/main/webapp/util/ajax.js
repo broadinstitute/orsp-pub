@@ -130,15 +130,15 @@ export const User = {
 export const Review = {
 
   getSuggestions(serverURL, projectKey) {
-    return axios.get(serverURL + '/api/issue-review/show-review?projectKey=' + projectKey);
+    return axios.get(serverURL + '/api/issue-review?projectKey=' + projectKey);
   },
 
   submitReview(serverURL, data) {
-    return axios.post(serverURL + '/api/issue-review/submit-review?projectKey=', data);
+    return axios.post(serverURL + '/api/issue-review?projectKey=', data);
   },
 
   updateReview(serverURL, projectKey, data) {
-    return axios.put(serverURL + '/api/issue-review/update-review?projectKey=' + projectKey, data);
+    return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
 
 }

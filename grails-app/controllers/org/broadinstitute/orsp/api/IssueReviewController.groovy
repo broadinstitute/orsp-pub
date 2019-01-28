@@ -54,8 +54,8 @@ class IssueReviewController extends AuthenticatedController {
     def show() {
         IssueReview issueReview = issueReviewService.findByProjectKey(params.projectKey)
         if (issueReview == null) {
-            response.status = 404
-            render([message: "Issue review does not exist"] as JSON)
+            response.status = 200
+            render('' )
         }
         response.status = 200
         render(issueReview as JSON)
