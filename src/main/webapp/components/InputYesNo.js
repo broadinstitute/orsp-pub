@@ -49,7 +49,7 @@ export const InputYesNo = (props) => {
       }),
       div({ isRendered: edited, className: "radioOptionsCurrent" }, [
         span({ className: "italic" }, ["Previous value: "]),
-        currentValue
+        currentValue == true ? 'Yes' : 'No'
       ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])

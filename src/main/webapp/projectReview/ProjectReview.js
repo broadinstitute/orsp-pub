@@ -20,6 +20,12 @@ class ProjectReview extends Component {
     super(props);
 
     this.state = {
+      descriptionError: false,
+      projectTitleError: false,
+      editTypeError: false,
+      editDescriptionError: false,
+      subjectProtection: false,
+      foundingError: false,
       showDialog: false,
       showApproveDialog: false,
       readOnly: true,
@@ -203,14 +209,14 @@ class ProjectReview extends Component {
   approveEdits() {
     let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
-      resp => {
-        window.location.href = [this.props.serverURL, "index"].join("/");
-        spinnerService.showAll();
-      })
-      .catch(error => {
+    resp => {
+      window.location.href = [this.props.serverURL, "index"].join("/");
+      spinnerService.showAll();
+    })
+    .catch(error => {
       spinnerService.hideAll();
       console.error(error);
-    });
+     });    
   }
 
   getProject() {
@@ -225,6 +231,8 @@ class ProjectReview extends Component {
     project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
     project.manageProtocol = this.state.formData.projectExtraProps.manageProtocol;
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
+    project.editDescription = this.state.formData.projectExtraProps.editDescription;
+    project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
     let collaborators = this.state.formData.collaborators;
     
     if (this.state.formData.pmList !== null &&this.state.formData.pmList.length > 0) {
@@ -334,6 +342,9 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
+    },
+    () => {
+      if(this.state.errorSubmit == true) this.isValid() 
     }); 
   };
 
@@ -347,6 +358,9 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
+    },
+    () => {
+      if(this.state.errorSubmit == true) this.isValid() 
     }); 
   };
 
@@ -360,6 +374,9 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
       return prev;
+    },
+    () => {
+      if(this.state.errorSubmit == true) this.isValid() 
     }); 
   };
 
@@ -369,6 +386,9 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
       return prev;
+    },
+    () => {
+      if(this.state.errorSubmit == true) this.isValid() 
     }); 
   };
 
@@ -379,9 +399,58 @@ class ProjectReview extends Component {
   };
    
   handleApproveDialog = () => {
-    this.setState({
-      showApproveDialog: !this.state.showApproveDialog
-    });
+    if(this.isValid()) {
+      this.setState({
+        showApproveDialog: !this.state.showApproveDialog,
+        errorSubmit: false
+      });
+    } 
+    else {
+      this.setState({
+        errorSubmit: true
+      });
+    }    
+  };
+
+  isValid() {
+   let descriptionError = false;
+   let projectTitleError = false;
+   let subjectProtectionError = false;
+   let editTypeError = false;
+   let editDescriptionError = false;
+   
+   if (!this.isTextValid(this.state.formData.projectExtraProps.editDescription)) {
+      editDescriptionError = true;
+   }
+   if (!this.isTextValid(this.state.formData.projectExtraProps.describeEditType)) {
+    editTypeError = true;
+  }
+   if (!this.isTextValid(this.state.formData.description)) {
+      descriptionError = true;
+   }
+   if (!this.isTextValid(this.state.formData.projectExtraProps.projectTitle)) {
+      projectTitleError = true;
+   }
+   if (!this.isTextValid(this.state.formData.projectExtraProps.subjectProtection)) {
+      subjectProtectionError = false;
+   }
+   this.setState(prev => {
+     prev.descriptionError = descriptionError;
+     prev.projectTitleError = projectTitleError;
+     prev.subjectProtectionError = subjectProtectionError;
+     prev.editDescriptionError = editDescriptionError;
+     prev.editTypeError = editTypeError;
+     return prev;
+   });
+   return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
+  }
+
+  isTextValid(value) {
+    let isValid = false;
+    if (value !== '' && value !== null && value !== undefined) {
+      isValid = true;
+    }
+    return isValid;
   };
 
   render() {
@@ -486,9 +555,9 @@ class ProjectReview extends Component {
             value: this.state.formData.description.replace(/<\/?[^>]+(>|$)/g, ""),
             currentValue: this.state.current.description,
             readOnly: this.state.readOnly,
-            required: false,
+            required: true,
             onChange: this.handleInputChange,
-            error: false,
+            error: this.state.descriptionError,
             errorMessage: "Required field"
           }),
 
@@ -514,7 +583,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             required: false,
             onChange: this.handleProjectExtraPropsChange,
-            error: false,
+            error: this.state.projectTitleError,
             errorMessage: "Required field"
           }),
           InputFieldText({
@@ -562,6 +631,8 @@ class ProjectReview extends Component {
             name: "projectAvailability",
             label: "Project Availability",
             value: this.state.formData.projectExtraProps.projectAvailability,
+            currentValue: this.state.current.projectExtraProps.projectAvailability,
+            currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
             optionValues: ["available", "onHold"],
             optionLabels: [
               "Available",
@@ -572,29 +643,38 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Notes to ORSP", isRendered: false, }, [
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false}, [
           InputFieldRadio({
             id: "radioDescribeEdits",
             name: "describeEditType",
+            currentValue: this.state.current.projectExtraProps.describeEditType,
+            currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ? 
+            "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record": 
+            "I am requesting assistance in updating and existing project",
             label: "Please choose one of the following to describe the proposed Edits: ",
-            optionValues: ["01", "02"],
+            value: this.state.formData.projectExtraProps.describeEditType,
+            optionValues: ["newAmendment", "requestingAssistance"],
             optionLabels: [
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
               "I am requesting assistance in updating and existing project"
             ],
-            onChange: () => { },
-            readOnly: this.state.readOnly
+            onChange:  this.handleProjectExtraPropsChangeRadio,
+            readOnly: this.state.readOnly,
+            required: true,
+            error: this.state.editTypeError,
+            errorMessage: "Required field"
           }),
 
           InputFieldTextArea({
             id: "inputDescribeEdits",
             name: "editDescription",
             label: "Please use the space below to describe any additional edits or clarifications to the edits above",
-            currentValue: this.state.current.editDescription,
+            currentValue: this.state.current.projectExtraProps.editDescription,
+            value: this.state.formData.projectExtraProps.editDescription,
             readOnly: this.state.readOnly,
-            required: false,
-            onChange: this.handleInputChange,
-            error: false,
+            required: true,
+            onChange: this.handleProjectExtraPropsChange,
+            error: this.state.editDescriptionError,
             errorMessage: "Required field"
           })
         ]),
