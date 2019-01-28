@@ -209,14 +209,14 @@ class ProjectReview extends Component {
   approveEdits() {
     let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
-    resp => {
-      window.location.href = [this.props.serverURL, "index"].join("/");
-      spinnerService.showAll();
-    })
-    .catch(error => {
-      spinnerService.hideAll();
-      console.error(error);
-     });    
+      resp => {
+        window.location.href = [this.props.serverURL, "index"].join("/");
+        spinnerService.showAll();
+      })
+      .catch(error => {
+        spinnerService.hideAll();
+        console.error(error);
+    });
   }
 
   getProject() {
@@ -233,6 +233,7 @@ class ProjectReview extends Component {
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
+
     let collaborators = this.state.formData.collaborators;
     
     if (this.state.formData.pmList !== null &&this.state.formData.pmList.length > 0) {
@@ -631,8 +632,11 @@ class ProjectReview extends Component {
             name: "projectAvailability",
             label: "Project Availability",
             value: this.state.formData.projectExtraProps.projectAvailability,
+<<<<<<< HEAD
             currentValue: this.state.current.projectExtraProps.projectAvailability,
             currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
+=======
+>>>>>>> 4ae219ac6aceabbdd9ce5574adbf47da0682c42b
             optionValues: ["available", "onHold"],
             optionLabels: [
               "Available",
@@ -652,8 +656,12 @@ class ProjectReview extends Component {
             "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record": 
             "I am requesting assistance in updating and existing project",
             label: "Please choose one of the following to describe the proposed Edits: ",
+<<<<<<< HEAD
             value: this.state.formData.projectExtraProps.describeEditType,
             optionValues: ["newAmendment", "requestingAssistance"],
+=======
+            optionValues: ["01", "02"],
+>>>>>>> 4ae219ac6aceabbdd9ce5574adbf47da0682c42b
             optionLabels: [
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
               "I am requesting assistance in updating and existing project"
@@ -669,8 +677,12 @@ class ProjectReview extends Component {
             id: "inputDescribeEdits",
             name: "editDescription",
             label: "Please use the space below to describe any additional edits or clarifications to the edits above",
+<<<<<<< HEAD
             currentValue: this.state.current.projectExtraProps.editDescription,
             value: this.state.formData.projectExtraProps.editDescription,
+=======
+            currentValue: this.state.current.editDescription,
+>>>>>>> 4ae219ac6aceabbdd9ce5574adbf47da0682c42b
             readOnly: this.state.readOnly,
             required: true,
             onChange: this.handleProjectExtraPropsChange,
