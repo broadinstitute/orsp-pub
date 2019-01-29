@@ -53,8 +53,9 @@ class IssueService {
             IssueExtraProperty.APPROVAL,
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.MANAGE_PROTOCOL,
-            IssueExtraProperty.PROJECT_AVAILABILITY
-
+            IssueExtraProperty.PROJECT_AVAILABILITY,
+            IssueExtraProperty.EDIT_DESCRIPTION,
+            IssueExtraProperty.DESCRIBE_EDIT_TYPE
     ]
 
 

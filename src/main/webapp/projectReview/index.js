@@ -14,6 +14,7 @@ ReactDOM.render(
     serverURL = {projectReviewValues.serverURL}
     rejectProjectUrl = {projectReviewValues.rejectProjectUrl}
     updateProjectUrl = {projectReviewValues.updateProjectUrl}
+    discardReviewUrl = {projectReviewValues.discardReviewUrl}
   />,
   document.getElementById('projectReview')
 );
