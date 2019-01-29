@@ -8,7 +8,7 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
-import { ConsentGroup, SampleCollections, User } from "../util/ajax";
+import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 
@@ -20,6 +20,7 @@ class ConsentGroupReview extends Component {
       readOnly: true,
       isAdmin: false,
       disableApproveButton: false,
+      reviewSuggestion: false,
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
@@ -102,7 +103,6 @@ class ConsentGroupReview extends Component {
               };
             });
             sampleCollectionList = sampleCollections;
-
             current.consentExtraProps = element.data.extraProperties;
             if (element.data.collectionLinks !== undefined) {
               current.sampleCollectionLinks = element.data.collectionLinks;
@@ -124,12 +124,7 @@ class ConsentGroupReview extends Component {
 
             current.consentForm = element.data.issue;
             currentStr = JSON.stringify(current);
-
-            // read suggestions here ....
-            // ....
-            // ConsentGroup.getSuggestions(this.props.consentGroupUrl, this.props.consentKey).then(
-            //   edits => {
-
+            this.getReviewSuggestions();
             let edits = null;
 
             if (edits != null) {
@@ -167,7 +162,25 @@ class ConsentGroupReview extends Component {
             });
           }
         );
+      }
+    );
+  }
 
+  getReviewSuggestions() {
+    Review.getSuggestions(this.props.serverURL, this.props.consentKey).then(
+      data => {
+        if (data.data !== '') {
+          this.setState(prev => {
+            prev.formData = JSON.parse(data.data.suggestions);
+            prev.reviewSuggestion = true;
+            return prev;
+          });
+        } else {
+          this.setState(prev => {
+            prev.reviewSuggestion = false;
+            return prev;
+          });
+        }
       }
     );
   }
@@ -175,7 +188,7 @@ class ConsentGroupReview extends Component {
   parseBool() {
     if (this.state.formData.consentExtraProps.onGoingProcess !== undefined) {
       let stringValue = this.state.formData.consentExtraProps.onGoingProcess;
-      let boolValue = stringValue.toLowerCase() == 'true' ? true : false;
+      let boolValue = stringValue.toLowerCase() === 'true';
       return boolValue;
     }
   }
@@ -190,8 +203,8 @@ class ConsentGroupReview extends Component {
   }
 
   approveConsentGroup = () => {
-    this.setState({ disableApproveButton: true })
-    const data = { approvalStatus: "Approved" }
+    this.setState({ disableApproveButton: true });
+    const data = { approvalStatus: "Approved" };
     ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(
       () =>
         this.setState(prev => {
@@ -199,7 +212,7 @@ class ConsentGroupReview extends Component {
           return prev;
         })
     );
-  }
+  };
 
   approveRevision = (e) => () => {
     this.setState({ disableApproveButton: true });
@@ -238,22 +251,38 @@ class ConsentGroupReview extends Component {
   }
 
   enableEdit = (e) => () => {
+    this.getReviewSuggestions();
     this.setState({
       readOnly: false
     });
-  }
+  };
 
   cancelEdit = (e) => () => {
     this.setState({
       formData: this.state.futureCopy,
       readOnly: true
     });
-  }
+    this.getReviewSuggestions();
+  };
 
   submitEdit = (e) => () => {
     this.setState({
       readOnly: true
     });
+    const data = {
+      projectKey: this.props.consentKey,
+      suggestions: JSON.stringify(this.state.formData),
+    };
+
+    if (this.state.reviewSuggestion) {
+      Review.updateReview (this.props.serverURL, this.props.consentKey, data).then(() =>
+        this.getReviewSuggestions()
+      );
+    } else {
+      Review.submitReview (this.props.serverURL, data).then(() =>
+        this.getReviewSuggestions()
+      );
+    }
   }
 
   handleSampleCollectionChange = () => (data) => {
@@ -265,13 +294,23 @@ class ConsentGroupReview extends Component {
   };
 
   handleCheck = (e) => {
+    const checked = e.target.checked;
+    const date = this.state.current.consentExtraProps.endDate;
     this.setState(prev => {
-      prev.formData.consentExtraProps.onGoingProcess = !this.state.formData.consentExtraProps.onGoingProcess;
-      prev.formData.endDate = null;
+      prev.formData.consentExtraProps.onGoingProcess = checked;
+      prev.formData.consentExtraProps.endDate = checked ? null : date;
       return prev;
-    }); // , () => this.props.updateForm(this.state.formData, "onGoingProcess"));
-    //this.props.removeErrorMessage();
+    });
   };
+
+  addDays(date, days) {
+    if (date !== null) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+    return null
+  }
 
   handleUpdateinstitutionalSources = (updated, field) => {
     this.setState(prev => {
@@ -425,14 +464,15 @@ class ConsentGroupReview extends Component {
             id: "inputConsentGroupName",
             name: "consentGroupName",
             label: "Consent Group Name",
-            value: this.state.formData.consentForm.summary,
+            disabled: !this.state.readOnly,
+            value: consent + " / " + protocol,
             currentValue: this.state.current.consentForm.summary,
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly
           }),
           InputFieldText({
             id: "inputInvestigatorLastName",
-            name: "investigatorLastName",
+            name: "consent",
             label: "Last Name of Investigator Listed on the Consent Form",
             value: consent,
             currentValue: this.state.current.consentExtraProps.consent,
@@ -464,7 +504,8 @@ class ConsentGroupReview extends Component {
             value: collContact,
             currentValue: this.state.current.consentExtraProps.collContact,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            valueEdited: this.isEmpty(this.state.current.consentExtraProps.collContact) === !this.isEmpty(this.state.formData.consentExtraProps.collContact)
           }),
           InputFieldRadio({
             id: "radioDescribeConsentGroup",
@@ -532,7 +573,7 @@ class ConsentGroupReview extends Component {
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                selected: endDate, // this.hasDate("endDate") ? new Date(endDate.substr(0, 4), endDate.substr(5, 2) - 1, endDate.substr(8, 2)) : null,
+                selected: this.addDays(endDate, 1),
                 value: endDate,
                 currentValue: this.state.current.consentExtraProps.endDate,
                 name: "endDate",
@@ -542,15 +583,13 @@ class ConsentGroupReview extends Component {
                 readOnly: this.state.readOnly
               })
             ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox checkboxReadOnly", style: { 'marginTop': '32px' } }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox" + (this.state.readOnly ? ' checkboxReadOnly' : ''), style: { 'marginTop': '32px' } }, [
               input({
                 type: 'checkbox',
                 id: "onGoingProcess",
                 name: "onGoingProcess",
                 checked: onGoingProcess === 'true' || onGoingProcess === true,
-                onClick: this.handleCheck,
-                onChange: (e) => { },
-                readOnly: this.state.readOnly
+                onChange:this.handleCheck,
               }),
               label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
             ])
@@ -790,7 +829,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.consentExtraProps.projectReviewApproved
+            isRendered: this.isAdmin && this.state.reviewSuggestion
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
@@ -798,7 +837,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.discardEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.consentExtraProps.projectReviewApproved
+            isRendered: this.isAdmin && this.state.reviewSuggestion
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
