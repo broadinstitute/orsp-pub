@@ -10,12 +10,22 @@ export const InputYesNo = (props) => {
     }
   };
 
-  const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value, currentValue = null } = props;
+  const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value, currentValue = null, valueEdited = false } = props;
 
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
-  const edited = normValue !== currentValue && currentValue != null;
+  const edited = normValue !== currentValue && currentValue != null || valueEdited === true;
+
+  const previousValue = ()=> {
+    if (currentValue) {
+      return 'Yes';
+    } else if (currentValue === false) {
+      return 'No';
+    } else {
+      return '-';
+    }
+  };
 
   return (
 
@@ -49,7 +59,7 @@ export const InputYesNo = (props) => {
       }),
       div({ isRendered: edited, className: "radioOptionsCurrent" }, [
         span({ className: "italic" }, ["Previous value: "]),
-        currentValue == true ? 'Yes' : 'No'
+        (previousValue(currentValue))
       ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
