@@ -137,7 +137,7 @@ export const Review = {
   },
 
   submitReview(serverURL, data) {
-    return axios.post(serverURL + '/api/issue-review?id=', data);
+    return axios.post(serverURL + '/api/issue-review', data);
   },
 
   updateReview(serverURL, projectKey, data) {

@@ -9,8 +9,6 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
 
-import javax.ws.rs.DELETE
-
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class IssueReviewController extends AuthenticatedController {
@@ -46,7 +44,6 @@ class IssueReviewController extends AuthenticatedController {
         response.status = 200
         render([issueReviewFormer] as JSON)
     }
-
 
     def delete() {
         issueReviewService.delete(params.projectKey)
