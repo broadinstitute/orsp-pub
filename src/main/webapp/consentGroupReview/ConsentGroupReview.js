@@ -189,6 +189,7 @@ class ConsentGroupReview extends Component {
         );
       }
     );
+    console.log(this.state.formData);
   }
 
   getReviewSuggestions() {
@@ -315,7 +316,7 @@ class ConsentGroupReview extends Component {
     });
     const data = {
       projectKey: this.props.consentKey,
-      suggestions: JSON.stringify(this.state.formData),
+      suggestions: JSON.stringify(this.getConsentGroup()),
     };
 
     if (this.state.reviewSuggestion) {
@@ -327,6 +328,72 @@ class ConsentGroupReview extends Component {
         this.getReviewSuggestions()
       );
     }
+  };
+
+  parseDate(date) {
+    if (date !== undefined) {
+      let d = new Date(date).toISOString();
+      return d.slice(0, d.indexOf("T"));
+    }
+  }
+
+  getSampleCollections = () => {
+    const sampleCollections = this.state.formData.sampleCollections;
+    const sampleCollectionList = [];
+    if (sampleCollections !== null && sampleCollections.length > 0) {
+      sampleCollections.map((sc, idx) => {
+        sampleCollectionList.push(sc.value);
+      });
+    }
+    return sampleCollectionList;
+  };
+
+  getConsentGroup = () => {
+    const consentGroup = {};
+
+    consentGroup.summary = this.state.formData.consentForm.summary;
+    consentGroup.samples = this.getSampleCollections();
+
+    const extraProperties = [];
+
+    extraProperties.push({ 'startDate': this.parseDate(this.state.formData.consentExtraProps.startDate) });
+    extraProperties.push({ 'onGoingProcess': this.state.formData.consentExtraProps.onGoingProcess });
+    extraProperties.push({ 'source': this.props.projectKey });
+    extraProperties.push({ 'collInst': this.state.formData.consentExtraProps.collInst });
+    extraProperties.push({ 'collContact': this.state.formData.consentExtraProps.collContact });
+    extraProperties.push({ 'consent': this.state.formData.consentExtraProps.consent });
+    extraProperties.push({ 'protocol': this.state.formData.consentExtraProps.protocol });
+    extraProperties.push({ 'institutionalSources': JSON.stringify(this.state.formData.instSources) });
+    extraProperties.push({ 'describeConsentGroup': this.state.formData.consentExtraProps.describeConsentGroup });
+    extraProperties.push({ 'requireMta': this.state.formData.consentExtraProps.requireMta });
+
+    if (this.state.formData.consentExtraProps.endDate !== null) {
+      extraProperties.push({ 'endDate': this.parseDate(this.state.formData.consentExtraProps.endDate) });
+    }
+
+    const questions = this.state.questions;
+    if (questions !== null && questions.length > 1) {
+      questions.map((q, idx) => {
+        if (q.answer !== null) {
+          extraProperties.push({name: q.key, value: q.answer});
+        }
+      });
+    }
+
+    extraProperties.push({ 'pii': this.state.formData.consentExtraProps.pii });
+    extraProperties.push({ 'compliance': this.state.formData.consentExtraProps.compliance });
+    extraProperties.push({ 'textCompliance': this.state.formData.consentExtraProps.textCompliance });
+    extraProperties.push({ 'sensitive': this.state.formData.consentExtraProps.sensitive });
+    extraProperties.push({ 'textSensitive': this.state.formData.consentExtraProps.textSensitive });
+    extraProperties.push({ 'accessible': this.state.formData.consentExtraProps.accessible });
+    extraProperties.push({ 'textAccessible': this.state.formData.consentExtraProps.textAccessible });
+
+    extraProperties.push({ 'sharingPlan': this.state.formData.consentExtraProps.sharingPlan });
+    extraProperties.push({ 'databaseControlled': this.state.formData.consentExtraProps.databaseControlled });
+    extraProperties.push({ 'databaseOpen': this.state.formData.consentExtraProps.databaseOpen });
+    consentGroup.extraProperties = extraProperties;
+    return consentGroup;
+
   };
 
   handleSampleCollectionChange = () => (data) => {
@@ -529,6 +596,7 @@ class ConsentGroupReview extends Component {
   render() {
 
     const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
+    console.log(this.state.formData.consentExtraProps);
 
     const { startDate = null, endDate = null } = this.state.formData.consentExtraProps;
 
