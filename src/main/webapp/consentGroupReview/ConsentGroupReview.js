@@ -176,6 +176,11 @@ class ConsentGroupReview extends Component {
             prev.reviewSuggestion = true;
             return prev;
           });
+        } else {
+          this.setState(prev => {
+            prev.reviewSuggestion = false;
+            return prev;
+          });
         }
       }
     );
@@ -247,6 +252,7 @@ class ConsentGroupReview extends Component {
   }
 
   enableEdit = (e) => () => {
+    this.getReviewSuggestions();
     this.setState({
       readOnly: false
     });
@@ -257,6 +263,7 @@ class ConsentGroupReview extends Component {
       formData: this.state.futureCopy,
       readOnly: true
     });
+    this.getReviewSuggestions();
   };
 
   submitEdit = (e) => () => {
@@ -266,13 +273,17 @@ class ConsentGroupReview extends Component {
     const data = {
       projectKey: this.props.consentKey,
       suggestions: JSON.stringify(this.state.formData),
-      };
+    };
 
-      if (this.state.reviewSuggestion) {
-        Review.updateReview (this.props.serverURL, this.props.consentKey, data);
-      } else {
-        Review.submitReview (this.props.serverURL, data);
-      }
+    if (this.state.reviewSuggestion) {
+      Review.updateReview (this.props.serverURL, this.props.consentKey, data).then(() =>
+        this.getReviewSuggestions()
+      );
+    } else {
+      Review.submitReview (this.props.serverURL, data).then(() =>
+        this.getReviewSuggestions()
+      );
+    }
   }
 
   handleSampleCollectionChange = () => (data) => {
@@ -819,7 +830,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.consentExtraProps.projectReviewApproved
+            isRendered: this.isAdmin && this.state.reviewSuggestion
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
@@ -827,7 +838,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.discardEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.formData.consentExtraProps.projectReviewApproved
+            isRendered: this.isAdmin && this.state.reviewSuggestion
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
