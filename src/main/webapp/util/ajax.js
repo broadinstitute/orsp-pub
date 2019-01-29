@@ -127,3 +127,11 @@ export const User = {
 
 };
 
+export const Review = {
+
+  deleteSuggestions(url, projectKey) {
+    return axios.delete(url + '?projectKey=' + projectKey);
+  }
+
+}
+

@@ -7,7 +7,8 @@
         isAdmin: "${session.isAdmin}",
         rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
         updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
-        serverURL: "${webRequest.baseUrl}"
+        serverURL: "${webRequest.baseUrl}",
+        discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
     };
 
     const urls = {

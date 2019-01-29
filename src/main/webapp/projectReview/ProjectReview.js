@@ -12,7 +12,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project } from "../util/ajax";
 import { Search } from '../util/ajax';
 import { User } from '../util/ajax';
-
+import { Review } from '../util/ajax';
 
 class ProjectReview extends Component {
 
@@ -82,6 +82,7 @@ class ProjectReview extends Component {
     }
     this.rejectProject = this.rejectProject.bind(this);
     this.approveEdits = this.approveEdits.bind(this);
+    this.removeEdits = this.removeEdits.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -90,6 +91,10 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    init();
+  }
+
+  init() {
     let current = {};
     let currentStr = {};
     let future = {};
@@ -99,7 +104,6 @@ class ProjectReview extends Component {
     let formDataStr = {};
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
-
         // store current issue info here ....
         current.description = issue.data.issue.description;
         current.projectExtraProps = issue.data.extraProperties;
@@ -111,7 +115,6 @@ class ProjectReview extends Component {
         currentStr = JSON.stringify(current);
         // read suggestions here ....
         let edits = null;
-
         if (edits != null) {
           // prepare form data here, initially same as current ....
           future.description = edits.data.issue.description;
@@ -141,7 +144,7 @@ class ProjectReview extends Component {
           prev.futureCopy = futureCopy;
           return prev;
         });
-      });
+    });
   }
 
   isAdmin() {
@@ -203,20 +206,37 @@ class ProjectReview extends Component {
   }
 
   discardEdits = (e) => () => {
-
+    spinnerService.showAll();
+    this.removeEdits(false);
   }
 
   approveEdits() {
     let project = this.getProject();
+    spinnerService.showAll();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
-        window.location.href = [this.props.serverURL, "index"].join("/");
-        spinnerService.showAll();
+        this.removeEdits(true);
       })
       .catch(error => {
         spinnerService.hideAll();
         console.error(error);
     });
+  }
+
+  removeEdits(redirect) {
+      Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
+        resp => {
+          if(!redirect) {
+            this.init();
+          } else {
+            window.location.href = [this.props.serverURL, "index"].join("/");
+          }          
+          spinnerService.hideAll();
+      })
+      .catch(error => {
+        spinnerService.hideAll();
+        console.error(error);
+      });
   }
 
   getProject() {
@@ -632,11 +652,8 @@ class ProjectReview extends Component {
             name: "projectAvailability",
             label: "Project Availability",
             value: this.state.formData.projectExtraProps.projectAvailability,
-<<<<<<< HEAD
             currentValue: this.state.current.projectExtraProps.projectAvailability,
             currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
-=======
->>>>>>> 4ae219ac6aceabbdd9ce5574adbf47da0682c42b
             optionValues: ["available", "onHold"],
             optionLabels: [
               "Available",
@@ -656,12 +673,8 @@ class ProjectReview extends Component {
             "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record": 
             "I am requesting assistance in updating and existing project",
             label: "Please choose one of the following to describe the proposed Edits: ",
-<<<<<<< HEAD
             value: this.state.formData.projectExtraProps.describeEditType,
             optionValues: ["newAmendment", "requestingAssistance"],
-=======
-            optionValues: ["01", "02"],
->>>>>>> 4ae219ac6aceabbdd9ce5574adbf47da0682c42b
             optionLabels: [
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
               "I am requesting assistance in updating and existing project"
@@ -677,12 +690,8 @@ class ProjectReview extends Component {
             id: "inputDescribeEdits",
             name: "editDescription",
             label: "Please use the space below to describe any additional edits or clarifications to the edits above",
-<<<<<<< HEAD
             currentValue: this.state.current.projectExtraProps.editDescription,
             value: this.state.formData.projectExtraProps.editDescription,
-=======
-            currentValue: this.state.current.editDescription,
->>>>>>> 4ae219ac6aceabbdd9ce5574adbf47da0682c42b
             readOnly: this.state.readOnly,
             required: true,
             onChange: this.handleProjectExtraPropsChange,

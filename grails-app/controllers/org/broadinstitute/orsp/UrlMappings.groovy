@@ -20,7 +20,8 @@ class UrlMappings {
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
         '/api/consent-group'(resource: 'newConsentGroup')
-        '/api/issue-review'(resource: 'issueReview')
+        '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")
