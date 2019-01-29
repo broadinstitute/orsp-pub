@@ -69,8 +69,6 @@ class ConsentGroupReview extends Component {
         sharingPlan: null,
         databaseControlled: null,
         databaseOpen: null,
-
-
         instSources: []
       },
       errors: {
@@ -93,6 +91,12 @@ class ConsentGroupReview extends Component {
       questionsIds: [],
       showError: false,
       errorMessage: '',
+      detailsError: false,
+      sampleCollectionsError: false,
+      institutionalSourceError: false,
+      internationalCohortsError: false,
+      securityError: false,
+      dataSharingError: false,
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
@@ -192,6 +196,10 @@ class ConsentGroupReview extends Component {
       }
     );
   }
+
+  validateDetails = () => {
+
+  };
 
   parseBool() {
     if (this.state.formData.consentExtraProps.onGoingProcess !== undefined) {
