@@ -9,7 +9,6 @@ import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
-
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 
@@ -299,7 +298,7 @@ class ConsentGroupReview extends Component {
     const date = this.state.current.consentExtraProps.endDate;
     this.setState(prev => {
       prev.formData.consentExtraProps.onGoingProcess = checked;
-      prev.formData.consentExtraProps.endDate = checked ? null : date;//(this.hasDate('endDate') ? new Date(date.substr(0, 4), date.substr(5, 2) - 1, date.substr(8, 2)): null); //this.state.current.consentExtraProps.endDate;
+      prev.formData.consentExtraProps.endDate = checked ? null : date;
       return prev;
     });
   };
