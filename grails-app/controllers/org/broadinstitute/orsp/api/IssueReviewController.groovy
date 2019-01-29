@@ -38,8 +38,8 @@ class IssueReviewController extends AuthenticatedController {
             response.status = 404
             render([message: "Issue review does not exist"] as JSON)
         }
-
-        issueReviewFormer.suggestions = parseIssueReview(gson.toJson(request.JSON)).suggestions
+        IssueReview ir = parseIssueReview(gson.toJson(request.JSON))
+        issueReviewFormer.suggestions = ir.suggestions
         issueReviewFormer.save(flush: true)
         response.status = 200
         render([issueReviewFormer] as JSON)
@@ -52,13 +52,13 @@ class IssueReviewController extends AuthenticatedController {
     }
 
     def show() {
-        IssueReview issueReview = issueReviewService.findByProjectKey(params.projectKey)
+        IssueReview issueReview = issueReviewService.findByProjectKey(params.id)
         if (issueReview == null) {
+            response.status = 204
+        } else {
             response.status = 200
-            render('' )
+            render(issueReview as JSON)
         }
-        response.status = 200
-        render(issueReview as JSON)
     }
 
     private IssueReview parseIssueReview(String json) {
