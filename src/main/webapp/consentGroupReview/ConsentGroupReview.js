@@ -687,11 +687,13 @@ class ConsentGroupReview extends Component {
           title: "International Cohorts",
           isRendered: !this.state.readOnly,
         },[
-          QuestionnaireWorkflow({
-            questions: this.state.questions,
-            handler: this.determinationHandler,
-            determination: this.state.determination
-          })
+          div({ style: { 'marginTop': '55px' } }, [
+            QuestionnaireWorkflow({
+               questions: this.state.questions,
+               handler: this.determinationHandler,
+               determination: this.state.determination
+           })
+          ]),
         ]),
         Panel({
           title: "International Cohorts",
