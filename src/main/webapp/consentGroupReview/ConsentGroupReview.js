@@ -104,9 +104,7 @@ class ConsentGroupReview extends Component {
               };
             });
             sampleCollectionList = sampleCollections;
-            current.consentExtraProps.collContact = '';
             current.consentExtraProps = element.data.extraProperties;
-
             if (element.data.collectionLinks !== undefined) {
               current.sampleCollectionLinks = element.data.collectionLinks;
             }
@@ -165,7 +163,6 @@ class ConsentGroupReview extends Component {
             });
           }
         );
-
       }
     );
   }
@@ -304,12 +301,7 @@ class ConsentGroupReview extends Component {
     }
     return null
   }
-  parseDate(date) {
-    if (date !== null) {
-      let d = new Date(date).toISOString();
-      return d.slice(0, d.indexOf("T"));
-    }
-  }
+
   handleUpdateinstitutionalSources = (updated, field) => {
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
@@ -502,7 +494,8 @@ class ConsentGroupReview extends Component {
             value: collContact,
             currentValue: this.state.current.consentExtraProps.collContact,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            valueEdited: this.isEmpty(this.state.current.consentExtraProps.collContact) === !this.isEmpty(this.state.formData.consentExtraProps.collContact)
           }),
           InputFieldRadio({
             id: "radioDescribeConsentGroup",
