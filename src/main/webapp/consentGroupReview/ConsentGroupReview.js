@@ -12,6 +12,7 @@ import { ConsentGroup, SampleCollections, User } from "../util/ajax";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
+import { AlertMessage } from "../components/AlertMessage";
 
 const EXIT = 500;
 const DPA = 600;
@@ -89,7 +90,9 @@ class ConsentGroupReview extends Component {
       suggestions: {},
       suggestionsCopy: {},
       questions: [],
-      questionsIds: []
+      questionsIds: [],
+      showError: false,
+      errorMessage: '',
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
@@ -207,6 +210,18 @@ class ConsentGroupReview extends Component {
       return true
   }
 
+  validateQuestionaire = () => {
+    let isValid = true;
+    if (this.state.determination.requiredError || this.state.determination.endState == false) {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.showErrorStep3 = !isValid;
+      return prev;
+    });
+    return isValid;
+  };
+
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true })
     const data = { approvalStatus: "Approved" }
@@ -269,6 +284,7 @@ class ConsentGroupReview extends Component {
   };
 
   submitEdit = (e) => () => {
+    // validate International Cohorts
     this.setState({
       readOnly: true
     });
@@ -883,6 +899,10 @@ class ConsentGroupReview extends Component {
             readOnly: this.state.readOnly
           })
         ]),
+        AlertMessage({
+          msg: this.state.errorMessage,
+          show: this.state.showError
+        }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
             className: "btn buttonPrimary floatLeft",
