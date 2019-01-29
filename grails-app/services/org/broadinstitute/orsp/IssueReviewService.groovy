@@ -8,7 +8,10 @@ class IssueReviewService {
 
     void delete(String projectKey) throws DomainException {
         IssueReview ir = findByProjectKey(projectKey)
-        ir.delete(flush: true)
+        if (ir != null) {
+            ir.delete(flush: true)
+        }
+
     }
 
     IssueReview findByProjectKey(String projectKey) {

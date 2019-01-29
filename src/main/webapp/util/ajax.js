@@ -127,6 +127,11 @@ export const User = {
 };
 
 export const Review = {
+
+  deleteSuggestions(url, projectKey) {
+    return axios.delete(url + '?projectKey=' + projectKey);
+  },
+
   getSuggestions(serverURL, projectKey) {
     return axios.get(serverURL + '/api/issue-review?id=' + projectKey);
   },
@@ -138,4 +143,5 @@ export const Review = {
   updateReview(serverURL, projectKey, data) {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
-};
+
+}
