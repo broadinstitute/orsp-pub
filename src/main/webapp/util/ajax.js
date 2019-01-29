@@ -132,13 +132,10 @@ export const Review = {
   },
 
   submitReview(serverURL, data) {
-    const config = {
-        headers: { 'content-type': 'application/json' }
-    };
-    return axios.post(serverURL + '/api/issue-review?id=', data);
+    return axios.post(serverURL + '/api/issue-review', data);
   },
 
   updateReview(serverURL, projectKey, data) {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
-}
+};
