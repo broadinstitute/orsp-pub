@@ -198,7 +198,9 @@ class ConsentGroupReview extends Component {
   }
 
   validateDetails = () => {
+    if (this.isEmpty(this.state.collInst) || this.isEmpty('')) {
 
+    }
   };
 
   parseBool() {
@@ -589,7 +591,8 @@ class ConsentGroupReview extends Component {
             value: collContact,
             currentValue: this.state.current.consentExtraProps.collContact,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            valueEdited: !this.isEmpty(collContact) === this.isEmpty(this.state.current.consentExtraProps.collContact)
           }),
           InputFieldRadio({
             id: "radioDescribeConsentGroup",
