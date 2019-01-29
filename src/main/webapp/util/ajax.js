@@ -94,7 +94,6 @@ export const Project = {
   updateProject(url, data, projectKey) {
     return axios.put(url + '?projectKey=' + projectKey, data);
   }
-
 };
 
 export const DocumentHandler = {
@@ -131,7 +130,21 @@ export const Review = {
 
   deleteSuggestions(url, projectKey) {
     return axios.delete(url + '?projectKey=' + projectKey);
+  },
+
+  getSuggestions(serverURL, projectKey) {
+    return axios.get(serverURL + '/api/issue-review?id=' + projectKey);
+  },
+
+  submitReview(serverURL, data) {
+    const config = {
+        headers: { 'content-type': 'application/json' }
+    };
+    return axios.post(serverURL + '/api/issue-review?id=', data);
+  },
+
+  updateReview(serverURL, projectKey, data) {
+    return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
-
+  
 }
-

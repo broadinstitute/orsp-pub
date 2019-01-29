@@ -9,10 +9,8 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { Project } from "../util/ajax";
-import { Search } from '../util/ajax';
-import { User } from '../util/ajax';
-import { Review } from '../util/ajax';
+import { Project, Search, User, Review } from "../util/ajax";
+
 
 class ProjectReview extends Component {
 
@@ -51,7 +49,7 @@ class ProjectReview extends Component {
         }
       },
       disableApproveButton: false,
-
+      reviewSuggestion: false,
       current: {
         requestor: {
           displayName: '',
@@ -91,7 +89,7 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    init();
+    this.init();
   }
 
   init() {
@@ -113,7 +111,9 @@ class ProjectReview extends Component {
         current.fundings = this.getFundingsArray(issue.data.fundings);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         currentStr = JSON.stringify(current);
-        // read suggestions here ....
+
+        this.getReviewSuggestions();
+
         let edits = null;
         if (edits != null) {
           // prepare form data here, initially same as current ....
@@ -147,10 +147,28 @@ class ProjectReview extends Component {
     });
   }
 
+  getReviewSuggestions() {
+    Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+      data => {
+        if (data.data !== '') {
+          this.setState(prev => {
+            prev.formData = JSON.parse(data.data.suggestions);
+            prev.reviewSuggestion = true;
+            return prev;
+          });
+        } else {
+            this.setState(prev => {
+              prev.reviewSuggestion = false;
+              return prev;
+            });
+        }
+      });
+  }
+
   isAdmin() {
     return this.props.isAdmin === "true";
   }
-  
+
   getUsersArray(array) {
     let usersArray = [];
     if (array !== undefined && array !== null && array.length > 0) {
@@ -211,11 +229,15 @@ class ProjectReview extends Component {
   }
 
   approveEdits() {
-    let project = this.getProject();
     spinnerService.showAll();
+    let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
-        this.removeEdits(true);
+        this.removeEdits();
+        this.setState(prev =>{
+          prev.showApproveDialog = !this.state.showApproveDialog;
+          return prev;
+        });
       })
       .catch(error => {
         spinnerService.hideAll();
@@ -223,14 +245,10 @@ class ProjectReview extends Component {
     });
   }
 
-  removeEdits(redirect) {
+  removeEdits() {
       Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
         resp => {
-          if(!redirect) {
-            this.init();
-          } else {
-            window.location.href = [this.props.serverURL, "index"].join("/");
-          }          
+          this.init();
           spinnerService.hideAll();
       })
       .catch(error => {
@@ -295,6 +313,7 @@ class ProjectReview extends Component {
   }
 
   enableEdit = (e) => () => {
+    this.getReviewSuggestions();
     this.setState({
       readOnly: false
     });
@@ -311,6 +330,19 @@ class ProjectReview extends Component {
     this.setState({
       readOnly: true
     });
+    const data = {
+      projectKey: this.props.projectKey,
+      suggestions: JSON.stringify(this.state.formData),
+    };
+    if (this.state.reviewSuggestion) {
+      Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
+        this.getReviewSuggestions()
+      );
+    } else {
+      Review.submitReview(this.props.serverURL, data).then(() =>
+        this.getReviewSuggestions()
+      );
+    }
   }
 
   loadUsersOptions = (query, callback) => {
@@ -346,13 +378,16 @@ class ProjectReview extends Component {
   handlePIChange = (data, action) => {
     this.setState(prev => {
       prev.formData.piList = data;
+      prev.formData.projectExtraProps.pi = data.map(user => user.key);
       return prev;
     }); 
   };
 
   handleProjectManagerChange = (data, action) => {
+    const pmUsers = data.map(user => user.key)
     this.setState(prev => {
       prev.formData.pmList = data;
+      prev.formData.projectExtraProps.pm = data.map(user => user.key);
       return prev;
     }); 
   };
@@ -616,6 +651,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             required: false,
             onChange: this.handleProjectExtraPropsChange,
+            valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol)
           }),
           InputYesNo({
             id: "radioSubjectProtection",
@@ -821,7 +857,7 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && this.state.reviewSuggestion
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
@@ -829,7 +865,7 @@ class ProjectReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.discardEdits(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && this.state.reviewSuggestion
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
