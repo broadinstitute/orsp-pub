@@ -79,7 +79,7 @@ class ConsentGroupReview extends Component {
       errorSubmit: false,
       errors: {
         sampleCollections: false,
-        investigatorLastName: false,
+        consent: false,
         institutionProtocolNumber: false,
         consentGroupName: false,
         collaboratingInstitution: false,
@@ -219,24 +219,22 @@ class ConsentGroupReview extends Component {
     );
   };
 
-  getReviewSuggestions() {
-    Review.getSuggestions(this.props.serverURL, this.props.consentKey).then(
-      data => {
-        if (data.data !== '') {
-          this.setState(prev => {
-            prev.formData = JSON.parse(data.data.suggestions);
-            prev.reviewSuggestion = true;
-            return prev;
-          });
-        } else {
-          this.setState(prev => {
-            prev.reviewSuggestion = false;
-            return prev;
-          });
-        }
+  getReviewSuggestions = () => {
+    Review.getSuggestions(this.props.serverURL, this.props.consentKey).then(data => {
+      if (data.data !== '') {
+        this.setState(prev => {
+          prev.formData = JSON.parse(data.data.suggestions);
+          prev.reviewSuggestion = true;
+          return prev;
+        });
+      } else {
+        this.setState(prev => {
+          prev.reviewSuggestion = false;
+          return prev;
+        });
       }
-    );
-  }
+    });
+  };
 
   validateDetails = () => {
     if (this.isEmpty(this.state.collInst) || this.isEmpty('')) {
@@ -316,37 +314,25 @@ class ConsentGroupReview extends Component {
       compliance = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.textCompliance) && compliance) {
-      textCompliance = true;
-    }
-    
     if (this.isEmpty(this.state.formData.consentExtraProps.sensitive)) {
       sensitive = true;
-    }
-
-    if (this.isEmpty(this.state.current.consentExtraProps.textSensitive) && sensitive) {
-      textSensitive = true;
-    }
-
-    if (this.isEmpty(this.state.formData.consentExtraProps.accessible)) {
-      accessible = true;
-    }
-
-    if (this.isEmpty(this.state.formData.consentExtraProps.textAccessible) && accessible) {
-      textAccessible = true;
     }
 
     if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
       sharingPlan = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.databaseControlled) && this.state.formData.consentExtraProps.sharingPlan === 'controlled') {
-      databaseControlled = true;
-    }
-
-    if (this.isEmpty(this.state.formData.consentExtraProps.databaseOpen) && this.state.formData.consentExtraProps.sharingPlan === 'open') {
-      databaseOpen = true;
-    }
+    this.setState(prev => {
+      prev.errors.consent = consent;
+      prev.errors.protocol = protocol;
+      prev.errors.collInst = collInst;
+      prev.errors.describeConsentGroup = describeConsentGroup;
+      prev.errors.requireMta = requireMta;
+      prev.errors.sampleCollections = sampleCollections;
+      prev.errors.pii = pii;
+      prev.errors.sharingPlan = sharingPlan;
+      return prev;
+    });
 
   };
 
@@ -402,8 +388,14 @@ class ConsentGroupReview extends Component {
     });
   }
 
-  discardEdits = (e) => () => {
-
+  discardEdits = () => {
+    console.log('discard edits');
+    spinnerService.showAll();
+    this.removeEdits();
+    this.setState(prev =>{
+      prev.showDiscardEditsDialog = !this.state.showDiscardEditsDialog;
+      return prev;
+    });
   };
 
   approveEdits = () => {
@@ -743,10 +735,13 @@ class ConsentGroupReview extends Component {
     });
   };
 
+  handleDiscardEditsDialog = () => {
+    this.setState({
+      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
+    });
+  };
+
   render() {
-
-    const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
-
     const { startDate = null, endDate = null } = this.state.formData.consentExtraProps;
 
     const {
@@ -754,27 +749,14 @@ class ConsentGroupReview extends Component {
       protocol = '',
       collInst = '',
       collContact = '',
-
-      individualDataSourced = '',
-      isLinkMaintained = '',
-      feeForService = '',
-      areSamplesComingFromEEAA = '',
-      isCollaboratorProvidingGoodService = '',
-      isConsentUnambiguous = '',
-      pii = '',
-      compliance = '',
       textCompliance = '',
-      sensitive = '',
       textSensitive = '',
-      accessible = '',
       textAccessible = '',
-      sharingPlan = '',
       databaseControlled = '',
       databaseOpen = '',
       onGoingProcess = '',
       describeConsentGroup = '',
       requireMta = '',
-
     } = this.state.formData.consentExtraProps;
 
 
@@ -787,6 +769,14 @@ class ConsentGroupReview extends Component {
           handleOkAction: this.approveEdits,
           title: 'Approve Edits Confirmation',
           bodyText: 'Are you sure yo want to approve this edits?',
+          actionLabel: 'Yes'
+        }, []),
+        ConfirmationDialog({
+          closeModal: this.closeEditsModal,
+          show: this.state.showDiscardEditsDialog,
+          handleOkAction: this.discardEdits,
+          title: 'Discard Edits Confirmation',
+          bodyText: 'Are you sure yo want to remove this edits?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
@@ -829,7 +819,9 @@ class ConsentGroupReview extends Component {
             value: consent,
             currentValue: this.state.current.consentExtraProps.consent,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.consent,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             id: "inputInstitutionProtocolNumber",
@@ -838,7 +830,9 @@ class ConsentGroupReview extends Component {
             value: protocol,
             currentValue: this.state.current.consentExtraProps.protocol,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.protocol,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             id: "inputCollaboratingInstitution",
@@ -847,7 +841,9 @@ class ConsentGroupReview extends Component {
             value: collInst,
             currentValue: this.state.current.consentExtraProps.collInst,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.collInst,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             id: "inputprimaryContact",
@@ -871,7 +867,9 @@ class ConsentGroupReview extends Component {
               "I am requesting assistance in updating and existing project"
             ],
             onChange: this.handleRadio2Change,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.describeConsentGroup,
+            errorMessage: "Required field"
           }),
           InputFieldRadio({
             id: "radioRequireMta",
@@ -887,7 +885,9 @@ class ConsentGroupReview extends Component {
               "Not sure"
             ],
             onChange: this.handleRadio2Change,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.requireMta,
+            errorMessage: "Required field"
           })
         ]),
 
@@ -1061,6 +1061,8 @@ class ConsentGroupReview extends Component {
             ],
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
+            error: this.state.errors.pii,
+            errorMessage: "Required field"
           }),
           InputFieldRadio({
             id: "radioCompliance",
@@ -1076,6 +1078,8 @@ class ConsentGroupReview extends Component {
             ],
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
+            error: this.state.erros.compliance,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             isRendered: this.state.formData.consentExtraProps.compliance === "true",
@@ -1085,7 +1089,9 @@ class ConsentGroupReview extends Component {
             value: textCompliance,
             currentValue: this.state.current.consentExtraProps.textCompliance,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.textCompliance,
+            errorMessage: "Required field"
           }),
           InputFieldRadio({
             id: "radioSensitive",
@@ -1101,6 +1107,8 @@ class ConsentGroupReview extends Component {
             ],
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
+            error: this.state.errors.sensitive,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             isRendered: this.state.formData.consentExtraProps.sensitive === "true",
@@ -1110,7 +1118,9 @@ class ConsentGroupReview extends Component {
             value: textSensitive,
             currentValue: this.state.current.consentExtraProps.textSensitive,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.textSensitive,
+            errorMessage: "Required field"
           }),
           InputFieldRadio({
             id: "radioAccessible",
@@ -1126,6 +1136,8 @@ class ConsentGroupReview extends Component {
             ],
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
+            error: this.state.errors.accessible,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             isRendered: this.state.formData.consentExtraProps.accessible === "true",
@@ -1135,7 +1147,9 @@ class ConsentGroupReview extends Component {
             value: textAccessible,
             currentValue: this.state.current.consentExtraProps.textAccessible,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.textAccessible,
+            errorMessage: "Required field"
           })
         ]),
 
@@ -1150,7 +1164,9 @@ class ConsentGroupReview extends Component {
             value: this.state.formData.consentExtraProps.sharingPlan,
             currentValue: this.state.current.consentExtraProps.sharingPlan,
             onChange: this.handleRadio2Change,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.props.errors.sharingPlan,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             isRendered: this.state.formData.consentExtraProps.sharingPlan === "controlled",
@@ -1204,15 +1220,15 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin && this.state.reviewSuggestion
+            isRendered: (this.state.isAdmin === true && this.state.reviewSuggestion === true)
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.discardEdits(),
+            onClick: this.handleDiscardEditsDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin && this.state.reviewSuggestion
+            isRendered: (this.state.isAdmin === true && this.state.reviewSuggestion === true)
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
