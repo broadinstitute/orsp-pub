@@ -217,6 +217,6 @@ class Issue implements LogicalDelete<Issue> {
     transient Boolean attachmentsApproved() {
         getAttachments()?.collect {
             it.status != IssueStatus.Approved.getName()
-        }?.findAll{ it }?.isEmpty()
+        }?.isEmpty()
     }
 }
