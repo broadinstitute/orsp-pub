@@ -73,7 +73,23 @@ class ConsentGroupReview extends Component {
         instSources: []
       },
       errors: {
-        sampleCollections: false
+        sampleCollections: false,
+        investigatorLastName: false,
+        institutionProtocolNumber: false,
+        consentGroupName: false,
+        collaboratingInstitution: false,
+        describeConsentGroup: false,
+        requireMta: false,
+        institutionalSourcesName: false,
+        institutionalSourcesCountry: false,
+        pii: false,
+        compliance: false,
+        sensitive: false,
+        accessible: false,
+        textCompliance: false,
+        textSensitive: false,
+        textAccessible: false,
+        sharingPlan: false
       },
       formData: {
         consentExtraProps: {},
@@ -90,6 +106,9 @@ class ConsentGroupReview extends Component {
       suggestionsCopy: {},
       questions: [],
       questionsIds: [],
+
+      singleErrorMessage: 'Required field',
+
       showError: false,
       errorMessage: '',
       detailsError: false,
@@ -189,7 +208,6 @@ class ConsentGroupReview extends Component {
         );
       }
     );
-    console.log(this.state.formData);
   }
 
   getReviewSuggestions() {
@@ -234,6 +252,95 @@ class ConsentGroupReview extends Component {
       return true
   }
 
+  isValid = () => {
+    let consent = false;
+    let protocol = false;
+    let collInst = false;
+    let sampleCollections = false;
+    let instSources = false;
+    let describeConsentGroup = false;
+    let requireMta = false;
+    let pii = false;
+    let compliance = false;
+    let sensitive= false;
+    let accessible = false;
+    let textCompliance = false;
+    let textSensitive = false;
+    let textAccessible = false;
+    let sharingPlan = false;
+    let databaseControlled = false;
+    let databaseOpen = false;
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
+      consent = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.protocol)) {
+      protocol = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.collInst)) {
+      collInst = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.describeConsentGroup)) {
+      describeConsentGroup = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.requireMta)) {
+      requireMta = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.sampleCollections)) {
+      sampleCollections = true;
+    }
+
+    if (this.isEmpty(this.state.formData.instSources)) {
+      instSources = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.pii)) {
+      pii = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.compliance)) {
+      compliance = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.textCompliance) && compliance) {
+      textCompliance = true;
+    }
+    
+    if (this.isEmpty(this.state.formData.consentExtraProps.sensitive)) {
+      sensitive = true;
+    }
+
+    if (this.isEmpty(this.state.current.consentExtraProps.textSensitive) && sensitive) {
+      textSensitive = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.accessible)) {
+      accessible = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.textAccessible) && accessible) {
+      textAccessible = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
+      sharingPlan = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.databaseControlled) && this.state.formData.consentExtraProps.sharingPlan === 'controlled') {
+      databaseControlled = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.databaseOpen) && this.state.formData.consentExtraProps.sharingPlan === 'open') {
+      databaseOpen = true;
+    }
+
+  };
+
   validateQuestionaire = () => {
     let isValid = true;
     if (this.state.determination.requiredError || this.state.determination.endState == false) {
@@ -267,7 +374,7 @@ class ConsentGroupReview extends Component {
         return prev;
       })
     );
-  }
+  };
 
   isCurrentUserAdmin() {
     User.isCurrentUserAdmin(this.props.isAdminUrl).then(
@@ -288,11 +395,18 @@ class ConsentGroupReview extends Component {
 
   discardEdits = (e) => () => {
 
-  }
+  };
 
   approveEdits = (e) => () => {
+    spinnerService.showAll();
+    let consentGroup = this.getConsentGroup();
 
-  }
+    ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(
+      resp => {
+        console.log(resp);
+      }
+    );
+  };
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
@@ -316,7 +430,7 @@ class ConsentGroupReview extends Component {
     });
     const data = {
       projectKey: this.props.consentKey,
-      suggestions: JSON.stringify(this.getConsentGroup()),
+      suggestions: JSON.stringify(this.state.formData),
     };
 
     if (this.state.reviewSuggestion) {
@@ -353,48 +467,46 @@ class ConsentGroupReview extends Component {
 
     consentGroup.summary = this.state.formData.consentForm.summary;
     consentGroup.samples = this.getSampleCollections();
-
-    const extraProperties = [];
-
-    extraProperties.push({ 'startDate': this.parseDate(this.state.formData.consentExtraProps.startDate) });
-    extraProperties.push({ 'onGoingProcess': this.state.formData.consentExtraProps.onGoingProcess });
-    extraProperties.push({ 'source': this.props.projectKey });
-    extraProperties.push({ 'collInst': this.state.formData.consentExtraProps.collInst });
-    extraProperties.push({ 'collContact': this.state.formData.consentExtraProps.collContact });
-    extraProperties.push({ 'consent': this.state.formData.consentExtraProps.consent });
-    extraProperties.push({ 'protocol': this.state.formData.consentExtraProps.protocol });
-    extraProperties.push({ 'institutionalSources': JSON.stringify(this.state.formData.instSources) });
-    extraProperties.push({ 'describeConsentGroup': this.state.formData.consentExtraProps.describeConsentGroup });
-    extraProperties.push({ 'requireMta': this.state.formData.consentExtraProps.requireMta });
+    consentGroup.startDate = this.parseDate(this.state.formData.consentExtraProps.startDate);
+    consentGroup.onGoingProcess = this.state.formData.consentExtraProps.onGoingProcess;
+    consentGroup.source = this.props.projectKey;
+    consentGroup.collInst = this.state.formData.consentExtraProps.collInst;
+    consentGroup.collContact = this.state.formData.consentExtraProps.collContact;
+    consentGroup.consent = this.state.formData.consentExtraProps.consent;
+    consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
+    consentGroup.institutionalSources = JSON.stringify(this.state.formData.instSources);
+    consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
+    consentGroup.requireMta = this.state.formData.consentExtraProps.requireMta
 
     if (this.state.formData.consentExtraProps.endDate !== null) {
-      extraProperties.push({ 'endDate': this.parseDate(this.state.formData.consentExtraProps.endDate) });
+      consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
     }
 
     const questions = this.state.questions;
     if (questions !== null && questions.length > 1) {
       questions.map((q, idx) => {
         if (q.answer !== null) {
-          extraProperties.push({name: q.key, value: q.answer});
+          consentGroup[q.key] = q.answer;
         }
       });
     }
 
-    extraProperties.push({ 'pii': this.state.formData.consentExtraProps.pii });
-    extraProperties.push({ 'compliance': this.state.formData.consentExtraProps.compliance });
-    extraProperties.push({ 'textCompliance': this.state.formData.consentExtraProps.textCompliance });
-    extraProperties.push({ 'sensitive': this.state.formData.consentExtraProps.sensitive });
-    extraProperties.push({ 'textSensitive': this.state.formData.consentExtraProps.textSensitive });
-    extraProperties.push({ 'accessible': this.state.formData.consentExtraProps.accessible });
-    extraProperties.push({ 'textAccessible': this.state.formData.consentExtraProps.textAccessible });
+    consentGroup.pii = this.state.formData.consentExtraProps.pii;
+    consentGroup.compliance = this.state.formData.consentExtraProps.compliance;
+    consentGroup.textCompliance = this.state.formData.consentExtraProps.textCompliance;
+    consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
+    consentGroup.textSensitive = this.state.formData.consentExtraProps.textSensitive;
+    consentGroup.accessible = this.state.formData.consentExtraProps.accessible;
+    consentGroup.textAccessible = this.state.formData.consentExtraProps.textAccessible;
 
-    extraProperties.push({ 'sharingPlan': this.state.formData.consentExtraProps.sharingPlan });
-    extraProperties.push({ 'databaseControlled': this.state.formData.consentExtraProps.databaseControlled });
-    extraProperties.push({ 'databaseOpen': this.state.formData.consentExtraProps.databaseOpen });
-    consentGroup.extraProperties = extraProperties;
+    consentGroup.sharingPlan = this.state.formData.consentExtraProps.sharingPlan;
+    consentGroup.databaseControlled = this.state.formData.consentExtraProps.databaseControlled;
+    consentGroup.databaseOpen = this.state.formData.consentExtraProps.databaseOpen;
     return consentGroup;
 
   };
+
+
 
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
@@ -596,7 +708,6 @@ class ConsentGroupReview extends Component {
   render() {
 
     const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
-    console.log(this.state.formData.consentExtraProps);
 
     const { startDate = null, endDate = null } = this.state.formData.consentExtraProps;
 
