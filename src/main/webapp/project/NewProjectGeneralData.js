@@ -241,7 +241,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             name: "pTitle",
             label: "Title of project/protocol*",
             value: this.state.formData.pTitle,
-            currentValue: this.state.formerData.pTitle,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
