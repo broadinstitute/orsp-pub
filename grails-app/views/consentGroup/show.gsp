@@ -28,6 +28,10 @@
         <g:render template="/base/value" model="[value: issue.actors]"/>
         </span>
     </g:if>
+    <div class="issue-type">
+    <span>New Status:</span>
+    <span>${issue?.approvalStatus}</span>
+    </div>
 </div>
 
 <div class="orsp-tabs" style="display: none;">
