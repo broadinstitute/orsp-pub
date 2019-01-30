@@ -25,6 +25,10 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showDialog: false,
+      showDiscardEditsDialog: false,
+      showApproveDialog: false,
+      showRejectProjectDialog: false,
       readOnly: true,
       isAdmin: false,
       disableApproveButton: false,
@@ -72,6 +76,7 @@ class ConsentGroupReview extends Component {
         databaseOpen: null,
         instSources: []
       },
+      errorSubmit: false,
       errors: {
         sampleCollections: false,
         investigatorLastName: false,
@@ -123,6 +128,10 @@ class ConsentGroupReview extends Component {
 
   componentDidMount() {
     this.isCurrentUserAdmin();
+    this.init();
+  }
+
+  init = () => {
     let current = {};
     let currentStr = {};
     let future = {};
@@ -208,7 +217,7 @@ class ConsentGroupReview extends Component {
         );
       }
     );
-  }
+  };
 
   getReviewSuggestions() {
     Review.getSuggestions(this.props.serverURL, this.props.consentKey).then(
@@ -397,15 +406,34 @@ class ConsentGroupReview extends Component {
 
   };
 
-  approveEdits = (e) => () => {
+  approveEdits = () => {
     spinnerService.showAll();
     let consentGroup = this.getConsentGroup();
 
-    ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(
-      resp => {
-        console.log(resp);
-      }
-    );
+    ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
+      this.setState(prev =>{
+        prev.showApproveDialog = !this.state.showApproveDialog;
+        return prev;
+      });
+      this.removeEdits();
+    }).catch(error => {
+      spinnerService.hideAll();
+      console.error(error);
+    });
+  };
+
+  handleApproveDialog = () => {
+    if (this.isValid() || true) {
+      this.setState({
+        showApproveDialog: !this.state.showApproveDialog,
+        errorSubmit: false
+      });
+    }
+    else {
+      this.setState({
+        errorSubmit: true
+      });
+    }
   };
 
   enableEdit = (e) => () => {
@@ -506,7 +534,17 @@ class ConsentGroupReview extends Component {
 
   };
 
-
+  removeEdits = () => {
+    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.consentKey).then(
+      resp => {
+        this.init();
+        spinnerService.hideAll();
+      })
+      .catch(error => {
+        spinnerService.hideAll();
+        console.error(error);
+      });
+  };
 
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
@@ -743,6 +781,14 @@ class ConsentGroupReview extends Component {
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
+        ConfirmationDialog({
+          closeModal: this.handleApproveDialog,
+          show: this.state.showApproveDialog,
+          handleOkAction: this.approveEdits,
+          title: 'Approve Edits Confirmation',
+          bodyText: 'Are you sure yo want to approve this edits?',
+          actionLabel: 'Yes'
+        }, []),
         ConfirmationDialog({
           closeModal: this.closeModal,
           show: this.state.showDialog,
@@ -1157,8 +1203,7 @@ class ConsentGroupReview extends Component {
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",
-            onClick: this.approveEdits(),
-            disabled: this.state.disableApproveButton,
+            onClick: this.handleApproveDialog,
             isRendered: this.isAdmin && this.state.reviewSuggestion
           }, ["Approve Edits"]),
 

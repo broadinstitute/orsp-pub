@@ -14,6 +14,7 @@ ReactDOM.render(
         updateConsentUrl = {consentGroupReviewComponent.updateConsentUrl}
         projectKey = {consentGroupReviewComponent.projectKey}
         serverURL = {consentGroupReviewComponent.serverURL}
+        discardReviewUrl = {consentGroupReviewComponent.discardReviewUrl}
     />,
     document.getElementById('consentGroupReview')
 );

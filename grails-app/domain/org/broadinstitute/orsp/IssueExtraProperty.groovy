@@ -64,6 +64,11 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String EDIT_DESCRIPTION = "editDescription"
     public static final String DESCRIBE_EDIT_TYPE = "describeEditType"
     public static final String ON_GOING_PROCESS = "onGoingProcess"
+    public static final String SAMPLES = "samples"
+    public static final String INSTIUTIONAL_SOURCES = "institutionalSources"
+    public static final String DATABASE_CONTROLLED = "databaseControlled"
+    public static final String DESCRIBE_CONSENT = "describeConsentGroup"
+    public static final String SHARING_PLAN = "sharingPlan"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

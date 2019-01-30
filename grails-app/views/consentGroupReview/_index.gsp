@@ -8,7 +8,8 @@
       projectKey: "${params.projectKey}",
       serverURL: "${webRequest.baseUrl}",
       updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
-      approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}"
+      approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",
+      discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
     };
 
 </g:javascript>

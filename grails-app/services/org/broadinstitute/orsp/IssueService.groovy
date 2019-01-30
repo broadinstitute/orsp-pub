@@ -57,6 +57,18 @@ class IssueService {
             IssueExtraProperty.EDIT_DESCRIPTION,
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.ON_GOING_PROCESS,
+            IssueExtraProperty.COMPLIANCE,
+            IssueExtraProperty.INSTIUTIONAL_SOURCES,
+            IssueExtraProperty.DATABASE_CONTROLLED,
+            IssueExtraProperty.DESCRIBE_CONSENT,
+            IssueExtraProperty.REQUIRE_MTA,
+            IssueExtraProperty.SENSITIVE,
+            IssueExtraProperty.TEXT_SENSITIVE,
+            IssueExtraProperty.ACCESSIBLE,
+            IssueExtraProperty.TEXT_ACCESSIBLE,
+            IssueExtraProperty.TEXT_COMPLIANCE,
+            IssueExtraProperty.SHARING_PLAN,
+
     ]
 
 
@@ -67,7 +79,8 @@ class IssueService {
             IssueExtraProperty.NOT_RESEARCH,
             IssueExtraProperty.COLLABORATOR,
             IssueExtraProperty.PM,
-            IssueExtraProperty.PI
+            IssueExtraProperty.PI,
+            IssueExtraProperty.SAMPLES
     ]
 
     /**
@@ -100,8 +113,10 @@ class IssueService {
     @Transactional
     Issue updateIssue(Issue issue, Map<String, Object> input) throws DomainException {
         // Top level properties that are set on the Issue object.
-        if (input.get(IssueExtraProperty.SUMMARY)) {
+        if (!(issue.getType() == IssueType.CONSENT_GROUP.getName()) && input.get(IssueExtraProperty.SUMMARY)) {
             issue.setSummary((String) input.get(IssueExtraProperty.SUMMARY))
+        } else if (issue.getType().equals(IssueType.CONSENT_GROUP.getName())) {
+            issue.setSummary((String) input.get(IssueExtraProperty.CONSENT) + " / " + input.get(IssueExtraProperty.PROTOCOL ))
         }
         if (input.get(IssueExtraProperty.DESCRIPTION)) {
             issue.setDescription((String) input.get(IssueExtraProperty.DESCRIPTION))

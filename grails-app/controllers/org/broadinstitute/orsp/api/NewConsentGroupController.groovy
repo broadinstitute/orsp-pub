@@ -99,9 +99,9 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def update() {
-        Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
-        Issue issue = Issue.findByProjectKey(params.projectKey)
-        issueService.updateIssue(issue, project)
+        Map<String, Object> consent = IssueUtils.getJson(Map.class, request.JSON)
+        Issue issue = Issue.findByProjectKey(params.consentKey)
+        issueService.updateIssue(issue, consent)
         response.status = 200
         render([message: 'Consent Group was updated'] as JSON)
     }
