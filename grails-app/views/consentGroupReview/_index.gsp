@@ -6,11 +6,9 @@
       sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
       rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
       projectKey: "${params.projectKey}",
-      serverURL: "${webRequest.baseUrl}"
-    };
-
-    const urls = {
-        approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}"
+      serverURL: "${webRequest.baseUrl}",
+      updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
+      approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}"
     };
 
 </g:javascript>

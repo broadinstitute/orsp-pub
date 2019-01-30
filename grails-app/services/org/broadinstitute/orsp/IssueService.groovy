@@ -55,7 +55,8 @@ class IssueService {
             IssueExtraProperty.MANAGE_PROTOCOL,
             IssueExtraProperty.PROJECT_AVAILABILITY,
             IssueExtraProperty.EDIT_DESCRIPTION,
-            IssueExtraProperty.DESCRIBE_EDIT_TYPE
+            IssueExtraProperty.DESCRIBE_EDIT_TYPE,
+            IssueExtraProperty.ON_GOING_PROCESS,
     ]
 
 
