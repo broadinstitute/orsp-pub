@@ -17,7 +17,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   }
 
   isEdited = (current, futureValue) => {
-    return current!== futureValue
+    return current !== futureValue
   };
 
   render() {
@@ -40,7 +40,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               id: this.props.id,
               index: this.props.index,
               name: this.props.name,
-              value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
+              value: this.props.value,
               className: "inputFieldSelect",
               onChange: this.props.onChange(this.props.index),
               options: this.props.options,

@@ -46,41 +46,43 @@ export const Fundings = hh(class Fundings extends Component {
           fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
         if (this.props.edit) {
           let current = prev.current;
-          current.splice(0, 0, {source: '', sponsor: '', identifier: ''});
+          current.splice(0, 0, {source: '', sponsor: null, identifier: null});
           prev.current = current;
         }
         prev.fundings = fundings;
-        if (this.props.error) this.props.setError();
+        this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
         return prev;
       }, () => {
         this.props.updateFundings(this.state.fundings)
       });
     } else {
-      if (!this.props.error) this.props.setError();
+      if (!this.props.error && this.props.edit) this.props.setError();
     }
   }
 
   removeFundings = (index) => {
-    if (this.props.fundings.length > 1) {
-      this.setState(prev => {
-        let fundings = this.props.fundings;
-        let current = prev.current;
-        if (!this.props.edit) {
+    this.setState(prev => {
+      let fundings = this.props.fundings;
+      let current = prev.current;
+      if (!this.props.edit && this.props.fundings.length > 1) {
+        fundings.splice(index, 1);
+      } else if (this.props.edit) {
+        let diff =  fundings.length - this.props.copy.length;
+        if (index - diff < 0) {
           fundings.splice(index, 1);
+          current.splice(index, 1);
         } else {
-          let diff =  fundings.length - this.props.copy.length;
-          if (index - diff < 0) {
-            fundings.splice(index, 1);
-            current.splice(index, 1);
-          } else {
-            fundings[index] = { source: '', sponsor: '', identifier: '' };
-          }
-          prev.current = current;
+          fundings[index] = { source: '', sponsor: '', identifier: '' };
         }
-        prev.fundings = fundings;
-        return prev;
-      });
-    }
+        prev.current = current;
+      }
+      prev.fundings = fundings;
+      // if (!this.props.error && this.props.edit) this.props.setError();
+      return prev;
+    }, () => {
+      this.props.updateFundings(this.state.fundings)
+    });
+
   };
 
   handleFundingChange = (e) => {
@@ -102,7 +104,7 @@ export const Fundings = hh(class Fundings extends Component {
     select[index].source = selectedOption;
     this.setState(prev => {
       prev.fundings = select;
-      if (this.props.error)  this.props.setError();
+      if (this.props.error && this.props.edit)  this.props.setError();
       return prev;
     }, () => this.props.updateFundings(this.state.fundings)
     )

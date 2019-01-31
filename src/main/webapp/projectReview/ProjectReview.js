@@ -391,6 +391,7 @@ class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     this.setState(prev => {
       prev.formData.fundings = updated;
+      prev.fundingError = false;
       return prev;
     }); 
   };
@@ -519,7 +520,10 @@ class ProjectReview extends Component {
    let subjectProtectionError = false;
    let editTypeError = false;
    let editDescriptionError = false;
-   
+   let fundingError = false;
+   if (this.isEmpty(this.state.formData.fundings[0].source.label)) {
+     fundingError = true;
+   }
    if (this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
    }
@@ -541,9 +545,10 @@ class ProjectReview extends Component {
      prev.subjectProtectionError = subjectProtectionError;
      prev.editDescriptionError = editDescriptionError;
      prev.editTypeError = editTypeError;
+     prev.fundingError = fundingError;
      return prev;
    });
-   return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
+   return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
   }
 
   changeFundingError = () => {
