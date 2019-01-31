@@ -147,8 +147,6 @@ class ProjectReview extends Component {
           prev.futureCopy = futureCopy;
           return prev;
         });
-        console.log("FORMDATA: ", formData);
-        console.log("CURRENT: ", current);
     });
   }
 
