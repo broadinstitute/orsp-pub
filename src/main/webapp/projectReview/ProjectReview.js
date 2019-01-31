@@ -31,6 +31,7 @@ class ProjectReview extends Component {
       readOnly: true,
       formData: {
         description: '',
+        projectType: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
@@ -38,7 +39,6 @@ class ProjectReview extends Component {
           projectTitle: '',
           protocol: '',
           subjectProtection: null,
-          manageProtocol: null,
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
@@ -75,7 +75,6 @@ class ProjectReview extends Component {
           projectTitle: '',
           protocol: '',
           subjectProtection: null,
-          manageProtocol: null,
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
@@ -109,7 +108,7 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
-        current.description = issue.data.issue.description;
+        current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.projectExtraProps = issue.data.extraProperties;
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
@@ -119,6 +118,7 @@ class ProjectReview extends Component {
         currentStr = JSON.stringify(current);
 
         this.getReviewSuggestions();
+        this.projectType = issue.data.issue.type;
 
         let edits = null;
         if (edits != null) {
@@ -285,7 +285,6 @@ class ProjectReview extends Component {
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
     project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
-    project.manageProtocol = this.state.formData.projectExtraProps.manageProtocol;
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
@@ -370,8 +369,7 @@ class ProjectReview extends Component {
       this.setState({
         errorSubmit: true
       });
-    }  
-
+    }
   }
 
   loadUsersOptions = (query, callback) => {
@@ -479,7 +477,7 @@ class ProjectReview extends Component {
 
   closeModal = () => {
     this.setState({
-      showDialog: !this.state.showDialog
+      showRejectProjectDialog: !this.state.showRejectProjectDialog
     });
   };
    
@@ -657,7 +655,7 @@ class ProjectReview extends Component {
             id: "inputStudyActivitiesDescription",
             name: "description",
             label: "Broad study activities",
-            value: this.state.formData.description.replace(/<\/?[^>]+(>|$)/g, ""),
+            value: this.state.formData.description,
             currentValue: this.state.current.description,
             readOnly: this.state.readOnly,
             required: true,
@@ -717,19 +715,6 @@ class ProjectReview extends Component {
           }),
 
           /*IMPORTANT: These questions will appear on Edit mode, once project has been approved*/
-          InputYesNo({
-            isRendered: false,
-            id: "radioManageProtocol",
-            name: "manageProtocol",
-            label: "Is the Broad Institute managing this protocol? ",
-            value: this.state.formData.projectExtraProps.manageProtocol,
-            currentValue: this.state.current.projectExtraProps.manageProtocol,
-            onChange: this.handleProjectExtraPropsChangeRadio,
-            required: false,
-            readOnly: this.state.readOnly,
-            error: false,
-            errorMessage: "Required field"
-          }),
 
           InputFieldRadio({
             isRendered: false,
@@ -749,7 +734,7 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false}, [
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false && this.projectType === "IRB Project"}, [
           InputFieldRadio({
             id: "radioDescribeEdits",
             name: "describeEditType",
@@ -897,7 +882,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            // disabled: ,
+            //disabled: ,
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
