@@ -338,7 +338,6 @@ class ProjectReview extends Component {
       formData: this.state.futureCopy,
       readOnly: true
     });
-    console.log(this.state.current);
   }
 
   submitEdit = (e) => () => {
@@ -364,10 +363,7 @@ class ProjectReview extends Component {
       this.setState({
         errorSubmit: true
       });
-    }  
-    console.log(this.state.formData);
-    console.log(this.state.current);
-    console.log(this.state.formData === this.state.current);
+    }
   }
 
   loadUsersOptions = (query, callback) => {
@@ -878,7 +874,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            //disabled: this.state.current !== this.state.formData,
+            //disabled: ,
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
