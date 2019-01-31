@@ -40,19 +40,20 @@ export const Fundings = hh(class Fundings extends Component {
   }
 
   addFundings() {
-    if (this.state.fundings[0].source !== '') {
-
+    if (this.props.fundings[0].source !== '') {
       this.setState(prev => {
         let fundings = prev.fundings;
-        let current = prev.current;
-        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+          fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
         if (this.props.edit) {
+          let current = prev.current;
           current.splice(0, 0, {source: '', sponsor: '', identifier: ''});
           prev.current = current;
         }
         prev.fundings = fundings;
         prev.error = false;
         return prev;
+      }, () => {
+        this.props.updateFundings(this.state.fundings)
       });
     }
   }
