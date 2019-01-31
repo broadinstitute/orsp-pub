@@ -1078,7 +1078,7 @@ class ConsentGroupReview extends Component {
             ],
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
-            error: this.state.erros.compliance,
+            error: this.state.errors.compliance,
             errorMessage: "Required field"
           }),
           InputFieldText({
@@ -1165,7 +1165,7 @@ class ConsentGroupReview extends Component {
             currentValue: this.state.current.consentExtraProps.sharingPlan,
             onChange: this.handleRadio2Change,
             readOnly: this.state.readOnly,
-            error: this.props.errors.sharingPlan,
+            error: this.state.errors.sharingPlan,
             errorMessage: "Required field"
           }),
           InputFieldText({
