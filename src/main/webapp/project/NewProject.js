@@ -128,6 +128,7 @@ class NewProject extends Component {
     extraProperties.push({name: 'protocol', value: this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null});
     extraProperties.push({name: 'description', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
+    extraProperties.push({name: 'projectAvailability', value: 'available'});
     let collaborators = this.state.step1FormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
         collaborators.map((collaborator, idx) => {
