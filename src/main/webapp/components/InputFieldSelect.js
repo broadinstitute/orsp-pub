@@ -24,63 +24,40 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   };
 
   isEdited = (current, futureValue) => {
-    let edited = false;
-    let future = undefined;
-
-    if (futureValue[0] === '') {
-      future = futureValue;
-    } else {
-      future = futureValue[0];
-    }
-
-    if (this.props.edit || this.props.edit === undefined) {
-      if (current.length !== future.length) {
-        edited = true;
-      }
-
-      current.forEach((element, index) => {
-        if (future[index] !== undefined) {
-          if (element.key !== future[index].key) {
-            edited = true;
-          }
-        }
-      });
-    }
-    return edited;
+    return current!== futureValue
   };
 
   render() {
+    // let currentValue  = [];
+    // let value = [];
+    //
+    // let currentValues = [];
 
-    let currentValue  = [];
-    let value = [];
+    // if (this.props.currentValue === undefined) {
+    //   currentValue.push("");
+    // } else if (this.props.currentValue.length === 0){
+    //   currentValue.push("");
+    // } else {
+    //   currentValue = this.props.currentValue;
+    // }
 
-    let currentValues = [];
+    // if (this.props.value.length === 0) {
+    //   value.push("");
+    // } else {
+    //   value.push(this.props.value);
+    // }
 
-    if (this.props.currentValue === undefined) {
-      currentValue.push("");
-    } else if (this.props.currentValue.length === 0){
-      currentValue.push("");
-    } else {
-      currentValue = this.props.currentValue;
-    }
+    // currentValue.forEach(item => {
+    //   currentValues.push(item.label);
+    // });
 
-    if (this.props.value.length === 0) {
-      value.push("");
-    } else {
-      value.push(this.props.value);
-    }
-
-    currentValue.forEach(item => {
-      currentValues.push(item.label);
-    });
-
-    let currentKeys = this.sortByKey(currentValue, 'key');
-    let keys = this.sortByKey(value, 'key');
-
-    let currentValueStr = currentValues.join(',');
+    // let currentKeys = this.sortByKey(currentValue, 'key');
+    // let keys = this.sortByKey(value, 'key');
+    //
+    // let currentValueStr = currentValues.join(',');
 
     // verified if edited ...
-    const edited = this.isEdited(currentKeys, keys);
+    const edited = this.isEdited(this.props.currentValue.value, this.props.value.value);
 
     return (
       InputField({
@@ -91,7 +68,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         readOnly: this.props.readOnly,
         value: this.props.value,
         currentValue: this.props.currentValue,
-        currentValueStr: currentValueStr,
+        currentValueStr: this.props.currentValue.label,
         edited : edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [

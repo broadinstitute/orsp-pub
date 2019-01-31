@@ -52,6 +52,9 @@ class ProjectReview extends Component {
       },
       disableApproveButton: false,
       reviewSuggestion: false,
+      copy: {
+        fundings: [{ source: '', sponsor: '', identifier: '' }]
+      },
       current: {
         requestor: {
           displayName: '',
@@ -97,6 +100,7 @@ class ProjectReview extends Component {
 
   init() {
     let current = {};
+    let copy = {};
     let currentStr = {};
     let future = {};
     let futureCopy = {};
@@ -132,6 +136,7 @@ class ProjectReview extends Component {
           futureCopy = JSON.parse(futureStr);
         } else {
           // prepare form data here, initially same as current ....
+          copy= JSON.parse(currentStr);
           formData = JSON.parse(currentStr);
           current = JSON.parse(currentStr);
           future = JSON.parse((currentStr));
@@ -141,6 +146,7 @@ class ProjectReview extends Component {
         // store current issue info here ....
         this.setState(prev => {
           // prepare form data here, initially same as current ....
+          prev.copy = copy;
           prev.formData = formData;
           prev.current = current;
           prev.future = future;
@@ -628,11 +634,13 @@ class ProjectReview extends Component {
         Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.formData.fundings,
+            copy: this.state.copy.fundings,
             currentValue: this.state.current.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
             error: false,
-            errorMessage: ""
+            errorMessage: "",
+            edit: true
           })
         ]),
 

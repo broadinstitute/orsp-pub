@@ -24,16 +24,32 @@ export const Fundings = hh(class Fundings extends Component {
     this.addFundings = this.addFundings.bind(this);
     this.removeFundings = this.removeFundings.bind(this);
     this.handleFundingSelect = this.handleFundingSelect.bind(this);
+
     this.state = {
-      fundings: this.props.fundings
+      fundings: [{ source: '', sponsor: '', identifier: '' }],
+      current: [{ source: '', sponsor: '', identifier: '' }]
     };
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    const copyCurrent = nextProps.currentValue;
+
+    return {
+      current: copyCurrent
+    }
   }
 
   addFundings() {
     if (this.state.fundings[0].source !== '') {
+
       this.setState(prev => {
         let fundings = prev.fundings;
+        let current = prev.current;
         fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+        if (this.props.edit) {
+          current.splice(0, 0, {source: '', sponsor: '', identifier: ''});
+          prev.current = current;
+        }
         prev.fundings = fundings;
         prev.error = false;
         return prev;
@@ -45,32 +61,52 @@ export const Fundings = hh(class Fundings extends Component {
     if (this.state.fundings.length > 1) {
       this.setState(prev => {
         let fundings = prev.fundings;
-        fundings.splice(index, 1);
+        let current = prev.current;
+        if (!this.props.edit) {
+          fundings.splice(index, 1);
+        } else {
+          let diff =  fundings.length - this.props.copy.length;
+          if (index - diff < 0) {
+            fundings.splice(index, 1);
+            current.splice(index, 1);
+          } else {
+            fundings[index] = { source: '', sponsor: '', identifier: '' };
+          }
+          prev.current = current;
+        }
         prev.fundings = fundings;
         return prev;
-      }, () => this.props.updateFundings(this.state.fundings));
+      });
     }
-  }
+  };
 
   handleFundingChange = (e) => {
+    let funding = this.props.fundings;
     const field = e.target.name;
     const value = e.target.value;
     const index = e.target.getAttribute('index');
+    funding[index][field] = value;
     this.setState(prev => {
-      prev.fundings[index][field] = value;
+      prev.fundings = funding;
       return prev;
-    }, () => this.props.updateFundings(this.state.fundings));
+    }, () => {
+      this.props.updateFundings(this.state.fundings)
+    });
   };
 
   handleFundingSelect = (index) => (selectedOption) => {
+    let select = this.props.fundings;
+    select[index].source = selectedOption;
     this.setState(prev => {
-      prev.fundings[index].source = selectedOption;
+      prev.fundings = select;
       return prev;
     }, () => this.props.updateFundings(this.state.fundings)
     )
   };
 
   render() {
+    const { fundings = [] } = this.props;
+    const { copy = [] } = this.props;
     return (
       h(Fragment, {}, [
         div({ className: "row" }, [
@@ -98,7 +134,7 @@ export const Fundings = hh(class Fundings extends Component {
 
         hr({ className: "fullWidth" }),
 
-        this.props.fundings.map((rd, idx) => {
+        fundings.map((rd, idx) => {
           return h(Fragment, { key: idx }, [
 
             div({ className: "row" }, [
@@ -111,11 +147,14 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "source",
                       options: fundingOptions,
-                      value: this.props.fundings[idx].source,
+                      value: rd.source,
+                      currentValue: fundings.length <= copy.length  && copy[idx].source !== undefined ?
+                        copy[idx].source : this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined ? this.props.currentValue[idx].source : rd.source,
                       onChange: this.handleFundingSelect,
                       error: this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage,
-                      readOnly: this.props.readOnly
+                      readOnly: this.props.readOnly,
+                      edited: this.props.readOnly
                     })
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -124,7 +163,9 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
-                      value: this.props.fundings[idx].sponsor,
+                      value: rd.sponsor,
+                      currentValue: fundings.length < copy.length  && copy[idx].sponsor !== undefined ?
+                                    copy[idx].sponsor : this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined ? this.props.currentValue[idx].sponsor : rd.sponsor,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -137,7 +178,9 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      value: this.props.fundings[idx].identifier,
+                      value: rd.identifier,
+                      currentValue: fundings.length < copy.length && copy[idx].identifier !== undefined ?
+                        copy[idx].identifier : this.props.currentValue !== undefined && this.props.currentValue[idx] !==  undefined ? this.props.currentValue[idx].identifier : rd.identifier,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
