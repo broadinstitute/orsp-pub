@@ -346,22 +346,30 @@ class ProjectReview extends Component {
   }
 
   submitEdit = (e) => () => {
-    this.setState({
-      readOnly: true
-    });
-    const data = {
-      projectKey: this.props.projectKey,
-      suggestions: JSON.stringify(this.state.formData),
-    };
-    if (this.state.reviewSuggestion) {
-      Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
-        this.getReviewSuggestions()
-      );
+    if(this.isValid()) {
+      this.setState({
+        readOnly: true,
+        errorSubmit: false
+      });
+      const data = {
+        projectKey: this.props.projectKey,
+        suggestions: JSON.stringify(this.state.formData),
+      };
+      if (this.state.reviewSuggestion) {
+        Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
+          this.getReviewSuggestions()
+        );
+      } else {
+        Review.submitReview(this.props.serverURL, data).then(() =>
+          this.getReviewSuggestions()
+        );
+      }
     } else {
-      Review.submitReview(this.props.serverURL, data).then(() =>
-        this.getReviewSuggestions()
-      );
-    }
+      this.setState({
+        errorSubmit: true
+      });
+    }  
+
   }
 
   loadUsersOptions = (query, callback) => {
