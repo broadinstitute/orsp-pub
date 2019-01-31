@@ -327,6 +327,14 @@ class ConsentGroupReview extends Component {
       textSensitive = true;
     }
 
+    if (this.state.formData.consentExtraProps.sensitive && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
+      textSensitive = true;
+    }
+
+    if (this.state.formData.consentExtraProps.accessible && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
+      textAccessible = true;
+    }
+
     if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
       sharingPlan = true;
     }
@@ -346,10 +354,23 @@ class ConsentGroupReview extends Component {
       prev.errors.sharingPlan = sharingPlan;
       prev.errors.textCompliance = textCompliance;
       prev.errors.textSensitive = textSensitive;
+      prev.errors.textAccessible = textAccessible;
       return prev;
     });
 
-    return !consent && !protocol && !collInst && !describeConsentGroup && !requireMta && !sampleCollections && !pii && !sharingPlan && !questions && !textCompliance && !textSensitive;
+    return !consent &&
+      !protocol &&
+      !collInst &&
+      !describeConsentGroup &&
+      !requireMta &&
+      !sampleCollections &&
+      !pii &&
+      !sharingPlan &&
+      !questions &&
+      !textCompliance &&
+      !textSensitive &&
+      !accessible &&
+      !textAccessible;
   };
 
   validateQuestionaire = () => {
