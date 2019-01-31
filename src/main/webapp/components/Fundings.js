@@ -50,16 +50,18 @@ export const Fundings = hh(class Fundings extends Component {
           prev.current = current;
         }
         prev.fundings = fundings;
-        prev.error = false;
+        if (this.props.error) this.props.setError();
         return prev;
       }, () => {
         this.props.updateFundings(this.state.fundings)
       });
+    } else {
+      if (!this.props.error) this.props.setError();
     }
   }
 
   removeFundings = (index) => {
-    if (this.state.fundings.length > 1) {
+    if (this.props.fundings.length > 1) {
       this.setState(prev => {
         let fundings = this.props.fundings;
         let current = prev.current;
@@ -100,6 +102,7 @@ export const Fundings = hh(class Fundings extends Component {
     select[index].source = selectedOption;
     this.setState(prev => {
       prev.fundings = select;
+      if (this.props.error)  this.props.setError();
       return prev;
     }, () => this.props.updateFundings(this.state.fundings)
     )

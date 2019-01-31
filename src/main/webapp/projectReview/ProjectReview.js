@@ -23,7 +23,7 @@ class ProjectReview extends Component {
       editTypeError: false,
       editDescriptionError: false,
       subjectProtection: false,
-      foundingError: false,
+      fundingError: false,
       showDialog: false,
       showDiscardEditsDialog: false,
       showApproveDialog: false,
@@ -546,6 +546,13 @@ class ProjectReview extends Component {
    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
   }
 
+  changeFundingError = () => {
+    this.setState(prev => {
+      prev.fundingError = !prev.fundingError;
+      return prev;
+    })
+  };
+
   render() {
     return (
       div({}, [
@@ -644,8 +651,9 @@ class ProjectReview extends Component {
             currentValue: this.state.current.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
-            error: false,
-            errorMessage: "",
+            error: this.state.fundingError,
+            setError: this.changeFundingError,
+            errorMessage: "Required field",
             edit: true
           })
         ]),

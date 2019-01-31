@@ -16,47 +16,11 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     console.log(error, info);
   }
 
-  sortByKey = (array, key) => {
-    return array.sort(function (a, b) {
-      var x = a[key]; var y = b[key];
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
-  };
-
   isEdited = (current, futureValue) => {
     return current!== futureValue
   };
 
   render() {
-    // let currentValue  = [];
-    // let value = [];
-    //
-    // let currentValues = [];
-
-    // if (this.props.currentValue === undefined) {
-    //   currentValue.push("");
-    // } else if (this.props.currentValue.length === 0){
-    //   currentValue.push("");
-    // } else {
-    //   currentValue = this.props.currentValue;
-    // }
-
-    // if (this.props.value.length === 0) {
-    //   value.push("");
-    // } else {
-    //   value.push(this.props.value);
-    // }
-
-    // currentValue.forEach(item => {
-    //   currentValues.push(item.label);
-    // });
-
-    // let currentKeys = this.sortByKey(currentValue, 'key');
-    // let keys = this.sortByKey(value, 'key');
-    //
-    // let currentValueStr = currentValues.join(',');
-
-    // verified if edited ...
     const edited = this.isEdited(this.props.currentValue.value, this.props.value.value);
 
     return (
@@ -80,7 +44,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               className: "inputFieldSelect",
               onChange: this.props.onChange(this.props.index),
               options: this.props.options,
-              placeholder: this.props.placeholder,
+              placeholder: edited ? '--' : this.props.placeholder,
               isMulti: this.props.isMulti
             })
           ])
