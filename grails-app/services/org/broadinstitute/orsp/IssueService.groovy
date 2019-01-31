@@ -114,7 +114,7 @@ class IssueService {
         // Handle native associations.
 
         // Funding:
-        def fundingParams = input.get('funding')
+        def fundingParams = input.get('fundings')
 
         def newFundingList = fundingParams.collect { p ->
             Long fundingID = Long.valueOf(p.getOrDefault("id", "0").toString())
@@ -123,7 +123,7 @@ class IssueService {
             if (f.id) f.setUpdated(new Date())
             f.setSource(p.get("source").toString())
             f.setName(p.get("name").toString())
-            f.setAwardNumber(p.get("award").toString())
+            f.setAwardNumber(p.get("awardNumber").toString())
             f.setProjectKey(issue.projectKey)
             f
         }

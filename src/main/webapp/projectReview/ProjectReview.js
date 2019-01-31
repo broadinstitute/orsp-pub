@@ -246,7 +246,7 @@ class ProjectReview extends Component {
     });
   }
 
-  approveEdits() {
+  approveEdits = () => {
     spinnerService.showAll();
     let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
@@ -321,10 +321,12 @@ class ProjectReview extends Component {
     if (fundings !== null && fundings.length > 0) {
       fundings.map((f, idx) => {
         let funding = {};
-        funding.source = f.source.label;
-        funding.awardNumber = f.identifier;
-        funding.name = f.sponsor;
-        fundingList.push(funding);
+        if (!this.isEmpty(f.source.label)) {
+          funding.source = f.source.label;
+          funding.award = f.identifier;
+          funding.name = f.sponsor;
+          fundingList.push(funding);
+        }
       });
     }
     return fundingList;
