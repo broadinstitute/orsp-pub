@@ -105,7 +105,7 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
-        current.description = issue.data.issue.description;
+        current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.projectExtraProps = issue.data.extraProperties;
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
@@ -147,6 +147,8 @@ class ProjectReview extends Component {
           prev.futureCopy = futureCopy;
           return prev;
         });
+        console.log("FORMDATA: ", formData);
+        console.log("CURRENT: ", current);
     });
   }
 
@@ -647,7 +649,7 @@ class ProjectReview extends Component {
             id: "inputStudyActivitiesDescription",
             name: "description",
             label: "Broad study activities",
-            value: this.state.formData.description.replace(/<\/?[^>]+(>|$)/g, ""),
+            value: this.state.formData.description,
             currentValue: this.state.current.description,
             readOnly: this.state.readOnly,
             required: true,
