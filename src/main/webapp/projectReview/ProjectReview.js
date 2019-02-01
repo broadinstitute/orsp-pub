@@ -94,6 +94,7 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    console.log("COMPONENT DID MOUNT")
     this.init();
   }
 
@@ -339,12 +340,13 @@ class ProjectReview extends Component {
   }
 
   cancelEdit = (e) => () => {
+    this.init();
     this.setState({
       formData: this.state.futureCopy,
       current: this.state.futureCopy,
       readOnly: true
     });
-  }
+  };
 
   submitEdit = (e) => () => {
     if(this.isValid()) {

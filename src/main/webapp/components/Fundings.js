@@ -64,6 +64,7 @@ export const Fundings = hh(class Fundings extends Component {
     this.setState(prev => {
       let fundings = this.props.fundings;
       let current = prev.current;
+
       if (!this.props.edit && this.props.fundings.length > 1) {
         fundings.splice(index, 1);
       } else if (this.props.edit) {
@@ -77,7 +78,6 @@ export const Fundings = hh(class Fundings extends Component {
         prev.current = current;
       }
       prev.fundings = fundings;
-      // if (!this.props.error && this.props.edit) this.props.setError();
       return prev;
     }, () => {
       this.props.updateFundings(this.state.fundings)
