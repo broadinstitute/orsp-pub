@@ -29,6 +29,7 @@ class ProjectReview extends Component {
       showApproveDialog: false,
       showRejectProjectDialog: false,
       readOnly: true,
+      editedForm: {},
       formData: {
         description: '',
         projectType: '',
@@ -156,6 +157,7 @@ class ProjectReview extends Component {
         if (data.data !== '') {
           this.setState(prev => {
             prev.formData = JSON.parse(data.data.suggestions);
+            prev.editedForm = JSON.parse(data.data.suggestions);
             prev.reviewSuggestion = true;
             return prev;
           });
@@ -326,6 +328,10 @@ class ProjectReview extends Component {
     return fundingList;
   }
 
+  compareObj(obj1, obj2){
+    return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
+  }
+
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
     this.setState({
@@ -334,8 +340,8 @@ class ProjectReview extends Component {
   }
 
   cancelEdit = (e) => () => {
+    this.init();
     this.setState({
-      formData: this.state.futureCopy,
       readOnly: true
     });
   }
@@ -514,10 +520,10 @@ class ProjectReview extends Component {
    let editTypeError = false;
    let editDescriptionError = false;
    
-   if (this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
+   if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
    }
-   if (this.isEmpty(this.state.formData.projectExtraProps.describeEditType)) {
+   if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.describeEditType)) {
     editTypeError = true;
   }
    if (this.isEmpty(this.state.formData.description)) {
@@ -874,7 +880,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            //disabled: ,
+            disabled: this.compareObj("formData", "current") || this.compareObj("formData","editedForm"),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 

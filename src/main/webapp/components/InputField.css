@@ -18,7 +18,7 @@
   cursor: default;
 }
 
-.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
+.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
   pointer-events: none;
 }
 
