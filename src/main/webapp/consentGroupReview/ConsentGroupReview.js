@@ -1024,7 +1024,7 @@ class ConsentGroupReview extends Component {
         ]),
         Panel({
           title: "International Cohorts",
-          isRendered: this.state.readOnly
+          // isRendered: this.state.readOnly
         }, [
           div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.individualDataSourced), className: "firstRadioGroup" }, [
             InputYesNo({
