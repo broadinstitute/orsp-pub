@@ -67,6 +67,8 @@ class IssueService {
             IssueExtraProperty.TEXT_ACCESSIBLE,
             IssueExtraProperty.TEXT_COMPLIANCE,
             IssueExtraProperty.SHARING_PLAN,
+            IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
+            IssueExtraProperty.IS_LINK_MAINTAINED,
 
     ]
 

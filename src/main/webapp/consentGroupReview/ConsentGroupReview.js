@@ -123,7 +123,7 @@ class ConsentGroupReview extends Component {
       securityError: false,
       dataSharingError: false,
 
-      intCohortsAnswers: {},
+      intCohortsAnswers: [],
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
@@ -212,7 +212,7 @@ class ConsentGroupReview extends Component {
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
-              prev.questions = this.initQuestions(true);
+              prev.questions = this.initQuestions();
               return prev;
             });
           }
@@ -469,7 +469,7 @@ class ConsentGroupReview extends Component {
     this.getReviewSuggestions();
     this.setState({
       readOnly: false,
-      questions: this.initQuestions(false)
+      questions: this.initQuestions()
     });
   };
 
@@ -483,26 +483,34 @@ class ConsentGroupReview extends Component {
   };
 
   submitEdit = (e) => () => {
-    if (this.validateQuestionaire()) {
-      this.setEditedAnswers();
-      this.setState({
-        readOnly: true,
-        errorSubmit: false,
-      });
-      const data = {
-        projectKey: this.props.consentKey,
-        suggestions: JSON.stringify(this.state.formData),
-      };
+    let data = {};
 
-      if (this.state.reviewSuggestion) {
-        Review.updateReview (this.props.serverURL, this.props.consentKey, data).then(() =>
-          this.getReviewSuggestions()
-        );
-      } else {
-        Review.submitReview (this.props.serverURL, data).then(() =>
-          this.getReviewSuggestions()
-        );
-      }
+    if (this.validateQuestionaire()) {
+      this.setState(prev => {
+        prev.readOnly = true;
+        prev.errorSubmit = false;
+
+        prev.intCohortsAnswers.forEach(question => {
+          prev.formData.consentExtraProps[question.key] = question.answer;
+        });
+        return prev;
+      }, () => {
+        data = {
+          projectKey: this.props.consentKey,
+          suggestions: JSON.stringify(this.state.formData),
+        };
+
+
+        if (this.state.reviewSuggestion) {
+          Review.updateReview (this.props.serverURL, this.props.consentKey, data).then(() =>
+            this.getReviewSuggestions()
+          );
+        } else {
+          Review.submitReview (this.props.serverURL, data).then(() =>
+            this.getReviewSuggestions()
+          );
+        }
+      });
     } else {
       this.setState(prev => {
         prev.errorSubmit = true;
@@ -709,8 +717,7 @@ class ConsentGroupReview extends Component {
     }
   }
 
-  initQuestions = (readOnly = true) => {
-    const alreadyAnswered = this.state.determination.endState === false && readOnly === false;
+  initQuestions = () => {
     let questions = [];
 
     questions.push({
@@ -777,30 +784,34 @@ class ConsentGroupReview extends Component {
   };
 
   setEditedAnswers = () => {
-    console.log(this.state.intCohortsAnswers);
     this.setState(prev => {
       prev.intCohortsAnswers.forEach(question => {
-        if (question.answer !== null) {
-          prev.formData.consentExtraProps[question.key] = question.answer;
-        } else {
-          prev.formData.consentExtraProps[question.key] = null;
-        }
+        prev.formData.consentExtraProps[question.key] = question.answer;
       });
       return prev;
     });
   };
 
   determinationHandler = (determination) => {
-    console.log(determination.questions);
+    const answers = [];
+    determination.questions.forEach(question => {
+      if (question.answer !== null) {
+        let singleAnswer = {};
+        singleAnswer.key = question.key;
+        singleAnswer.answer = question.answer;
+        answers.push(singleAnswer);
+      } else {
+        let singleAnswer = {};
+        singleAnswer.key = question.key;
+        singleAnswer.answer = null;
+        answers.push(singleAnswer);
+      }
+    });
+
+
     this.setState(prev => {
+      prev.intCohortsAnswers = answers;
       prev.determination = determination;
-      determination.questions.forEach(question => {
-        if (question.answer !== null) {
-          prev.intCohortsAnswers[question.key] = question.answer;
-        } else {
-          prev.intCohortsAnswers[question.key] = null;
-        }
-      });
       return prev;
     });
   };
