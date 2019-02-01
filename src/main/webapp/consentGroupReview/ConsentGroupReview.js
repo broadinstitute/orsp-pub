@@ -122,6 +122,8 @@ class ConsentGroupReview extends Component {
       internationalCohortsError: false,
       securityError: false,
       dataSharingError: false,
+
+      intCohortsAnswers: {},
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
   }
@@ -367,6 +369,7 @@ class ConsentGroupReview extends Component {
       !pii &&
       !sharingPlan &&
       !questions &&
+
       !textCompliance &&
       !textSensitive &&
       !accessible &&
@@ -374,9 +377,10 @@ class ConsentGroupReview extends Component {
   };
 
   validateQuestionaire = () => {
-    let isValid = true;
-    if (this.state.determination.requiredError || this.state.determination.endState == false) {
-      isValid = false;
+    let isValid = false;
+    const determination = this.state.determination;
+    if (determination.questions.length === 0 || determination.endState === true) {
+      isValid = true;
     }
     return isValid;
   };
@@ -412,6 +416,7 @@ class ConsentGroupReview extends Component {
 
   rejectConsentGroup() {
     spinnerService.showAll();
+
     ConsentGroup.rejectConsent(this.props.rejectConsentUrl, this.props.consentKey).then(resp => {
       window.location.href = this.getRedirectUrl(this.props.projectKey);
       spinnerService.hideAll();
@@ -479,7 +484,7 @@ class ConsentGroupReview extends Component {
 
   submitEdit = (e) => () => {
     if (this.validateQuestionaire()) {
-      // validate International Cohorts
+      this.setEditedAnswers();
       this.setState({
         readOnly: true,
         errorSubmit: false,
@@ -712,7 +717,7 @@ class ConsentGroupReview extends Component {
       question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
       yesOutput: 2,
       noOutput: EXIT,
-      answer: this.state.formData.consentExtraProps.individualDataSourced,
+      answer: null,
       progress: 0,
       key: 'individualDataSourced',
       id: 1
@@ -722,7 +727,7 @@ class ConsentGroupReview extends Component {
       question: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
       yesOutput: 3,
       noOutput: EXIT,
-      answer: alreadyAnswered ? this.state.formData.consentExtraProps.isLinkMaintained : null,
+      answer: null,
       progress: 17,
       key: 'isLinkMaintained',
       id: 2
@@ -732,7 +737,7 @@ class ConsentGroupReview extends Component {
       question: 'Is the Broad work being performed as fee-for-service?',
       yesOutput: DPA,
       noOutput: 4,
-      answer: alreadyAnswered ? this.state.formData.consentExtraProps.feeForService : null,
+      answer: null,
       progress: 34,
       key: 'feeForService',
       id: 3
@@ -742,7 +747,7 @@ class ConsentGroupReview extends Component {
       question: 'Are samples/data coming directly to the Broad from the EEA?',
       yesOutput: 5,
       noOutput: RA,
-      answer: alreadyAnswered ? this.state.formData.consentExtraProps.areSamplesComingFromEEAA : null,
+      answer: null,
       progress: 50,
       key: 'areSamplesComingFromEEAA',
       id: 4
@@ -752,7 +757,7 @@ class ConsentGroupReview extends Component {
       question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
       yesOutput: OSAP,
       noOutput: 6,
-      answer: alreadyAnswered ? this.state.formData.consentExtraProps.isCollaboratorProvidingGoodService : null,
+      answer: null,
       progress: 67,
       key: 'isCollaboratorProvidingGoodService',
       id: 5
@@ -762,7 +767,7 @@ class ConsentGroupReview extends Component {
       question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
       yesOutput: EXIT,
       noOutput: CTC,
-      answer: alreadyAnswered ? this.state.formData.consentExtraProps.isConsentUnambiguous : null,
+      answer: null,
       progress: 83,
       key: 'isConsentUnambiguous',
       id: 6
@@ -771,17 +776,29 @@ class ConsentGroupReview extends Component {
     return questions;
   };
 
-  determinationHandler = (determination) => {
+  setEditedAnswers = () => {
+    console.log(this.state.intCohortsAnswers);
     this.setState(prev => {
-      prev.determination = determination;
-      if (this.state.determination.projectType !== null && this.state.showCohortError === true) {
-        prev.showCohortError = false;
-      }
-      determination.questions.forEach(question => {
+      prev.intCohortsAnswers.forEach(question => {
         if (question.answer !== null) {
           prev.formData.consentExtraProps[question.key] = question.answer;
         } else {
           prev.formData.consentExtraProps[question.key] = null;
+        }
+      });
+      return prev;
+    });
+  };
+
+  determinationHandler = (determination) => {
+    console.log(determination.questions);
+    this.setState(prev => {
+      prev.determination = determination;
+      determination.questions.forEach(question => {
+        if (question.answer !== null) {
+          prev.intCohortsAnswers[question.key] = question.answer;
+        } else {
+          prev.intCohortsAnswers[question.key] = null;
         }
       });
       return prev;
