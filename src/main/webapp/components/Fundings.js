@@ -67,13 +67,16 @@ export const Fundings = hh(class Fundings extends Component {
 
       if (!this.props.edit && this.props.fundings.length > 1) {
         fundings.splice(index, 1);
-      } else if (this.props.edit) {
-        let diff =  fundings.length - this.props.copy.length;
-        if (index - diff < 0) {
+      }
+
+      else if (this.props.edit) { // only enters if edit mode is true
+        let diff =  fundings.length - this.props.copy.length; // obtains the index difference
+        // console.log("index - diff = ",index - diff);
+        if (index - diff < 0) { // determines if element to delete is within the original array or the originalTemporal
           fundings.splice(index, 1);
           current.splice(index, 1);
         } else {
-          fundings[index] = { source: '', sponsor: '', identifier: '' };
+          fundings[index] = { source: '', sponsor: ' ', identifier:  ' ' };
         }
         prev.current = current;
       }
@@ -154,13 +157,13 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "source",
                       options: fundingOptions,
                       value: rd.source,
-                      currentValue: fundings.length <= copy.length  && copy[idx].source !== undefined ?
-                        copy[idx].source : this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined ? this.props.currentValue[idx].source : rd.source,
+                      currentValue: this.getCurrentValue(fundings, copy, idx, rd, "source"),
                       onChange: this.handleFundingSelect,
                       error: this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
-                      edited: this.props.readOnly
+                      edited: this.props.readOnly,
+                      edit: this.props.edit
                     })
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -170,8 +173,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "sponsor",
                       label: "",
                       value: rd.sponsor,
-                      currentValue: fundings.length < copy.length  && copy[idx].sponsor !== undefined ?
-                                    copy[idx].sponsor : this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined ? this.props.currentValue[idx].sponsor : rd.sponsor,
+                      currentValue: this.getCurrentValue(fundings, copy, idx, rd, "sponsor"),
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -185,8 +187,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "identifier",
                       label: "",
                       value: rd.identifier,
-                      currentValue: fundings.length < copy.length && copy[idx].identifier !== undefined ?
-                        copy[idx].identifier : this.props.currentValue !== undefined && this.props.currentValue[idx] !==  undefined ? this.props.currentValue[idx].identifier : rd.identifier,
+                      currentValue: this.getCurrentValue(fundings, copy, idx, rd, "identifier"),
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -208,4 +209,25 @@ export const Fundings = hh(class Fundings extends Component {
       ])
     )
   }
+
+  getCurrentValue(fundings, copy, idx, rd, field) {
+    let currentValue = '';
+    // console.log("Fundings");
+    // console.table(fundings);
+    // console.log("COPY");
+    // console.table(copy);
+
+    if (fundings.length < copy.length && copy[idx][field] !== undefined) {
+      currentValue = copy[idx][field]; //dentro del rango de fundings original
+    } else if (this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined) {
+      currentValue = this.props.currentValue[idx][field]; // fuera del rango de fundings original, (cuando se agregan nuevos)
+    } else {
+      currentValue = rd[field];  //cuando esta en modo crear, asi no puesta cambios
+    }
+
+    return currentValue;
+    // return fundings.length < copy.length && copy[idx][field] !== undefined ?
+    //   copy[idx][field] : this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined ? this.props.currentValue[idx][field] : rd[field];
+  }
+
 });

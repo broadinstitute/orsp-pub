@@ -122,7 +122,7 @@ class IssueService {
             if (f.id) f.setUpdated(new Date())
             f.setSource(p.get("source").toString())
             f.setName(p.get("name").toString())
-            f.setAwardNumber(p.get("awardNumber").toString())
+            f.setAwardNumber(p.get("award").toString())
             f.setProjectKey(issue.projectKey)
             f
         }

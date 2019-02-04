@@ -17,11 +17,11 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   }
 
   isEdited = (current, futureValue) => {
-    return current !== futureValue
+    return current !== futureValue || current === undefined
   };
 
   render() {
-    const edited = this.isEdited(this.props.currentValue.value, this.props.value.value);
+    const edited = this.props.edit ? this.isEdited(this.props.currentValue.value, this.props.value.value) : false;
 
     return (
       InputField({
