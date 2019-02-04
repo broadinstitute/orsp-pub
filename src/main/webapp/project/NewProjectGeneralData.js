@@ -234,7 +234,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.state.formData.collaborators,
             placeholder: "Start typing collaborator names",
             isMulti: true,
-            edit: false
+            currentValue: this.state.formData.collaborators
           }),
           InputFieldText({
             id: "inputPTitle",
