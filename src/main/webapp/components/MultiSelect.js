@@ -17,7 +17,6 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   }
 
   sortByKey = (array, key) => {
-    console.log(array, "  ES ARRAY??  ", Array.isArray(array));
     if (Array.isArray(array)) {
       return array.sort(function (a, b) {
       var x = a[key]; var y = b[key];

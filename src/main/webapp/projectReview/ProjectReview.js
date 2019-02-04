@@ -95,7 +95,6 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    console.log("COMPONENT DID MOUNT")
     this.init();
   }
 
@@ -528,7 +527,30 @@ class ProjectReview extends Component {
    let subjectProtectionError = false;
    let editTypeError = false;
    let editDescriptionError = false;
-   let fundingError = false;
+   let fundingErrorIndex = [];
+
+    // let fundingError = this.state.formData.fundings.some((obj, idx) => {
+    //     if (this.isEmpty(obj.source.label)) {
+    //       // fundingErrorIndex = idx;
+    //       return true
+    //     } else {
+    //       return false;
+    //     }
+    //   }
+    // );
+    //
+    let fundingError = this.state.formData.fundings.filter((obj, idx) => {
+      if (this.isEmpty(obj.source.label)) {
+        fundingErrorIndex.push(idx);
+        return true
+      } else {
+        return false;
+      }
+    });
+
+
+console.log("funding error = ", fundingError, " indice = ", fundingErrorIndex);
+//     console.log("Prueba => ", prueba);
    if (this.isEmpty(this.state.formData.fundings[0].source.label)) {
      fundingError = true;
    }
@@ -554,6 +576,7 @@ class ProjectReview extends Component {
      prev.editDescriptionError = editDescriptionError;
      prev.editTypeError = editTypeError;
      prev.fundingError = fundingError;
+     prev.fundingErrorIndex = fundingError ? fundingErrorIndex : null;
      return prev;
    });
    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
@@ -665,6 +688,7 @@ class ProjectReview extends Component {
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
             error: this.state.fundingError,
+            errorIndex: this.state.fundingErrorIndex,
             setError: this.changeFundingError,
             errorMessage: "Required field",
             edit: true
