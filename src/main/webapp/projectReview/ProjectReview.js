@@ -555,7 +555,7 @@ class ProjectReview extends Component {
           show: this.state.showRejectProjectDialog,
           handleOkAction: this.rejectProject,
           title: 'Remove Project Confirmation',
-          bodyText: 'Are you sure yo want to remove this project?',
+          bodyText: 'Are you sure you want to remove this project?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
@@ -563,7 +563,7 @@ class ProjectReview extends Component {
           show: this.state.showDiscardEditsDialog,
           handleOkAction: this.discardEdits,
           title: 'Discard Edits Confirmation',
-          bodyText: 'Are you sure yo want to remove this edits?',
+          bodyText: 'Are you sure you want to remove these edits?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
@@ -571,7 +571,7 @@ class ProjectReview extends Component {
           show: this.state.showApproveDialog,
           handleOkAction: this.approveEdits,
           title: 'Approve Edits Confirmation',
-          bodyText: 'Are you sure yo want to approve this edits?',
+          bodyText: 'Are you sure you want to approve these edits?',
           actionLabel: 'Yes'
         }, []),
         button({
@@ -732,28 +732,29 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false && this.projectType === "IRB Project"}, [
-          InputFieldRadio({
-            id: "radioDescribeEdits",
-            name: "describeEditType",
-            currentValue: this.state.current.projectExtraProps.describeEditType,
-            currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ? 
-            "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record": 
-            "I am requesting assistance in updating and existing project",
-            label: "Please choose one of the following to describe the proposed Edits: ",
-            value: this.state.formData.projectExtraProps.describeEditType,
-            optionValues: ["newAmendment", "requestingAssistance"],
-            optionLabels: [
-              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-              "I am requesting assistance in updating and existing project"
-            ],
-            onChange:  this.handleProjectExtraPropsChangeRadio,
-            readOnly: this.state.readOnly,
-            required: true,
-            error: this.state.editTypeError,
-            errorMessage: "Required field"
-          }),
-
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false }, [
+            div({ isRendered: this.projectType === "IRB Project" },[
+              InputFieldRadio({
+                id: "radioDescribeEdits",
+                name: "describeEditType",
+                currentValue: this.state.current.projectExtraProps.describeEditType,
+                currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ?
+                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record":
+                "I am requesting assistance in updating and existing project",
+                label: "Please choose one of the following to describe the proposed Edits: ",
+                value: this.state.formData.projectExtraProps.describeEditType,
+                optionValues: ["newAmendment", "requestingAssistance"],
+                optionLabels: [
+                  "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+                  "I am requesting assistance in updating and existing project"
+                ],
+                onChange:  this.handleProjectExtraPropsChangeRadio,
+                readOnly: this.state.readOnly,
+                required: true,
+                error: this.state.editTypeError,
+                errorMessage: "Required field"
+              })
+            ]),
           InputFieldTextArea({
             id: "inputDescribeEdits",
             name: "editDescription",
@@ -888,14 +889,14 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDiscardEditsDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
           }, ["Discard Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
@@ -903,14 +904,14 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.approveRevision(),
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved && this.state.readOnly === true
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleRejectProjectDialog,
-            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved
+            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved && this.state.readOnly === true
           }, ["Reject"])
         ])
       ])
