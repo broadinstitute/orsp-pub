@@ -439,6 +439,7 @@ class ConsentGroupReview extends Component {
     ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
       this.setState(prev =>{
         prev.showApproveDialog = !this.state.showApproveDialog;
+        prev.questions.length = 0;
         return prev;
       });
       this.removeEdits();
@@ -555,7 +556,7 @@ class ConsentGroupReview extends Component {
       consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
     }
 
-    const questions = this.state.questions;
+    const questions = this.state.intCohortsAnswers;
     if (questions !== null && questions.length > 1) {
       questions.map((q, idx) => {
         if (q.answer !== null) {
@@ -715,7 +716,7 @@ class ConsentGroupReview extends Component {
   }
 
   initQuestions = () => {
-    let questions = [];
+    const questions = [];
 
     questions.push({
       question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
@@ -807,6 +808,7 @@ class ConsentGroupReview extends Component {
 
 
     this.setState(prev => {
+      prev.intCohortsAnswers.length = 0;
       prev.intCohortsAnswers = answers;
       prev.determination = determination;
       return prev;
@@ -991,7 +993,7 @@ class ConsentGroupReview extends Component {
           div({ className: "row" }, [
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                selected: startDate, //this.hasDate("startDate") ? new Date(startDate.substr(0, 4), startDate.substr(5, 2) - 1, startDate.substr(8, 2)) : null,
+                selected: startDate,
                 value: startDate,
                 currentValue: this.state.current.consentExtraProps.startDate,
                 name: "startDate",

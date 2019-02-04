@@ -57,7 +57,7 @@ class IssueService {
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.ON_GOING_PROCESS,
             IssueExtraProperty.COMPLIANCE,
-            IssueExtraProperty.INSTIUTIONAL_SOURCES,
+            IssueExtraProperty.INSTITUTIONAL_SOURCES,
             IssueExtraProperty.DATABASE_CONTROLLED,
             IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.REQUIRE_MTA,
@@ -69,6 +69,9 @@ class IssueService {
             IssueExtraProperty.SHARING_PLAN,
             IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
             IssueExtraProperty.IS_LINK_MAINTAINED,
+            IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA,
+            IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE,
+            IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS,
 
     ]
 
@@ -169,6 +172,24 @@ class IssueService {
         }
         if (!input.containsKey(IssueExtraProperty.NOT_HSR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_HSR })
+        }
+        if (!input.containsKey(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INDIVIDUAL_DATA_SOURCED })
+        }
+        if (!input.containsKey(IssueExtraProperty.IS_LINK_MAINTAINED)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_LINK_MAINTAINED})
+        }
+        if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE})
+        }
+        if (!input.containsKey(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA})
+        }
+        if (!input.containsKey(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE})
+        }
+        if (!input.containsKey(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS})
         }
 
         propsToDelete.each {
