@@ -277,8 +277,6 @@ class ConsentGroupReview extends Component {
     let textSensitive = false;
     let textAccessible = false;
     let sharingPlan = false;
-    let databaseControlled = false;
-    let databaseOpen = false;
     let questions = false;
 
     if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
@@ -369,7 +367,6 @@ class ConsentGroupReview extends Component {
       !pii &&
       !sharingPlan &&
       !questions &&
-
       !textCompliance &&
       !textSensitive &&
       !accessible &&
@@ -832,7 +829,6 @@ class ConsentGroupReview extends Component {
       collContact = '',
       textCompliance = '',
       textSensitive = '',
-      textAccessible = '',
       databaseControlled = '',
       databaseOpen = '',
       onGoingProcess = '',
@@ -1225,7 +1221,7 @@ class ConsentGroupReview extends Component {
             id: "inputAccessible",
             name: "textAccessible",
             label: "Please explain",
-            value: textAccessible,
+            value: this.state.formData.consentExtraProps.textAccessible,
             currentValue: this.state.current.consentExtraProps.textAccessible,
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
@@ -1267,7 +1263,7 @@ class ConsentGroupReview extends Component {
             label: "Name of Database(s) ",
             moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
             value: databaseOpen,
-            currentValue: this.state.current.databaseOpen,
+            currentValue: this.state.current.consentExtraProps.databaseOpen,
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly
           })
