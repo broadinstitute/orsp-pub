@@ -43,7 +43,7 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: false      
+          projectReviewApproved: 'false'
         },       
         fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
         requestor: {
@@ -76,7 +76,7 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: false          
+          projectReviewApproved: 'false'
         }
       }
     }
@@ -209,15 +209,20 @@ class ProjectReview extends Component {
     return value === '' || value === null || value === undefined;
   }
 
-  approveRevision = (e) => () => {
+  approveRevision = () => {
+    spinnerService.showAll();
     this.setState({ disableApproveButton: true })
-    const data = { projectReviewApproved: true }
+    const data = { projectReviewApproved: 'true' }
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
       () => this.setState(prev => {
-        prev.formData.projectExtraProps.projectReviewApproved = true;
+        prev.formData.projectExtraProps.projectReviewApproved = 'true';
+        prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
         return prev;
       })
     );
+    if (this.state.reviewSuggestion) {
+        this.approveEdits(false);
+    }
   }
 
   rejectProject() {
@@ -245,16 +250,18 @@ class ProjectReview extends Component {
     });
   }
 
-  approveEdits() {
+  approveEdits(showModal= true) {
     spinnerService.showAll();
     let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
         this.removeEdits();
-        this.setState(prev =>{
-          prev.showApproveDialog = !this.state.showApproveDialog;
-          return prev;
-        });
+        if (!showModal) {
+            this.setState(prev =>{
+              prev.showApproveDialog = !this.state.showApproveDialog;
+              return prev;
+            });
+        }
       })
       .catch(error => {
         spinnerService.hideAll();
@@ -501,6 +508,20 @@ class ProjectReview extends Component {
     }    
   };
 
+  handleApproveInfoDialog = () => {
+    if(this.isValid()) {
+      this.setState({
+        showApproveInfoDialog: !this.state.showApproveInfoDialog,
+        errorSubmit: false
+      });
+    }
+    else {
+      this.setState({
+        errorSubmit: true
+      });
+    }
+  };
+
   handleDiscardEditsDialog = () => {
       this.setState({
         showDiscardEditsDialog: !this.state.showDiscardEditsDialog
@@ -547,6 +568,7 @@ class ProjectReview extends Component {
   }
 
   render() {
+    const {projectReviewApproved = 'false'} = this.state.formData.projectExtraProps;
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
@@ -572,6 +594,14 @@ class ProjectReview extends Component {
           handleOkAction: this.approveEdits,
           title: 'Approve Edits Confirmation',
           bodyText: 'Are you sure you want to approve these edits?',
+          actionLabel: 'Yes'
+        }, []),
+        ConfirmationDialog({
+          closeModal: this.handleApproveInfoDialog,
+          show: this.state.showApproveInfoDialog,
+          handleOkAction: this.approveRevision,
+          title: 'Approve Project Information',
+          bodyText: 'Are you sure you want to approve Project Information?',
           actionLabel: 'Yes'
         }, []),
         button({
@@ -889,7 +919,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && (this.state.readOnly === true && projectReviewApproved === 'true')
           }, ["Approve Edits"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
@@ -902,16 +932,16 @@ class ProjectReview extends Component {
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonPrimary floatRight",
-            onClick: this.approveRevision(),
+            onClick: this.handleApproveInfoDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved && this.state.readOnly === true
+            isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleRejectProjectDialog,
-            isRendered: this.isAdmin() && !this.state.formData.projectExtraProps.projectReviewApproved && this.state.readOnly === true
+            isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
           }, ["Reject"])
         ])
       ])
