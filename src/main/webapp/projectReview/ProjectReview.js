@@ -776,7 +776,7 @@ class ProjectReview extends Component {
               currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ?
                 "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record" :
                 "I am requesting assistance in updating and existing project",
-              label: "Please choose one of the following to describe the proposed Edits: ",
+              label: "Please choose one of the following to describe the proposed edits: ",
               value: this.state.formData.projectExtraProps.describeEditType,
               optionValues: ["newAmendment", "requestingAssistance"],
               optionLabels: [
@@ -932,7 +932,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && (this.state.readOnly === true && projectReviewApproved === 'true')
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === 'true'
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
