@@ -72,6 +72,8 @@ class IssueService {
             IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA,
             IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE,
             IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS,
+            IssueExtraProperty.END_DATE,
+            IssueExtraProperty.START_DATE,
 
     ]
 
@@ -190,6 +192,9 @@ class IssueService {
         }
         if (!input.containsKey(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS})
+        }
+        if (!input.containsKey(IssueExtraProperty.END_DATE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
         }
 
         propsToDelete.each {

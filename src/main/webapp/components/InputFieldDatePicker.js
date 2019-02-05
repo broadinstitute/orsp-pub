@@ -25,8 +25,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
     }
 
     const { value, currentValue } = this.props;
-    // TODO fix when date comes undefined
-    const edited = value !== currentValue && currentValue !== undefined && (currentValue === undefined && value !== undefined);
+    const edited = value !== currentValue && currentValue !== undefined && value !== undefined;
 
     return (
 

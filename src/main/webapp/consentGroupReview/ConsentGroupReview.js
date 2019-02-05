@@ -94,7 +94,8 @@ class ConsentGroupReview extends Component {
         textCompliance: false,
         textSensitive: false,
         textAccessible: false,
-        sharingPlan: false
+        sharingPlan: false,
+        endDate: false,
       },
       formData: {
         consentExtraProps: {},
@@ -103,6 +104,7 @@ class ConsentGroupReview extends Component {
       },
       current: {
         consentExtraProps: {
+          endDate: null,
         },
         consentForm: {
         }
@@ -262,6 +264,7 @@ class ConsentGroupReview extends Component {
   }
 
   isValid = () => {
+    this.setState({errorSubmit: false});
     let consent = false;
     let protocol = false;
     let collInst = false;
@@ -278,6 +281,7 @@ class ConsentGroupReview extends Component {
     let textAccessible = false;
     let sharingPlan = false;
     let questions = false;
+    let endDate = false;
 
     if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
@@ -343,6 +347,10 @@ class ConsentGroupReview extends Component {
       questions = true;
     }
 
+    if (!this.state.formData.consentExtraProps.onGoingProcess && this.isEmpty(this.state.formData.consentExtraProps.endDate)) {
+      endDate = true;
+    }
+
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
@@ -355,6 +363,7 @@ class ConsentGroupReview extends Component {
       prev.errors.textCompliance = textCompliance;
       prev.errors.textSensitive = textSensitive;
       prev.errors.textAccessible = textAccessible;
+      prev.errors.endDate = endDate;
       return prev;
     });
 
@@ -370,7 +379,8 @@ class ConsentGroupReview extends Component {
       !textCompliance &&
       !textSensitive &&
       !accessible &&
-      !textAccessible;
+      !textAccessible &&
+      !endDate;
   };
 
   validateQuestionaire = () => {
@@ -607,6 +617,7 @@ class ConsentGroupReview extends Component {
     const checked = e.target.checked;
     const date = this.state.current.consentExtraProps.endDate;
     this.setState(prev => {
+      prev.errors.endDate = false;
       prev.formData.consentExtraProps.onGoingProcess = checked;
       prev.formData.consentExtraProps.endDate = checked ? null : date;
       return prev;
@@ -823,6 +834,7 @@ class ConsentGroupReview extends Component {
 
   render() {
     const { startDate = null, endDate = null } = this.state.formData.consentExtraProps;
+    const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
 
     const {
       consent = '',
@@ -833,7 +845,7 @@ class ConsentGroupReview extends Component {
       textSensitive = '',
       databaseControlled = '',
       databaseOpen = '',
-      onGoingProcess = '',
+      onGoingProcess = false,
       describeConsentGroup = '',
       requireMta = '',
     } = this.state.formData.consentExtraProps;
@@ -993,6 +1005,7 @@ class ConsentGroupReview extends Component {
           div({ className: "row" }, [
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
+                minDate: new Date(),
                 selected: startDate,
                 value: startDate,
                 currentValue: this.state.current.consentExtraProps.startDate,
@@ -1004,14 +1017,17 @@ class ConsentGroupReview extends Component {
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                selected: this.addDays(endDate, 1),
+                minDate: new Date(this.state.formData.consentExtraProps.startDate),
+                selected: endDate,
                 value: endDate,
-                currentValue: this.state.current.consentExtraProps.endDate,
+                currentValue: currentEndDate,
                 name: "endDate",
                 label: "End Date",
                 onChange: this.handleChange,
-                disabled: (this.state.formData.consentExtraProps.onGoingProcess === "true"),
-                readOnly: this.state.readOnly
+                disabled: (onGoingProcess === "true" || onGoingProcess === true),
+                readOnly: this.state.readOnly,
+                error: this.state.errors.endDate,
+                errorMessage: "Required field",
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox" + (this.state.readOnly ? ' checkboxReadOnly' : ''), style: { 'marginTop': '32px' } }, [

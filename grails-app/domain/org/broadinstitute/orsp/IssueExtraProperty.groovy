@@ -70,6 +70,8 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String SHARING_PLAN = "sharingPlan"
     public static final String INDIVIDUAL_DATA_SOURCED = "individualDataSourced"
     public static final String IS_LINK_MAINTAINED = "isLinkMaintained"
+    public static final String START_DATE = "startDate"
+    public static final String END_DATE = "endDate"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"
