@@ -14,14 +14,14 @@ export const InputFieldRadio = (props) => {
   const { currentValue = null, currentOptionLabel = [], edit = false } = props;
 
   const previousValue = (labelValue) => {
-    if (!edit) {
+    if (!edit && props.name !== 'sharingPlan') {
       if (value === '02') {
         return labelValue[0]
       } else if (value === '01') {
         return labelValue[1]
       }
 
-      if (currentValue !== value && currentOptionLabel.length === 3) {
+      if (currentValue !== value && currentOptionLabel.length === 3 && props.name !== 'sharingPlan') {
         if (currentValue === 'true') {
           return currentOptionLabel[0];
         } else if (currentValue === 'false') {
@@ -30,6 +30,19 @@ export const InputFieldRadio = (props) => {
           return currentOptionLabel[2]
         }
       }
+
+      if (currentValue === 'true' && props.name !== 'sharingPlan') {
+        return 'Yes';
+      } else if (currentValue === 'false') {
+        return 'No';
+      } else {
+        return 'Uncertain';
+      }
+
+      if (props.name === 'sharingPlan') {
+
+      }
+
     }
   };
 

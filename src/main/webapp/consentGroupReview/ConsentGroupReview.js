@@ -335,7 +335,7 @@ class ConsentGroupReview extends Component {
       textSensitive = true;
     }
 
-    if (this.state.formData.consentExtraProps.accessible && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
+    if (this.state.formData.consentExtraProps.accessible === "true" && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
       textAccessible = true;
     }
 
