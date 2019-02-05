@@ -18,8 +18,12 @@
   cursor: default;
 }
 
-.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
+.inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
   pointer-events: none;
+}
+
+.inputFieldReadOnly .inputFieldTextarea:read-only {
+  background-color: transparent;
 }
 
 .inputFieldReadOnly .inputFieldSelect div .css-1wy0on6,
@@ -160,7 +164,7 @@ textarea:disabled, input:disabled {
 .inputFieldUpdated .react-datepicker-wrapper .inputFieldDatePicker{
   border: none;
   box-shadow: none;
-  background: #FFF4BD;
+  background: #FFF4BD !important;
   color: black;
 }
 

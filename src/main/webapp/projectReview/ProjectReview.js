@@ -44,7 +44,7 @@ class ProjectReview extends Component {
           describeEditType: null,
           editDescription: null,
           projectReviewApproved: 'false'
-        },       
+        },
         fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
         requestor: {
           displayName: '',
@@ -148,7 +148,7 @@ class ProjectReview extends Component {
           prev.futureCopy = futureCopy;
           return prev;
         });
-    });
+      });
   }
 
   getReviewSuggestions() {
@@ -162,10 +162,10 @@ class ProjectReview extends Component {
             return prev;
           });
         } else {
-            this.setState(prev => {
-              prev.reviewSuggestion = false;
-              return prev;
-            });
+          this.setState(prev => {
+            prev.reviewSuggestion = false;
+            return prev;
+          });
         }
       });
   }
@@ -220,13 +220,13 @@ class ProjectReview extends Component {
       })
     );
     if (this.state.reviewSuggestion) {
-        let project = this.getProject();
-        Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
-          resp => {
-            this.removeEdits();
-          })
-          .catch(error => {
-            console.error(error);
+      let project = this.getProject();
+      Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+        resp => {
+          this.removeEdits();
+        })
+        .catch(error => {
+          console.error(error);
         });
     }
   }
@@ -234,23 +234,23 @@ class ProjectReview extends Component {
   rejectProject() {
     spinnerService.showAll();
     Project.rejectProject(this.props.rejectProjectUrl, this.props.projectKey).then(resp => {
-      this.setState(prev =>{
+      this.setState(prev => {
         prev.showRejectProjectDialog = !this.state.showRejectProjectDialog;
         return prev;
       });
       window.location.href = [this.props.serverURL, "index"].join("/");
       spinnerService.hideAll();
     })
-    .catch(error => {
-      spinnerService.hideAll();
-      console.error(error);
-    });
+      .catch(error => {
+        spinnerService.hideAll();
+        console.error(error);
+      });
   }
 
   discardEdits() {
     spinnerService.showAll();
     this.removeEdits();
-    this.setState(prev =>{
+    this.setState(prev => {
       prev.showDiscardEditsDialog = !this.state.showDiscardEditsDialog;
       return prev;
     });
@@ -262,7 +262,7 @@ class ProjectReview extends Component {
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
         this.removeEdits();
-        this.setState(prev =>{
+        this.setState(prev => {
           prev.showApproveDialog = !this.state.showApproveDialog;
           return prev;
         });
@@ -270,14 +270,14 @@ class ProjectReview extends Component {
       .catch(error => {
         spinnerService.hideAll();
         console.error(error);
-    });
+      });
   }
 
   removeEdits() {
-      Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
-        resp => {
-          this.init();
-          spinnerService.hideAll();
+    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
+      resp => {
+        this.init();
+        spinnerService.hideAll();
       })
       .catch(error => {
         spinnerService.hideAll();
@@ -300,15 +300,15 @@ class ProjectReview extends Component {
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
 
     let collaborators = this.state.formData.collaborators;
-    
-    if (this.state.formData.pmList !== null &&this.state.formData.pmList.length > 0) {
+
+    if (this.state.formData.pmList !== null && this.state.formData.pmList.length > 0) {
       let pmList = [];
       this.state.formData.pmList.map((pm, idx) => {
         pmList.push(pm.key);
       });
       project.pm = pmList;
     }
-    if (this.state.formData.piList !== null &&this.state.formData.piList.length > 0) {
+    if (this.state.formData.piList !== null && this.state.formData.piList.length > 0) {
       let piList = [];
       this.state.formData.piList.map((pi, idx) => {
         piList.push(pi.key);
@@ -339,7 +339,7 @@ class ProjectReview extends Component {
     return fundingList;
   }
 
-  compareObj(obj1, obj2){
+  compareObj(obj1, obj2) {
     return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
   }
 
@@ -358,7 +358,7 @@ class ProjectReview extends Component {
   }
 
   submitEdit = (e) => () => {
-    if(this.isValid()) {
+    if (this.isValid()) {
       this.setState({
         readOnly: true,
         errorSubmit: false
@@ -403,7 +403,7 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.fundings = updated;
       return prev;
-    }); 
+    });
   };
 
   handleProjectCollaboratorChange = (data, action) => {
@@ -418,7 +418,7 @@ class ProjectReview extends Component {
       prev.formData.piList = data;
       prev.formData.projectExtraProps.pi = data.map(user => user.key);
       return prev;
-    }); 
+    });
   };
 
   handleProjectManagerChange = (data, action) => {
@@ -427,7 +427,7 @@ class ProjectReview extends Component {
       prev.formData.pmList = data;
       prev.formData.projectExtraProps.pm = data.map(user => user.key);
       return prev;
-    }); 
+    });
   };
 
   handleInputChange = (e) => {
@@ -437,9 +437,9 @@ class ProjectReview extends Component {
       prev.formData[field] = value;
       return prev;
     },
-    () => {
-      if(this.state.errorSubmit == true) this.isValid() 
-    }); 
+      () => {
+        if (this.state.errorSubmit == true) this.isValid()
+      });
   };
 
   handleRadioChange = (e, field, value) => {
@@ -453,9 +453,9 @@ class ProjectReview extends Component {
       prev.formData[field] = value;
       return prev;
     },
-    () => {
-      if(this.state.errorSubmit == true) this.isValid() 
-    }); 
+      () => {
+        if (this.state.errorSubmit == true) this.isValid()
+      });
   };
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
@@ -469,9 +469,9 @@ class ProjectReview extends Component {
       prev.formData.projectExtraProps[field] = value;
       return prev;
     },
-    () => {
-      if(this.state.errorSubmit == true) this.isValid() 
-    }); 
+      () => {
+        if (this.state.errorSubmit == true) this.isValid()
+      });
   };
 
   handleProjectExtraPropsChange = (e) => {
@@ -481,9 +481,9 @@ class ProjectReview extends Component {
       prev.formData.projectExtraProps[field] = value;
       return prev;
     },
-    () => {
-      if(this.state.errorSubmit == true) this.isValid() 
-    }); 
+      () => {
+        if (this.state.errorSubmit == true) this.isValid()
+      });
   };
 
   closeModal = () => {
@@ -491,29 +491,29 @@ class ProjectReview extends Component {
       showRejectProjectDialog: !this.state.showRejectProjectDialog
     });
   };
-   
+
   closeEditsModal = () => {
     this.setState({
       showDiscardEditsDialog: !this.state.showDiscardEditsDialog
     });
   };
-   
+
   handleApproveDialog = () => {
-    if(this.isValid()) {
+    if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
         errorSubmit: false
       });
-    } 
+    }
     else {
       this.setState({
         errorSubmit: true
       });
-    }    
+    }
   };
 
   handleApproveInfoDialog = () => {
-    if(this.isValid()) {
+    if (this.isValid()) {
       this.setState({
         showApproveInfoDialog: !this.state.showApproveInfoDialog,
         errorSubmit: false
@@ -527,9 +527,9 @@ class ProjectReview extends Component {
   };
 
   handleDiscardEditsDialog = () => {
-      this.setState({
-        showDiscardEditsDialog: !this.state.showDiscardEditsDialog
-      });
+    this.setState({
+      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
+    });
   };
 
   handleRejectProjectDialog = () => {
@@ -539,40 +539,40 @@ class ProjectReview extends Component {
   };
 
   isValid() {
-   let descriptionError = false;
-   let projectTitleError = false;
-   let subjectProtectionError = false;
-   let editTypeError = false;
-   let editDescriptionError = false;
-   
-   if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
+    let descriptionError = false;
+    let projectTitleError = false;
+    let subjectProtectionError = false;
+    let editTypeError = false;
+    let editDescriptionError = false;
+
+    if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
-   }
-   if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.describeEditType)) {
-    editTypeError = true;
-  }
-   if (this.isEmpty(this.state.formData.description)) {
+    }
+    if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.describeEditType)) {
+      editTypeError = true;
+    }
+    if (this.isEmpty(this.state.formData.description)) {
       descriptionError = true;
-   }
-   if (this.isEmpty(this.state.formData.projectExtraProps.projectTitle)) {
+    }
+    if (this.isEmpty(this.state.formData.projectExtraProps.projectTitle)) {
       projectTitleError = true;
-   }
-   if (this.isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
+    }
+    if (this.isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
       subjectProtectionError = false;
-   }
-   this.setState(prev => {
-     prev.descriptionError = descriptionError;
-     prev.projectTitleError = projectTitleError;
-     prev.subjectProtectionError = subjectProtectionError;
-     prev.editDescriptionError = editDescriptionError;
-     prev.editTypeError = editTypeError;
-     return prev;
-   });
-   return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
+    }
+    this.setState(prev => {
+      prev.descriptionError = descriptionError;
+      prev.projectTitleError = projectTitleError;
+      prev.subjectProtectionError = subjectProtectionError;
+      prev.editDescriptionError = editDescriptionError;
+      prev.editTypeError = editTypeError;
+      return prev;
+    });
+    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
   }
 
   render() {
-    const {projectReviewApproved = 'false'} = this.state.formData.projectExtraProps;
+    const { projectReviewApproved = 'false' } = this.state.formData.projectExtraProps;
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
@@ -667,7 +667,7 @@ class ProjectReview extends Component {
             handleChange: this.handleProjectManagerChange,
             value: this.state.formData.pmList,
             currentValue: this.state.current.pmList,
-            isMulti: true 
+            isMulti: true
           })
         ]),
 
@@ -690,6 +690,7 @@ class ProjectReview extends Component {
             value: this.state.formData.description,
             currentValue: this.state.current.description,
             readOnly: this.state.readOnly,
+            readonly: true,
             required: true,
             onChange: this.handleInputChange,
             error: this.state.descriptionError,
@@ -767,28 +768,28 @@ class ProjectReview extends Component {
         ]),
 
         Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false }, [
-            div({ isRendered: this.projectType === "IRB Project" },[
-              InputFieldRadio({
-                id: "radioDescribeEdits",
-                name: "describeEditType",
-                currentValue: this.state.current.projectExtraProps.describeEditType,
-                currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ?
-                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record":
+          div({ isRendered: this.projectType === "IRB Project" }, [
+            InputFieldRadio({
+              id: "radioDescribeEdits",
+              name: "describeEditType",
+              currentValue: this.state.current.projectExtraProps.describeEditType,
+              currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ?
+                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record" :
                 "I am requesting assistance in updating and existing project",
-                label: "Please choose one of the following to describe the proposed Edits: ",
-                value: this.state.formData.projectExtraProps.describeEditType,
-                optionValues: ["newAmendment", "requestingAssistance"],
-                optionLabels: [
-                  "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                  "I am requesting assistance in updating and existing project"
-                ],
-                onChange:  this.handleProjectExtraPropsChangeRadio,
-                readOnly: this.state.readOnly,
-                required: true,
-                error: this.state.editTypeError,
-                errorMessage: "Required field"
-              })
-            ]),
+              label: "Please choose one of the following to describe the proposed Edits: ",
+              value: this.state.formData.projectExtraProps.describeEditType,
+              optionValues: ["newAmendment", "requestingAssistance"],
+              optionLabels: [
+                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+                "I am requesting assistance in updating and existing project"
+              ],
+              onChange: this.handleProjectExtraPropsChangeRadio,
+              readOnly: this.state.readOnly,
+              required: true,
+              error: this.state.editTypeError,
+              errorMessage: "Required field"
+            })
+          ]),
           InputFieldTextArea({
             id: "inputDescribeEdits",
             name: "editDescription",
@@ -915,7 +916,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.compareObj("formData", "current") || this.compareObj("formData","editedForm"),
+            disabled: this.compareObj("formData", "current") || this.compareObj("formData", "editedForm"),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
