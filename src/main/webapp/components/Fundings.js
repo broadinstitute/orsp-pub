@@ -27,9 +27,7 @@ export const Fundings = hh(class Fundings extends Component {
 
     this.state = {
       fundings: [{ source: '', sponsor: '', identifier: '' }],
-      currentAuxiliar: [{ source: '', sponsor: '', identifier: '' }],
-      valueEdited: false
-
+      currentAuxiliar: [{ source: '', sponsor: '', identifier: '' }]
     };
   }
 

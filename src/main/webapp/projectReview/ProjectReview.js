@@ -362,6 +362,7 @@ class ProjectReview extends Component {
         errorSubmit: false
       });
       const data = this.getReviewEditData();
+
       if (this.state.reviewSuggestion) {
         Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
           this.getReviewSuggestions()
@@ -381,7 +382,7 @@ class ProjectReview extends Component {
   getReviewEditData = () => {
     let data = {};
     let form = this.state.formData;
-    form.currentFundings = this.state.current.fundings;
+    form.currentFundings = this.state.reviewSuggestion ? this.state.formData.currentFundings : this.state.current.fundings;
     data.projectKey = this.props.projectKey;
     data.suggestions = JSON.stringify(form);
     return data;
@@ -672,7 +673,6 @@ class ProjectReview extends Component {
             isMulti: true 
           })
         ]),
-
         Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.formData.fundings,
