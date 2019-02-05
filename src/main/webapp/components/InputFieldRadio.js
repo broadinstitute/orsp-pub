@@ -11,8 +11,28 @@ export const InputFieldRadio = (props) => {
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
-  const { currentValue = null, currentOptionLabel = null } = props;
-  
+  const { currentValue = null, currentOptionLabel = [], edit = false } = props;
+
+  const previousValue = (labelValue) => {
+    if (!edit) {
+      if (value === '02') {
+        return labelValue[0]
+      } else if (value === '01') {
+        return labelValue[1]
+      }
+
+      if (currentValue !== value && currentOptionLabel.length === 3) {
+        if (currentValue === 'true') {
+          return currentOptionLabel[0];
+        } else if (currentValue === 'false') {
+          return currentOptionLabel[1]
+        } else if (currentValue === 'uncertain') {
+          return currentOptionLabel[2]
+        }
+      }
+    }
+  };
+
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : value;
 
@@ -50,7 +70,7 @@ export const InputFieldRadio = (props) => {
       }),
       div({ isRendered: edited, className: "radioOptionsCurrent" }, [
         span({ className: "italic" }, ["Previous value: "]),
-        currentOptionLabel
+        (previousValue(currentOptionLabel))
       ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])

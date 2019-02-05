@@ -951,6 +951,10 @@ class ConsentGroupReview extends Component {
             name: "describeConsentGroup",
             label: "Please choose one of the following to describe this proposed Consent Group: ",
             value: describeConsentGroup,
+            currentOptionLabel: [
+              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+              "I am requesting assistance in updating and existing project"
+            ],
             currentValue: this.state.current.consentExtraProps.describeConsentGroup,
             optionValues: ["01", "02"],
             optionLabels: [
@@ -965,6 +969,11 @@ class ConsentGroupReview extends Component {
           InputFieldRadio({
             id: "radioRequireMta",
             name: "requireMta",
+            currentOptionLabel: [
+              "Yes, the provider does require an MTA/DTA.",
+              "No, the provider does not require an MTA/DTA.",
+              "Not sure"
+            ],
             label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
             moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)"]),
             value: requireMta,
@@ -1012,7 +1021,8 @@ class ConsentGroupReview extends Component {
                 name: "startDate",
                 label: "Start Date",
                 onChange: this.handleChange,
-                readOnly: this.state.readOnly
+                readOnly: this.state.readOnly,
+                maxDate: this.state.formData.consentExtraProps.endDate !== null ? new Date(this.state.formData.consentExtraProps.endDate) : null
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
