@@ -216,7 +216,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
             label: "Describe Broad study activities* ",
-            moreInfo: "(briefly, in 1-2 paragraphs, with attention to wheter or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
             value: this.state.formData.studyDescription,
             disabled: false,
             required: false,
