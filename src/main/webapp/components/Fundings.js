@@ -158,7 +158,7 @@ export const Fundings = hh(class Fundings extends Component {
 
         fundings.map((rd, idx) => {
           return h(Fragment, { key: idx }, [
-            div({ className: "row" }, [
+            div({ className: "row", style: {'marginBottom': '15px'} }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
