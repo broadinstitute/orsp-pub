@@ -210,7 +210,6 @@ class ProjectReview extends Component {
   }
 
   approveRevision = () => {
-    spinnerService.showAll();
     this.setState({ disableApproveButton: true })
     const data = { projectReviewApproved: 'true' }
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
@@ -221,7 +220,14 @@ class ProjectReview extends Component {
       })
     );
     if (this.state.reviewSuggestion) {
-        this.approveEdits(false);
+        let project = this.getProject();
+        Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+          resp => {
+            this.removeEdits();
+          })
+          .catch(error => {
+            console.error(error);
+        });
     }
   }
 
@@ -250,18 +256,16 @@ class ProjectReview extends Component {
     });
   }
 
-  approveEdits(showModal= true) {
+  approveEdits() {
     spinnerService.showAll();
     let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
         this.removeEdits();
-        if (!showModal) {
-            this.setState(prev =>{
-              prev.showApproveDialog = !this.state.showApproveDialog;
-              return prev;
-            });
-        }
+        this.setState(prev =>{
+          prev.showApproveDialog = !this.state.showApproveDialog;
+          return prev;
+        });
       })
       .catch(error => {
         spinnerService.hideAll();
@@ -915,20 +919,6 @@ class ProjectReview extends Component {
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
-          /*visible for Admin in readOnly mode and if there are changes to review*/
-          button({
-            className: "btn buttonPrimary floatRight",
-            onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && (this.state.readOnly === true && projectReviewApproved === 'true')
-          }, ["Approve Edits"]),
-
-          /*visible for every user in readOnly mode and if there are changes to review*/
-          button({
-            className: "btn buttonSecondary floatRight",
-            onClick: this.handleDiscardEditsDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
-          }, ["Discard Edits"]),
-
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonPrimary floatRight",
@@ -937,12 +927,26 @@ class ProjectReview extends Component {
             isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
           }, ["Approve"]),
 
+          /*visible for Admin in readOnly mode and if there are changes to review*/
+          button({
+            className: "btn buttonPrimary floatRight",
+            onClick: this.handleApproveDialog,
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && (this.state.readOnly === true && projectReviewApproved === 'true')
+          }, ["Approve Edits"]),
+
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleRejectProjectDialog,
             isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
-          }, ["Reject"])
+          }, ["Reject"]),
+
+          /*visible for every user in readOnly mode and if there are changes to review*/
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.handleDiscardEditsDialog,
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
+          }, ["Discard Edits"])
         ])
       ])
     )
