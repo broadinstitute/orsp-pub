@@ -75,7 +75,7 @@ export const Fundings = hh(class Fundings extends Component {
           fundings.splice(index, 1);
           current.splice(index, 1);
         } else {
-          fundings[index] = { source: '', sponsor: ' ', identifier:  ' ' };
+          fundings[index] = { source: '', sponsor: '', identifier:  '' };
         }
         prev.current = current;
       }
@@ -112,6 +112,19 @@ export const Fundings = hh(class Fundings extends Component {
     )
   };
 
+  getCurrentValue(fundings, copy, idx, rd, field) {
+    let currentValue = '';
+    if (fundings.length < copy.length && copy[idx][field] !== undefined) {
+      currentValue = copy[idx][field];
+    } else if (this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined) {
+      currentValue = this.props.currentValue[idx][field];
+    } else {
+      currentValue = rd[field];
+    }
+
+    return currentValue;
+  }
+
   render() {
     const { fundings = [] } = this.props;
     const { copy = [] } = this.props;
@@ -144,8 +157,6 @@ export const Fundings = hh(class Fundings extends Component {
 
         fundings.map((rd, idx) => {
           return h(Fragment, { key: idx }, [
-            // console.log("error? ", this.props.error),
-            // console.log("index es igual ? ", this.props.errorIndex, " es igual a ", idx, " ====> ", this.props.errorIndex === idx),
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
@@ -159,7 +170,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: rd.source,
                       currentValue: this.getCurrentValue(fundings, copy, idx, rd, "source"),
                       onChange: this.handleFundingSelect,
-                      error: this.props.edit === true ? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
+                      error: this.props.edit === true  && this.props.errorIndex !== null? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
                       edited: this.props.readOnly,
@@ -209,20 +220,4 @@ export const Fundings = hh(class Fundings extends Component {
       ])
     )
   }
-
-  getCurrentValue(fundings, copy, idx, rd, field) {
-    let currentValue = '';
-    if (fundings.length < copy.length && copy[idx][field] !== undefined) {
-      currentValue = copy[idx][field];
-    } else if (this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined) {
-      currentValue = this.props.currentValue[idx][field];
-    } else {
-      currentValue = rd[field];
-    }
-
-    return currentValue;
-    // return fundings.length < copy.length && copy[idx][field] !== undefined ?
-    //   copy[idx][field] : this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined ? this.props.currentValue[idx][field] : rd[field];
-  }
-
 });

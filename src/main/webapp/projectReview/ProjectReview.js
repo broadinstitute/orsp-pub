@@ -24,6 +24,7 @@ class ProjectReview extends Component {
       editDescriptionError: false,
       subjectProtection: false,
       fundingError: false,
+      fundingErrorIndex: [],
       showDialog: false,
       showDiscardEditsDialog: false,
       showApproveDialog: false,
@@ -46,6 +47,7 @@ class ProjectReview extends Component {
           projectReviewApproved: false      
         },       
         fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
+        currentFundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -354,15 +356,12 @@ class ProjectReview extends Component {
   };
 
   submitEdit = (e) => () => {
-    if(this.isValid()) {
+    if (this.isValid()) {
       this.setState({
         readOnly: true,
         errorSubmit: false
       });
-      const data = {
-        projectKey: this.props.projectKey,
-        suggestions: JSON.stringify(this.state.formData),
-      };
+      const data = this.getReviewEditData();
       if (this.state.reviewSuggestion) {
         Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
           this.getReviewSuggestions()
@@ -377,7 +376,16 @@ class ProjectReview extends Component {
         errorSubmit: true
       });
     }
-  }
+  };
+
+  getReviewEditData = () => {
+    let data = {};
+    let form = this.state.formData;
+    form.currentFundings = this.state.current.fundings;
+    data.projectKey = this.props.projectKey;
+    data.suggestions = JSON.stringify(form);
+    return data;
+  };
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
@@ -501,12 +509,12 @@ class ProjectReview extends Component {
         showApproveDialog: !this.state.showApproveDialog,
         errorSubmit: false
       });
-    } 
+    }
     else {
       this.setState({
         errorSubmit: true
       });
-    }    
+    }
   };
 
   handleDiscardEditsDialog = () => {
@@ -529,31 +537,15 @@ class ProjectReview extends Component {
    let editDescriptionError = false;
    let fundingErrorIndex = [];
 
-    // let fundingError = this.state.formData.fundings.some((obj, idx) => {
-    //     if (this.isEmpty(obj.source.label)) {
-    //       // fundingErrorIndex = idx;
-    //       return true
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // );
-    //
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
-      if (this.isEmpty(obj.source.label)) {
+      if (this.isEmpty(obj.source.label) && !this.isEmpty(obj.sponsor) && !this.isEmpty(obj.identifier)) {
         fundingErrorIndex.push(idx);
         return true
       } else {
         return false;
       }
-    });
+    }).length > 0;
 
-
-console.log("funding error = ", fundingError, " indice = ", fundingErrorIndex);
-//     console.log("Prueba => ", prueba);
-   if (this.isEmpty(this.state.formData.fundings[0].source.label)) {
-     fundingError = true;
-   }
    if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
    }
@@ -576,7 +568,7 @@ console.log("funding error = ", fundingError, " indice = ", fundingErrorIndex);
      prev.editDescriptionError = editDescriptionError;
      prev.editTypeError = editTypeError;
      prev.fundingError = fundingError;
-     prev.fundingErrorIndex = fundingError ? fundingErrorIndex : null;
+     prev.fundingErrorIndex = fundingError ? fundingErrorIndex : [];
      return prev;
    });
    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
@@ -684,7 +676,7 @@ console.log("funding error = ", fundingError, " indice = ", fundingErrorIndex);
           Fundings({
             fundings: this.state.formData.fundings,
             copy: this.state.futureCopy.fundings,
-            currentValue: this.state.current.fundings,
+            currentValue: this.state.reviewSuggestion ? this.state.formData.currentFundings : this.state.current.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
             error: this.state.fundingError,
