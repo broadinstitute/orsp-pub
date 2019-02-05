@@ -538,7 +538,8 @@ class ProjectReview extends Component {
    let fundingErrorIndex = [];
 
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
-      if (this.isEmpty(obj.source.label) && !this.isEmpty(obj.sponsor) && !this.isEmpty(obj.identifier)) {
+      if (this.isEmpty(obj.source.label) && (!this.isEmpty(obj.sponsor) || !this.isEmpty(obj.identifier))
+        || idx === 0 && this.isEmpty(obj.source.label)) {
         fundingErrorIndex.push(idx);
         return true
       } else {
@@ -675,8 +676,8 @@ class ProjectReview extends Component {
         Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.formData.fundings,
-            copy: this.state.futureCopy.fundings,
-            currentValue: this.state.reviewSuggestion ? this.state.formData.currentFundings : this.state.current.fundings,
+            currentOriginal: this.state.futureCopy.fundings,
+            currentAuxiliar: this.state.reviewSuggestion ? this.state.formData.currentFundings : this.state.current.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
             error: this.state.fundingError,

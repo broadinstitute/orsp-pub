@@ -27,15 +27,15 @@ export const Fundings = hh(class Fundings extends Component {
 
     this.state = {
       fundings: [{ source: '', sponsor: '', identifier: '' }],
-      current: [{ source: '', sponsor: '', identifier: '' }]
+      currentAuxiliar: [{ source: '', sponsor: '', identifier: '' }],
+      valueEdited: false
+
     };
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const copyCurrent = nextProps.currentValue; // First component render will send an empty copy current (its default), this will update the proper value on its refresh
-
     return {
-      current: copyCurrent
+      currentAuxiliar: nextProps.currentAuxiliar
     }
   }
 
@@ -43,12 +43,14 @@ export const Fundings = hh(class Fundings extends Component {
     if (this.props.fundings[0].source !== '') {
       this.setState(prev => {
         let fundings = this.props.fundings;
-          fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
+
         if (this.props.edit) {
-          let current = prev.current;
-          current.splice(0, 0, {source: '', sponsor: null, identifier: null});
-          prev.current = current;
+          let current = prev.currentAuxiliar;
+          current.splice(0, 0, { source: '', sponsor: null, identifier: null });
+          prev.currentAuxiliar = current;
         }
+
         prev.fundings = fundings;
         this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
         return prev;
@@ -63,21 +65,21 @@ export const Fundings = hh(class Fundings extends Component {
   removeFundings = (index) => {
     this.setState(prev => {
       let fundings = this.props.fundings;
-      let current = prev.current;
+      let current = prev.currentAuxiliar;
 
       if (!this.props.edit && this.props.fundings.length > 1) {
         fundings.splice(index, 1);
       }
 
-      else if (this.props.edit) { // only enters if edit mode is true
-        let diff =  fundings.length - this.props.copy.length; // obtains the index difference
+      else if (this.props.edit) {
+        let diff =  fundings.length - this.props.currentOriginal.length;
         if (index - diff < 0) { // determines if element to delete is within the original array or the originalTemporal
           fundings.splice(index, 1);
           current.splice(index, 1);
         } else {
           fundings[index] = { source: '', sponsor: '', identifier:  '' };
         }
-        prev.current = current;
+        prev.currentAuxiliar = current;
       }
       prev.fundings = fundings;
       return prev;
@@ -112,12 +114,13 @@ export const Fundings = hh(class Fundings extends Component {
     )
   };
 
-  getCurrentValue(fundings, copy, idx, rd, field) {
+  // When adding a new funding, we use currentAuxiliar to correspond indexes by adding empty objects.
+  getCurrentValue(fundings, currentOriginal, idx, rd, field) {
     let currentValue = '';
-    if (fundings.length < copy.length && copy[idx][field] !== undefined) {
-      currentValue = copy[idx][field];
-    } else if (this.props.currentValue !== undefined && this.props.currentValue[idx] !== undefined) {
-      currentValue = this.props.currentValue[idx][field];
+    if (fundings.length < currentOriginal.length && currentOriginal[idx][field] !== undefined) {
+      currentValue = currentOriginal[idx][field];
+    } else if (this.props.currentAuxiliar !== undefined && this.props.currentAuxiliar[idx] !== undefined) {
+      currentValue = this.props.currentAuxiliar[idx][field];
     } else {
       currentValue = rd[field];
     }
@@ -127,7 +130,7 @@ export const Fundings = hh(class Fundings extends Component {
 
   render() {
     const { fundings = [] } = this.props;
-    const { copy = [] } = this.props;
+    const { currentOriginal = [] } = this.props;
     return (
       h(Fragment, {}, [
         div({ className: "row" }, [
@@ -168,7 +171,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "source",
                       options: fundingOptions,
                       value: rd.source,
-                      currentValue: this.getCurrentValue(fundings, copy, idx, rd, "source"),
+                      currentValue: this.getCurrentValue(fundings, currentOriginal, idx, rd, "source"),
                       onChange: this.handleFundingSelect,
                       error: this.props.edit === true  && this.props.errorIndex !== null? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage,
@@ -184,7 +187,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "sponsor",
                       label: "",
                       value: rd.sponsor,
-                      currentValue: this.getCurrentValue(fundings, copy, idx, rd, "sponsor"),
+                      currentValue: this.getCurrentValue(fundings, currentOriginal, idx, rd, "sponsor"),
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -198,7 +201,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "identifier",
                       label: "",
                       value: rd.identifier,
-                      currentValue: this.getCurrentValue(fundings, copy, idx, rd, "identifier"),
+                      currentValue: this.getCurrentValue(fundings, currentOriginal, idx, rd, "identifier"),
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
