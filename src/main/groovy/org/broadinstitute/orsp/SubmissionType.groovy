@@ -10,6 +10,10 @@ enum SubmissionType {
     String label
     Collection<IssueType> issueTypes
 
+    /**
+     * @param label Label string
+     * @param issueTypes Collection of issue types for which the submission type is applicable
+     */
     SubmissionType(String label, Collection<IssueType> issueTypes) {
         this.label = label
         this.issueTypes = issueTypes
