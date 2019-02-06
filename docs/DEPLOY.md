@@ -47,5 +47,5 @@ Execution failed for task ':renderConfigs'.
 ```
 Authenticate (or see dsde-toolbox link for authenticating)
 ```
-vault auth -method=github token=$(cat ~/.github-token)
+vault login -method=github token=$(cat ~/.github-token)
 ```
