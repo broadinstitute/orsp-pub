@@ -46,7 +46,10 @@ class ProjectReview extends Component {
           editDescription: null,
           projectReviewApproved: false      
         },       
-        fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
+        fundings: [{
+          current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
+          future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+        }],
         currentFundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
         requestor: {
           displayName: '',
@@ -56,7 +59,6 @@ class ProjectReview extends Component {
       disableApproveButton: false,
       reviewSuggestion: false,
       futureCopy: {
-        fundings: [{ source: '', sponsor: '', identifier: '' }]
       },
       current: {
         requestor: {
@@ -198,12 +200,22 @@ class ProjectReview extends Component {
     if (fundings !== undefined && fundings !== null && fundings.length > 0) {
       fundings.map(funding => {
         fundingsArray.push({
-          source: {
-            label: funding.source,
-            value: funding.source.split(" ").join("_").toLowerCase()
+          current: {
+            source: {
+              label: funding.source,
+              value: funding.source.split(" ").join("_").toLowerCase()
+            },
+            sponsor: funding.name,
+            identifier: funding.awardNumber !== null ? funding.awardNumber : ''
           },
-          sponsor: funding.name,
-          identifier: funding.awardNumber !== null ? funding.awardNumber : ''
+          future: {
+            source: {
+              label: funding.source,
+              value: funding.source.split(" ").join("_").toLowerCase()
+            },
+            sponsor: funding.name,
+            identifier: funding.awardNumber !== null ? funding.awardNumber : ''
+          }
         });
       });
     }
@@ -324,10 +336,10 @@ class ProjectReview extends Component {
     if (fundings !== null && fundings.length > 0) {
       fundings.map((f, idx) => {
         let funding = {};
-        if (!this.isEmpty(f.source.label)) {
-          funding.source = f.source.label;
-          funding.award = f.identifier;
-          funding.name = f.sponsor;
+        if (!this.isEmpty(f.future.source.label)) {
+          funding.source = f.future.source.label;
+          funding.award = f.future.identifier;
+          funding.name = f.future.sponsor;
           fundingList.push(funding);
         }
       });
@@ -361,8 +373,8 @@ class ProjectReview extends Component {
         readOnly: true,
         errorSubmit: false
       });
-      const data = this.getReviewEditData();
-
+      // const data = this.getReviewEditData();
+      const data = { projectKey: this.props.projectKey, suggestions: JSON.stringify(this.state.formData) };
       if (this.state.reviewSuggestion) {
         Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
           this.getReviewSuggestions()
@@ -377,15 +389,6 @@ class ProjectReview extends Component {
         errorSubmit: true
       });
     }
-  };
-
-  getReviewEditData = () => {
-    let data = {};
-    let form = this.state.formData;
-    form.currentFundings = this.state.reviewSuggestion ? this.state.formData.currentFundings : this.state.current.fundings;
-    data.projectKey = this.props.projectKey;
-    data.suggestions = JSON.stringify(form);
-    return data;
   };
 
   loadUsersOptions = (query, callback) => {
@@ -537,17 +540,15 @@ class ProjectReview extends Component {
    let editTypeError = false;
    let editDescriptionError = false;
    let fundingErrorIndex = [];
-
-    let fundingError = this.state.formData.fundings.filter((obj, idx) => {
-      if (this.isEmpty(obj.source.label) && ( !this.isEmpty(obj.sponsor) || !this.isEmpty(obj.identifier) )
-        || ( idx === 0 && this.isEmpty(obj.source.label) )) {
-        fundingErrorIndex.push(idx);
-        return true
-      } else {
-        return false;
-      }
-    }).length > 0;
-
+   let fundingError = this.state.formData.fundings.filter((obj, idx) => {
+     if (this.isEmpty(obj.future.source.label) && ( !this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier) )
+       || ( idx === 0 && this.isEmpty(obj.future.source.label) )) {
+       fundingErrorIndex.push(idx);
+       return true
+     } else {
+       return false;
+     }
+   }).length > 0;
    if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
    }
@@ -676,8 +677,7 @@ class ProjectReview extends Component {
         Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.formData.fundings,
-            currentOriginal: this.state.futureCopy.fundings,
-            currentAux: this.state.reviewSuggestion ? this.state.formData.currentFundings : this.state.current.fundings,
+            current: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
             error: this.state.fundingError,

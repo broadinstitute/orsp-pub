@@ -16,7 +16,7 @@ const fundingOptions = [
   { value: 'none', label: 'None' }
 ]
 
-
+// Todo: unify logic for edit and creation without changing funding's structure
 export const Fundings = hh(class Fundings extends Component {
 
   constructor(props) {
@@ -26,103 +26,126 @@ export const Fundings = hh(class Fundings extends Component {
     this.handleFundingSelect = this.handleFundingSelect.bind(this);
 
     this.state = {
-      fundings: [{ source: '', sponsor: '', identifier: '' }],
-      currentAux: [{ source: '', sponsor: '', identifier: '' }]
+      future: [],
+      fundings: []
     };
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      currentAux: nextProps.currentAux
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.current !== prevState.current){
+      return { current: nextProps.current, future: nextProps.future};
     }
+    else return null;
   }
 
   addFundings() {
-    if (this.props.fundings[0].source !== '') {
-      this.setState(prev => {
-        let fundings = this.props.fundings;
-        fundings.splice(0, 0, { source: '', sponsor: '', identifier: '' });
-
-        if (this.props.edit) {
-          let aux = prev.currentAux;
-          aux.splice(0, 0, { source: '', sponsor: null, identifier: null });
-          prev.currentAux = aux;
-        }
-
-        prev.fundings = fundings;
-        this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
-        return prev;
-      }, () => {
-        this.props.updateFundings(this.state.fundings)
-      });
+    if (!this.props.edit) {
+      // For new Projects
+      if (this.props.fundings[0].source !== '') {
+        this.setState(prev => {
+          let fundings = this.props.fundings;
+          fundings.splice(0, 0, {source: '', sponsor: '', identifier: ''});
+          prev.fundings = fundings;
+          prev.error = false;
+          return prev
+        }, () => this.props.updateFundings(this.state.fundings));
+      }
+    } else {
+      // Only for edit / review
+      if (this.props.fundings[0].future.source !== '') {
+        this.setState(prev => {
+          let future = this.props.fundings;
+          future.splice(0, 0, {
+            current: { source: '', sponsor: null, identifier: null },
+            future: { source: '', sponsor: '', identifier: '' }
+          });
+          prev.future = future;
+          this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
+          return prev;
+        }, () => this.props.updateFundings(this.state.future));
+      }
     }
   }
 
   removeFundings = (index) => {
-    this.setState(prev => {
-      let fundings = this.props.fundings;
-      let aux = prev.currentAux;
-
-      if (!this.props.edit && this.props.fundings.length > 1) {
-        fundings.splice(index, 1);
-      } else if (this.props.edit) {
-        let diff =  fundings.length - this.props.currentOriginal.length;
-        if (index - diff < 0) {
-          // determines if element to delete is within the originalCurrent array or in edited funding array
+    if (!this.props.edit) {
+      // For new Projects
+      this.setState(prev => {
+        if (this.props.fundings.length > 1) {
+          let fundings = this.props.fundings;
           fundings.splice(index, 1);
-          aux.splice(index, 1);
-        } else {
-          // to match indexes for comparison we replace the element with an object with empty values
-          fundings[index] = { source: '', sponsor: '', identifier:  '' };
+          prev.fundings = fundings;
+          return prev;
         }
-        prev.currentAux = aux;
-      }
-      prev.fundings = fundings;
-      return prev;
-    }, () => {
-      this.props.updateFundings(this.state.fundings)
-    });
+      }, () => this.props.updateFundings(this.state.fundings));
 
+    } else {
+    // Only for edit / review
+      this.setState(prev => {
+        let future = this.props.fundings;
+        if (future[index].current.source === '') {
+          future.splice(index, 1);
+        } else {
+          future[index].future = { source: '', sponsor: '', identifier: '' }
+        }
+        prev.future = future;
+        return prev
+      }, () => this.props.updateFundings(this.state.future));
+    }
   };
 
   handleFundingChange = (e) => {
-    let funding = this.props.fundings;
-    const field = e.target.name;
-    const value = e.target.value;
-    const index = e.target.getAttribute('index');
-    funding[index][field] = value;
-    this.setState(prev => {
-      prev.fundings = funding;
-      return prev;
-    }, () => {
-      this.props.updateFundings(this.state.fundings)
-    });
+    if (!this.props.edit) {
+      let funding = this.props.fundings;
+      const field = e.target.name;
+      const value = e.target.value;
+      const index = e.target.getAttribute('index');
+      funding[index][field] = value;
+      this.setState(prev => {
+        prev.fundings = funding;
+        return prev;
+      }, () => {
+        this.props.updateFundings(this.state.fundings)
+      });
+    } else {
+      let future = this.props.fundings;
+      const field = e.target.name;
+      const value = e.target.value;
+      const index = e.target.getAttribute('index');
+      future[index].future[field] = value;
+      this.setState(prev => {
+        prev.future = future;
+        return prev;
+      }, () => this.props.updateFundings(this.state.future));
+    }
   };
 
   handleFundingSelect = (index) => (selectedOption) => {
-    let select = this.props.fundings;
-    select[index].source = selectedOption;
-    this.setState(prev => {
-      prev.fundings = select;
-      if (this.props.error && this.props.edit)  this.props.setError();
-      return prev;
-    }, () => this.props.updateFundings(this.state.fundings)
-    )
+    if (!this.props.edit) {
+      let select = this.props.fundings;
+      select[index].source = selectedOption;
+      this.setState(prev => {
+          prev.fundings = select;
+          return prev;
+        }, () => this.props.updateFundings(this.state.fundings)
+      )
+    } else {
+      let select = this.props.fundings;
+      select[index].future.source = selectedOption;
+      this.setState(prev => {
+          prev.future = select;
+          if (this.props.error)  this.props.setError();
+          return prev;
+        }, () => this.props.updateFundings(this.state.future)
+      )
+    }
   };
 
-  // When adding a funding, we use currentAux to correspond indexes by adding empty objects
-  getCurrentValue(idx, rd, field) {
-    let currentValue = '';
-      if (this.props.currentAux !== undefined && this.props.currentAux[idx] !== undefined) {
-      currentValue = this.props.currentAux[idx][field];
-    } else {
-      currentValue = rd[field];
-    }
-    return currentValue;
-  }
-
   render() {
-    const { fundings = [] } = this.props;
+    let {
+      fundings = [],
+      current = []
+    } = this.props;
     return (
       h(Fragment, {}, [
         div({ className: "row" }, [
@@ -162,8 +185,8 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "source",
                       options: fundingOptions,
-                      value: rd.source,
-                      currentValue: this.getCurrentValue(idx, rd, "source"),
+                      value: this.props.edit ? rd.future.source : rd.source,
+                      currentValue: current[0] !== undefined ? current[idx].current.source: rd.source,
                       onChange: this.handleFundingSelect,
                       error: this.props.edit === true  && this.props.errorIndex !== null? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage,
@@ -178,8 +201,8 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
-                      value: rd.sponsor,
-                      currentValue: this.getCurrentValue(idx, rd, "sponsor"),
+                      value: this.props.edit ? rd.future.sponsor : rd.sponsor,
+                      currentValue: current[0] !== undefined ? current[idx].current.sponsor: rd.sponsor,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -192,8 +215,8 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      value: rd.identifier,
-                      currentValue: this.getCurrentValue(idx, rd, "identifier"),
+                      value: this.props.edit ? rd.future.identifier : rd.identifier,
+                      currentValue: current[0] !== undefined ? current[idx].current.identifier : rd.identifier,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -205,7 +228,7 @@ export const Fundings = hh(class Fundings extends Component {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
-                  disabled: !this.state.fundings.length > 1,
+                  disabled: this.props.edit ? fundings.future.length === 1 : fundings.length === 1,
                   isRendered: !this.props.readOnly
                 }),
               ])
