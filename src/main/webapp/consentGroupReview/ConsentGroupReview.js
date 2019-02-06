@@ -832,10 +832,31 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  render() {
-    const { startDate = null, endDate = null } = this.state.formData.consentExtraProps;
-    const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
+  stringAnswer = (current) => {
+    let answer = '';
+    if (current === 'true' || current === true) {
+      answer ='Yes';
+    } else if (current === 'false' || current === false) {
+      answer = 'No'
+    } else if (current === 'null' || current === null || this.isEmpty(current)){
+      answer = '--';
+    }
+    return answer
+  };
 
+  isEquals = (a, b) => {
+    // console.log(a !== undefined && !this.isEmpty(a) && b !== undefined && !this.isEmpty(b));
+    if (a !== undefined && b !== undefined ) {
+      if (JSON.parse(a) === JSON.parse(b)) {
+        return true;
+      } else if ((JSON.parse(a) !== JSON.parse(b))){
+        return false;
+      }
+    }
+    return true;
+  };
+
+  render() {
     const {
       consent = '',
       protocol = '',
@@ -848,8 +869,17 @@ class ConsentGroupReview extends Component {
       onGoingProcess = false,
       describeConsentGroup = '',
       requireMta = '',
+      startDate = null,
+      endDate = null,
+      individualDataSourced = '',
+      isLinkMaintained = '',
+      feeForService = '',
+      areSamplesComingFromEEAA = '',
+      isCollaboratorProvidingGoodService = '',
+      isConsentUnambiguous = '',
     } = this.state.formData.consentExtraProps;
 
+    const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
 
     return (
       div({}, [
@@ -1073,111 +1103,64 @@ class ConsentGroupReview extends Component {
 
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
-            div({ className: false ? 'answerUpdated' : '' }, ["Yes"]),
-            div({ isRendered: false, className: "answerCurrent" }, ["Yes"])
+            div({
+              className: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced)? 'answerUpdated' : ''
+            }, [this.stringAnswer(individualDataSourced)]),
+            div({
+              isRendered: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced),
+              className: "answerCurrent"
+            }, [this.stringAnswer(this.state.current.consentExtraProps.individualDataSourced),])
           ]),
 
           div({ className: "answerWrapper" }, [
             label({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
-            div({ className: true ? 'answerUpdated' : '' }, ["Yes"]),
-            div({ isRendered: true, className: "answerCurrent" }, ["No"])
+            div({ className: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained) ? 'answerUpdated' : ''
+            }, [this.stringAnswer(isLinkMaintained)]),
+            div({
+              isRendered: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained),
+              className: "answerCurrent"
+            }, [this.stringAnswer(this.state.current.consentExtraProps.isLinkMaintained)])
           ]),
 
           div({ className: "answerWrapper" }, [
             label({}, ["Is the Broad work being performed as fee-for-service?"]),
-            div({ className: true ? 'answerUpdated' : '' }, ["--"]),
-            div({ isRendered: true, className: "answerCurrent" }, ["No"])
+            div({ className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : '' // NEW
+           }, [this.stringAnswer(feeForService)]), // si hay cambios se aplica el estilo, siempre se muestra con la respuesta actual el current -> NEW aplica el estilo y muestra el cambio
+            div({
+              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService), // TODO cambiar nombre método
+              className: "answerCurrent"
+            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)]) // si hay cambios se muestran acá -> OLD siempre
           ]),
 
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples/data coming directly to the Broad from the EEA?"]),
-            div({ className: true ? 'answerUpdated' : '' }, ["--"]),
-            div({ isRendered: true, className: "answerCurrent" }, ["No"])
+            div({ className: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA) ? 'answerUpdated' : ''
+            }, [this.stringAnswer(areSamplesComingFromEEAA)]),
+            div({
+              isRendered: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA),
+              className: "answerCurrent"
+            }, [this.stringAnswer(this.state.current.consentExtraProps.areSamplesComingFromEEAA)])
           ]),
 
           div({ className: "answerWrapper" }, [
             label({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-            div({ className: true ? 'answerUpdated' : '' }, ["--"]),
-            div({ isRendered: true, className: "answerCurrent" }, ["No"])
+            div({ className: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) ? 'answerUpdated' : ''
+            }, [this.stringAnswer(isCollaboratorProvidingGoodService)]),
+            div({
+              isRendered: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) ,
+              className: "answerCurrent"
+            }, [this.stringAnswer(this.state.current.consentExtraProps.isCollaboratorProvidingGoodService)])
           ]),
 
           div({ className: "answerWrapper" }, [
             label({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-            div({ className: true ? 'answerUpdated' : '' }, ["--"]),
-            div({ isRendered: true, className: "answerCurrent" }, ["-"])
+            div({ className: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous) ? 'answerUpdated' : ''
+            }, [this.stringAnswer(isConsentUnambiguous)]),
+            div({
+              isRendered: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous) ,
+              className: "answerCurrent"
+            }, [this.stringAnswer(this.state.current.consentExtraProps.isConsentUnambiguous)])
           ])
-
-          // div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.individualDataSourced), className: "firstRadioGroup" }, [
-          //   InputYesNo({
-          //     id: "radioQuestion1",
-          //     name: "individualDataSourced",
-          //     value: this.state.formData.consentExtraProps.individualDataSourced,
-          //     currentValue: this.state.current.consentExtraProps.individualDataSourced,
-          //     label: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? "]),
-          //     readOnly: this.state.readOnly,
-          //     onChange: this.handleExtraPropsInputChange,
-          //   })
-          // ]),
-          // div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.isLinkMaintained) }, [
-          //   InputYesNo({
-          //     id: "radioQuestion2",
-          //     name: "isLinkMaintained",
-          //     value: this.state.formData.consentExtraProps.isLinkMaintained,
-          //     currentValue: this.state.current.consentExtraProps.isLinkMaintained,
-          //     label: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
-          //     readOnly: this.state.readOnly,
-          //     onChange: this.handleExtraPropsInputChange,
-          //     valueEdited: this.isEmpty(this.state.current.consentExtraProps.isLinkMaintained) === !this.isEmpty(this.state.formData.consentExtraProps.individualDataSourced)
-          //   })
-          // ]),
-          // div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.feeForService) }, [
-          //   InputYesNo({
-          //     id: "radioQuestion3",
-          //     name: "feeForService",
-          //     value: this.state.formData.consentExtraProps.feeForService,
-          //     currentValue: this.state.current.consentExtraProps.feeForService,
-          //     label: 'Is the Broad work being performed as fee-for-service?',
-          //     readOnly: this.state.readOnly,
-          //     onChange: this.handleExtraPropsInputChange,
-          //     valueEdited: this.isEmpty(this.state.current.consentExtraProps.feeForService) === !this.isEmpty(this.state.formData.consentExtraProps.isLinkMaintained)
-          //   })
-          // ]),
-          // div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.areSamplesComingFromEEAA) }, [
-          //   InputYesNo({
-          //     id: "radioQuestion4",
-          //     name: "areSamplesComingFromEEAA",
-          //     value: this.state.formData.consentExtraProps.areSamplesComingFromEEAA,
-          //     currentValue: this.state.current.consentExtraProps.areSamplesComingFromEEAA,
-          //     label: 'Are samples/data coming directly to the Broad from the EEA?',
-          //     readOnly: this.state.readOnly,
-          //     onChange: this.handleExtraPropsInputChange,
-          //     valueEdited: this.isEmpty(this.state.current.consentExtraProps.areSamplesComingFromEEAA) === !this.isEmpty(this.state.formData.consentExtraProps.feeForService)
-          //   })
-          // ]),
-          // div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.isCollaboratorProvidingGoodService) }, [
-          //   InputYesNo({
-          //     id: "radioQuestion5",
-          //     name: "isCollaboratorProvidingGoodService",
-          //     value: this.state.formData.consentExtraProps.isCollaboratorProvidingGoodService,
-          //     currentValue: this.state.current.consentExtraProps.isCollaboratorProvidingGoodService,
-          //     label: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-          //     readOnly: this.state.readOnly,
-          //     onChange: this.handleExtraPropsInputChange,
-          //     valueEdited: this.isEmpty(this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) === !this.isEmpty(this.state.formData.consentExtraProps.areSamplesComingFromEEAA)
-          //   })
-          // ]),
-          // div({ isRendered: !this.isEmpty(this.state.formData.consentExtraProps.isConsentUnambiguous) }, [
-          //   InputYesNo({
-          //     id: "radioQuestion6",
-          //     name: "isConsentUnambiguous",
-          //     value: this.state.formData.consentExtraProps.isConsentUnambiguous,
-          //     currentValue: this.state.current.consentExtraProps.isConsentUnambiguous,
-          //     label: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-          //     readOnly: this.state.readOnly,
-          //     onChange: this.handleExtraPropsInputChange,
-          //     valueEdited: this.isEmpty(this.state.current.consentExtraProps.isConsentUnambiguous) === !this.isEmpty(this.state.formData.consentExtraProps.isCollaboratorProvidingGoodService)
-          //   })
-          // ])
         ]),
 
         Panel({ title: "Security" }, [
