@@ -2,8 +2,8 @@ package org.broadinstitute.orsp;
 
 enum SubmissionType {
 
-    ContinuingReview ("Continuing Review", [IssueType.IRB]),
     Amendment ("Amendment", [IssueType.IRB, IssueType.NE, IssueType.NHSR]),
+    ContinuingReview ("Continuing Review", [IssueType.IRB]),
     OtherEvent ("Other Event", [IssueType.IRB]),
     Other ("Other", [IssueType.IRB, IssueType.NE, IssueType.NHSR])
 
