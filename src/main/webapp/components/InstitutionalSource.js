@@ -11,46 +11,90 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
     this.state = {
       institutionalSources: [{ name: '', country: '' }],
+      currentAuxiliar: [{ source: '', sponsor: '', identifier: '' }]
     };
+  }
 
+  static getDerivedStateFromProps(nextProps) {
+    return {
+      currentAuxiliar: nextProps.currentAuxiliar
+    }
   }
 
   addInstitutionalSources() {
-    if (this.state.institutionalSources[0].name !== '') {
+    if (this.props.institutionalSources[0].name !== '') {
       this.setState(prev => {
         let institutionalSources = prev.institutionalSources;
         institutionalSources.splice(0, 0, { name: '', country: '' });
+
+        if (this.props.edit) {
+          let current = prev.currentAuxiliar;
+          current.splice(0, 0, { name: null, country: null });
+          this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
+        }
+
         prev.institutionalSources = institutionalSources;
         prev.error = false;
         return prev;
       });
+    } else {
+      if (!this.props.error && this.props.edit) this.props.setError();
     }
   }
 
   removeInstitutionalSources = (index) => (e) => {
-    if (this.state.institutionalSources.length > 1) {
-      this.setState(prev => {
-        let institutionalSources = prev.institutionalSources;
+
+    this.setState(prev => {
+      let institutionalSources = this.props.institutionalSources;
+      let current = prev.currentAuxiliar;
+
+      if (!this.props.edit && institutionalSources.length > 1) {
         institutionalSources.splice(index, 1);
-        prev.institutionalSources = institutionalSources;
-        return prev;
-      });
-    }
+      } else if (this.props.edit) {
+        let diff =  institutionalSources.length - this.props.currentOriginal.length;
+        if (index - diff < 0) { // determines if element to delete is within the original array or the originalTemporal
+          institutionalSources.splice(index, 1);
+          current.splice(index, 1);
+        } else {
+          institutionalSources[index] = { source: '', sponsor: '', identifier:  '' };
+        }
+        prev.currentAuxiliar = current;
+      }
+      prev.institutionalSources = institutionalSources;
+      return prev;
+    });
+
   };
 
   handleInstitutionalChange = (e) => {
+    let institutionalSources = this.props.institutionalSources;
     const field = e.target.name;
     const value = e.target.value;
     const index = e.target.getAttribute('index');
+    institutionalSources[index][field] = value;
     this.setState(prev => {
-      prev.institutionalSources[index][field] = value;
+      prev.institutionalSources = value;
       return prev;
     }, () =>
         this.props.updateInstitutionalSource(this.state.institutionalSources, field));
   };
 
+  getCurrentValue(institutionalSources, currentOriginal, idx, rd, field) {
+    let currentValue = '';
+    if (institutionalSources.length < currentOriginal.length && currentOriginal[idx][field] !== undefined) {
+      currentValue = currentOriginal[idx][field];
+    } else if (this.props.currentAuxiliar !== undefined && this.props.currentAuxiliar[idx] !== undefined) {
+      currentValue = this.props.currentAuxiliar[idx][field];
+    } else {
+      currentValue = rd[field];
+    }
+    return currentValue;
+  }
+
+
   render() {
     const { institutionalSources = [] } = this.props;
+    const { currentOriginal = [] } = this.props;
     return (
       h(Fragment, {}, [
         div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
@@ -89,6 +133,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       name: "name",
                       label: "",
                       value: rd.name,
+                      currentValue: this.getCurrentValue(institutionalSources, currentOriginal, index, rd, "name"),
                       disabled: (index > 0) && !this.props.readOnly,
                       required: true,
                       onChange: this.handleInstitutionalChange,
@@ -103,6 +148,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       index: index,
                       name: "country",
                       value: rd.country,
+                      currentValue: this.getCurrentValue(institutionalSources, currentOriginal, index, rd, "country"),
                       disabled: (index > 0) && !this.props.readOnly,
                       required: true,
                       onChange: this.handleInstitutionalChange,

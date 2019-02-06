@@ -73,9 +73,14 @@ class ConsentGroupReview extends Component {
         instSources: []
       },
       errors: {
-        sampleCollections: false
+        sampleCollections: false,
+        institutionalSourceNameError: false,
+        institutionalSourceCountryError: false,
+        institutionalSourceNameErrorIndex: [],
+        institutionalSourceCountryErrorIndex: []
       },
       formData: {
+        currentInstSources: [{  name: '', country: '' }],
         consentExtraProps: {},
         consentForm: {},
         sampleCollections: [],
@@ -85,6 +90,9 @@ class ConsentGroupReview extends Component {
         },
         consentForm: {
         }
+      },
+      futureCopy: {
+        instSources: [{  name: '', country: '' }],
       },
       suggestions: {},
       suggestionsCopy: {},
@@ -144,6 +152,7 @@ class ConsentGroupReview extends Component {
 
             if (element.data.extraProperties.institutionalSources !== undefined) {
               current.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
+              console.log(current.instSources)
             }
 
             current.consentForm = element.data.issue;
