@@ -350,7 +350,7 @@ class ConsentGroupController extends AuthenticatedController {
         } catch (Exception e) {
             flash.error = "Unable to attach consent document: " + e.getMessage()
         }
-        redirect(controller: issue.controller, action: "show", params: [id: issue.projectKey, tab: "documents"])
+        redirect(controller: issue.controller, action: "show", params: [id: issue.projectKey, tab: "consent-groups"])
     }
 
 }
