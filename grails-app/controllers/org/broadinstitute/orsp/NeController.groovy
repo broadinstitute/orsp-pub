@@ -10,8 +10,6 @@ import org.springframework.web.multipart.MultipartFile
 @Slf4j
 class NeController extends AuthenticatedController {
 
-    public static List<String> ATTACHMENT_DOC_TYPES = ["Other"]
-
     public static final Map<String, String> NON_IRB_STATUS_TEMPLATES =
             ["submitting to orsp": "submit",
              "reviewing form": "review",
@@ -59,9 +57,8 @@ class NeController extends AuthenticatedController {
          workspaceTemplate : NON_IRB_STATUS_TEMPLATES.get(issue?.status?.toLowerCase(), ""),
          extraProperties   : issue.getExtraProperties(),
          attachments       : issue.attachments?.sort { a, b -> b.createDate <=> a.createDate },
-         attachmentTypes   : ATTACHMENT_DOC_TYPES,
+         attachmentTypes   : PROJECT_DOC_TYPES,
          tab               : params.tab,
-         amendmentTypes    : SUBMISSION_DOC_TYPES,
          storageDocuments  : storageDocuments,
          groupedSubmissions: groupedSubmissions
         ]

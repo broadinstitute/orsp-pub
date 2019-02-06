@@ -158,7 +158,6 @@
                                 {
                                     issueKey: $(this).data("issue"),
                                     consentKey: $(this).data("consent"),
-                                    type: $(this).data("type"),
                                     controller: "${issue.controller}"
                                 },
                                 function() {
