@@ -22,6 +22,7 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
               name: this.props.name,
               id: "txt_description",
               rows: "5",
+              readOnly: this.props.readOnly,
               className: "form-control inputFieldTextarea",
               onChange: this.props.onChange,
               required: this.props.required,
