@@ -28,11 +28,15 @@ export const Fundings = hh(class Fundings extends Component {
     this.state = {
       future: [],
       fundings: []
+      // fundings: [{
+      //   current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
+      //   future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+      // }]
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.current !== prevState.current){
+    if (nextProps.edit && nextProps.current !== prevState.current){
       return { current: nextProps.current, future: nextProps.future};
     }
     else return null;
@@ -52,7 +56,7 @@ export const Fundings = hh(class Fundings extends Component {
       }
     } else {
       // Only for edit / review
-      if (this.props.fundings[0].future.source !== '') {
+      if (this.props.fundings[0] === undefined || this.props.fundings[0].future.source !== '') {
         this.setState(prev => {
           let future = this.props.fundings;
           future.splice(0, 0, {
@@ -172,7 +176,6 @@ export const Fundings = hh(class Fundings extends Component {
         ]),
 
         hr({ className: "fullWidth" }),
-
         fundings.map((rd, idx) => {
           return h(Fragment, { key: idx }, [
             div({ className: "row", style: {'marginBottom': '15px'} }, [
@@ -186,7 +189,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "source",
                       options: fundingOptions,
                       value: this.props.edit ? rd.future.source : rd.source,
-                      currentValue: current[0] !== undefined ? current[idx].current.source: rd.source,
+                      currentValue: this.props.edit ? current[idx].current.source : rd.source,
                       onChange: this.handleFundingSelect,
                       error: this.props.edit === true  && this.props.errorIndex !== null? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
                       errorMessage: this.props.errorMessage,
@@ -202,7 +205,7 @@ export const Fundings = hh(class Fundings extends Component {
                       name: "sponsor",
                       label: "",
                       value: this.props.edit ? rd.future.sponsor : rd.sponsor,
-                      currentValue: current[0] !== undefined ? current[idx].current.sponsor: rd.sponsor,
+                      currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -215,8 +218,8 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      value: this.props.edit ? rd.future.identifier : rd.identifier,
-                      currentValue: current[0] !== undefined ? current[idx].current.identifier : rd.identifier,
+                      value: this.props.edit ? rd.future.identifier: rd.identifier,
+                      currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
                       disabled: false,
                       required: false,
                       onChange: this.handleFundingChange,
@@ -228,7 +231,7 @@ export const Fundings = hh(class Fundings extends Component {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
-                  disabled: this.props.edit ? fundings.future.length === 1 : fundings.length === 1,
+                  disabled: fundings > 1,
                   isRendered: !this.props.readOnly
                 }),
               ])

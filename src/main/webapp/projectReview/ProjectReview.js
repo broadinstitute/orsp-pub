@@ -46,7 +46,10 @@ class ProjectReview extends Component {
           editDescription: null,
           projectReviewApproved: 'false'
         },
-        fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
+        fundings: [{
+          current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
+          future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+        }],
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -69,7 +72,10 @@ class ProjectReview extends Component {
         studyDescription: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
-        fundings: [{ source: '', sponsor: '', identifier: '' }],
+        fundings: [{
+          current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
+          future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+        }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbProtocolId: '',
@@ -560,6 +566,17 @@ class ProjectReview extends Component {
     let subjectProtectionError = false;
     let editTypeError = false;
     let editDescriptionError = false;
+    let fundingErrorIndex = [];
+
+    let fundingError = this.state.formData.fundings.filter((obj, idx) => {
+      if (this.isEmpty(obj.future.source.label) && ( !this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier) )
+        || ( idx === 0 && this.isEmpty(obj.future.source.label) )) {
+        fundingErrorIndex.push(idx);
+        return true
+      } else {
+        return false;
+      }
+    }).length > 0;
 
     if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
@@ -582,9 +599,11 @@ class ProjectReview extends Component {
       prev.subjectProtectionError = subjectProtectionError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
+      prev.fundingError = fundingError;
+      prev.fundingErrorIndex = fundingErrorIndex;
       return prev;
     });
-    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
+    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
   }
 
   changeFundingError = () => {
