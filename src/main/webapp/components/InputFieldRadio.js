@@ -11,49 +11,7 @@ export const InputFieldRadio = (props) => {
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
-  const { currentValue = null, currentOptionLabel = [], edit = false } = props;
-
-  const previousValue = (labelValue) => {
-    if (!edit) {
-      if (value === '02') {
-        return labelValue[0]
-      } else if (value === '01') {
-        return labelValue[1]
-      }
-
-      if (currentValue !== value && currentOptionLabel.length === 3 && props.name !== 'sharingPlan') {
-        if (currentValue === 'true') {
-          return currentOptionLabel[0];
-        } else if (currentValue === 'false') {
-          return currentOptionLabel[1]
-        } else if (currentValue === 'uncertain') {
-          return currentOptionLabel[2]
-        }
-      }
-
-      if (currentValue === 'true' && props.name !== 'sharingPlan') {
-        return 'Yes';
-      } else if (currentValue === 'false') {
-        return 'No';
-      } else if (currentValue === 'uncertain'){
-        return 'Uncertain';
-      }
-
-      if (props.name === 'sharingPlan'){
-        if (currentValue === 'controlled') {
-          return props.optionLabels[0];
-        } else if (currentValue === 'open') {
-          return props.optionLabels[1];
-        } else if (currentValue === 'none') {
-          return props.optionLabels[2];
-        } else if (currentValue === 'undetermined') {
-          return props.optionLabels[3]
-        }
-
-      }
-
-    }
-  };
+  const { currentValue = null, currentOptionLabel = null } = props;
 
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : value;
@@ -92,7 +50,7 @@ export const InputFieldRadio = (props) => {
       }),
       div({ isRendered: edited, className: "radioOptionsCurrent" }, [
         span({ className: "italic" }, ["Previous value: "]),
-        (previousValue(currentOptionLabel))
+        (currentOptionLabel)
       ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
