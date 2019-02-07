@@ -845,7 +845,9 @@ class ConsentGroupReview extends Component {
   };
 
   isEquals = (a, b) => {
-    // console.log(a !== undefined && !this.isEmpty(a) && b !== undefined && !this.isEmpty(b));
+    if (this.isEmpty(b) && !this.isEmpty(a) || !this.isEmpty(a) && this.isEmpty(b)) {
+      return false;
+    }
     if (a !== undefined && b !== undefined ) {
       if (JSON.parse(a) === JSON.parse(b)) {
         return true;
