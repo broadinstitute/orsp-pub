@@ -141,6 +141,18 @@ export const Fundings = hh(class Fundings extends Component {
     }
   };
 
+  // verifies if the given funding index is included in the error funding array given from parent validation
+  // Todo: move parent validation inside component
+  getError(fundingIndex) {
+    let error = false;
+    if (this.props.edit === true && this.props.errorIndex !== null) {
+      error = this.props.error;
+    } else if (this.props.errorIndex.includes(fundingIndex)){
+      error = this.props.error && fundingIndex === 0;
+    }
+  return error;
+  }
+
   render() {
     let {
       fundings = [],
@@ -187,7 +199,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.source : rd.source,
                       currentValue: this.props.edit ? current[idx].current.source : rd.source,
                       onChange: this.handleFundingSelect,
-                      error: this.props.edit === true  && this.props.errorIndex !== null? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
+                      error: this.getError(idx),
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
                       edited: this.props.readOnly,

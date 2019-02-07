@@ -197,6 +197,7 @@ class ProjectReview extends Component {
     return usersArray
   }
 
+  // Todo: move into fundings component
   getFundingsArray(fundings) {
     let fundingsArray = [];
     if (fundings !== undefined && fundings !== null && fundings.length > 0) {
@@ -442,8 +443,6 @@ class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     this.setState(prev => {
       prev.formData.fundings = updated;
-      // this.compareObj("formData", "current");
-      // this.compareObj("formData", "editedForm");
       prev.fundingError = false;
       return prev;
     });
@@ -476,22 +475,6 @@ class ProjectReview extends Component {
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    },
-      () => {
-        if (this.state.errorSubmit == true) this.isValid()
-      });
-  };
-
-  handleRadioChange = (e, field, value) => {
-    if (value === 'true') {
-      value = true;
-    } else if (value === 'false') {
-      value = false;
-    }
-
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
