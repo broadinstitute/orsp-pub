@@ -231,7 +231,7 @@ export const Fundings = hh(class Fundings extends Component {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeFundings(idx) },
-                  disabled: fundings > 1,
+                  disabled: fundings.length === 1,
                   isRendered: !this.props.readOnly
                 }),
               ])

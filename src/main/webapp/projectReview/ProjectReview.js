@@ -361,6 +361,8 @@ class ProjectReview extends Component {
   }
 
   compareObj(obj1, obj2) {
+    console.log("formData vs Current son iguales? ", JSON.stringify(this.state.formData) === JSON.stringify(this.state.current));
+
     return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
   }
 
@@ -570,7 +572,7 @@ class ProjectReview extends Component {
 
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (this.isEmpty(obj.future.source.label) && ( !this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier) )
-        || ( idx === 0 && this.isEmpty(obj.future.source.label) )) {
+        || ( idx === 0 && this.isEmpty(obj.future.source.label) && this.isEmpty(obj.current.source.label) )) {
         fundingErrorIndex.push(idx);
         return true
       } else {
@@ -957,6 +959,8 @@ class ProjectReview extends Component {
           }, ["Cancel"]),
 
           /*visible for every user in edit mode and disabled until some edit has been made*/
+          // console.log("formData vs Current son iguales? ", this.compareObj("formData", "current")),
+          // console.log("formData vs editedForm son iguales? ", this.compareObj("formData", "editedForm")),
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
