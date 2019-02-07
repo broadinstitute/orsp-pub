@@ -6,7 +6,6 @@ import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
-import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
@@ -331,10 +330,6 @@ class ConsentGroupReview extends Component {
       textSensitive = true;
     }
 
-    if (this.state.formData.consentExtraProps.sensitive && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
-      textSensitive = true;
-    }
-
     if (this.state.formData.consentExtraProps.accessible === "true" && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
       textAccessible = true;
     }
@@ -347,8 +342,16 @@ class ConsentGroupReview extends Component {
       questions = true;
     }
 
-    if (!this.state.formData.consentExtraProps.onGoingProcess && this.isEmpty(this.state.formData.consentExtraProps.endDate)) {
+
+    if (!this.state.formData.consentExtraProps.onGoingProcess
+        && this.isEmpty(this.state.formData.consentExtraProps.endDate)
+        && !this.isEmpty(this.state.formData.consentExtraProps.startDate)
+      ) {
       endDate = true;
+    }
+
+    if (this.isEmpty(this.state.formData.consentExtraProps.accessible)) {
+      accessible = true;
     }
 
     this.setState(prev => {
@@ -364,6 +367,9 @@ class ConsentGroupReview extends Component {
       prev.errors.textSensitive = textSensitive;
       prev.errors.textAccessible = textAccessible;
       prev.errors.endDate = endDate;
+      prev.errors.compliance = compliance;
+      prev.errors.sensitive = sensitive;
+      prev.errors.accessible = accessible;
       return prev;
     });
 
@@ -380,7 +386,30 @@ class ConsentGroupReview extends Component {
       !textSensitive &&
       !accessible &&
       !textAccessible &&
+      !compliance &&
+      !sensitive &&
       !endDate;
+  };
+
+  cleanErrors = () => {
+    this.setState(prev => {
+      prev.errors.consent = false;
+      prev.errors.protocol = false;
+      prev.errors.collInst = false;
+      prev.errors.describeConsentGroup = false;
+      prev.errors.requireMta = false;
+      prev.errors.sampleCollections = false;
+      prev.errors.pii = false;
+      prev.errors.sharingPlan = false;
+      prev.errors.textCompliance = false;
+      prev.errors.textSensitive = false;
+      prev.errors.textAccessible = false;
+      prev.errors.endDate = false;
+      prev.errors.compliance = false;
+      prev.errors.sensitive = false;
+      prev.errors.accessible = false;
+      return prev;
+    });
   };
 
   validateQuestionaire = () => {
@@ -482,10 +511,14 @@ class ConsentGroupReview extends Component {
   };
 
   cancelEdit = (e) => () => {
-    this.setState({
-      formData: this.state.futureCopy,
-      readOnly: true,
-      errorSubmit: false,
+    this.cleanErrors();
+    this.cleanAnswersIntCohorts();
+    this.setState(prev => {
+      prev.formData = this.state.futureCopy;
+      prev.readOnly = true;
+      prev.errorSubmit =false;
+      prev.questions.length = 0;
+      return prev;
     });
     this.getReviewSuggestions();
   };
@@ -493,36 +526,43 @@ class ConsentGroupReview extends Component {
   submitEdit = (e) => () => {
     let data = {};
 
-    if (this.validateQuestionaire()) {
-      this.setState(prev => {
-        prev.readOnly = true;
-        prev.errorSubmit = false;
+    if (this.isValid()) {
+      if (this.validateQuestionaire()) {
+        this.setState(prev => {
+          prev.readOnly = true;
+          prev.errorSubmit = false;
 
-        prev.intCohortsAnswers.forEach(question => {
-          prev.formData.consentExtraProps[question.key] = question.answer;
+          prev.intCohortsAnswers.forEach(question => {
+            prev.formData.consentExtraProps[question.key] = question.answer;
+          });
+          return prev;
+        }, () => {
+          data = {
+            projectKey: this.props.consentKey,
+            suggestions: JSON.stringify(this.state.formData),
+          };
+
+          if (this.state.reviewSuggestion) {
+            Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
+              this.getReviewSuggestions()
+            );
+          } else {
+            Review.submitReview(this.props.serverURL, data).then(() =>
+              this.getReviewSuggestions()
+            );
+          }
         });
-        return prev;
-      }, () => {
-        data = {
-          projectKey: this.props.consentKey,
-          suggestions: JSON.stringify(this.state.formData),
-        };
-
-
-        if (this.state.reviewSuggestion) {
-          Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
-            this.getReviewSuggestions()
-          );
-        } else {
-          Review.submitReview(this.props.serverURL, data).then(() =>
-            this.getReviewSuggestions()
-          );
-        }
-      });
+      } else {
+        this.setState(prev => {
+          prev.errorSubmit = true;
+          prev.errorMessage = 'Please answer International Cohort questionnaire.';
+          return prev;
+        });
+      }
     } else {
       this.setState(prev => {
         prev.errorSubmit = true;
-        prev.errorMessage = 'Please answer International Cohort questionnaire.';
+        prev.errorMessage = 'Please complete the required fields.';
         return prev;
       });
     }
@@ -658,6 +698,7 @@ class ConsentGroupReview extends Component {
     const value = e.target.value;
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
+      prev.errors[field] = false;
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -669,6 +710,7 @@ class ConsentGroupReview extends Component {
   handleChange = (id) => (date) => {
     this.setState(prev => {
       prev.formData.consentExtraProps[id] = date;
+      prev.errors[id] = false;
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -696,9 +738,11 @@ class ConsentGroupReview extends Component {
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
+      prev.errors[field] = false;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, field));
-    // this.props.removeErrorMessage();
+    }, () => {
+      if (this.state.errorSubmit) this.isValid()
+    });
   };
 
   closeModal = () => {
@@ -817,11 +861,20 @@ class ConsentGroupReview extends Component {
       }
     });
 
-
     this.setState(prev => {
       prev.intCohortsAnswers.length = 0;
       prev.intCohortsAnswers = answers;
       prev.determination = determination;
+      return prev;
+    });
+  };
+
+  cleanAnswersIntCohorts = () => {
+    this.setState(prev => {
+      prev.intCohortsAnswers.forEach(answer => {
+        answer.answer = null;
+      });
+      prev.endState = false;
       return prev;
     });
   };
@@ -857,6 +910,10 @@ class ConsentGroupReview extends Component {
     }
     return true;
   };
+
+  compareObj(obj1, obj2) {
+    return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
+  }
 
   render() {
     const {
@@ -1331,7 +1388,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            // disabled: ,
+            disabled: this.compareObj("formData", "current") || this.compareObj("formData", "editedForm"),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
