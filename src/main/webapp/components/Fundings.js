@@ -28,10 +28,6 @@ export const Fundings = hh(class Fundings extends Component {
     this.state = {
       future: [],
       fundings: []
-      // fundings: [{
-      //   current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
-      //   future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
-      // }]
     };
   }
 

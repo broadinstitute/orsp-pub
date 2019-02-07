@@ -228,6 +228,17 @@ class ProjectReview extends Component {
     return value === '' || value === null || value === undefined;
   }
 
+  sortByKey = (array, key, key2) => {
+    if ( array !== undefined ) {
+      return array.sort(function (a, b) {
+        var x = a.future[key][key2];
+        var y = b.future[key][key2];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      });
+    }
+    return array;
+  };
+
   approveRevision = () => {
     this.setState({ disableApproveButton: true })
     const data = { projectReviewApproved: 'true' }
@@ -361,9 +372,13 @@ class ProjectReview extends Component {
   }
 
   compareObj(obj1, obj2) {
-    console.log("formData vs Current son iguales? ", JSON.stringify(this.state.formData) === JSON.stringify(this.state.current));
-
-    return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
+    let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
+    let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
+    if ( form1 !== undefined && form1.fundings !== undefined && form2.fundings !== undefined) {
+      form1.fundings = this.sortByKey(form1.fundings, "source", "label");
+      form2.fundings = this.sortByKey(form2.fundings, "source", "label");
+    }
+    return JSON.stringify(form1) === JSON.stringify(form2);
   }
 
   enableEdit = (e) => () => {
@@ -388,8 +403,10 @@ class ProjectReview extends Component {
         readOnly: true,
         errorSubmit: false
       });
-      // const data = this.getReviewEditData();
-      const data = { projectKey: this.props.projectKey, suggestions: JSON.stringify(this.state.formData) };
+      const data = {
+        projectKey: this.props.projectKey,
+        suggestions: JSON.stringify(this.state.formData)
+      };
       if (this.state.reviewSuggestion) {
         Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
           this.getReviewSuggestions()
@@ -425,6 +442,8 @@ class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     this.setState(prev => {
       prev.formData.fundings = updated;
+      // this.compareObj("formData", "current");
+      // this.compareObj("formData", "editedForm");
       prev.fundingError = false;
       return prev;
     });
@@ -959,12 +978,11 @@ class ProjectReview extends Component {
           }, ["Cancel"]),
 
           /*visible for every user in edit mode and disabled until some edit has been made*/
-          // console.log("formData vs Current son iguales? ", this.compareObj("formData", "current")),
-          // console.log("formData vs editedForm son iguales? ", this.compareObj("formData", "editedForm")),
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.compareObj("formData", "current") || this.compareObj("formData", "editedForm"),
+            disabled: this.compareObj("formData", "editedForm") ? true :
+              (this.compareObj("formData", "current") && this.compareObj("formData", "editedForm")),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
