@@ -56,7 +56,7 @@ export const Fundings = hh(class Fundings extends Component {
       }
     } else {
       // Only for edit / review
-      if (this.props.fundings[0] === undefined || this.props.fundings[0].future.source !== '') {
+      if (this.props.fundings[0] === undefined || this.props.fundings[0].future.source !== '' || this.props.fundings[0].current.source !== '') {
         this.setState(prev => {
           let future = this.props.fundings;
           future.splice(0, 0, {
