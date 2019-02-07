@@ -226,7 +226,11 @@ class ProjectReview extends Component {
   }
 
   isEmpty(value) {
-    return value === '' || value === null || value === undefined;
+    if (typeof value === 'object') {
+      return !Object.keys(value).length
+    } else {
+      return value === '' || value === null || value === undefined;
+    }
   }
 
   sortByKey = (array, key, key2) => {
@@ -528,6 +532,7 @@ class ProjectReview extends Component {
     if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
+        editedForm: {},
         errorSubmit: false
       });
     }
@@ -964,8 +969,9 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.compareObj("formData", "editedForm") ? true :
-              (this.compareObj("formData", "current") && this.compareObj("formData", "editedForm")),
+            disabled: this.isEmpty(this.state.editedForm) ?
+                      !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
+                      : this.compareObj("formData", "editedForm"),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
