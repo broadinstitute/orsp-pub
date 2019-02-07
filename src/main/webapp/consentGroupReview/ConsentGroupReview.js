@@ -213,6 +213,7 @@ class ConsentGroupReview extends Component {
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
+              prev.questions.length = 0;
               prev.questions = this.initQuestions();
               return prev;
             });
@@ -504,9 +505,11 @@ class ConsentGroupReview extends Component {
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
-    this.setState({
-      readOnly: false,
-      questions: this.initQuestions()
+    this.setState(prev => {
+      prev.readOnly = false;
+      prev.questions.length = 0;
+      prev.questions = this.initQuestions();
+      return prev;
     });
   };
 
@@ -526,8 +529,8 @@ class ConsentGroupReview extends Component {
   submitEdit = (e) => () => {
     let data = {};
 
-    if (this.isValid()) {
       if (this.validateQuestionaire()) {
+        if (this.isValid()) {
         this.setState(prev => {
           prev.readOnly = true;
           prev.errorSubmit = false;
@@ -555,14 +558,14 @@ class ConsentGroupReview extends Component {
       } else {
         this.setState(prev => {
           prev.errorSubmit = true;
-          prev.errorMessage = 'Please answer International Cohort questionnaire.';
+          prev.errorMessage = 'Please complete the required fields.';
           return prev;
         });
       }
     } else {
       this.setState(prev => {
         prev.errorSubmit = true;
-        prev.errorMessage = 'Please complete the required fields.';
+        prev.errorMessage = 'Please answer International Cohorts questionnaire.';
         return prev;
       });
     }
@@ -865,6 +868,7 @@ class ConsentGroupReview extends Component {
       prev.intCohortsAnswers.length = 0;
       prev.intCohortsAnswers = answers;
       prev.determination = determination;
+      prev.submitError = false;
       return prev;
     });
   };
