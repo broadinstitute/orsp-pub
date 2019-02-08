@@ -920,53 +920,65 @@ class ConsentGroupReview extends Component {
   }
 
   currentOptionalValue = (name, currentValue, optionLabels) => {
+    let label = '';
     if (name === 'sharingPlan') {
       if (currentValue === 'controlled') {
-        return optionLabels[0];
+        label = optionLabels[0];
       } else if (currentValue === 'open') {
-        return optionLabels[1];
+        label = optionLabels[1];
       } else if (currentValue === 'none') {
-        return optionLabels[2];
+        label = optionLabels[2];
       } else if (currentValue === 'undetermined') {
-        return optionLabels[3]
+        label = optionLabels[3]
+      } else {
+        label = '--';
       }
     }
 
     if (name === 'describeConsentGroup') {
       if (currentValue === '02') {
-        return optionLabels[0]
+        label = optionLabels[0]
       } else if (currentValue === '01') {
-        return optionLabels[1]
+        label = optionLabels[1]
+      } else {
+        label = '--';
       }
     }
 
     if (name === 'compliance' || name === 'sensitive' || name === 'accessible') {
       if (currentValue === 'true') {
-        return optionLabels[0];
+        label = optionLabels[0];
       } else if (currentValue === 'false') {
-        return optionLabels[1];
+        label = optionLabels[1];
       } else if (currentValue === 'uncertain') {
-        return optionLabels[2];
+        label = optionLabels[2];
+      } else {
+        label = '--';
       }
     }
 
     if (name === 'requireMta') {
       if (currentValue === 'true') {
-        return optionLabels[0];
+        label = optionLabels[0];
       } else if (currentValue === 'false') {
-        return optionLabels[1];
+        label =optionLabels[1];
       } else if (currentValue === 'uncertain') {
-        return optionLabels[2];
+        label = optionLabels[2];
+      } else {
+        label = '--';
       }
     }
 
     if (name === 'pii') {
       if (currentValue === 'true') {
-        return optionLabels[0];
+        label = optionLabels[0];
       } else if (currentValue === 'false') {
-        return optionLabels[1]
+        label = optionLabels[1]
+      } else {
+        label = '--';
       }
     }
+    return label;
   };
 
   render() {
@@ -1090,6 +1102,7 @@ class ConsentGroupReview extends Component {
             valueEdited: !this.isEmpty(collContact) === this.isEmpty(this.state.current.consentExtraProps.collContact)
           }),
           InputFieldRadio({
+            edit: true,
             id: "radioDescribeConsentGroup",
             name: "describeConsentGroup",
             label: "Please choose one of the following to describe this proposed Consent Group: ",
@@ -1111,6 +1124,7 @@ class ConsentGroupReview extends Component {
             errorMessage: "Required field"
           }),
           InputFieldRadio({
+            edit: true,
             id: "radioRequireMta",
             name: "requireMta",
             currentOptionLabel: this.currentOptionalValue("requireMta",
@@ -1279,6 +1293,7 @@ class ConsentGroupReview extends Component {
 
         Panel({ title: "Security" }, [
           InputFieldRadio({
+            edit: true,
             id: "radioPII",
             name: "pii",
             label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)? ",
@@ -1316,7 +1331,8 @@ class ConsentGroupReview extends Component {
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
             error: this.state.errors.compliance,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: true,
           }),
           InputFieldText({
             isRendered: this.state.formData.consentExtraProps.compliance === "true",
@@ -1331,6 +1347,7 @@ class ConsentGroupReview extends Component {
             errorMessage: "Required field"
           }),
           InputFieldRadio({
+            edit: true,
             id: "radioSensitive",
             name: "sensitive",
             label: span({}, ["Is this data ", span({ className: 'italic' }, ["“sensitive” "]), "for any reason?"]),
@@ -1363,6 +1380,7 @@ class ConsentGroupReview extends Component {
             errorMessage: "Required field"
           }),
           InputFieldRadio({
+            edit: true,
             id: "radioAccessible",
             name: "accessible",
             label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?"]),
@@ -1398,6 +1416,7 @@ class ConsentGroupReview extends Component {
 
         Panel({ title: "Data Sharing" }, [
           InputFieldRadio({
+            edit: true,
             id: "radioSharingPlan",
             name: "sharingPlan",
             label: "What is your Data Sharing plan?",
