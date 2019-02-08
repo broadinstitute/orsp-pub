@@ -590,7 +590,7 @@ class ConsentGroupReview extends Component {
     } else {
       this.setState(prev => {
         prev.errorSubmit = true;
-        prev.errorMessage = 'Please answer International Cohorts questionnaire.';
+        prev.errorMessage = 'Please complete International Cohorts';
         return prev;
       });
     }
