@@ -95,6 +95,7 @@ class ConsentGroupReview extends Component {
         textAccessible: false,
         sharingPlan: false,
         endDate: false,
+        startDate: false,
       },
       formData: {
         consentExtraProps: {},
@@ -123,7 +124,7 @@ class ConsentGroupReview extends Component {
       internationalCohortsError: false,
       securityError: false,
       dataSharingError: false,
-
+      isEdited: false,
       intCohortsAnswers: [],
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
@@ -246,14 +247,6 @@ class ConsentGroupReview extends Component {
     }
   };
 
-  parseBool() {
-    if (this.state.formData.consentExtraProps.onGoingProcess !== undefined) {
-      let stringValue = this.state.formData.consentExtraProps.onGoingProcess;
-      let boolValue = stringValue.toLowerCase() === 'true';
-      return boolValue;
-    }
-  }
-
   isEmpty(value) {
     return value === '' || value === null || value === undefined;
   }
@@ -282,6 +275,7 @@ class ConsentGroupReview extends Component {
     let sharingPlan = false;
     let questions = false;
     let endDate = false;
+    let startDate = false;
 
     if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
@@ -343,12 +337,15 @@ class ConsentGroupReview extends Component {
       questions = true;
     }
 
-
     if (!this.state.formData.consentExtraProps.onGoingProcess
         && this.isEmpty(this.state.formData.consentExtraProps.endDate)
         && !this.isEmpty(this.state.formData.consentExtraProps.startDate)
       ) {
       endDate = true;
+    }
+
+    if (!this.isEmpty(this.state.formData.consentExtraProps.endDate) && this.isEmpty(this.state.formData.consentExtraProps.startDate)) {
+      startDate = true;
     }
 
     if (this.isEmpty(this.state.formData.consentExtraProps.accessible)) {
@@ -371,6 +368,7 @@ class ConsentGroupReview extends Component {
       prev.errors.compliance = compliance;
       prev.errors.sensitive = sensitive;
       prev.errors.accessible = accessible;
+      prev.errors.startDate = startDate;
       return prev;
     });
 
@@ -389,6 +387,7 @@ class ConsentGroupReview extends Component {
       !textAccessible &&
       !compliance &&
       !sensitive &&
+      !startDate &&
       !endDate;
   };
 
@@ -409,8 +408,20 @@ class ConsentGroupReview extends Component {
       prev.errors.compliance = false;
       prev.errors.sensitive = false;
       prev.errors.accessible = false;
+      prev.errors.startDate = false;
       return prev;
     });
+  };
+
+  isAnswer = () => {
+    let answer = false;
+    this.state.questions.forEach(question => {
+      if (question.answer !== null) {
+        answer = true;
+      }
+    });
+    console.log(answer);
+    return answer;
   };
 
   validateQuestionaire = () => {
@@ -493,6 +504,7 @@ class ConsentGroupReview extends Component {
     if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
+        isEdited: true,
         errorSubmit: false
       });
     }
@@ -648,6 +660,7 @@ class ConsentGroupReview extends Component {
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
       prev.formData.sampleCollections = data;
+      prev.isEdited = !this.compareObj("formData", "current");
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -663,6 +676,7 @@ class ConsentGroupReview extends Component {
       prev.errors.endDate = false;
       prev.formData.consentExtraProps.onGoingProcess = checked;
       prev.formData.consentExtraProps.endDate = checked ? null : date;
+      prev.isEdited = !this.compareObj("formData", "current");
       return prev;
     });
   };
@@ -680,20 +694,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
       return prev;
-    }); //, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
-    // this.props.removeErrorMessage();
-  };
-
-  handleInputChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }); //, () => {
-    //   this.props.updateForm(this.state.formData, field);
-    //   this.props.removeErrorMessage();
-    // })
+    });
   };
 
   handleExtraPropsInputChange = (e) => {
@@ -702,6 +703,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
       prev.errors[field] = false;
+      prev.isEdited = !this.compareObj("formData", "current") ;
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -713,6 +715,7 @@ class ConsentGroupReview extends Component {
   handleChange = (id) => (date) => {
     this.setState(prev => {
       prev.formData.consentExtraProps[id] = date;
+      prev.isEdited = !this.compareObj("formData", "current") ;
       prev.errors[id] = false;
       return prev;
     }, () => {
@@ -720,28 +723,13 @@ class ConsentGroupReview extends Component {
         this.isValid();
       }
     });
-
-    //this.props.removeErrorMessage();
-  };
-
-  handleRadioChange = (e, field, value) => {
-    if (value === 'true') {
-      value = true;
-    } else if (value === 'false') {
-      value = false;
-    }
-
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }); //, () => this.props.updateForm(this.state.formData, field));
-    // this.props.removeErrorMessage();
   };
 
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
       prev.errors[field] = false;
+      prev.isEdited = !this.compareObj("formData", "current") ;
       return prev;
     }, () => {
       if (this.state.errorSubmit) this.isValid()
@@ -849,6 +837,7 @@ class ConsentGroupReview extends Component {
   };
 
   determinationHandler = (determination) => {
+    this.setState({isEdited: true});
     const answers = [];
     determination.questions.forEach(question => {
       if (question.answer !== null) {
@@ -1005,6 +994,7 @@ class ConsentGroupReview extends Component {
     } = this.state.formData.consentExtraProps;
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
+    const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
 
     return (
       div({}, [
@@ -1175,12 +1165,14 @@ class ConsentGroupReview extends Component {
                 minDate: new Date(),
                 selected: startDate,
                 value: startDate,
-                currentValue: this.state.current.consentExtraProps.startDate,
+                currentValue: currentStartDate,
                 name: "startDate",
                 label: "Start Date",
                 onChange: this.handleChange,
                 readOnly: this.state.readOnly,
-                maxDate: this.state.formData.consentExtraProps.endDate !== null ? new Date(this.state.formData.consentExtraProps.endDate) : null
+                maxDate: this.state.formData.consentExtraProps.endDate !== null ? new Date(this.state.formData.consentExtraProps.endDate) : null,
+                error: this.state.errors.startDate,
+                errorMessage: "Required field",
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -1478,7 +1470,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.compareObj("formData", "current") || this.compareObj("formData", "editedForm"),
+            disabled: !this.state.isEdited,
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 

@@ -74,6 +74,7 @@ class IssueService {
             IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS,
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
+            IssueExtraProperty.PII,
 
     ]
 
