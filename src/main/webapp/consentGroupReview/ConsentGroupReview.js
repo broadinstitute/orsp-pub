@@ -151,8 +151,10 @@ class ConsentGroupReview extends Component {
             }
 
             if (element.data.extraProperties.institutionalSources !== undefined) {
+              // current.instSources = this.parseInstSources(element.data.extraProperties.institutionalSources);
               current.instSources = JSON.parse(element.data.extraProperties.institutionalSources);
-              console.log(current.instSources)
+
+              // console.log(current.instSources)
             }
 
             current.consentForm = element.data.issue;
@@ -218,6 +220,18 @@ class ConsentGroupReview extends Component {
       }
     );
   }
+  // parseInstSources(instSources) {
+  //   let instSourcesArray = [];
+  //   if (instSources !== null && instSources.length > 0) {
+  //     instSources.map(instSourrce => {
+  //       instSourcesArray.push({
+  //         current: { name: instSourrce.name, country: instSourrce.country },
+  //         future: { name: instSourrce.name, country: instSourrce.country },
+  //       })
+  //     });
+  //   }
+  //   return instSourcesArray;
+  // }
 
   validateDetails = () => {
     if (this.isEmpty(this.state.collInst) || this.isEmpty('')) {
@@ -299,8 +313,20 @@ class ConsentGroupReview extends Component {
   }
 
   approveEdits = (e) => () => {
-
-  }
+    spinnerService.showAll();
+    let consentGroup = this.getConsentGroup();
+    ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
+      this.setState(prev => {
+        prev.showApproveDialog = !this.state.showApproveDialog;
+        prev.questions.length = 0;
+        return prev;
+      });
+      this.removeEdits();
+    }).catch(error => {
+      spinnerService.hideAll();
+      console.error(error);
+    });
+  };
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
@@ -319,13 +345,17 @@ class ConsentGroupReview extends Component {
 
   submitEdit = (e) => () => {
     // validate International Cohorts
+    let data = {};
     this.setState({
       readOnly: true
     });
-    const data = {
-      projectKey: this.props.consentKey,
-      suggestions: JSON.stringify(this.state.formData),
-    };
+
+    let institutionalSourceArray = this.parseInstSources(this.state.futureCopy.instSources, this.state.formData.instSources);
+    let newFormData = Object.assign({}, this.state.formData);
+    newFormData.instSources = institutionalSourceArray;
+
+    data.projectKey = this.props.consentKey;
+    data.suggestions = JSON.stringify(newFormData);
 
     if (this.state.reviewSuggestion) {
       Review.updateReview (this.props.serverURL, this.props.consentKey, data).then(() =>
@@ -337,6 +367,23 @@ class ConsentGroupReview extends Component {
       );
     }
   };
+
+  parseInstSources(instSources, future) {
+    let instSourcesArray = [];
+    if (instSources !== null && instSources.length > 0) {
+      instSources.map(instSource => {
+        instSourcesArray.push({
+          current: {name: instSource.name, country: instSource.country},
+          future: {name: '', country: ''},
+        })
+      });
+      future.map((futureInst, index) => {
+        instSourcesArray[index].future.name = futureInst.name;
+        instSourcesArray[index].future.country = futureInst.country;
+      })
+    }
+    return instSourcesArray;
+  }
 
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
@@ -364,10 +411,22 @@ class ConsentGroupReview extends Component {
     }
     return null
   }
+  getinstitutionalFuture(institutional) {
+    return institutional.map(element => element.future)
+  }
+
+  getinstitutionalCurrent(institutional) {
+    return institutional.map(element => element.current)
+  }
 
   handleUpdateinstitutionalSources = (updated, field) => {
+    // console.log("handler en consent group review");
+    // console.log("updated ", updated);
+    // console.log("getinstitutionalCurrent ", this.getinstitutionalCurrent(updated));
+    // console.log("getinstitutionalFuture ", this.getinstitutionalFuture(updated));
     this.setState(prev => {
-      prev.formData.institutionalSources = updated;
+      prev.formData.instSources = this.getinstitutionalFuture(updated);
+      prev.futureCopy.instSources = this.getinstitutionalCurrent(updated);
       return prev;
     }); //, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
     // this.props.removeErrorMessage();
@@ -734,10 +793,11 @@ class ConsentGroupReview extends Component {
 
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
-            updateInstitutionalSource: () => { },
+            updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: this.state.formData.instSources,
-            currentValue: this.state.current.instSources,
-            readOnly: this.state.readOnly
+            currentValue: this.state.futureCopy.instSources,
+            readOnly: this.state.readOnly,
+            edit: true
           })
         ]),
 

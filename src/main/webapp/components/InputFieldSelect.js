@@ -56,31 +56,32 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
     let currentValues = [];
 
-    if (this.props.currentValue === undefined) {
-      currentValue.push("");
-    } else if (this.props.currentValue.length === 0){
-      currentValue.push("");
-    } else {
-      currentValue = this.props.currentValue;
-    }
-
-    if (this.props.value.length === 0) {
-      value.push("");
-    } else {
-      value.push(this.props.value);
-    }
-
-    currentValue.forEach(item => {
-      currentValues.push(item.label);
-    });
-
-    let currentKeys = this.sortByKey(currentValue, 'key');
-    let keys = this.sortByKey(value, 'key');
-
-    let currentValueStr = currentValues.join(',');
+    // if (this.props.currentValue === undefined) {
+    //   currentValue.push("");
+    // } else if (this.props.currentValue.length === 0){
+    //   currentValue.push("");
+    // } else {
+    //   currentValue = this.props.currentValue;
+    // }
+    //
+    // if (this.props.value.length === 0) {
+    //   value.push("");
+    // } else {
+    //   value.push(this.props.value);
+    // }
+    //
+    // currentValue.forEach(item => {
+    //   currentValues.push(item.label);
+    // });
+    //
+    // let currentKeys = this.sortByKey(currentValue, 'key');
+    // let keys = this.sortByKey(value, 'key');
+    //
+    // let currentValueStr = currentValues.join(',');
+    let currentValueStr = '';
 
     // verified if edited ...
-    const edited = this.isEdited(currentKeys, keys);
+    const edited = false;
 
     return (
       InputField({

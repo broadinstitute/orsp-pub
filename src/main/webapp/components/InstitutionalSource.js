@@ -10,91 +10,130 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.addInstitutionalSources = this.addInstitutionalSources.bind(this);
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
     this.state = {
-      institutionalSources: [{ name: '', country: '' }],
-      currentAuxiliar: [{ source: '', sponsor: '', identifier: '' }]
+      institutionalSources: [{
+        current: { name: '', country: '' },
+        future: { name: '', country: '' }
+      }],
+      error: false,
+      institutionalNameErrorIndex: [],
+      institutionalCountryErrorIndex : []
     };
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    return {
-      currentAuxiliar: nextProps.currentAuxiliar
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.currentValue !== undefined && JSON.stringify(nextProps.currentValue) !== JSON.stringify(prevState.institutionalSources.map(inst => inst.current))) {
+      // console.log("Institutional Source Component State Change ");
+      // console.log("PROPS currentvalue", nextProps.currentValue);
+      // console.log("PROPS future", nextProps.currentValue);
+      return {error:nextProps.error, institutionalSources: InstitutionalSource.parseInstSources(nextProps.currentValue, nextProps.institutionalSources) };
+    }
+    else {
+      return null
     }
   }
 
   addInstitutionalSources() {
-    if (this.props.institutionalSources[0].name !== '') {
-      this.setState(prev => {
-        let institutionalSources = prev.institutionalSources;
-        institutionalSources.splice(0, 0, { name: '', country: '' });
-
-        if (this.props.edit) {
-          let current = prev.currentAuxiliar;
-          current.splice(0, 0, { name: null, country: null });
-          this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
-        }
-
-        prev.institutionalSources = institutionalSources;
-        prev.error = false;
-        return prev;
-      });
+    if (this.state.institutionalSources[0].future.name !== '' && this.state.institutionalSources[0].future.country !== ''
+      || this.state.institutionalSources[0].current.name && this.state.institutionalSources[0].current.country ) {
+        let future = this.state.institutionalSources;
+        future.splice(0, 0, {
+          current: { name: '', country: '' },
+          future: { name: '', country: '' }
+        });
+        this.setState({ institutionalSources: future, error: false});
+        this.props.updateInstitutionalSource(this.state.institutionalSources);
     } else {
-      if (!this.props.error && this.props.edit) this.props.setError();
+      this.validate();
     }
   }
 
   removeInstitutionalSources = (index) => (e) => {
-
-    this.setState(prev => {
-      let institutionalSources = this.props.institutionalSources;
-      let current = prev.currentAuxiliar;
-
-      if (!this.props.edit && institutionalSources.length > 1) {
-        institutionalSources.splice(index, 1);
-      } else if (this.props.edit) {
-        let diff =  institutionalSources.length - this.props.currentOriginal.length;
-        if (index - diff < 0) { // determines if element to delete is within the original array or the originalTemporal
-          institutionalSources.splice(index, 1);
-          current.splice(index, 1);
+      let future = this.state.institutionalSources;
+      if (this.props.institutionalSources.length > 1) {
+        if (!this.state.institutionalSources[index].current.name) {
+          future.splice(index, 1);
         } else {
-          institutionalSources[index] = { source: '', sponsor: '', identifier:  '' };
+          future[index].future = { name: '', country: '' }
         }
-        prev.currentAuxiliar = current;
+        this.setState({ institutionalSources: future, error: false });
+        this.props.updateInstitutionalSource(this.state.institutionalSources);
+      } else {
+        this.validate();
       }
-      prev.institutionalSources = institutionalSources;
-      return prev;
-    });
-
   };
 
   handleInstitutionalChange = (e) => {
-    let institutionalSources = this.props.institutionalSources;
+    let institutionalSources = this.state.institutionalSources;
     const field = e.target.name;
     const value = e.target.value;
     const index = e.target.getAttribute('index');
-    institutionalSources[index][field] = value;
-    this.setState(prev => {
-      prev.institutionalSources = value;
-      return prev;
-    }, () =>
-        this.props.updateInstitutionalSource(this.state.institutionalSources, field));
+    institutionalSources[index].future[field] = value;
+    this.setState({ institutionalSources: institutionalSources, error: false });
+    // this.validate();
+    this.props.updateInstitutionalSource(this.state.institutionalSources, field);
   };
 
-  getCurrentValue(institutionalSources, currentOriginal, idx, rd, field) {
-    let currentValue = '';
-    if (institutionalSources.length < currentOriginal.length && currentOriginal[idx][field] !== undefined) {
-      currentValue = currentOriginal[idx][field];
-    } else if (this.props.currentAuxiliar !== undefined && this.props.currentAuxiliar[idx] !== undefined) {
-      currentValue = this.props.currentAuxiliar[idx][field];
-    } else {
-      currentValue = rd[field];
+  static parseInstSources(instSources, future) {
+    let instSourcesArray = [];
+    if (instSources !== null && instSources.length > 0) {
+      instSources.map(instSource=> {
+        instSourcesArray.push({
+          current : { name: instSource.name, country: instSource.country },
+          future: { name: '', country: '' },
+        })
+      });
+      future.map((futureInst, index)=>{
+        instSourcesArray[index].future.name = futureInst.name;
+        instSourcesArray[index].future.country = futureInst.country;
+      })
     }
-    return currentValue;
+    return instSourcesArray;
   }
 
+  setError(value) {
+    this.setState({ error: value });
+  }
 
+  isEmpty(value) {
+    return value === '' || value === null || value === undefined;
+  }
+
+  validate = () => {
+    let institutionalNameErrorIndex = [];
+    let institutionalCountryErrorIndex = [];
+    let institutionalError = this.state.institutionalSources.filter((obj, idx) => {
+      let response = false;
+      if (this.isEmpty(obj.future.name)) {
+        institutionalNameErrorIndex.push(idx);
+        response = true;
+      }
+      if (this.isEmpty(obj.future.country)) {
+        institutionalCountryErrorIndex.push(idx);
+        response = true;
+      }
+      return response;
+    }).length > 0;
+
+    console.log("error index name ", institutionalNameErrorIndex);
+    console.log("error index country ", institutionalCountryErrorIndex);
+    console.log("error index name ", institutionalError);
+    this.setState(prev => {
+      prev.institutionalNameErrorIndex = institutionalNameErrorIndex;
+      prev.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
+      prev.error = institutionalError;
+      return prev;
+    });
+  }
+
+  getError(index, field) {
+    if (field === "name") {
+      return this.state.error === true ? this.state.institutionalNameErrorIndex.includes(index) : false;
+    } else {
+      return this.state.error === true ? this.state.institutionalCountryErrorIndex.includes(index) : false;
+    }
+  }
   render() {
-    const { institutionalSources = [] } = this.props;
-    const { currentOriginal = [] } = this.props;
+    let { institutionalSources = [] } = this.state;
     return (
       h(Fragment, {}, [
         div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
@@ -132,12 +171,13 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index + "name",
                       name: "name",
                       label: "",
-                      value: rd.name,
-                      currentValue: this.getCurrentValue(institutionalSources, currentOriginal, index, rd, "name"),
-                      disabled: (index > 0) && !this.props.readOnly,
+                      value: this.state.institutionalSources[index].future.name,
+                      currentValue: this.props.edit ? this.state.institutionalSources[index].current.name : this.state.institutionalSources[index].future.name, // currentValue[index].name,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.errorName && index === 0,
+                      // error: this.state.error,//this.props.errorName && index === 0,
+                      error: this.getError(index, "name"),
+                      // error: this.props.errorName || this.state.error  ? this.state.institutionalNameErrorIndex.includes(index) : this.props.errorName,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly
                     })
@@ -147,12 +187,12 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index + "country",
                       index: index,
                       name: "country",
-                      value: rd.country,
-                      currentValue: this.getCurrentValue(institutionalSources, currentOriginal, index, rd, "country"),
-                      disabled: (index > 0) && !this.props.readOnly,
+                      value: this.state.institutionalSources[index].future.country,
+                      currentValue: this.props.edit ? this.state.institutionalSources[index].current.country : this.state.institutionalSources[index].future.country,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.errorCountry && index === 0,
+                      error: this.getError(index, "country"),
+                      // error: this.props.errorCountry || this.state.error ? this.state.institutionalCountryErrorIndex.includes(index) : index === 0,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly
                     })

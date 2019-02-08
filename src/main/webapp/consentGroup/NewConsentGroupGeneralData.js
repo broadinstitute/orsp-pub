@@ -26,6 +26,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         describeConsentGroup: '',
         requireMta: '',
         institutionalSources: [{ name: '', country: '' }],
+        institutionalSourcesError: false,
         startDate: null,
         endDate: null,
         onGoingProcess: false
@@ -37,7 +38,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
+    }, () => this.props.updateForm(this.state.formData, field !== undefined ? field.concat("Institutional") : ''));
     this.props.removeErrorMessage();
   };
 
@@ -119,6 +120,12 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
       this.props.removeErrorMessage();
     }
   }
+
+  setInstitutionalError = (error) => {
+    // let error = this.state.institutionalSourcesError;
+    console.log("Error en new CG ", error)
+    this.setState({formData:{institutionalSourcesError: error}})
+  };
 
   render() {
 
@@ -283,7 +290,9 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
               institutionalSources: this.state.formData.institutionalSources,
               errorName: this.props.errors.institutionalSourcesName,
               errorCountry: this.props.errors.institutionalSourcesCountry,
-              errorMessage: "Required field"
+              errorMessage: "Required field",
+              setInstitutionalError: this.setInstitutionalError,
+              edit: false
             })
           ]),
 

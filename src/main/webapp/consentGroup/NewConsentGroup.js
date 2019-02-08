@@ -257,6 +257,10 @@ class NewConsentGroup extends Component {
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
 
+    // if (!this.state.formSubmitted) {
+    //   return;
+    // }
+
     let isValid = true;
     if (field === "consentGroupName" && this.consentGroupNameExists()) {
       consentGroupName = true;
@@ -287,22 +291,27 @@ class NewConsentGroup extends Component {
       describeConsentGroup = true;
       isValid = false;
     }
-    if (this.state.step1FormData.institutionalSources === undefined) {
-      institutionalSourcesName = true;
-      institutionalSourcesCountry = true;
+    console.log("CG PADRE ", this.state.step1FormData.institutionalSourcesError)
+    if (this.state.step1FormData.institutionalSourcesError) {
+    // if (!this.state.step1FormData.validateInstitutionalSources()) {
       isValid = false;
-    } else {
-      this.state.step1FormData.institutionalSources.forEach(institutionalSource => {
-        if (!this.isTextValid(institutionalSource.name)) {
-          institutionalSourcesName = true;
-          isValid = false;
-        }
-        if (!this.isTextValid(institutionalSource.country)) {
-          institutionalSourcesCountry = true;
-          isValid = false;
-        }
-      });
     }
+    // if (this.state.step1FormData.institutionalSources === undefined) {
+    //   institutionalSourcesName = true;
+    //   institutionalSourcesCountry = true;
+    //   isValid = false;
+    // } else {
+    //   this.state.step1FormData.institutionalSources.forEach(institutionalSource => {
+    //     if (!this.isTextValid(institutionalSource.name)) {
+    //       institutionalSourcesName = true;
+    //       isValid = false;
+    //     }
+    //     if (!this.isTextValid(institutionalSource.country)) {
+    //       institutionalSourcesCountry = true;
+    //       isValid = false;
+    //     }
+    //   });
+    // }
 
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
