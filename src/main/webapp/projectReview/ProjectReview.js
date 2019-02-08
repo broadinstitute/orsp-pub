@@ -197,7 +197,7 @@ class ProjectReview extends Component {
     return usersArray
   }
 
-  // Todo: move into fundings component
+  // Todo: handle data structure in Fundings component
   getFundingsArray(fundings) {
     let fundingsArray = [];
     if (fundings !== undefined && fundings !== null && fundings.length > 0) {
@@ -232,17 +232,6 @@ class ProjectReview extends Component {
       return value === '' || value === null || value === undefined;
     }
   }
-
-  sortByKey = (array, key, key2) => {
-    if ( array !== undefined ) {
-      return array.sort(function (a, b) {
-        var x = a.future[key][key2];
-        var y = b.future[key][key2];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-      });
-    }
-    return array;
-  };
 
   approveRevision = () => {
     this.setState({ disableApproveButton: true })
@@ -379,12 +368,23 @@ class ProjectReview extends Component {
   compareObj(obj1, obj2) {
     let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
     let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
-    if ( form1 !== undefined && form1.fundings !== undefined && form2.fundings !== undefined) {
-      form1.fundings = this.sortByKey(form1.fundings, "source", "label");
-      form2.fundings = this.sortByKey(form2.fundings, "source", "label");
+    if ( form1 !== undefined && form2 !== undefined && form1.fundings !== undefined && form2.fundings !== undefined) {
+      form1.fundings = this.sortFundingsBySource(form1.fundings);
+      form2.fundings = this.sortFundingsBySource(form2.fundings);
     }
     return JSON.stringify(form1) === JSON.stringify(form2);
   }
+
+  sortFundingsBySource = (fundings) => {
+    if ( fundings !== undefined ) {
+      return fundings.sort(function (a, b) {
+        let x = a.future.source.label;
+        let y = b.future.source.label;
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      });
+    }
+    return fundings;
+  };
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
@@ -577,6 +577,7 @@ class ProjectReview extends Component {
     let editDescriptionError = false;
     let fundingErrorIndex = [];
 
+    // Todo: Fundings error will be handled inside its component
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (this.isEmpty(obj.future.source.label) && ( !this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier) )
         || ( idx === 0 && this.isEmpty(obj.future.source.label) && this.isEmpty(obj.current.source.label) )) {
