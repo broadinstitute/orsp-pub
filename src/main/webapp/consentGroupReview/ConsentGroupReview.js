@@ -100,14 +100,13 @@ class ConsentGroupReview extends Component {
       formData: {
         consentExtraProps: {},
         consentForm: {},
-        sampleCollections: [],
+        sampleCollections: []
       },
       current: {
         consentExtraProps: {
           endDate: null,
         },
-        consentForm: {
-        }
+        consentForm: {}
       },
       suggestions: {},
       suggestionsCopy: {},
@@ -437,22 +436,22 @@ class ConsentGroupReview extends Component {
     this.setState({ disableApproveButton: true });
     const data = { approvalStatus: "Approved" };
     ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(
-      () =>
+      () => {
+        if (this.state.reviewSuggestion) {
+          let consentGroup = this.getConsentGroup();
+          ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
+            this.removeEdits();
+          }).catch(error => {
+            console.error(error);
+          });
+        }
         this.setState(prev => {
-          prev.formData.consentForm.approvalStatus = data.approvalStatus;
-          return prev;
+            prev.formData.consentForm.approvalStatus = data.approvalStatus;
+            prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
+            prev.questions.length = 0;
+            return prev;
         })
-    );
-  };
-
-  approveRevision = (e) => () => {
-    this.setState({ disableApproveButton: true });
-    const data = { projectReviewApproved: true };
-    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
-      () => this.setState(prev => {
-        prev.formData.consentExtraProps.projectReviewApproved = true;
-        return prev;
-      })
+      }
     );
   };
 
@@ -505,6 +504,20 @@ class ConsentGroupReview extends Component {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
         isEdited: true,
+        errorSubmit: false
+      });
+    }
+    else {
+      this.setState({
+        errorSubmit: true
+      });
+    }
+  };
+
+  handleApproveInfoDialog = () => {
+    if (this.isValid()) {
+      this.setState({
+        showApproveInfoDialog: !this.state.showApproveInfoDialog,
         errorSubmit: false
       });
     }
@@ -1004,7 +1017,7 @@ class ConsentGroupReview extends Component {
           show: this.state.showApproveDialog,
           handleOkAction: this.approveEdits,
           title: 'Approve Edits Confirmation',
-          bodyText: 'Are you sure yo want to approve this edits?',
+          bodyText: 'Are you sure you want to approve these edits?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
@@ -1012,7 +1025,15 @@ class ConsentGroupReview extends Component {
           show: this.state.showDiscardEditsDialog,
           handleOkAction: this.discardEdits,
           title: 'Discard Edits Confirmation',
-          bodyText: 'Are you sure yo want to remove this edits?',
+          bodyText: 'Are you sure you want to remove these edits?',
+          actionLabel: 'Yes'
+        }, []),
+        ConfirmationDialog({
+          closeModal: this.handleApproveInfoDialog,
+          show: this.state.showApproveInfoDialog,
+          handleOkAction: this.approveConsentGroup,
+          title: 'Approve Project Information',
+          bodyText: 'Are you sure you want to approve this Consent Group Details?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
@@ -1020,7 +1041,7 @@ class ConsentGroupReview extends Component {
           show: this.state.showDialog,
           handleOkAction: this.rejectConsentGroup,
           title: 'Remove Confirmation',
-          bodyText: 'Are you sure yo want to remove this consent group?',
+          bodyText: 'Are you sure you want to remove this Consent Group?',
           actionLabel: 'Yes'
         }, []),
         button({
@@ -1474,36 +1495,36 @@ class ConsentGroupReview extends Component {
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
+          /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
+          button({
+            className: "btn buttonPrimary floatRight",
+            onClick: this.handleApproveInfoDialog,
+            isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
+            disabled: this.state.disableApproveButton
+          }, ["Approve"]),
+
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: (this.state.isAdmin === true && this.state.reviewSuggestion === true)
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.formData.consentForm.approvalStatus === 'Approved'
           }, ["Approve Edits"]),
-
-          /*visible for every user in readOnly mode and if there are changes to review*/
-          button({
-            className: "btn buttonSecondary floatRight",
-            onClick: this.handleDiscardEditsDialog,
-            disabled: this.state.disableApproveButton,
-            isRendered: (this.state.isAdmin === true && this.state.reviewSuggestion === true)
-          }, ["Discard Edits"]),
-
-          /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
-          button({
-            className: "btn buttonPrimary floatRight",
-            onClick: this.approveConsentGroup,
-            isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
-            disabled: this.state.disableApproveButton
-          }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin,
-          }, ["Reject"])
+            isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
+          }, ["Reject"]),
+
+          /*visible for every user in readOnly mode and if there are changes to review*/
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.handleDiscardEditsDialog,
+            disabled: this.state.disableApproveButton,
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true
+          }, ["Discard Edits"])
         ])
       ])
     )
