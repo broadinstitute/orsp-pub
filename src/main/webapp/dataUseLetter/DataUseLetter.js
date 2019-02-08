@@ -10,6 +10,7 @@ import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { AlertMessage } from '../components/AlertMessage';
 
 class DataUseLetter extends Component {
 
@@ -64,6 +65,7 @@ class DataUseLetter extends Component {
                 ethnicSpecify: '',
                 otherRestrictions: '',
 
+                dataSubmissionProhibition: null,
                 dataUseConsent: null,
                 dataDepositionDescribed: null,
                 repositoryType: null,
@@ -72,6 +74,7 @@ class DataUseLetter extends Component {
                 signature: '',
                 printedName: '',
                 title: '',
+                institution: '',
                 date: '',
             }
         };
@@ -185,7 +188,7 @@ class DataUseLetter extends Component {
                         ])
                     ]),
 
-                    Panel({ title: "Sample Collection Date Range" }, [
+                    Panel({ title: "Sample Collection Date Range*" }, [
                         div({ className: "row" }, [
                             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                                 InputFieldDatePicker({
@@ -245,8 +248,7 @@ class DataUseLetter extends Component {
                         "Information required for data management"
                     ]),
 
-                    console.log(this.state.formData.noRestrictions),
-                    Panel({ title: "1. Primary Restrictions" }, [
+                    Panel({ title: "1. Primary Restrictions*" }, [
                         InputFieldCheckbox({
                             id: "ckb_noRestrictions",
                             name: "noRestrictions",
@@ -547,68 +549,102 @@ class DataUseLetter extends Component {
                         })
                     ]),
 
-                    // SECTION 2
-                    h2({ className: "pageSubtitle" }, [
-                        small({}, ["Section 2"]),
-                        "Information required for data sharing via a repository"
+                    // SECTION 2 If repositoryDeposition is true
+                    div({ isRendered: this.state.formData.repositoryDeposition !== true }, [
+                        h2({ className: "pageSubtitle" }, [
+                            small({}, ["Section 2"]),
+                            "Information required for data sharing via a repository"
+                        ]),
+
+                        // If SC Date Range still not answered
+                        AlertMessage({
+                            msg: "Please enter sample collection date range above before proceeding.",
+                            show: false
+                        }),
+
+                        // If SC Date Range starts before 1/25/2015
+                        div({ isRendered: true }, [
+                            InputFieldRadio({
+                                id: "radioDataSubmissionProhibition",
+                                name: "dataSubmissionProhibition",
+                                label: "Is data submission not inconsistent with (not prohibited by) the informed consent provided by the research participant?*",
+                                value: this.state.formData.repositoryType,
+                                // currentValue: this.state.current.projectExtraProps.projectAvailability,
+                                // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
+                                optionValues: ["allowed", "prohibited"],
+                                optionLabels: [
+                                    span({}, ["Yes, data submission is ", span({ className: "bold" }, ["not inconsistent"]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
+                                    span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent"]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
+                                ],
+                                onChange: this.handleProjectExtraPropsChangeRadio,
+                                readOnly: this.state.readOnly
+                            })
+                        ]),
+
+                        // If SC Date Range ends after (or that same) 1/25/2015
+                        div({ isRendered: true }, [
+                            InputYesNo({
+                                id: "radioDataUseConsent",
+                                name: "dataUseConsent",
+                                value: this.state.formData.dataUseConsent,
+                                // currentValue: this.state.current.consentExtraProps.individualDataSourced,
+                                label: "Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?*",
+                                readOnly: this.state.readOnly,
+                                onChange: this.handleExtraPropsInputChange,
+                            }),
+                            InputYesNo({
+                                id: "radioDataDepositionDescribed",
+                                name: "dataDepositionDescribed",
+                                value: this.state.formData.dataDepositionDescribed,
+                                // currentValue: this.state.current.consentExtraProps.individualDataSourced,
+                                label: "Is data deposition into a repository described in the consent form?*",
+                                readOnly: this.state.readOnly,
+                                onChange: this.handleExtraPropsInputChange,
+                            }),
+                            InputFieldRadio({
+                                id: "radioRepositoryType",
+                                name: "repositoryType",
+                                label: "What type of repository is permitted?*",
+                                value: this.state.formData.repositoryType,
+                                // currentValue: this.state.current.projectExtraProps.projectAvailability,
+                                // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
+                                optionValues: ["controlledAccess", "openAccess"],
+                                optionLabels: [
+                                    span({}, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
+                                    span({}, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
+                                    span({}, ["Both controlled-access and open-access are permitted"]),
+                                ],
+                                onChange: this.handleProjectExtraPropsChangeRadio,
+                                readOnly: this.state.readOnly
+                            })
+                        ]),
+                        div({ className: "boxWrapper" }, [
+                            p({}, ["NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."]),
+                        ]),
+                        InputFieldRadio({
+                            id: "radioGSRAvailability",
+                            name: "GSRAvailability",
+                            label: "Are the genomic summary results (GSR) from this study to be made available only through controlled-access?*",
+                            value: this.state.formData.repositoryType,
+                            // currentValue: this.state.current.projectExtraProps.projectAvailability,
+                            // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
+                            optionValues: ["GSRNotRequired", "GSRRequired"],
+                            optionLabels: [
+                                "No, controlled-access for GSR is not required",
+                                "Yes, controlled-access for GSR is required",
+                            ],
+                            onChange: this.handleProjectExtraPropsChangeRadio,
+                            readOnly: this.state.readOnly
+                        })
                     ]),
 
-                    InputYesNo({
-                        id: "radioDataUseConsent",
-                        name: "dataUseConsent",
-                        value: this.state.formData.dataUseConsent,
-                        // currentValue: this.state.current.consentExtraProps.individualDataSourced,
-                        label: "1. Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?",
-                        readOnly: this.state.readOnly,
-                        onChange: this.handleExtraPropsInputChange,
-                    }),
-                    InputYesNo({
-                        id: "radioDataDepositionDescribed",
-                        name: "dataDepositionDescribed",
-                        value: this.state.formData.dataDepositionDescribed,
-                        // currentValue: this.state.current.consentExtraProps.individualDataSourced,
-                        label: "2. Is data deposition into a repository described in the consent form?",
-                        readOnly: this.state.readOnly,
-                        onChange: this.handleExtraPropsInputChange,
-                    }),
-                    InputFieldRadio({
-                        id: "radioRepositoryType",
-                        name: "repositoryType",
-                        label: "3. What type of repository is permitted?",
-                        value: this.state.formData.repositoryType,
-                        // currentValue: this.state.current.projectExtraProps.projectAvailability,
-                        // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
-                        optionValues: ["controlledAccess", "openAccess"],
-                        optionLabels: [
-                            span({}, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
-                            span({}, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
-                            span({}, ["Both controlled-access and open-access are permitted"]),
-                        ],
-                        onChange: this.handleProjectExtraPropsChangeRadio,
-                        readOnly: this.state.readOnly
-                    }),
-                    div({ className: "boxWrapper" }, [
-                        p({}, ["NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."]),
-                    ]),
-                    InputFieldRadio({
-                        id: "radioGSRAvailability",
-                        name: "GSRAvailability",
-                        label: "4. Are the genomic summary results (GSR) from this study to be made available only through controlled-access?",
-                        value: this.state.formData.repositoryType,
-                        // currentValue: this.state.current.projectExtraProps.projectAvailability,
-                        // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
-                        optionValues: ["GSRNotRequired", "GSRRequired"],
-                        optionLabels: [
-                            "No, controlled-access for GSR is not required",
-                            "Yes, controlled-access for GSR is required",
-                        ],
-                        onChange: this.handleProjectExtraPropsChangeRadio,
-                        readOnly: this.state.readOnly
-                    }),
-
-                    // SECTION 3
+                    // SECTION 2 or 3
                     h2({ className: "pageSubtitle" }, [
-                        small({}, ["Section 3"]),
+                        small({}, [
+                            "Section ",
+                            span({ isRendered: this.state.formData.repositoryDeposition === true }, ["3"]),
+                            span({ isRendered: this.state.formData.repositoryDeposition !== true }, ["2"])
+                        ]),
                         span({}, ["Assurances ", span({ className: "normal italic" }, ["(by signing this form, you are also attesting)"])])
                     ]),
                     div({ className: "boxWrapper" }, [
@@ -629,8 +665,9 @@ class DataUseLetter extends Component {
                     InputFieldText({
                         id: "inputSignature",
                         name: "signature",
-                        label: "Signature",
+                        label: "Signature*",
                         disabled: false,
+                        required: true,
                         value: "",
                         // currentValue: this.state.current.consentForm.summary,
                         onChange: this.handleExtraPropsInputChange,
@@ -639,8 +676,9 @@ class DataUseLetter extends Component {
                     InputFieldText({
                         id: "inputPrintedName",
                         name: "printedName",
-                        label: "Printed Name",
+                        label: "Printed Name*",
                         disabled: false,
+                        required: true,
                         value: "",
                         // currentValue: this.state.current.consentForm.summary,
                         onChange: this.handleExtraPropsInputChange,
@@ -649,8 +687,20 @@ class DataUseLetter extends Component {
                     InputFieldText({
                         id: "inputTitle",
                         name: "title",
-                        label: "Title",
+                        label: "Title*",
                         disabled: false,
+                        required: true,
+                        value: "",
+                        // currentValue: this.state.current.consentForm.summary,
+                        onChange: this.handleExtraPropsInputChange,
+                        readOnly: this.state.readOnly
+                    }),
+                    InputFieldText({
+                        id: "inputTitle",
+                        name: "title",
+                        label: "Institution*",
+                        disabled: false,
+                        required: true,
                         value: "",
                         // currentValue: this.state.current.consentForm.summary,
                         onChange: this.handleExtraPropsInputChange,
@@ -660,11 +710,11 @@ class DataUseLetter extends Component {
                         id: "inputDate",
                         name: "date",
                         label: "Date",
-                        disabled: false,
-                        value: "",
+                        disabled: true,
+                        value: "Autocompleted with current date",
                         // currentValue: this.state.current.consentForm.summary,
                         onChange: this.handleExtraPropsInputChange,
-                        readOnly: this.state.readOnly
+                        readOnly: false
                     }),
 
 
