@@ -16,12 +16,75 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     console.log(error, info);
   }
 
+  sortByKey = (array, key) => {
+    return array.sort(function (a, b) {
+      var x = a[key]; var y = b[key];
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+  };
+
   isEdited = (current, futureValue) => {
-    return current !== futureValue || current === undefined
+    if (typeof current !== 'string') {
+      let edited = false;
+      let future = undefined;
+
+      if (futureValue[0] === '') {
+        future = futureValue;
+      } else {
+        future = futureValue[0];
+      }
+
+      if (this.props.edit || this.props.edit === undefined) {
+        if (current.length !== future.length) {
+          edited = true;
+        }
+
+        current.forEach((element, index) => {
+          if (future[index] !== undefined) {
+            if (element.key !== future[index].key) {
+              edited = true;
+            }
+          }
+        });
+      }
+      return edited;
+    } else {
+      return current.value !== futureValue.value || current.value === undefined
+    }
   };
 
   render() {
-    const edited = this.props.edit ? this.isEdited(this.props.currentValue.value, this.props.value.value) : false;
+    let currentValue  = [];
+    let value = [];
+
+    let currentValues = [];
+
+    if (this.props.currentValue === undefined) {
+      currentValue.push("");
+    } else if (this.props.currentValue.length === 0){
+      currentValue.push("");
+    } else {
+      currentValue = this.props.currentValue;
+    }
+
+    if (this.props.value === null || this.props.value.length === 0) {
+      value.push("");
+    } else {
+      value.push(this.props.value);
+    }
+
+    currentValue.forEach(item => {
+      currentValues.push(item.label);
+    });
+
+    let currentKeys = this.sortByKey(currentValue, 'key');
+    let keys = this.sortByKey(value, 'key');
+
+    let currentValueStr = currentValues.join(',');
+
+    const edited = this.isEdited(currentKeys, keys);
+    // const edited = this.props.edit ? this.isEdited(this.props.currentValue, this.props.value) : false;
+
 
     return (
       InputField({
@@ -32,7 +95,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         readOnly: this.props.readOnly,
         value: this.props.value,
         currentValue: this.props.currentValue,
-        currentValueStr: this.props.currentValue.label,
+        currentValueStr: currentValueStr,
         edited : edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
@@ -40,9 +103,9 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               id: this.props.id,
               index: this.props.index,
               name: this.props.name,
-              value: this.props.value,
+              value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
               className: "inputFieldSelect",
-              onChange: this.props.onChange(this.props.index),
+              onChange: this.props.onChange(this.props.index, event),
               options: this.props.options,
               placeholder: edited ? '--' : this.props.placeholder,
               isMulti: this.props.isMulti

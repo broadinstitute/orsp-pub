@@ -144,6 +144,9 @@ class ConsentGroupReview extends Component {
     let formDataStr = {};
     let sampleCollectionList = [];
 
+    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
+      resp => this.setState({ existingGroupNames: resp.data }));
+
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element => {
         let sampleCollections = [];
@@ -165,6 +168,11 @@ class ConsentGroupReview extends Component {
 
             if (element.data.sampleCollections !== undefined) {
               current.sampleCollections = element.data.sampleCollections.map(sample => {
+                sampleCollectionList.push({
+                  key: sample.id,
+                  value: sample.collectionId,
+                  label: sample.collectionId + ": " + sample.name + " ( " + sample.category + " )"
+                });
                 return ({
                   key: sample.id,
                   value: sample.collectionId,
@@ -264,6 +272,7 @@ class ConsentGroupReview extends Component {
     let questions = false;
     let endDate = false;
     let startDate = false;
+    let consentGroupName = false;
 
     if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
@@ -340,6 +349,10 @@ class ConsentGroupReview extends Component {
       accessible = true;
     }
 
+    if (this.consentGroupNameExists()) {
+      consentGroupName = true;
+    }
+
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
@@ -357,6 +370,7 @@ class ConsentGroupReview extends Component {
       prev.errors.sensitive = sensitive;
       prev.errors.accessible = accessible;
       prev.errors.startDate = startDate;
+      prev.errors.consentGroupName = consentGroupName;
       return prev;
     });
 
@@ -376,6 +390,7 @@ class ConsentGroupReview extends Component {
       !compliance &&
       !sensitive &&
       !startDate &&
+      !consentGroupName &&
       !endDate;
   };
 
@@ -946,6 +961,10 @@ class ConsentGroupReview extends Component {
     return label;
   };
 
+  consentGroupNameExists() {
+    return this.state.existingGroupNames.indexOf(this.state.formData.consentForm.summary) > -1;
+  }
+
   render() {
     const {
       consent = '',
@@ -1030,7 +1049,9 @@ class ConsentGroupReview extends Component {
             value: consent + " / " + protocol,
             currentValue: this.state.current.consentForm.summary,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.consentGroupName,
+            errorMessage: "An existing Consent Group with this protocol exists. Please choose a different one."
           }),
           InputFieldText({
             id: "inputInvestigatorLastName",
@@ -1138,7 +1159,8 @@ class ConsentGroupReview extends Component {
             isMulti: true,
             error: this.state.errors.sampleCollections,
             errorMessage: "Required field",
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            edit: true
           }),
         ]),
 

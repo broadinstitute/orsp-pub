@@ -10,6 +10,7 @@
       updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
       approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",
       discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
+      consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
     };
 
 </g:javascript>

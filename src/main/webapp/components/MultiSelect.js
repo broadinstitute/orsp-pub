@@ -61,7 +61,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
       currentValue = this.props.currentValue;
     }
 
-    if (this.props.value.length === 0) {
+    if (this.props.value === null || this.props.value.length === 0) {
       value.push("");
     } else {
       value = this.props.value;
