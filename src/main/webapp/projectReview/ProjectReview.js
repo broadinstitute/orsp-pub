@@ -10,7 +10,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, User, Review } from "../util/ajax";
-
+import _ from 'lodash';
 
 class ProjectReview extends Component {
 
@@ -57,8 +57,7 @@ class ProjectReview extends Component {
       },
       disableApproveButton: false,
       reviewSuggestion: false,
-      futureCopy: {
-      },
+      futureCopy: {},
       current: {
         requestor: {
           displayName: '',
@@ -368,15 +367,13 @@ class ProjectReview extends Component {
   compareObj(obj1, obj2) {
     let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
     let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
-    if ( form1 !== undefined && form2 !== undefined && form1.fundings !== undefined && form2.fundings !== undefined) {
-      form1.fundings = this.sortFundingsBySource(form1.fundings);
-      form2.fundings = this.sortFundingsBySource(form2.fundings);
-    }
+    form1.fundings = this.sortFundingsBySource(_.get(form1, 'fundings', ''));
+    form2.fundings = this.sortFundingsBySource(_.get(form2, 'fundings', ''));
     return JSON.stringify(form1) === JSON.stringify(form2);
   }
 
   sortFundingsBySource = (fundings) => {
-    if ( fundings !== undefined ) {
+    if (!this.isEmpty(fundings)) {
       return fundings.sort(function (a, b) {
         let x = a.future.source.label;
         let y = b.future.source.label;

@@ -6,7 +6,7 @@ import { Btn } from './Btn';
 
 const fundingOptions = [
   { value: 'federal_prime', label: 'Federal Prime' },
-  { value: 'federal_sub_award', label: 'Federal Sub-award' },
+  { value: 'federal_sub-award', label: 'Federal Sub-award' },
   { value: 'internal_broad', label: 'Internal Broad' },
   { value: 'purchase_order', label: 'Purchase Order' },
   { value: 'corporate_funding', label: 'Corporate Funding' },
@@ -141,6 +141,19 @@ export const Fundings = hh(class Fundings extends Component {
     }
   };
 
+
+  // In edit mode we use an array of indexes, indicating which row has an error.
+  // this.props.error is used to hide error highlights on change, and validating again on submit.
+  getSourceError = (index) => {
+    let hasError = false;
+    if (this.props.edit === true) {
+      hasError = this.props.error && this.props.errorIndex.includes(index)
+    } else {
+      hasError = this.props.error && index === 0
+    }
+    return hasError
+  };
+
   render() {
     let {
       fundings = [],
@@ -187,7 +200,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.source : rd.source,
                       currentValue: this.props.edit ? current[idx].current.source : rd.source,
                       onChange: this.handleFundingSelect,
-                      error: this.props.edit === true  && this.props.errorIndex !== null? this.props.error && this.props.errorIndex.includes(idx) : this.props.error && idx === 0,
+                      error: this.getSourceError(idx),
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
                       edited: this.props.readOnly,
