@@ -1,6 +1,5 @@
 package org.broadinstitute.orsp
 
-import grails.converters.JSON
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import grails.util.Environment
@@ -1043,6 +1042,23 @@ class QueryService implements Status {
             log.warn("Unable to findIssues issue by key [" + key + "]: " + e)
             ""
         }
+    }
+
+    /**
+     * Get last version for the specified project key and file type
+     * @return List of distinct disease terms
+     */
+    Long findLastVersionByFileTypeAndProjectKey(String projectKey, String fileType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select COALESCE(MAX(d.doc_version), 0) ' +
+                        ' from storage_document d ' +
+                        ' where d.project_key = ? ' +
+                        ' and d.file_type = ? '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        String version = (String)sqlQuery.list()?.get(0)
+        Long.valueOf(version)
     }
 
 }
