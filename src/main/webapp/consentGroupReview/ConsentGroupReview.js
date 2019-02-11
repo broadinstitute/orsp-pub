@@ -432,6 +432,12 @@ class ConsentGroupReview extends Component {
     // this.props.removeErrorMessage();
   };
 
+  setInstitutionalError = (error) => {
+    // let error = this.state.institutionalSourcesError;
+    console.log("Error en review CG ", error);
+    // this.setState({ formData:{ institutionalSourceError: error } })
+  };
+
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -598,8 +604,7 @@ class ConsentGroupReview extends Component {
 
     const headers = [{ name: 'ID', value: 'id' }, { name: 'Name', value: 'name' }, { name: 'Category', value: 'category' }, { name: 'Group', value: 'groupName' }];
 
-    const { startDate = null, endDate = null } = this.state.formData.consentExtraProps;
-
+    const { startDate = null, endDate = null } = _.get(this.state.formData, 'consentExtraProps', '');
     const {
       consent = '',
       protocol = '',
@@ -626,8 +631,7 @@ class ConsentGroupReview extends Component {
       describeConsentGroup = '',
       requireMta = '',
 
-    } = this.state.formData.consentExtraProps;
-
+    } = _.get(this.state.formData, 'consentExtraProps', '');
 
     return (
       div({}, [
@@ -774,7 +778,7 @@ class ConsentGroupReview extends Component {
                 name: "endDate",
                 label: "End Date",
                 onChange: this.handleChange,
-                disabled: (this.state.formData.consentExtraProps.onGoingProcess === "true"),
+                disabled: _.get(this.state.formData, 'consentExtraProps.onGoingProcess', '') === "true",
                 readOnly: this.state.readOnly
               })
             ]),
@@ -797,7 +801,9 @@ class ConsentGroupReview extends Component {
             institutionalSources: this.state.formData.instSources,
             currentValue: this.state.futureCopy.instSources,
             readOnly: this.state.readOnly,
-            edit: true
+            edit: true,
+            errorHandler: this.setInstitutionalError,
+            // setInstitutionalError: this.setInstitutionalError
           })
         ]),
 

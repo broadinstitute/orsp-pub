@@ -651,6 +651,10 @@ class NewConsentGroup extends Component {
     }
   }
 
+  validateForm() {
+    this.setState({ validateForm: true })
+  }
+
   render() {
 
     const { currentStep, determination } = this.state;
@@ -665,8 +669,9 @@ class NewConsentGroup extends Component {
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage
-      }, [
+        loadingImage: this.props.loadingImage,
+        validate: this.state.validateForm
+  }, [
         NewConsentGroupGeneralData({
           title: "General Data",
           currentStep: currentStep,

@@ -21,7 +21,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("PROPS ", nextProps);
+    // console.log("PROPS ", nextProps);
     if (nextProps.currentValue !== undefined && JSON.stringify(nextProps.currentValue) !== JSON.stringify(prevState.institutionalSources.map(inst => inst.current))) {
       // console.log("Institutional Source Component State Change ");
       // console.log("PROPS currentvalue", nextProps.currentValue);
@@ -45,24 +45,29 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         this.setState({ institutionalSources: future, error: false});
         this.props.updateInstitutionalSource(this.state.institutionalSources);
     } else {
-      this.validate();
+      console.log("else de add ")
+      this.validate("add");
     }
   }
 
   removeInstitutionalSources = (index) => (e) => {
       let future = this.state.institutionalSources;
-      if (this.props.institutionalSources !== undefined && this.props.institutionalSources.length > 1) {
+      console.log("es edit?", this.props.edit === true , " o hay al menos 1 element no vacio en inst sources? ", future.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length , "==== ", this.props.edit === true || future.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0)
+      if (this.props.edit === true ||
+        future.filter( element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 1) {
+      // if (this.props.institutionalSources !== undefined && this.props.institutionalSources.length > 1) {
         console.log("current name ", this.state.institutionalSources[index].current.name)
         if (this.isEmpty(this.state.institutionalSources[index].current.name)) {
-          console.log("ENTRO" )
           future.splice(index, 1);
         } else {
           future[index].future = { name: '', country: '' }
         }
         this.setState({ institutionalSources: future, error: false });
         this.props.updateInstitutionalSource(this.state.institutionalSources);
+        this.validate("remove", index);
+
       } else {
-        this.validate();
+        this.validate("remove", index);
       }
   };
 
@@ -72,7 +77,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     const value = e.target.value;
     const index = e.target.getAttribute('index');
     institutionalSources[index].future[field] = value;
-    this.setState({ institutionalSources: institutionalSources, error: false });
+    this.setState({ institutionalSources: institutionalSources, error: false, institutionalNameErrorIndex: [], institutionalCountryErrorIndex: [] });
     // this.validate();
     this.props.updateInstitutionalSource(this.state.institutionalSources, field);
   };
@@ -99,20 +104,29 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   isEmpty(value) {
-    return value === '' || value === null || value === undefined;
+    return value === "" || value === null || value === undefined;
   }
 
-  validate = () => {
+  validate = (action, indexToRemove) => {
     let institutionalNameErrorIndex = [];
     let institutionalCountryErrorIndex = [];
     let institutionalError = this.state.institutionalSources.filter((obj, idx) => {
       let response = false;
-      if (this.isEmpty(obj.future.name)) {
+      if (this.isEmpty(obj.current.name) && this.isEmpty(obj.future.name)
+      || this.isEmpty(obj.future.name) && !this.isEmpty(obj.future.country)
+      ) {
         institutionalNameErrorIndex.push(idx);
         response = true;
       }
-      if (this.isEmpty(obj.future.country)) {
+      if (this.isEmpty(obj.future.country) && this.isEmpty(obj.current.country)
+        || this.isEmpty(obj.future.country) && !this.isEmpty(obj.future.name)
+      ) {
         institutionalCountryErrorIndex.push(idx);
+        response = true;
+      }
+      if (action === "remove" && !this.state.institutionalSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
+        institutionalNameErrorIndex.push(indexToRemove);
+        institutionalCountryErrorIndex.push(indexToRemove);
         response = true;
       }
       this.props.errorHandler(response);
@@ -121,14 +135,16 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
     // console.log("error index name ", institutionalNameErrorIndex);
     // console.log("error index country ", institutionalCountryErrorIndex);
-    // console.log("error index name ", institutionalError);
+    console.log("error institutionalError ", institutionalError);
     this.setState(prev => {
       prev.institutionalNameErrorIndex = institutionalNameErrorIndex;
       prev.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
       prev.error = institutionalError;
       return prev;
+    }, () => {
+      this.props.errorHandler(this.state.error);
     });
-  }
+  };
 
   getError(index, field) {
     if (field === "name") {
