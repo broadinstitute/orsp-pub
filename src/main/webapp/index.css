@@ -143,8 +143,18 @@ input[type=checkbox]:checked+label:before {
 }
 
 .pageTitle {
+  width: 100%;
   font-weight: 700;
   margin: 20px 0;
+}
+
+.pageClarification {
+  display: inline-block;
+  font-style: italic;
+  font-weight: 400;
+  float: right;
+  text-align: right;
+  margin-top: 5px;
 }
 
 .pageSubtitle {

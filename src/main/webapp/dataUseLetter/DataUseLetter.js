@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
-import { hh, p, div, h1, h2, small, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
+import { hh, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -28,6 +28,7 @@ class DataUseLetter extends Component {
                 startDate: null,
                 endDate: null,
                 onGoingProcess: false,
+                repositoryDeposition: '',
 
                 noRestrictions: false,
                 generalUse: false,
@@ -42,9 +43,9 @@ class DataUseLetter extends Component {
                 nervousDisease: false,
                 eyeDisease: false,
                 earDisease: false,
+                respiratoryDisease: false,
                 digestiveDisease: false,
                 inflammatoryDisease: false,
-                diseaseRestricted: false,
                 skinDisease: false,
                 musculoskeletalDisease: false,
                 genitourinaryDisease: false,
@@ -53,27 +54,29 @@ class DataUseLetter extends Component {
                 bloodDisorder: false,
                 otherDisease: false,
                 otherDiseaseSpecify: '',
+
                 commercialPurposes: false,
                 methodsResearch: false,
 
                 noPopulationRestricted: false,
                 under18: false,
-                above18: false,
+                over18: false,
                 onlyMen: false,
                 onlyWomen: false,
                 ethnic: false,
                 ethnicSpecify: '',
+
                 otherRestrictions: '',
 
-                dataSubmissionProhibition: null,
-                dataUseConsent: null,
-                dataDepositionDescribed: null,
-                repositoryType: null,
-                GSRAvailability: null,
+                dataSubmissionProhibition: '',
+                dataUseConsent: '',
+                dataDepositionDescribed: '',
+                repositoryType: '',
+                GSRAvailability: '',
 
                 signature: '',
                 printedName: '',
-                title: '',
+                position: '',
                 institution: '',
                 date: '',
             }
@@ -114,7 +117,14 @@ class DataUseLetter extends Component {
 
         return (
             div({}, [
-                h1({ className: "pageTitle" }, ["Data Use Limitation Record"]),
+                h1({ className: "pageTitle" }, [
+                    "Data Use Limitation Record",
+                    p({ className: "pageClarification"}, [
+                        "Broad Institute - Data Use Limitation Record",
+                        br({}),
+                        "Version 5.21.2018"
+                    ])
+                ]),
                 div({ className: "pageContainer" }, [
                     div({ style: { 'marginBottom': '20px' } }, [
                         InputFieldText({
@@ -122,7 +132,7 @@ class DataUseLetter extends Component {
                             name: "protocolTitle",
                             label: "Title of Specimen Collection Protocol",
                             disabled: true,
-                            value: "Some autopopulated value",
+                            value: "Some autopopulated value. (Consent Group Name)",
                             // currentValue: this.state.current.consentForm.summary,
                             onChange: this.handleExtraPropsInputChange,
                             readOnly: false
@@ -140,12 +150,13 @@ class DataUseLetter extends Component {
                         InputFieldText({
                             id: "inputConsentFormTitle",
                             name: "consentFormTitle",
-                            label: "Consent Form Title",
-                            disabled: true,
-                            value: "Some autopopulated value",
+                            label: "Consent Form Title ",
+                            moreInfo: "(Please enter the title at the top of the consent form referenced by this form)",
+                            disabled: false,
+                            value: "",
                             // currentValue: this.state.current.consentForm.summary,
                             onChange: this.handleExtraPropsInputChange,
-                            readOnly: false
+                            readOnly: this.state.readOnly
                         }),
                         InputFieldText({
                             id: "inputPrincipalInvestigator",
@@ -336,18 +347,10 @@ class DataUseLetter extends Component {
                                     readOnly: this.state.readOnly
                                 }),
                                 InputFieldCheckbox({
-                                    id: "ckb_diseaseRestricted",
-                                    name: "diseaseRestricted",
-                                    onChange: this.handleCheck,
-                                    label: span({ className: "normal" }, ['Eye diseases']),
-                                    checked: this.state.formData.diseaseRestricted === 'true' || this.state.formData.diseaseRestricted === true,
-                                    readOnly: this.state.readOnly
-                                }),
-                                InputFieldCheckbox({
                                     id: "ckb_eyeDisease",
                                     name: "eyeDisease",
                                     onChange: this.handleCheck,
-                                    label: span({ className: "normal" }, ['Ear and mastoid process diseases']),
+                                    label: span({ className: "normal" }, ['Eye diseases']),
                                     checked: this.state.formData.eyeDisease === 'true' || this.state.formData.eyeDisease === true,
                                     readOnly: this.state.readOnly
                                 }),
@@ -357,6 +360,14 @@ class DataUseLetter extends Component {
                                     onChange: this.handleCheck,
                                     label: span({ className: "normal" }, ['Ear and mastoid process diseases']),
                                     checked: this.state.formData.earDisease === 'true' || this.state.formData.earDisease === true,
+                                    readOnly: this.state.readOnly
+                                }),
+                                InputFieldCheckbox({
+                                    id: "ckb_respiratoryDisease",
+                                    name: "respiratoryDisease",
+                                    onChange: this.handleCheck,
+                                    label: span({ className: "normal" }, ['Respiratory system diseases']),
+                                    checked: this.state.formData.respiratoryDisease === 'true' || this.state.formData.respiratoryDisease === true,
                                     readOnly: this.state.readOnly
                                 })
                             ]),
@@ -467,7 +478,7 @@ class DataUseLetter extends Component {
                             id: "ckb_methodsResearch",
                             name: "methodsResearch",
                             onChange: this.handleCheck,
-                            label: span({}, ['Methods research', span({ className: "normal italic" }, ['(analytic/software/technology development)'])]),
+                            label: span({}, ['Methods research ', span({ className: "normal italic" }, ['(analytic/software/technology development)'])]),
                             checked: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true,
                             readOnly: this.state.readOnly
                         })
@@ -491,11 +502,11 @@ class DataUseLetter extends Component {
                             readOnly: this.state.readOnly
                         }),
                         InputFieldCheckbox({
-                            id: "ckb_above18",
-                            name: "above18",
+                            id: "ckb_over18",
+                            name: "over18",
                             onChange: this.handleCheck,
                             label: "Research in adults 18 years of age and older only",
-                            checked: this.state.formData.above18 === 'true' || this.state.formData.above18 === true,
+                            checked: this.state.formData.over18 === 'true' || this.state.formData.over18 === true,
                             readOnly: this.state.readOnly
                         }),
                         InputFieldCheckbox({
@@ -573,8 +584,8 @@ class DataUseLetter extends Component {
                                 // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
                                 optionValues: ["allowed", "prohibited"],
                                 optionLabels: [
-                                    span({}, ["Yes, data submission is ", span({ className: "bold" }, ["not inconsistent"]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
-                                    span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent"]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
+                                    span({}, ["Yes, data submission is ", span({ className: "bold" }, ["not inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
+                                    span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
                                 ],
                                 onChange: this.handleProjectExtraPropsChangeRadio,
                                 readOnly: this.state.readOnly
@@ -610,9 +621,9 @@ class DataUseLetter extends Component {
                                 // currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
                                 optionValues: ["controlledAccess", "openAccess"],
                                 optionLabels: [
-                                    span({}, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
-                                    span({}, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
-                                    span({}, ["Both controlled-access and open-access are permitted"]),
+                                    span({ className: "bold" }, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
+                                    span({ className: "bold" }, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
+                                    span({ className: "bold" }, ["Both controlled-access and open-access are permitted"]),
                                 ],
                                 onChange: this.handleProjectExtraPropsChangeRadio,
                                 readOnly: this.state.readOnly
@@ -638,7 +649,7 @@ class DataUseLetter extends Component {
                         })
                     ]),
 
-                    // SECTION 2 or 3
+                    // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3
                     h2({ className: "pageSubtitle" }, [
                         small({}, [
                             "Section ",
@@ -662,6 +673,13 @@ class DataUseLetter extends Component {
                             li({}, ["When some or all of the subjects are likely to be vulnerable to coercion or undue influence, such as children, prisoners, pregnant women, mentally disabled persons, or economically or educationally disadvantaged persons, additional safeguards have been included in the study to protect the rights and welfare of these subjects."])
                         ])
                     ]),
+
+                    h4({ className: "bold", style: { 'lineHeight': '1.3' } }, [
+                        "Institutional Review Board/Ethics Committee Official",
+                        br({}),
+                        span({ className: "normal italic" }, ["I hereby attest that I am qualified to sign this agreement on behalf of the Institution listed below:"])
+                    ]),
+
                     InputFieldText({
                         id: "inputSignature",
                         name: "signature",
@@ -685,9 +703,9 @@ class DataUseLetter extends Component {
                         readOnly: this.state.readOnly
                     }),
                     InputFieldText({
-                        id: "inputTitle",
-                        name: "title",
-                        label: "Title*",
+                        id: "inputPosition",
+                        name: "position",
+                        label: "Position/Title in your Institution*",
                         disabled: false,
                         required: true,
                         value: "",
@@ -696,8 +714,8 @@ class DataUseLetter extends Component {
                         readOnly: this.state.readOnly
                     }),
                     InputFieldText({
-                        id: "inputTitle",
-                        name: "title",
+                        id: "inputInstitution",
+                        name: "institution",
                         label: "Institution*",
                         disabled: false,
                         required: true,
