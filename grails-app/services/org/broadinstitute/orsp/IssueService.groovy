@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.ConsentCollectionLink
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -164,6 +165,30 @@ class IssueService {
             it.delete(hard: true)
         }
 
+        def sampleCollectionIds = input.get('samples')
+        Collection<ConsentCollectionLink> sclOld = ConsentCollectionLink.findAllByConsentKey(issue.projectKey)
+
+        def deletableConsentCollectionLinks = sclOld.findAll { !sampleCollectionIds.contains(it.sampleCollectionId)}
+        if (!deletableConsentCollectionLinks.isEmpty()) {
+            deletableConsentCollectionLinks.each {
+                it.delete(hard: true)
+                sclOld.remove(it)
+            }
+        }
+
+        def newSampleCollectionLinks = sampleCollectionIds.findAll { !sclOld.sampleCollectionId.contains(it) }
+
+        newSampleCollectionLinks.each {
+            if (!sclOld.contains(it)) {
+                new ConsentCollectionLink(
+                        projectKey: issue.source,
+                        consentKey: issue.projectKey,
+                        sampleCollectionId: it,
+                        creationDate: new Date()
+                ).save(flush: true)
+            }
+        }
+
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -196,6 +221,9 @@ class IssueService {
         }
         if (!input.containsKey(IssueExtraProperty.END_DATE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
+        }
+        if (!input.containsKey(IssueExtraProperty.SAMPLES)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SAMPLES})
         }
 
         propsToDelete.each {

@@ -240,19 +240,8 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  validateDetails = () => {
-    if (this.isEmpty(this.state.collInst) || this.isEmpty('')) {
-
-    }
-  };
-
   isEmpty(value) {
     return value === '' || value === null || value === undefined;
-  }
-
-  hasDate(date) {
-    if (this.state.formData.consentExtraProps[date] !== undefined)
-      return true
   }
 
   isValid = () => {
@@ -412,17 +401,6 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  isAnswer = () => {
-    let answer = false;
-    this.state.questions.forEach(question => {
-      if (question.answer !== null) {
-        answer = true;
-      }
-    });
-    console.log(answer);
-    return answer;
-  };
-
   validateQuestionaire = () => {
     let isValid = false;
     const determination = this.state.determination;
@@ -534,6 +512,7 @@ class ConsentGroupReview extends Component {
       prev.readOnly = false;
       prev.questions.length = 0;
       prev.questions = this.initQuestions();
+      prev.isEdited = !this.compareObj("formData", "current");
       return prev;
     });
   };
@@ -703,13 +682,6 @@ class ConsentGroupReview extends Component {
     return null
   }
 
-  handleUpdateinstitutionalSources = (updated, field) => {
-    this.setState(prev => {
-      prev.formData.institutionalSources = updated;
-      return prev;
-    });
-  };
-
   handleExtraPropsInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -838,15 +810,6 @@ class ConsentGroupReview extends Component {
     });
 
     return questions;
-  };
-
-  setEditedAnswers = () => {
-    this.setState(prev => {
-      prev.intCohortsAnswers.forEach(question => {
-        prev.formData.consentExtraProps[question.key] = question.answer;
-      });
-      return prev;
-    });
   };
 
   determinationHandler = (determination) => {
