@@ -288,11 +288,11 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             InstitutionalSource({
               updateInstitutionalSource: this.handleUpdateinstitutionalSources,
               institutionalSources: this.state.formData.institutionalSources,
-              errorName: this.props.errors.institutionalSourcesName,
-              errorCountry: this.props.errors.institutionalSourcesCountry,
+              error: this.props.errors.institutionalSourcesCountry || this.props.errors.institutionalSourcesName,
               errorMessage: "Required field",
               setInstitutionalError: this.setInstitutionalError,
-              edit: false
+              edit: false,
+              errorHandler: this.setInstitutionalError
             })
           ]),
 

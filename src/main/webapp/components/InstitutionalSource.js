@@ -21,13 +21,15 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    console.log("PROPS ", nextProps);
     if (nextProps.currentValue !== undefined && JSON.stringify(nextProps.currentValue) !== JSON.stringify(prevState.institutionalSources.map(inst => inst.current))) {
       // console.log("Institutional Source Component State Change ");
       // console.log("PROPS currentvalue", nextProps.currentValue);
       // console.log("PROPS future", nextProps.currentValue);
-      return {error:nextProps.error, institutionalSources: InstitutionalSource.parseInstSources(nextProps.currentValue, nextProps.institutionalSources) };
-    }
-    else {
+      return {institutionalSources: InstitutionalSource.parseInstSources(nextProps.currentValue, nextProps.institutionalSources) };
+    } else if (nextProps.error === true && nextProps.error !== prevState.error) {
+      return { error: nextProps.error };
+    } else {
       return null
     }
   }
@@ -49,8 +51,10 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
   removeInstitutionalSources = (index) => (e) => {
       let future = this.state.institutionalSources;
-      if (this.props.institutionalSources.length > 1) {
-        if (!this.state.institutionalSources[index].current.name) {
+      if (this.props.institutionalSources !== undefined && this.props.institutionalSources.length > 1) {
+        console.log("current name ", this.state.institutionalSources[index].current.name)
+        if (this.isEmpty(this.state.institutionalSources[index].current.name)) {
+          console.log("ENTRO" )
           future.splice(index, 1);
         } else {
           future[index].future = { name: '', country: '' }
@@ -111,12 +115,13 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         institutionalCountryErrorIndex.push(idx);
         response = true;
       }
+      this.props.errorHandler(response);
       return response;
     }).length > 0;
 
-    console.log("error index name ", institutionalNameErrorIndex);
-    console.log("error index country ", institutionalCountryErrorIndex);
-    console.log("error index name ", institutionalError);
+    // console.log("error index name ", institutionalNameErrorIndex);
+    // console.log("error index country ", institutionalCountryErrorIndex);
+    // console.log("error index name ", institutionalError);
     this.setState(prev => {
       prev.institutionalNameErrorIndex = institutionalNameErrorIndex;
       prev.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
