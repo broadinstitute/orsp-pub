@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
+import _ from 'lodash';
 
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
@@ -17,15 +18,18 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   }
 
   sortByKey = (array, key) => {
-    return array.sort(function (a, b) {
-      var x = a[key]; var y = b[key];
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
+    if (Array.isArray(array)) {
+      return array.sort(function (a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      });
+    }
+    return array;
   };
 
   isEdited = (current, futureValue) => {
-    if (typeof current !== 'string') {
-      let edited = false;
+    let edited = false;
+    if (Array.isArray(current) && Array.isArray(futureValue)) {
       let future = undefined;
 
       if (futureValue[0] === '') {
@@ -47,44 +51,47 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
           }
         });
       }
-      return edited;
     } else {
-      return current.value !== futureValue.value || current.value === undefined
+      edited = _.get(current, 'value', '') !== _.get(futureValue, 'value', ' ') || current.value === undefined
     }
+    return edited;
   };
 
   render() {
-    let currentValue  = [];
-    let value = [];
+    let edited = false;
+    let currentValueStr;
+    let currentValue;
+    if (Array.isArray(this.props.currentValue)) {
+      currentValue  = [];
+      let value = [];
+      let currentValues = [];
+      if (this.props.currentValue === undefined) {
+        currentValue.push("");
+      } else if (this.props.currentValue.length === 0){
+        currentValue.push("");
+      } else {
+        currentValue = this.props.currentValue;
+      }
+      if (this.props.value === null || this.props.value.length === 0) {
+        value.push("");
+      } else {
+        value.push(this.props.value);
+      }
 
-    let currentValues = [];
+      currentValue.forEach(item => {
+        currentValues.push(item.label);
+      });
 
-    if (this.props.currentValue === undefined) {
-      currentValue.push("");
-    } else if (this.props.currentValue.length === 0){
-      currentValue.push("");
+      let currentKeys = this.sortByKey(currentValue, 'key');
+      let keys = this.sortByKey(value, 'key');
+
+      currentValueStr = currentValues.join(',');
+      edited = this.isEdited(currentKeys, keys);
     } else {
-      currentValue = this.props.currentValue;
+      let currentValue = this.props.currentValue;
+      currentValueStr  = _.get(this.props.currentValue, 'label', '');
+      edited = this.props.edit ? this.isEdited(this.props.currentValue, this.props.value) : false;
     }
-
-    if (this.props.value === null || this.props.value.length === 0) {
-      value.push("");
-    } else {
-      value.push(this.props.value);
-    }
-
-    currentValue.forEach(item => {
-      currentValues.push(item.label);
-    });
-
-    let currentKeys = this.sortByKey(currentValue, 'key');
-    let keys = this.sortByKey(value, 'key');
-
-    let currentValueStr = currentValues.join(',');
-
-    const edited = this.isEdited(currentKeys, keys);
-    // const edited = this.props.edit ? this.isEdited(this.props.currentValue, this.props.value) : false;
-
 
     return (
       InputField({
@@ -94,7 +101,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly,
         value: this.props.value,
-        currentValue: this.props.currentValue,
+        currentValue: currentValue,
         currentValueStr: currentValueStr,
         edited : edited
       }, [

@@ -127,10 +127,14 @@ class ConsentGroupReview extends Component {
       intCohortsAnswers: [],
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
+    this.consentGroupNameExists = this.consentGroupNameExists.bind(this);
   }
 
   componentDidMount() {
     this.isCurrentUserAdmin();
+    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
+      resp => this.setState({ existingGroupNames: resp.data })
+    );
     this.init();
   }
 
@@ -143,9 +147,6 @@ class ConsentGroupReview extends Component {
     let formData = {};
     let formDataStr = {};
     let sampleCollectionList = [];
-
-    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
-      resp => this.setState({ existingGroupNames: resp.data }));
 
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element => {
@@ -688,15 +689,6 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  addDays(date, days) {
-    if (date !== null) {
-      var result = new Date(date);
-      result.setDate(result.getDate() + days);
-      return result;
-    }
-    return null
-  }
-
   handleExtraPropsInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -962,7 +954,13 @@ class ConsentGroupReview extends Component {
   };
 
   consentGroupNameExists() {
-    return this.state.existingGroupNames.indexOf(this.state.formData.consentForm.summary) > -1;
+    const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
+    let consentGroupNameExists = this.state.existingGroupNames.indexOf(groupName) > -1;
+    this.setState(prev => {
+      prev.errors.consentGroupName = consentGroupNameExists;
+      return prev;
+    });
+    return consentGroupNameExists;
   }
 
   render() {
@@ -1060,6 +1058,7 @@ class ConsentGroupReview extends Component {
             value: consent,
             currentValue: this.state.current.consentExtraProps.consent,
             onChange: this.handleExtraPropsInputChange,
+            focusOut: this.consentGroupNameExists,
             readOnly: this.state.readOnly,
             error: this.state.errors.consent,
             errorMessage: "Required field"
@@ -1071,6 +1070,7 @@ class ConsentGroupReview extends Component {
             value: protocol,
             currentValue: this.state.current.consentExtraProps.protocol,
             onChange: this.handleExtraPropsInputChange,
+            focusOut: this.consentGroupNameExists,
             readOnly: this.state.readOnly,
             error: this.state.errors.protocol,
             errorMessage: "Required field"
