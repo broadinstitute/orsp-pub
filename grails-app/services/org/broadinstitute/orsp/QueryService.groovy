@@ -1057,6 +1057,8 @@ class QueryService implements Status {
                         ' where d.project_key = ? ' +
                         ' and d.file_type = ? '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, projectKey)
+        sqlQuery.setString(1, fileType)
         String version = (String)sqlQuery.list()?.get(0)
         Long.valueOf(version)
     }
