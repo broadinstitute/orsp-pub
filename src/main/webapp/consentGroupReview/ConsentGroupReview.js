@@ -242,6 +242,7 @@ class ConsentGroupReview extends Component {
         });
       } else {
         this.setState(prev => {
+          prev.formData = JSON.parse(JSON.stringify(this.state.current));
           prev.reviewSuggestion = false;
           return prev;
         });
@@ -529,7 +530,7 @@ class ConsentGroupReview extends Component {
       prev.readOnly = false;
       prev.questions.length = 0;
       prev.questions = this.initQuestions();
-      prev.isEdited = !this.compareObj("formData", "current");
+      prev.isEdited = false;
       return prev;
     });
   };
@@ -826,7 +827,8 @@ class ConsentGroupReview extends Component {
   };
 
   determinationHandler = (determination) => {
-    this.setState({isEdited: true});
+    console.log("determinationHandler", determination);
+    let newValues = {};
     const answers = [];
     determination.questions.forEach(question => {
       if (question.answer !== null) {
@@ -840,11 +842,20 @@ class ConsentGroupReview extends Component {
         singleAnswer.answer = null;
         answers.push(singleAnswer);
       }
+      newValues[question.key] = question.answer;
     });
+console.log("answers: ", answers, newValues, this.state);
+
 
     this.setState(prev => {
-      prev.intCohortsAnswers.length = 0;
-      prev.intCohortsAnswers = answers;
+      Object.keys(newValues).forEach(key => {
+        console.log(key, newValues[key]);
+        prev.formData.consentExtraProps[key] = newValues[key];
+      });
+      prev.isEdited = true;
+      //prev.intCohortsAnswers.length = 0;
+      prev.intCohortsAnswers = [...answers];
+      prev.form
       prev.determination = determination;
       prev.submitError = false;
       return prev;
@@ -924,6 +935,7 @@ class ConsentGroupReview extends Component {
     }
 
     if (name === 'compliance' || name === 'sensitive' || name === 'accessible') {
+      console.log("currentValue ---> ", name, currentValue, optionLabels);
       if (currentValue === 'true') {
         label = optionLabels[0];
       } else if (currentValue === 'false') {
@@ -969,6 +981,19 @@ class ConsentGroupReview extends Component {
     return consentGroupNameExists;
   }
 
+  isFormEdited = () => {
+    let isEdited = false;
+    console.log("Comparando : ", JSON.stringify(this.state.formData), JSON.stringify(this.state.current));
+    const formAndCurrentComp = this.compareObj("formData", "current");
+  console.log("formAndCurrentComp", formAndCurrentComp );
+    if (this.state.isEdited === false) {
+      isEdited = false;
+    } else if (!formAndCurrentComp) {
+      isEdited = true;
+    }
+    return isEdited;
+  }
+
   render() {
     const {
       consent = '',
@@ -994,7 +1019,7 @@ class ConsentGroupReview extends Component {
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
-
+    const disableSubmitEdit = !this.isFormEdited();
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
@@ -1358,7 +1383,7 @@ class ConsentGroupReview extends Component {
             value: this.state.formData.consentExtraProps.sensitive,
             currentValue: this.state.current.consentExtraProps.sensitive,
             currentOptionLabel: this.currentOptionalValue("sensitive",
-              this.state.current.consentExtraProps.compliance,
+              this.state.current.consentExtraProps.sensitive,
               ["Yes", "No", "Uncertain"]),
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
@@ -1391,7 +1416,7 @@ class ConsentGroupReview extends Component {
             value: this.state.formData.consentExtraProps.accessible,
             currentValue: this.state.current.consentExtraProps.accessible,
             currentOptionLabel: this.currentOptionalValue("accessible",
-              this.state.current.consentExtraProps.compliance,
+              this.state.current.consentExtraProps.accessible,
               ["Yes", "No", "Uncertain"]),
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
@@ -1482,7 +1507,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: !this.state.isEdited,
+            disabled: disableSubmitEdit,
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 

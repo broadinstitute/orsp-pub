@@ -44,6 +44,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
                 minDate: this.props.minDate,
                 maxDate: this.props.maxDate,
                 disabled: this.props.disabled,
+                readOnly: this.props.readOnly,
                 placeholderText: this.props.placeholder,
                 className: "inputFieldDatePicker"
               })
