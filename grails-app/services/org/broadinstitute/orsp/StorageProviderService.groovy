@@ -30,6 +30,7 @@ class StorageProviderService implements Status {
 
     PersistenceService persistenceService
     StorageConfiguration storageConfiguration
+    QueryService queryService
 
     private final String RESPONSE_PROJECT_HEADER = "x-goog-meta-project"
     private final String RESPONSE_UUID_HEADER = "x-goog-meta-uuid"
@@ -42,6 +43,8 @@ class StorageProviderService implements Status {
     private final static HttpTransport HTTP_TRANSPORT = new NetHttpTransport()
 
     private GoogleCredential credential
+
+    private final lock = new Object()
 
     void removeStorageDocument(StorageDocument document, String displayUser) {
         HttpRequest request
@@ -246,14 +249,22 @@ class StorageProviderService implements Status {
         if (!document.creationDate) {
             throw new IllegalArgumentException("Creation Date is required")
         }
+
         HttpContent content = new InputStreamContent(document.mimeType, stream)
         HttpResponse response = uploadContent(content, document)
         if (response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK) {
-            document.save(flush: true)
+            synchronized (lock) {
+                Long version = queryService.findLastVersionByFileTypeAndProjectKey(document.projectKey, document.fileType)
+                version = version == null ? 0 : ++version
+                document.setDocVersion(version)
+                document.save(flush: true)
+            }
         } else {
             throw new Exception("Unable to save Storage Document: " + response.getStatusMessage())
         }
         response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK
+
+
     }
 
     /**
