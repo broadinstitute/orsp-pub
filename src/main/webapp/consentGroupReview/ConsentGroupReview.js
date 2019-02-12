@@ -955,7 +955,7 @@ class ConsentGroupReview extends Component {
 
   consentGroupNameExists() {
     const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
-    let consentGroupNameExists = this.state.existingGroupNames.indexOf(groupName) > -1;
+    let consentGroupNameExists = groupName === this.state.formData.consentForm.summary ? false : this.state.existingGroupNames.indexOf(groupName) > -1;
     this.setState(prev => {
       prev.errors.consentGroupName = consentGroupNameExists;
       return prev;
