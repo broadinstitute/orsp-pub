@@ -413,6 +413,7 @@ class ConsentGroupReview extends Component {
       prev.errors.sensitive = false;
       prev.errors.accessible = false;
       prev.errors.startDate = false;
+      prev.errors.consentGroupName = false;
       return prev;
     });
   };
@@ -494,6 +495,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleApproveDialog = () => {
+    consoe.log("CANCELO");
     if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
@@ -506,6 +508,12 @@ class ConsentGroupReview extends Component {
         errorSubmit: true
       });
     }
+  };
+
+  handleCancelModal = () => {
+      this.setState({
+        showRejectProjectDialog: !this.state.showRejectProjectDialog
+      });
   };
 
   handleApproveInfoDialog = () => {
@@ -534,6 +542,7 @@ class ConsentGroupReview extends Component {
   };
 
   cancelEdit = (e) => () => {
+
     this.cleanErrors();
     this.cleanAnswersIntCohorts();
     this.setState(prev => {
@@ -730,6 +739,12 @@ class ConsentGroupReview extends Component {
 
   closeModal = () => {
     this.setState({ showDialog: !this.state.showDialog });
+  };
+
+  closeEditsModal = () => {
+    this.setState({
+      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
+    });
   };
 
   handleDialog = () => {
