@@ -524,28 +524,14 @@ class ConsentGroupReview extends Component {
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
-    // ENABLE EDIT
     this.setState(prev => {
       prev.readOnly = false;
       prev.questions.length = 0;
       prev.questions = this.initQuestions();
-      prev.isEdited = false;
+      prev.isEdited = !this.compareObj("formData", "current");
       return prev;
     });
   };
-
-  isFormEdited () {
-    let isEdited = false;
-    const formAndCurrentComp = this.compareObj("formData", "current");
-    if (formAndCurrentComp  && this.state.isEdited === false) {
-      isEdited = false;
-    } else if (!formAndCurrentComp && this.state.isEdited === false) {
-      isEdited = false;
-    } else {
-      isEdited = true;
-    }
-    return isEdited;
-  }
 
   cancelEdit = (e) => () => {
     this.cleanErrors();
@@ -834,10 +820,7 @@ class ConsentGroupReview extends Component {
   };
 
   determinationHandler = (determination) => {
-    this.setState(prev => {
-      prev.isEdited= true;
-      return prev;
-    });
+    this.setState({isEdited: true});
     const answers = [];
     determination.questions.forEach(question => {
       if (question.answer !== null) {
@@ -1005,7 +988,7 @@ class ConsentGroupReview extends Component {
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
-    const enableSubmitEdit = !this.isFormEdited();
+
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
@@ -1493,7 +1476,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: enableSubmitEdit,
+            disabled: !this.state.isEdited,
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
