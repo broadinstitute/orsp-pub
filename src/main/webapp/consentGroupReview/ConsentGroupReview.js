@@ -495,7 +495,6 @@ class ConsentGroupReview extends Component {
   };
 
   handleApproveDialog = () => {
-    consoe.log("CANCELO");
     if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
@@ -508,12 +507,6 @@ class ConsentGroupReview extends Component {
         errorSubmit: true
       });
     }
-  };
-
-  handleCancelModal = () => {
-      this.setState({
-        showRejectProjectDialog: !this.state.showRejectProjectDialog
-      });
   };
 
   handleApproveInfoDialog = () => {
@@ -542,9 +535,8 @@ class ConsentGroupReview extends Component {
   };
 
   cancelEdit = (e) => () => {
-
     this.cleanErrors();
-    this.cleanAnswersIntCohorts();
+    this.getReviewSuggestions();
     this.setState(prev => {
       prev.formData = this.state.futureCopy;
       prev.readOnly = true;
@@ -552,7 +544,6 @@ class ConsentGroupReview extends Component {
       prev.questions.length = 0;
       return prev;
     });
-    this.getReviewSuggestions();
   };
 
   submitEdit = (e) => () => {
@@ -1507,7 +1498,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.formData.consentForm.approvalStatus === 'Approved'
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.formData.consentForm.approvalStatus === 'Approved' && this.state.readOnly === true
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
@@ -1523,7 +1514,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDiscardEditsDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
           }, ["Discard Edits"])
         ])
       ])
