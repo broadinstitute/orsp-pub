@@ -20,13 +20,15 @@ class ConsentGroupDocuments extends Component {
       action: '',
       uuid: '',
       user: {isAdmin: false},
-      serverError: false
+      serverError: false,
+      documentOptions: []
     };
   }
 
   componentDidMount() {
     this.getAttachedDocuments();
     this.isCurrentUserAdmin();
+    this.loadOptions();
   }
 
   isCurrentUserAdmin() {
@@ -136,7 +138,10 @@ class ConsentGroupDocuments extends Component {
         additionalDocuments: this.state.additionalDocuments,
         handleDialogConfirm: this.handleDialog,
         user: this.state.user,
-        downloadDocumentUrl: this.props.downloadDocumentUrl
+        downloadDocumentUrl: this.props.downloadDocumentUrl,
+        options: this.state.documentOptions,
+        projectKey: this.props.projectKey,
+        attachDocumentsUrl: this.props.attachDocumentsUrl
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',

@@ -61,6 +61,7 @@ export const Table = hh(class Table extends Component {
                       hover
                       className='tableContainer'
                       pagination={true}
+                      search={true}
                       options={{
                         paginationSize: this.props.paginationSize,
                         paginationPosition: 'bottom',

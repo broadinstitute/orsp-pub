@@ -1048,7 +1048,7 @@ class QueryService implements Status {
      * Get last version for the specified project key and file type
      * @return List of distinct disease terms
      */
-    Long findLastVersionByFileTypeAndProjectKey(String projectKey, String fileType) {
+    Long findNextVersionByFileTypeAndProjectKey(String projectKey, String fileType) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =
@@ -1060,7 +1060,7 @@ class QueryService implements Status {
         sqlQuery.setString(0, projectKey)
         sqlQuery.setString(1, fileType)
         String version = (String)sqlQuery.list()?.get(0)
-        Long.valueOf(version)
+        ++Long.valueOf(version)
     }
 
 }

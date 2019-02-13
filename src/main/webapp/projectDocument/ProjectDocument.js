@@ -22,19 +22,20 @@ class ProjectDocument extends Component {
       uuid: '',
       user: {isAdmin: false},
       serverError: false,
-      documentOptions: []
+      documentKeyOptions: [],
+      documentAdditionalOptions: []
     };
   }
 
   componentDidMount() {
     this.getAttachedDocuments();
     this.isCurrentUserAdmin();
-    this.loadOptions();
+    this.loadKeyOptions();
+    this.loadAdditionalOptions();
   }
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-      console.log(resp.data);
       this.setState({user: resp.data});
     });
   }
@@ -124,7 +125,13 @@ class ProjectDocument extends Component {
     this.setState({showDialog: !this.state.showDialog});
   };
 
-  loadOptions () {
+  loadAdditionalOptions() {
+    let documentOptions = [];
+    documentOptions.push({value: 'Other', label: 'Other'});
+    this.setState({documentAdditionalOptions: documentOptions});
+  }
+
+  loadKeyOptions () {
     let key = this.props.projectKey.split("-");
     let projectType;
     if (key.length === 3) {
@@ -148,8 +155,9 @@ class ProjectDocument extends Component {
         documentOptions.push({value: type, label: type});
       });
     } 
-    this.setState({documentOptions: documentOptions});
+    this.setState({documentKeyOptions: documentOptions});
   };
+  
 
   render() {
     return (
@@ -168,9 +176,11 @@ class ProjectDocument extends Component {
           handleDialogConfirm: this.handleDialog,
           user: this.state.user,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
-          options: this.state.documentOptions,
+          keyOptions: this.state.documentKeyOptions,
+          additionalOptions: this.state.documentAdditionalOptions,
           projectKey: this.props.projectKey,
-          attachDocumentsUrl: this.props.attachDocumentsUrl
+          attachDocumentsUrl: this.props.attachDocumentsUrl,
+          handleLoadDocuments: this.getAttachedDocuments
         }),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',

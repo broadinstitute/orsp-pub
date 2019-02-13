@@ -9,6 +9,7 @@ const headers =
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
     { name: 'Author', value: 'creator' },
+    { name: 'Version', value: 'docVersion' },
     { name: 'Status', value: 'status' },
     { name: 'Created', value: 'creationDate' }
   ];
@@ -18,12 +19,10 @@ export const Documents = hh(class Documents extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showAddKeyDocuments : false
+      showAddKeyDocuments : false,
+      showAddAdditionalDocuments: false
     }
   }
-
-  addDocument = (e) => {
-  };
 
   addKeyDocuments = () => {
     this.setState({
@@ -31,8 +30,18 @@ export const Documents = hh(class Documents extends Component {
     });
   };
 
+  addAdditionalDocuments = () => {
+    this.setState({
+      showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments
+    });
+  };
+
   closeModal = () => {
     this.setState({showAddKeyDocuments: !this.state.showAddKeyDocuments});
+  };
+
+  closeAdditionalModal = () => {
+    this.setState({showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments});
   };
 
   render() {
@@ -40,13 +49,23 @@ export const Documents = hh(class Documents extends Component {
         AddDocumentDialog({
           closeModal: this.closeModal,
           show: this.state.showAddKeyDocuments,
-          title: ' Confirmation',
-          options: this.props.options,
+          title: '',
+          options: this.props.keyOptions,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           projectKey: this.props.projectKey,
-          user: this.props.user
+          user: this.props.user,
+          handleLoadDocuments: this.props.handleLoadDocuments
       }, []),
-
+      AddDocumentDialog({
+        closeModal: this.closeAdditionalModal,
+        show: this.state.showAddAdditionalDocuments,
+        title: '',
+        options: this.props.additionalOptions,
+        attachDocumentsUrl: this.props.attachDocumentsUrl,
+        projectKey: this.props.projectKey,
+        user: this.props.user,
+        handleLoadDocuments: this.props.handleLoadDocuments
+    }, []),
       Panel({ title: "Key Documents" }, [
         button({ className: "btn buttonSecondary", onClick: this.addKeyDocuments }, ["Add Document"]),
         Table({
@@ -61,7 +80,7 @@ export const Documents = hh(class Documents extends Component {
       ]),
 
       Panel({ title: "Additional Documents" }, [
-        button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Add Document"]),
+        button({ className: "btn buttonSecondary", onClick: this.addAdditionalDocuments }, ["Add Document"]),
         Table({
           headers: headers,
           data: this.props.additionalDocuments,

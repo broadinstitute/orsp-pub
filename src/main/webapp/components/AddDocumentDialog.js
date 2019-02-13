@@ -56,6 +56,7 @@ import './ConfirmationDialog.css';
             prev.type = '';
             return prev;
           });
+          this.props.handleLoadDocuments();
           this.props.closeModal();  
         }).catch(error => {
           this.setState(prev => {
@@ -117,7 +118,7 @@ import './ConfirmationDialog.css';
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Attach Document to' + this.props.projectKey])
+            h(ModalTitle, { className: "dialogTitle" }, ['Attach Document to ' + this.props.projectKey])
           ]),
 
            h(ModalBody, { className: "dialogBody" }, [this.props.bodyText]),
