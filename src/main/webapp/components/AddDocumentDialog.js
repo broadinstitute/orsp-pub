@@ -12,6 +12,8 @@ import './ConfirmationDialog.css';
   constructor(props) {
     super(props);
     this.state = {
+      documents: '',
+      disableBttn: false, 
       typeError: false,
       fileError: false,
       submit: false,
@@ -46,12 +48,17 @@ import './ConfirmationDialog.css';
       return prev;
     }, () => {
       if (this.isValid()) {
+        this.setState(prev => {
+          prev.disableBttn = true;
+          return prev;
+        });
         let file = {file: this.state.file, fileKey: this.state.type.label};
         let files = [file];
         Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
         .then(resp => {
           this.setState(prev => {
             prev.submit = false;
+            prev.disableBttn = false;
             prev.file =  { name: ''};
             prev.type = '';
             return prev;
@@ -61,6 +68,8 @@ import './ConfirmationDialog.css';
         }).catch(error => {
           this.setState(prev => {
             prev.uploadError = true;
+            prev.submit = false;
+            prev.disableBttn = false;
             return prev;
           });
         });
@@ -136,15 +145,15 @@ import './ConfirmationDialog.css';
               errorMessage: "Required field"
             }),
             InputFieldFile({
-              callback: this.setFilesToUpload(documents),
+              callback: this.setFilesToUpload(this.state.documents),
               fileName: this.state.file.name ,
               required: true,
               error: this.state.fileError,
               errorMessage: "Required field",
               removeHandler:() => this.removeFile(document)
             }),
-            button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", onClick: this.upload }, ["Upload"]),
+            button({ className: "btn buttonSecondary", disabled: this.state.disableBttn, onClick: this.handleClose }, ["Cancel"]),
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBttn, onClick: this.upload }, ["Upload"]),
           ])
         ])
     )
