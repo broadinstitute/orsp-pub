@@ -8,7 +8,7 @@ import { Files } from "../util/ajax";
 
 import './ConfirmationDialog.css';
 
- export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
+export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,9 +29,9 @@ import './ConfirmationDialog.css';
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
 
-   handleClose  = () => {
+  handleClose = () => {
     this.setState(prev => {
-      prev.file =  {
+      prev.file = {
         name: ''
       };
       prev.type = '';
@@ -46,36 +46,36 @@ import './ConfirmationDialog.css';
       return prev;
     }, () => {
       if (this.isValid()) {
-        let file = {file: this.state.file, fileKey: this.state.type.label};
+        let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
-        .then(resp => {
-          this.setState(prev => {
-            prev.submit = false;
-            prev.file =  { name: ''};
-            prev.type = '';
-            return prev;
+          .then(resp => {
+            this.setState(prev => {
+              prev.submit = false;
+              prev.file = { name: '' };
+              prev.type = '';
+              return prev;
+            });
+            this.props.handleLoadDocuments();
+            this.props.closeModal();
+          }).catch(error => {
+            this.setState(prev => {
+              prev.uploadError = true;
+              return prev;
+            });
           });
-          this.props.handleLoadDocuments();
-          this.props.closeModal();  
-        }).catch(error => {
-          this.setState(prev => {
-            prev.uploadError = true;
-            return prev;
-          });
-        });
-      }    
-    });    
+      }
+    });
   };
- 
+
   isValid() {
     let typeError = false;
     let fileError = false;
-    if(this.state.submit) {
-      if(this.state.file.name === '' ) {
+    if (this.state.submit) {
+      if (this.state.file.name === '') {
         fileError = true;
-      } 
-      if(this.state.type === '') {
+      }
+      if (this.state.type === '') {
         typeError = true;
       }
       this.setState(prev => {
@@ -101,19 +101,19 @@ import './ConfirmationDialog.css';
       return prev;
     }, () => this.isValid());
   };
-  
+
   removeFile() {
     this.setState(prev => {
-      prev.file =  {
+      prev.file = {
         name: ''
       };
       return prev;
     });
   }
 
-   render() {
+  render() {
 
-     return (
+    return (
       h(Modal, {
         show: this.props.show
       }, [
@@ -121,9 +121,7 @@ import './ConfirmationDialog.css';
             h(ModalTitle, { className: "dialogTitle" }, ['Attach Document to ' + this.props.projectKey])
           ]),
 
-           h(ModalBody, { className: "dialogBody" }, [this.props.bodyText]),
-
-           h(ModalFooter, {}, [
+          h(ModalBody, { className: "dialogBody" }, [
             InputFieldSelect({
               label: "Type",
               id: "file-type",
@@ -137,12 +135,15 @@ import './ConfirmationDialog.css';
             }),
             InputFieldFile({
               callback: this.setFilesToUpload(documents),
-              fileName: this.state.file.name ,
+              fileName: this.state.file.name,
               required: true,
               error: this.state.fileError,
               errorMessage: "Required field",
-              removeHandler:() => this.removeFile(document)
-            }),
+              removeHandler: () => this.removeFile(document)
+            })
+          ]),
+
+          h(ModalFooter, {}, [
             button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Cancel"]),
             button({ className: "btn buttonPrimary", onClick: this.upload }, ["Upload"]),
           ])

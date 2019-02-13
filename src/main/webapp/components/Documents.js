@@ -14,6 +14,10 @@ const headers =
     { name: 'Created', value: 'creationDate' }
   ];
 
+const addDocumentBtn = { 
+  position: 'absolute', right: '15px', zIndex: '1'
+}
+
 export const Documents = hh(class Documents extends Component {
 
   constructor(props) {
@@ -46,16 +50,16 @@ export const Documents = hh(class Documents extends Component {
 
   render() {
     return div({}, [
-        AddDocumentDialog({
-          closeModal: this.closeModal,
-          show: this.state.showAddKeyDocuments,
-          title: '',
-          options: this.props.keyOptions,
-          attachDocumentsUrl: this.props.attachDocumentsUrl,
-          projectKey: this.props.projectKey,
-          user: this.props.user,
-          handleLoadDocuments: this.props.handleLoadDocuments
-      }, []),
+      AddDocumentDialog({
+        closeModal: this.closeModal,
+        show: this.state.showAddKeyDocuments,
+        title: '',
+        options: this.props.keyOptions,
+        attachDocumentsUrl: this.props.attachDocumentsUrl,
+        projectKey: this.props.projectKey,
+        user: this.props.user,
+        handleLoadDocuments: this.props.handleLoadDocuments
+      }),
       AddDocumentDialog({
         closeModal: this.closeAdditionalModal,
         show: this.state.showAddAdditionalDocuments,
@@ -65,9 +69,9 @@ export const Documents = hh(class Documents extends Component {
         projectKey: this.props.projectKey,
         user: this.props.user,
         handleLoadDocuments: this.props.handleLoadDocuments
-    }, []),
+      }),
       Panel({ title: "Key Documents" }, [
-        button({ className: "btn buttonSecondary", onClick: this.addKeyDocuments }, ["Add Document"]),
+        button({ className: "btn buttonSecondary", style: addDocumentBtn, onClick: this.addKeyDocuments }, ["Add Document"]),
         Table({
           headers: headers,
           data: this.props.keyDocuments,
@@ -78,9 +82,8 @@ export const Documents = hh(class Documents extends Component {
           isAdmin: this.props.user.isAdmin
         })
       ]),
-
       Panel({ title: "Additional Documents" }, [
-        button({ className: "btn buttonSecondary", onClick: this.addAdditionalDocuments }, ["Add Document"]),
+        button({ className: "btn buttonSecondary", style: addDocumentBtn, onClick: this.addAdditionalDocuments }, ["Add Document"]),
         Table({
           headers: headers,
           data: this.props.additionalDocuments,
