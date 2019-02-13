@@ -19,7 +19,7 @@ class ConsentGroupDocuments extends Component {
       showDialog: false,
       action: '',
       uuid: '',
-      isAdmin: false,
+      user: {isAdmin: false},
       serverError: false
     };
   }
@@ -31,7 +31,7 @@ class ConsentGroupDocuments extends Component {
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-        this.setState({isAdmin: resp.data.isAdmin});
+        this.setState({user: resp.data});
     });
   }
 
@@ -135,7 +135,7 @@ class ConsentGroupDocuments extends Component {
         keyDocuments: this.state.keyDocuments,
         additionalDocuments: this.state.additionalDocuments,
         handleDialogConfirm: this.handleDialog,
-        isAdmin: this.state.isAdmin,
+        user: this.state.user,
         downloadDocumentUrl: this.props.downloadDocumentUrl
       }),
       AlertMessage({

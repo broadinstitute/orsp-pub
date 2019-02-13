@@ -3,9 +3,11 @@ import { Documents } from '../components/Documents'
 import { DocumentHandler } from "../util/ajax";
 import { User } from "../util/ajax";
 import { ProjectKeyDocuments } from '../util/KeyDocuments';
+import { IRB, NHSR, NE } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
+
 
 class ProjectDocument extends Component {
 
@@ -18,19 +20,22 @@ class ProjectDocument extends Component {
       showDialog: false,
       action: '',
       uuid: '',
-      isAdmin: false,
-      serverError: false
+      user: {isAdmin: false},
+      serverError: false,
+      documentOptions: []
     };
   }
 
   componentDidMount() {
     this.getAttachedDocuments();
     this.isCurrentUserAdmin();
+    this.loadOptions();
   }
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-      this.setState({isAdmin: resp.data.isAdmin});
+      console.log(resp.data);
+      this.setState({user: resp.data});
     });
   }
 
@@ -119,6 +124,33 @@ class ProjectDocument extends Component {
     this.setState({showDialog: !this.state.showDialog});
   };
 
+  loadOptions () {
+    let key = this.props.projectKey.split("-");
+    let projectType;
+    if (key.length === 3) {
+      projectType = key[1].toUpperCase();
+    } else {
+      projectType = key[0].toUpperCase();
+    }
+    let documentOptions = [];
+    if (projectType === 'IRB') {
+      IRB.forEach(type => {
+        documentOptions.push({value: type, label: type});
+      });
+    } 
+    else if (projectType === 'NE') {
+      NE.forEach(type => {
+        documentOptions.push({value: type, label: type});
+      });
+    }
+    else if (projectType === 'NHSR') {
+      NHSR.forEach(type => {
+        documentOptions.push({value: type, label: type});
+      });
+    } 
+    this.setState({documentOptions: documentOptions});
+  };
+
   render() {
     return (
       h( Fragment, {},[
@@ -134,8 +166,11 @@ class ProjectDocument extends Component {
           keyDocuments: this.state.keyDocuments,
           additionalDocuments: this.state.additionalDocuments,
           handleDialogConfirm: this.handleDialog,
-          isAdmin: this.state.isAdmin,
-          downloadDocumentUrl: this.props.downloadDocumentUrl
+          user: this.state.user,
+          downloadDocumentUrl: this.props.downloadDocumentUrl,
+          options: this.state.documentOptions,
+          projectKey: this.props.projectKey,
+          attachDocumentsUrl: this.props.attachDocumentsUrl
         }),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',
