@@ -56,7 +56,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
 
     if (this.props.edit === true) {
-      this.props.cleanQuestionsUnanswered(this.state, "next");
+      if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "next");
     }
 
     if (currentAnswer !== null) {
@@ -105,7 +105,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         } else {
           nextQuestionIndex = null;
           projectType = onYes;
-          this.props.cleanQuestionsUnanswered(this.state, "end - true");
+          if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "end - true");
           endState = true;
         }
         break;
@@ -117,7 +117,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
           endState = false;
         } else {
           nextQuestionIndex = null;
-          this.props.cleanQuestionsUnanswered(this.state, "end - false");
+          if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "end - false");
           projectType = onNo;
           endState = true;
         }
