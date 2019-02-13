@@ -15,6 +15,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
     String username
     String creationDate
     String status
+    Long docVersion
 
     InputStream inputStream
     Integer statusCode
@@ -31,6 +32,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
         username nullable: false
         creationDate nullable: true
         status nullable: false
+        docVersion nullable: false
     }
 
     static transients = ['inputStream', 'statusCode', 'statusMessage', 'createDate']
