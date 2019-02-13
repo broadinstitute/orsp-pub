@@ -53,7 +53,7 @@ export const Documents = hh(class Documents extends Component {
       AddDocumentDialog({
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
-        title: '',
+        title: 'Key ',
         options: this.props.keyOptions,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         projectKey: this.props.projectKey,
@@ -63,7 +63,7 @@ export const Documents = hh(class Documents extends Component {
       AddDocumentDialog({
         closeModal: this.closeAdditionalModal,
         show: this.state.showAddAdditionalDocuments,
-        title: '',
+        title: 'Additional ',
         options: this.props.additionalOptions,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         projectKey: this.props.projectKey,

@@ -12,6 +12,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      documents: '',
+      disableBttn: false,
       typeError: false,
       fileError: false,
       submit: false,
@@ -46,12 +48,17 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       return prev;
     }, () => {
       if (this.isValid()) {
+        this.setState(prev => {
+          prev.disableBttn = true;
+          return prev;
+        });
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             this.setState(prev => {
               prev.submit = false;
+              prev.disableBttn = false;
               prev.file = { name: '' };
               prev.type = '';
               return prev;
@@ -61,6 +68,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           }).catch(error => {
             this.setState(prev => {
               prev.uploadError = true;
+              prev.submit = false;
+              prev.disableBttn = false;
               return prev;
             });
           });
@@ -118,23 +127,28 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Attach Document to ' + this.props.projectKey])
+            h(ModalTitle, { className: "dialogTitle" }, ['Add ' + this.props.title + 'Document to ' + this.props.projectKey])
           ]),
 
           h(ModalBody, { className: "dialogBody" }, [
-            InputFieldSelect({
-              label: "Type",
-              id: "file-type",
-              name: "type",
-              options: this.props.options,
-              value: this.state.type,
-              onChange: this.handleTypeSelect,
-              currentValue: this.state.currentValue,
-              error: this.state.typeError,
-              errorMessage: "Required field"
-            }),
+            // div({ style: { 'marginBottom': '10px' } }, [
+              InputFieldSelect({
+                label: "Type",
+                id: "documentType",
+                name: "documentType",
+                options: this.props.options,
+                value: this.state.type,
+                onChange: this.handleTypeSelect,
+                currentValue: this.state.currentValue,
+                error: this.state.typeError,
+                errorMessage: "Required field"
+              }),
+            // ]),
             InputFieldFile({
-              callback: this.setFilesToUpload(documents),
+              label: "File",
+              id: "documentFile",
+              name: "documentFile",
+              callback: this.setFilesToUpload(this.state.documents),
               fileName: this.state.file.name,
               required: true,
               error: this.state.fileError,
@@ -144,8 +158,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           ]),
 
           h(ModalFooter, {}, [
-            button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", onClick: this.upload }, ["Upload"]),
+            button({ className: "btn buttonSecondary", disabled: this.state.disableBttn, onClick: this.handleClose }, ["Cancel"]),
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBttn, onClick: this.upload }, ["Upload"]),
           ])
         ])
     )
