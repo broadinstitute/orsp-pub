@@ -162,7 +162,10 @@ class ConsentGroupReview extends Component {
               };
             });
             sampleCollectionList = sampleCollections;
+
             current.consentExtraProps = element.data.extraProperties;
+            this.parseQuestions(element.data.extraProperties);
+            // console.log("ComponentDidMount current extraProps: ", current.consentExtraProps);
             if (element.data.collectionLinks !== undefined) {
               current.sampleCollectionLinks = element.data.collectionLinks;
             }
@@ -192,29 +195,16 @@ class ConsentGroupReview extends Component {
             let edits = null;
 
             if (edits != null) {
-              // prepare form data here, initially same as current ....
               future.consentExtraProps = edits.data.extraProperties;
-              // ...
-              // ...
-              // ... need to complete future to look like current, same structure
-              // ...
-              // ...
               futureStr = JSON.stringify(future);
-
               formData = JSON.parse(futureStr);
               futureCopy = JSON.parse(futureStr);
-
-
             } else {
-              // prepare form data here, initially same as current ....
               formData = JSON.parse(currentStr);
               future = JSON.parse((currentStr));
               futureCopy = JSON.parse(currentStr);
             }
 
-            // });
-
-            // store current issue info here ....
             this.setState(prev => {
               // prepare form data here, initially same as current ....
               prev.sampleCollectionList = sampleCollectionList;
@@ -827,47 +817,50 @@ class ConsentGroupReview extends Component {
   };
 
   determinationHandler = (determination) => {
-    console.log("determinationHandler", determination);
+    // console.log("determinationHandler", determination);
+    // console.log("pregunta respondida o cambiada ", determination.currentQuestionIndex);
+
     let newValues = {};
     const answers = [];
     determination.questions.forEach(question => {
+
       if (question.answer !== null) {
         let singleAnswer = {};
         singleAnswer.key = question.key;
         singleAnswer.answer = question.answer;
         answers.push(singleAnswer);
-      } else {
-        let singleAnswer = {};
-        singleAnswer.key = question.key;
-        singleAnswer.answer = null;
-        answers.push(singleAnswer);
       }
+      // else {
+      //   let singleAnswer = {};
+      //   singleAnswer.key = question.key;
+      //   singleAnswer.answer = null;
+      //   answers.push(singleAnswer);
+      // }
       newValues[question.key] = question.answer;
     });
-console.log("answers: ", answers, newValues, this.state);
-
-
     this.setState(prev => {
       Object.keys(newValues).forEach(key => {
-        console.log(key, newValues[key]);
         prev.formData.consentExtraProps[key] = newValues[key];
       });
+      prev.questions = determination.questions;
       prev.isEdited = true;
-      //prev.intCohortsAnswers.length = 0;
       prev.intCohortsAnswers = [...answers];
-      prev.form
       prev.determination = determination;
       prev.submitError = false;
       return prev;
     });
   };
 
-  cleanAnswersIntCohorts = () => {
+  cleanAnswersIntCohorts = (questionIndex, where) => {
     this.setState(prev => {
-      prev.intCohortsAnswers.forEach(answer => {
-        answer.answer = null;
+      this.state.questions.forEach((q, index) => {
+        if (index > questionIndex.currentQuestionIndex) {
+          // console.log("before cleaning key, index : ", "Q.KEY => ",q.key, "\nINDEX => ", index, "\nquestionIndex obj => ", questionIndex, "\nconsentExtraProps[q.key] => ", prev.formData.consentExtraProps[q.key] );
+          prev.formData.consentExtraProps[q.key] = null;
+          prev.questions[index].answer = null
+          // console.log("after cleaning key, index : ", q.key, index, prev.formData.consentExtraProps[q.key] );
+        }
       });
-      prev.endState = false;
       return prev;
     });
   };
@@ -905,7 +898,12 @@ console.log("answers: ", answers, newValues, this.state);
   };
 
   compareObj(obj1, obj2) {
-    return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
+    let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
+    let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
+
+    Object.keys(form1.consentExtraProps).forEach((key) => (form1.consentExtraProps[key] === null) && delete form1.consentExtraProps[key]);
+    // Object.keys(form2.consentExtraProps).forEach((key) => (form2.consentExtraProps[key] === null) && delete form2.consentExtraProps[key]);
+    return JSON.stringify(form1) === JSON.stringify(form2);
   }
 
   currentOptionalValue = (name, currentValue, optionLabels) => {
@@ -935,7 +933,7 @@ console.log("answers: ", answers, newValues, this.state);
     }
 
     if (name === 'compliance' || name === 'sensitive' || name === 'accessible') {
-      console.log("currentValue ---> ", name, currentValue, optionLabels);
+      // console.log("currentValue ---> ", name, currentValue, optionLabels);
       if (currentValue === 'true') {
         label = optionLabels[0];
       } else if (currentValue === 'false') {
@@ -983,9 +981,9 @@ console.log("answers: ", answers, newValues, this.state);
 
   isFormEdited = () => {
     let isEdited = false;
-    console.log("Comparando : ", JSON.stringify(this.state.formData), JSON.stringify(this.state.current));
+    // console.log("Comparando : ", JSON.stringify(this.state.formData), JSON.stringify(this.state.current));
     const formAndCurrentComp = this.compareObj("formData", "current");
-  console.log("formAndCurrentComp", formAndCurrentComp );
+  // console.log("formAndCurrentComp", formAndCurrentComp );
     if (this.state.isEdited === false) {
       isEdited = false;
     } else if (!formAndCurrentComp) {
@@ -1017,6 +1015,7 @@ console.log("answers: ", answers, newValues, this.state);
       isConsentUnambiguous = '',
     } = this.state.formData.consentExtraProps;
 
+    // console.log('------------ feeForService ------------------', feeForService, this.state.current.consentExtraProps.feeForService);
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
     const disableSubmitEdit = !this.isFormEdited();
@@ -1253,11 +1252,12 @@ console.log("answers: ", answers, newValues, this.state);
           div({ isRendered: !this.state.readOnly, style: { 'marginTop': '55px' } }, [
             QuestionnaireWorkflow({
               questions: this.state.questions,
+              edit: true,
+              cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
               handler: this.determinationHandler,
               determination: this.state.determination
             })
           ]),
-
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
             div({
