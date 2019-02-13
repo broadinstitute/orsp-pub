@@ -164,8 +164,6 @@ class ConsentGroupReview extends Component {
             sampleCollectionList = sampleCollections;
 
             current.consentExtraProps = element.data.extraProperties;
-            this.parseQuestions(element.data.extraProperties);
-            // console.log("ComponentDidMount current extraProps: ", current.consentExtraProps);
             if (element.data.collectionLinks !== undefined) {
               current.sampleCollectionLinks = element.data.collectionLinks;
             }
@@ -817,9 +815,6 @@ class ConsentGroupReview extends Component {
   };
 
   determinationHandler = (determination) => {
-    // console.log("determinationHandler", determination);
-    // console.log("pregunta respondida o cambiada ", determination.currentQuestionIndex);
-
     let newValues = {};
     const answers = [];
     determination.questions.forEach(question => {
@@ -830,12 +825,6 @@ class ConsentGroupReview extends Component {
         singleAnswer.answer = question.answer;
         answers.push(singleAnswer);
       }
-      // else {
-      //   let singleAnswer = {};
-      //   singleAnswer.key = question.key;
-      //   singleAnswer.answer = null;
-      //   answers.push(singleAnswer);
-      // }
       newValues[question.key] = question.answer;
     });
     this.setState(prev => {
@@ -855,10 +844,8 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       this.state.questions.forEach((q, index) => {
         if (index > questionIndex.currentQuestionIndex) {
-          // console.log("before cleaning key, index : ", "Q.KEY => ",q.key, "\nINDEX => ", index, "\nquestionIndex obj => ", questionIndex, "\nconsentExtraProps[q.key] => ", prev.formData.consentExtraProps[q.key] );
           prev.formData.consentExtraProps[q.key] = null;
           prev.questions[index].answer = null
-          // console.log("after cleaning key, index : ", q.key, index, prev.formData.consentExtraProps[q.key] );
         }
       });
       return prev;
@@ -897,13 +884,24 @@ class ConsentGroupReview extends Component {
     return true;
   };
 
-  compareObj(obj1, obj2) {
-    let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
-    let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
+  compareObj(formData, current) {
+    let newValues = JSON.parse(JSON.stringify(this.state[formData]));
+    let currentValues = JSON.parse(JSON.stringify(this.state[current]));
 
-    Object.keys(form1.consentExtraProps).forEach((key) => (form1.consentExtraProps[key] === null) && delete form1.consentExtraProps[key]);
-    // Object.keys(form2.consentExtraProps).forEach((key) => (form2.consentExtraProps[key] === null) && delete form2.consentExtraProps[key]);
-    return JSON.stringify(form1) === JSON.stringify(form2);
+    // remove Null consentExtraprops objects and normalize true/false to strings
+    Object.keys(newValues.consentExtraProps).forEach((key) => {
+      if (newValues.consentExtraProps[key] === true)  newValues.consentExtraProps[key] = "true";
+      else if (newValues.consentExtraProps[key] === false) newValues.consentExtraProps[key] = "false";
+      (newValues.consentExtraProps[key] === null) && delete newValues.consentExtraProps[key]
+
+    });
+    Object.keys(currentValues.consentExtraProps).forEach((key) =>{
+      if (currentValues.consentExtraProps[key] === true)  currentValues.consentExtraProps[key] = "true";
+      else if (currentValues.consentExtraProps[key] === false)
+      (currentValues.consentExtraProps[key] === null) && delete currentValues.consentExtraProps[key]
+    });
+
+    return JSON.stringify(newValues) === JSON.stringify(currentValues);
   }
 
   currentOptionalValue = (name, currentValue, optionLabels) => {
@@ -933,7 +931,6 @@ class ConsentGroupReview extends Component {
     }
 
     if (name === 'compliance' || name === 'sensitive' || name === 'accessible') {
-      // console.log("currentValue ---> ", name, currentValue, optionLabels);
       if (currentValue === 'true') {
         label = optionLabels[0];
       } else if (currentValue === 'false') {
@@ -981,9 +978,7 @@ class ConsentGroupReview extends Component {
 
   isFormEdited = () => {
     let isEdited = false;
-    // console.log("Comparando : ", JSON.stringify(this.state.formData), JSON.stringify(this.state.current));
     const formAndCurrentComp = this.compareObj("formData", "current");
-  // console.log("formAndCurrentComp", formAndCurrentComp );
     if (this.state.isEdited === false) {
       isEdited = false;
     } else if (!formAndCurrentComp) {
@@ -1015,7 +1010,6 @@ class ConsentGroupReview extends Component {
       isConsentUnambiguous = '',
     } = this.state.formData.consentExtraProps;
 
-    // console.log('------------ feeForService ------------------', feeForService, this.state.current.consentExtraProps.feeForService);
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
     const disableSubmitEdit = !this.isFormEdited();

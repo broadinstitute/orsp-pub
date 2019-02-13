@@ -19,12 +19,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     };
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //
-  // }
-
   componentDidMount() {
-    // console.log('------------------------------componentDidMount--------------------------------------------', this.props);
     if (this.props.determination.questions.length > 0) {
       this.setState({
         endState: this.props.determination.endState,
@@ -59,14 +54,12 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
   nextQuestion = (e) => {
     let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
-    // console.log('----> nextQuestion 1 ------- currentAnswer : ', currentAnswer, this.state.currentQuestionIndex);
 
     if (this.props.edit === true) {
       this.props.cleanQuestionsUnanswered(this.state, "next");
     }
 
     if (currentAnswer !== null) {
-      // console.log('----> nextQuestion 2 ------- currentAnswer : ', currentAnswer);
       e.preventDefault();
       this.setState(prev => {
         prev.endState = false;
@@ -75,7 +68,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         return prev;
       }, () => {
         let answer = this.state.questions[this.state.currentQuestionIndex].answer;
-        // console.log('----> nextQuestion 3 ------- answer : ', answer);
         if (answer !== null) {
           this.evaluateAnswer(answer);
         }
@@ -91,7 +83,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
   }
 
   evaluateAnswer = (answer) => {
-    // console.log('evaluateAnswer ----> ', answer);
     let onYes = this.state.questions[this.state.currentQuestionIndex].yesOutput;
     let onNo = this.state.questions[this.state.currentQuestionIndex].noOutput;
     let nextQuestionIndex = null;
@@ -101,14 +92,12 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     switch(answer) {
 
       case null:
-        // console.log('answer is null');
         nextQuestionIndex = null;
         projectType = null;
         endState = true;
         break;
 
       case true:
-        // console.log('answer is true');
         if (onYes < 100) {
           nextQuestionIndex = onYes - 1;
           projectType = null;
@@ -122,7 +111,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         break;
 
       case false:
-        // console.log('answer is false');
         if (onNo < 100) {
           nextQuestionIndex = onNo - 1;
           projectType = null;
@@ -138,38 +126,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       default:
         break;
     }
-
-    // if (answer === null) {
-    //   console.log('answer is null');
-    //   nextQuestionIndex = null;
-    //   projectType = null;
-    //   endState = true;
-    // } else if (answer === true) {
-    //   console.log('answer is true');
-    //   if (onYes < 100) {
-    //     nextQuestionIndex = onYes - 1;
-    //     projectType = null;
-    //     endState = false;
-    //   } else {
-    //     nextQuestionIndex = null;
-    //     projectType = onYes;
-    //     this.props.cleanQuestionsUnanswered(this.state.currentQuestionIndex, "end - true");
-    //     endState = true;
-    //   }
-    // } else if (answer === false) {
-    //   console.log('answer is false');
-    //   if (onNo < 100) {
-    //     nextQuestionIndex = onNo - 1;
-    //     projectType = null;
-    //     endState = false;
-    //   } else {
-    //     nextQuestionIndex = null;
-    //     this.props.cleanQuestionsUnanswered(this.state.currentQuestionIndex, "end - false");
-    //     projectType = onNo;
-    //     endState = true;
-    //   }
-    // }
-
     this.setState(prev => {
       prev.nextQuestionIndex = nextQuestionIndex;
       prev.projectType = projectType;
@@ -177,7 +133,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       prev.endState = endState;
       return prev
     }, () => {
-      // console.log('evaluateAnswer state ', this.state);
       this.props.handler(this.state);
     });
   };
