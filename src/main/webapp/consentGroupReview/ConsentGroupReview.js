@@ -1192,7 +1192,6 @@ class ConsentGroupReview extends Component {
           div({ className: "row" }, [
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
-                minDate: new Date(),
                 selected: startDate,
                 value: startDate,
                 currentValue: currentStartDate,
