@@ -14,7 +14,7 @@ const headers =
     { name: 'Created', value: 'creationDate' }
   ];
 
-const addDocumentBtn = { 
+const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 }
 
@@ -23,7 +23,7 @@ export const Documents = hh(class Documents extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showAddKeyDocuments : false,
+      showAddKeyDocuments: false,
       showAddAdditionalDocuments: false
     }
   }
@@ -41,11 +41,11 @@ export const Documents = hh(class Documents extends Component {
   };
 
   closeModal = () => {
-    this.setState({showAddKeyDocuments: !this.state.showAddKeyDocuments});
+    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
   };
 
   closeAdditionalModal = () => {
-    this.setState({showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments});
+    this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
   render() {

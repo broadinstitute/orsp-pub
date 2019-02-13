@@ -131,19 +131,17 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           ]),
 
           h(ModalBody, { className: "dialogBody" }, [
-            // div({ style: { 'marginBottom': '10px' } }, [
-              InputFieldSelect({
-                label: "Type",
-                id: "documentType",
-                name: "documentType",
-                options: this.props.options,
-                value: this.state.type,
-                onChange: this.handleTypeSelect,
-                currentValue: this.state.currentValue,
-                error: this.state.typeError,
-                errorMessage: "Required field"
-              }),
-            // ]),
+            InputFieldSelect({
+              label: "Type",
+              id: "documentType",
+              name: "documentType",
+              options: this.props.options,
+              value: this.state.type,
+              onChange: this.handleTypeSelect,
+              currentValue: this.state.currentValue,
+              error: this.state.typeError,
+              errorMessage: "Required field"
+            }),
             InputFieldFile({
               label: "File",
               id: "documentFile",
