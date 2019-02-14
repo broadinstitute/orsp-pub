@@ -28,7 +28,7 @@ export const InputFieldRadio = (props) => {
   }
 
   optionValues.forEach((val, ix) => {
-    if (normValue === normCurrentValue) {
+    if (val === normCurrentValue) {
       currentOptionLabel = optionLabels[ix];
     }
   });
