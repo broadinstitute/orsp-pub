@@ -807,7 +807,6 @@ class ProjectReview extends Component {
             label: "Project Availability",
             value: this.state.formData.projectExtraProps.projectAvailability,
             currentValue: this.state.current.projectExtraProps.projectAvailability,
-            currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
             optionValues: ["available", "onHold"],
             optionLabels: [
               "Available",
@@ -824,9 +823,6 @@ class ProjectReview extends Component {
               id: "radioDescribeEdits",
               name: "describeEditType",
               currentValue: this.state.current.projectExtraProps.describeEditType,
-              currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ?
-                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record" :
-                "I am requesting assistance in updating and existing project",
               label: "Please choose one of the following to describe the proposed edits: ",
               value: this.state.formData.projectExtraProps.describeEditType,
               optionValues: ["newAmendment", "requestingAssistance"],

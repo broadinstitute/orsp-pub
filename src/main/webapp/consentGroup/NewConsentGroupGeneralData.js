@@ -234,7 +234,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleRadio2Change,
             required: true,
             error: this.props.errors.describeConsentGroup,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
 
           Panel({
@@ -302,7 +303,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             ],
             required: true,
             error: this.props.errors.requireMta,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           })
         ])
     )
