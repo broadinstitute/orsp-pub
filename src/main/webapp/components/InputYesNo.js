@@ -13,11 +13,11 @@ export const InputYesNo = (props) => {
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value, currentValue = null, valueEdited = false } = props;
 
   let currentOptionLabel = '';
-  
+
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
-    const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
+  const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
     (currentValue === 'false' || currentValue === false || currentValue === '0') ? 'false' : currentValue;
 
   const edited = normValue !== currentValue && currentValue != null || valueEdited === true;
@@ -27,7 +27,7 @@ export const InputYesNo = (props) => {
       currentOptionLabel = optionLabels[ix];
     }
   });
-  
+
   return (
 
     div({ className: "radioContainer" }, [
@@ -42,7 +42,7 @@ export const InputYesNo = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited && (normValue === optionValues[ix])? 'radioOptionsUpdated ' : ''),
+            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited && (normValue === optionValues[ix]) ? 'radioOptionsUpdated ' : ''),
             disabled: props.readOnly
           }, [
               input({

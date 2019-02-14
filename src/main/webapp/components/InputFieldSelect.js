@@ -112,7 +112,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               name: this.props.name,
               value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
               className: "inputFieldSelect",
-              onChange: this.props.onChange(this.props.index, event),
+              onChange: this.props.onChange(this.props.index),
               options: this.props.options,
               placeholder: edited ? '--' : this.props.placeholder,
               isMulti: this.props.isMulti
