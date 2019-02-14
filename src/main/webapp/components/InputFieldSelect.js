@@ -62,12 +62,12 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     let currentValueStr;
     let currentValue;
     if (Array.isArray(this.props.currentValue)) {
-      currentValue  = [];
+      currentValue = [];
       let value = [];
       let currentValues = [];
       if (this.props.currentValue === undefined) {
         currentValue.push("");
-      } else if (this.props.currentValue.length === 0){
+      } else if (this.props.currentValue.length === 0) {
         currentValue.push("");
       } else {
         currentValue = this.props.currentValue;
@@ -89,7 +89,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
       edited = this.isEdited(currentKeys, keys);
     } else {
       let currentValue = this.props.currentValue;
-      currentValueStr  = _.get(this.props.currentValue, 'label', '');
+      currentValueStr = _.get(this.props.currentValue, 'label', '');
       edited = this.props.edit ? this.isEdited(this.props.currentValue, this.props.value) : false;
     }
 
@@ -103,22 +103,23 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         value: this.props.value,
         currentValue: currentValue,
         currentValueStr: currentValueStr,
-        edited : edited
+        edited: edited
       }, [
-        div({ className: "inputFieldSelectWrapper" }, [
-          h(Select, {
-            id: this.props.id,
-            index: this.props.index,
-            name: this.props.name,
-            value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
-            className: "inputFieldSelect",
-            onChange: this.props.onChange(this.props.index, event),
-            options: this.props.options,
-            placeholder: edited ? '--' : this.props.placeholder,
-            isMulti: this.props.isMulti
-          })
-        ])
-      ])
+          div({ className: "inputFieldSelectWrapper" }, [
+            h(Select, {
+              id: this.props.id,
+              index: this.props.index,
+              name: this.props.name,
+              value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
+              className: "inputFieldSelect",
+              onChange: this.props.onChange(this.props.index),
+              options: this.props.options,
+              placeholder: edited ? '--' : this.props.placeholder,
+              isMulti: this.props.isMulti
+            })
+          ])
+        ]
+      )
     )
   }
 });

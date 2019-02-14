@@ -37,7 +37,11 @@ export const ConsentGroup = {
   
   rejectConsent(url, consentKey) {
     return axios.delete(url + '?consentKey=' + consentKey);
-  }  
+  },
+
+  updateConsent(url, data, projectKey) {
+    return axios.put(url + '?consentKey=' + projectKey, data);
+  }
 
 };
 
@@ -144,4 +148,4 @@ export const Review = {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
 
-}
+};

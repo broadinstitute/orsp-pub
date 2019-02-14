@@ -31,6 +31,7 @@
 }
 
 .panelContent {
+  position: relative;
   padding: 15px;
 }
 
