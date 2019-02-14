@@ -24,7 +24,8 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
       selected = this.props.selected;
     }
 
-    const edited = this.props.value !== this.props.currentValue && this.props.currentValue != null;
+    const { value, currentValue } = this.props;
+    const edited = value !== currentValue && currentValue !== undefined && value !== undefined;
 
     return (
 
@@ -43,6 +44,7 @@ export const InputFieldDatePicker = hh(class InputFieldDatePicker extends Compon
                 minDate: this.props.minDate,
                 maxDate: this.props.maxDate,
                 disabled: this.props.disabled,
+                readOnly: this.props.readOnly,
                 placeholderText: this.props.placeholder,
                 className: "inputFieldDatePicker"
               })
