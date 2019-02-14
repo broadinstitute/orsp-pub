@@ -12,6 +12,7 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
 import { AlertMessage } from "../components/AlertMessage";
+import _ from 'lodash';
 
 const EXIT = 500;
 const DPA = 600;
