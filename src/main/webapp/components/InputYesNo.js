@@ -12,6 +12,8 @@ export const InputYesNo = (props) => {
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value, currentValue = null, valueEdited = false } = props;
 
+  let currentOptionLabel = '';
+  
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
