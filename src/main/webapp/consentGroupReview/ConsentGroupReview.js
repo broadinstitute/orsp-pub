@@ -660,7 +660,7 @@ class ConsentGroupReview extends Component {
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
       prev.formData.sampleCollections = data;
-      prev.isEdited = !this.compareObj("formData", "current");
+      prev.isEdited = !this.areObjectsEqual("formData", "current");
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -676,7 +676,7 @@ class ConsentGroupReview extends Component {
       prev.errors.endDate = false;
       prev.formData.consentExtraProps.onGoingProcess = checked;
       prev.formData.consentExtraProps.endDate = checked ? null : date;
-      prev.isEdited = !this.compareObj("formData", "current");
+      prev.isEdited = !this.areObjectsEqual("formData", "current");
       return prev;
     });
   };
@@ -687,7 +687,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
       prev.errors[field] = false;
-      prev.isEdited = !this.compareObj("formData", "current");
+      prev.isEdited = !this.areObjectsEqual("formData", "current");
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -699,7 +699,7 @@ class ConsentGroupReview extends Component {
   handleChange = (id) => (date) => {
     this.setState(prev => {
       prev.formData.consentExtraProps[id] = date;
-      prev.isEdited = !this.compareObj("formData", "current");
+      prev.isEdited = !this.areObjectsEqual("formData", "current");
       prev.errors[id] = false;
       return prev;
     }, () => {
@@ -713,7 +713,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
       prev.errors[field] = false;
-      prev.isEdited = !this.compareObj("formData", "current");
+      prev.isEdited = !this.areObjectsEqual("formData", "current");
       return prev;
     }, () => {
       if (this.state.errorSubmit) this.isValid()
@@ -887,7 +887,7 @@ class ConsentGroupReview extends Component {
     return true;
   };
 
-  compareObj(formData, current) {
+  areObjectsEqual(formData, current) {
     let newValues = JSON.parse(JSON.stringify(this.state[formData]));
     let currentValues = JSON.parse(JSON.stringify(this.state[current]));
 
@@ -981,7 +981,7 @@ class ConsentGroupReview extends Component {
 
   isFormEdited = () => {
     let isEdited = false;
-    const formAndCurrentComp = this.compareObj("formData", "current");
+    const formAndCurrentComp = this.areObjectsEqual("formData", "current");
     if (this.state.isEdited === false) {
       isEdited = false;
     } else if (!formAndCurrentComp) {
