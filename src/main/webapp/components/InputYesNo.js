@@ -15,21 +15,17 @@ export const InputYesNo = (props) => {
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
-  const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
-    (currentValue === 'false' || currentValue === false || currentValue === '0') ? 'false' : null;
+    const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
+    (currentValue === 'false' || currentValue === false || currentValue === '0') ? 'false' : currentValue;
 
   const edited = normValue !== currentValue && currentValue != null || valueEdited === true;
 
-  const previousValue = ()=> {
-    if (normCurrentValue) {
-      return 'Yes';
-    } else if (normCurrentValue === false) {
-      return 'No';
-    } else {
-      return '-';
+  optionValues.forEach((val, ix) => {
+    if (val === normCurrentValue) {
+      currentOptionLabel = optionLabels[ix];
     }
-  };
-
+  });
+  
   return (
 
     div({ className: "radioContainer" }, [
@@ -62,7 +58,7 @@ export const InputYesNo = (props) => {
       }),
       div({ isRendered: edited, className: "radioOptionsCurrent" }, [
         span({ className: "italic" }, ["Previous value: "]),
-        (previousValue(currentValue))
+        (currentOptionLabel)
       ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
