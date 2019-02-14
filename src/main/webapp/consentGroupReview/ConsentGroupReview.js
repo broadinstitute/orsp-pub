@@ -243,7 +243,7 @@ class ConsentGroupReview extends Component {
   }
 
   isValid = () => {
-    this.setState({errorSubmit: false});
+    this.setState({ errorSubmit: false });
     let consent = false;
     let protocol = false;
     let collInst = false;
@@ -325,9 +325,9 @@ class ConsentGroupReview extends Component {
     }
 
     if (!this.state.formData.consentExtraProps.onGoingProcess
-        && this.isEmpty(this.state.formData.consentExtraProps.endDate)
-        && !this.isEmpty(this.state.formData.consentExtraProps.startDate)
-      ) {
+      && this.isEmpty(this.state.formData.consentExtraProps.endDate)
+      && !this.isEmpty(this.state.formData.consentExtraProps.startDate)
+    ) {
       endDate = true;
     }
 
@@ -342,6 +342,25 @@ class ConsentGroupReview extends Component {
     if (this.consentGroupNameExists()) {
       consentGroupName = true;
     }
+
+    const valid = !consent &&
+      !protocol &&
+      !collInst &&
+      !describeConsentGroup &&
+      !requireMta &&
+      !sampleCollections &&
+      !pii &&
+      !sharingPlan &&
+      !questions &&
+      !textCompliance &&
+      !textSensitive &&
+      !accessible &&
+      !textAccessible &&
+      !compliance &&
+      !sensitive &&
+      !startDate &&
+      !consentGroupName &&
+      !endDate;
 
     this.setState(prev => {
       prev.errors.consent = consent;
@@ -364,24 +383,8 @@ class ConsentGroupReview extends Component {
       return prev;
     });
 
-    return !consent &&
-      !protocol &&
-      !collInst &&
-      !describeConsentGroup &&
-      !requireMta &&
-      !sampleCollections &&
-      !pii &&
-      !sharingPlan &&
-      !questions &&
-      !textCompliance &&
-      !textSensitive &&
-      !accessible &&
-      !textAccessible &&
-      !compliance &&
-      !sensitive &&
-      !startDate &&
-      !consentGroupName &&
-      !endDate;
+    return valid;
+
   };
 
   cleanErrors = () => {
@@ -430,10 +433,10 @@ class ConsentGroupReview extends Component {
           });
         }
         this.setState(prev => {
-            prev.formData.consentForm.approvalStatus = data.approvalStatus;
-            prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
-            prev.questions.length = 0;
-            return prev;
+          prev.formData.consentForm.approvalStatus = data.approvalStatus;
+          prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
+          prev.questions.length = 0;
+          return prev;
         })
       }
     );
@@ -529,7 +532,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData = this.state.futureCopy;
       prev.readOnly = true;
-      prev.errorSubmit =false;
+      prev.errorSubmit = false;
       prev.questions.length = 0;
       return prev;
     });
@@ -538,8 +541,8 @@ class ConsentGroupReview extends Component {
   submitEdit = (e) => () => {
     let data = {};
 
-      if (this.validateQuestionaire()) {
-        if (this.isValid()) {
+    if (this.validateQuestionaire()) {
+      if (this.isValid()) {
         this.setState(prev => {
           prev.readOnly = true;
           prev.errorSubmit = false;
@@ -684,7 +687,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
       prev.errors[field] = false;
-      prev.isEdited = !this.compareObj("formData", "current") ;
+      prev.isEdited = !this.compareObj("formData", "current");
       return prev;
     }, () => {
       if (this.state.errorSubmit === true) {
@@ -696,7 +699,7 @@ class ConsentGroupReview extends Component {
   handleChange = (id) => (date) => {
     this.setState(prev => {
       prev.formData.consentExtraProps[id] = date;
-      prev.isEdited = !this.compareObj("formData", "current") ;
+      prev.isEdited = !this.compareObj("formData", "current");
       prev.errors[id] = false;
       return prev;
     }, () => {
@@ -710,7 +713,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.formData.consentExtraProps[field] = value;
       prev.errors[field] = false;
-      prev.isEdited = !this.compareObj("formData", "current") ;
+      prev.isEdited = !this.compareObj("formData", "current");
       return prev;
     }, () => {
       if (this.state.errorSubmit) this.isValid()
@@ -861,10 +864,10 @@ class ConsentGroupReview extends Component {
   stringAnswer = (current) => {
     let answer = '';
     if (current === 'true' || current === true) {
-      answer ='Yes';
+      answer = 'Yes';
     } else if (current === 'false' || current === false) {
       answer = 'No'
-    } else if (current === 'null' || current === null || this.isEmpty(current)){
+    } else if (current === 'null' || current === null || this.isEmpty(current)) {
       answer = '--';
     }
     return answer
@@ -874,10 +877,10 @@ class ConsentGroupReview extends Component {
     if (this.isEmpty(b) && !this.isEmpty(a) || !this.isEmpty(a) && this.isEmpty(b)) {
       return false;
     }
-    if (a !== undefined && b !== undefined ) {
+    if (a !== undefined && b !== undefined) {
       if (JSON.parse(a) === JSON.parse(b)) {
         return true;
-      } else if ((JSON.parse(a) !== JSON.parse(b))){
+      } else if ((JSON.parse(a) !== JSON.parse(b))) {
         return false;
       }
     }
@@ -890,15 +893,15 @@ class ConsentGroupReview extends Component {
 
     // remove Null consentExtraprops objects and normalize true/false to strings
     Object.keys(newValues.consentExtraProps).forEach((key) => {
-      if (newValues.consentExtraProps[key] === true)  newValues.consentExtraProps[key] = "true";
+      if (newValues.consentExtraProps[key] === true) newValues.consentExtraProps[key] = "true";
       else if (newValues.consentExtraProps[key] === false) newValues.consentExtraProps[key] = "false";
       (newValues.consentExtraProps[key] === null) && delete newValues.consentExtraProps[key]
 
     });
-    Object.keys(currentValues.consentExtraProps).forEach((key) =>{
-      if (currentValues.consentExtraProps[key] === true)  currentValues.consentExtraProps[key] = "true";
+    Object.keys(currentValues.consentExtraProps).forEach((key) => {
+      if (currentValues.consentExtraProps[key] === true) currentValues.consentExtraProps[key] = "true";
       else if (currentValues.consentExtraProps[key] === false)
-      (currentValues.consentExtraProps[key] === null) && delete currentValues.consentExtraProps[key]
+        (currentValues.consentExtraProps[key] === null) && delete currentValues.consentExtraProps[key]
     });
 
     return JSON.stringify(newValues) === JSON.stringify(currentValues);
@@ -946,7 +949,7 @@ class ConsentGroupReview extends Component {
       if (currentValue === 'true') {
         label = optionLabels[0];
       } else if (currentValue === 'false') {
-        label =optionLabels[1];
+        label = optionLabels[1];
       } else if (currentValue === 'uncertain') {
         label = optionLabels[2];
       } else {
@@ -1129,8 +1132,8 @@ class ConsentGroupReview extends Component {
             currentOptionLabel: this.currentOptionalValue("describeConsentGroup",
               this.state.current.consentExtraProps.describeConsentGroup,
               ["I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-              "I am requesting assistance in updating and existing project"
-            ]),
+                "I am requesting assistance in updating and existing project"
+              ]),
             currentValue: this.state.current.consentExtraProps.describeConsentGroup,
             optionValues: ["01", "02"],
             optionLabels: [
@@ -1148,9 +1151,9 @@ class ConsentGroupReview extends Component {
             name: "requireMta",
             currentOptionLabel: this.currentOptionalValue("requireMta",
               this.state.current.consentExtraProps.requireMta,
-              [ "Yes, the provider does require an MTA/DTA.",
-              "No, the provider does not require an MTA/DTA.",
-              "Not sure"]),
+              ["Yes, the provider does require an MTA/DTA.",
+                "No, the provider does not require an MTA/DTA.",
+                "Not sure"]),
             label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
             moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)"]),
             value: requireMta,
@@ -1254,7 +1257,7 @@ class ConsentGroupReview extends Component {
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
             div({
-              className: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced)? 'answerUpdated' : ''
+              className: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced) ? 'answerUpdated' : ''
             }, [this.stringAnswer(individualDataSourced)]),
             div({
               isRendered: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced),
@@ -1264,7 +1267,8 @@ class ConsentGroupReview extends Component {
 
           div({ className: "answerWrapper" }, [
             label({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
-            div({ className: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained) ? 'answerUpdated' : ''
+            div({
+              className: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained) ? 'answerUpdated' : ''
             }, [this.stringAnswer(isLinkMaintained)]),
             div({
               isRendered: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained),
@@ -1274,8 +1278,9 @@ class ConsentGroupReview extends Component {
 
           div({ className: "answerWrapper" }, [
             label({}, ["Is the Broad work being performed as fee-for-service?"]),
-            div({ className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : '' // NEW
-           }, [this.stringAnswer(feeForService)]), // si hay cambios se aplica el estilo, siempre se muestra con la respuesta actual el current -> NEW aplica el estilo y muestra el cambio
+            div({
+              className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : '' // NEW
+            }, [this.stringAnswer(feeForService)]), // si hay cambios se aplica el estilo, siempre se muestra con la respuesta actual el current -> NEW aplica el estilo y muestra el cambio
             div({
               isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService), // TODO cambiar nombre método
               className: "answerCurrent"
@@ -1284,7 +1289,8 @@ class ConsentGroupReview extends Component {
 
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples/data coming directly to the Broad from the EEA?"]),
-            div({ className: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA) ? 'answerUpdated' : ''
+            div({
+              className: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA) ? 'answerUpdated' : ''
             }, [this.stringAnswer(areSamplesComingFromEEAA)]),
             div({
               isRendered: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA),
@@ -1294,20 +1300,22 @@ class ConsentGroupReview extends Component {
 
           div({ className: "answerWrapper" }, [
             label({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-            div({ className: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) ? 'answerUpdated' : ''
+            div({
+              className: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) ? 'answerUpdated' : ''
             }, [this.stringAnswer(isCollaboratorProvidingGoodService)]),
             div({
-              isRendered: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) ,
+              isRendered: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService),
               className: "answerCurrent"
             }, [this.stringAnswer(this.state.current.consentExtraProps.isCollaboratorProvidingGoodService)])
           ]),
 
           div({ className: "answerWrapper" }, [
             label({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-            div({ className: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous) ? 'answerUpdated' : ''
+            div({
+              className: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous) ? 'answerUpdated' : ''
             }, [this.stringAnswer(isConsentUnambiguous)]),
             div({
-              isRendered: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous) ,
+              isRendered: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous),
               className: "answerCurrent"
             }, [this.stringAnswer(this.state.current.consentExtraProps.isConsentUnambiguous)])
           ])
