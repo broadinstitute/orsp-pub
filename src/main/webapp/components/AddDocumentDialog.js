@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bo
 import { MultiSelect } from './MultiSelect';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
+import { AlertMessage } from './AlertMessage';
 import { Files } from "../util/ajax";
 
 import './ConfirmationDialog.css';
@@ -12,6 +13,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorMessage: '',
       documents: '',
       disableBttn: false,
       typeError: false,
@@ -36,6 +38,11 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       prev.file = {
         name: ''
       };
+      prev.typeError = false;
+      prev.fileError = false;
+      prev.uploadError = false;
+      prev.disableBttn = false;
+      prev.errorMessage = '';
       prev.type = '';
       return prev;
     });
@@ -67,6 +74,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.closeModal();
           }).catch(error => {
             this.setState(prev => {
+              prev.errorMessage = 'Something went wrong. Please try again.';
               prev.uploadError = true;
               prev.submit = false;
               prev.disableBttn = false;
@@ -143,7 +151,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               errorMessage: "Required field"
             }),
             InputFieldFile({
-              label: "File",
+              label: "File ",
+              moreInfo: "(Max file size 15.7 Mb)",
               id: "documentFile",
               name: "documentFile",
               callback: this.setFilesToUpload(this.state.documents),
@@ -152,6 +161,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               error: this.state.fileError,
               errorMessage: "Required field",
               removeHandler: () => this.removeFile(document)
+            }),
+            AlertMessage({
+              msg: this.state.errorMessage,
+              show: this.state.uploadError
             })
           ]),
 
