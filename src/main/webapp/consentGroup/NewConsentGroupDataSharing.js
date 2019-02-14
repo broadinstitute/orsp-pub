@@ -91,7 +91,8 @@ export const NewConsentGroupDataSharing = hh(class NewConsentGroupDataSharing ex
               onChange: this.handleRadio2Change,
               required: true,
               error: this.props.errors.sharingPlan,
-              errorMessage: "Required field"
+              errorMessage: "Required field",
+              edit: false
             }),
             InputFieldText({
               isRendered: this.state.formData.sharingPlan === "controlled",
