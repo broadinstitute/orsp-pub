@@ -11,16 +11,27 @@ export const InputFieldRadio = (props) => {
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
-  const { currentValue = null, currentOptionLabel = null, edit = false} = props;
+  const { currentValue = null, edit = false } = props;
+
+  let currentOptionLabel = '';
 
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : value;
+
+  const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
+    (currentValue === 'false' || currentValue === false || currentValue === '0') ? 'false' : currentValue;
 
   let edited = props.value !== currentValue && currentValue != null;
 
   if (edit && !edited) {
     edited = value !== undefined && value !== '' && currentValue === null;
   }
+
+  optionValues.forEach((val, ix) => {
+    if (normValue === normCurrentValue) {
+      currentOptionLabel = optionsLabels[ix];
+    }
+  });
 
   return (
 
