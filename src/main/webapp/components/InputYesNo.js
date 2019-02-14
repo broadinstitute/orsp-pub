@@ -15,12 +15,15 @@ export const InputYesNo = (props) => {
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : null;
 
+  const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
+    (currentValue === 'false' || currentValue === false || currentValue === '0') ? 'false' : null;
+
   const edited = normValue !== currentValue && currentValue != null || valueEdited === true;
 
   const previousValue = ()=> {
-    if (currentValue) {
+    if (normCurrentValue) {
       return 'Yes';
-    } else if (currentValue === false) {
+    } else if (normCurrentValue === false) {
       return 'No';
     } else {
       return '-';
