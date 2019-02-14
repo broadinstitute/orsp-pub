@@ -1063,4 +1063,19 @@ class QueryService implements Status {
         Long.valueOf(version)
     }
 
+    Collection<StorageDocument> getAllDocuments() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' SELECT creation_date, file_type, project_key, doc_version ' +
+                        'FROM storage_document ' +
+                        'group by creation_date, file_type, project_key, doc_version ' +
+                        'order by creation_date'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(StorageDocument)
+            list()
+        }
+        results
+    }
 }

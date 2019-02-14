@@ -309,6 +309,19 @@ class StorageProviderService implements Status {
         response
     }
 
+    Map<String, List<StorageDocument>> updateDocumentVersion() {
+        println 'version update'
+        Map<String, List<StorageDocument>> mapDocuments
+        try {
+            Collection<StorageDocument> documents =  queryService.getAllDocuments()
+             mapDocuments = documents.groupBy {it.projectKey}.collectEntries { k, v  -> [k, v] }
+        } catch (InterruptedException e) {
+            log.error("Error disconnecting response.", e)
+        }
+
+        mapDocuments
+    }
+
     private GenericUrl getUrlForDocument(StorageDocument document) {
         new GenericUrl(getBucketUrl() + document.projectKey + "/" + document.uuid)
     }
