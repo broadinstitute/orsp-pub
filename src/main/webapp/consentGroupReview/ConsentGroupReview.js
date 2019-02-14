@@ -103,7 +103,7 @@ class ConsentGroupReview extends Component {
         startDate: false,
       },
       formData: {
-        currentInstSources: [{  name: '', country: '' }],
+        currentInstSources: [{ name: '', country: '' }],
         consentExtraProps: {},
         consentForm: {},
         sampleCollections: []
@@ -115,7 +115,7 @@ class ConsentGroupReview extends Component {
         consentForm: {}
       },
       futureCopy: {
-        instSources: [{  name: '', country: '' }],
+        instSources: [{ name: '', country: '' }],
       },
       suggestions: {},
       suggestionsCopy: {},
@@ -194,7 +194,7 @@ class ConsentGroupReview extends Component {
 
             if (element.data.extraProperties.institutionalSources !== undefined) {
               // current.instSources = this.parseInstSources(element.data.extraProperties.institutionalSources);
-              current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources)) ;
+              current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources));
 
               // console.log(current.instSources)
             }
@@ -237,8 +237,8 @@ class ConsentGroupReview extends Component {
     if (instSources !== undefined && instSources !== null && instSources.length > 0) {
       instSources.map(instSource => {
         instSourcesArray.push({
-          current: {name: instSource.name, country: instSource.country},
-          future: {name: instSource.name, country: instSource.country}
+          current: { name: instSource.name, country: instSource.country },
+          future: { name: instSource.name, country: instSource.country }
         });
       });
     }
@@ -566,45 +566,16 @@ class ConsentGroupReview extends Component {
   submitEdit = (e) => () => {
 
     // leo's changes ... to review 
-    
-    // // validate International Cohorts
-    // let data = {};
-    // this.setState(prev => {
-    //   prev.checkInstSrc = true;
-    //   prev.readOnly = true;
-    //   return prev;
-    // }, () => {
-    //   // InstitutionalSource.validate()
-    // });
 
-    // // inst sources should validate it self
-    // console.log("this.state.errors.instError: ", this.state.errors.instError);
-    // if (this.state.errors.instError) {
-    //   this.setState({checkInstSrc:false});
-    //   console.log("HAY ERROR EN INSTITUTIONAL SOURCES ");
-
-    // } else {
-    //   let institutionalSourceArray = this.parseInstSources(this.state.futureCopy.instSources);
-    //   let newFormData = Object.assign({}, this.state.formData);
-    //   newFormData.instSources = institutionalSourceArray;
-
-    //   data.projectKey = this.props.consentKey;
-    //   data.suggestions = JSON.stringify(newFormData);
-
-    //   if (this.state.reviewSuggestion) {
-    //     Review.updateReview (this.props.serverURL, this.props.consentKey, data).then(() =>
-    //       this.getReviewSuggestions()
-    //     );
-    //   } else {
-    //     Review.submitReview (this.props.serverURL, data).then(() =>
-    //       this.getReviewSuggestions()
-    //     );
-    //   }
+    // validate International Cohorts
     let data = {};
 
     if (this.validateQuestionaire()) {
+
       if (this.isValid()) {
+
         this.setState(prev => {
+          prev.checkInstSrc = true;
           prev.readOnly = true;
           prev.errorSubmit = false;
 
@@ -613,10 +584,25 @@ class ConsentGroupReview extends Component {
           });
           return prev;
         }, () => {
-          data = {
-            projectKey: this.props.consentKey,
-            suggestions: JSON.stringify(this.state.formData),
-          };
+          // InstitutionalSource.validate()
+
+          // inst sources should validate it self
+          console.log("this.state.errors.instError: ", this.state.errors.instError);
+          if (this.state.errors.instError) {
+            this.setState({ checkInstSrc: false });
+            console.log("HAY ERROR EN INSTITUTIONAL SOURCES ");
+          } else {
+            let institutionalSourceArray = this.parseInstSources(this.state.futureCopy.instSources);
+            let newFormData = Object.assign({}, this.state.formData);
+            newFormData.instSources = institutionalSourceArray;
+
+            data.projectKey = this.props.consentKey;
+            data.suggestions = JSON.stringify(newFormData);
+          }
+
+          data.projectKey = this.props.consentKey;
+          data.suggestions = JSON.stringify(newFormData);
+          // data.suggestions: JSON.stringify(this.state.formData)
 
           if (this.state.reviewSuggestion) {
             Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
@@ -661,7 +647,7 @@ class ConsentGroupReview extends Component {
   //   }
   //   return instSourcesArray;
   // }
-  
+
   parseDate(date) {
     if (date !== undefined) {
       let d = new Date(date).toISOString();
@@ -1371,11 +1357,11 @@ class ConsentGroupReview extends Component {
             label({}, ["Is the Broad work being performed as fee-for-service?"]),
             div({
               className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(feeForService)]), 
+            }, [this.stringAnswer(feeForService)]),
             div({
-              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService), 
+              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService),
               className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)]) 
+            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)])
           ]),
 
           div({ className: "answerWrapper" }, [
