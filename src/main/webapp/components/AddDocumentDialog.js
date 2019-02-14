@@ -15,7 +15,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     this.state = {
       errorMessage: '',
       documents: '',
-      disableBttn: false,
+      disableBtn: false,
       typeError: false,
       fileError: false,
       submit: false,
@@ -41,7 +41,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       prev.typeError = false;
       prev.fileError = false;
       prev.uploadError = false;
-      prev.disableBttn = false;
+      prev.disableBtn = false;
       prev.errorMessage = '';
       prev.type = '';
       return prev;
@@ -56,7 +56,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     }, () => {
       if (this.isValid()) {
         this.setState(prev => {
-          prev.disableBttn = true;
+          prev.disableBtn = true;
           return prev;
         });
         let file = { file: this.state.file, fileKey: this.state.type.label };
@@ -65,7 +65,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           .then(resp => {
             this.setState(prev => {
               prev.submit = false;
-              prev.disableBttn = false;
+              prev.disableBtn = false;
               prev.file = { name: '' };
               prev.type = '';
               return prev;
@@ -77,7 +77,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               prev.errorMessage = 'Something went wrong. Please try again.';
               prev.uploadError = true;
               prev.submit = false;
-              prev.disableBttn = false;
+              prev.disableBtn = false;
               return prev;
             });
           });
@@ -169,8 +169,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           ]),
 
           h(ModalFooter, {}, [
-            button({ className: "btn buttonSecondary", disabled: this.state.disableBttn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBttn, onClick: this.upload }, ["Upload"]),
+            button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, ["Upload"]),
           ])
         ])
     )
