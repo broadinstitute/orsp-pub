@@ -254,8 +254,7 @@ class StorageProviderService implements Status {
         HttpResponse response = uploadContent(content, document)
         if (response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK) {
             synchronized (lock) {
-                Long version = queryService.findLastVersionByFileTypeAndProjectKey(document.projectKey, document.fileType)
-                version = version == null ? 0 : ++version
+                Long version = queryService.findNextVersionByFileTypeAndProjectKey(document.projectKey, document.fileType)
                 document.setDocVersion(version)
                 document.save(flush: true)
             }
