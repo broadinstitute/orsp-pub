@@ -85,8 +85,22 @@ class DataUseLetter extends Component {
         date: '',
       },
       errors: {
+        errorForm : false,
         errorSampleCollectionDateRange: false,
-        consentFormTitle: false
+        errorPrimaryRestrictionsChecks: false,
+        errorDiseaseRestrictedOptions: false,
+        errorOtherDiseaseSpecify: false,
+
+        errorSignature: false,
+        errorPrintedName: false,
+        errorPosition: false,
+        errorInstitution: false,
+
+        errorGSRAvailability: false,
+        errorDataSubmissionProhibition: false,
+        errorRepositoryType: false,
+        errorDataDepositionDescribed: false,
+        errorDataUseConsent: false
       }
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
@@ -186,13 +200,114 @@ class DataUseLetter extends Component {
   };
 
   validateForm = () => {
+    let errorForm = false;
     let errorSampleCollectionDateRange = false;
+
+    let errorPrimaryRestrictionsChecks = false;
+    let errorDiseaseRestrictedOptions = false;
+    let errorOtherDiseaseSpecify = false;
+
+    let errorSignature = false;
+    let errorPrintedName = false;
+    let errorPosition = false;
+    let errorInstitution = false;
+
+    let errorGSRAvailability = false;
+    let errorDataSubmissionProhibition = false;
+    let errorRepositoryType = false;
+    let errorDataDepositionDescribed = false;
+    let errorDataUseConsent = false;
 
     if (this.state.formData.startDate === null
       || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) {
+      errorForm = true;
       errorSampleCollectionDateRange = true;
     }
-    // Primary Restrictions
+
+    // Primary Restrictions validations
+    if (this.isEmpty(this.state.formData.noRestrictions)
+        && this.isEmpty(this.state.formData.generalUse)
+        && this.isEmpty(this.state.formData.researchRestricted)
+        && this.isEmpty(this.state.formData.diseaseRestricted)) {
+      errorForm = true;
+      errorPrimaryRestrictionsChecks = true;
+    }
+    if (this.state.formData.diseaseRestricted === true
+        && Object.keys(this.state.formData.diseaseRestrictedOptions).every(key =>
+        this.state.formData.diseaseRestrictedOptions[key] === false)) {
+      errorForm = true;
+      errorDiseaseRestrictedOptions = true;
+    }
+    if (this.state.formData.diseaseRestricted === true
+        && this.state.formData.diseaseRestrictedOptions.otherDisease === true
+        && this.isEmpty(this.state.formData.diseaseRestrictedOptions.otherDiseaseSpecify)) {
+      errorForm = true;
+      errorOtherDiseaseSpecify = true;
+    }
+
+    // Institutional Review Board/Ethics Validations
+    if (this.isEmpty(this.state.signature)) {
+      errorForm = true;
+      errorSignature = true;
+    }
+    if (this.isEmpty(this.state.printedName)) {
+      errorForm = true;
+      errorPrintedName = true;
+    }
+    if (this.isEmpty(this.state.position)) {
+      errorForm = true;
+      errorPosition = true;
+    }
+    if (this.isEmpty(this.state.institution)) {
+      errorForm = true;
+      errorInstitution = true;
+    }
+    //
+
+    if (this.isEmpty(this.state.formData.GSRAvailability)) {
+      errorForm = true;
+      errorGSRAvailability = true
+    }
+
+    if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.dataSubmissionProhibition)) {
+      errorForm = true;
+      errorDataSubmissionProhibition = true;
+    }
+
+    if (this.endsEqualOrAfter("1/25/2015")) {
+      if (this.isEmpty(this.state.formData.repositoryType)) {
+        errorForm = true;
+        errorRepositoryType = true;
+      }
+      if (this.isEmpty(this.state.formData.dataDepositionDescribed)) {
+        errorForm = true;
+        errorDataDepositionDescribed = true;
+      }
+      if (this.isEmpty(this.state.formData.dataUseConsent)) {
+        errorForm = true;
+        errorDataUseConsent = true;
+      }
+    }
+
+    this.setState(prev => {
+      prev.errors.errorForm= errorForm;
+      prev.errors.errorSampleCollectionDateRange= errorSampleCollectionDateRange;
+      prev.errors.errorPrimaryRestrictionsChecks= errorPrimaryRestrictionsChecks;
+      prev.errors.errorDiseaseRestrictedOptions= errorDiseaseRestrictedOptions;
+      prev.errors.errorOtherDiseaseSpecify= errorOtherDiseaseSpecify;
+
+      prev.errors.errorSignature= errorSignature;
+      prev.errors.errorPrintedName= errorPrintedName;
+      prev.errors.errorPosition= errorPosition;
+      prev.errors.errorInstitution= errorInstitution;
+
+      prev.errors.errorGSRAvailability= errorGSRAvailability;
+      prev.errors.errorDataSubmissionProhibition= errorDataSubmissionProhibition;
+      prev.errors.errorRepositoryType= errorRepositoryType;
+      prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
+      prev.errors.errorDataUseConsent = errorDataUseConsent;
+      return prev;
+    });
   };
 
   getUsersArray(array) {
@@ -272,8 +387,6 @@ class DataUseLetter extends Component {
               value: this.state.formData.consentFormTitle,
               required: false,
               onChange: this.handleFormDataTextChange,
-              error: this.state.errors.consentFormTitle,
-              errorMessage: "Required field",
               edit: false
             }),
             InputFieldText({
@@ -346,7 +459,11 @@ class DataUseLetter extends Component {
                   defaultChecked: this.state.formData.onGoingProcess
                 }),
                 label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
-              ])
+              ]),
+              AlertMessage({
+                msg: 'Required',//this.state.errorMessage,
+                show: this.state.errors.errorSampleCollectionDateRange === true
+              }),
             ])
           ]),
 
