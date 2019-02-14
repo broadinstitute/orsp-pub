@@ -907,68 +907,6 @@ class ConsentGroupReview extends Component {
     return JSON.stringify(newValues) === JSON.stringify(currentValues);
   }
 
-  currentOptionalValue = (name, currentValue, optionLabels) => {
-    let label = '';
-    if (name === 'sharingPlan') {
-      if (currentValue === 'controlled') {
-        label = optionLabels[0];
-      } else if (currentValue === 'open') {
-        label = optionLabels[1];
-      } else if (currentValue === 'none') {
-        label = optionLabels[2];
-      } else if (currentValue === 'undetermined') {
-        label = optionLabels[3]
-      } else {
-        label = '--';
-      }
-    }
-
-    if (name === 'describeConsentGroup') {
-      if (currentValue === '02') {
-        label = optionLabels[0]
-      } else if (currentValue === '01') {
-        label = optionLabels[1]
-      } else {
-        label = '--';
-      }
-    }
-
-    if (name === 'compliance' || name === 'sensitive' || name === 'accessible') {
-      if (currentValue === 'true') {
-        label = optionLabels[0];
-      } else if (currentValue === 'false') {
-        label = optionLabels[1];
-      } else if (currentValue === 'uncertain') {
-        label = optionLabels[2];
-      } else {
-        label = '--';
-      }
-    }
-
-    if (name === 'requireMta') {
-      if (currentValue === 'true') {
-        label = optionLabels[0];
-      } else if (currentValue === 'false') {
-        label = optionLabels[1];
-      } else if (currentValue === 'uncertain') {
-        label = optionLabels[2];
-      } else {
-        label = '--';
-      }
-    }
-
-    if (name === 'pii') {
-      if (currentValue === 'true') {
-        label = optionLabels[0];
-      } else if (currentValue === 'false') {
-        label = optionLabels[1]
-      } else {
-        label = '--';
-      }
-    }
-    return label;
-  };
-
   consentGroupNameExists() {
     const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
     let consentGroupNameExists = groupName === this.state.formData.consentForm.summary ? false : this.state.existingGroupNames.indexOf(groupName) > -1;
@@ -1129,11 +1067,6 @@ class ConsentGroupReview extends Component {
             name: "describeConsentGroup",
             label: "Please choose one of the following to describe this proposed Consent Group: ",
             value: describeConsentGroup,
-            currentOptionLabel: this.currentOptionalValue("describeConsentGroup",
-              this.state.current.consentExtraProps.describeConsentGroup,
-              ["I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                "I am requesting assistance in updating and existing project"
-              ]),
             currentValue: this.state.current.consentExtraProps.describeConsentGroup,
             optionValues: ["01", "02"],
             optionLabels: [
@@ -1149,11 +1082,6 @@ class ConsentGroupReview extends Component {
             edit: true,
             id: "radioRequireMta",
             name: "requireMta",
-            currentOptionLabel: this.currentOptionalValue("requireMta",
-              this.state.current.consentExtraProps.requireMta,
-              ["Yes, the provider does require an MTA/DTA.",
-                "No, the provider does not require an MTA/DTA.",
-                "Not sure"]),
             label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
             moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)"]),
             value: requireMta,
@@ -1279,12 +1207,12 @@ class ConsentGroupReview extends Component {
           div({ className: "answerWrapper" }, [
             label({}, ["Is the Broad work being performed as fee-for-service?"]),
             div({
-              className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : '' // NEW
-            }, [this.stringAnswer(feeForService)]), // si hay cambios se aplica el estilo, siempre se muestra con la respuesta actual el current -> NEW aplica el estilo y muestra el cambio
+              className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : ''
+            }, [this.stringAnswer(feeForService)]), 
             div({
-              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService), // TODO cambiar nombre método
+              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService), 
               className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)]) // si hay cambios se muestran acá -> OLD siempre
+            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)]) 
           ]),
 
           div({ className: "answerWrapper" }, [
@@ -1330,9 +1258,6 @@ class ConsentGroupReview extends Component {
             moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
             value: this.state.formData.consentExtraProps.pii,
             currentValue: this.state.current.consentExtraProps.pii,
-            currentOptionLabel: this.currentOptionalValue("pii",
-              this.state.current.consentExtraProps.pii,
-              ["Yes", "No"]),
             optionValues: ["true", "false"],
             optionLabels: [
               "Yes",
@@ -1349,9 +1274,6 @@ class ConsentGroupReview extends Component {
             label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?"]),
             value: this.state.formData.consentExtraProps.compliance,
             currentValue: this.state.current.consentExtraProps.compliance,
-            currentOptionLabel: this.currentOptionalValue("compliance",
-              this.state.current.consentExtraProps.compliance,
-              ["Yes", "No", "Uncertain"]),
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
               "Yes",
@@ -1383,9 +1305,6 @@ class ConsentGroupReview extends Component {
             label: span({}, ["Is this data ", span({ className: 'italic' }, ["“sensitive” "]), "for any reason?"]),
             value: this.state.formData.consentExtraProps.sensitive,
             currentValue: this.state.current.consentExtraProps.sensitive,
-            currentOptionLabel: this.currentOptionalValue("sensitive",
-              this.state.current.consentExtraProps.sensitive,
-              ["Yes", "No", "Uncertain"]),
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
               "Yes",
@@ -1416,9 +1335,6 @@ class ConsentGroupReview extends Component {
             label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?"]),
             value: this.state.formData.consentExtraProps.accessible,
             currentValue: this.state.current.consentExtraProps.accessible,
-            currentOptionLabel: this.currentOptionalValue("accessible",
-              this.state.current.consentExtraProps.accessible,
-              ["Yes", "No", "Uncertain"]),
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
               "Yes",
@@ -1453,10 +1369,6 @@ class ConsentGroupReview extends Component {
             moreInfo: "",
             optionValues: ["controlled", "open", "none", "undetermined"],
             optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
-            currentOptionLabel: this.currentOptionalValue("sharingPlan",
-              this.state.current.consentExtraProps.sharingPlan,
-              ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"]
-            ),
             value: this.state.formData.consentExtraProps.sharingPlan,
             currentValue: this.state.current.consentExtraProps.sharingPlan,
             onChange: this.handleRadio2Change,

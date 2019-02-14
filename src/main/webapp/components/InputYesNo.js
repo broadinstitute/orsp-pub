@@ -41,7 +41,7 @@ export const InputYesNo = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited ? 'radioOptionsUpdated ' : ''),
+            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited && (normValue === optionValues[ix])? 'radioOptionsUpdated ' : ''),
             disabled: props.readOnly
           }, [
               input({
