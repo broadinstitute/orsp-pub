@@ -4,6 +4,10 @@ import DataUseLetter from './DataUseLetter';
 import '../index.css';
 
 ReactDOM.render(
-    <DataUseLetter/>,
+    <DataUseLetter
+        serverUrl = {dataUseLetterComponent.serverURL}
+        consentGroupUrl = {dataUseLetterComponent.consentGroupUrl}
+        projectUrl = {dataUseLetterComponent.projectUrl}
+    />,
     document.getElementById('dataUseLetter')
 );

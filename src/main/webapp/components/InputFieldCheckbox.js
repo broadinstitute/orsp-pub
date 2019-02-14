@@ -15,18 +15,16 @@ export const InputFieldCheckbox = hh(class InputFieldCheckbox extends Component 
                 error: this.props.error, errorMessage: this.props.errorMessage,
                 readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited, additionalClass: 'inputFieldCkb'
             }, [
-                    div({ className: "checkbox" + (this.props.readOnly ? ' checkboxReadOnly' : '') }, [
-                        input({
-                            type: 'checkbox',
-                            id: this.props.id,
-                            name: this.props.name,
-                            className: "form-control",
-                            checked: this.props.checked,
-                            onChange: this.props.onChange,
-                        })
-                    ]),
-                    label({ id: "lbl_" + this.props.id, htmlFor: this.props.id, className: "regular-checkbox" }, [this.props.label])
-                ])
+                input({
+                    type: 'checkbox',
+                    id: this.props.id,
+                    name: this.props.name,
+                    className: "form-control",
+                    checked: this.props.checked,
+                    onChange: this.props.onChange
+                }),
+                label({ id: "lbl_" + this.props.id, htmlFor: this.props.id, className: "regular-checkbox" }, [this.props.label])
+            ])
         )
     }
 });
