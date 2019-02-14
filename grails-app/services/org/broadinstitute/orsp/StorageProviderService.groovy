@@ -308,6 +308,45 @@ class StorageProviderService implements Status {
         response
     }
 
+    List<StorageDocument> processStorageDocuments(List<StorageDocument> documents) {
+        Map<String, List<StorageDocument>> mapDocuments = documents.groupBy {it.fileType}.collectEntries { k, v  -> [k, v] }
+        List<StorageDocument> additionalList = new ArrayList<>()
+        List<StorageDocument> keyList = new ArrayList<>()
+        for ( type in mapDocuments.keySet() ) {
+            List<StorageDocument> intermediateList = new ArrayList<>()
+            List<StorageDocument> values = mapDocuments.get(type)
+            for(sd in values) {
+                if (sd.status.equals(DocumentStatus.REJECTED.status)) {
+                    additionalList.add(sd)
+                }
+                else if(sd.status.equals(DocumentStatus.APPROVED.status)) {
+                    additionalList.addAll(intermediateList)
+                    intermediateList.clear()
+                    intermediateList.add(sd)
+                }
+                else {
+                    intermediateList.add(sd)
+                }
+
+            }
+            keyList.addAll(intermediateList)
+        }
+        for (key in keyList) {
+            key.setDocumentType("key")
+        }
+        for (additional in additionalList) {
+            additional.setDocumentType("additional")
+        }
+        List<StorageDocument> docs = new ArrayList<>();
+        if(!additionalList.isEmpty()) {
+            docs.addAll(additionalList)
+        }
+        if(!keyList.isEmpty()) {
+            docs.addAll(keyList)
+        }
+        docs
+    }
+
     private GenericUrl getUrlForDocument(StorageDocument document) {
         new GenericUrl(getBucketUrl() + document.projectKey + "/" + document.uuid)
     }
