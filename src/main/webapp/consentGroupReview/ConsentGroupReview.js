@@ -82,8 +82,8 @@ class ConsentGroupReview extends Component {
         instError: false,
         institutionalSourceNameError: false,
         institutionalSourceCountryError: false,
-        institutionalSourceNameErrorIndex: [],
-        institutionalSourceCountryErrorIndex: [],
+        institutionalNameErrorIndex: [],
+        institutionalCountryErrorIndex: [],
         consent: false,
         protocol: false,
         consentGroupName: false,
@@ -194,10 +194,7 @@ class ConsentGroupReview extends Component {
             }
 
             if (element.data.extraProperties.institutionalSources !== undefined) {
-              // current.instSources = this.parseInstSources(element.data.extraProperties.institutionalSources);
               current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources));
-
-              // console.log(current.instSources)
             }
 
             current.consentForm = element.data.issue;
@@ -243,7 +240,6 @@ class ConsentGroupReview extends Component {
         });
       });
     }
-    console.log("instarray ", instSourcesArray);
     return instSourcesArray;
   }
 
@@ -513,7 +509,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleApproveDialog = () => {
-    if (this.isValid()) {
+    if (this.isValid() && this.validateInstitutional()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
         isEdited: true,
@@ -570,13 +566,12 @@ class ConsentGroupReview extends Component {
 
     // validate International Cohorts
     let data = {};
-
+    this.validateInstitutional();
     if (this.validateQuestionaire()) {
 
-      if (this.isValid()) {
+      if (this.isValid() && this.state.errors.instError) {
 
         this.setState(prev => {
-          prev.checkInstSrc = true;
           prev.readOnly = true;
           prev.errorSubmit = false;
 
@@ -585,25 +580,12 @@ class ConsentGroupReview extends Component {
           });
           return prev;
         }, () => {
-          // InstitutionalSource.validate()
-
-          // inst sources should validate it self
-          console.log("this.state.errors.instError: ", this.state.errors.instError);
-          if (this.state.errors.instError) {
-            this.setState({ checkInstSrc: false });
-            console.log("HAY ERROR EN INSTITUTIONAL SOURCES ");
-          } else {
-            let institutionalSourceArray = this.parseInstSources(this.state.futureCopy.instSources);
-            let newFormData = Object.assign({}, this.state.formData);
-            newFormData.instSources = institutionalSourceArray;
-
-            data.projectKey = this.props.consentKey;
-            data.suggestions = JSON.stringify(newFormData);
-          }
-
+          let institutionalSourceArray = this.parseInstSources(this.state.futureCopy.instSources);
+          let newFormData = Object.assign({}, this.state.formData);
+          newFormData.instSources = institutionalSourceArray;
+          console.log("NEW FORMDATA INST SOURCES? ", newFormData.instSources)
           data.projectKey = this.props.consentKey;
           data.suggestions = JSON.stringify(newFormData);
-          // data.suggestions: JSON.stringify(this.state.formData)
 
           if (this.state.reviewSuggestion) {
             Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
@@ -632,22 +614,44 @@ class ConsentGroupReview extends Component {
 
   };
 
-  // parseInstSources(instSources, future) {
-  //   let instSourcesArray = [];
-  //   if (instSources !== null && instSources.length > 0) {
-  //     instSources.map(instSource => {
-  //       instSourcesArray.push({
-  //         current: {name: instSource.name, country: instSource.country},
-  //         future: {name: '', country: ''},
-  //       })
-  //     });
-  //     future.map((futureInst, index) => {
-  //       instSourcesArray[index].future.name = futureInst.name;
-  //       instSourcesArray[index].future.country = futureInst.country;
-  //     })
-  //   }
-  //   return instSourcesArray;
-  // }
+  validateInstitutional = () => {
+    let institutionalNameErrorIndex = [];
+    let institutionalCountryErrorIndex = [];
+    let institutionalError = this.state.formData.instSources.filter((obj, idx) => {
+      let response = false;
+      // Error if Name is missing
+      if (this.isEmpty(obj.current.name) && this.isEmpty(obj.future.name)
+        || this.isEmpty(obj.future.name) && !this.isEmpty(obj.future.country)
+      ) {
+        institutionalNameErrorIndex.push(idx);
+        response = true;
+      }
+
+      // Error if Country is missing
+      if (this.isEmpty(obj.future.country) && this.isEmpty(obj.current.country)
+        || this.isEmpty(obj.future.country) && !this.isEmpty(obj.future.name)
+      ) {
+        institutionalCountryErrorIndex.push(idx);
+        response = true;
+      }
+
+      // Error if all elements are empty
+      if (/*action === "remove" && */!this.state.formData.instSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
+        institutionalNameErrorIndex.push(0);
+        institutionalCountryErrorIndex.push(0);
+        response = true;
+      }
+      return response;
+    }).length > 0;
+
+    this.setState(prev => {
+      prev.errors.institutionalNameErrorIndex = institutionalNameErrorIndex;
+      prev.errors.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
+      prev.errors.instError= institutionalError;
+      return prev;
+    });
+    return institutionalError;
+  };
 
   parseDate(date) {
     if (date !== undefined) {
@@ -755,52 +759,11 @@ class ConsentGroupReview extends Component {
     }
     return null
   }
-  getinstitutionalFuture(institutional) {
-    return institutional.map(element => element.future)
-  }
-
-  getinstitutionalCurrent(institutional) {
-    return institutional.map(element => element.current)
-  }
-
-  validateInstitutional = (action, indexToRemove) => {
-    let institutionalNameErrorIndex = [];
-    let institutionalCountryErrorIndex = [];
-    let institutionalError = this.state.formData.instSources.filter((obj, idx) => {
-      let response = false;
-      if (this.isEmpty(obj.current.name) && this.isEmpty(obj.future.name)
-        || this.isEmpty(obj.future.name) && !this.isEmpty(obj.future.country)
-      ) {
-        institutionalNameErrorIndex.push(idx);
-        response = true;
-      }
-      if (this.isEmpty(obj.future.country) && this.isEmpty(obj.current.country)
-        || this.isEmpty(obj.future.country) && !this.isEmpty(obj.future.name)
-      ) {
-        institutionalCountryErrorIndex.push(idx);
-        response = true;
-      }
-      // if (action === "remove" && !this.state.institutionalSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
-      //   institutionalNameErrorIndex.push(indexToRemove);
-      //   institutionalCountryErrorIndex.push(indexToRemove);
-      //   response = true;
-      // }
-      // this.props.errorHandler(response);
-      return response;
-    }).length > 0;
-
-    this.setState(prev => {
-      prev.institutionalNameErrorIndex = institutionalSourceNameErrorIndex;
-      prev.institutionalCountryErrorIndex = institutionalSourceCountryErrorIndex;
-      prev.instError = institutionalError;
-      return prev;
-    });
-  };
 
   handleUpdateinstitutionalSources = (updated) => {
     this.setState(prev => {
       prev.formData.instSources = updated;
-      prev.instError = false;
+      prev.errors.instError = false;
       return prev;
     });
   };
@@ -1047,7 +1010,7 @@ class ConsentGroupReview extends Component {
         (currentValues.consentExtraProps[key] === null) && delete currentValues.consentExtraProps[key]
     });
 
-
+  console.log("Son iguales? ", JSON.stringify(newValues) === JSON.stringify(currentValues))
     return JSON.stringify(newValues) === JSON.stringify(currentValues);
   }
 
@@ -1066,9 +1029,11 @@ class ConsentGroupReview extends Component {
     const formAndCurrentComp = this.areObjectsEqual("formData", "current");
     if (this.state.isEdited === false) {
       isEdited = false;
-    } else if (!formAndCurrentComp) {
+    }
+    if (!formAndCurrentComp) {
       isEdited = true;
     }
+    console.log("formdata and current are equal? ",formAndCurrentComp, "\nIS EDITED? ", isEdited, "\nstate is edited? ", this.state.isEdited);
     return isEdited;
   }
 
@@ -1318,7 +1283,9 @@ class ConsentGroupReview extends Component {
             readOnly: this.state.readOnly,
             edit: true,
             errorHandler: this.setInstitutionalError,
-            checkInstSrc: this.state.checkInstSrc
+            institutionalNameErrorIndex: this.state.errors.institutionalNameErrorIndex,
+            institutionalCountryErrorIndex: this.state.errors.institutionalCountryErrorIndex,
+            error: this.state.errors.instError
           })
         ]),
 

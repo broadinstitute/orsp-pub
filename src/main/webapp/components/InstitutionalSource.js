@@ -38,8 +38,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
       }
     } else {
       // Only for edit / review
-      if (this.props.institutionalSources[0] !== undefined || this.state.institutionalSources[0].future.name !== '' && this.state.institutionalSources[0].future.country !== ''
-        || this.state.institutionalSources[0].current.name && this.state.institutionalSources[0].current.country ) {
+      if ((this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
+        || this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country ) {
         this.setState(prev => {
           let institutionalSources = this.props.institutionalSources;
           institutionalSources.splice(0, 0, {
@@ -47,31 +47,44 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
             future: { name: '', country: '' }
           });
           prev.institutionalSources = institutionalSources;
-          this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
+          this.props.error && this.props.edit ? this.props.errorHandler() : prev.error = false;
           return prev;
-        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+        }, () => {
+          this.props.updateInstitutionalSource(this.state.institutionalSources)
+      });
+      } else {
+        this.validate();
       }
     }
   }
 
-  removeInstitutionalSources = (index) => (e) => {
-      let future = this.state.institutionalSources;
-      console.log("es edit?", this.props.edit === true , " o hay al menos 1 element no vacio en inst sources? ", future.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length , "==== ", this.props.edit === true || future.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0)
-      if (this.props.edit === true ||
-        future.filter( element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 1) {
-        console.log("current name ", this.state.institutionalSources[index].current.name)
-        if (this.isEmpty(this.state.institutionalSources[index].current.name)) {
-          future.splice(index, 1);
-        } else {
-          future[index].future = { name: '', country: '' }
-        }
-        this.setState({ institutionalSources: future, error: false });
-        this.props.updateInstitutionalSource(this.state.institutionalSources);
-        this.validate("remove", index);
-
-      } else {
-        this.validate("remove", index);
+  removeInstitutionalSources = (index) => {
+    console.log("REMOVE");
+    if (!this.props.edit) {
+      // For new Projects
+      if (this.props.institutionalSources.length > 1) {
+        this.setState(prev => {
+          let institutionalSources = prev.institutionalSources;
+          institutionalSources.splice(index, 1);
+          prev.institutionalSources = institutionalSources;
+          return prev;
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
       }
+    } else {
+      // Only for edit / review
+        let institutionalSources = this.props.institutionalSources;
+      // if (institutionalSources.filter( element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
+        if (this.isEmpty(this.props.institutionalSources[index].current.name)) {
+          institutionalSources.splice(index, 1);
+        } else {
+          institutionalSources[index].future = { name: '', country: '' }
+        }
+
+      this.setState(prev => {
+        prev.institutionalSources = institutionalSources;
+        return prev
+      }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+    }
   };
 
   handleInstitutionalChange = (e) => {
@@ -157,9 +170,9 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
   getError(index, field) {
     if (field === "name") {
-      return this.state.error === true ? this.state.institutionalNameErrorIndex.includes(index) : false;
+      return this.props.error === true ? this.props.institutionalNameErrorIndex.includes(index) : false;
     } else {
-      return this.state.error === true ? this.state.institutionalCountryErrorIndex.includes(index) : false;
+      return this.props.error === true ? this.props.institutionalCountryErrorIndex.includes(index) : false;
     }
   }
 
@@ -194,7 +207,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         institutionalSources.map((rd, index) => {
 
           return h(Fragment, { key: index }, [
-            console.log("value??? ", this.props.edit ? rd.future.name : rd.name),
+            // console.log("value??? ", this.props.edit ? rd.future.name : rd.name),
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
@@ -234,7 +247,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({
-                  action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(index) },
+                  action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeInstitutionalSources(index) },
                   disabled: institutionalSources.length === 1,
                   isRendered: !this.props.readOnly
                 }),
