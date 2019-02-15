@@ -671,6 +671,21 @@ class ConsentGroupReview extends Component {
     return sampleCollectionList;
   };
 
+  getInstitutionalSrc(institutionalSources) {
+    let institutionalSourcesList = [];
+    if (institutionalSources !== null && institutionalSources.length > 0) {
+      institutionalSources.map((f, idx) => {
+        let institutionalSources = {};
+        if (!this.isEmpty(f.future.name) && !this.isEmpty(f.future.country)) {
+          institutionalSources.name = f.future.name;
+          institutionalSources.country = f.future.country;
+          institutionalSourcesList.push(funding);
+        }
+      });
+    }
+    return institutionalSourcesList;
+  }
+
   getConsentGroup = () => {
     const consentGroup = {};
 
@@ -683,7 +698,7 @@ class ConsentGroupReview extends Component {
     consentGroup.collContact = this.state.formData.consentExtraProps.collContact;
     consentGroup.consent = this.state.formData.consentExtraProps.consent;
     consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
-    consentGroup.institutionalSources = JSON.stringify(this.state.formData.instSources);
+    consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.institutionalSources));
     consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
     consentGroup.requireMta = this.state.formData.consentExtraProps.requireMta
 
