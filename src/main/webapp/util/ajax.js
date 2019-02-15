@@ -149,3 +149,9 @@ export const Review = {
   }
 
 };
+
+export const DataUseLetter = {
+  generateRedirectLink(data, serverURL) {
+    return axios.post(serverURL + '/api/dataUseLetter', data);
+  }
+};

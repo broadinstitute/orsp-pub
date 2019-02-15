@@ -1,12 +1,11 @@
 import { Component } from 'react';
 import { hh, div, h, p, small, span, br, button } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
-import { MultiSelect } from './MultiSelect';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
-import { Files } from "../util/ajax";
+import { Files, DataUseLetter } from "../util/ajax";
 
 import './ConfirmationDialog.css';
 
@@ -36,9 +35,16 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
 
   getShareableLink = () => {
+    // generates and returns link to UUID to be redirected to dul form
   };
 
   redirectToDul = () => {
+    // generates and returns link UUID to be redirected to dul form
+    let data = {
+      consentKey: this.props.projectKey,
+      user: this.props.user.userName
+    };
+    DataUseLetter.generateRedirectLink(data, this.props.serverURL);
   };
 
 
