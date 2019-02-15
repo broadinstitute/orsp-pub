@@ -1063,16 +1063,77 @@ class QueryService implements Status {
         ++Long.valueOf(version)
     }
 
-    Collection<StorageDocument> getAllDocuments() {
+    Collection<List> getDocumentsVersions() {
+        List<HashMap<String, String>> storageDocumentList = new ArrayList<>()
+        final String singleVersionDocQuery =
+                'select project_key, file_type, count(file_type) as counted ' +
+                        'from storage_document ' +
+                        'group by project_key, file_type  ' +
+                        'having counted >= 1 ' +
+                        'order by project_key, file_type'
+
+        getSqlConnection().rows(singleVersionDocQuery).each {
+            HashMap<String, String> documentMap = new HashMap<>()
+            documentMap.put('projectKey', it.get("project_key").toString())
+            documentMap.put('fileType', it.get("file_type").toString())
+            documentMap.put('counted', it.get("counted").toString())
+            storageDocumentList.push(documentMap)
+        }
+
+        storageDocumentList
+    }
+
+    StorageDocument getDocument(String projectKey, String fileType) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select d.* ' +
+                        ' from storage_document as d ' +
+                        ' where d.project_key = ?' +
+                        ' and d.file_type = ?'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, projectKey)
+        sqlQuery.setString(1, fileType)
+        final StorageDocument document = sqlQuery.with {
+            addEntity(StorageDocument)
+            list()
+        }.first()
+
+        document
+    }
+
+    Collection<StorageDocument> getDocuments(String projectKey, String fileType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select d.* ' +
+                        ' from storage_document as d ' +
+                        ' where d.project_key = ?' +
+                        ' and d.file_type = ?'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, projectKey)
+        sqlQuery.setString(1, fileType)
+        final documents = sqlQuery.with {
+            addEntity(StorageDocument)
+            list()
+        }
+
+        documents
+    }
+
+    Map<String, List<StorageDocument>> getAllDocuments() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+
         final String query =
                 ' SELECT  creation_date, file_type, project_key, doc_version ' +
                         'FROM storage_document ' +
                         'group by creation_date, file_type, project_key, doc_version ' +
-                        'order by creation_date'
+                        'order by project_key, file_type, creation_date'
 //        final SQLQuery sqlQuery = session.createSQLQuery(query)
 
-        Map<String, StorageDocument> documentMap = new LinkedHashMap<>()
+        Map<String, List<StorageDocument>> documentMap = new LinkedHashMap<>()
+        List<StorageDocument> documentList
+        String previousProjectKey = null
         getSqlConnection().rows(query).each {
             StorageDocument document = new StorageDocument(
                     'projectKey': it.get("project_key").toString(),
@@ -1080,7 +1141,14 @@ class QueryService implements Status {
                     'creationDate': it.get("creation_date"),
                     'docVersion': it.get("doc_version")
             )
-            documentMap.put(document.projectKey, document)
+
+            if (previousProjectKey == document.projectKey) {
+                documentList.push(document)
+            } else {
+                documentMap.put(document.projectKey, documentList)
+                documentList = new ArrayList<>()
+                documentList.push(document)
+            }
         }
         documentMap.values()
     }

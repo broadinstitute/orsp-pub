@@ -308,6 +308,39 @@ class StorageProviderService implements Status {
         response
     }
 
+    def updateSingleDocVersionType() {
+        Collection<List> documentsList = queryService.getDocumentsVersions()
+        documentsList.each {
+            println it.counted
+            println it.projectKey
+            println it.fileType
+            if (it.counted == '1') {
+                updateDocumentVersion(it.projectKey, it.fileType)
+            } else {
+                updateDocumentsVersions(it.projectKey, it.fileType)
+            }
+        }
+
+    }
+
+    def updateDocumentVersion(String projectKey, String fileType) {
+        StorageDocument document = queryService.getDocument(projectKey, fileType)
+        document.setDocVersion(1)
+        document.save(flush: true)
+
+    }
+
+    def updateDocumentsVersions(String projectKey, String fileType) {
+        Collection<StorageDocument> documentCollection = queryService.getDocuments(projectKey, fileType)
+        Long counter = 1
+        documentCollection.each {
+            StorageDocument document = it
+            document.setDocVersion(counter)
+            document.save(flush: true)
+            counter++
+        }
+    }
+
     Map<String, List<StorageDocument>> updateDocumentVersion() {
         Map<String, List<StorageDocument>> mapDocuments
         try {
