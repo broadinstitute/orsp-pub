@@ -21,6 +21,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
     Integer statusCode
     String statusMessage
     Date createDate
+    String documentType
 
     static constraints = {
         uuid nullable: false, unique: true
@@ -35,7 +36,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
         docVersion nullable: false
     }
 
-    static transients = ['inputStream', 'statusCode', 'statusMessage', 'createDate']
+    static transients = ['inputStream', 'statusCode', 'statusMessage', 'createDate', 'documentType']
 
     def getCreateDate() {
         if (!creationDate) {

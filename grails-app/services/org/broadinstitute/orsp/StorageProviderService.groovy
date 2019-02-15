@@ -327,7 +327,6 @@ class StorageProviderService implements Status {
                 else {
                     intermediateList.add(sd)
                 }
-
             }
             keyList.addAll(intermediateList)
         }
