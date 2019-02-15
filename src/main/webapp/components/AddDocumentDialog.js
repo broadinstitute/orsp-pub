@@ -185,7 +185,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               show: this.state.uploadError
             }),
 
-            // following div is visible if document type is data use letter
             div({ isRendered: this.state.type.value === 'Data Use Letter', style: { 'marginTop': '10px' } }, [
               p({ className: "bold" }, [
                 "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
