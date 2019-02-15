@@ -310,7 +310,6 @@ class StorageProviderService implements Status {
     }
 
     Map<String, List<StorageDocument>> updateDocumentVersion() {
-        println 'version update'
         Map<String, List<StorageDocument>> mapDocuments
         try {
             Collection<StorageDocument> documents =  queryService.getAllDocuments()

@@ -93,8 +93,7 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def updateDocumentsVersion() {
-        println 'updateDocumentsVersion'
-        def docs = storageProviderService.updateDocumentVersion()
-        render ([documents: docs])
+        def documents = storageProviderService.updateDocumentVersion()
+        render ([documents: documents] as JSON)
     }
 }
