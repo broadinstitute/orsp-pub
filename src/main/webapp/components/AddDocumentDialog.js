@@ -198,7 +198,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
                 value: this.state.collaboratorEmail,
                 disabled: false,
                 required: false,
-                placeholder: "Enter email addresses...",
+                placeholder: "Enter email address...",
                 onChange: this.handleInputChange
               }),
               div({ className: "row" }, [
