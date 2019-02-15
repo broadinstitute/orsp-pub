@@ -23,7 +23,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
               name: this.props.name,
               className: "form-control inputFieldText",
               value: (this.props.value === undefined || this.props.value === '') ? '' : this.props.value,
-              placeholder: '--',
+              placeholder: (this.props.placeholder === undefined || this.props.placeholder === '') ? '--' : this.props.placeholder,
               disabled: this.props.disabled,
               required: this.props.required,
               onChange: this.props.onChange,

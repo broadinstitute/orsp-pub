@@ -54,6 +54,11 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
   nextQuestion = (e) => {
     let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
+
+    if (this.props.edit === true) {
+      this.props.cleanQuestionsUnanswered(this.state, "next");
+    }
+
     if (currentAnswer !== null) {
       e.preventDefault();
       this.setState(prev => {
@@ -84,32 +89,43 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     let projectType = null;
     let endState = false;
 
-    if (answer === null) {
-      nextQuestionIndex = null;
-      projectType = null;
-      endState = true;
-    } else if (answer) {
-      if (onYes < 100) {
-        nextQuestionIndex = onYes - 1;
-        projectType = null;
-        endState = false;
-      } else {
-        nextQuestionIndex = null;
-        projectType = onYes;
-        endState = true;
-      }
-    } else if (answer === false) {
-      if (onNo < 100) {
-        nextQuestionIndex = onNo - 1;
-        projectType = null;
-        endState = false;
-      } else {
-        nextQuestionIndex = null;
-        projectType = onNo;
-        endState = true;
-      }
-    }
+    switch (answer) {
 
+      case null:
+        nextQuestionIndex = null;
+        projectType = null;
+        endState = true;
+        break;
+
+      case true:
+        if (onYes < 100) {
+          nextQuestionIndex = onYes - 1;
+          projectType = null;
+          endState = false;
+        } else {
+          nextQuestionIndex = null;
+          projectType = onYes;
+          if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "end - true");
+          endState = true;
+        }
+        break;
+
+      case false:
+        if (onNo < 100) {
+          nextQuestionIndex = onNo - 1;
+          projectType = null;
+          endState = false;
+        } else {
+          nextQuestionIndex = null;
+          if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "end - false");
+          projectType = onNo;
+          endState = true;
+        }
+        break;
+
+      default:
+        break;
+    }
     this.setState(prev => {
       prev.nextQuestionIndex = nextQuestionIndex;
       prev.projectType = projectType;
@@ -119,8 +135,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }, () => {
       this.props.handler(this.state);
     });
-
-  }
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')

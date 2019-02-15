@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.ConsentCollectionLink
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -54,7 +55,28 @@ class IssueService {
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PROJECT_AVAILABILITY,
             IssueExtraProperty.EDIT_DESCRIPTION,
-            IssueExtraProperty.DESCRIBE_EDIT_TYPE
+            IssueExtraProperty.DESCRIBE_EDIT_TYPE,
+            IssueExtraProperty.ON_GOING_PROCESS,
+            IssueExtraProperty.COMPLIANCE,
+            IssueExtraProperty.INSTITUTIONAL_SOURCES,
+            IssueExtraProperty.DATABASE_CONTROLLED,
+            IssueExtraProperty.DESCRIBE_CONSENT,
+            IssueExtraProperty.REQUIRE_MTA,
+            IssueExtraProperty.SENSITIVE,
+            IssueExtraProperty.TEXT_SENSITIVE,
+            IssueExtraProperty.ACCESSIBLE,
+            IssueExtraProperty.TEXT_ACCESSIBLE,
+            IssueExtraProperty.TEXT_COMPLIANCE,
+            IssueExtraProperty.SHARING_PLAN,
+            IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
+            IssueExtraProperty.IS_LINK_MAINTAINED,
+            IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA,
+            IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE,
+            IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS,
+            IssueExtraProperty.END_DATE,
+            IssueExtraProperty.START_DATE,
+            IssueExtraProperty.PII,
+
     ]
 
 
@@ -65,7 +87,8 @@ class IssueService {
             IssueExtraProperty.NOT_RESEARCH,
             IssueExtraProperty.COLLABORATOR,
             IssueExtraProperty.PM,
-            IssueExtraProperty.PI
+            IssueExtraProperty.PI,
+            IssueExtraProperty.SAMPLES
     ]
 
     /**
@@ -98,8 +121,10 @@ class IssueService {
     @Transactional
     Issue updateIssue(Issue issue, Map<String, Object> input) throws DomainException {
         // Top level properties that are set on the Issue object.
-        if (input.get(IssueExtraProperty.SUMMARY)) {
+        if (!(issue.getType() == IssueType.CONSENT_GROUP.getName()) && input.get(IssueExtraProperty.SUMMARY)) {
             issue.setSummary((String) input.get(IssueExtraProperty.SUMMARY))
+        } else if (issue.getType().equals(IssueType.CONSENT_GROUP.getName())) {
+            issue.setSummary((String) input.get(IssueExtraProperty.CONSENT) + " / " + input.get(IssueExtraProperty.PROTOCOL ))
         }
         if (input.get(IssueExtraProperty.DESCRIPTION)) {
             issue.setDescription((String) input.get(IssueExtraProperty.DESCRIPTION))
@@ -140,6 +165,30 @@ class IssueService {
             it.delete(hard: true)
         }
 
+        def sampleCollectionIds = input.get('samples')
+        Collection<ConsentCollectionLink> sclOld = ConsentCollectionLink.findAllByConsentKey(issue.projectKey)
+
+        def deletableConsentCollectionLinks = sclOld.findAll { !sampleCollectionIds.contains(it.sampleCollectionId)}
+        if (!deletableConsentCollectionLinks.isEmpty()) {
+            deletableConsentCollectionLinks.each {
+                it.delete(hard: true)
+                sclOld.remove(it)
+            }
+        }
+
+        def newSampleCollectionLinks = sampleCollectionIds.findAll { !sclOld.sampleCollectionId.contains(it) }
+
+        newSampleCollectionLinks.each {
+            if (!sclOld.contains(it)) {
+                new ConsentCollectionLink(
+                        projectKey: issue.source,
+                        consentKey: issue.projectKey,
+                        sampleCollectionId: it,
+                        creationDate: new Date()
+                ).save(flush: true)
+            }
+        }
+
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -151,6 +200,30 @@ class IssueService {
         }
         if (!input.containsKey(IssueExtraProperty.NOT_HSR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_HSR })
+        }
+        if (!input.containsKey(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INDIVIDUAL_DATA_SOURCED })
+        }
+        if (!input.containsKey(IssueExtraProperty.IS_LINK_MAINTAINED)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_LINK_MAINTAINED})
+        }
+        if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE})
+        }
+        if (!input.containsKey(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA})
+        }
+        if (!input.containsKey(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE})
+        }
+        if (!input.containsKey(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS})
+        }
+        if (!input.containsKey(IssueExtraProperty.END_DATE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
+        }
+        if (!input.containsKey(IssueExtraProperty.SAMPLES)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SAMPLES})
         }
 
         propsToDelete.each {

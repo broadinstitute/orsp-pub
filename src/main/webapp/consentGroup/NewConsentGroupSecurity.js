@@ -84,7 +84,8 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
               onChange: this.handleRadio2Change,
               required: true,
               error: this.props.errors.pii,
-              errorMessage: "Required field"
+              errorMessage: "Required field",
+              edit: false
             }),
             InputFieldRadio({
               id: "radioCompliance",
@@ -100,7 +101,8 @@ export const NewConsentGroupSecurity = hh(class NewConsentGroupSecurity extends 
               onChange: this.handleRadio2Change,
               required: true,
               error: this.props.errors.compliance,
-              errorMessage: "Required field"
+              errorMessage: "Required field",
+              edit: false
             }),
             InputFieldText({
               isRendered: this.state.formData.compliance === "true",
