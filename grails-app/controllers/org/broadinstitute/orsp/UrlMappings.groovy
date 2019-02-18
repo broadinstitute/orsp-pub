@@ -24,7 +24,7 @@ class UrlMappings {
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
-        '/api/dul-email-notification'(controller: '')
+        '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")

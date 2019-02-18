@@ -4,7 +4,6 @@ import grails.converters.JSON
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
-import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.ReportService
 import org.broadinstitute.orsp.webservice.PaginationParams
 

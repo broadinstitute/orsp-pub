@@ -554,4 +554,8 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
+
+    def sendDulFormLinkNotification() {
+
+    }
 }
