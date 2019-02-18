@@ -1,23 +1,48 @@
 package org.broadinstitute.orsp
+
 import grails.gorm.transactions.Transactional
-import java.util.Date
 
 class DataUseLetterControllerService {
+    QueryService queryService
 
-    DataUseLetter generateLink(Object input) {
+    String generateDul(Object input) {
         DataUseLetter newDul = new DataUseLetter()
 
         def uniqueId = UUID.randomUUID().toString()
 
         newDul.setUid(uniqueId)
-        newDul.setConsentGroupKey(input.getAt("consentKey") as String)
-        newDul.setProjectKey(input.getAt("projectKey") as String)
-        newDul.setCreationDate(new Date())
-        newDul.save(flush:true)
-//        newDul.setCreator(input.getAt("user"))
-        return newDul
+        newDul.setCreator(input["user"] as String)
 
+        newDul.setConsentGroupKey(input["consentKey"] as String)
+        newDul.setProjectKey(input["projectKey"] as String)
+        newDul.setSubmitted(false)
+        newDul.setCreationDate(new Date())
+
+        newDul.save(flush: true)
+
+        if (newDul.hasErrors()) {
+            throw new DomainException(newDul.getErrors())
+        } else {
+            newDul.uid
+        }
     }
 
+    @Transactional
+    def udpateDataUseLetter(Object input) {
+
+        DataUseLetter dul = DataUseLetter.findByUid(input.uid)
+        if (dul != null && dul.submitted == false) {
+            dul.setSubmitted(true)
+            dul.setDulInfo(input.dulInfo as String)
+            dul.setSubmitDate(new Date())
+            dul.save(flush:true)
+
+            if (dul.hasErrors()) {
+                throw new DomainException(dul.getErrors())
+            } else {
+                dul
+            }
+        }
+    }
 
 }

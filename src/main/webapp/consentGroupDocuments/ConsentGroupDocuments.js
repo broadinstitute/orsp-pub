@@ -126,7 +126,16 @@ class ConsentGroupDocuments extends Component {
     this.setState({ showDialog: !this.state.showDialog });
   };
 
+  getUrlVars() {
+    let vars = {};
+    let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
+
   render() {
+    console.log("props de consentgroupdocument ", this.props);
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
@@ -144,7 +153,8 @@ class ConsentGroupDocuments extends Component {
         downloadDocumentUrl: this.props.downloadDocumentUrl,
         keyOptions: this.state.documentKeyOptions,
         additionalOptions: this.state.documentAdditionalOptions,
-        projectKey: this.props.projectKey,
+        consentKey: this.props.projectKey,
+        projectKey: this.getUrlVars().projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
         serverURL: this.props.serverURL

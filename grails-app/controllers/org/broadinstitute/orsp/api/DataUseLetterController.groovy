@@ -4,7 +4,6 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
-import org.broadinstitute.orsp.DataUseLetterControllerService
 import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
@@ -14,13 +13,27 @@ class DataUseLetterController extends AuthenticatedController {
 
     @Override
     def create () {
-
-        println request.JSON
         Object input = IssueUtils.getJson(Map.class, request.JSON)
-        dataUseLetterControllerService.generateLink(input)
-        response.status = 200
-        render([request.JSON] as JSON)
-
+        try {
+            String linkId = dataUseLetterControllerService.generateDul(input)
+            response.status = 200
+            render([dulToken: linkId] as JSON)
+        } catch(Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
     }
 
+    @Override
+    def update () {
+        Object input = IssueUtils.getJson(Map.class, request.JSON)
+        try {
+            dataUseLetterControllerService.udpateDataUseLetter(input)
+            response.status = 200
+            render(response.status as JSON)
+        } catch(Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+    }
 }

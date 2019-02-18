@@ -36,17 +36,36 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
 
   getShareableLink = () => {
     // generates and returns link to UUID to be redirected to dul form
-  };
+      DataUseLetter.generateRedirectLink(data, this.props.serverURL).then(data => {
+        // Copy to link to clipboard
+        console.log([this.props.serverURL, "/dul/", data.data.dulToken].join)
+      });
+
+    };
 
   redirectToDul = () => {
     // generates and returns link UUID to be redirected to dul form
     let data = {
-      consentKey: this.props.projectKey,
+      projectKey: this.props.projectKey,
+      consentKey: this.props.consentKey,
       user: this.props.user.userName
     };
-    DataUseLetter.generateRedirectLink(data, this.props.serverURL);
+    DataUseLetter.generateRedirectLink(data, this.props.serverURL).then(data => {
+      // Redirect to dul form
+      console.log([this.props.serverURL, "/dul/", data.data.dulToken].join);
+    });
   };
 
+  getRedirectUrl(projectKey) {
+    let key = projectKey.split("-");
+    let projectType = '';
+    if (key.length === 3) {
+      projectType = key[1].toLowerCase();
+    } else {
+      projectType = key[0].toLowerCase();
+    }
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=details"].join("/");
+  }
 
   handleClose = () => {
     this.setState(prev => {
