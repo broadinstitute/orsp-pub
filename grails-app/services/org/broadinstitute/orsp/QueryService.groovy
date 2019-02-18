@@ -1067,7 +1067,7 @@ class QueryService implements Status {
         List<HashMap<String, String>> storageDocumentList = new ArrayList<>()
         final String singleVersionDocQuery =
                 'select project_key, file_type, count(file_type) as counted ' +
-                        'from storage_document ' +
+                        'from storage_document where doc_version = 0 ' +
                         'group by project_key, file_type  ' +
                         'having counted >= 1 ' +
                         'order by project_key, file_type'
