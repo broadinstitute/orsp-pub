@@ -15,12 +15,15 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     super(props);
     this.state = {
       errorMessage: '',
+      successMessage: '',
       documents: '',
       disableBtn: false,
+      disableSendBtn: false,
       typeError: false,
       fileError: false,
       submit: false,
       uploadError: false,
+      success: false,
       type: '',
       error: false,
       file: {
@@ -50,9 +53,13 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       prev.typeError = false;
       prev.fileError = false;
       prev.uploadError = false;
+      prev.success = false;
       prev.disableBtn = false;
+      prev.disableSendBtn = false;
       prev.errorMessage = '';
+      prev.successMessage = '';
       prev.type = '';
+      prev.collaboratorEmail = '';
       return prev;
     });
     this.props.closeModal();
@@ -93,6 +100,15 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       }
     });
   };
+
+  send = () => {
+    this.setState(prev => {
+      prev.successMessage = 'Email sent to: ' + prev.collaboratorEmail;
+      prev.success = true;
+      prev.collaboratorEmail = '';
+      return prev;
+    });
+  }
 
   isValid() {
     let typeError = false;
@@ -180,44 +196,57 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               errorMessage: "Required field",
               removeHandler: () => this.removeFile(document)
             }),
-            AlertMessage({
-              msg: this.state.errorMessage,
-              show: this.state.uploadError
-            }),
-
             div({ isRendered: this.state.type.value === 'Data Use Letter', style: { 'marginTop': '10px' } }, [
               p({ className: "bold" }, [
                 "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
                 br({}),
                 small({ className: "normal" }, ["You can either insert their emails below and a link will be sent to them directly, get a shareable link, or click to be redirected to the Data Use Letter form."])
               ]),
-              InputFieldText({
-                id: "inputCollaboratorEmail",
-                name: "collaboratorEmail",
-                label: "Collaborator Email",
-                value: this.state.collaboratorEmail,
-                disabled: false,
-                required: false,
-                placeholder: "Enter email address...",
-                onChange: this.handleInputChange
-              }),
+              div({ className: "row positionRelative" }, [
+                div({ className: "col-lg-10 col-md-9 col-sm-9 col-9" }, [
+                  InputFieldText({
+                    id: "inputCollaboratorEmail",
+                    name: "collaboratorEmail",
+                    label: "Collaborator Email",
+                    value: this.state.collaboratorEmail,
+                    disabled: false,
+                    required: false,
+                    placeholder: "Enter email address...",
+                    onChange: this.handleInputChange
+                  })
+                ]),
+                div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'bottom': '12px', 'right': '0'} }, [
+                    button({ className: "btn buttonPrimary fullWidth", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
+                ]),
+              ]),
               div({ className: "row" }, [
                 div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({ className: "btn buttonSecondary fullWidth", disabled: this.state.disableBttn, onClick: this.getShareableLink }, [
+                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink }, [
                     span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
                     "Get shareable link"
                   ])
                 ]),
                 div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({ className: "btn buttonSecondary fullWidth", disabled: this.state.disableBttn, onClick: this.redirectToDul }, ["Complete Data Use Letter form"]),
+                  button({ className: "btn buttonSecondary fullWidth", onClick: this.redirectToDul }, ["Complete Data Use Letter form"]),
                 ])
               ])
+            ]),
+            div({ style: { 'marginTop': '15px' } }, [
+              AlertMessage({
+                msg: this.state.errorMessage,
+                show: this.state.uploadError,
+              }),
+              AlertMessage({
+                type: 'success',
+                msg: this.state.successMessage,
+                show: this.state.success,
+              })
             ])
           ]),
 
           h(ModalFooter, {}, [
             button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, ["Upload"]),
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, ["Upload"])
           ])
         ])
     )

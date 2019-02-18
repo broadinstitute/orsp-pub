@@ -233,6 +233,10 @@ input[type=checkbox]:checked+label:before {
   position: relative;
 }
 
+.positionAbsolute {
+  position: absolute;
+}
+
 .noMargin {
   margin: 0;
 }
