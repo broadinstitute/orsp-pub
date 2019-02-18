@@ -1069,7 +1069,6 @@ class QueryService implements Status {
                 'select project_key, file_type, count(file_type) as counted ' +
                         'from storage_document where doc_version = 0 ' +
                         'group by project_key, file_type  ' +
-                        'having counted >= 1 ' +
                         'order by project_key, file_type'
 
         getSqlConnection().rows(singleVersionDocQuery).each {
@@ -1084,22 +1083,7 @@ class QueryService implements Status {
     }
 
     StorageDocument getDocument(String projectKey, String fileType) {
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final String query =
-                ' select d.* ' +
-                        ' from storage_document as d ' +
-                        ' where d.project_key = ?' +
-                        ' and d.file_type = ?'
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        sqlQuery.setString(0, projectKey)
-        sqlQuery.setString(1, fileType)
-        final StorageDocument document = sqlQuery.with {
-            addEntity(StorageDocument)
-            list()
-        }.first()
-
-        document
+        getDocuments(projectKey, fileType).first()
     }
 
     Collection<StorageDocument> getDocuments(String projectKey, String fileType) {
@@ -1109,7 +1093,8 @@ class QueryService implements Status {
                 ' select d.* ' +
                         ' from storage_document as d ' +
                         ' where d.project_key = ?' +
-                        ' and d.file_type = ?'
+                        ' and d.file_type = ?' +
+                        ' order by creation_date'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setString(0, projectKey)
         sqlQuery.setString(1, fileType)
