@@ -41,8 +41,11 @@ export const ConsentGroup = {
 
   updateConsent(url, data, projectKey) {
     return axios.put(url + '?consentKey=' + projectKey, data);
-  }
+  },
 
+  sendEmailDul(url, recipients, projectKey) {
+   return axios.post(url, data, projectKey);
+  },
 };
 
 export const Files = {
