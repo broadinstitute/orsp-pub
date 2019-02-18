@@ -31,6 +31,9 @@ class DataUseLetterController extends AuthenticatedController {
             dataUseLetterControllerService.udpateDataUseLetter(input)
             response.status = 200
             render(response.status as JSON)
+        } catch(IllegalArgumentException e) {
+            response.status = 400
+            render([error: "Form has been already submitted"] as JSON)
         } catch(Exception e) {
             response.status = 500
             render([error: e.message] as JSON)

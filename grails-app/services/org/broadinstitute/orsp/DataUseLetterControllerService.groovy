@@ -31,7 +31,7 @@ class DataUseLetterControllerService {
     def udpateDataUseLetter(Object input) {
 
         DataUseLetter dul = DataUseLetter.findByUid(input.uid)
-        if (dul != null && dul.submitted == false) {
+        if (dul != null && !dul.submitted) {
             dul.setSubmitted(true)
             dul.setDulInfo(input.dulInfo as String)
             dul.setSubmitDate(new Date())
@@ -42,6 +42,8 @@ class DataUseLetterControllerService {
             } else {
                 dul
             }
+        } else {
+            throw new IllegalArgumentException()
         }
     }
 
