@@ -54,7 +54,11 @@ class ProjectDocument extends Component {
     const additionalDocuments = [];
     documentsCollection.forEach(documentData => {
       if (ProjectKeyDocuments.lastIndexOf(documentData.fileType) !== -1) {
-        keyDocuments.push(documentData);
+        if(documentData.documentType === 'key') {
+          keyDocuments.push(documentData);
+        } else {
+          additionalDocuments.push(documentData);
+        }        
       } else {
         additionalDocuments.push(documentData);
       }
@@ -65,27 +69,9 @@ class ProjectDocument extends Component {
     })
   };
 
-  handleChangeStatus = (uuid, status) => {
-    const formerStateKeyDoc = this.state.keyDocuments.slice();
-    formerStateKeyDoc.forEach(doc => {
-      if (uuid === doc.uuid){
-        doc.status = status;
-      }
-    });
-    this.setState({keyDocuments: formerStateKeyDoc});
-
-    const formerAdditionalDoc = this.state.additionalDocuments.slice();
-    formerAdditionalDoc.forEach(doc => {
-      if (uuid === doc.uuid){
-        doc.status = status;
-      }
-    });
-    this.setState({additionalDocuments: formerAdditionalDoc});
-  };
-
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
-      this.handleChangeStatus(uuid, 'Approved');
+        this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -94,7 +80,7 @@ class ProjectDocument extends Component {
 
   rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
-      this.handleChangeStatus(uuid, 'Rejected');
+      this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);

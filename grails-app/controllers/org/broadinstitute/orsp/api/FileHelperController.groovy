@@ -6,15 +6,20 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.Status
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.StorageProviderService
 import org.springframework.web.multipart.MultipartFile
 
 import java.text.SimpleDateFormat
+import java.util.function.Function
+import java.util.stream.Collectors
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
     StorageProviderService storageProviderService
+
+    StorageProviderService storageProviderService;
 
     def attachDocument() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
@@ -87,8 +92,9 @@ class FileHelperController extends AuthenticatedController{
 
     def attachedDocuments() {
         Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
+        List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
         Gson gson = new Gson()
-        String doc = gson.toJson(documents)
+        String doc = gson.toJson(results)
         render ([documents : doc] as JSON)
     }
 
