@@ -1121,35 +1121,4 @@ class QueryService implements Status {
         documents
     }
 
-    Map<String, List<StorageDocument>> getAllDocuments() {
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-
-        final String query =
-                ' SELECT  creation_date, file_type, project_key, doc_version ' +
-                        'FROM storage_document ' +
-                        'group by creation_date, file_type, project_key, doc_version ' +
-                        'order by project_key, file_type, creation_date'
-//        final SQLQuery sqlQuery = session.createSQLQuery(query)
-
-        Map<String, List<StorageDocument>> documentMap = new LinkedHashMap<>()
-        List<StorageDocument> documentList
-        String previousProjectKey = null
-        getSqlConnection().rows(query).each {
-            StorageDocument document = new StorageDocument(
-                    'projectKey': it.get("project_key").toString(),
-                    'fileType': it.get("file_type").toString(),
-                    'creationDate': it.get("creation_date"),
-                    'docVersion': it.get("doc_version")
-            )
-
-            if (previousProjectKey == document.projectKey) {
-                documentList.push(document)
-            } else {
-                documentMap.put(document.projectKey, documentList)
-                documentList = new ArrayList<>()
-                documentList.push(document)
-            }
-        }
-        documentMap.values()
-    }
 }

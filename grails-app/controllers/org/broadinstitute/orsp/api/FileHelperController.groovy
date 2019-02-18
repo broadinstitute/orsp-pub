@@ -95,6 +95,6 @@ class FileHelperController extends AuthenticatedController{
     def updateDocumentsVersion() {
         storageProviderService.updateSingleDocVersionType()
         response.status = 200
-        render (['status': 'updated'] as JSON)
+        render (['message': 'documents versions updated'] as JSON)
     }
 }
