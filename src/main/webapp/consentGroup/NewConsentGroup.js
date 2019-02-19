@@ -137,9 +137,9 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }).catch(error => {
-      this.changeSubmitState();
-      console.error(error);
-      this.toggleSubmitError();
+        this.changeSubmitState();
+        console.error(error);
+        this.toggleSubmitError();
     });
   };
 
@@ -174,11 +174,11 @@ class NewConsentGroup extends Component {
     // step 3
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
-      questions.map((q, idx) => {
+     questions.map((q, idx) => {
         if (q.answer !== null) {
           extraProperties.push({name: q.key, value: q.answer});
         }
-      });
+     });
     }
     // step 4
     extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });

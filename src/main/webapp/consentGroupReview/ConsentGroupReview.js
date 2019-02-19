@@ -103,6 +103,7 @@ class ConsentGroupReview extends Component {
         endDate: false,
         startDate: false,
       },
+      editedForm: {},
       formData: {
         currentInstSources: [{ name: '', country: '' }],
         consentExtraProps: {},
@@ -248,7 +249,7 @@ class ConsentGroupReview extends Component {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
-          prev.isEdited = true;
+          prev.editedForm = JSON.parse(data.data.suggestions);
           prev.reviewSuggestion = true;
           return prev;
         });
@@ -949,8 +950,7 @@ class ConsentGroupReview extends Component {
         }
       });
       return prev;
-    }, () => console.log(this.state.questions)
-    )};
+    })};
 
   handleDiscardEditsDialog = () => {
     this.setState({
@@ -1013,15 +1013,14 @@ class ConsentGroupReview extends Component {
     return consentGroupNameExists;
   }
 
-  isFormEdited = () => {
-    let isEdited = false;
-    const formAndCurrentComp = this.areObjectsEqual("formData", "current");
-    if (this.state.isEdited === false) {
-      isEdited = false;
-    } else if (!formAndCurrentComp) {
-      isEdited = true;
+  areFormsEqual() {
+    let areFormsEqual = false;
+    if (this.state.reviewSuggestion) {
+      areFormsEqual = this.areObjectsEqual("formData", "editedForm");
+    } else {
+      areFormsEqual = this.areObjectsEqual("formData", "current");
     }
-    return isEdited;
+    return areFormsEqual;
   };
 
   render() {
@@ -1049,8 +1048,8 @@ class ConsentGroupReview extends Component {
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
-    const disableSubmitEdit = !this.isFormEdited();
-    return (
+    // const disableSubmitEdit = !this.areFormsEqual(); // etsa edidato deberia habilitar boton
+    return (                                        // no esta editado deshabilitar boton
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
@@ -1518,10 +1517,11 @@ class ConsentGroupReview extends Component {
           }, ["Cancel"]),
 
           /*visible for every user in edit mode and disabled until some edit has been made*/
+          // debug esto ya mismo
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: disableSubmitEdit,
+            disabled: this.areFormsEqual(),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
