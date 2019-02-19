@@ -695,7 +695,7 @@ class ConsentGroupReview extends Component {
     }
 
     const questions = this.state.intCohortsAnswers;
-    if (questions !== null && questions.length > 1) {
+    if (questions !== null && questions.length > 0) {
       questions.map((q, idx) => {
         if (q.answer !== null) {
           consentGroup[q.key] = q.answer;
