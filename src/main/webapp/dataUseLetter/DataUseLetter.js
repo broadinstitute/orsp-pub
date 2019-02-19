@@ -19,6 +19,7 @@ class DataUseLetter extends Component {
     super(props);
     this.state = {
       readOnly: false,
+      submit: false,
       showSampleCollectionWarning: true,
       formData: {
         protocolTitle: '',
@@ -105,7 +106,8 @@ class DataUseLetter extends Component {
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
-
+    this.validateForm = this.validateForm.bind(this);
+    this.submitDUL = this.submitDUL.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -121,11 +123,8 @@ class DataUseLetter extends Component {
     const  params  = window.location.href.split('/').pop(); // this must be replaced with UID to get associated info
     const consentKey = params.substr(0, params.indexOf('?'));
     let projectKey = new URLSearchParams(window.location.search).get("projectKey");
-    // console.log("PROJECT KEEY", projectKey);
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => { //check backend map to retrieve only relevant info
-      // console.log("CONSENT GROUP ", consentGroup.data);
       Project.getProject(this.props.projectUrl, projectKey).then(project => {
-        // console.log("PROJECT INFO ", project.data);
         this.setState(prev => {
           prev.formData.protocolTitle = consentGroup.data.issue.summary;
           prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
@@ -139,10 +138,14 @@ class DataUseLetter extends Component {
 
   handleFormDataTextChange = (e) => {
     const { name = '', value = '' } = e.target;
-    console.log("NAME ", name);
     this.setState(prev => {
       prev.formData[name] = value;
       return prev;
+    }, () => {
+      console.log("submitttt", this.state.submit);
+      if(this.state.submit) {
+        this.validateForm();
+      }
     });
   };
 
@@ -150,6 +153,10 @@ class DataUseLetter extends Component {
     this.setState(prev => {
       prev.formData[id] = date;
       return prev;
+    }, () => {
+      if(this.state.submit) {
+        this.validateForm();
+      }
     });
   };
 
@@ -163,15 +170,35 @@ class DataUseLetter extends Component {
     const { name = '', checked = '' } = e.target;
     this.setState(prev => {
       prev.formData[name] = checked;
+      if(name === 'ethnic' && checked === false) {
+        prev.formData['ethnicSpecify'] = '';
+      }
       return prev;
+    }, () => {
+      if(this.state.submit) {
+        this.validateForm();
+      }
     });
   };
 
   handleSubOptionsCheck = (e) => {
     const { name = '', checked = '' } = e.target;
     this.setState(prev => {
+      if(name === 'endocrineDisease' && checked === false) {
+        prev.formData.diseaseRestrictedOptions['endocrineDiabetes'] = false;
+      }
+      if(name === 'digestiveDisease' && checked === false) {
+        prev.formData.diseaseRestrictedOptions['inflammatoryDisease'] = false;
+      }
+      if(name === 'otherDisease' && checked === false) {
+        prev.formData['otherDiseaseSpecify'] = '';
+      }
       prev.formData.diseaseRestrictedOptions[name] = checked;
       return prev;
+    }, () => {
+      if(this.state.submit) {
+        this.validateForm();
+      }
     });
   };
 
@@ -181,25 +208,41 @@ class DataUseLetter extends Component {
     } else if (value === 'false') {
       value = false;
     }
-
     this.setState(prev => {
         prev.formData[field] = value;
         return prev;
+    }, () => {
+      if(this.state.submit) {
+        this.validateForm();
+      }
     });
   };
 
   cancelDUL = (e) => () => {
   };
 
-  submitDUL = (e) => () => {
-    this.validateForm();
+  // isSCDateRangeValid() {
+  //   let valid = true;
+  //   if(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) {
+  //     valid = false;
+  //   }
+  //   return valid;
+  // }
 
+  submitDUL() {
+    this.validateForm();
+    this.setState(prev => {
+      prev.submit = true;
+      console.log("setting",prev.submit);
+      return prev;
+    });
     if (this.state.isFormValid === true) {
       // submit
     }
   };
 
-  validateForm = () => {
+  validateForm() {
+    console.log("validando");
     let errorForm = false;
     let errorSampleCollectionDateRange = false;
 
@@ -225,10 +268,10 @@ class DataUseLetter extends Component {
     }
 
     // Primary Restrictions validations
-    if (this.isEmpty(this.state.formData.noRestrictions)
-        && this.isEmpty(this.state.formData.generalUse)
-        && this.isEmpty(this.state.formData.researchRestricted)
-        && this.isEmpty(this.state.formData.diseaseRestricted)) {
+    if (this.state.formData.noRestrictions === false
+        && this.state.formData.generalUse === false
+        && this.state.formData.researchRestricted === false
+        && this.state.formData.diseaseRestricted === false) {
       errorForm = true;
       errorPrimaryRestrictionsChecks = true;
     }
@@ -238,31 +281,30 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
     }
-    if (this.state.formData.diseaseRestricted === true
-        && this.state.formData.diseaseRestrictedOptions.otherDisease === true
-        && this.isEmpty(this.state.formData.diseaseRestrictedOptions.otherDiseaseSpecify)) {
-      errorForm = true;
-      errorOtherDiseaseSpecify = true;
-    }
+    // if (this.state.formData.diseaseRestricted === true
+    //     && this.state.formData.diseaseRestrictedOptions.otherDisease === true
+    //     && this.isEmpty(this.state.formData.diseaseRestrictedOptions.otherDiseaseSpecify)) {
+    //   errorForm = true;
+    //   errorOtherDiseaseSpecify = true;
+    // }
 
     // Institutional Review Board/Ethics Validations
-    if (this.isEmpty(this.state.signature)) {
+    if (this.isEmpty(this.state.formData.signature)) {
       errorForm = true;
       errorSignature = true;
     }
-    if (this.isEmpty(this.state.printedName)) {
+    if (this.isEmpty(this.state.formData.printedName)) {
       errorForm = true;
       errorPrintedName = true;
     }
-    if (this.isEmpty(this.state.position)) {
+    if (this.isEmpty(this.state.formData.position)) {
       errorForm = true;
       errorPosition = true;
     }
-    if (this.isEmpty(this.state.institution)) {
+    if (this.isEmpty(this.state.formData.institution)) {
       errorForm = true;
       errorInstitution = true;
     }
-    //
 
     if (this.isEmpty(this.state.formData.GSRAvailability)) {
       errorForm = true;
@@ -291,19 +333,19 @@ class DataUseLetter extends Component {
 
     this.setState(prev => {
       prev.errors.errorForm= errorForm;
-      prev.errors.errorSampleCollectionDateRange= errorSampleCollectionDateRange;
-      prev.errors.errorPrimaryRestrictionsChecks= errorPrimaryRestrictionsChecks;
-      prev.errors.errorDiseaseRestrictedOptions= errorDiseaseRestrictedOptions;
-      prev.errors.errorOtherDiseaseSpecify= errorOtherDiseaseSpecify;
+      prev.errors.errorSampleCollectionDateRange = errorSampleCollectionDateRange;
+      prev.errors.errorPrimaryRestrictionsChecks = errorPrimaryRestrictionsChecks;
+      prev.errors.errorDiseaseRestrictedOptions = errorDiseaseRestrictedOptions;
+      prev.errors.errorOtherDiseaseSpecify = errorOtherDiseaseSpecify;
 
-      prev.errors.errorSignature= errorSignature;
-      prev.errors.errorPrintedName= errorPrintedName;
-      prev.errors.errorPosition= errorPosition;
-      prev.errors.errorInstitution= errorInstitution;
+      prev.errors.errorSignature = errorSignature;
+      prev.errors.errorPrintedName = errorPrintedName;
+      prev.errors.errorPosition = errorPosition;
+      prev.errors.errorInstitution = errorInstitution;
 
-      prev.errors.errorGSRAvailability= errorGSRAvailability;
-      prev.errors.errorDataSubmissionProhibition= errorDataSubmissionProhibition;
-      prev.errors.errorRepositoryType= errorRepositoryType;
+      prev.errors.errorGSRAvailability = errorGSRAvailability;
+      prev.errors.errorDataSubmissionProhibition = errorDataSubmissionProhibition;
+      prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
       return prev;
@@ -435,7 +477,9 @@ class DataUseLetter extends Component {
                   label: "Start Date",
                   onChange: this.handleDatePickerChange,
                   placeholder: "Enter Start Date",
-                  maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
+                  maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null,
+                  error: this.state.errors.errorSampleCollectionDateRange,
+                  errorMessage: 'Required Fields'
                 })
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
@@ -460,10 +504,6 @@ class DataUseLetter extends Component {
                 }),
                 label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
               ]),
-              AlertMessage({
-                msg: 'Required',//this.state.errorMessage,
-                show: this.state.errors.errorSampleCollectionDateRange === true
-              }),
             ])
           ]),
 
@@ -523,9 +563,8 @@ class DataUseLetter extends Component {
               checked: this.state.formData.diseaseRestricted === 'true' || this.state.formData.diseaseRestricted === true,
               readOnly: this.state.readOnly
             }),
-
-/////////////diseaseRestrictedOptions
-
+            small({ isRendered: this.state.errors.errorPrimaryRestrictionsChecks, className: "errorMessage" }, ['Requiered Fields.']),
+       
             div({ isRendered: this.state.formData.diseaseRestricted === true, className: "row subGroup" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
                 InputFieldCheckbox({
@@ -694,7 +733,7 @@ class DataUseLetter extends Component {
                   })
                 ])
               ])
-            ])
+            ]),
           ]),
 
           Panel({ title: "2. Does the informed consent form or the IRB/EC prohibit any of the following?" }, [
@@ -776,7 +815,7 @@ class DataUseLetter extends Component {
                 onChange: this.handleFormDataTextChange,
                 readOnly: this.state.readOnly
               })
-            ])
+            ]),
           ]),
 
           Panel({ title: "4. Other restrictions" }, [
@@ -801,77 +840,80 @@ class DataUseLetter extends Component {
             // If SC Date Range still not answered (OK)
             AlertMessage({
               msg: "Please enter sample collection date range above before proceeding.",
-              show: startDate === null || (onGoingProcess === false && endDate === null)
+              show: this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)
             }),
 
             // If SC Date Range starts before 1/25/2015 (OK)
-            div({ isRendered: this.startsBefore("1/25/2015") }, [
+            div({ isRendered: !(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null))}, [
+              div({ isRendered: this.startsBefore("1/25/2015") }, [
+                InputFieldRadio({
+                  id: "radioDataSubmissionProhibition",
+                  name: "dataSubmissionProhibition",
+                  label: "Is data submission not inconsistent with (not prohibited by) the informed consent provided by the research participant?*",
+                  value: this.state.formData.dataSubmissionProhibition,
+                  optionValues: ["allowed", "prohibited"],
+                  optionLabels: [
+                    span({}, ["Yes, data submission is ", span({ className: "bold" }, ["not inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
+                    span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
+                  ],
+                  onChange: this.handleRadioChange,
+                  readOnly: this.state.readOnly
+                })
+              ]),
+
+              // If SC Date Range ends after (or that same) 1/25/2015 (OK)
+              div({ isRendered: this.endsEqualOrAfter("1/25/2015") }, [
+                InputYesNo({
+                  id: "radioDataUseConsent",
+                  name: "dataUseConsent",
+                  value: this.state.formData.dataUseConsent,
+                  label: "Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?*",
+                  readOnly: this.state.readOnly,
+                  onChange: this.handleRadioChange,
+                }),
+                InputYesNo({
+                  id: "radioDataDepositionDescribed",
+                  name: "dataDepositionDescribed",
+                  value: this.state.formData.dataDepositionDescribed,
+                  label: "Is data deposition into a repository described in the consent form?*",
+                  readOnly: this.state.readOnly,
+                  onChange: this.handleRadioChange,
+                }),
+                InputFieldRadio({
+                  id: "radioRepositoryType",
+                  name: "repositoryType",
+                  label: "What type of repository is permitted?*",
+                  value: this.state.formData.repositoryType,
+                  optionValues: ["controlledAccess", "openAccess"],
+                  optionLabels: [
+                    span({ className: "bold" }, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
+                    span({ className: "bold" }, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
+                    span({ className: "bold" }, ["Both controlled-access and open-access are permitted"]),
+                  ],
+                  onChange: this.handleRadioChange,
+                  readOnly: this.state.readOnly
+                })
+              ]),
+              div({ className: "boxWrapper" }, [
+                p({}, ["NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."]),
+              ]),
               InputFieldRadio({
-                id: "radioDataSubmissionProhibition",
-                name: "dataSubmissionProhibition",
-                label: "Is data submission not inconsistent with (not prohibited by) the informed consent provided by the research participant?*",
-                value: this.state.formData.dataSubmissionProhibition,
-                optionValues: ["allowed", "prohibited"],
+                id: "radioGSRAvailability",
+                name: "GSRAvailability",
+                label: "Are the genomic summary results (GSR) from this study to be made available only through controlled-access?*",
+                value: this.state.formData.GSRAvailability,
+                optionValues: ["GSRNotRequired", "GSRRequired"],
                 optionLabels: [
-                  span({}, ["Yes, data submission is ", span({ className: "bold" }, ["not inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
-                  span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
+                  "No, controlled-access for GSR is not required",
+                  "Yes, controlled-access for GSR is required",
                 ],
                 onChange: this.handleRadioChange,
-                readOnly: this.state.readOnly
+                readOnly: this.state.readOnly,
+                error: this.state.errors.errorGSRAvailability,
+                errorMessage: 'Required Field'
               })
             ]),
-
-            // If SC Date Range ends after (or that same) 1/25/2015 (OK)
-            div({ isRendered: this.endsEqualOrAfter("1/25/2015") }, [
-              InputYesNo({
-                id: "radioDataUseConsent",
-                name: "dataUseConsent",
-                value: this.state.formData.dataUseConsent,
-                label: "Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?*",
-                readOnly: this.state.readOnly,
-                onChange: this.handleRadioChange,
-              }),
-              InputYesNo({
-                id: "radioDataDepositionDescribed",
-                name: "dataDepositionDescribed",
-                value: this.state.formData.dataDepositionDescribed,
-                label: "Is data deposition into a repository described in the consent form?*",
-                readOnly: this.state.readOnly,
-                onChange: this.handleRadioChange,
-              }),
-              InputFieldRadio({
-                id: "radioRepositoryType",
-                name: "repositoryType",
-                label: "What type of repository is permitted?*",
-                value: this.state.formData.repositoryType,
-                optionValues: ["controlledAccess", "openAccess"],
-                optionLabels: [
-                  span({ className: "bold" }, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
-                  span({ className: "bold" }, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
-                  span({ className: "bold" }, ["Both controlled-access and open-access are permitted"]),
-                ],
-                onChange: this.handleRadioChange,
-                readOnly: this.state.readOnly
-              })
-            ]),
-            div({ className: "boxWrapper" }, [
-              p({}, ["NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."]),
-            ]),
-            InputFieldRadio({
-              id: "radioGSRAvailability",
-              name: "GSRAvailability",
-              label: "Are the genomic summary results (GSR) from this study to be made available only through controlled-access?*",
-              value: this.state.formData.GSRAvailability,
-              optionValues: ["GSRNotRequired", "GSRRequired"],
-              optionLabels: [
-                "No, controlled-access for GSR is not required",
-                "Yes, controlled-access for GSR is required",
-              ],
-              onChange: this.handleRadioChange,
-              readOnly: this.state.readOnly
-            })
-          ]),
-
+        ]),
           // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3 (OK)
           h2({ className: "pageSubtitle" }, [
             small({}, [
@@ -911,7 +953,9 @@ class DataUseLetter extends Component {
             required: true,
             value: this.state.formData.signature,
             onChange: this.handleFormDataTextChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.errorSignature,
+            errorMessage: 'Required Field'
           }),
           InputFieldText({
             id: "inputPrintedName",
@@ -921,7 +965,9 @@ class DataUseLetter extends Component {
             required: true,
             value: this.state.formData.printedName,
             onChange: this.handleFormDataTextChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.errorPrintedName,
+            errorMessage: 'Required Field'
           }),
           InputFieldText({
             id: "inputPosition",
@@ -931,7 +977,9 @@ class DataUseLetter extends Component {
             required: true,
             value: this.state.formData.position,
             onChange: this.handleFormDataTextChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.errorPosition,
+            errorMessage: 'Required Field'
           }),
           InputFieldText({
             id: "inputInstitution",
@@ -941,7 +989,9 @@ class DataUseLetter extends Component {
             required: true,
             value: this.state.formData.institution,
             onChange: this.handleFormDataTextChange,
-            readOnly: this.state.readOnly
+            readOnly: this.state.readOnly,
+            error: this.state.errors.errorInstitution,
+            errorMessage: 'Required Field'            
           }),
           InputFieldText({
             id: "inputDate",
@@ -956,7 +1006,7 @@ class DataUseLetter extends Component {
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
-              onClick: this.submitDUL(),
+              onClick: this.submitDUL,
               disabled: false
             }, ["Submit"]),
 
