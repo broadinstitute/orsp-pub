@@ -47,7 +47,6 @@ export const Wizard = hh(class Wizard extends Component {
         return prev;
       }, () => {
         this.props.stepChanged(this.state.currentStepIndex);
-        this.props.validate();
       })
     }
   };

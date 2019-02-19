@@ -257,10 +257,6 @@ class NewConsentGroup extends Component {
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
 
-    // if (!this.state.formSubmitted) {
-    //   return;
-    // }
-
     let isValid = true;
     if (field === "consentGroupName" && this.consentGroupNameExists()) {
       consentGroupName = true;
@@ -291,13 +287,6 @@ class NewConsentGroup extends Component {
       describeConsentGroup = true;
       isValid = false;
     }
-    // console.log("CG PADRE ", this.state.step1FormData.institutionalSourcesError)
-    // if (this.state.step1FormData.institutionalSourcesError) {
-    // // if (!this.state.step1FormData.validateInstitutionalSources()) {
-    //   isValid = false;
-    // }
-
-
     if (this.state.step1FormData.institutionalSources === undefined) {
       institutionalSourcesName = true;
       institutionalSourcesCountry = true;
@@ -314,7 +303,6 @@ class NewConsentGroup extends Component {
         }
       });
     }
-
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.investigatorLastName = investigatorLastName;
@@ -651,10 +639,6 @@ class NewConsentGroup extends Component {
     }
   }
 
-  validateForm() {
-    this.setState({ validateForm: true })
-  }
-
   render() {
 
     const { currentStep, determination } = this.state;
@@ -669,8 +653,7 @@ class NewConsentGroup extends Component {
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage,
-        validate: this.state.validateForm
+        loadingImage: this.props.loadingImage
   }, [
         NewConsentGroupGeneralData({
           title: "General Data",
