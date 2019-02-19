@@ -248,7 +248,7 @@ class ConsentGroupReview extends Component {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
-          prev.isEdited = false;
+          prev.isEdited = true;
           prev.reviewSuggestion = true;
           return prev;
         });

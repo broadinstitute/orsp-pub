@@ -11,13 +11,15 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
     this.state = {
       future: [],
-      institutionalSources: []
+      institutionalSources: [{ name: '', country: '' }]
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.edit && nextProps.current !== prevState.current) {
       return { current: nextProps.current, future: nextProps.future};
+    } else if (!nextProps.edit && nextProps.institutionalSources !== prevState.institutionalSources) {
+      return { institutionalSources: nextProps.institutionalSources};
     } else {
       return null
     }
@@ -26,7 +28,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   addInstitutionalSources() {
     if (!this.props.edit) {
       // For new Projects
-      if (this.state.institutionalSources[0].name !== '' && this.state.institutionalSources[0].country !== '') {
+      if (this.props.institutionalSources !== undefined && this.props.institutionalSources[0].name !== '' && this.props.institutionalSources[0].country !== '') {
         this.setState(prev => {
           let institutionalSources = this.state.institutionalSources;
           institutionalSources.splice(0, 0, { name: '', country: '' });
@@ -83,17 +85,6 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   };
 
   handleInstitutionalChange = (e) => {
-    let institutionalSources = this.state.institutionalSources;
-    const field = e.target.name;
-    const value = e.target.value;
-    const index = e.target.getAttribute('index');
-    institutionalSources[index].future[field] = value;
-    this.setState({ institutionalSources: institutionalSources, error: false, institutionalNameErrorIndex: [], institutionalCountryErrorIndex: [] });
-    this.props.updateInstitutionalSource(this.state.institutionalSources, field);
-  };
-
-
-  handleInstitutionalChange = (e) => {
     if (!this.props.edit) {
       let institutionalSources = this.props.institutionalSources;
       const field = e.target.name;
@@ -104,7 +95,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         prev.institutionalSources = institutionalSources;
         return prev;
       }, () => {
-        this.props.updateInstitutionalSource(this.state.institutionalSources)
+        this.props.updateInstitutionalSource(this.state.institutionalSources, field)
       });
     } else {
       let institutionalSources = this.props.institutionalSources;
@@ -170,7 +161,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.name : rd.name,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "name") : this.props.error,
+                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0,
+                      disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
                       edited: this.props.readOnly,
@@ -186,7 +178,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.country : rd.country,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "country") : this.props.error,
+                      error: this.props.edit ? this.getError(index, "country") : this.props.errorCountry && index === 0,
+                      disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly
                     })

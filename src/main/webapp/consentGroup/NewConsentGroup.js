@@ -137,10 +137,10 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }).catch(error => {
-        this.changeSubmitState();
-        console.error(error);
-        this.toggleSubmitError();
-      });
+      this.changeSubmitState();
+      console.error(error);
+      this.toggleSubmitError();
+    });
   };
 
   toggleSubmitError = () => {
@@ -174,11 +174,11 @@ class NewConsentGroup extends Component {
     // step 3
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
-     questions.map((q, idx) => {
+      questions.map((q, idx) => {
         if (q.answer !== null) {
           extraProperties.push({name: q.key, value: q.answer});
         }
-     });
+      });
     }
     // step 4
     extraProperties.push({ name: 'pii', value: this.state.step4FormData.pii });
@@ -303,6 +303,7 @@ class NewConsentGroup extends Component {
         }
       });
     }
+
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.investigatorLastName = investigatorLastName;
@@ -654,7 +655,7 @@ class NewConsentGroup extends Component {
         submitHandler: this.submitNewConsentGroup,
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage
-  }, [
+      }, [
         NewConsentGroupGeneralData({
           title: "General Data",
           currentStep: currentStep,
