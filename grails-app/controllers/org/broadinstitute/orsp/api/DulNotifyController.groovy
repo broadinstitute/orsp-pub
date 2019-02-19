@@ -11,26 +11,26 @@ class DulNotifyController extends AuthenticatedController{
 
     def sendNotifications() {
         User user = userService.findUser('triveros')
-        // TODO pedir los links de cada formulario antes de enviar el email
 
         println 'notify'
         println request.JSON['projectKey']
-        def issue = queryService.findByKey(params.id)
-        def usersNotif = ['lforcone@broadinstitute','triveros@broadinstitute.org' ]
-        def dulLinksForm = method.getLinks()
+        def issue = queryService.findByKey(params.consentKey)
+        def usersNotif = [request.JSON['recipients']]
+        println request.JSON['recipients']
+//        def dulLinksForm = method.getLinks()
 
         usersNotif.each {
-
             notifyService.sendDulFormLinkNotification(
                     new NotifyArguments(
                             toAddresses: [it.toString()],
-                            subject: "New Data Use Letter form" + request.JSON['projectKey'],
+                            subject: "New Data Use Letter form " + params.consentKey,
                             issue: issue,
                             user: user,
-                            details: 'link'
+                            details: 'link-XXXXXXX-formlink'
                     )
             )
         }
-        render (['ok': 'ok'] as JSON)
+        response.status = 200
+        render (['sended': 'ok'] as JSON)
     }
 }

@@ -1,12 +1,11 @@
 import { Component } from 'react';
 import { hh, div, h, p, small, span, br, button } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
-import { MultiSelect } from './MultiSelect';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
-import { Files } from "../util/ajax";
+import {ConsentGroup, Files} from "../util/ajax";
 
 import './ConfirmationDialog.css';
 
@@ -15,17 +14,18 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     super(props);
     this.state = {
       errorMessage: '',
-      successMessage: '',
+      alertMessage: '',
       documents: '',
       disableBtn: false,
       disableSendBtn: false,
       typeError: false,
       fileError: false,
       submit: false,
-      uploadError: false,
-      success: false,
+      showAlert: false,
       type: '',
       error: false,
+      alertType: 'success',
+      invalidEmail: false,
       file: {
         name: ''
       },
@@ -33,7 +33,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       currentValue: {
         label: ''
       }
-    }
+    };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
   }
@@ -52,12 +52,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       };
       prev.typeError = false;
       prev.fileError = false;
-      prev.uploadError = false;
-      prev.success = false;
+      prev.showAlert = false;
       prev.disableBtn = false;
       prev.disableSendBtn = false;
       prev.errorMessage = '';
-      prev.successMessage = '';
       prev.type = '';
       prev.collaboratorEmail = '';
       return prev;
@@ -89,9 +87,11 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
+          console.log(error);
             this.setState(prev => {
-              prev.errorMessage = 'Something went wrong. Please try again.';
-              prev.uploadError = true;
+              prev.alertType = 'danger';
+              prev.alertMessage = 'Something went wrong. Please try again.';
+              prev.showAlert = true;
               prev.submit = false;
               prev.disableBtn = false;
               return prev;
@@ -101,14 +101,39 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     });
   };
 
+  validEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(email)) {
+      return true;
+    } else {
+      this.setState({ invalidEmail: true });
+    }
+  };
+
   send = () => {
-    this.setState(prev => {
-      prev.successMessage = 'Email sent to: ' + prev.collaboratorEmail;
-      prev.success = true;
-      prev.collaboratorEmail = '';
-      return prev;
-    });
-  }
+    const collaboratorEmail = this.state.collaboratorEmail;
+    if (this.validEmail(collaboratorEmail)){
+      this.setState({alertMessage: '', collaboratorEmail: '', showAlert: false});
+      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.state.collaboratorEmail).then( resp => {
+        this.setState(prev => {
+          prev.alertType = 'success';
+          prev.alertMessage = 'Email sent to: ' + collaboratorEmail;
+          prev.showAlert = true;
+          prev.collaboratorEmail = '';
+          return prev;
+        });
+      }).catch( error => {
+        this.setState(prev => {
+          prev.alertType = 'danger';
+          prev.alertMessage = 'Error sending email sent to: ' + collaboratorEmail + '. Please try again later.';
+          prev.showAlert = true;
+          prev.collaboratorEmail = '';
+          return prev;
+        });
+        console.error(error);
+      });
+    }
+  };
 
   isValid() {
     let typeError = false;
@@ -140,6 +165,9 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     const value = e.target.value;
     this.setState(prev => {
       prev[field] = value;
+      if (field === 'collaboratorEmail') {
+        prev.invalidEmail = false;
+      }
       return prev;
     })
   };
@@ -212,7 +240,9 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
                     disabled: false,
                     required: false,
                     placeholder: "Enter email address...",
-                    onChange: this.handleInputChange
+                    onChange: this.handleInputChange,
+                    error: this.state.invalidEmail,
+                    errorMessage: 'Invalid e-mail'
                   })
                 ]),
                 div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'bottom': '12px', 'right': '0'} }, [
@@ -233,14 +263,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             ]),
             div({ style: { 'marginTop': '15px' } }, [
               AlertMessage({
-                msg: this.state.errorMessage,
-                show: this.state.uploadError,
+                type: this.state.alertType,
+                msg: this.state.alertMessage,
+                show: this.state.showAlert
               }),
-              AlertMessage({
-                type: 'success',
-                msg: this.state.successMessage,
-                show: this.state.success,
-              })
             ])
           ]),
 
