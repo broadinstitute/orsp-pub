@@ -217,7 +217,6 @@ class DataUseLetter extends Component {
     this.validateForm();
     this.setState(prev => {
       prev.submit = true;
-      console.log("setting",prev.submit);
       return prev;
     });
     if (this.state.isFormValid === true) {
@@ -550,7 +549,7 @@ class DataUseLetter extends Component {
               checked: this.state.formData.diseaseRestricted === 'true' || this.state.formData.diseaseRestricted === true,
               readOnly: this.state.readOnly
             }),
-            small({ isRendered: this.state.errors.errorPrimaryRestrictionsChecks, className: "errorMessage" }, ['Requiered Fields.']),
+            small({ isRendered: this.state.errors.errorPrimaryRestrictionsChecks, className: "errorMessage" }, ['Required Fields']),
        
             div({ isRendered: this.state.formData.diseaseRestricted === true, className: "row subGroup" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
@@ -708,7 +707,7 @@ class DataUseLetter extends Component {
                   readOnly: this.state.readOnly
                 }),
                 //if otherDisease is checked (OK)
-                div({ isRendered: this.state.formData.diseaseRestrictedOptions.otherDisease === true, className: "subGroup", style: { 'marginTop': '5px' } }, [
+                div({ isRendered: this.state.formData.diseaseRestrictedOptions.otherDisease === true, className: "subGroup", style: { 'marginTop': '5px', 'marginBottom': '0' } }, [
                   InputFieldText({
                     id: "inputOtherDiseaseSpecify",
                     name: "otherDiseaseSpecify",
