@@ -178,7 +178,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Add ' + this.props.title + 'Document to ' + this.props.projectKey])
+            h(ModalTitle, { className: "dialogTitle" }, ['Add ' + this.props.title + 'Document to ' + this.props.projectKey ])
           ]),
 
           h(ModalBody, { className: "dialogBody" }, [
