@@ -30,7 +30,6 @@ class DataUseLetter extends Component {
         endDate: null,
         onGoingProcess: false,
         repositoryDeposition: '',
-
         primaryRestrictions: {},
         noRestrictions: false,
         generalUse: false,
@@ -119,19 +118,15 @@ class DataUseLetter extends Component {
 
   initFormData = () => {
     const  params  = window.location.href.split('/').pop(); // this must be replaced with UID to get associated info
-    const consentKey = params.substr(0, params.indexOf('?'));
-    let projectKey = new URLSearchParams(window.location.search).get("projectKey");
+    const consentKey = params;
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => { 
-      Project.getProject(this.props.projectUrl, projectKey).then(project => {
         this.setState(prev => {
           prev.formData.protocolTitle = consentGroup.data.issue.summary;
           prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
-          prev.formData.principalInvestigator = this.getUsersArray(project.data.pis).join(' , ');
           prev.formData.date = this.parseDate(new Date());
           return prev;
         });
       });
-    });
   };
 
   handleFormDataTextChange = (e) => {
@@ -169,6 +164,8 @@ class DataUseLetter extends Component {
       prev.formData[name] = checked;
       if(name === 'ethnic' && checked === false) {
         prev.formData['ethnicSpecify'] = '';
+      } else if( name === 'onGoingProcess' && checked === true) {
+        prev.formData['endDate'] = null;
       }
       return prev;
     }, () => {
@@ -284,31 +281,30 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorInstitution = true;
     }
-
-    if (this.isEmpty(this.state.formData.GSRAvailability)) {
-      errorForm = true;
-      errorGSRAvailability = true
-    }
-
-    if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.dataSubmissionProhibition)) {
-      errorForm = true;
-      errorDataSubmissionProhibition = true;
-    }
-
-    if (this.endsEqualOrAfter("1/25/2015")) {
-      if (this.isEmpty(this.state.formData.repositoryType)) {
+    if(this.state.formData.repositoryDeposition == true) {
+      if ((this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) && this.isEmpty(this.state.formData.GSRAvailability)) {
         errorForm = true;
-        errorRepositoryType = true;
+        errorGSRAvailability = true
       }
-      if (this.isEmpty(this.state.formData.dataDepositionDescribed)) {
+      if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.dataSubmissionProhibition)) {
         errorForm = true;
-        errorDataDepositionDescribed = true;
+        errorDataSubmissionProhibition = true;
       }
-      if (this.isEmpty(this.state.formData.dataUseConsent)) {
-        errorForm = true;
-        errorDataUseConsent = true;
+      if (this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) {
+        if (this.isEmpty(this.state.formData.repositoryType)) {
+          errorForm = true;
+          errorRepositoryType = true;
+        }
+        if (this.isEmpty(this.state.formData.dataDepositionDescribed)) {
+          errorForm = true;
+          errorDataDepositionDescribed = true;
+        }
+        if (this.isEmpty(this.state.formData.dataUseConsent)) {
+          errorForm = true;
+          errorDataUseConsent = true;
+        }
       }
-    }
+    }  
 
     this.setState(prev => {
       prev.errors.errorForm= errorForm;
@@ -844,7 +840,7 @@ class DataUseLetter extends Component {
               ]),
 
               // If SC Date Range ends after (or that same) 1/25/2015 (OK)
-              div({ isRendered: this.endsEqualOrAfter("1/25/2015") }, [
+              div({ isRendered: this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015") }, [
                 InputYesNo({
                   id: "radioDataUseConsent",
                   name: "dataUseConsent",
@@ -990,6 +986,13 @@ class DataUseLetter extends Component {
             onChange: this.handleFormDataTextChange,
             readOnly: false
           }),
+
+          div({ style: { 'marginTop': '15px' } }, [
+            AlertMessage({
+              msg: "Please complete all required fields.",
+              show: this.state.errors.errorForm
+            })
+          ]),
 
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
             button({
