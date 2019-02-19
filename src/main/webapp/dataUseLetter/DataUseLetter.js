@@ -1,17 +1,15 @@
 import { Component } from 'react';
-import { Wizard } from '../components/Wizard';
-import { hh, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
+import { p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
-import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { ConsentGroup, SampleCollections, User, Review, Project } from "../util/ajax";
+import { ConsentGroup, Project } from "../util/ajax";
 
 class DataUseLetter extends Component {
 
@@ -217,10 +215,6 @@ class DataUseLetter extends Component {
     });
   };
 
-  cancelDUL = (e) => () => {
-  };
-
-
   submitDUL() {
     this.validateForm();
     this.setState(prev => {
@@ -348,7 +342,7 @@ class DataUseLetter extends Component {
     }
     return usersArray
   }
-  // startsBefore receives a date string with format " MM/DD/YYYY "
+
   startsBefore(date) {
     let result = false;
     if (!this.isEmpty(date) && !this.isEmpty(this.state.formData.startDate)) {
@@ -359,7 +353,6 @@ class DataUseLetter extends Component {
     return result;
   }
 
-  // endsEqualOrAfter receives a date string with format " MM/DD/YYYY "
   endsEqualOrAfter(date) {
     let result = false;
     if (!this.isEmpty(date) && !this.isEmpty(this.state.formData.endDate)) {
@@ -877,7 +870,7 @@ class DataUseLetter extends Component {
                   name: "repositoryType",
                   label: "What type of repository is permitted?*",
                   value: this.state.formData.repositoryType,
-                  optionValues: ["controlledAccess", "openAccess"],
+                  optionValues: ["controlledAccess", "openAccess", 'controlledAccessAndOpenAccess'],
                   optionLabels: [
                     span({ className: "bold" }, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
                     span({ className: "bold" }, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
