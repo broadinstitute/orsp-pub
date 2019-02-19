@@ -84,6 +84,7 @@ class DataUseLetter extends Component {
       },
       errors: {
         errorForm : false,
+        errorPi : false,
         errorSampleCollectionDateRange: false,
         errorPrimaryRestrictionsChecks: false,
         errorDiseaseRestrictedOptions: false,
@@ -228,6 +229,7 @@ class DataUseLetter extends Component {
     let errorForm = false;
     let errorSampleCollectionDateRange = false;
 
+    let errorPi = false;
     let errorPrimaryRestrictionsChecks = false;
     let errorDiseaseRestrictedOptions = false;
     let errorOtherDiseaseSpecify = false;
@@ -243,6 +245,13 @@ class DataUseLetter extends Component {
     let errorDataDepositionDescribed = false;
     let errorDataUseConsent = false;
 
+    // Pi Validation
+    if (this.isEmpty(this.state.formData.principalInvestigator)) {
+      errorForm = true;
+      errorPi = true;
+    }
+    
+    // Date Range Validations
     if (this.state.formData.startDate === null
       || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) {
       errorForm = true;
@@ -308,6 +317,7 @@ class DataUseLetter extends Component {
 
     this.setState(prev => {
       prev.errors.errorForm= errorForm;
+      prev.errors.errorPi = errorPi;
       prev.errors.errorSampleCollectionDateRange = errorSampleCollectionDateRange;
       prev.errors.errorPrimaryRestrictionsChecks = errorPrimaryRestrictionsChecks;
       prev.errors.errorDiseaseRestrictedOptions = errorDiseaseRestrictedOptions;
@@ -408,11 +418,14 @@ class DataUseLetter extends Component {
             InputFieldText({
               id: "inputPrincipalInvestigator",
               name: "principalInvestigator",
-              label: "Principal Investigator Listed on Consent Form",
-              disabled: true,
+              label: "Principal Investigator Listed on Consent Form*",
+              disabled: false,
               value: this.state.formData.principalInvestigator,
-              onChange: this.handleExtraPropsInputChange,
-              readOnly: false
+              onChange: this.handleFormDataTextChange,
+              readOnly: false,
+              required: true,
+              error: this.state.errors.errorPi,
+              errorMessage: 'Required Field'
             })
           ]),
           Panel({ title: "Data Manager ", moreInfo: "(individual decisions regarding data access and transfer)" }, [
@@ -423,7 +436,7 @@ class DataUseLetter extends Component {
                   name: "dataManagerName",
                   label: "Data Manager Name",
                   disabled: true,
-                  value: "Some autopopulated value",
+                  value: "",
                   onChange: this.handleExtraPropsInputChange,
                   readOnly: false
                 })
@@ -434,7 +447,7 @@ class DataUseLetter extends Component {
                   name: "dataManagerEmail",
                   label: "Data Manager Email",
                   disabled: true,
-                  value: "Some autopopulated value",
+                  value: "",
                   onChange: this.handleExtraPropsInputChange,
                   readOnly: false
                 })
