@@ -213,6 +213,16 @@ class ConsentGroupReview extends Component {
               future = JSON.parse((currentStr));
               futureCopy = JSON.parse(currentStr);
             }
+            let questions = this.initQuestions();
+            let intCohortsAnswers = [];
+            questions.forEach(it =>{
+              if (current.consentExtraProps[it.key] !== undefined) {
+                intCohortsAnswers.push({
+                  key: it.key,
+                  answer: current.consentExtraProps[it.key]
+                });
+              }
+            });
 
             this.setState(prev => {
               // prepare form data here, initially same as current ....
@@ -222,7 +232,8 @@ class ConsentGroupReview extends Component {
               prev.future = future;
               prev.futureCopy = futureCopy;
               prev.questions.length = 0;
-              prev.questions = this.initQuestions();
+              prev.intCohortsAnswers = intCohortsAnswers;
+              prev.questions = questions;
               return prev;
             });
           }
@@ -1048,8 +1059,7 @@ class ConsentGroupReview extends Component {
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
-    // const disableSubmitEdit = !this.areFormsEqual(); // etsa edidato deberia habilitar boton
-    return (                                        // no esta editado deshabilitar boton
+    return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
@@ -1241,8 +1251,6 @@ class ConsentGroupReview extends Component {
                 onChange: this.handleChange,
                 disabled: _.get(this.state.formData, 'consentExtraProps.onGoingProcess', '') === "true",
                 readOnly: this.state.readOnly,
-                // disabled: (onGoingProcess === "true" || onGoingProcess === true),
-                // readOnly: this.state.readOnly,
                 error: this.state.errors.endDate,
                 errorMessage: "Required field",
               })
@@ -1517,7 +1525,6 @@ class ConsentGroupReview extends Component {
           }, ["Cancel"]),
 
           /*visible for every user in edit mode and disabled until some edit has been made*/
-          // debug esto ya mismo
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
