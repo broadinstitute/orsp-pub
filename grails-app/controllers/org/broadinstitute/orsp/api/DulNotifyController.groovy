@@ -10,13 +10,9 @@ import org.broadinstitute.orsp.User
 class DulNotifyController extends AuthenticatedController{
 
     def sendNotifications() {
-        User user = userService.findUser('triveros')
-
-        println 'notify'
-        println request.JSON['projectKey']
+        User user = userService.findUser(request.JSON['userName'].toString())
         def issue = queryService.findByKey(params.consentKey)
         def usersNotif = [request.JSON['recipients']]
-        println request.JSON['recipients']
 //        def dulLinksForm = method.getLinks()
 
         usersNotif.each {

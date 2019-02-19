@@ -114,7 +114,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)){
       this.setState({alertMessage: '', collaboratorEmail: '', showAlert: false});
-      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.state.collaboratorEmail).then( resp => {
+      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then( resp => {
         this.setState(prev => {
           prev.alertType = 'success';
           prev.alertMessage = 'Email sent to: ' + collaboratorEmail;

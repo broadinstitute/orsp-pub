@@ -147,7 +147,8 @@ class ConsentGroupDocuments extends Component {
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
-        emailUrl: this.props.emailDulUrl
+        emailUrl: this.props.emailDulUrl,
+        userName: this.state.user.userName
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
