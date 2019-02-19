@@ -123,7 +123,7 @@ class DataUseLetter extends Component {
     const  params  = window.location.href.split('/').pop(); // this must be replaced with UID to get associated info
     const consentKey = params.substr(0, params.indexOf('?'));
     let projectKey = new URLSearchParams(window.location.search).get("projectKey");
-    ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => { //check backend map to retrieve only relevant info
+    ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => { 
       Project.getProject(this.props.projectUrl, projectKey).then(project => {
         this.setState(prev => {
           prev.formData.protocolTitle = consentGroup.data.issue.summary;
@@ -142,7 +142,6 @@ class DataUseLetter extends Component {
       prev.formData[name] = value;
       return prev;
     }, () => {
-      console.log("submitttt", this.state.submit);
       if(this.state.submit) {
         this.validateForm();
       }
@@ -221,13 +220,6 @@ class DataUseLetter extends Component {
   cancelDUL = (e) => () => {
   };
 
-  // isSCDateRangeValid() {
-  //   let valid = true;
-  //   if(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) {
-  //     valid = false;
-  //   }
-  //   return valid;
-  // }
 
   submitDUL() {
     this.validateForm();
@@ -242,7 +234,6 @@ class DataUseLetter extends Component {
   };
 
   validateForm() {
-    console.log("validando");
     let errorForm = false;
     let errorSampleCollectionDateRange = false;
 
@@ -281,12 +272,6 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
     }
-    // if (this.state.formData.diseaseRestricted === true
-    //     && this.state.formData.diseaseRestrictedOptions.otherDisease === true
-    //     && this.isEmpty(this.state.formData.diseaseRestrictedOptions.otherDiseaseSpecify)) {
-    //   errorForm = true;
-    //   errorOtherDiseaseSpecify = true;
-    // }
 
     // Institutional Review Board/Ethics Validations
     if (this.isEmpty(this.state.formData.signature)) {
@@ -732,7 +717,9 @@ class DataUseLetter extends Component {
                     readOnly: this.state.readOnly
                   })
                 ])
-              ])
+              ]),
+              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Requiered Fields.']),
+
             ]),
           ]),
 
@@ -857,7 +844,9 @@ class DataUseLetter extends Component {
                     span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
                   ],
                   onChange: this.handleRadioChange,
-                  readOnly: this.state.readOnly
+                  readOnly: this.state.readOnly,
+                  error: this.state.errors.errorDataSubmissionProhibition,
+                  errorMessage: "Required Field"
                 })
               ]),
 
@@ -870,6 +859,8 @@ class DataUseLetter extends Component {
                   label: "Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?*",
                   readOnly: this.state.readOnly,
                   onChange: this.handleRadioChange,
+                  error: this.state.errors.errorDataUseConsent,
+                  errorMessage: "Required Field"
                 }),
                 InputYesNo({
                   id: "radioDataDepositionDescribed",
@@ -878,6 +869,8 @@ class DataUseLetter extends Component {
                   label: "Is data deposition into a repository described in the consent form?*",
                   readOnly: this.state.readOnly,
                   onChange: this.handleRadioChange,
+                  error: this.state.errors.errorDataDepositionDescribed,
+                  errorMessage: "Required Field"
                 }),
                 InputFieldRadio({
                   id: "radioRepositoryType",
@@ -891,7 +884,9 @@ class DataUseLetter extends Component {
                     span({ className: "bold" }, ["Both controlled-access and open-access are permitted"]),
                   ],
                   onChange: this.handleRadioChange,
-                  readOnly: this.state.readOnly
+                  readOnly: this.state.readOnly,
+                  error: this.state.errors.errorRepositoryType,
+                  errorMessage: "Required Field"
                 })
               ]),
               div({ className: "boxWrapper" }, [
@@ -1008,13 +1003,7 @@ class DataUseLetter extends Component {
               className: "btn buttonPrimary floatRight",
               onClick: this.submitDUL,
               disabled: false
-            }, ["Submit"]),
-
-            // button({
-            //   className: "btn buttonSecondary floatRight",
-            //   onClick: this.cancelDUL(),
-            //   disabled: false
-            // }, ["Cancel"])
+            }, ["Submit"])
           ])
         ])
       ])
