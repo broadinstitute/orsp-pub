@@ -201,7 +201,15 @@ class DataUseLetter extends Component {
     if (value === 'true') {
       value = true;
     } else if (value === 'false') {
-      value = false;
+      if(field === 'repositoryDeposition') {
+        this.setState(prev => {
+          prev.formData['GSRAvailability'] = '';
+          prev.formData['dataSubmissionProhibition'] = '';
+          prev.formData['repositoryType'] = '';
+          prev.formData['dataDepositionDescribed'] = '';
+          prev.formData['dataUseConsent'] = '';
+          return prev;
+      })
     }
     this.setState(prev => {
         prev.formData[field] = value;
