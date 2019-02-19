@@ -1063,4 +1063,47 @@ class QueryService implements Status {
         ++Long.valueOf(version)
     }
 
+    Collection<List> getDocumentsVersions() {
+        List<HashMap<String, String>> storageDocumentList = new ArrayList<>()
+        final String singleVersionDocQuery =
+                'select project_key, file_type, count(file_type) as counted ' +
+                        'from storage_document where doc_version = 0 ' +
+                        'group by project_key, file_type  ' +
+                        'order by project_key, file_type'
+
+        getSqlConnection().rows(singleVersionDocQuery).each {
+            HashMap<String, String> documentMap = new HashMap<>()
+            documentMap.put('projectKey', it.get("project_key").toString())
+            documentMap.put('fileType', it.get("file_type").toString())
+            documentMap.put('counted', it.get("counted").toString())
+            storageDocumentList.push(documentMap)
+        }
+
+        storageDocumentList
+    }
+
+    StorageDocument getDocument(String projectKey, String fileType) {
+        getDocuments(projectKey, fileType).first()
+    }
+
+    Collection<StorageDocument> getDocuments(String projectKey, String fileType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select d.* ' +
+                        ' from storage_document as d ' +
+                        ' where d.project_key = ?' +
+                        ' and d.file_type = ?' +
+                        ' order by creation_date'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, projectKey)
+        sqlQuery.setString(1, fileType)
+        final documents = sqlQuery.with {
+            addEntity(StorageDocument)
+            list()
+        }
+
+        documents
+    }
+
 }
