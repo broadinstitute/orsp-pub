@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
+import _ from 'lodash';
 
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
@@ -17,70 +18,80 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   }
 
   sortByKey = (array, key) => {
-    return array.sort(function (a, b) {
-      var x = a[key]; var y = b[key];
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
+    if (Array.isArray(array)) {
+      return array.sort(function (a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      });
+    }
+    return array;
   };
 
   isEdited = (current, futureValue) => {
     let edited = false;
-    let future = undefined;
+    if (Array.isArray(current) && Array.isArray(futureValue)) {
+      let future = undefined;
 
-    if (futureValue[0] === '') {
-      future = futureValue;
-    } else {
-      future = futureValue[0];
-    }
-
-    if (this.props.edit || this.props.edit === undefined) {
-      if (current.length !== future.length) {
-        edited = true;
+      if (futureValue[0] === '') {
+        future = futureValue;
+      } else {
+        future = futureValue[0];
       }
 
-      current.forEach((element, index) => {
-        if (future[index] !== undefined) {
-          if (element.key !== future[index].key) {
-            edited = true;
-          }
+      if (this.props.edit || this.props.edit === undefined) {
+        if (current.length !== future.length) {
+          edited = true;
         }
-      });
+
+        current.forEach((element, index) => {
+          if (future[index] !== undefined) {
+            if (element.key !== future[index].key) {
+              edited = true;
+            }
+          }
+        });
+      }
+    } else {
+      edited = _.get(current, 'value', '') !== _.get(futureValue, 'value', ' ') || current.value === undefined
     }
     return edited;
   };
 
   render() {
+    let edited = false;
+    let currentValueStr;
+    let currentValue;
+    if (Array.isArray(this.props.currentValue)) {
+      currentValue  = [];
+      let value = [];
+      let currentValues = [];
+      if (this.props.currentValue === undefined) {
+        currentValue.push("");
+      } else if (this.props.currentValue.length === 0){
+        currentValue.push("");
+      } else {
+        currentValue = this.props.currentValue;
+      }
+      if (this.props.value === null || this.props.value.length === 0) {
+        value.push("");
+      } else {
+        value.push(this.props.value);
+      }
 
-    let currentValue  = [];
-    let value = [];
+      currentValue.forEach(item => {
+        currentValues.push(item.label);
+      });
 
-    let currentValues = [];
+      let currentKeys = this.sortByKey(currentValue, 'key');
+      let keys = this.sortByKey(value, 'key');
 
-    if (this.props.currentValue === undefined) {
-      currentValue.push("");
-    } else if (this.props.currentValue.length === 0){
-      currentValue.push("");
+      currentValueStr = currentValues.join(',');
+      edited = this.isEdited(currentKeys, keys);
     } else {
-      currentValue = this.props.currentValue;
+      let currentValue = this.props.currentValue;
+      currentValueStr  = _.get(this.props.currentValue, 'label', '');
+      edited = this.props.edit ? this.isEdited(this.props.currentValue, this.props.value) : false;
     }
-
-    if (this.props.value.length === 0) {
-      value.push("");
-    } else {
-      value.push(this.props.value);
-    }
-
-    currentValue.forEach(item => {
-      currentValues.push(item.label);
-    });
-
-    let currentKeys = this.sortByKey(currentValue, 'key');
-    let keys = this.sortByKey(value, 'key');
-
-    let currentValueStr = currentValues.join(',');
-
-    // verified if edited ...
-    const edited = this.isEdited(currentKeys, keys);
 
     return (
       InputField({
@@ -90,7 +101,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         errorMessage: this.props.errorMessage,
         readOnly: this.props.readOnly,
         value: this.props.value,
-        currentValue: this.props.currentValue,
+        currentValue: currentValue,
         currentValueStr: currentValueStr,
         edited : edited
       }, [
@@ -103,7 +114,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               className: "inputFieldSelect",
               onChange: this.props.onChange(this.props.index),
               options: this.props.options,
-              placeholder: this.props.placeholder,
+              placeholder: edited ? '--' : this.props.placeholder,
               isMulti: this.props.isMulti
             })
           ])

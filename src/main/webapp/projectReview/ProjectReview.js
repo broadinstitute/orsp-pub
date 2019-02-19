@@ -10,7 +10,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, User, Review } from "../util/ajax";
-
+import _ from 'lodash';
 
 class ProjectReview extends Component {
 
@@ -23,7 +23,8 @@ class ProjectReview extends Component {
       editTypeError: false,
       editDescriptionError: false,
       subjectProtection: false,
-      foundingError: false,
+      fundingError: false,
+      fundingErrorIndex: [],
       showDialog: false,
       showDiscardEditsDialog: false,
       showApproveDialog: false,
@@ -45,7 +46,10 @@ class ProjectReview extends Component {
           editDescription: null,
           projectReviewApproved: 'false'
         },
-        fundings: [{ source: { label: '', value: '' }, sponsor: '', identifier: '' }],
+        fundings: [{
+          current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
+          future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+        }],
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -53,6 +57,7 @@ class ProjectReview extends Component {
       },
       disableApproveButton: false,
       reviewSuggestion: false,
+      futureCopy: {},
       current: {
         requestor: {
           displayName: '',
@@ -66,7 +71,10 @@ class ProjectReview extends Component {
         studyDescription: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
-        fundings: [{ source: '', sponsor: '', identifier: '' }],
+        fundings: [{
+          current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
+          future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+        }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbProtocolId: '',
@@ -188,17 +196,28 @@ class ProjectReview extends Component {
     return usersArray
   }
 
+  // Todo: handle data structure in Fundings component
   getFundingsArray(fundings) {
     let fundingsArray = [];
     if (fundings !== undefined && fundings !== null && fundings.length > 0) {
       fundings.map(funding => {
         fundingsArray.push({
-          source: {
-            label: funding.source,
-            value: funding.source.split(" ").join("_").toLowerCase()
+          current: {
+            source: {
+              label: funding.source,
+              value: funding.source.split(" ").join("_").toLowerCase()
+            },
+            sponsor: funding.name,
+            identifier: funding.awardNumber !== null ? funding.awardNumber : ''
           },
-          sponsor: funding.name,
-          identifier: funding.awardNumber !== null ? funding.awardNumber : ''
+          future: {
+            source: {
+              label: funding.source,
+              value: funding.source.split(" ").join("_").toLowerCase()
+            },
+            sponsor: funding.name,
+            identifier: funding.awardNumber !== null ? funding.awardNumber : ''
+          }
         });
       });
     }
@@ -206,7 +225,11 @@ class ProjectReview extends Component {
   }
 
   isEmpty(value) {
-    return value === '' || value === null || value === undefined;
+    if (typeof value === 'object') {
+      return !Object.keys(value).length
+    } else {
+      return value === '' || value === null || value === undefined;
+    }
   }
 
   approveRevision = () => {
@@ -256,7 +279,7 @@ class ProjectReview extends Component {
     });
   }
 
-  approveEdits() {
+  approveEdits = () => {
     spinnerService.showAll();
     let project = this.getProject();
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
@@ -330,18 +353,35 @@ class ProjectReview extends Component {
     if (fundings !== null && fundings.length > 0) {
       fundings.map((f, idx) => {
         let funding = {};
-        funding.source = f.source.label;
-        funding.awardNumber = f.identifier;
-        funding.name = f.sponsor;
-        fundingList.push(funding);
+        if (!this.isEmpty(f.future.source.label)) {
+          funding.source = f.future.source.label;
+          funding.award = f.future.identifier;
+          funding.name = f.future.sponsor;
+          fundingList.push(funding);
+        }
       });
     }
     return fundingList;
   }
 
   compareObj(obj1, obj2) {
-    return JSON.stringify(this.state[obj1]) === JSON.stringify(this.state[obj2]);
+    let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
+    let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
+    form1.fundings = this.sortFundingsBySource(_.get(form1, 'fundings', ''));
+    form2.fundings = this.sortFundingsBySource(_.get(form2, 'fundings', ''));
+    return JSON.stringify(form1) === JSON.stringify(form2);
   }
+
+  sortFundingsBySource = (fundings) => {
+    if (!this.isEmpty(fundings)) {
+      return fundings.sort(function (a, b) {
+        let x = a.future.source.label;
+        let y = b.future.source.label;
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      });
+    }
+    return fundings;
+  };
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
@@ -353,9 +393,11 @@ class ProjectReview extends Component {
   cancelEdit = (e) => () => {
     this.init();
     this.setState({
+      formData: this.state.futureCopy,
+      current: this.state.futureCopy,
       readOnly: true
     });
-  }
+  };
 
   submitEdit = (e) => () => {
     if (this.isValid()) {
@@ -365,7 +407,7 @@ class ProjectReview extends Component {
       });
       const data = {
         projectKey: this.props.projectKey,
-        suggestions: JSON.stringify(this.state.formData),
+        suggestions: JSON.stringify(this.state.formData)
       };
       if (this.state.reviewSuggestion) {
         Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
@@ -381,7 +423,7 @@ class ProjectReview extends Component {
         errorSubmit: true
       });
     }
-  }
+  };
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
@@ -402,6 +444,7 @@ class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     this.setState(prev => {
       prev.formData.fundings = updated;
+      prev.fundingError = false;
       return prev;
     });
   };
@@ -433,22 +476,6 @@ class ProjectReview extends Component {
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    },
-      () => {
-        if (this.state.errorSubmit == true) this.isValid()
-      });
-  };
-
-  handleRadioChange = (e, field, value) => {
-    if (value === 'true') {
-      value = true;
-    } else if (value === 'false') {
-      value = false;
-    }
-
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
@@ -502,6 +529,7 @@ class ProjectReview extends Component {
     if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
+        editedForm: {},
         errorSubmit: false
       });
     }
@@ -544,6 +572,18 @@ class ProjectReview extends Component {
     let subjectProtectionError = false;
     let editTypeError = false;
     let editDescriptionError = false;
+    let fundingErrorIndex = [];
+
+    // Todo: Fundings error will be handled inside its component
+    let fundingError = this.state.formData.fundings.filter((obj, idx) => {
+      if (this.isEmpty(obj.future.source.label) && ( !this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier) )
+        || ( idx === 0 && this.isEmpty(obj.future.source.label) && this.isEmpty(obj.current.source.label) )) {
+        fundingErrorIndex.push(idx);
+        return true
+      } else {
+        return false;
+      }
+    }).length > 0;
 
     if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
@@ -566,10 +606,19 @@ class ProjectReview extends Component {
       prev.subjectProtectionError = subjectProtectionError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
+      prev.fundingError = fundingError;
+      prev.fundingErrorIndex = fundingErrorIndex;
       return prev;
     });
-    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError;
+    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
   }
+
+  changeFundingError = () => {
+    this.setState(prev => {
+      prev.fundingError = !prev.fundingError;
+      return prev;
+    })
+  };
 
   render() {
     const { projectReviewApproved = 'false' } = this.state.formData.projectExtraProps;
@@ -670,15 +719,17 @@ class ProjectReview extends Component {
             isMulti: true
           })
         ]),
-
         Panel({ title: "Funding" }, [
           Fundings({
             fundings: this.state.formData.fundings,
-            currentValue: this.state.current.fundings,
+            current: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
             readOnly: this.state.readOnly,
-            error: false,
-            errorMessage: ""
+            error: this.state.fundingError,
+            errorIndex: this.state.fundingErrorIndex,
+            setError: this.changeFundingError,
+            errorMessage: "Required field",
+            edit: true
           })
         ]),
 
@@ -756,7 +807,6 @@ class ProjectReview extends Component {
             label: "Project Availability",
             value: this.state.formData.projectExtraProps.projectAvailability,
             currentValue: this.state.current.projectExtraProps.projectAvailability,
-            currentOptionLabel: this.state.current.projectExtraProps.projectAvailability === 'available' ? 'Available' : 'On Hold',
             optionValues: ["available", "onHold"],
             optionLabels: [
               "Available",
@@ -773,9 +823,6 @@ class ProjectReview extends Component {
               id: "radioDescribeEdits",
               name: "describeEditType",
               currentValue: this.state.current.projectExtraProps.describeEditType,
-              currentOptionLabel: this.state.current.projectExtraProps.describeEditType === 'newAmendment' ?
-                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record" :
-                "I am requesting assistance in updating and existing project",
               label: "Please choose one of the following to describe the proposed edits: ",
               value: this.state.formData.projectExtraProps.describeEditType,
               optionValues: ["newAmendment", "requestingAssistance"],
@@ -916,7 +963,9 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.compareObj("formData", "current") || this.compareObj("formData", "editedForm"),
+            disabled: this.isEmpty(this.state.editedForm) ?
+                      !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
+                      : this.compareObj("formData", "editedForm"),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 

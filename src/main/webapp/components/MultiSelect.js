@@ -17,34 +17,31 @@ export const MultiSelect = hh(class MultiSelect extends Component {
   }
 
   sortByKey = (array, key) => {
-    return array.sort(function (a, b) {
+    if (Array.isArray(array)) {
+      return array.sort(function (a, b) {
       var x = a[key]; var y = b[key];
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
+    }
+    return array;
+
   };
 
-  isEdited = (current, futureValue) => {
+  isEdited = (current, future) => {
     let edited = false;
-    let future = undefined;
-
-    if (futureValue[0] === '') {
-      future = futureValue;
-    } else {
-      future = futureValue[0];
-    }
-
     if (this.props.edit || this.props.edit === undefined) {
       if (current.length !== future.length) {
-        edited = true;
+        return true;
       }
-
-      current.forEach((element, index) => {
-        if (future[index] !== undefined) {
-          if (element.key !== future[index].key) {
-            edited = true;
+      if (Array.isArray(current)) {
+        current.forEach((element, index) => {
+          if (future[index] !== undefined) {
+            if (element.key !== future[index].key) {
+              edited = true;
+            }
           }
-        }
-      });
+        });
+      }
     }
     return edited;
   };
@@ -64,10 +61,10 @@ export const MultiSelect = hh(class MultiSelect extends Component {
       currentValue = this.props.currentValue;
     }
 
-    if (this.props.value.length === 0) {
+    if (this.props.value === null || this.props.value.length === 0) {
       value.push("");
     } else {
-      value.push(this.props.value);
+      value = this.props.value;
     }
 
     currentValue.forEach(item => {

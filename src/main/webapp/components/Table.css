@@ -2,8 +2,20 @@
     margin-bottom: 0;
 }
 
+.tableContainer {
+    position: relative;
+}
+
 .tableContainer .table-search-form {
     float: left;
+}
+
+.tableContainer .react-bs-table-tool-bar .row .col-lg-8 {
+    display: none;
+}
+
+.tableContainer .react-bs-table-search-form .form-control {
+    height: 35px !important;
 }
 
 .tableContainer .btn-toolbar {

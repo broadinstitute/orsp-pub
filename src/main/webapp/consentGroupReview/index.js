@@ -7,12 +7,15 @@ ReactDOM.render(
     <ConsentGroupReview
         consentKey = {consentGroupReviewComponent.consentKey}
         consentGroupUrl = {consentGroupReviewComponent.consentGroupUrl}
-        approveConsentGroupUrl = {urls.approveConsentGroupUrl}
+        approveConsentGroupUrl = {consentGroupReviewComponent.approveConsentGroupUrl}
         isAdminUrl = {consentGroupReviewComponent.isAdminUrl}
         sampleSearchUrl = {consentGroupReviewComponent.sampleSearchUrl}
         rejectConsentUrl = {consentGroupReviewComponent.rejectConsentUrl}
+        updateConsentUrl = {consentGroupReviewComponent.updateConsentUrl}
         projectKey = {consentGroupReviewComponent.projectKey}
         serverURL = {consentGroupReviewComponent.serverURL}
+        discardReviewUrl = {consentGroupReviewComponent.discardReviewUrl}
+        consentNamesSearchURL = {consentGroupReviewComponent.consentNamesSearchURL}
     />,
     document.getElementById('consentGroupReview')
 );

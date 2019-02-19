@@ -19,19 +19,37 @@ class ConsentGroupDocuments extends Component {
       showDialog: false,
       action: '',
       uuid: '',
-      isAdmin: false,
-      serverError: false
+      user: {isAdmin: false},
+      serverError: false,
+      documentKeyOptions: [],
+      documentAdditionalOptions: []
     };
   }
 
   componentDidMount() {
     this.getAttachedDocuments();
     this.isCurrentUserAdmin();
+    this.loadKeyOptions();
+    this.loadAdditionalOptions();
+  }
+
+  loadKeyOptions() {
+    let documentOptions = [];
+    ConsentGroupKeyDocuments.forEach(type => {
+        documentOptions.push({value: type, label: type});
+      }); 
+    this.setState({documentKeyOptions: documentOptions});
+  }
+
+  loadAdditionalOptions() {
+    let documentOptions = [];
+    documentOptions.push({value: 'Other', label: 'Other'});
+    this.setState({documentAdditionalOptions: documentOptions});
   }
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-        this.setState({isAdmin: resp.data.isAdmin});
+        this.setState({user: resp.data});
     });
   }
 
@@ -49,7 +67,11 @@ class ConsentGroupDocuments extends Component {
     const additionalDocuments = [];
     documentsCollection.forEach(documentData => {
       if (ConsentGroupKeyDocuments.lastIndexOf(documentData.fileType) !== -1) {
-        keyDocuments.push(documentData);
+        if(documentData.documentType === 'key') {
+          keyDocuments.push(documentData);
+        } else {
+          additionalDocuments.push(documentData);
+        }
       } else {
         additionalDocuments.push(documentData);
       }
@@ -61,27 +83,10 @@ class ConsentGroupDocuments extends Component {
     })
   };
 
-  handleChangeStatus = (uuid, status) => {
-    const formerStateKeyDoc = this.state.keyDocuments.slice();
-    formerStateKeyDoc.forEach(doc => {
-      if (uuid === doc.uuid) {
-        doc.status = status;
-      }
-    });
-    this.setState({ keyDocuments: formerStateKeyDoc });
-
-    const formerAdditionalDoc = this.state.additionalDocuments.slice();
-    formerAdditionalDoc.forEach(doc => {
-      if (uuid === doc.uuid) {
-        doc.status = status;
-      }
-    });
-    this.setState({ additionalDocuments: formerAdditionalDoc });
-  };
 
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
-      this.handleChangeStatus(uuid, 'Approved');
+      this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -90,7 +95,7 @@ class ConsentGroupDocuments extends Component {
 
   rejectDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
-      this.handleChangeStatus(uuid, 'Rejected');
+      this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -135,8 +140,13 @@ class ConsentGroupDocuments extends Component {
         keyDocuments: this.state.keyDocuments,
         additionalDocuments: this.state.additionalDocuments,
         handleDialogConfirm: this.handleDialog,
-        isAdmin: this.state.isAdmin,
-        downloadDocumentUrl: this.props.downloadDocumentUrl
+        user: this.state.user,
+        downloadDocumentUrl: this.props.downloadDocumentUrl,
+        keyOptions: this.state.documentKeyOptions,
+        additionalOptions: this.state.documentAdditionalOptions,
+        projectKey: this.props.projectKey,
+        attachDocumentsUrl: this.props.attachDocumentsUrl,
+        handleLoadDocuments: this.getAttachedDocuments
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
