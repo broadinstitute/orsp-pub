@@ -83,8 +83,8 @@ class DataUseLetter extends Component {
         date: '',
       },
       errors: {
-        errorForm : false,
-        errorPi : false,
+        errorForm: false,
+        errorPi: false,
         errorSampleCollectionDateRange: false,
         errorPrimaryRestrictionsChecks: false,
         errorDiseaseRestrictedOptions: false,
@@ -118,16 +118,16 @@ class DataUseLetter extends Component {
   }
 
   initFormData = () => {
-    const  params  = window.location.href.split('/').pop(); // this must be replaced with UID to get associated info
+    const params = window.location.href.split('/').pop(); // this must be replaced with UID to get associated info
     const consentKey = params;
-    ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => { 
-        this.setState(prev => {
-          prev.formData.protocolTitle = consentGroup.data.issue.summary;
-          prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
-          prev.formData.date = this.parseDate(new Date());
-          return prev;
-        });
+    ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => {
+      this.setState(prev => {
+        prev.formData.protocolTitle = consentGroup.data.issue.summary;
+        prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
+        prev.formData.date = this.parseDate(new Date());
+        return prev;
       });
+    });
   };
 
   handleFormDataTextChange = (e) => {
@@ -136,7 +136,7 @@ class DataUseLetter extends Component {
       prev.formData[name] = value;
       return prev;
     }, () => {
-      if(this.state.submit) {
+      if (this.state.submit) {
         this.validateForm();
       }
     });
@@ -147,7 +147,7 @@ class DataUseLetter extends Component {
       prev.formData[id] = date;
       return prev;
     }, () => {
-      if(this.state.submit) {
+      if (this.state.submit) {
         this.validateForm();
       }
     });
@@ -163,14 +163,14 @@ class DataUseLetter extends Component {
     const { name = '', checked = '' } = e.target;
     this.setState(prev => {
       prev.formData[name] = checked;
-      if(name === 'ethnic' && checked === false) {
+      if (name === 'ethnic' && checked === false) {
         prev.formData['ethnicSpecify'] = '';
-      } else if( name === 'onGoingProcess' && checked === true) {
+      } else if (name === 'onGoingProcess' && checked === true) {
         prev.formData['endDate'] = null;
       }
       return prev;
     }, () => {
-      if(this.state.submit) {
+      if (this.state.submit) {
         this.validateForm();
       }
     });
@@ -179,19 +179,19 @@ class DataUseLetter extends Component {
   handleSubOptionsCheck = (e) => {
     const { name = '', checked = '' } = e.target;
     this.setState(prev => {
-      if(name === 'endocrineDisease' && checked === false) {
+      if (name === 'endocrineDisease' && checked === false) {
         prev.formData.diseaseRestrictedOptions['endocrineDiabetes'] = false;
       }
-      if(name === 'digestiveDisease' && checked === false) {
+      if (name === 'digestiveDisease' && checked === false) {
         prev.formData.diseaseRestrictedOptions['inflammatoryDisease'] = false;
       }
-      if(name === 'otherDisease' && checked === false) {
+      if (name === 'otherDisease' && checked === false) {
         prev.formData['otherDiseaseSpecify'] = '';
       }
       prev.formData.diseaseRestrictedOptions[name] = checked;
       return prev;
     }, () => {
-      if(this.state.submit) {
+      if (this.state.submit) {
         this.validateForm();
       }
     });
@@ -201,7 +201,7 @@ class DataUseLetter extends Component {
     if (value === 'true') {
       value = true;
     } else if (value === 'false') {
-      if(field === 'repositoryDeposition') {
+      if (field === 'repositoryDeposition') {
         this.setState(prev => {
           prev.formData['GSRAvailability'] = '';
           prev.formData['dataSubmissionProhibition'] = '';
@@ -209,16 +209,17 @@ class DataUseLetter extends Component {
           prev.formData['dataDepositionDescribed'] = '';
           prev.formData['dataUseConsent'] = '';
           return prev;
-      })
-    }
-    this.setState(prev => {
+        });
+      }
+      this.setState(prev => {
         prev.formData[field] = value;
         return prev;
-    }, () => {
-      if(this.state.submit) {
-        this.validateForm();
-      }
-    });
+      }, () => {
+        if (this.state.submit) {
+          this.validateForm();
+        }
+      });
+    }
   };
 
   submitDUL() {
@@ -257,7 +258,7 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorPi = true;
     }
-    
+
     // Date Range Validations
     if (this.state.formData.startDate === null
       || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) {
@@ -267,14 +268,14 @@ class DataUseLetter extends Component {
 
     // Primary Restrictions validations
     if (this.state.formData.noRestrictions === false
-        && this.state.formData.generalUse === false
-        && this.state.formData.researchRestricted === false
-        && this.state.formData.diseaseRestricted === false) {
+      && this.state.formData.generalUse === false
+      && this.state.formData.researchRestricted === false
+      && this.state.formData.diseaseRestricted === false) {
       errorForm = true;
       errorPrimaryRestrictionsChecks = true;
     }
     if (this.state.formData.diseaseRestricted === true
-        && Object.keys(this.state.formData.diseaseRestrictedOptions).every(key =>
+      && Object.keys(this.state.formData.diseaseRestrictedOptions).every(key =>
         this.state.formData.diseaseRestrictedOptions[key] === false)) {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
@@ -297,7 +298,7 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorInstitution = true;
     }
-    if(this.state.formData.repositoryDeposition == true) {
+    if (this.state.formData.repositoryDeposition == true) {
       if ((this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) && this.isEmpty(this.state.formData.GSRAvailability)) {
         errorForm = true;
         errorGSRAvailability = true
@@ -320,10 +321,10 @@ class DataUseLetter extends Component {
           errorDataUseConsent = true;
         }
       }
-    }  
+    }
 
     this.setState(prev => {
-      prev.errors.errorForm= errorForm;
+      prev.errors.errorForm = errorForm;
       prev.errors.errorPi = errorPi;
       prev.errors.errorSampleCollectionDateRange = errorSampleCollectionDateRange;
       prev.errors.errorPrimaryRestrictionsChecks = errorPrimaryRestrictionsChecks;
@@ -380,12 +381,12 @@ class DataUseLetter extends Component {
     return value === '' || value === null || value === undefined;
   }
   render() {
-    const {startDate = null, endDate = null, onGoingProcess = false } = this.state.formData;
+    const { startDate = null, endDate = null, onGoingProcess = false } = this.state.formData;
     return (
       div({}, [
         h1({ className: "pageTitle" }, [
           "Data Use Limitation Record",
-          p({ className: "pageClarification"}, [
+          p({ className: "pageClarification" }, [
             "Broad Institute - Data Use Limitation Record",
             br({}),
             "Version 5.21.2018"
@@ -558,7 +559,7 @@ class DataUseLetter extends Component {
               readOnly: this.state.readOnly
             }),
             small({ isRendered: this.state.errors.errorPrimaryRestrictionsChecks, className: "errorMessage" }, ['Required Fields']),
-       
+
             div({ isRendered: this.state.formData.diseaseRestricted === true, className: "row subGroup" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
                 InputFieldCheckbox({
@@ -840,7 +841,7 @@ class DataUseLetter extends Component {
             }),
 
             // If SC Date Range starts before 1/25/2015 (OK)
-            div({ isRendered: !(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null))}, [
+            div({ isRendered: !(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) }, [
               div({ isRendered: this.startsBefore("1/25/2015") }, [
                 InputFieldRadio({
                   id: "radioDataSubmissionProhibition",
@@ -917,7 +918,7 @@ class DataUseLetter extends Component {
                 errorMessage: 'Required Field'
               })
             ]),
-        ]),
+          ]),
           // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3 (OK)
           h2({ className: "pageSubtitle" }, [
             small({}, [
@@ -995,7 +996,7 @@ class DataUseLetter extends Component {
             onChange: this.handleFormDataTextChange,
             readOnly: this.state.readOnly,
             error: this.state.errors.errorInstitution,
-            errorMessage: 'Required Field'            
+            errorMessage: 'Required Field'
           }),
           InputFieldText({
             id: "inputDate",
