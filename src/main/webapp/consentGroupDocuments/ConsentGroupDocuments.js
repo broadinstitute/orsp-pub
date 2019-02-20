@@ -127,6 +127,7 @@ class ConsentGroupDocuments extends Component {
   };
 
   render() {
+    console.log("props de consentgroupdocument ", this.props);
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
@@ -146,7 +147,8 @@ class ConsentGroupDocuments extends Component {
         additionalOptions: this.state.documentAdditionalOptions,
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
-        handleLoadDocuments: this.getAttachedDocuments
+        handleLoadDocuments: this.getAttachedDocuments,
+        serverURL: this.props.serverURL
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
