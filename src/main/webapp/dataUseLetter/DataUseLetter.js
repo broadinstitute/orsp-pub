@@ -211,15 +211,15 @@ class DataUseLetter extends Component {
           return prev;
         });
       }
-      this.setState(prev => {
-        prev.formData[field] = value;
-        return prev;
-      }, () => {
-        if (this.state.submit) {
-          this.validateForm();
-        }
-      });
     }
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, () => {
+      if (this.state.submit) {
+        this.validateForm();
+      }
+    });
   };
 
   submitDUL() {
