@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, p, div, h2, input, label, span, a, button } from 'react-hyperscript-helpers';
+import { hh, p, div, h2, h3, input, label, span, a, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -1173,15 +1173,6 @@ class ConsentGroupReview extends Component {
         ]),
 
         Panel({ title: "International Cohorts" }, [
-          div({ isRendered: !this.state.readOnly, style: { 'marginTop': '55px' } }, [
-            QuestionnaireWorkflow({
-              questions: this.state.questions,
-              edit: true,
-              cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
-              handler: this.determinationHandler,
-              determination: this.state.determination
-            })
-          ]),
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
             div({
@@ -1208,11 +1199,11 @@ class ConsentGroupReview extends Component {
             label({}, ["Is the Broad work being performed as fee-for-service?"]),
             div({
               className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(feeForService)]), 
+            }, [this.stringAnswer(feeForService)]),
             div({
-              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService), 
+              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService),
               className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)]) 
+            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)])
           ]),
 
           div({ className: "answerWrapper" }, [
@@ -1246,6 +1237,24 @@ class ConsentGroupReview extends Component {
               isRendered: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous),
               className: "answerCurrent"
             }, [this.stringAnswer(this.state.current.consentExtraProps.isConsentUnambiguous)])
+          ]),
+
+          div({ isRendered: !this.state.readOnly, className: "questionnaireEdits" }, [
+            div({ style: { 'margin': '15px 0 40px 0' } }, [
+              AlertMessage({
+                type: 'info',
+                msg: "If you want to edit the answers above, please complete the following questionnaire.",
+                show: true
+              })
+            ]),
+            h3({}, ["International Cohorts' Questionnaire"]),
+            QuestionnaireWorkflow({
+              questions: this.state.questions,
+              edit: true,
+              cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
+              handler: this.determinationHandler,
+              determination: this.state.determination
+            })
           ])
         ]),
 
