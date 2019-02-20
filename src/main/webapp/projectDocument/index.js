@@ -14,6 +14,7 @@ import '../index.css';
         sessionUserUrl = {component.sessionUserUrl}
         component = {component}
         downloadDocumentUrl = {component.downloadDocumentUrl}
+        loadingImage = {component.loadingImage}
       />,
     document.getElementById('projectDocument')
 );
