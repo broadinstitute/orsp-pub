@@ -140,7 +140,7 @@ class NewConsentGroup extends Component {
         this.changeSubmitState();
         console.error(error);
         this.toggleSubmitError();
-    });
+      });
   };
 
   toggleSubmitError = () => {
