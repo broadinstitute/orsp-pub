@@ -150,7 +150,7 @@ export const Review = {
 
 };
 
-export const DataUseLetter = {
+export const DUL = {
   generateRedirectLink(data, serverURL) {
     return axios.post(serverURL + '/api/dataUseLetter', data);
   }

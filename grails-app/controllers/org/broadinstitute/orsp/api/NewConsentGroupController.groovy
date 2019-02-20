@@ -107,6 +107,7 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def dul() {
+        request.parameterMap["id"]
         render(view: "/dataUseLetter/index")
     }
 }

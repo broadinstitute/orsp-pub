@@ -8,13 +8,12 @@ class DataUseLetterControllerService {
     String generateDul(Object input) {
         DataUseLetter newDul = new DataUseLetter()
 
-        def uniqueId = UUID.randomUUID().toString()
+        String uniqueId = UUID.randomUUID().toString()
 
         newDul.setUid(uniqueId)
         newDul.setCreator(input["user"] as String)
 
         newDul.setConsentGroupKey(input["consentKey"] as String)
-        newDul.setProjectKey(input["projectKey"] as String)
         newDul.setSubmitted(false)
         newDul.setCreationDate(new Date())
 
