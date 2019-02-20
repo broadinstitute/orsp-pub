@@ -33,6 +33,7 @@ class ConsentGroupReview extends Component {
       isAdmin: false,
       disableApproveButton: false,
       reviewSuggestion: false,
+      submitted: false,
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
@@ -279,7 +280,6 @@ class ConsentGroupReview extends Component {
   }
 
   isValid = () => {
-    this.setState({ errorSubmit: false });
     let consent = false;
     let protocol = false;
     let collInst = false;
@@ -391,7 +391,8 @@ class ConsentGroupReview extends Component {
       !sensitive &&
       !startDate &&
       !consentGroupName &&
-      !endDate;
+      !endDate &&
+      !this.institutionalSrcHasErrors();
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
@@ -412,6 +413,7 @@ class ConsentGroupReview extends Component {
       prev.errors.consentGroupName = consentGroupName;
       return prev;
     });
+    this.setState({ errorSubmit: !valid });
     return valid;
   };
 
@@ -517,7 +519,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleApproveDialog = () => {
-    if (this.isValid() && !this.institutionalSrcHasErrors()) {
+    if (this.isValid()) {
       this.setState({
         showApproveDialog: !this.state.showApproveDialog,
         isEdited: true,
@@ -570,7 +572,7 @@ class ConsentGroupReview extends Component {
 
   submitEdit = (e) => () => {
     let data = {};
-    if (this.validateQuestionaire() && !this.institutionalSrcHasErrors()) {
+    if (this.validateQuestionaire()) {
       if (this.isValid()) {
         this.setState(prev => {
           prev.readOnly = true;
@@ -598,6 +600,7 @@ class ConsentGroupReview extends Component {
         });
       } else {
         this.setState(prev => {
+          prev.submitted = true;
           prev.errorSubmit = true;
           prev.errorMessage = 'Please complete required fields.';
           return prev;
@@ -605,6 +608,7 @@ class ConsentGroupReview extends Component {
       }
     } else {
       this.setState(prev => {
+        prev.submitted = true;
         prev.errorSubmit = true;
         prev.errorMessage = 'Please complete International Cohorts';
         return prev;
@@ -640,12 +644,10 @@ class ConsentGroupReview extends Component {
       }
       return response;
     }).length > 0;
-
     this.setState(prev => {
       prev.errors.institutionalNameErrorIndex = institutionalNameErrorIndex;
       prev.errors.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
       prev.errors.instError= institutionalError;
-      prev.errorSubmit = institutionalError;
       return prev;
     });
 
@@ -780,6 +782,10 @@ class ConsentGroupReview extends Component {
       prev.isEdited = true;
       prev.errors.instError = false;
       return prev;
+    }, () => {
+      if (this.state.submitted) {
+        this.isValid();
+      }
     });
   };
 
