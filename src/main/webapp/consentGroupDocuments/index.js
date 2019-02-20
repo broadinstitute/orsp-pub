@@ -13,6 +13,7 @@ import ConsentGroupDocuments from './ConsentGroupDocuments';
     rejectDocumentUrl = {consentGroupDocumentsComponent.rejectDocumentUrl}
     sessionUserUrl = {consentGroupDocumentsComponent.sessionUserUrl}
     downloadDocumentUrl = {consentGroupDocumentsComponent.downloadDocumentUrl}
+    loadingImage = {consentGroupDocumentsComponent.loadingImage}
   />,
   document.getElementById('consentGroupDocuments')
 );

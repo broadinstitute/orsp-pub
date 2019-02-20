@@ -7,6 +7,7 @@ import { InputFieldFile } from './InputFieldFile';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
 import { Files } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
 
 import './ConfirmationDialog.css';
 
@@ -59,6 +60,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   };
 
   upload = () => {
+    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
       return prev;
@@ -72,6 +74,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let files = [file];
         Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
+            spinnerService.hideAll();
             this.setState(prev => {
               prev.submit = false;
               prev.disableBtn = false;
@@ -82,6 +85,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
+            spinnerService.hideAll();
             this.setState(prev => {
               prev.errorMessage = 'Something went wrong. Please try again.';
               prev.uploadError = true;
