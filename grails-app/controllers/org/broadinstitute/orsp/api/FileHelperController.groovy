@@ -66,6 +66,7 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def approveDocument() {
+        String projectType = request.JSON['projectType']
         StorageDocument document = StorageDocument.findByUuid(params.uuid)
         try {
             if (document != null) {
@@ -73,7 +74,7 @@ class FileHelperController extends AuthenticatedController{
                 document.save(flush: true)
 
                 Issue issue = queryService.findByKey(document.projectKey)
-                issueService.updateProjectApproval(issue)
+                issueService.updateProjectApproval(issue, projectType)
 
                 render(['document': document] as JSON)
             } else {

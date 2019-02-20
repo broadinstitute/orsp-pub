@@ -303,8 +303,10 @@ class IssueService {
      * Check that an issue has its general data and all of its attachments are in 'Approved' status.
      * If all conditions are met, then we set its general status to 'Approved'
      */
-    void updateProjectApproval(Issue issue) {
-        if (issue != null && issue.getProjectReviewApproved() && issue.attachmentsApproved()) {
+    void updateProjectApproval(Issue issue, String projectType) {
+        def approved = issue.attachmentsApproved(projectType)
+
+        if (issue != null && issue.getProjectReviewApproved() && approved) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)

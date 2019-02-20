@@ -101,8 +101,8 @@ export const Project = {
 };
 
 export const DocumentHandler = {
-  approveDocument(url, uuid) {
-    return axios.put(`${url}?uuid=${uuid}`);
+  approveDocument(url, uuid, projectType = '') {
+    return axios.put(`${url}?uuid=${uuid}`, {'projectType': projectType});
   },
 
    rejectDocument(url, uuid) {
