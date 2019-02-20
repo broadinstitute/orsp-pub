@@ -105,4 +105,8 @@ class NewConsentGroupController extends AuthenticatedController {
         response.status = 200
         render([message: 'Consent Group was updated'] as JSON)
     }
+
+    def dul() {
+        render(view: "/dataUseLetter/index")
+    }
 }
