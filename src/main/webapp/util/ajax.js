@@ -153,5 +153,9 @@ export const Review = {
 export const DUL = {
   generateRedirectLink(data, serverURL) {
     return axios.post(serverURL + '/api/dataUseLetter', data);
+  },
+
+  updateDUL(data, serverURL) {
+    return axios.put(serverURL + '/api/dataUseLetter', data);
   }
 };

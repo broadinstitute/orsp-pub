@@ -17,7 +17,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
     IssueService issueService
     PersistenceService persistenceService
     StatusEventService statusEventService
-    DataUseLetterControllerService dataUseLetterControllerService
+    DataUseLetterService dataUseLetterService
 
     public static final List<String> SUBMISSION_DOC_TYPES =
             [ "Amendment Form",

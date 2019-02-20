@@ -9,7 +9,7 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { ConsentGroup, Project } from "../util/ajax";
+import { ConsentGroup, DUL } from "../util/ajax";
 
 class DataUseLetter extends Component {
 
@@ -223,13 +223,16 @@ class DataUseLetter extends Component {
   };
 
   submitDUL() {
-    this.validateForm();
     this.setState(prev => {
       prev.submit = true;
       return prev;
     });
-    if (this.state.isFormValid === true) {
-      // submit
+    if (this.validateForm() === false) {
+      const  id  = window.location.href.split('id=')[1];
+      let form = {dulInfo: JSON.stringify(this.state.formData), uid: id};
+      DUL.updateDUL(form, this.props.serverUrl).then(resp => {
+          console.log("testeeesssssssssssssssss");
+      });
     }
   };
 
@@ -343,6 +346,7 @@ class DataUseLetter extends Component {
       prev.errors.errorDataUseConsent = errorDataUseConsent;
       return prev;
     });
+    return errorForm;
   };
 
   getUsersArray(array) {

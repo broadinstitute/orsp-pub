@@ -2,7 +2,7 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 
-class DataUseLetterControllerService {
+class DataUseLetterService {
     QueryService queryService
 
     String generateDul(Object input) {
@@ -38,9 +38,8 @@ class DataUseLetterControllerService {
 
             if (dul.hasErrors()) {
                 throw new DomainException(dul.getErrors())
-            } else {
-                dul
             }
+            dul
         } else {
             throw new IllegalArgumentException()
         }
