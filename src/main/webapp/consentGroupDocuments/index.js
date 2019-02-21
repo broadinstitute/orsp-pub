@@ -14,6 +14,7 @@ import ConsentGroupDocuments from './ConsentGroupDocuments';
     sessionUserUrl = {consentGroupDocumentsComponent.sessionUserUrl}
     downloadDocumentUrl = {consentGroupDocumentsComponent.downloadDocumentUrl}
     emailDulUrl = {consentGroupDocumentsComponent.emailDulUrl}
+    loadingImage = {consentGroupDocumentsComponent.loadingImage}
   />,
   document.getElementById('consentGroupDocuments')
 );

@@ -5,7 +5,8 @@ import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
-import {ConsentGroup, Files} from "../util/ajax";
+import { ConsentGroup, Files } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
 
 import './ConfirmationDialog.css';
 
@@ -64,6 +65,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   };
 
   upload = () => {
+    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
       return prev;
@@ -77,6 +79,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let files = [file];
         Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
+            spinnerService.hideAll();
             this.setState(prev => {
               prev.submit = false;
               prev.disableBtn = false;
@@ -88,6 +91,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.closeModal();
           }).catch(error => {
           console.log(error);
+            spinnerService.hideAll();
             this.setState(prev => {
               prev.alertType = 'danger';
               prev.alertMessage = 'Something went wrong. Please try again.';
@@ -111,6 +115,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   };
 
   send = () => {
+    spinnerService.showAll();
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)){
       this.setState({alertMessage: '', collaboratorEmail: '', showAlert: false});
@@ -123,6 +128,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           return prev;
         });
       }).catch( error => {
+        spinnerService.hideAll();
         this.setState(prev => {
           prev.alertType = 'danger';
           prev.alertMessage = 'Error sending email sent to: ' + collaboratorEmail + '. Please try again later.';
@@ -133,6 +139,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         console.error(error);
       });
     }
+    spinnerService.hideAll();
   };
 
   isValid() {
@@ -155,6 +162,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
   handleTypeSelect = () => (selectedOption) => {
     this.setState(prev => {
+      prev.alertMessage = '';
+      prev.showAlert = false;
       prev.type = selectedOption;
       return prev;
     }, () => this.isValid());

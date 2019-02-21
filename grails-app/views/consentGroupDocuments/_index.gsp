@@ -8,7 +8,8 @@
         approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
         sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
-        emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}"
+        emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}",
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
     };
 </g:javascript>
 
