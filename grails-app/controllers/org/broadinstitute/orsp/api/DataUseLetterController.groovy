@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
@@ -39,4 +40,17 @@ class DataUseLetterController extends AuthenticatedController {
             render([error: e.message] as JSON)
         }
     }
+
+    def show() {
+        String uid = request.parameterMap["id"].first()
+        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        if(dul == null) {
+            render(view: "/dataUseLetter/index", model: [error: 'notFound'])
+        } else if(dul.submitted) {
+            render(view: "/dataUseLetter/index", model: [error: 'submitted'])
+        } else {
+            render(view: "/dataUseLetter/index")
+        }
+    }
+
 }
