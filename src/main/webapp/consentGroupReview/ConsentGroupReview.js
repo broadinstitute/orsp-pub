@@ -797,6 +797,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleExtraPropsInputChange = (e) => {
+
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {

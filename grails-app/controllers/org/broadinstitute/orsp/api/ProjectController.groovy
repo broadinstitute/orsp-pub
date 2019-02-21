@@ -18,6 +18,10 @@ class ProjectController extends AuthenticatedController {
         render(view: "/newProject/index")
     }
 
+    def dul() {
+        render(view: "/dataUseLetter/index")
+    }
+
     @Override
     def show() {
         List<String> diseaseAndPopulationRestrictions = queryService.findAllDiseaseAndPopulationRestrictions()
