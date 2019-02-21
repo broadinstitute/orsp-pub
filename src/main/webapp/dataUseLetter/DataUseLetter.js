@@ -120,14 +120,14 @@ class DataUseLetter extends Component {
   initFormData = () => {
     const params = window.location.href.split('/').pop();
     const uuid = params;
-    ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
-      this.setState(prev => {
-        prev.formData.protocolTitle = consentGroup.data.issue.summary;
-        prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
-        prev.formData.date = this.parseDate(new Date());
-        return prev;
-      });
-    });
+    // ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
+    //   this.setState(prev => {
+    //     prev.formData.protocolTitle = consentGroup.data.issue.summary;
+    //     prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
+    //     prev.formData.date = this.parseDate(new Date());
+    //     return prev;
+    //   });
+    // });
   };
 
   handleFormDataTextChange = (e) => {
@@ -228,10 +228,10 @@ class DataUseLetter extends Component {
       return prev;
     });
     if (this.validateForm() === false) {
-      const  id  = window.location.href.split('id=')[1];
-      let form = {dulInfo: JSON.stringify(this.state.formData), uid: id};
+      const id = window.location.href.split('id=')[1];
+      let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-          console.log("testeeesssssssssssssssss");
+        console.log("testeeesssssssssssssssss");
       });
     }
   };
@@ -502,7 +502,7 @@ class DataUseLetter extends Component {
                   defaultChecked: this.state.formData.onGoingProcess
                 }),
                 label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
-              ]),
+              ])
             ])
           ]),
 
@@ -553,7 +553,6 @@ class DataUseLetter extends Component {
               checked: this.state.formData.researchRestricted === 'true' || this.state.formData.researchRestricted === true,
               readOnly: this.state.readOnly
             }),
-
             InputFieldCheckbox({
               id: "ckb_diseaseRestricted",
               name: "diseaseRestricted",
@@ -732,9 +731,8 @@ class DataUseLetter extends Component {
                   })
                 ])
               ]),
-              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Requiered Fields.']),
-
-            ]),
+              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
+            ])
           ]),
 
           Panel({ title: "2. Does the informed consent form or the IRB/EC prohibit any of the following?" }, [
@@ -816,7 +814,7 @@ class DataUseLetter extends Component {
                 onChange: this.handleFormDataTextChange,
                 readOnly: this.state.readOnly
               })
-            ]),
+            ])
           ]),
 
           Panel({ title: "4. Other restrictions" }, [
@@ -921,7 +919,7 @@ class DataUseLetter extends Component {
                 error: this.state.errors.errorGSRAvailability,
                 errorMessage: 'Required Field'
               })
-            ]),
+            ])
           ]),
           // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3 (OK)
           h2({ className: "pageSubtitle" }, [

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { AlertMessage } from '../components/Wizard';
-import { div } from 'react-hyperscript-helpers';
+import { div, h2 } from 'react-hyperscript-helpers';
 
 class DataUseLetterMessage extends Component {
 
@@ -9,10 +9,12 @@ class DataUseLetterMessage extends Component {
   }
 
   render() {
-     // error notFound or submitted
-     console.log("data use letter message", this.props.error);
      return (
-      div(['Test' + this.props.error]))
+       div({}, [
+        h2({ isRendered: this.props.error === 'submitted', className: "pageSubtitle" }, ["The Data Use Letter form was submitted to ORSP."]),
+        h2({ isRendered: this.props.error === 'notFound', className: "pageSubtitle" }, ["Sorry, this page could not be found."])
+       ])
+     )
   }
 }
 
