@@ -242,10 +242,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
                     placeholder: "Enter email address...",
                     onChange: this.handleInputChange,
                     error: this.state.invalidEmail,
-                    errorMessage: 'Invalid e-mail'
+                    errorMessage: 'Invalid email address'
                   })
                 ]),
-                div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'bottom': '12px', 'right': '0'} }, [
+                div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'top': '25px', 'right': '0'} }, [
                     button({ className: "btn buttonPrimary fullWidth", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
                 ]),
               ]),
