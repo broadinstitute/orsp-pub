@@ -10,15 +10,12 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.addInstitutionalSources = this.addInstitutionalSources.bind(this);
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
     this.state = {
-      future: [],
       institutionalSources: [{ name: '', country: '' }]
     };
-  }
+  };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.edit && nextProps.current !== prevState.current) {
-      return { current: nextProps.current, future: nextProps.future};
-    } else if (!nextProps.edit && nextProps.institutionalSources !== prevState.institutionalSources) {
+    if (!nextProps.edit && nextProps.institutionalSources !== prevState.institutionalSources) {
       return { institutionalSources: nextProps.institutionalSources};
     } else {
       return null
@@ -26,18 +23,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   addInstitutionalSources() {
-    if (!this.props.edit) {
-      // For new Projects
-      if (this.props.institutionalSources !== undefined && this.props.institutionalSources[0].name !== '' && this.props.institutionalSources[0].country !== '') {
-        this.setState(prev => {
-          let institutionalSources = this.state.institutionalSources;
-          institutionalSources.splice(0, 0, { name: '', country: '' });
-          prev.institutionalSources = institutionalSources;
-          prev.error = false;
-          return prev
-        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
-      }
-    } else {
+    if (this.props.edit) {
       // Only for edit / review
       if ((this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
         || this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country ) {
@@ -54,11 +40,35 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
           this.props.updateInstitutionalSource(this.state.institutionalSources)
         });
       }
+    } else {
+      // For new Projects
+      if (this.props.institutionalSources !== undefined && this.props.institutionalSources[0].name !== '' && this.props.institutionalSources[0].country !== '') {
+        this.setState(prev => {
+          let institutionalSources = this.state.institutionalSources;
+          institutionalSources.splice(0, 0, { name: '', country: '' });
+          prev.institutionalSources = institutionalSources;
+          prev.error = false;
+          return prev
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+      }
     }
   }
 
   removeInstitutionalSources = (index) => {
-    if (!this.props.edit) {
+    if (this.props.edit) {
+      // Only for edit / review
+      let institutionalSources = this.props.institutionalSources;
+      if (this.isEmpty(this.props.institutionalSources[index].current.name)) {
+        institutionalSources.splice(index, 1);
+      } else {
+        institutionalSources[index].future = { name: '', country: '' }
+      }
+      this.setState(prev => {
+        prev.institutionalSources = institutionalSources;
+        return prev
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources)
+      );
+    } else {
       // For new Projects
       if (this.props.institutionalSources.length > 1) {
         this.setState(prev => {
@@ -68,24 +78,22 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
           return prev;
         }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
       }
-    } else {
-      // Only for edit / review
-        let institutionalSources = this.props.institutionalSources;
-        if (this.isEmpty(this.props.institutionalSources[index].current.name)) {
-          institutionalSources.splice(index, 1);
-        } else {
-          institutionalSources[index].future = { name: '', country: '' }
-        }
-
-      this.setState(prev => {
-        prev.institutionalSources = institutionalSources;
-        return prev
-      }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
     }
   };
 
   handleInstitutionalChange = (e) => {
-    if (!this.props.edit) {
+    if (this.props.edit) {
+      let institutionalSources = this.props.institutionalSources;
+      const field = e.target.name;
+      const value = e.target.value;
+      const index = e.target.getAttribute('index');
+      institutionalSources[index].future[field] = value;
+      this.setState(prev => {
+        prev.institutionalSources = institutionalSources;
+        return prev;
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources)
+      );
+    } else {
       let institutionalSources = this.props.institutionalSources;
       const field = e.target.name;
       const value = e.target.value;
@@ -97,16 +105,6 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
       }, () => {
         this.props.updateInstitutionalSource(this.state.institutionalSources, field)
       });
-    } else {
-      let institutionalSources = this.props.institutionalSources;
-      const field = e.target.name;
-      const value = e.target.value;
-      const index = e.target.getAttribute('index');
-      institutionalSources[index].future[field] = value;
-      this.setState(prev => {
-        prev.institutionalSources = institutionalSources;
-        return prev;
-      }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
     }
   };
 

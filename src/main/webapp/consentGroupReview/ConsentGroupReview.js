@@ -12,7 +12,7 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
 import { AlertMessage } from "../components/AlertMessage";
-import _ from 'lodash';
+import get from 'lodash/get';
 
 const EXIT = 500;
 const DPA = 600;
@@ -477,7 +477,10 @@ class ConsentGroupReview extends Component {
 
   isCurrentUserAdmin() {
     User.isCurrentUserAdmin(this.props.isAdminUrl).then(
-      resp => this.setState({ isAdmin: resp.data.isAdmin })
+      resp => {
+        this.setState({ isAdmin: true })
+        // this.setState({ isAdmin: resp.data.isAdmin })
+      }
     );
   }
 
@@ -647,7 +650,7 @@ class ConsentGroupReview extends Component {
     this.setState(prev => {
       prev.errors.institutionalNameErrorIndex = institutionalNameErrorIndex;
       prev.errors.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
-      prev.errors.instError= institutionalError;
+      prev.errors.instError = institutionalError;
       return prev;
     });
 
@@ -675,12 +678,9 @@ class ConsentGroupReview extends Component {
   getInstitutionalSrc(institutionalSources) {
     let institutionalSourcesList = [];
     if (institutionalSources !== null && institutionalSources.length > 0) {
-      institutionalSources.map((f, idx) => {
-        let institutionalSources = {};
+      institutionalSources.map((f) => {
         if (!this.isEmpty(f.future.name) && !this.isEmpty(f.future.country)) {
-          institutionalSources.name = f.future.name;
-          institutionalSources.country = f.future.country;
-          institutionalSourcesList.push(institutionalSources);
+          institutionalSourcesList.push({ name: f.future.name, country: f.future.country });
         }
       });
     }
@@ -701,7 +701,7 @@ class ConsentGroupReview extends Component {
     consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
     consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
-    consentGroup.requireMta = this.state.formData.consentExtraProps.requireMta
+    consentGroup.requireMta = this.state.formData.consentExtraProps.requireMta;
 
     if (this.state.formData.consentExtraProps.endDate !== null) {
       consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
@@ -1062,7 +1062,7 @@ class ConsentGroupReview extends Component {
       areSamplesComingFromEEAA = '',
       isCollaboratorProvidingGoodService = '',
       isConsentUnambiguous = '',
-    } = _.get(this.state.formData, 'consentExtraProps', '');
+    } = get(this.state.formData, 'consentExtraProps', '');
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
@@ -1256,7 +1256,7 @@ class ConsentGroupReview extends Component {
                 name: "endDate",
                 label: "End Date",
                 onChange: this.handleChange,
-                disabled: _.get(this.state.formData, 'consentExtraProps.onGoingProcess', '') === "true",
+                disabled: onGoingProcess === true || onGoingProcess === "true",
                 readOnly: this.state.readOnly,
                 error: this.state.errors.endDate,
                 errorMessage: "Required field",
