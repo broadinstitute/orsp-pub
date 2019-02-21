@@ -1,6 +1,6 @@
 package org.broadinstitute.orsp
 
-enum ProjectKeyDocuments {
+enum ProjectKeyDocument {
 
     IRB_APPROVAL('IRB Approval'),
     IBR_APPLICATION('IRB Application'),
@@ -11,12 +11,12 @@ enum ProjectKeyDocuments {
 
     String type
 
-    ProjectKeyDocuments(String type) {
+    ProjectKeyDocument(String type) {
         this.type = type
     }
 
     static String getType(String type) {
-        ProjectKeyDocuments found = values().find { it.type.equalsIgnoreCase(type) }
+        ProjectKeyDocument found = values().find { it.type.equalsIgnoreCase(type) }
         found?.type ?: ""
     }
 }

@@ -70,7 +70,7 @@ class ProjectDocument extends Component {
   };
 
   approveDocument = (uuid) => {
-    DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid, 'project').then(resp => {
+    DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
         this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});

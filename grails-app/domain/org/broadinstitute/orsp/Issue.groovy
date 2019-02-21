@@ -217,18 +217,23 @@ class Issue implements LogicalDelete<Issue> {
     transient Boolean attachmentsApproved(String projectType) {
         // TODO should check for approved key documents // al menos uno de cada key document debe estar aprobado
 
+        println 'attachmentsApproved'
         getAttachments()?.collect {
             it
         }?.findAll{
-            switch (projectType) {
-                case 'consentGroup':
-                    println it.fileType + ' ' + it.fileName + ' ' + it.status
-                    println CGroupKeyDocument.getType(it.fileType).isEmpty()
-                    break
-                case 'project':
-                    ProjectKeyDocuments.getType(it.fileType).isEmpty()
-                    break
-            }
+//            switch (projectType) {
+//                case 'Consent Group':
+//                    println it.fileType + ' ' + it.fileName + ' ' + it.status
+//                    println CGroupKeyDocument.getType(it.fileType).isEmpty()
+//                    break
+////            APPROVAL_MEMO('Approval Memo'),
+////            CONSENT_DOCUMENT('Consent Document'),
+////            DATA_USE_LETTER('Data Use Letter')
+//                case 'project':
+//                    println 'checking Project type documents approved'
+//                    println it.status != IssueStatus.Approved.getName() && !ProjectKeyDocument.getType(it.fileType).isEmpty()
+//                    break
+//            }
             it.status != IssueStatus.Approved.getName() && it.fileType
         }?.isEmpty()
     }
