@@ -40,7 +40,11 @@
 .inputFieldReadOnly .inputFieldLabel,
 .inputFieldReadOnly label {
   font-weight: 700;
-} 
+}
+
+.inputFieldCkb {
+  margin-top: 10px;
+}
 
 .inputFieldLabel {
   font-weight: 400;
