@@ -14,6 +14,7 @@
         serverURL: "${webRequest.baseUrl}",
         consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+        error: "${error}"
     };
     </script>
 </head>
