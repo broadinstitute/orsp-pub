@@ -133,7 +133,7 @@ class ConsentGroupDocuments extends Component {
         show: this.state.showDialog,
         handleOkAction: this.handleAction,
         title: this.state.action + ' Confirmation',
-        bodyText: 'Are you sure yo want to ' + this.state.action + ' this document?',
+        bodyText: 'Are you sure you want to ' + this.state.action + ' this document?',
         actionLabel: 'Yes'
       }, []),
       Documents({

@@ -1358,7 +1358,7 @@ class ConsentGroupReview extends Component {
             div({ style: { 'margin': '15px 0 40px 0' } }, [
               AlertMessage({
                 type: 'info',
-                msg: "If you want to edit the answers above, please complete the following questionnaire.",
+                msg: "If you would like to change the answers to any of the International Cohort questions displayed above, please proceed through the questions below to change your answers accordingly.",
                 show: true
               })
             ]),
