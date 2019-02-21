@@ -10,7 +10,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, User, Review } from "../util/ajax";
-import _ from 'lodash';
+import get from 'lodash/get';
 
 class ProjectReview extends Component {
 
@@ -367,8 +367,8 @@ class ProjectReview extends Component {
   compareObj(obj1, obj2) {
     let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
     let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
-    form1.fundings = this.sortFundingsBySource(_.get(form1, 'fundings', ''));
-    form2.fundings = this.sortFundingsBySource(_.get(form2, 'fundings', ''));
+    form1.fundings = this.sortFundingsBySource(get(form1, 'fundings', ''));
+    form2.fundings = this.sortFundingsBySource(get(form2, 'fundings', ''));
     return JSON.stringify(form1) === JSON.stringify(form2);
   }
 
