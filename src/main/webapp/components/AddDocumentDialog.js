@@ -65,12 +65,12 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   };
 
   upload = () => {
-    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
       return prev;
     }, () => {
       if (this.isValid()) {
+        spinnerService.showAll();
         this.setState(prev => {
           prev.disableBtn = true;
           return prev;
