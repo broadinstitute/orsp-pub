@@ -164,12 +164,13 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   handleTypeSelect = () => (selectedOption) => {
     this.setState(prev => {
       prev.alertMessage = '';
+      prev.typeError = false;
       prev.showAlert = false;
       prev.invalidEmail = false;
       prev.fileError = false;
       prev.type = selectedOption;
       return prev;
-    }, () => this.isValid());
+    });
   };
 
   handleInputChange = (e) => {
@@ -191,9 +192,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     this.setState(prev => {
       prev.alertMessage = '';
       prev.showAlert = false;
+      prev.fileError = false;
       prev.file = selectedFile;
       return prev;
-    }, () => this.isValid());
+    });
   };
 
   removeFile() {
