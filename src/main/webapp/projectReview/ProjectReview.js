@@ -854,11 +854,13 @@ class ProjectReview extends Component {
         /*UNTIL HERE*/
 
         Panel({ title: "Determination Questions" }, [
-          AlertMessage({
-            type: 'info',
-            msg: "If changes need to be made to any of these questions, please submit a new project request",
-            show: true
-          }),
+          div({ isRendered: this.state.readOnly === false }, [
+            AlertMessage({
+              type: 'info',
+              msg: "If changes need to be made to any of these questions, please submit a new project request",
+              show: true
+            })
+          ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioPII",
