@@ -15,10 +15,10 @@ export const InputField = hh(class InputField extends Component {
   }
 
   render() {
-    const { value, label, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
+    const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 
     return (
-      div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') }, [
+      div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated ' : '') + (additionalClass !== null || additionalClass !== undefined ? additionalClass : '') }, [
         p({ className: "inputFieldLabel" }, [
           label,
           span({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])
