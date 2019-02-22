@@ -12,6 +12,7 @@ import { AlertMessage } from '../components/AlertMessage';
 import { ConsentGroup, DUL } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 
+
 class DataUseLetter extends Component {
 
   constructor(props) {
