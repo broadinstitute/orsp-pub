@@ -18,11 +18,7 @@ export const InputField = hh(class InputField extends Component {
     const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 
     return (
-<<<<<<< HEAD
-      div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated' : '') + (additionalClass !== null ? additionalClass : '') }, [
-=======
       div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated ' : '') + (additionalClass !== null || additionalClass !== undefined ? additionalClass : '') }, [
->>>>>>> 2007ba4e0c39babfeb0cf35bc1f530d4bf642934
         p({ className: "inputFieldLabel" }, [
           label,
           span({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])
