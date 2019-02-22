@@ -112,10 +112,15 @@ class NewConsentGroupController extends AuthenticatedController {
     def findByUUID() {
         String uid = params.uuid
         DataUseLetter dul = DataUseLetter.findByUid(uid)
-        User user = userService.findUser(dul.getCreator())
-        Map<String, String> consent = queryService.getIssueKeysWithConsentKey(dul.getConsentGroupKey(), Arrays.asList(IssueExtraProperty.PROTOCOL, IssueExtraProperty.SUMMARY))
-        consent.put("managerName", user.getDisplayName())
-        consent.put("managerEmail", user.getEmailAddress())
+        Map<String, String> consent = new HashMap<>()
+        if(dul != null) {
+            User user = userService.findUser(dul.getCreator())
+            Issue issue = queryService.findByKey(dul.getConsentGroupKey())
+            consent.put("dataManagerName", user.getDisplayName())
+            consent.put("dataManagerEmail", user.getEmailAddress())
+            consent.put(IssueExtraProperty.SUMMARY, issue.getSummary())
+            consent.put(IssueExtraProperty.PROTOCOL, IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PROTOCOL).getValue())
+        }
         response.status = 200
         render([consent: consent] as JSON)
     }

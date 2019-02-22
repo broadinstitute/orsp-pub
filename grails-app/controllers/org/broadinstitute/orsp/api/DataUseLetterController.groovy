@@ -31,7 +31,7 @@ class DataUseLetterController extends AuthenticatedController {
         try {
             dataUseLetterService.udpateDataUseLetter(input)
             response.status = 200
-            render(response.status as JSON)
+            render(response.status)
         } catch(IllegalArgumentException e) {
             response.status = 400
             render([error: "Form has been already submitted"] as JSON)
@@ -42,7 +42,7 @@ class DataUseLetterController extends AuthenticatedController {
     }
 
     def show() {
-        String uid = request.parameterMap["id"].first()
+        String uid = request.parameterMap["id"]?.first()
         DataUseLetter dul = DataUseLetter.findByUid(uid)
         if(dul == null) {
             render(view: "/dataUseLetter/index", model: [error: 'notFound'])

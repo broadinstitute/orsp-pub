@@ -41,6 +41,10 @@ export const ConsentGroup = {
 
   updateConsent(url, data, projectKey) {
     return axios.put(url + '?consentKey=' + projectKey, data);
+  },
+
+  getConsentGroupByUUID(url, uuid) {
+    return axios.get(url + '?uuid=' + uuid);
   }
 
 };

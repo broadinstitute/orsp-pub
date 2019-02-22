@@ -118,13 +118,14 @@ class DataUseLetter extends Component {
   }
 
   initFormData = () => {
-    const params = window.location.href.split('/').pop();
-    const uuid = params;
+    const uuid =  window.location.href.split('id=')[1];
     ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
       this.setState(prev => {
-        prev.formData.protocolTitle = consentGroup.data.issue.summary;
-        prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
+        prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
+        prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
         prev.formData.date = this.parseDate(new Date());
+        prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
+        prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
         return prev;
       });
     });
@@ -231,7 +232,11 @@ class DataUseLetter extends Component {
       const  id  = window.location.href.split('id=')[1];
       let form = {dulInfo: JSON.stringify(this.state.formData), uid: id};
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-          console.log("testeeesssssssssssssssss");
+        console.log("testeeesssssssssssssssss");
+        console.log(this.props.serverURL);
+        window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+      }).catch(error => {
+        console.log("error" , error);
       });
     }
   };
@@ -448,7 +453,7 @@ class DataUseLetter extends Component {
                   name: "dataManagerName",
                   label: "Data Manager Name",
                   disabled: true,
-                  value: "",
+                  value: this.state.formData.dataManagerName,
                   onChange: this.handleExtraPropsInputChange,
                   readOnly: false
                 })
@@ -459,7 +464,7 @@ class DataUseLetter extends Component {
                   name: "dataManagerEmail",
                   label: "Data Manager Email",
                   disabled: true,
-                  value: "",
+                  value: this.state.formData.dataManagerEmail,
                   onChange: this.handleExtraPropsInputChange,
                   readOnly: false
                 })

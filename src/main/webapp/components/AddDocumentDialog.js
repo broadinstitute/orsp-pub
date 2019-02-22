@@ -43,7 +43,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
         // Copy to link to clipboard
         console.log(this.props.serverURL + "/" + "dul?" + data.data.dulToken);
-        window.location.href = this.props.serverURL + "/newConsentGroup/dul?id=" + data.data.dulToken;
+        window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
       });
 
     };
@@ -57,7 +57,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
       // Redirect to dul form
       console.log(this.props.serverURL + "/" + "dul?" + data.data.dulToken);
-      window.location.href = this.props.serverURL + "/newConsentGroup/dul?id=" + data.data.dulToken;
+      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
     });
   };
 
