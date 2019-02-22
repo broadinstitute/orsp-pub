@@ -5,6 +5,7 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.utils.IssueUtils
 
@@ -78,7 +79,10 @@ class NewConsentGroupController extends AuthenticatedController {
         Object input = IssueUtils.getJson(Object.class, request.JSON)
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
+        Map<String, Object> simpleInput = new HashMap<>()
+        simpleInput.put(IssueExtraProperty.PROJECT_REVIEW_APPROVED, true)
         try {
+            issueService.modifyExtraProperties(simpleInput, projectKey)
             Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
             render([message: updatedIssue])
         } catch(Exception e) {
