@@ -53,6 +53,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       };
       prev.typeError = false;
       prev.fileError = false;
+      prev.invalidEmail = false;
       prev.showAlert = false;
       prev.disableBtn = false;
       prev.disableSendBtn = false;
@@ -164,6 +165,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     this.setState(prev => {
       prev.alertMessage = '';
       prev.showAlert = false;
+      prev.invalidEmail = false;
+      prev.fileError = false;
       prev.type = selectedOption;
       return prev;
     }, () => this.isValid());
@@ -173,6 +176,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
+      prev.fileError = false;
       prev[field] = value;
       if (field === 'collaboratorEmail') {
         prev.invalidEmail = false;
@@ -185,6 +189,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     let selectedFile = e.target.files[0];
     e.target.value = '';
     this.setState(prev => {
+      prev.alertMessage = '';
+      prev.showAlert = false;
       prev.file = selectedFile;
       return prev;
     }, () => this.isValid());
