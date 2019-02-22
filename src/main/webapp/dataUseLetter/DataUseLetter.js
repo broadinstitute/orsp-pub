@@ -10,6 +10,7 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
 import { ConsentGroup, DUL } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
 
 class DataUseLetter extends Component {
 
@@ -224,18 +225,23 @@ class DataUseLetter extends Component {
   };
 
   submitDUL() {
+    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
       return prev;
     });
     if (this.validateForm() === false) {
-      const  id  = window.location.href.split('id=')[1];
-      let form = {dulInfo: JSON.stringify(this.state.formData), uid: id};
+      const id = window.location.href.split('id=')[1];
+      let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-        console.log("testeeesssssssssssssssss");
-        console.log(this.props.serverURL);
+        spinnerService.hideAll();
         window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
       }).catch(error => {
+        this.setState(prev => {
+          prev.submit = false;
+          return prev;
+        });
+        spinnerService.hideAll();
         console.log("error" , error);
       });
     }
@@ -507,7 +513,7 @@ class DataUseLetter extends Component {
                   defaultChecked: this.state.formData.onGoingProcess
                 }),
                 label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
-              ]),
+              ])
             ])
           ]),
 
@@ -558,7 +564,6 @@ class DataUseLetter extends Component {
               checked: this.state.formData.researchRestricted === 'true' || this.state.formData.researchRestricted === true,
               readOnly: this.state.readOnly
             }),
-
             InputFieldCheckbox({
               id: "ckb_diseaseRestricted",
               name: "diseaseRestricted",
@@ -737,9 +742,8 @@ class DataUseLetter extends Component {
                   })
                 ])
               ]),
-              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Requiered Fields.']),
-
-            ]),
+              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
+            ])
           ]),
 
           Panel({ title: "2. Does the informed consent form or the IRB/EC prohibit any of the following?" }, [
@@ -821,7 +825,7 @@ class DataUseLetter extends Component {
                 onChange: this.handleFormDataTextChange,
                 readOnly: this.state.readOnly
               })
-            ]),
+            ])
           ]),
 
           Panel({ title: "4. Other restrictions" }, [
@@ -926,7 +930,7 @@ class DataUseLetter extends Component {
                 error: this.state.errors.errorGSRAvailability,
                 errorMessage: 'Required Field'
               })
-            ]),
+            ])
           ]),
           // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3 (OK)
           h2({ className: "pageSubtitle" }, [
@@ -1028,7 +1032,7 @@ class DataUseLetter extends Component {
             button({
               className: "btn buttonPrimary floatRight",
               onClick: this.submitDUL,
-              disabled: false
+              disabled: this.state.submit
             }, ["Submit"])
           ])
         ])
