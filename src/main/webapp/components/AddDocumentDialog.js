@@ -14,7 +14,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      errorMessage: '',
       alertMessage: '',
       documents: '',
       disableBtn: false,
@@ -57,7 +56,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       prev.showAlert = false;
       prev.disableBtn = false;
       prev.disableSendBtn = false;
-      prev.errorMessage = '';
+      prev.alertMessage = '';
       prev.type = '';
       prev.collaboratorEmail = '';
       return prev;
