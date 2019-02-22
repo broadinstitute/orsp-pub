@@ -478,8 +478,7 @@ class ConsentGroupReview extends Component {
   isCurrentUserAdmin() {
     User.isCurrentUserAdmin(this.props.isAdminUrl).then(
       resp => {
-        this.setState({ isAdmin: true })
-        // this.setState({ isAdmin: resp.data.isAdmin })
+        this.setState({ isAdmin: resp.data.isAdmin });
       }
     );
   }
@@ -1570,12 +1569,10 @@ class ConsentGroupReview extends Component {
             disabled: this.state.disableApproveButton,
             isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
-
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDiscardEditsDialog,
-            disabled: this.state.disableApproveButton,
             isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
           }, ["Discard Edits"])
         ])
