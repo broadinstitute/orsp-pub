@@ -215,12 +215,14 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
-        // TODO should check for approved key documents // al menos uno de cada key document debe estar aprobado
+        def approvedTypeDocuments = getAttachments().findAll { it.status == IssueStatus.Approved.getName() }.fileType
 
         if (getType() == IssueType.CONSENT_GROUP.name) {
-            CGroupKeyDocument.values().findAll {
-
-            }
+            // quedan documentos por aprobar? si la lista está vacía es porque todos los keys están aprobados
+            !CGroupKeyDocument.values().collect {
+                it.getType() }.findAll {
+                approvedTypeDocuments.contains(it) == false
+            }.isEmpty()
         } else {
             ProjectKeyDocument.values()
         }
