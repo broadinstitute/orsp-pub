@@ -467,6 +467,7 @@ class ConsentGroupReview extends Component {
         }
         this.setState(prev => {
           prev.formData.consentForm.approvalStatus = data.approvalStatus;
+          prev.current.consentExtraProps.projectReviewApproved = "true";
           prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
           prev.questions.length = 0;
           return prev;
