@@ -7,6 +7,7 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from "../components/AlertMessage";
+import { Spinner } from '../components/Spinner';
 
 class ConsentGroupDocuments extends Component {
 
@@ -147,11 +148,16 @@ class ConsentGroupDocuments extends Component {
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
-        serverURL: this.props.serverURL
+        serverURL: this.props.serverURL,
+        emailUrl: this.props.emailDulUrl,
+        userName: this.state.user.userName
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
         show: this.state.serverError
+      }),
+      h(Spinner, {
+        name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
       })
     ])
   }

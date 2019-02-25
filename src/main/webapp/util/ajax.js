@@ -45,8 +45,11 @@ export const ConsentGroup = {
 
   getConsentGroupByUUID(url, uuid) {
     return axios.get(url + '?uuid=' + uuid);
-  }
+  },
 
+  sendEmailDul(url, consentKey, userName, recipients) {
+   return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
+  },
 };
 
 export const Files = {

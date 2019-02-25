@@ -7,6 +7,7 @@ import { IRB, NHSR, NE } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
+import { Spinner } from '../components/Spinner';
 
 
 class ProjectDocument extends Component {
@@ -171,6 +172,9 @@ class ProjectDocument extends Component {
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',
           show: this.state.serverError
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
         })
       ])
     )}

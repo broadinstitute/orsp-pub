@@ -60,6 +60,8 @@ export const Documents = hh(class Documents extends Component {
         user: this.props.user,
         handleLoadDocuments: this.props.handleLoadDocuments,
         serverURL: this.props.serverURL,
+        emailUrl: this.props.emailUrl,
+        userName: this.props.userName
       }),
       AddDocumentDialog({
         closeModal: this.closeAdditionalModal,
