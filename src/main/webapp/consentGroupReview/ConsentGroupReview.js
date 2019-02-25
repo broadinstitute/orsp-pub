@@ -298,6 +298,7 @@ class ConsentGroupReview extends Component {
     let endDate = false;
     let startDate = false;
     let consentGroupName = false;
+    let intCohortsAnswers = false;
 
     if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
@@ -331,7 +332,7 @@ class ConsentGroupReview extends Component {
       compliance = true;
     }
 
-    if (this.state.formData.consentExtraProps.compliance && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
+    if (this.state.formData.consentExtraProps.compliance === "true" && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
       textCompliance = true;
     }
 
@@ -339,7 +340,7 @@ class ConsentGroupReview extends Component {
       sensitive = true;
     }
 
-    if (this.state.formData.consentExtraProps.sensitive && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
+    if (this.state.formData.consentExtraProps.sensitive === "true" && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
       textSensitive = true;
     }
 
@@ -351,7 +352,7 @@ class ConsentGroupReview extends Component {
       sharingPlan = true;
     }
 
-    if (!this.validateQuestionaire()) {
+    if (!this.validateQuestionnaire()) {
       questions = true;
     }
 
@@ -374,6 +375,11 @@ class ConsentGroupReview extends Component {
       consentGroupName = true;
     }
 
+    console.log('this.state.intCohortsAnswers', this.state.intCohortsAnswers.length);
+    if (this.state.intCohortsAnswers.length === 0) {
+      intCohortsAnswers = true;
+    }
+
     const valid = !consent &&
       !protocol &&
       !collInst &&
@@ -392,7 +398,9 @@ class ConsentGroupReview extends Component {
       !startDate &&
       !consentGroupName &&
       !endDate &&
+      !intCohortsAnswers &&
       !this.institutionalSrcHasErrors();
+
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
@@ -411,6 +419,7 @@ class ConsentGroupReview extends Component {
       prev.errors.accessible = accessible;
       prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
+      prev.internationalCohortsError = intCohortsAnswers;
       return prev;
     });
     this.setState({ errorSubmit: !valid });
@@ -439,11 +448,12 @@ class ConsentGroupReview extends Component {
       prev.errors.instError = false;
       prev.errors.institutionalNameErrorIndex = [];
       prev.errors.institutionalCountryErrorIndex = [];
+      prev.internationalCohortsError = false;
       return prev;
     });
   };
 
-  validateQuestionaire = () => {
+  validateQuestionnaire = () => {
     let isValid = false;
     const determination = this.state.determination;
     if (determination.questions.length === 0 || determination.endState === true) {
@@ -575,7 +585,7 @@ class ConsentGroupReview extends Component {
 
   submitEdit = (e) => () => {
     let data = {};
-    if (this.validateQuestionaire()) {
+    if (this.validateQuestionnaire()) {
       if (this.isValid()) {
         this.setState(prev => {
           prev.readOnly = true;
@@ -1063,6 +1073,7 @@ class ConsentGroupReview extends Component {
       isCollaboratorProvidingGoodService = '',
       isConsentUnambiguous = '',
     } = get(this.state.formData, 'consentExtraProps', '');
+    const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
@@ -1277,7 +1288,7 @@ class ConsentGroupReview extends Component {
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
-            institutionalSources: this.state.formData.instSources !== undefined ? this.state.formData.instSources : [],
+            institutionalSources: instSources,
             readOnly: this.state.readOnly,
             edit: true,
             errorHandler: this.setInstitutionalError,
