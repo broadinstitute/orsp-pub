@@ -39,26 +39,21 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
 
   getShareableLink = () => {
-    // generates and returns link to UUID to be redirected to dul form
       let data = {
         consentKey: this.props.projectKey,
         user: this.props.user.userName
       };
       DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-        // Copy to link to clipboard
         window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
       });
-
-    };
+  };
 
   redirectToDul = () => {
-    // generates and returns link UUID to be redirected to dul form
     let data = {
       consentKey: this.props.projectKey,
       user: this.props.user.userName
     };
     DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-      // Redirect to dul form
       window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
     });
   };
@@ -230,9 +225,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Add ' + this.props.title + 'Document to ' + this.props.projectKey ])
+            h(ModalTitle, { className: "dialogTitle" }, ['Add ' + this.props.title + 'Document to ' + this.props.projectKey])
           ]),
-
           h(ModalBody, { className: "dialogBody" }, [
             InputFieldSelect({
               label: "Type",
