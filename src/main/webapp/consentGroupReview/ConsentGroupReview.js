@@ -331,7 +331,7 @@ class ConsentGroupReview extends Component {
       compliance = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.textCompliance) && compliance) {
+    if (this.state.formData.consentExtraProps.compliance && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
       textCompliance = true;
     }
 
@@ -339,7 +339,7 @@ class ConsentGroupReview extends Component {
       sensitive = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.textSensitive) && sensitive) {
+    if (this.state.formData.consentExtraProps.sensitive && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
       textSensitive = true;
     }
 
