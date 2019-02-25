@@ -554,4 +554,10 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
+
+    def sendDulFormLinkNotification(NotifyArguments arguments) {
+        arguments.view = "/notify/dulFormLink"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
 }
