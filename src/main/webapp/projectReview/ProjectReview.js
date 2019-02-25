@@ -704,7 +704,7 @@ class ProjectReview extends Component {
             handleChange: this.handlePIChange,
             value: this.state.formData.piList,
             currentValue: this.state.current.piList,
-            isMulti: true
+            isMulti: false
           }),
 
           MultiSelect({
@@ -716,7 +716,7 @@ class ProjectReview extends Component {
             handleChange: this.handleProjectManagerChange,
             value: this.state.formData.pmList,
             currentValue: this.state.current.pmList,
-            isMulti: true
+            isMulti: false
           })
         ]),
         Panel({ title: "Funding" }, [
@@ -817,7 +817,7 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false }, [
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false ||  (this.state.formData.projectExtraProps.editDescription !== null && this.state.formData.projectExtraProps.editDescription !== undefined)}, [
           div({ isRendered: this.projectType === "IRB Project" }, [
             InputFieldRadio({
               id: "radioDescribeEdits",
