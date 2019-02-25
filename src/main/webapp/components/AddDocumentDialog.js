@@ -7,6 +7,7 @@ import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
 import { ConsentGroup, Files } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
+import { validateEmail } from "../util/ValidateEmail";
 
 import './ConfirmationDialog.css';
 
@@ -106,8 +107,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   };
 
   validEmail = (email) => {
-    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (re.test(email)) {
+    if (validateEmail(email)) {
       return true;
     } else {
       this.setState({ invalidEmail: true });
