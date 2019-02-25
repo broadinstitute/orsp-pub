@@ -1543,7 +1543,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveInfoDialog,
-            isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
+            isRendered: this.state.current.consentExtraProps.projectReviewApproved !== 'true' && this.state.isAdmin && this.state.readOnly === true,
             disabled: this.state.disableApproveButton
           }, ["Approve"]),
 
@@ -1559,7 +1559,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
+            isRendered: this.state.current.consentExtraProps.projectReviewApproved !== 'true' && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/

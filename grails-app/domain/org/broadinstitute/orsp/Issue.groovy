@@ -215,21 +215,32 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
-        def approvedTypeDocuments = getAttachments().findAll { it.status == IssueStatus.Approved.getName() }.fileType
+        Boolean completed = false
+        def approvedTypeDocuments = getAttachments().findAll {
+            it.status == IssueStatus.Approved.getName()
+        }.fileType
 
         if (getType() == IssueType.CONSENT_GROUP.name) {
-            // quedan documentos por aprobar? si la lista está vacía es porque todos los keys están aprobados
-            !CGroupKeyDocument.values().collect {
+            completed = CGroupKeyDocument.values().collect {
                 it.getType() }.findAll {
                 approvedTypeDocuments.contains(it) == false
-            }.isEmpty()
-        } else {
-            ProjectKeyDocument.values()
+            }.size() == 0
+        } else if (getType() == IssueType.NE.name) {
+            completed = NEKeyDocuments.values().collect {
+                it.getType() }.findAll {
+                approvedTypeDocuments.contains(it) == false
+            }.size() == 0
+        } else if (getType() == IssueType.NHSR.name) {
+            completed = NHSRKeyDocuments.values().collect {
+                it.getType() }.findAll {
+                approvedTypeDocuments.contains(it) == false
+            }.size() == 0
+        } else if (getType() == IssueType.IRB.name) {
+            completed = IRBKeyDocuments.values().collect {
+                it.getType() }.findAll {
+                approvedTypeDocuments.contains(it) == false
+            }.size() == 0
         }
-        getAttachments()?.collect {
-            it
-        }?.findAll{
-            it.status != IssueStatus.Approved.getName() && CGroupKeyDocument.getType(it.fileType)
-        }?.isEmpty()
+        completed
     }
 }
