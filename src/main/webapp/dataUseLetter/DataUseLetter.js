@@ -356,6 +356,9 @@ class DataUseLetter extends Component {
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
+      if(errorForm == false) {
+        prev.submit = false;
+      }
       return prev;
     });
     return errorForm;

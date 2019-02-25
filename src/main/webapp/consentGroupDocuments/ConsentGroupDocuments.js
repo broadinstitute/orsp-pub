@@ -127,7 +127,6 @@ class ConsentGroupDocuments extends Component {
   };
 
   render() {
-    console.log("props de consentgroupdocument ", this.props);
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
