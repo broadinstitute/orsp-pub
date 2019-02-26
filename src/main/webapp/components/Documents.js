@@ -59,6 +59,7 @@ export const Documents = hh(class Documents extends Component {
         projectKey: this.props.projectKey,
         user: this.props.user,
         handleLoadDocuments: this.props.handleLoadDocuments,
+        serverURL: this.props.serverURL,
         emailUrl: this.props.emailUrl,
         userName: this.props.userName
       }),
@@ -70,7 +71,8 @@ export const Documents = hh(class Documents extends Component {
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         projectKey: this.props.projectKey,
         user: this.props.user,
-        handleLoadDocuments: this.props.handleLoadDocuments
+        handleLoadDocuments: this.props.handleLoadDocuments,
+        serverURL: this.props.serverURL,
       }),
       Panel({ title: "Key Documents" }, [
         button({ className: "btn buttonSecondary", style: addDocumentBtn, onClick: this.addKeyDocuments }, ["Add Document"]),

@@ -12,8 +12,8 @@
     <script type="application/javascript">
     const dataUseLetterComponent = {
         serverURL: "${webRequest.baseUrl}",
-        consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-        projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
+        error: "${error}"
     };
     </script>
 </head>
