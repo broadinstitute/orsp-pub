@@ -46,24 +46,6 @@
                         </thead>
                         <tbody>
 
-                        <g:each in="${consent.nonProjAttachTypes()}" var="type" status="index">
-                            <tr>
-                                <td>
-                                    <button
-                                            class="btn btn-default btn-xs modal-add-button"
-                                            data-issue="${issue.projectKey}"
-                                            data-consent="${consent.projectKey}"
-                                            data-type="${type}">
-                                        Add
-                                    </button>
-                                </td>
-                                <td>${type}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </g:each>
-
                         <g:each in="${consent.attachments?.sort {a,b -> b.createDate <=> a.createDate}}" var="document">
                             <tr>
                                 <td>
@@ -87,6 +69,23 @@
                         </g:each>
 
                         </tbody>
+
+                        <tfoot>
+                        <tr class="text-right">
+                            <td colspan="5">
+                                <g:if test="${!issue.isLocked() || session?.isOrsp}">
+                                    <button class="btn btn-default btn-sm modal-add-button"
+                                            data-toggle="modal"
+                                            data-issue="${issue.projectKey}"
+                                            data-consent="${consent.projectKey}"
+                                            data-target="#upload-attachment">Add Consent Attachment</button>
+                                </g:if>
+                                <g:else>
+                                    <button disabled="disabled" class="btn btn-default btn-sm">Add Attachment</button>
+                                </g:else>
+                            </td>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
