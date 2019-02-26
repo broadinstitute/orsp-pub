@@ -2,8 +2,7 @@ package org.broadinstitute.orsp
 
 enum NEKeyDocuments {
     NE_APPROVAL('NE Approval'),
-    NE_APPLICATION('NE Application'),
-    CONSENT_DOCUMENT('Consent Document')
+    NE_APPLICATION('NE Application')
 
     String type
 

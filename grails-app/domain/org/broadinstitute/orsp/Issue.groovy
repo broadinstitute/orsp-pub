@@ -17,6 +17,8 @@ class Issue implements LogicalDelete<Issue> {
     Date requestDate
     Date updateDate
     Date expirationDate
+    static final String DATA_USE_LETTER = "Data Use Letter"
+    static final String CONSENT_DOCUMENT = "Consent Document"
 
     static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding]
 
@@ -216,20 +218,35 @@ class Issue implements LogicalDelete<Issue> {
      */
     transient Boolean attachmentsApproved() {
         Boolean completed = false
+        Boolean optionalKey = true
+
         ArrayList approvedTypeDocuments = getAttachments().findAll {
             it.status == IssueStatus.Approved.getName()
         }.fileType
 
+
         if (getType() == IssueType.CONSENT_GROUP.name) {
+            def dulFiles = getAttachments().findAll {
+                it.fileType == DATA_USE_LETTER
+            }.fileType
+            if (dulFiles.size() != 0) {
+                optionalKey = approvedTypeDocuments.contains(DATA_USE_LETTER)
+            }
             completed = CGroupKeyDocument.values().collect {
                 it.getType() }.findAll {
                 approvedTypeDocuments.contains(it) == false
-            }.size() == 0
+            }.size() == 0 && optionalKey
         } else if (getType() == IssueType.NE.name) {
+            def consentDoc = getAttachments().findAll {
+                it.fileType == CONSENT_DOCUMENT
+            }.fileType
+            if (consentDoc.size() != 0) {
+                optionalKey = approvedTypeDocuments.contains(DATA_USE_LETTER)
+            }
             completed = NEKeyDocuments.values().collect {
                 it.getType() }.findAll {
                 approvedTypeDocuments.contains(it) == false
-            }.size() == 0
+            }.size() == 0 && optionalKey
         } else if (getType() == IssueType.NHSR.name) {
             completed = NHSRKeyDocuments.values().collect {
                 it.getType() }.findAll {

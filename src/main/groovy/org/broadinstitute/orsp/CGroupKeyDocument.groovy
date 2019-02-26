@@ -3,8 +3,7 @@ package org.broadinstitute.orsp
 enum CGroupKeyDocument {
 
     APPROVAL_MEMO('Approval Memo'),
-    CONSENT_DOCUMENT('Consent Document'),
-    DATA_USE_LETTER('Data Use Letter')
+    CONSENT_DOCUMENT('Consent Document')
 
     String type
 
