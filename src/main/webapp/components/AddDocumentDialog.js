@@ -5,10 +5,9 @@ import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
-import { ConsentGroup, Files } from "../util/ajax";
+import { ConsentGroup, Files, DUL } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { validateEmail } from "../util/ValidateEmail";
-
 import './ConfirmationDialog.css';
 
 export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
@@ -40,11 +39,24 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
 
   getShareableLink = () => {
+      let data = {
+        consentGroupKey: this.props.projectKey,
+        creator: this.props.user.userName
+      };
+      DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
+        window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
+      });
   };
 
   redirectToDul = () => {
+    let data = {
+      consentGroupKey: this.props.projectKey,
+      creator: this.props.user.userName
+    };
+    DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
+      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
+    });
   };
-
 
   handleClose = () => {
     this.setState(prev => {
@@ -215,7 +227,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           h(ModalHeader, {}, [
             h(ModalTitle, { className: "dialogTitle" }, ['Add ' + this.props.title + 'Document to ' + this.props.projectKey])
           ]),
-
           h(ModalBody, { className: "dialogBody" }, [
             InputFieldSelect({
               label: "Type",
