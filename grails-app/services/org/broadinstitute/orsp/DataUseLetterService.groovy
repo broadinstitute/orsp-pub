@@ -5,15 +5,13 @@ import grails.gorm.transactions.Transactional
 class DataUseLetterService {
     QueryService queryService
 
-    String generateDul(Object input) {
-        DataUseLetter newDul = new DataUseLetter()
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    DataUseLetter generateDul(DataUseLetter input) {
+        DataUseLetter newDul = input
 
         String uniqueId = UUID.randomUUID().toString()
-
         newDul.setUid(uniqueId)
-        newDul.setCreator(input["user"] as String)
 
-        newDul.setConsentGroupKey(input["consentKey"] as String)
         newDul.setSubmitted(false)
         newDul.setCreationDate(new Date())
 
@@ -22,14 +20,15 @@ class DataUseLetterService {
         if (newDul.hasErrors()) {
             throw new DomainException(newDul.getErrors())
         } else {
-            newDul.uid
+            newDul
         }
     }
 
     @Transactional
-    def udpateDataUseLetter(Object input) {
-
-        DataUseLetter dul = DataUseLetter.findByUid(input.uid)
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    def udpateDataUseLetter(DataUseLetter input) {
+        DataUseLetter dul = DataUseLetter.findByUid(input.getUid())
+        dul.setDulInfo(input.getDulInfo())
         if (dul != null && !dul.submitted) {
             dul.setSubmitted(true)
             dul.setDulInfo(input.dulInfo as String)

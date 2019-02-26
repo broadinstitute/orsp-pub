@@ -5,20 +5,22 @@ import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
+import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class DataUseLetterController extends AuthenticatedController {
-
+    DataUseLetterService dataUseLetterService
 
     @Override
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
     def create () {
-        Object input = IssueUtils.getJson(Map.class, request.JSON)
+        DataUseLetter inputDul = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
-            String linkId = dataUseLetterService.generateDul(input)
+            DataUseLetter newDul = dataUseLetterService.generateDul(inputDul)
             response.status = 200
-            render([dulToken: linkId] as JSON)
+            render([dulToken: newDul.getUid()] as JSON)
         } catch(Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
@@ -27,7 +29,7 @@ class DataUseLetterController extends AuthenticatedController {
 
     @Override
     def update () {
-        Object input = IssueUtils.getJson(Map.class, request.JSON)
+        DataUseLetter input = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
             dataUseLetterService.udpateDataUseLetter(input)
             response.status = 200

@@ -40,8 +40,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
 
   getShareableLink = () => {
       let data = {
-        consentKey: this.props.projectKey,
-        user: this.props.user.userName
+        consentGroupKey: this.props.projectKey,
+        creator: this.props.user.userName
       };
       DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
         window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
@@ -50,8 +50,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
 
   redirectToDul = () => {
     let data = {
-      consentKey: this.props.projectKey,
-      user: this.props.user.userName
+      consentGroupKey: this.props.projectKey,
+      creator: this.props.user.userName
     };
     DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
       window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
