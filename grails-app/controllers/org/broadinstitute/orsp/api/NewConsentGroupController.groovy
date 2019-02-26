@@ -25,7 +25,7 @@ class NewConsentGroupController extends AuthenticatedController {
             response.setHeader('Content-Length', 'file-size')
             response.setContentType('application/pdf')
             response.outputStream << resource.openStream()
-        } catch (Exception e){
+        } catch (Exception e) {
             response.status = 500
             render([error: "${e}"] as JSON)
         }
