@@ -1,3 +1,13 @@
+%{--
+This template requires the following arguments:
+
+[
+    issue
+    consent
+    attachmentTypes
+]
+
+--}%
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <g:form controller="consentGroup" action="attachConsentDocument" enctype="multipart/form-data" method="POST" class="attach-input">
@@ -11,8 +21,8 @@
                 <div class="form-group">
                     <label for="type">Type</label>
                     <select name="type" id="type" class="chosen-select form-control">
-                        <g:each in="${consent.nonProjAttachTypes()}" var="attachmentType">
-                            <option value="${attachmentType}" <g:if test="${type == attachmentType}">selected="selected"</g:if>>${attachmentType}</option>
+                        <g:each in="${attachmentTypes}" var="attachmentType">
+                            <option value="${attachmentType}">${attachmentType}</option>
                         </g:each>
                     </select>
                 </div>
