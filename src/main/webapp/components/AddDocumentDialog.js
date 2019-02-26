@@ -47,9 +47,11 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
     }).catch(
       error => {
-        console.log("ERROR? ", error);
         this.setState(prev => {
           prev.disableBtn = false;
+          prev.alertType ="danger";
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          prev.showAlert = true;
           return prev;
         })
       }
@@ -65,9 +67,11 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
     }).catch(
       error => {
-        console.log("ERROR? ", error);
         this.setState(prev => {
           prev.disableBtn = false;
+          prev.alertType ="danger";
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          prev.showAlert = true;
           return prev;
         })
       }
@@ -119,7 +123,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
-          console.log(error);
             spinnerService.hideAll();
             this.setState(prev => {
               prev.alertType = 'danger';
@@ -160,11 +163,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         this.setState(prev => {
           prev.alertType = 'danger';
           prev.alertMessage = 'Error sending email sent to: ' + collaboratorEmail + '. Please try again later.';
-          prev.showAlert = true;
+          prev.showAlert = false;
           prev.collaboratorEmail = '';
           return prev;
         });
-        console.error(error);
       });
     }
     spinnerService.hideAll();
@@ -190,6 +192,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
   handleTypeSelect = () => (selectedOption) => {
     this.setState(prev => {
+      prev.disableBtn = false;
       prev.alertMessage = '';
       prev.typeError = false;
       prev.showAlert = false;
@@ -218,6 +221,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     e.target.value = '';
     this.setState(prev => {
       prev.alertMessage = '';
+      prev.disableBtn = false;
       prev.showAlert = false;
       prev.fileError = false;
       prev.file = selectedFile;

@@ -102,7 +102,9 @@ class DataUseLetter extends Component {
         errorRepositoryType: false,
         errorDataDepositionDescribed: false,
         errorDataUseConsent: false
-      }
+      },
+      dulError: false,
+      dulMsg: "Something went wrong, please try again"
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
@@ -229,6 +231,7 @@ class DataUseLetter extends Component {
     spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
+      prev.dulError = false;
       return prev;
     });
     if (this.validateForm() === false) {
@@ -239,17 +242,14 @@ class DataUseLetter extends Component {
           (resolve) => {
           spinnerService.hideAll();
           window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
-          },
-          (status) => {
-            // PDF error handler
-          });
+        }).throw();
       }).catch(error => {
         this.setState(prev => {
           prev.submit = false;
+          prev.dulError = true;
           return prev;
         });
         spinnerService.hideAll();
-        console.log("error" , error);
       });
     }
   };
@@ -347,7 +347,7 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorInstitution = true;
     }
-    if (this.state.formData.repositoryDeposition == true) {
+    if (this.state.formData.repositoryDeposition === true) {
       if ((this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) && this.isEmpty(this.state.formData.GSRAvailability)) {
         errorForm = true;
         errorGSRAvailability = true
@@ -390,7 +390,7 @@ class DataUseLetter extends Component {
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
-      if(errorForm == false) {
+      if (errorForm === false) {
         prev.submit = false;
       }
       return prev;
@@ -434,7 +434,6 @@ class DataUseLetter extends Component {
     return value === '' || value === null || value === undefined;
   }
   render() {
-    const { startDate = null, endDate = null, onGoingProcess = false } = this.state.formData;
     return (
       div({}, [
         h1({ className: "pageTitle" }, [
@@ -1065,7 +1064,12 @@ class DataUseLetter extends Component {
               show: this.state.errors.errorForm
             })
           ]),
-
+          div({ style: { 'marginTop': '15px' } }, [
+            AlertMessage({
+              msg: this.state.dulMsg,
+              show: this.state.dulError
+            })
+          ]),
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",

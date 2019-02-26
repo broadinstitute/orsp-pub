@@ -119,7 +119,7 @@ class DataUseLetterController extends AuthenticatedController {
                 )
                 storageProviderService.saveStorageDocument(document, dulDoc)
             } else {
-                throw new MissingResourceException("Unable to upload Data Use Letter pdf. Empty Data Use Letter")
+                throw new MissingResourceException("Unable to upload empty Data Use Letter pdf.")
             }
         } catch (Exception e) {
             response.status = 500
