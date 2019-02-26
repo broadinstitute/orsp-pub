@@ -375,12 +375,12 @@ class ConsentGroupReview extends Component {
       consentGroupName = true;
     }
 
-    console.log('this.state.intCohortsAnswers', this.state.intCohortsAnswers.length);
     if (this.state.intCohortsAnswers.length === 0) {
       intCohortsAnswers = true;
     }
 
     const valid = !consent &&
+      !this.institutionalSrcHasErrors() &&
       !protocol &&
       !collInst &&
       !describeConsentGroup &&
@@ -398,8 +398,7 @@ class ConsentGroupReview extends Component {
       !startDate &&
       !consentGroupName &&
       !endDate &&
-      !intCohortsAnswers &&
-      !this.institutionalSrcHasErrors();
+      !intCohortsAnswers;
 
     this.setState(prev => {
       prev.errors.consent = consent;
@@ -458,6 +457,9 @@ class ConsentGroupReview extends Component {
     const determination = this.state.determination;
     if (determination.questions.length === 0 || determination.endState === true) {
       isValid = true;
+    }
+    if (this.state.intCohortsAnswers.length === 0) {
+      isValid = false;
     }
     return isValid;
   };
@@ -630,9 +632,10 @@ class ConsentGroupReview extends Component {
   };
 
   institutionalSrcHasErrors = () => {
+    const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
     let institutionalNameErrorIndex = [];
     let institutionalCountryErrorIndex = [];
-    let institutionalError = this.state.formData.instSources.filter((obj, idx) => {
+    let institutionalError = instSources.filter((obj, idx) => {
       let response = false;
       // Error if Name is missing
       if (this.isEmpty(obj.current.name) && this.isEmpty(obj.future.name)
@@ -649,7 +652,7 @@ class ConsentGroupReview extends Component {
         response = true;
       }
       // Error if all elements are empty
-      if (!this.state.formData.instSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
+      if (!instSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
         institutionalNameErrorIndex.push(0);
         institutionalCountryErrorIndex.push(0);
         response = true;
@@ -964,6 +967,8 @@ class ConsentGroupReview extends Component {
       prev.intCohortsAnswers = [...answers];
       prev.determination = determination;
       prev.submitError = false;
+      prev.errorSubmit = false;
+      prev.internationalCohortsError = false;
       return prev;
     });
   };
