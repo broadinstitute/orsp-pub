@@ -43,6 +43,10 @@ export const ConsentGroup = {
     return axios.put(url + '?consentKey=' + projectKey, data);
   },
 
+  getConsentGroupByUUID(url, uuid) {
+    return axios.get(url + '?uuid=' + uuid);
+  },
+
   sendEmailDul(url, consentKey, userName, recipients) {
    return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
@@ -151,4 +155,14 @@ export const Review = {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
   }
 
+};
+
+export const DUL = {
+  generateRedirectLink(data, serverURL) {
+    return axios.post(serverURL + '/api/dataUseLetter', data);
+  },
+
+  updateDUL(data, serverURL) {
+    return axios.put(serverURL + '/api/dataUseLetter', data);
+  }
 };

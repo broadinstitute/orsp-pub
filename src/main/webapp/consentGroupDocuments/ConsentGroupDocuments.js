@@ -148,6 +148,7 @@ class ConsentGroupDocuments extends Component {
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
+        serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName
       }),
