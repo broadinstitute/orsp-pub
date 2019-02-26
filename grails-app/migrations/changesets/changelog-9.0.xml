@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <changeSet id="changelog-9.0-1" author="tadeork">
         <sql dbms="mysql" endDelimiter=";" stripComments="false" splitStatements="true">
-            INSERT INTO `bussys_dev`.`issue_extra_property` (`version`, `issue_id`, `name`, `value`, `project_key`, `deleted`) SELECT 0, id as issue_id, "projectReviewApproved", "true", project_key, 0 FROM issue WHERE type = "Consent Group" AND approval_status = "Approved"
+            INSERT INTO `issue_extra_property` (`version`, `issue_id`, `name`, `value`, `project_key`, `deleted`) SELECT 0, id as issue_id, "projectReviewApproved", "true", project_key, 0 FROM issue WHERE type = "Consent Group" AND approval_status = "Approved"
         </sql>
     </changeSet>
 </databaseChangeLog>
