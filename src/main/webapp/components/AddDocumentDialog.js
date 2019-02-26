@@ -39,13 +39,21 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
 
   getShareableLink = () => {
-      let data = {
-        consentGroupKey: this.props.projectKey,
-        creator: this.props.user.userName
-      };
-      DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-        window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-      });
+    let data = {
+      consentGroupKey: this.props.projectKey,
+      creator: this.props.user.userName
+    };
+    DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
+      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
+    }).catch(
+      error => {
+        console.log("ERROR? ", error);
+        this.setState(prev => {
+          prev.disableBtn = false;
+          return prev;
+        })
+      }
+    );
   };
 
   redirectToDul = () => {
@@ -55,7 +63,15 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     };
     DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
       window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-    });
+    }).catch(
+      error => {
+        console.log("ERROR? ", error);
+        this.setState(prev => {
+          prev.disableBtn = false;
+          return prev;
+        })
+      }
+    );
   };
 
   handleClose = () => {

@@ -3,10 +3,17 @@ package org.broadinstitute.orsp.api
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.DocumentStatus
+import org.broadinstitute.orsp.StorageDocument
+import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
+import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
+
+import java.text.SimpleDateFormat
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -28,6 +35,7 @@ class DataUseLetterController extends AuthenticatedController {
     }
 
     @Override
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
     def update () {
         DataUseLetter input = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
@@ -55,4 +63,67 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    def createPdf() {
+        String fileName = "DataUseLetterTemplate.pdf"
+        String uid = request.JSON[DataUseLetterFields.UID.abbreviation]
+        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        if (dul != null) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream()
+            PDDocument dulDOC = new PDDocument()
+            try {
+                ClassLoader classLoader = getClass().getClassLoader()
+                InputStream is = classLoader.getResourceAsStream(fileName)
+                dulDOC = PDDocument.load(is)
+                is.close()
+                new DulPdfParser().fillDulForm(dul, dulDOC.getDocumentCatalog().getAcroForm())
+                dulDOC.save(output)
+                uploadDataUseLetter(dul,new ByteArrayInputStream(output.toByteArray()), fileName)
+
+                dul.setSubmitted(true)
+                dul.setSubmitDate(new Date())
+                dul.save(flush:true)
+
+                response.status = 200
+                response.setContentType("application/pdf")
+                response.setContentLength(output.toByteArray().length)
+                response.setHeader("Content-disposition","attachment;filename=" + fileName)
+                response.outputStream << output.toByteArray()
+            } catch (Exception e) {
+                response.status = 500
+                render([error: e.message] as JSON)
+            } finally {
+                dulDOC.close()
+                output.close()
+            }
+        } else {
+            response.status = 404
+        }
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    void uploadDataUseLetter(DataUseLetter dul, ByteArrayInputStream dulDoc, String fileName) {
+        try {
+            if (dul != null && dulDoc.available() != 0) {
+                Object dulInfo = JSON.parse(dul.dulInfo)
+                StorageDocument document = new StorageDocument(
+                        projectKey: dul.getConsentGroupKey(),
+                        fileName: fileName,
+                        fileType: 'Data Use Letter',
+                        mimeType: "application/pdf",
+                        uuid: dul.getUid(),
+                        creator: dulInfo[DataUseLetterFields.PRINTED_NAME.abbreviation],
+                        username: dul.getCreator(),
+                        creationDate: new SimpleDateFormat().format(new Date()),
+                        status: DocumentStatus.PENDING.status
+                )
+                storageProviderService.saveStorageDocument(document, dulDoc)
+            } else {
+                throw new MissingResourceException("Unable to upload Data Use Letter pdf. Empty Data Use Letter")
+            }
+        } catch (Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+    }
 }

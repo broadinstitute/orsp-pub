@@ -235,8 +235,14 @@ class DataUseLetter extends Component {
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-        spinnerService.hideAll();
-        window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+        this.downloadDulPdf(id).then(
+          (resolve) => {
+          spinnerService.hideAll();
+          window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+          },
+          (status) => {
+            // PDF error handler
+          });
       }).catch(error => {
         this.setState(prev => {
           prev.submit = false;
@@ -246,6 +252,34 @@ class DataUseLetter extends Component {
         console.log("error" , error);
       });
     }
+  };
+
+  downloadDulPdf = (uid) => {
+    return new Promise((resolve, reject) => {
+      DUL.downloadDulPdf({uid: uid}, this.props.serverUrl).then(resp => {
+        if (resp.status === 200) {
+          const blob = new Blob([resp.data], {type: resp.headers['content-type']});
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          const contentDisposition = resp.headers['content-disposition'];
+          let fileName = 'unknown';
+          if (contentDisposition) {
+            const fileNameMatch = contentDisposition.match(/filename=(.+)/);
+            if (fileNameMatch.length === 2)
+              fileName = fileNameMatch[1];
+          }
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.URL.revokeObjectURL(url);
+          resolve()
+        } else {
+          reject(resp.status)
+        }
+      });
+    });
   };
 
   validateForm() {
