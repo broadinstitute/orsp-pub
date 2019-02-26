@@ -728,7 +728,7 @@ class DataUseLetter extends Component {
                   })
                 ])
               ]),
-              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Requiered Fields.']),
+              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
 
             ]),
           ]),

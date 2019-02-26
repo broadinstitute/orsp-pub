@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, p, div, h2, input, label, span, a, button } from 'react-hyperscript-helpers';
+import { hh, p, div, h2, h3, input, label, span, a, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -479,8 +479,7 @@ class ConsentGroupReview extends Component {
   isCurrentUserAdmin() {
     User.isCurrentUserAdmin(this.props.isAdminUrl).then(
       resp => {
-        this.setState({ isAdmin: true })
-        // this.setState({ isAdmin: resp.data.isAdmin })
+        this.setState({ isAdmin: resp.data.isAdmin });
       }
     );
   }
@@ -1289,15 +1288,6 @@ class ConsentGroupReview extends Component {
         ]),
 
         Panel({ title: "International Cohorts" }, [
-          div({ isRendered: !this.state.readOnly, style: { 'marginTop': '55px' } }, [
-            QuestionnaireWorkflow({
-              questions: this.state.questions,
-              edit: true,
-              cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
-              handler: this.determinationHandler,
-              determination: this.state.determination
-            })
-          ]),
           div({ className: "answerWrapper" }, [
             label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
             div({
@@ -1362,6 +1352,24 @@ class ConsentGroupReview extends Component {
               isRendered: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous),
               className: "answerCurrent"
             }, [this.stringAnswer(this.state.current.consentExtraProps.isConsentUnambiguous)])
+          ]),
+
+          div({ isRendered: !this.state.readOnly, className: "questionnaireEdits" }, [
+            div({ style: { 'margin': '15px 0 40px 0' } }, [
+              AlertMessage({
+                type: 'info',
+                msg: "If you would like to change the answers to any of the International Cohort questions displayed above, please proceed through the questions below to change your answers accordingly.",
+                show: true
+              })
+            ]),
+            h3({}, ["International Cohorts' Questionnaire"]),
+            QuestionnaireWorkflow({
+              questions: this.state.questions,
+              edit: true,
+              cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
+              handler: this.determinationHandler,
+              determination: this.state.determination
+            })
           ])
         ]),
 
@@ -1562,12 +1570,10 @@ class ConsentGroupReview extends Component {
             disabled: this.state.disableApproveButton,
             isRendered: this.state.current.consentExtraProps.projectReviewApproved !== 'true' && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
-
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDiscardEditsDialog,
-            disabled: this.state.disableApproveButton,
             isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
           }, ["Discard Edits"])
         ])
