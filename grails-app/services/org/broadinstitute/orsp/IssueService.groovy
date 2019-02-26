@@ -286,13 +286,12 @@ class IssueService {
     Issue modifyExtraProperties(Object input, String projectKey) {
         Issue issue = queryService.findByKey(projectKey)
         Collection<IssueExtraProperty> extraPropertiesList = getSingleValuedPropsForSaving(issue, input)
-        if (!extraPropertiesList.isEmpty()) {
+        if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
+            updateProjectApproval(issue)
+        } else {
             saveExtraProperties(issue, extraPropertiesList)
         }
         issue.extraProperties.addAll(extraPropertiesList)
-        if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
-            updateProjectApproval(issue)
-        }
         issue
     }
 
