@@ -180,7 +180,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             required: false,
             onChange: null,
             error: this.props.errors.consentGroupName,
-            errorMessage: "An existing Consent Group with this protocol exists. Please choose a different one."
+            errorMessage: "There is already a Consent Group with this protocol number. Please choose a different one."
           }),
 
           InputFieldText({
