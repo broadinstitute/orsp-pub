@@ -1560,7 +1560,10 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.formData.consentForm.approvalStatus === 'Approved' && this.state.readOnly === true
+            isRendered: this.state.isAdmin
+              && this.state.reviewSuggestion === true
+              && this.state.current.consentExtraProps.projectReviewApproved === 'true'
+              && this.state.readOnly === true
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
