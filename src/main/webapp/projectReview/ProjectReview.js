@@ -526,17 +526,10 @@ class ProjectReview extends Component {
   };
 
   handleApproveInfoDialog = () => {
-    if (this.isValid()) {
       this.setState({
         showApproveInfoDialog: !this.state.showApproveInfoDialog,
         errorSubmit: false
       });
-    }
-    else {
-      this.setState({
-        errorSubmit: true
-      });
-    }
   };
 
   handleDiscardEditsDialog = () => {
