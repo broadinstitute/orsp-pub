@@ -672,9 +672,14 @@ class ConsentGroupReview extends Component {
   parseDate(date) {
     if (date !== undefined) {
       let d = new Date(date).toISOString();
-      return d.slice(0, d.indexOf("T"));
+      d.slice(0, d.indexOf("T"));
+      return this.replaceAll(d, '-', '/');
     }
   }
+
+  replaceAll = (value, search, replace) => {
+    return value.split(search).join(replace);
+  };
 
   getSampleCollections = () => {
     const sampleCollections = this.state.formData.sampleCollections;
@@ -1081,6 +1086,7 @@ class ConsentGroupReview extends Component {
 
     const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
     const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
+    console.log(currentStartDate, currentEndDate);
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
