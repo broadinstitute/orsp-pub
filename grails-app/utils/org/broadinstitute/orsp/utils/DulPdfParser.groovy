@@ -97,6 +97,9 @@ class DulPdfParser {
                 case DataUseLetterFields.GENITOURINARY_DISEASE.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.GENITOURINARY_DISEASE.abbreviation] as String))
                     break
+                case DataUseLetterFields.CARDIOVASCULAR_DISEASE.abbreviation:
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.CARDIOVASCULAR_DISEASE.abbreviation] as String))
+                    break
                 case DataUseLetterFields.PREGNANCY.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.PREGNANCY.abbreviation] as String))
                     break
@@ -156,6 +159,9 @@ class DulPdfParser {
                     break
                 case DataUseLetterFields.GSR_AVAILABILITY.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation] as String))
+                    break
+                case DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation:
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation] as String))
                     break
                 case DataUseLetterFields.PRINTED_NAME.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PRINTED_NAME.abbreviation] as String))
