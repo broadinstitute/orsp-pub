@@ -1,8 +1,9 @@
 import { Component } from 'react';
-import { input, hh, h, div, p, hr, small, button } from 'react-hyperscript-helpers';
+import { input, hh, h, h3, div, p, hr, small, button } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
+import { InputFieldText } from './InputFieldText'
 
 const headers =
   [
@@ -13,6 +14,13 @@ const headers =
     { name: 'Status', value: 'status' },
     { name: 'Created', value: 'creationDate' }
   ];
+
+const associatedProjectHeaders = 
+[
+  { name: '-', value: '-' },
+  { name: 'Type', value: 'type' },
+  { name: 'Summary', value: 'summary' }
+];
 
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
@@ -91,6 +99,25 @@ export const Documents = hh(class Documents extends Component {
         Table({
           headers: headers,
           data: this.props.additionalDocuments,
+          sizePerPage: 10,
+          paginationSize: 10,
+          handleDialogConfirm: this.props.handleDialogConfirm,
+          downloadDocumentUrl: this.props.downloadDocumentUrl,
+          isAdmin: this.props.user.isAdmin
+        })
+      ]),
+      Panel({ title: "Data Use Restrictions" }, [
+        h3({ style: { 'marginTop': '10px' }}, ["Summary"]),
+        p({}, [this.props.restriction]),
+        div({}, [
+          button({ className: "btn buttonSecondary", style: {'marginRight': '15px'}, onClick: this.addAdditionalDocuments }, ["Edit Restrictions"]),
+          button({ className: "btn buttonSecondary", onClick: this.addAdditionalDocuments }, ["View Restrictions"])
+        ])
+      ]),
+      Panel({ title: "Associated Projects" }, [
+        Table({
+          headers: associatedProjectHeaders,
+          data: [],
           sizePerPage: 10,
           paginationSize: 10,
           handleDialogConfirm: this.props.handleDialogConfirm,

@@ -9,7 +9,8 @@
         sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
         emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}",
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+        restriction: JSON.stringify(${restriction})
     };
 </g:javascript>
 

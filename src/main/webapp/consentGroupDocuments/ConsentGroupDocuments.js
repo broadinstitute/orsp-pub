@@ -150,7 +150,8 @@ class ConsentGroupDocuments extends Component {
         handleLoadDocuments: this.getAttachedDocuments,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
-        userName: this.state.user.userName
+        userName: this.state.user.userName,
+        restriction: this.props.restriction
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
