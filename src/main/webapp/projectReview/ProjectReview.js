@@ -765,7 +765,8 @@ class ProjectReview extends Component {
             required: false,
             onChange: this.handleProjectExtraPropsChange,
             error: this.state.projectTitleError,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: true
           }),
           InputFieldText({
             id: "inputIrbProtocolId",
@@ -776,7 +777,8 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             required: false,
             onChange: this.handleProjectExtraPropsChange,
-            valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol)
+            valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol),
+            edit: true
           }),
           InputYesNo({
             id: "radioSubjectProtection",
