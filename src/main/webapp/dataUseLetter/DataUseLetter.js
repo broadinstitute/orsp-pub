@@ -46,6 +46,7 @@ class DataUseLetter extends Component {
           nervousDisease: false,
           eyeDisease: false,
           earDisease: false,
+          cardiovascularDisease: false,
           respiratoryDisease: false,
           digestiveDisease: false,
           inflammatoryDisease: false,
@@ -77,6 +78,7 @@ class DataUseLetter extends Component {
         dataDepositionDescribed: '',
         repositoryType: '',
         GSRAvailability: '',
+        GSRAvailabilitySpecify: '',
 
         signature: '',
         printedName: '',
@@ -120,7 +122,7 @@ class DataUseLetter extends Component {
   }
 
   initFormData = () => {
-    const uuid =  window.location.href.split('id=')[1];
+    const uuid = window.location.href.split('id=')[1];
     ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
       this.setState(prev => {
         prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
@@ -236,14 +238,14 @@ class DataUseLetter extends Component {
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
         spinnerService.hideAll();
-        window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+        window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
       }).catch(error => {
         this.setState(prev => {
           prev.submit = false;
           return prev;
         });
         spinnerService.hideAll();
-        console.log("error" , error);
+        console.log("error", error);
       });
     }
   };
@@ -356,7 +358,7 @@ class DataUseLetter extends Component {
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
-      if(errorForm == false) {
+      if (errorForm == false) {
         prev.submit = false;
       }
       return prev;
@@ -455,7 +457,7 @@ class DataUseLetter extends Component {
               errorMessage: 'Required Field'
             })
           ]),
-          Panel({ title: "Data Manager ", moreInfo: "(individual decisions regarding data access and transfer)" }, [
+          Panel({ title: "Data Manager ", moreInfo: "(individual responsible for communicating future decisions regarding data access and transfer)" }, [
             div({ className: "row" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
                 InputFieldText({
@@ -644,6 +646,14 @@ class DataUseLetter extends Component {
                   onChange: this.handleSubOptionsCheck,
                   label: span({ className: "normal" }, ['Ear and mastoid process diseases']),
                   checked: this.state.formData.diseaseRestrictedOptions.earDisease === 'true' || this.state.formData.diseaseRestrictedOptions.earDisease === true,
+                  readOnly: this.state.readOnly
+                }),
+                InputFieldCheckbox({
+                  id: "ckb_cardiovascularDisease",
+                  name: "cardiovascularDisease",
+                  onChange: this.handleSubOptionsCheck,
+                  label: span({ className: "normal" }, ['Circulatory & Cardiovascular system diseases']),
+                  checked: this.state.formData.diseaseRestrictedOptions.cardiovascularDisease === 'true' || this.state.formData.diseaseRestrictedOptions.cardiovascularDisease === true,
                   readOnly: this.state.readOnly
                 }),
                 InputFieldCheckbox({
@@ -888,32 +898,36 @@ class DataUseLetter extends Component {
                   error: this.state.errors.errorDataUseConsent,
                   errorMessage: "Required Field"
                 }),
-                InputYesNo({
-                  id: "radioDataDepositionDescribed",
-                  name: "dataDepositionDescribed",
-                  value: this.state.formData.dataDepositionDescribed,
-                  label: "Is data deposition into a repository described in the consent form?*",
-                  readOnly: this.state.readOnly,
-                  onChange: this.handleRadioChange,
-                  error: this.state.errors.errorDataDepositionDescribed,
-                  errorMessage: "Required Field"
-                }),
-                InputFieldRadio({
-                  id: "radioRepositoryType",
-                  name: "repositoryType",
-                  label: "What type of repository is permitted?*",
-                  value: this.state.formData.repositoryType,
-                  optionValues: ["controlledAccess", "openAccess", 'controlledAccessAndOpenAccess'],
-                  optionLabels: [
-                    span({ className: "bold" }, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
-                    span({ className: "bold" }, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
-                    span({ className: "bold" }, ["Both controlled-access and open-access are permitted"]),
-                  ],
-                  onChange: this.handleRadioChange,
-                  readOnly: this.state.readOnly,
-                  error: this.state.errors.errorRepositoryType,
-                  errorMessage: "Required Field"
-                })
+                div({ isRendered: this.state.formData.dataUseConsent === true }, [
+                  InputYesNo({
+                    id: "radioDataDepositionDescribed",
+                    name: "dataDepositionDescribed",
+                    value: this.state.formData.dataDepositionDescribed,
+                    label: "Is data deposition into a repository described in the consent form?*",
+                    readOnly: this.state.readOnly,
+                    onChange: this.handleRadioChange,
+                    error: this.state.errors.errorDataDepositionDescribed,
+                    errorMessage: "Required Field"
+                  })
+                ]),
+                div({ isRendered: this.state.formData.dataDepositionDescribed === true }, [
+                  InputFieldRadio({
+                    id: "radioRepositoryType",
+                    name: "repositoryType",
+                    label: "What type of repository is permitted?*",
+                    value: this.state.formData.repositoryType,
+                    optionValues: ["controlledAccess", "openAccess", 'controlledAccessAndOpenAccess'],
+                    optionLabels: [
+                      span({ className: "bold" }, ["Controlled-access ", span({ className: "normal italic" }, ["(researchers are required to apply for access, e.g. dbGaP, EGA)"])]),
+                      span({ className: "bold" }, ["Open-access ", span({ className: "normal italic" }, ["(data publicly available without application or restrictions)"])]),
+                      span({ className: "bold" }, ["Both controlled-access and open-access are permitted"]),
+                    ],
+                    onChange: this.handleRadioChange,
+                    readOnly: this.state.readOnly,
+                    error: this.state.errors.errorRepositoryType,
+                    errorMessage: "Required Field"
+                  })
+                ])
               ]),
               div({ className: "boxWrapper" }, [
                 p({}, ["NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."]),
@@ -932,7 +946,18 @@ class DataUseLetter extends Component {
                 readOnly: this.state.readOnly,
                 error: this.state.errors.errorGSRAvailability,
                 errorMessage: 'Required Field'
-              })
+              }),
+              div({ isRendered: this.state.formData.GSRAvailability === 'GSRRequired' }, [
+                InputFieldText({
+                  id: "inputGSRAvailabilitySpecify",
+                  name: "GSRAvailabilitySpecify",
+                  label: "Please specify",
+                  disabled: false,
+                  value: this.state.formData.GSRAvailabilitySpecify,
+                  onChange: this.handleFormDataTextChange,
+                  readOnly: this.state.readOnly
+                })
+              ])
             ])
           ]),
           // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3 (OK)

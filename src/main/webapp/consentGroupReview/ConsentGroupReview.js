@@ -1263,7 +1263,7 @@ class ConsentGroupReview extends Component {
                 errorMessage: "Required field",
               })
             ]),
-            div({ className: "checkbox", style: { 'marginTop': '32px' } }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
               InputFieldCheckbox({
                 id: "onGoingProcess",
                 name: "onGoingProcess",
