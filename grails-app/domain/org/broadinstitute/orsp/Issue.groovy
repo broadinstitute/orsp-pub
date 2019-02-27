@@ -241,7 +241,7 @@ class Issue implements LogicalDelete<Issue> {
                 it.fileType == CONSENT_DOCUMENT
             }.fileType
             if (consentDoc.size() != 0) {
-                optionalKey = approvedTypeDocuments.contains(DATA_USE_LETTER)
+                optionalKey = approvedTypeDocuments.contains(CONSENT_DOCUMENT)
             }
             completed = NEKeyDocuments.values().collect {
                 it.getType() }.findAll {
