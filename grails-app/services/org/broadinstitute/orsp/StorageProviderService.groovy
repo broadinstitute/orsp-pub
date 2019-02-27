@@ -172,7 +172,8 @@ class StorageProviderService implements Status {
                 uuid: UUID.randomUUID().toString(),
                 creator: displayName,
                 username: userName,
-                creationDate: new SimpleDateFormat().format(new Date())
+                creationDate: new SimpleDateFormat().format(new Date()),
+                status: DocumentStatus.LEGACY.status
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(
@@ -204,7 +205,8 @@ class StorageProviderService implements Status {
                 uuid: UUID.randomUUID().toString(),
                 creator: displayName,
                 username: userName,
-                creationDate: new SimpleDateFormat().format(new Date())
+                creationDate: new SimpleDateFormat().format(new Date(),
+                status: DocumentStatus.LEGACY.status)
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(
@@ -249,6 +251,9 @@ class StorageProviderService implements Status {
         if (!document.creationDate) {
             throw new IllegalArgumentException("Creation Date is required")
         }
+        if (!document.status) {
+            throw new IllegalArgumentException("Status is required")
+        }
 
         HttpContent content = new InputStreamContent(document.mimeType, stream)
         HttpResponse response = uploadContent(content, document)
@@ -257,6 +262,10 @@ class StorageProviderService implements Status {
                 Long version = queryService.findNextVersionByFileTypeAndProjectKey(document.projectKey, document.fileType)
                 document.setDocVersion(version)
                 document.save(flush: true)
+                if (document.hasErrors()) {
+                    String message = document.getErrors()?.getAllErrors()*.objectName.join("; ")
+                    throw new Exception("Unable to save Storage Document: " + message)
+                }
             }
         } else {
             throw new Exception("Unable to save Storage Document: " + response.getStatusMessage())
