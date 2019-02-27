@@ -135,7 +135,8 @@ class AuthenticatedController implements Interceptor, UserInfo {
                 description: params.description,
                 reporter: getUser()?.userName,
                 expirationDate: expirationDate,
-                requestDate: new Date()
+                requestDate: new Date(),
+                approvalStatus: params.approvalStatus ?: params.status
         )
         issue = issueService.addIssue(issue, params)
         // Transition issue to correct intake status:

@@ -324,7 +324,7 @@ class IssueService {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
-        newIssue.setApprovalStatus("Pending")
+        newIssue.setApprovalStatus("Pending") // TODO: This should be in an enum
         newIssue.type = type.name
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null
