@@ -7,6 +7,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
@@ -216,7 +217,7 @@ class ConsentGroupReview extends Component {
             }
             let questions = this.initQuestions();
             let intCohortsAnswers = [];
-            questions.forEach(it =>{
+            questions.forEach(it => {
               if (current.consentExtraProps[it.key] !== undefined) {
                 intCohortsAnswers.push({
                   key: it.key,
@@ -967,7 +968,8 @@ class ConsentGroupReview extends Component {
         }
       });
       return prev;
-    })};
+    })
+  };
 
   handleDiscardEditsDialog = () => {
     this.setState({
@@ -1015,7 +1017,7 @@ class ConsentGroupReview extends Component {
     Object.keys(currentValues.consentExtraProps).forEach((key) => {
       if (currentValues.consentExtraProps[key] === true) currentValues.consentExtraProps[key] = "true";
       else if (currentValues.consentExtraProps[key] === false)
-      return (currentValues.consentExtraProps[key] === null) && delete currentValues.consentExtraProps[key]
+        return (currentValues.consentExtraProps[key] === null) && delete currentValues.consentExtraProps[key]
     });
     return JSON.stringify(newValues) === JSON.stringify(currentValues);
   }
@@ -1261,15 +1263,15 @@ class ConsentGroupReview extends Component {
                 errorMessage: "Required field",
               })
             ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox" + (this.state.readOnly ? ' checkboxReadOnly' : ''), style: { 'marginTop': '32px' } }, [
-              input({
-                type: 'checkbox',
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+              InputFieldCheckbox({
                 id: "onGoingProcess",
                 name: "onGoingProcess",
-                checked: onGoingProcess === 'true' || onGoingProcess === true,
                 onChange: this.handleCheck,
-              }),
-              label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
+                label: "Ongoing Process",
+                checked: onGoingProcess === true || onGoingProcess === "true",
+                readOnly: this.state.readOnly
+              })
             ])
           ])
         ]),

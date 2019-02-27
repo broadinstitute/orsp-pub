@@ -19,11 +19,12 @@ export const InputFieldCheckbox = hh(class InputFieldCheckbox extends Component 
                     type: 'checkbox',
                     id: this.props.id,
                     name: this.props.name,
-                    className: "form-control",
+                    className: "form-control checkboxInput",
                     checked: this.props.checked,
+                    disabled: this.props.readOnly,
                     onChange: this.props.onChange
                 }),
-                label({ id: "lbl_" + this.props.id, htmlFor: this.props.id, className: "regular-checkbox" }, [this.props.label])
+                label({ id: "lbl_" + this.props.id, htmlFor: this.props.id, className: "checkboxLabel" }, [this.props.label])
             ])
         )
     }
