@@ -9,7 +9,9 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { ConsentGroup, Project } from "../util/ajax";
+import { ConsentGroup, DUL } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
+
 
 class DataUseLetter extends Component {
 
@@ -118,13 +120,14 @@ class DataUseLetter extends Component {
   }
 
   initFormData = () => {
-    const params = window.location.href.split('/').pop(); // this must be replaced with UID to get associated info
-    const consentKey = params;
-    ConsentGroup.getConsentGroup(this.props.consentGroupUrl, consentKey).then(consentGroup => {
+    const uuid =  window.location.href.split('id=')[1];
+    ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
       this.setState(prev => {
-        prev.formData.protocolTitle = consentGroup.data.issue.summary;
-        prev.formData.protocolNumber = consentGroup.data.extraProperties.protocol;
+        prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
+        prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
         prev.formData.date = this.parseDate(new Date());
+        prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
+        prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
         return prev;
       });
     });
@@ -223,13 +226,25 @@ class DataUseLetter extends Component {
   };
 
   submitDUL() {
-    this.validateForm();
+    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
       return prev;
     });
-    if (this.state.isFormValid === true) {
-      // submit
+    if (this.validateForm() === false) {
+      const id = window.location.href.split('id=')[1];
+      let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
+      DUL.updateDUL(form, this.props.serverUrl).then(resp => {
+        spinnerService.hideAll();
+        window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+      }).catch(error => {
+        this.setState(prev => {
+          prev.submit = false;
+          return prev;
+        });
+        spinnerService.hideAll();
+        console.log("error" , error);
+      });
     }
   };
 
@@ -341,8 +356,12 @@ class DataUseLetter extends Component {
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
+      if(errorForm == false) {
+        prev.submit = false;
+      }
       return prev;
     });
+    return errorForm;
   };
 
   getUsersArray(array) {
@@ -444,7 +463,7 @@ class DataUseLetter extends Component {
                   name: "dataManagerName",
                   label: "Data Manager Name",
                   disabled: true,
-                  value: "",
+                  value: this.state.formData.dataManagerName,
                   onChange: this.handleExtraPropsInputChange,
                   readOnly: false
                 })
@@ -455,7 +474,7 @@ class DataUseLetter extends Component {
                   name: "dataManagerEmail",
                   label: "Data Manager Email",
                   disabled: true,
-                  value: "",
+                  value: this.state.formData.dataManagerEmail,
                   onChange: this.handleExtraPropsInputChange,
                   readOnly: false
                 })
@@ -498,7 +517,7 @@ class DataUseLetter extends Component {
                   defaultChecked: this.state.formData.onGoingProcess
                 }),
                 label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
-              ]),
+              ])
             ])
           ]),
 
@@ -549,7 +568,6 @@ class DataUseLetter extends Component {
               checked: this.state.formData.researchRestricted === 'true' || this.state.formData.researchRestricted === true,
               readOnly: this.state.readOnly
             }),
-
             InputFieldCheckbox({
               id: "ckb_diseaseRestricted",
               name: "diseaseRestricted",
@@ -728,9 +746,8 @@ class DataUseLetter extends Component {
                   })
                 ])
               ]),
-              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Requiered Fields.']),
-
-            ]),
+              small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
+            ])
           ]),
 
           Panel({ title: "2. Does the informed consent form or the IRB/EC prohibit any of the following?" }, [
@@ -812,7 +829,7 @@ class DataUseLetter extends Component {
                 onChange: this.handleFormDataTextChange,
                 readOnly: this.state.readOnly
               })
-            ]),
+            ])
           ]),
 
           Panel({ title: "4. Other restrictions" }, [
@@ -917,7 +934,7 @@ class DataUseLetter extends Component {
                 error: this.state.errors.errorGSRAvailability,
                 errorMessage: 'Required Field'
               })
-            ]),
+            ])
           ]),
           // SECTION 2 if repositoryDeposition is not true, otherwise SECTION 3 (OK)
           h2({ className: "pageSubtitle" }, [
@@ -1019,7 +1036,7 @@ class DataUseLetter extends Component {
             button({
               className: "btn buttonPrimary floatRight",
               onClick: this.submitDUL,
-              disabled: false
+              disabled: this.state.submit
             }, ["Submit"])
           ])
         ])

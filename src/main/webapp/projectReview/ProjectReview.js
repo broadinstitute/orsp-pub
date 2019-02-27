@@ -9,6 +9,7 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { AlertMessage } from "../components/AlertMessage";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, User, Review } from "../util/ajax";
 import get from 'lodash/get';
@@ -851,7 +852,14 @@ class ProjectReview extends Component {
         ]),
         /*UNTIL HERE*/
 
-        Panel({ title: "Determination Questions", tooltipLabel: "?", tooltipMsg: "If changes need to be made to any of these questions, please submit a new project request" }, [
+        Panel({ title: "Determination Questions" }, [
+          div({ isRendered: this.state.readOnly === false }, [
+            AlertMessage({
+              type: 'info',
+              msg: "If changes need to be made to any of these questions, please submit a new project request",
+              show: true
+            })
+          ]),
           div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioPII",

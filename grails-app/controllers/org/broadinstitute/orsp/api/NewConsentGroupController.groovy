@@ -4,8 +4,11 @@ import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 
 import javax.ws.rs.core.Response
@@ -104,5 +107,21 @@ class NewConsentGroupController extends AuthenticatedController {
         issueService.updateIssue(issue, consent)
         response.status = 200
         render([message: 'Consent Group was updated'] as JSON)
+    }
+
+    def findByUUID() {
+        String uid = params.uuid
+        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        Map<String, String> consent = new HashMap<>()
+        if(dul != null) {
+            User user = userService.findUser(dul.getCreator())
+            Issue issue = queryService.findByKey(dul.getConsentGroupKey())
+            consent.put("dataManagerName", user.getDisplayName())
+            consent.put("dataManagerEmail", user.getEmailAddress())
+            consent.put(IssueExtraProperty.SUMMARY, issue.getSummary())
+            consent.put(IssueExtraProperty.PROTOCOL, IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PROTOCOL).getValue())
+        }
+        response.status = 200
+        render([consent: consent] as JSON)
     }
 }
