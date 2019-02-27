@@ -1255,7 +1255,7 @@ class ConsentGroupReview extends Component {
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
                 selected: startDate,
-                value: startDate,
+                value: startDate !== null ? format(new Date(startDate), 'MM/DD/YYYY'): null,
                 currentValue: currentStartDate,
                 name: "startDate",
                 label: "Start Date",
@@ -1270,7 +1270,7 @@ class ConsentGroupReview extends Component {
               InputFieldDatePicker({
                 minDate: new Date(this.state.formData.consentExtraProps.startDate),
                 selected: endDate,
-                value: endDate,
+                value: endDate !== null ? format(new Date(endDate), 'MM/DD/YYYY') : null,
                 currentValue: currentEndDate,
                 name: "endDate",
                 label: "End Date",
