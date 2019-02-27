@@ -9,7 +9,6 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { AlertMessage } from "../components/AlertMessage";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, User, Review } from "../util/ajax";
 import get from 'lodash/get';
@@ -524,7 +523,6 @@ class ProjectReview extends Component {
         editedForm: {},
         errorSubmit: false
       });
-    }
   };
 
   handleApproveInfoDialog = () => {
