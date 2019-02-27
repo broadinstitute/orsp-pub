@@ -85,7 +85,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
       let currentKeys = this.sortByKey(currentValue, 'key');
       let keys = this.sortByKey(value, 'key');
 
-      currentValueStr = currentValues.join(',');
+      currentValueStr = currentValues.join(', ');
       edited = this.isEdited(currentKeys, keys);
     } else {
       let currentValue = this.props.currentValue;
@@ -115,6 +115,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               onChange: this.props.onChange(this.props.index),
               options: this.props.options,
               placeholder: edited ? '--' : this.props.placeholder,
+              isDisabled: this.props.readOnly,
               isMulti: this.props.isMulti
             })
           ])
