@@ -83,12 +83,9 @@ class DataUseLetterController extends AuthenticatedController {
                 dul.setSubmitted(true)
                 dul.setSubmitDate(new Date())
                 dul.save(flush:true)
-
+                dulDOC.close()
+                output.close()
                 response.status = 200
-                response.setContentType("application/pdf")
-                response.setContentLength(output.toByteArray().length)
-                response.setHeader("Content-disposition","attachment;filename=" + fileName)
-                response.outputStream << output.toByteArray()
             } catch (Exception e) {
                 response.status = 500
                 render([error: e.message] as JSON)

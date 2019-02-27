@@ -238,49 +238,28 @@ class DataUseLetter extends Component {
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-        this.downloadDulPdf(id).then(
-          (resolve) => {
+        DUL.downloadDulPdf({ uid: id }, this.props.serverUrl).then(() => {
           spinnerService.hideAll();
-          window.location.href =  this.props.serverUrl + "/dataUseLetter/show?id=" + id;
-        }).throw();
+          window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+        }, (reject) => {
+          console.log("reject");
+          this.showDulError();
+        })
       }).catch(error => {
-        this.setState(prev => {
-          prev.submit = false;
-          prev.dulError = true;
-          return prev;
-        });
-        spinnerService.hideAll();
+        console.log("catch", error);
+        this.showDulError()
       });
     }
   };
 
-  downloadDulPdf = (uid) => {
-    return new Promise((resolve, reject) => {
-      DUL.downloadDulPdf({uid: uid}, this.props.serverUrl).then(resp => {
-        if (resp.status === 200) {
-          const blob = new Blob([resp.data], {type: resp.headers['content-type']});
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          const contentDisposition = resp.headers['content-disposition'];
-          let fileName = 'unknown';
-          if (contentDisposition) {
-            const fileNameMatch = contentDisposition.match(/filename=(.+)/);
-            if (fileNameMatch.length === 2)
-              fileName = fileNameMatch[1];
-          }
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(url);
-          resolve()
-        } else {
-          reject(resp.status)
-        }
-      });
+  showDulError() {
+    this.setState(prev => {
+      prev.submit = false;
+      prev.dulError = true;
+      return prev;
     });
-  };
+    spinnerService.hideAll();
+  }
 
   validateForm() {
     let errorForm = false;
