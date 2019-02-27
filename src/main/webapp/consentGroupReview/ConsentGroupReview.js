@@ -14,6 +14,7 @@ import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
 import { AlertMessage } from "../components/AlertMessage";
 import get from 'lodash/get';
+import { format } from 'date-fns';
 
 const EXIT = 500;
 const DPA = 600;
@@ -673,14 +674,9 @@ class ConsentGroupReview extends Component {
   parseDate(date) {
     if (date !== undefined) {
       let d = new Date(date).toISOString();
-      d.slice(0, d.indexOf("T"));
-      return this.replaceAll(d, '-', '/');
+      return d.slice(0, d.indexOf("T"));
     }
   }
-
-  replaceAll = (value, search, replace) => {
-    return value.split(search).join(replace);
-  };
 
   getSampleCollections = () => {
     const sampleCollections = this.state.formData.sampleCollections;
@@ -1086,9 +1082,9 @@ class ConsentGroupReview extends Component {
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
 
-    const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
-    const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
-    console.log(currentStartDate, currentEndDate);
+    let currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
+    let currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
+    console.log(currentStartDate, startDate, currentEndDate, endDate);
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
