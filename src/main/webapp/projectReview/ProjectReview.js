@@ -20,6 +20,7 @@ class ProjectReview extends Component {
 
     this.state = {
       generalError: false,
+      subjectProtectionError: false,
       descriptionError: false,
       projectTitleError: false,
       editTypeError: false,
@@ -581,7 +582,7 @@ class ProjectReview extends Component {
       generalError = true;
     }
     if (this.isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
-      subjectProtectionError = false;
+      subjectProtectionError = true;
       generalError = true;
     }
     this.setState(prev => {
@@ -781,7 +782,7 @@ class ProjectReview extends Component {
             onChange: this.handleProjectExtraPropsChangeRadio,
             required: false,
             readOnly: this.state.readOnly,
-            error: false,
+            error: this.state.subjectProtectionError,
             errorMessage: "Required field"
           }),
 
