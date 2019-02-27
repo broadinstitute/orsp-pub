@@ -65,7 +65,7 @@ class DataUseLetterController extends AuthenticatedController {
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def createPdf() {
-        String fileName = "DataUseLetterTemplate.pdf"
+        String fileName = "DataUseLetterPDF.pdf"
         String uid = request.JSON[DataUseLetterFields.UID.abbreviation]
         DataUseLetter dul = DataUseLetter.findByUid(uid)
         if (dul != null) {

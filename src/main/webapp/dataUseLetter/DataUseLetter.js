@@ -242,11 +242,9 @@ class DataUseLetter extends Component {
           spinnerService.hideAll();
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
-          console.log("reject");
           this.showDulError();
         })
       }).catch(error => {
-        console.log("catch", error);
         this.showDulError()
       });
     }

@@ -50,7 +50,7 @@ enum DataUseLetterFields {
     OTHER_RESTRICTIONS("otherRestrictions"),
     DATA_SUBMISSION_PROHIBITION("dataSubmissionProhibition"),
     DATA_USE_CONSENT("dataUseConsent"),
-    DATA_DESPOSITION_DESCRIBED("dataDepositionDescribed"),
+    DATA_DEPOSITION_DESCRIBED("dataDepositionDescribed"),
     REPOSITORY_TYPE("repositoryType"),
     GSR_AVAILABILITY("GSRAvailability"),
     GCR_AVAILABILITY_SPECIFY("GCRAvailabilitySpecify"),
