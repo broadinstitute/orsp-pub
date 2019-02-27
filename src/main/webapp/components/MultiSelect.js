@@ -74,7 +74,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
     let currentKeys = this.sortByKey(currentValue, 'key');
     let keys = this.sortByKey(value, 'key');
 
-    let currentValueStr = currentValues.join(',');
+    let currentValueStr = currentValues.join(', ');
 
     // verified if edited ...
     const edited = this.isEdited(currentKeys, keys);
@@ -93,7 +93,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {
               id: this.props.id,
-              isDisabled: this.props.isDisabled,
+              isDisabled: this.props.isDisabled || this.props.readOnly,
               isMulti: this.props.isMulti,
               isClearable: true,
               loadOptions: (query, callback) => this.props.loadOptions(query, callback),

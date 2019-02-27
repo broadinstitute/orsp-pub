@@ -8,6 +8,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 
 
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
@@ -266,14 +267,13 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
               })
             ]),
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
-              input({
-                type: 'checkbox',
+              InputFieldCheckbox({
                 id: "onGoingProcess",
                 name: "onGoingProcess",
                 onChange: this.handleCheck,
+                label: "Ongoing Process",
                 defaultChecked: this.state.formData.onGoingProcess
-              }),
-              label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
+              })
             ])
           ])
         ]),
