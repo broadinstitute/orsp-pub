@@ -1084,7 +1084,6 @@ class ConsentGroupReview extends Component {
 
     let currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
     let currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
-    console.log(currentStartDate, startDate, currentEndDate, endDate);
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
