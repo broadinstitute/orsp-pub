@@ -86,7 +86,6 @@ class NewConsentGroupController extends AuthenticatedController {
         try {
             issueService.modifyExtraProperties(simpleInput, projectKey)
             issueService.updateProjectApproval(issue)
-//            Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
             render([message: issue])
         } catch(Exception e) {
             render([error: e.message] as JSON)
