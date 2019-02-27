@@ -40,7 +40,8 @@ class ConsentGroupController extends AuthenticatedController {
                 status: IssueStatus.Open.name,
                 summary: params.summary,
                 reporter: getUser()?.userName,
-                requestDate: new Date()
+                requestDate: new Date(),
+                approvalStatus: IssueStatus.Open.name
         )
         consent = issueService.addIssue(consent, params)
         try {
