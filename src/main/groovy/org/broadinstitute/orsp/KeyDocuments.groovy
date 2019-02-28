@@ -7,7 +7,7 @@ enum KeyDocuments {
     CONSENT_DOCUMENT('Consent Document', 'Consent Group', false),
     NE_APPROVAL('NE Approval', "'Not Engaged' Project", false),
     NE_APPLICATION('NE Application', "'Not Engaged' Project", false),
-    NE_CONSENT_DOCUMENT('Consent Document', "'Not Engaged' Project'", true),
+    NE_CONSENT_DOCUMENT('Consent Document', "'Not Engaged' Project", true),
     NHSR_APPLICATION('NHSR Application', 'NHSR Project', false),
     IRB_APPROVAL('IRB Approval', "IRB Project", false),
     IBR_APPLICATION('IRB Application', "IRB Project", false)

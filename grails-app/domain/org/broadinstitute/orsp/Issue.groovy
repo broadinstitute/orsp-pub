@@ -217,18 +217,26 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
+        Boolean optionalKey = true
         Boolean completed = false
         ArrayList approvedTypeDocuments = getAttachments().findAll {
             it.status == IssueStatus.Approved.getName()
         }.fileType
 
-        completed = KeyDocuments.getEnumByType(getType()).collect {
-            it }.findAll {
-            if (approvedTypeDocuments.contains(it.getValue()) == false) {
-                !it.getOptional()
-            }
-        }.size() == 0
+        Collection<String> optionalFile = getAttachments().findAll {
+            it.fileType == KeyDocuments.DATA_USE_LETTER.value || it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
+        }.fileType
 
+        if (optionalFile.size() > 0) {
+            optionalKey = approvedTypeDocuments.contains(KeyDocuments.DATA_USE_LETTER.value) || approvedTypeDocuments.contains(KeyDocuments.NE_CONSENT_DOCUMENT.value)
+        }
+        if (optionalKey) {
+            completed = KeyDocuments.getEnumByType(getType()).collect {
+                it
+            }.findAll {
+                approvedTypeDocuments.contains(it.getValue()) == false
+            }.size() == 0
+        }
         completed
     }
 }
