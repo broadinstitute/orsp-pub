@@ -298,7 +298,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               ]),
               div({ className: "row" }, [
                 div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink }, [
+                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink, disabled: true }, [
                     span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
                     "Get shareable link"
                   ])

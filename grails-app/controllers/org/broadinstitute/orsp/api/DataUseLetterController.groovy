@@ -65,7 +65,7 @@ class DataUseLetterController extends AuthenticatedController {
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def createPdf() {
-        String fileName = "DataUseLetterPDF.pdf"
+        String templateName = "DataUseLetterPDF.pdf"
         String uid = request.JSON[DataUseLetterFields.UID.abbreviation]
         DataUseLetter dul = DataUseLetter.findByUid(uid)
         if (dul != null) {
@@ -73,11 +73,12 @@ class DataUseLetterController extends AuthenticatedController {
             PDDocument dulDOC = new PDDocument()
             try {
                 ClassLoader classLoader = getClass().getClassLoader()
-                InputStream is = classLoader.getResourceAsStream(fileName)
+                InputStream is = classLoader.getResourceAsStream(templateName)
                 dulDOC = PDDocument.load(is)
                 is.close()
                 new DulPdfParser().fillDulForm(dul, dulDOC.getDocumentCatalog().getAcroForm())
                 dulDOC.save(output)
+                String fileName = JSON.parse(dul.dulInfo)[DataUseLetterFields.PROTOCOL_TITLE.abbreviation].replaceAll(' / ','_').concat("_DataUseLetter.pdf")
                 uploadDataUseLetter(dul,new ByteArrayInputStream(output.toByteArray()), fileName)
 
                 dul.setSubmitted(true)

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
+import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -10,6 +10,7 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
 import { ConsentGroup, DUL } from "../util/ajax";
+import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
 
 
@@ -239,13 +240,12 @@ class DataUseLetter extends Component {
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
         DUL.downloadDulPdf({ uid: id }, this.props.serverUrl).then(() => {
-          spinnerService.hideAll();
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
         })
       }).catch(error => {
-        this.showDulError()
+        this.showDulError();
       });
     }
   };
@@ -1046,6 +1046,7 @@ class DataUseLetter extends Component {
               show: this.state.dulError
             })
           ]),
+          console.log("DISABLE = ", this.state.submit),
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
@@ -1053,7 +1054,10 @@ class DataUseLetter extends Component {
               disabled: this.state.submit
             }, ["Submit"])
           ])
-        ])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+        })
       ])
     )
   }

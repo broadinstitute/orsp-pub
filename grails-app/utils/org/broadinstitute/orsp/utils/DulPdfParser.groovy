@@ -115,7 +115,7 @@ class DulPdfParser {
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.OTHER_DISEASE.abbreviation] as String))
                     break
                 case DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation:
-                    field.setValue(getDefaultDateValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation]))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation] as String))
                     break
                 case DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation] as String))
@@ -148,19 +148,19 @@ class DulPdfParser {
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_RESTRICTIONS.abbreviation] as String))
                     break
                 case DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation] as String))
+                    field.setValue(dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation].toString())
                     break
                 case DataUseLetterFields.DATA_USE_CONSENT.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.DATA_USE_CONSENT.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.DATA_USE_CONSENT.abbreviation].toString())
                     break
                 case DataUseLetterFields.DATA_DEPOSITION_DESCRIBED.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DATA_DEPOSITION_DESCRIBED.abbreviation] as String))
+                    field.setValue(dulInfoObj[DataUseLetterFields.DATA_DEPOSITION_DESCRIBED.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.DATA_DEPOSITION_DESCRIBED.abbreviation].toString())
                     break
                 case DataUseLetterFields.REPOSITORY_TYPE.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.REPOSITORY_TYPE.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.REPOSITORY_TYPE.abbreviation].toString())
                     break
                 case DataUseLetterFields.GSR_AVAILABILITY.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation] as String))
+                    field.setValue(dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation].toString())
                     break
                 case DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation] as String))
