@@ -13,7 +13,8 @@
     const dataUseLetterComponent = {
         serverURL: "${webRequest.baseUrl}",
         consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
-        error: "${error}"
+        error: "${error}",
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
     };
     </script>
 </head>

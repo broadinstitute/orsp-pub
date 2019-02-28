@@ -13,7 +13,8 @@ function DUL(props) {
                      serverUrl = {dataUseLetterComponent.serverURL}
                      consentGroupUrl = {dataUseLetterComponent.consentGroupUrl}
                      projectUrl = {dataUseLetterComponent.projectUrl}
-          />;
+                     loadingImage = {dataUseLetterComponent.loadingImage}
+  />;
 }
 
 ReactDOM.render(
