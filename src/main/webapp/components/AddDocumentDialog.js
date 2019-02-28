@@ -7,7 +7,7 @@ import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
 import { ConsentGroup, Files, DUL } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
-import { validateEmail } from "../util/ValidateEmail";
+import { validateEmail } from "../util/Utils";
 import './ConfirmationDialog.css';
 
 export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
