@@ -417,7 +417,7 @@ class NewProject extends Component {
     } else {
       projectType = key[0].toLowerCase();
     }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=details"].join("/");
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
   render() {
