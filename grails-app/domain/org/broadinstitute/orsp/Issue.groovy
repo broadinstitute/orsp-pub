@@ -227,11 +227,11 @@ class Issue implements LogicalDelete<Issue> {
             it.fileType == KeyDocuments.DATA_USE_LETTER.value || it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
         }.fileType
 
-        if (optionalFile.size() > 0) {
+        if (optionalFile.size() != 0) {
             optionalKey = approvedTypeDocuments.contains(KeyDocuments.DATA_USE_LETTER.value) || approvedTypeDocuments.contains(KeyDocuments.NE_CONSENT_DOCUMENT.value)
         }
         if (optionalKey) {
-            completed = KeyDocuments.getEnumByType(getType()).collect {
+            completed = KeyDocuments.getRequiredEnumByType(getType()).collect {
                 it
             }.findAll {
                 approvedTypeDocuments.contains(it.getValue()) == false
