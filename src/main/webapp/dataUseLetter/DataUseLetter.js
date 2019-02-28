@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
+import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -10,6 +10,7 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
 import { ConsentGroup, DUL } from "../util/ajax";
+import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
 
 
@@ -104,7 +105,9 @@ class DataUseLetter extends Component {
         errorRepositoryType: false,
         errorDataDepositionDescribed: false,
         errorDataUseConsent: false
-      }
+      },
+      dulError: false,
+      dulMsg: "Something went wrong, please try again"
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
@@ -238,31 +241,35 @@ class DataUseLetter extends Component {
   };
 
   submitDUL() {
-    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
+      prev.dulError = false;
       return prev;
     });
     if (this.validateForm() === false) {
+      spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-        spinnerService.hideAll();
-        this.setState(prev => {
-          prev.submit = false;
-          return prev;
-        });
-        window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+        DUL.uploadDulPdf({ uid: id }, this.props.serverUrl).then(() => {
+          window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+        }, (reject) => {
+          this.showDulError();
+        })
       }).catch(error => {
-        this.setState(prev => {
-          prev.submit = false;
-          return prev;
-        });
-        spinnerService.hideAll();
-        console.log("error", error);
+        this.showDulError();
       });
     }
   };
+
+  showDulError() {
+    this.setState(prev => {
+      prev.submit = false;
+      prev.dulError = true;
+      return prev;
+    });
+    spinnerService.hideAll();
+  }
 
   validateForm() {
     let errorForm = false;
@@ -329,7 +336,7 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorInstitution = true;
     }
-    if (this.state.formData.repositoryDeposition == true) {
+    if (this.state.formData.repositoryDeposition === true) {
       if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.dataSubmissionProhibition)) {
         errorForm = true;
         errorDataSubmissionProhibition = true;
@@ -339,11 +346,11 @@ class DataUseLetter extends Component {
           errorForm = true;
           errorDataUseConsent = true;
         }
-        if (this.state.formData.dataUseConsent == true && this.isEmpty(this.state.formData.dataDepositionDescribed)) {
+        if (this.state.formData.dataUseConsent === true && this.isEmpty(this.state.formData.dataDepositionDescribed)) {
           errorForm = true;
           errorDataDepositionDescribed = true;
         }
-        if (this.state.formData.dataDepositionDescribed == true && this.isEmpty(this.state.formData.repositoryType)) {
+        if (this.state.formData.dataDepositionDescribed === true && this.isEmpty(this.state.formData.repositoryType)) {
           errorForm = true;
           errorRepositoryType = true;
         }
@@ -417,7 +424,6 @@ class DataUseLetter extends Component {
     return value === '' || value === null || value === undefined;
   }
   render() {
-    const { startDate = null, endDate = null, onGoingProcess = false } = this.state.formData;
     return (
       div({}, [
         h1({ className: "pageTitle" }, [
@@ -1070,7 +1076,12 @@ class DataUseLetter extends Component {
               show: this.state.errors.errorForm
             })
           ]),
-
+          div({ style: { 'marginTop': '15px' } }, [
+            AlertMessage({
+              msg: this.state.dulMsg,
+              show: this.state.dulError
+            })
+          ]),
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
@@ -1078,7 +1089,10 @@ class DataUseLetter extends Component {
               disabled: this.state.submit
             }, ["Submit"])
           ])
-        ])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+        })
       ])
     )
   }
