@@ -217,6 +217,7 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
+        Boolean completed = false
         ArrayList approvedTypeDocuments = getAttachments().findAll {
             it.status == IssueStatus.Approved.getName()
         }.fileType
