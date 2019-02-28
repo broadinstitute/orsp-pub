@@ -89,6 +89,7 @@ class DataUseLetterController extends AuthenticatedController {
                 response.status = 200
             } catch (Exception e) {
                 response.status = 500
+                log.error("Error trying to create Data Use Letter PDF for uid: " + dul.uid + e.message)
                 render([error: e.message] as JSON)
             } finally {
                 dulDOC.close()
@@ -102,7 +103,7 @@ class DataUseLetterController extends AuthenticatedController {
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     void uploadDataUseLetter(DataUseLetter dul, ByteArrayInputStream dulDoc, String fileName) {
         try {
-            if (dul != null && dulDoc.available() != 0) {
+            if (dul && dulDoc.available() != 0) {
                 Object dulInfo = JSON.parse(dul.dulInfo)
                 StorageDocument document = new StorageDocument(
                         projectKey: dul.getConsentGroupKey(),

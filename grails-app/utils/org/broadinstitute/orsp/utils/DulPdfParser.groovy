@@ -8,7 +8,6 @@ import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.springframework.util.StringUtils
 
-import java.text.SimpleDateFormat
 import java.util.regex.Pattern
 
 @Slf4j
@@ -165,8 +164,8 @@ class DulPdfParser {
                 case DataUseLetterFields.GSR_AVAILABILITY.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation].toString())
                     break
-                case DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation] as String, dul.uid))
+                case DataUseLetterFields.GSR_AVAILABILITY_SPECIFY.abbreviation:
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY_SPECIFY.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.PRINTED_NAME.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PRINTED_NAME.abbreviation] as String, dul.uid))
