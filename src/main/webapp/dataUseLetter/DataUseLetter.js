@@ -215,7 +215,7 @@ class DataUseLetter extends Component {
           prev.formData['dataUseConsent'] = '';
           return prev;
         });
-      } else if (field ==  'dataUseConsent' || field ==  'dataDepositionDescribed' || field == 'repositoryType') {
+      } else if (field == 'dataUseConsent' || field == 'dataDepositionDescribed' || field == 'repositoryType') {
         this.setState(prev => {
           if (field === 'dataUseConsent') {
             prev.formData['dataDepositionDescribed'] = '';
@@ -225,7 +225,7 @@ class DataUseLetter extends Component {
           }
           return prev;
         });
-      }      
+      }
     }
     this.setState(prev => {
       prev.formData[field] = value;
@@ -350,8 +350,8 @@ class DataUseLetter extends Component {
         if (this.state.formData.dataDepositionDescribed == true && this.isEmpty(this.state.formData.repositoryType)) {
           errorForm = true;
           errorRepositoryType = true;
-        }       
-        
+        }
+
       }
     }
 
@@ -373,6 +373,10 @@ class DataUseLetter extends Component {
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
+      if (errorForm === false) {
+        prev.submit = false;
+      }
+
       return prev;
     });
     return errorForm;
