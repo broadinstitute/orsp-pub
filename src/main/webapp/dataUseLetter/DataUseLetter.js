@@ -229,13 +229,13 @@ class DataUseLetter extends Component {
   };
 
   submitDUL() {
-    spinnerService.showAll();
     this.setState(prev => {
       prev.submit = true;
       prev.dulError = false;
       return prev;
     });
     if (this.validateForm() === false) {
+      spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
@@ -1046,7 +1046,6 @@ class DataUseLetter extends Component {
               show: this.state.dulError
             })
           ]),
-          console.log("DISABLE = ", this.state.submit),
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",

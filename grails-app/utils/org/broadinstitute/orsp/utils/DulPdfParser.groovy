@@ -43,7 +43,7 @@ class DulPdfParser {
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.ON_GOING_PROCESS.abbreviation] as String))
                     break
                 case DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation] as String))
+                    field.setValue(dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation].toString())
                     break
                 case DataUseLetterFields.NO_RESTRICTIONS.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.NO_RESTRICTIONS.abbreviation] as String))
