@@ -166,7 +166,7 @@ export const DUL = {
     return axios.put(serverURL + '/api/dataUseLetter', data);
   },
 
-  downloadDulPdf(uid, serverURL) {
+  uploadDulPdf(uid, serverURL) {
     return axios.post(serverURL + '/api/dataUseLetter/pdf', uid)
   }
 };
