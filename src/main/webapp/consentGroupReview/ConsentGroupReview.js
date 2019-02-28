@@ -14,6 +14,7 @@ import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
 import { AlertMessage } from "../components/AlertMessage";
 import get from 'lodash/get';
+import { format } from 'date-fns';
 
 const EXIT = 500;
 const DPA = 600;
@@ -299,6 +300,7 @@ class ConsentGroupReview extends Component {
     let endDate = false;
     let startDate = false;
     let consentGroupName = false;
+    let intCohortsAnswers = false;
 
     if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
@@ -332,7 +334,7 @@ class ConsentGroupReview extends Component {
       compliance = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.textCompliance) && compliance) {
+    if (this.state.formData.consentExtraProps.compliance === "true" && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
       textCompliance = true;
     }
 
@@ -340,7 +342,7 @@ class ConsentGroupReview extends Component {
       sensitive = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.textSensitive) && sensitive) {
+    if (this.state.formData.consentExtraProps.sensitive === "true" && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
       textSensitive = true;
     }
 
@@ -352,7 +354,7 @@ class ConsentGroupReview extends Component {
       sharingPlan = true;
     }
 
-    if (!this.validateQuestionaire()) {
+    if (!this.validateQuestionnaire()) {
       questions = true;
     }
 
@@ -375,7 +377,12 @@ class ConsentGroupReview extends Component {
       consentGroupName = true;
     }
 
+    if (this.state.intCohortsAnswers.length === 0) {
+      intCohortsAnswers = true;
+    }
+
     const valid = !consent &&
+      !this.institutionalSrcHasErrors() &&
       !protocol &&
       !collInst &&
       !describeConsentGroup &&
@@ -393,7 +400,8 @@ class ConsentGroupReview extends Component {
       !startDate &&
       !consentGroupName &&
       !endDate &&
-      !this.institutionalSrcHasErrors();
+      !intCohortsAnswers;
+
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
@@ -412,6 +420,7 @@ class ConsentGroupReview extends Component {
       prev.errors.accessible = accessible;
       prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
+      prev.internationalCohortsError = intCohortsAnswers;
       return prev;
     });
     this.setState({ errorSubmit: !valid });
@@ -440,15 +449,19 @@ class ConsentGroupReview extends Component {
       prev.errors.instError = false;
       prev.errors.institutionalNameErrorIndex = [];
       prev.errors.institutionalCountryErrorIndex = [];
+      prev.internationalCohortsError = false;
       return prev;
     });
   };
 
-  validateQuestionaire = () => {
+  validateQuestionnaire = () => {
     let isValid = false;
     const determination = this.state.determination;
     if (determination.questions.length === 0 || determination.endState === true) {
       isValid = true;
+    }
+    if (this.state.intCohortsAnswers.length === 0) {
+      isValid = false;
     }
     return isValid;
   };
@@ -576,7 +589,7 @@ class ConsentGroupReview extends Component {
 
   submitEdit = (e) => () => {
     let data = {};
-    if (this.validateQuestionaire()) {
+    if (this.validateQuestionnaire()) {
       if (this.isValid()) {
         this.setState(prev => {
           prev.readOnly = true;
@@ -622,9 +635,10 @@ class ConsentGroupReview extends Component {
   };
 
   institutionalSrcHasErrors = () => {
+    const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
     let institutionalNameErrorIndex = [];
     let institutionalCountryErrorIndex = [];
-    let institutionalError = this.state.formData.instSources.filter((obj, idx) => {
+    let institutionalError = instSources.filter((obj, idx) => {
       let response = false;
       // Error if Name is missing
       if (this.isEmpty(obj.current.name) && this.isEmpty(obj.future.name)
@@ -641,7 +655,7 @@ class ConsentGroupReview extends Component {
         response = true;
       }
       // Error if all elements are empty
-      if (!this.state.formData.instSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
+      if (!instSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
         institutionalNameErrorIndex.push(0);
         institutionalCountryErrorIndex.push(0);
         response = true;
@@ -956,6 +970,8 @@ class ConsentGroupReview extends Component {
       prev.intCohortsAnswers = [...answers];
       prev.determination = determination;
       prev.submitError = false;
+      prev.errorSubmit = false;
+      prev.internationalCohortsError = false;
       return prev;
     });
   };
@@ -1065,9 +1081,10 @@ class ConsentGroupReview extends Component {
       isCollaboratorProvidingGoodService = '',
       isConsentUnambiguous = '',
     } = get(this.state.formData, 'consentExtraProps', '');
+    const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
 
-    const currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? this.state.current.consentExtraProps.endDate : null;
-    const currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? this.state.current.consentExtraProps.startDate : null;
+    let currentEndDate = this.state.current.consentExtraProps.endDate !== undefined ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
+    let currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
@@ -1238,7 +1255,7 @@ class ConsentGroupReview extends Component {
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
                 selected: startDate,
-                value: startDate,
+                value: startDate !== null ? format(new Date(startDate), 'MM/DD/YYYY'): null,
                 currentValue: currentStartDate,
                 name: "startDate",
                 label: "Start Date",
@@ -1253,7 +1270,7 @@ class ConsentGroupReview extends Component {
               InputFieldDatePicker({
                 minDate: new Date(this.state.formData.consentExtraProps.startDate),
                 selected: endDate,
-                value: endDate,
+                value: endDate !== null ? format(new Date(endDate), 'MM/DD/YYYY') : null,
                 currentValue: currentEndDate,
                 name: "endDate",
                 label: "End Date",
@@ -1279,7 +1296,7 @@ class ConsentGroupReview extends Component {
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
-            institutionalSources: this.state.formData.instSources !== undefined ? this.state.formData.instSources : [],
+            institutionalSources: instSources,
             readOnly: this.state.readOnly,
             edit: true,
             errorHandler: this.setInstitutionalError,
