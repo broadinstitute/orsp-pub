@@ -217,47 +217,17 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
-        Boolean completed = false
-        Boolean optionalKey = true
-
         ArrayList approvedTypeDocuments = getAttachments().findAll {
             it.status == IssueStatus.Approved.getName()
         }.fileType
 
+        completed = KeyDocuments.getEnumByType(getType()).collect {
+            it }.findAll {
+            if (approvedTypeDocuments.contains(it.getValue()) == false) {
+                !it.getOptional()
+            }
+        }.size() == 0
 
-        if (getType() == IssueType.CONSENT_GROUP.name) {
-            def dulFiles = getAttachments().findAll {
-                it.fileType == DATA_USE_LETTER
-            }.fileType
-            if (dulFiles.size() != 0) {
-                optionalKey = approvedTypeDocuments.contains(DATA_USE_LETTER)
-            }
-            completed = CGroupKeyDocument.values().collect {
-                it.getType() }.findAll {
-                approvedTypeDocuments.contains(it) == false
-            }.size() == 0 && optionalKey
-        } else if (getType() == IssueType.NE.name) {
-            def consentDoc = getAttachments().findAll {
-                it.fileType == CONSENT_DOCUMENT
-            }.fileType
-            if (consentDoc.size() != 0) {
-                optionalKey = approvedTypeDocuments.contains(CONSENT_DOCUMENT)
-            }
-            completed = NEKeyDocuments.values().collect {
-                it.getType() }.findAll {
-                approvedTypeDocuments.contains(it) == false
-            }.size() == 0 && optionalKey
-        } else if (getType() == IssueType.NHSR.name) {
-            completed = NHSRKeyDocuments.values().collect {
-                it.getType() }.findAll {
-                approvedTypeDocuments.contains(it) == false
-            }.size() == 0
-        } else if (getType() == IssueType.IRB.name) {
-            completed = IRBKeyDocuments.values().collect {
-                it.getType() }.findAll {
-                approvedTypeDocuments.contains(it) == false
-            }.size() == 0
-        }
         completed
     }
 }
