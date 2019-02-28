@@ -224,10 +224,14 @@ class Issue implements LogicalDelete<Issue> {
         }.fileType
 
         Collection<String> optionalFile = getAttachments().findAll {
-            it.fileType == KeyDocuments.DATA_USE_LETTER.value || it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
+            if (getType() == IssueType.CONSENT_GROUP.name) {
+                it.fileType == KeyDocuments.DATA_USE_LETTER.value
+            } else if (getType() == IssueType.NE.name) {
+                it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
+            }
         }.fileType
 
-        if (optionalFile.size() != 0) {
+        if (optionalFile.size() > 0) {
             optionalKey = approvedTypeDocuments.contains(KeyDocuments.DATA_USE_LETTER.value) || approvedTypeDocuments.contains(KeyDocuments.NE_CONSENT_DOCUMENT.value)
         }
         if (optionalKey) {
