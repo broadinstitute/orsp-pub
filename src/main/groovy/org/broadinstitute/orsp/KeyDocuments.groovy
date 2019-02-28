@@ -22,8 +22,8 @@ enum KeyDocuments {
         this.optional = optional
     }
 
-    static Collection<KeyDocuments> getEnumByType(String type) {
-        Collection<KeyDocuments> found = values().findAll { it.type.equalsIgnoreCase(type) }
+    static Collection<KeyDocuments> getRequiredEnumByType(String type) {
+        Collection<KeyDocuments> found = values().findAll { it.type.equalsIgnoreCase(type) && !it.optional }
         found
     }
 
