@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp.utils
 
 import grails.converters.JSON
+import groovy.util.logging.Slf4j
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm
 import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.broadinstitute.orsp.DataUseLetter
@@ -8,7 +9,9 @@ import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.springframework.util.StringUtils
 
 import java.text.SimpleDateFormat
+import java.util.regex.Pattern
 
+@Slf4j
 class DulPdfParser {
     static PDAcroForm fillDulForm(DataUseLetter dul, PDAcroForm acroForm) {
         Object dulInfoObj = JSON.parse(dul.dulInfo)
@@ -16,22 +19,22 @@ class DulPdfParser {
             String fieldName = field.getFullyQualifiedName()
             switch (fieldName) {
                 case DataUseLetterFields.PROTOCOL_TITLE.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PROTOCOL_TITLE.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PROTOCOL_TITLE.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.PROTOCOL_NUMBER.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PROTOCOL_NUMBER.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PROTOCOL_NUMBER.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.CONSENT_FORM_TITLE.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.CONSENT_FORM_TITLE.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.CONSENT_FORM_TITLE.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.PRINCIPAL_INVESTIGATOR.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PRINCIPAL_INVESTIGATOR.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PRINCIPAL_INVESTIGATOR.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.DATA_MANAGER_NAME.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DATA_MANAGER_NAME.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DATA_MANAGER_NAME.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.DATA_MANAGER_EMAIL.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DATA_MANAGER_EMAIL.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.DATA_MANAGER_EMAIL.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.START_DATE.abbreviation:
                     field.setValue(getDefaultDateValue(dulInfoObj[DataUseLetterFields.START_DATE.abbreviation] as String) )
@@ -115,7 +118,7 @@ class DulPdfParser {
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.OTHER_DISEASE.abbreviation] as String))
                     break
                 case DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation] as String))
@@ -142,10 +145,10 @@ class DulPdfParser {
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.ETHNIC.abbreviation] as String))
                     break
                 case DataUseLetterFields.ETHNIC_SPECIFY.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.ETHNIC_SPECIFY.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.ETHNIC_SPECIFY.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.OTHER_RESTRICTIONS.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_RESTRICTIONS.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_RESTRICTIONS.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation].toString())
@@ -163,22 +166,22 @@ class DulPdfParser {
                     field.setValue(dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.GSR_AVAILABILITY.abbreviation].toString())
                     break
                 case DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.GCR_AVAILABILITY_SPECIFY.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.PRINTED_NAME.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PRINTED_NAME.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.PRINTED_NAME.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.SIGNATURE.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.SIGNATURE.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.SIGNATURE.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.POSITION.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.POSITION.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.POSITION.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.INSTITUTION.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.INSTITUTION.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.INSTITUTION.abbreviation] as String, dul.uid))
                     break
                 case DataUseLetterFields.SUBMITTED_DATE.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.SUBMITTED_DATE.abbreviation] as String))
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.SUBMITTED_DATE.abbreviation] as String, dul.uid))
                     break
             }
             field.setReadOnly(true)
@@ -188,11 +191,13 @@ class DulPdfParser {
     }
 
 
-    private static String getDefaultValue(String value){
-        StringUtils.isEmpty(value) ? "--" : value
+    private static String getDefaultValue(String value, String uid){
+        StringUtils.isEmpty(value) ? "--" : filterNonPrintableValue(value, uid)
     }
 
-    // Pare for the checkbox elements created on the PDF form
+    /**
+     * Parse for the checkbox elements created on the PDF form
+     * */
     private static String parseCheckBoxValue(String value){
          value == "true" ? "On" : "Off"
     }
@@ -206,5 +211,18 @@ class DulPdfParser {
             stringDate = date.format("MM-dd-yyyy").toString()
         }
         stringDate
+    }
+
+    /**
+     * PDFBox has a lot of trouble with non-printable characters. Strip from the PDF content and
+     * log a warning so we can follow up with the user and/or clean up the Data Use Letter.
+     */
+    static String filterNonPrintableValue(String value, String uid) {
+        String NON_PRINTABLE_PATTERN = "\\P{Print}"
+        if (Pattern.compile(NON_PRINTABLE_PATTERN).matcher(value).find()) {
+            log.warn("Value " + value + " from Data Use Letter id: "+ uid + "' contains non-printable characters.")
+            return value.replaceAll(NON_PRINTABLE_PATTERN, "")
+        }
+        return value
     }
 }
