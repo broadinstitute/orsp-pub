@@ -215,7 +215,17 @@ class DataUseLetter extends Component {
           prev.formData['dataUseConsent'] = '';
           return prev;
         });
-      }
+      } else if (field ==  'dataUseConsent' || field ==  'dataDepositionDescribed' || field == 'repositoryType') {
+        this.setState(prev => {
+          if (field === 'dataUseConsent') {
+            prev.formData['dataDepositionDescribed'] = '';
+            prev.formData['repositoryType'] = '';
+          } else if (field === 'dataDepositionDescribed') {
+            prev.formData['repositoryType'] = '';
+          }
+          return prev;
+        });
+      }      
     }
     this.setState(prev => {
       prev.formData[field] = value;
@@ -238,6 +248,10 @@ class DataUseLetter extends Component {
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
         spinnerService.hideAll();
+        this.setState(prev => {
+          prev.submit = false;
+          return prev;
+        });
         window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
       }).catch(error => {
         this.setState(prev => {
@@ -325,18 +339,19 @@ class DataUseLetter extends Component {
         errorDataSubmissionProhibition = true;
       }
       if (this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) {
-        if (this.isEmpty(this.state.formData.repositoryType)) {
-          errorForm = true;
-          errorRepositoryType = true;
-        }
-        if (this.isEmpty(this.state.formData.dataDepositionDescribed)) {
-          errorForm = true;
-          errorDataDepositionDescribed = true;
-        }
         if (this.isEmpty(this.state.formData.dataUseConsent)) {
           errorForm = true;
           errorDataUseConsent = true;
         }
+        if (this.state.formData.dataUseConsent == true && this.isEmpty(this.state.formData.dataDepositionDescribed)) {
+          errorForm = true;
+          errorDataDepositionDescribed = true;
+        }
+        if (this.state.formData.dataDepositionDescribed == true && this.isEmpty(this.state.formData.repositoryType)) {
+          errorForm = true;
+          errorRepositoryType = true;
+        }       
+        
       }
     }
 
@@ -358,9 +373,6 @@ class DataUseLetter extends Component {
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
-      if (errorForm == false) {
-        prev.submit = false;
-      }
       return prev;
     });
     return errorForm;
