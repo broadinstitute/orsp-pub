@@ -231,9 +231,6 @@ class Issue implements LogicalDelete<Issue> {
             }
         }.fileType
 
-        if (optionalFile.size() > 0) {
-            optionalKey = approvedTypeDocuments.contains(KeyDocuments.DATA_USE_LETTER.value) || approvedTypeDocuments.contains(KeyDocuments.NE_CONSENT_DOCUMENT.value)
-        }
         if (optionalKey) {
             completed = KeyDocuments.getRequiredEnumByType(getType()).collect {
                 it
