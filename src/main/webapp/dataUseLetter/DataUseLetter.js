@@ -330,10 +330,6 @@ class DataUseLetter extends Component {
       errorInstitution = true;
     }
     if (this.state.formData.repositoryDeposition == true) {
-      if ((this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) && this.isEmpty(this.state.formData.GSRAvailability)) {
-        errorForm = true;
-        errorGSRAvailability = true
-      }
       if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.dataSubmissionProhibition)) {
         errorForm = true;
         errorDataSubmissionProhibition = true;
@@ -351,7 +347,10 @@ class DataUseLetter extends Component {
           errorForm = true;
           errorRepositoryType = true;
         }
-
+      }
+      if (this.isEmpty(this.state.formData.GSRAvailability)) {
+        errorForm = true;
+        errorGSRAvailability = true
       }
     }
 
