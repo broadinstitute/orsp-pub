@@ -50,6 +50,10 @@ export const ConsentGroup = {
   sendEmailDul(url, consentKey, userName, recipients) {
    return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
+
+  getUseRestriction(url, consentKey) {
+    return axios.get(url + '?consentKey=' + consentKey);
+  }
 };
 
 export const Files = {

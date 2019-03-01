@@ -10,7 +10,7 @@
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
         emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}",
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-        restriction: JSON.stringify(${restriction})
+        useRestrictionUrl: "${createLink(controller:'newConsentGroup', action: 'findUseRestriction')}",
     };
 </g:javascript>
 

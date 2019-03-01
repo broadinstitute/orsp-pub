@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
-import { User } from "../util/ajax";
+import { User, ConsentGroup } from "../util/ajax";
 import { DocumentHandler } from "../util/ajax";
 import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
@@ -14,6 +14,8 @@ class ConsentGroupDocuments extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      restrictionId: '',
+      restriction: '',
       documentsCollection: [],
       keyDocuments: [],
       additional: [],
@@ -29,6 +31,7 @@ class ConsentGroupDocuments extends Component {
 
   componentDidMount() {
     this.getAttachedDocuments();
+    this.getUseRestriction();
     this.isCurrentUserAdmin();
     this.loadKeyOptions();
     this.loadAdditionalOptions();
@@ -57,6 +60,20 @@ class ConsentGroupDocuments extends Component {
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachmentsUrl, this.props.projectKey).then(resp => {
       this.setKeyDocuments(JSON.parse(resp.data.documents));
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
+    });
+  };
+
+  getUseRestriction = () => {
+    ConsentGroup.getUseRestriction(this.props.useRestrictionUrl, this.props.projectKey).then(resp => {
+      const restriction = resp.data.restriction.map( du => { return du });
+      this.setState(prev => {
+       prev.restriction = restriction;
+       prev.restrictionId = resp.data.restrictionId;
+       return prev;
+     })
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -151,7 +168,8 @@ class ConsentGroupDocuments extends Component {
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName,
-        restriction: this.props.restriction
+        restriction: this.state.restriction,
+        restrictionId: this.state.restrictionId
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',

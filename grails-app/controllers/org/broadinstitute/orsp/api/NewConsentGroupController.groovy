@@ -4,7 +4,9 @@ import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
+import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
@@ -15,6 +17,8 @@ import javax.ws.rs.core.Response
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class NewConsentGroupController extends AuthenticatedController {
+
+    ConsentService consentService
 
     def show() {
         render(view: "/newConsentGroup/index")
@@ -123,5 +127,11 @@ class NewConsentGroupController extends AuthenticatedController {
         }
         response.status = 200
         render([consent: consent] as JSON)
+    }
+
+    def findUseRestriction() {
+        def restriction = DataUseRestriction.findByConsentGroupKey(params.consentKey)
+        Collection<String> duSummary = consentService.getSummary(restriction)
+        render([restriction: duSummary, restrictionId: restriction.id] as JSON)
     }
 }

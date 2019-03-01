@@ -48,6 +48,14 @@ export const Documents = hh(class Documents extends Component {
     });
   };
 
+  editRestriction = () => {
+    window.location.href =  this.props.serverURL + "/dataUse/edit/" + this.props.restrictionId;
+  }
+
+  showRestriction = () => {
+    window.location.href =  this.props.serverURL + "/dataUse/show/" + this.props.restrictionId;
+  }
+
   closeModal = () => {
     this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
   };
@@ -106,24 +114,13 @@ export const Documents = hh(class Documents extends Component {
           isAdmin: this.props.user.isAdmin
         })
       ]),
-      Panel({ title: "Data Use Restrictions" }, [
+      Panel({ isRender: this.props.restriction !== undefined, title: "Data Use Restrictions" }, [
         h3({ style: { 'marginTop': '10px' }}, ["Summary"]),
-        p({}, [this.props.restriction]),
+        p({dangerouslySetInnerHTML: { __html: this.props.restriction }}, []),
         div({}, [
-          button({ className: "btn buttonSecondary", style: {'marginRight': '15px'}, onClick: this.addAdditionalDocuments }, ["Edit Restrictions"]),
-          button({ className: "btn buttonSecondary", onClick: this.addAdditionalDocuments }, ["View Restrictions"])
+          button({ className: "btn buttonSecondary", style: {'marginRight': '15px'}, onClick: this.editRestriction }, ["Edit Restrictions"]),
+          button({ className: "btn buttonSecondary", onClick: this.showRestriction }, ["View Restrictions"])
         ])
-      ]),
-      Panel({ title: "Associated Projects" }, [
-        Table({
-          headers: associatedProjectHeaders,
-          data: [],
-          sizePerPage: 10,
-          paginationSize: 10,
-          handleDialogConfirm: this.props.handleDialogConfirm,
-          downloadDocumentUrl: this.props.downloadDocumentUrl,
-          isAdmin: this.props.user.isAdmin
-        })
       ])
     ]);
   }
