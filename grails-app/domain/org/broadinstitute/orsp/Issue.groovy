@@ -224,7 +224,12 @@ class Issue implements LogicalDelete<Issue> {
         }.fileType
 
         Collection<String> optionalFile = getAttachments().findAll {
-                it.fileType == KeyDocuments.DATA_USE_LETTER.value || it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
+            if (getType() == IssueType.CONSENT_GROUP.name) {
+                it.fileType == KeyDocuments.DATA_USE_LETTER.value
+            }
+            if (getType() == IssueType.NE.name) {
+                it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
+            }
         }.fileType
 
         if (optionalFile.size() > 0) {
@@ -236,7 +241,6 @@ class Issue implements LogicalDelete<Issue> {
             }
         }
 
-        // TODO revisar if de arriba debe comprobar por cada tipo de issue
         if (optionalKey) {
             completed = KeyDocuments.getRequiredEnumByType(getType()).collect {
                 it
