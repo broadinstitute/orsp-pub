@@ -62,7 +62,17 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     protected Collection<User> getPIsForIssue(Issue issue) {
         Collection<String> pis = IssueExtraProperty.findAllByProjectKeyAndName(issue.projectKey, IssueExtraProperty.PI)*.value
-        userService.findUsers(pis)
+        Collection<User> pisForUsers = new ArrayList<>()
+        pisForUsers.addAll(userService.findUsers(pis))
+        pisForUsers
+    }
+
+    protected User getRequestorForIssue(Issue issue) {
+        userService.findUser(issue.reporter)
+    }
+
+    protected Collection<User> getCollaborators(Collection<String> collaboratorsList) {
+        userService.findUsers(collaboratorsList) ?: new ArrayList<>()
     }
 
     String getType() {
@@ -331,6 +341,26 @@ class AuthenticatedController implements Interceptor, UserInfo {
             }
         }
         groupedSubmissions
+    }
+
+    @Deprecated
+    /**
+     * Use getSessionUser().isAdmin instead
+     */
+    def isCurrentUserAdmin() {
+        render([isAdmin: isAdmin()] as JSON)
+    }
+
+    def getSessionUser() {
+        User user = getUser()
+        render([
+            'displayName': user.displayName,
+            'emailAddress': user.emailAddress,
+            'userName': user.userName,
+            'isAdmin': isAdmin(),
+            'isORSP': isORSP(),
+            'isComplianceOffice': isComplianceOffice(),
+        ] as JSON)
     }
 
 }

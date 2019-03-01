@@ -1,9 +1,11 @@
 package org.broadinstitute.orsp
 
+import gorm.logical.delete.LogicalDelete
+
 /**
  * This class represents the association between Consent Group, Project, and Optional Sample Collection.
  */
-class ConsentCollectionLink {
+class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
 
     String projectKey
     String consentKey

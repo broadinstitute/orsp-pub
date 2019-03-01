@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp.utils
 
+import com.google.gson.Gson
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.IssueType
@@ -90,5 +91,12 @@ final class IssueUtils {
             Collections.emptyList()
         }
     }
+
+    static getJson(Class type, Object json) {
+        Gson gson = new Gson()
+        gson.fromJson(gson.toJson(json), type)
+
+    }
+
 
 }

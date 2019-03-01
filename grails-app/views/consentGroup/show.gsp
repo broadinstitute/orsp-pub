@@ -2,6 +2,7 @@
 <head>
     <meta name="layout" content="main">
     <title>${issue.type}: ${issue.projectKey}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     <style type="text/css">
         .clear-well {
             background-color: transparent;
@@ -27,18 +28,29 @@
         <g:render template="/base/value" model="[value: issue.actors]"/>
         </span>
     </g:if>
+    <div class="issue-type">
+    <span>New Status:</span>
+    <span>${issue?.approvalStatus}</span>
+    </div>
 </div>
 
 <div class="orsp-tabs" style="display: none;">
     <ul>
         <li><a href="#documents">Documents</a></li>
         <li><a href="#details">Details</a></li>
+        <li><b><a href="#consentGroupReview" style="color: blue">Review</a></b></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
         %{--<auth:isOrsp>--}%
             %{--<li><a href="#checklist">Reviewer Checklist</a></li>--}%
         %{--</auth:isOrsp>--}%
+        <li><b><a href="#consentGroupDocuments" style="color: blue">Documents New</a></b></li>
     </ul>
+
+    <div id="consentGroupDocuments">
+        <g:render template="/consentGroupDocuments/index" model="[issue: issue, attachedDocuments: attachedDocuments]" />
+    </div>
+
 
     <div id="documents">
 
@@ -120,6 +132,10 @@
         </g:if>
     </div>
 
+    <div id="consentGroupReview">
+        <g:render template="/consentGroupReview/index" model="[issue: issue]"/>
+    </div>
+
 
     <div id="details">
 
@@ -187,7 +203,7 @@
                                         class="btn btn-default btn-sm">Remove</a>
                                 </td>
                             </auth:isOrsp>
-                            <td>${link.sampleCollection?.id}</td>
+                            <td>${link.sampleCollection?.collectionId}</td>
                             <td>${link.sampleCollection?.name}</td>
                             <td>${link.sampleCollection?.category}</td>
                             <td>${link.sampleCollection?.groupName}</td>

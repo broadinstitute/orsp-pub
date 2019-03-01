@@ -30,6 +30,7 @@ class StorageProviderService implements Status {
 
     PersistenceService persistenceService
     StorageConfiguration storageConfiguration
+    QueryService queryService
 
     private final String RESPONSE_PROJECT_HEADER = "x-goog-meta-project"
     private final String RESPONSE_UUID_HEADER = "x-goog-meta-uuid"
@@ -42,6 +43,8 @@ class StorageProviderService implements Status {
     private final static HttpTransport HTTP_TRANSPORT = new NetHttpTransport()
 
     private GoogleCredential credential
+
+    private final lock = new Object()
 
     void removeStorageDocument(StorageDocument document, String displayUser) {
         HttpRequest request
@@ -246,14 +249,21 @@ class StorageProviderService implements Status {
         if (!document.creationDate) {
             throw new IllegalArgumentException("Creation Date is required")
         }
+
         HttpContent content = new InputStreamContent(document.mimeType, stream)
         HttpResponse response = uploadContent(content, document)
         if (response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK) {
-            document.save(flush: true)
+            synchronized (lock) {
+                Long version = queryService.findNextVersionByFileTypeAndProjectKey(document.projectKey, document.fileType)
+                document.setDocVersion(version)
+                document.save(flush: true)
+            }
         } else {
             throw new Exception("Unable to save Storage Document: " + response.getStatusMessage())
         }
         response.getStatusCode() == HttpStatusCodes.STATUS_CODE_OK
+
+
     }
 
     /**
@@ -296,6 +306,73 @@ class StorageProviderService implements Status {
             log.error("Error sleeping")
         }
         response
+    }
+
+    def updateSingleDocVersionType() {
+        Collection<List> documentsList = queryService.getDocumentsVersions()
+        documentsList.each {
+            if (it.counted == '1') {
+                updateDocumentVersion(it.projectKey, it.fileType)
+            } else {
+                updateDocumentsVersions(it.projectKey, it.fileType)
+            }
+        }
+
+    }
+
+    def updateDocumentVersion(String projectKey, String fileType) {
+        StorageDocument document = queryService.getDocument(projectKey, fileType)
+        document.setDocVersion(1)
+        document.save(flush: true)
+    }
+
+    def updateDocumentsVersions(String projectKey, String fileType) {
+        Collection<StorageDocument> documentCollection = queryService.getDocuments(projectKey, fileType)
+        Long counter = 1
+        documentCollection.each {
+            StorageDocument document = it
+            document.setDocVersion(counter)
+            document.save(flush: true)
+            counter++
+        }
+    }
+
+    List<StorageDocument> processStorageDocuments(List<StorageDocument> documents) {
+        Map<String, List<StorageDocument>> mapDocuments = documents.groupBy {it.fileType}.collectEntries { k, v  -> [k, v] }
+        List<StorageDocument> additionalList = new ArrayList<>()
+        List<StorageDocument> keyList = new ArrayList<>()
+        for ( type in mapDocuments.keySet() ) {
+            List<StorageDocument> intermediateList = new ArrayList<>()
+            List<StorageDocument> values = mapDocuments.get(type)
+            for(sd in values) {
+                if (sd.status.equals(DocumentStatus.REJECTED.status)) {
+                    additionalList.add(sd)
+                }
+                else if(sd.status.equals(DocumentStatus.APPROVED.status)) {
+                    additionalList.addAll(intermediateList)
+                    intermediateList.clear()
+                    intermediateList.add(sd)
+                }
+                else {
+                    intermediateList.add(sd)
+                }
+            }
+            keyList.addAll(intermediateList)
+        }
+        for (key in keyList) {
+            key.setDocumentType("key")
+        }
+        for (additional in additionalList) {
+            additional.setDocumentType("additional")
+        }
+        List<StorageDocument> docs = new ArrayList<>();
+        if(!additionalList.isEmpty()) {
+            docs.addAll(additionalList)
+        }
+        if(!keyList.isEmpty()) {
+            docs.addAll(keyList)
+        }
+        docs
     }
 
     private GenericUrl getUrlForDocument(StorageDocument document) {

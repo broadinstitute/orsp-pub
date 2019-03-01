@@ -6,16 +6,22 @@ import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
-import { Files, ConsentGroup, SampleCollections } from "../util/ajax";
+import { Files, ConsentGroup, SampleCollections, User } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
 
 class NewConsentGroup extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      user: {
+        displayName: '',
+        userName: ''
+      },
       showErrorStep3: false,
       generalError: false,
       formSubmitted: false,
+      submitError: false,
       determination: {
         projectType: 900,
         questions: [],
@@ -62,6 +68,7 @@ class NewConsentGroup extends Component {
 
   componentDidMount() {
     this.initDocuments();
+    this.getUserSession();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
 
@@ -79,46 +86,76 @@ class NewConsentGroup extends Component {
     );
   }
 
+  getUserSession() {
+    User.getUserSession(this.props.getUserUrl).then(
+      resp => this.setState({ user : resp.data })
+    )
+  }
+
   submitNewConsentGroup = () => {
+
+    spinnerService.showAll();
+    this.setState({submitError: false});
 
     if (this.validateStep1() && this.validateStep2() &&
       this.validateStep3() && this.validateStep4() && this.validateStep5()) {
       this.removeErrorMessage();
 
-      this.setState(prev => {
-        prev.formSubmitted = true;
-        return prev;
-      });
-
+      this.changeSubmitState();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
         this.uploadFiles(resp.data.message.projectKey);
+      }).catch(error => {
+        console.error(error);
+        spinnerService.hideAll();
+        this.toggleSubmitError();
+        this.changeSubmitState();
       });
     } else {
       this.setState(prev => {
         prev.generalError = true;
         return prev;
+      }, () => {
+        spinnerService.hideAll();
       });
     }
   };
 
+  changeSubmitState = () => {
+    this.setState(prev => {
+      prev.formSubmitted = !prev.formSubmitted;
+      return prev;
+    });
+  };
+
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
       .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
+        window.location.href = this.getRedirectUrl();
+        spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
           return prev;
         });
       }).catch(error => {
+        this.changeSubmitState();
         console.error(error);
+        this.toggleSubmitError();
       });
+  };
+
+  toggleSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = true;
+      prev.generalError = true;
+      return prev;
+    });
   };
 
   getConsentGroup() {
     // step 1
     let consentGroup = {};
     consentGroup.summary = this.state.step1FormData.consentGroupName;
-    consentGroup.reporter = this.props.user.userName;
+    consentGroup.reporter = this.state.user.userName;
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
     extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.step1FormData.startDate) });
@@ -186,14 +223,7 @@ class NewConsentGroup extends Component {
   };
 
   getRedirectUrl() {
-    let projectKey = this.props.projectKey.split("-");
-    let projectType = '';
-    if (projectKey.length === 3) {
-      projectType = projectKey[1].toLowerCase();
-    } else {
-      projectType = projectKey[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+    return [this.props.serverURL, this.props.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
   }
 
   isValid = (field) => {
@@ -245,7 +275,7 @@ class NewConsentGroup extends Component {
       sampleCollections = true;
       isValid = false;
     }
-    if (this.state.step1FormData.requireMta !== true && this.state.step1FormData.requireMta !== false) {
+    if (this.state.step1FormData.requireMta === undefined || this.state.step1FormData.requireMta === '') {
       requireMta = true;
       isValid = false;
     }
@@ -293,7 +323,7 @@ class NewConsentGroup extends Component {
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' ||
       field === 'sampleCollections' || field === 'describeConsentGroup' ||
-      field === 'requireMta' || field === 'nameInstitutional'|| field === 'countryInstitutional') {
+      field === 'requireMta' || field === 'nameInstitutional' || field === 'countryInstitutional') {
 
       this.setState(prev => {
         if (field === 'investigatorLastName') {
@@ -545,14 +575,14 @@ class NewConsentGroup extends Component {
     documents.push({
       required: true,
       fileKey: 'Consent Document',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" },["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
+      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" }, ["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
       file: null,
       fileName: null,
       error: false
     });
     documents.push({
       required: true,
-      fileKey: 'IRB approval',
+      fileKey: 'Approval Memo',
       label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document ", span({ className: "italic" }, ["(required for DFCI & MIT IRBs only):"])]),
       file: null,
       fileName: null,
@@ -617,12 +647,61 @@ class NewConsentGroup extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({ title: "New Consent Group", stepChanged: this.stepChanged, isValid: this.isValid, showSubmit: this.showSubmit, submitHandler: this.submitNewConsentGroup, disabledSubmit: this.state.formSubmitted }, [
-        NewConsentGroupGeneralData({ title: "General Data", currentStep: currentStep, user: this.props.user, sampleSearchUrl: this.props.sampleSearchUrl, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, projectKey: this.props.projectKey, sampleCollectionList: this.state.sampleCollectionList }),
-        NewConsentGroupDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, fillablePdfURL: this.props.fillablePdfURL }),
-        NewConsentGroupIntCohorts({ title: "International Cohorts", currentStep: currentStep, handler: this.determinationHandler, determination: this.state.determination, errors: this.state.showErrorStep3 }),
-        NewConsentGroupSecurity({ title: "Security", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep4FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewConsentGroupDataSharing({ title: "Data Sharing", currentStep: currentStep, user: this.props.user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep5FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage, generalError: this.state.generalError }),
+      Wizard({
+        title: "New Consent Group",
+        stepChanged: this.stepChanged,
+        isValid: this.isValid,
+        showSubmit: this.showSubmit,
+        submitHandler: this.submitNewConsentGroup,
+        disabledSubmit: this.state.formSubmitted,
+        loadingImage: this.props.loadingImage
+      }, [
+        NewConsentGroupGeneralData({
+          title: "General Data",
+          currentStep: currentStep,
+          user: this.state.user,
+          sampleSearchUrl: this.props.sampleSearchUrl,
+          updateForm: this.updateStep1FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          projectKey: this.props.projectKey,
+          sampleCollectionList: this.state.sampleCollectionList
+        }),
+        NewConsentGroupDocuments({
+          title: "Documents",
+          currentStep: currentStep,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          files: this.state.files,
+          fillablePdfURL: this.props.fillablePdfURL
+        }),
+        NewConsentGroupIntCohorts({
+          title: "International Cohorts",
+          currentStep: currentStep,
+          handler: this.determinationHandler,
+          determination: this.state.determination,
+          errors: this.state.showErrorStep3
+        }),
+        NewConsentGroupSecurity({
+          title: "Security",
+          currentStep: currentStep,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateStep4FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage
+        }),
+        NewConsentGroupDataSharing({
+          title: "Data Sharing",
+          currentStep: currentStep,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateStep5FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError
+        }),
       ])
     );
   }

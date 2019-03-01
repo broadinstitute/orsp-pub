@@ -42,6 +42,10 @@
         <g:render template="/base/value" model="[value: issue.actors]"/>
     </span>
     </g:if>
+    <div class="issue-type">
+    <span>New Status:</span>
+    <span>${issue?.approvalStatus}</span>
+    </div>
 </div>
 
 <div class="orsp-tabs" style="display: none;">
@@ -50,10 +54,16 @@
         <li><a href="#documents">Documents</a></li>
         <li><a href="#submissions">Submissions</a></li>
         <li><a href="#consent-groups">Consent Groups</a></li>
-        <li><a href="#details">Broad Project Information</a></li>
+        <li><a href="#details">Broad Project Info</a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
+        <li><b><a href="#review" style="color: blue">Project Review</a></b></li>
+        <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
     </ul>
+
+    <div id="review">
+        <g:render template="/projectReview/index" model="[issue: issue]"/>
+    </div>
 
     <div id="workspace">
         <g:if test="${!workspaceTemplate.isEmpty()}">
@@ -61,13 +71,21 @@
         </g:if>
     </div>
 
-    <div id="documents">
+   <div id="documents">
         <g:render template="/common/documentsPanel" model="${[
+          controller        : issue.controller,
+          issue             : issue,
+          attachmentTypes   : attachmentTypes,
+          storageDocuments  : storageDocuments
+        ]}"/>
+    </div>
+
+    <div id="documentsNew">
+        <g:render template="/projectDocument/index" model="[
                 controller        : issue.controller,
                 issue             : issue,
-                attachmentTypes   : attachmentTypes,
-                storageDocuments  : storageDocuments
-        ]}"/>
+                attachmentTypes   : attachmentTypes
+                ]"/>
     </div>
 
     <div id="submissions">

@@ -1,0 +1,14 @@
+.dialogTitle {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+ .dialogBody {
+    font-size: 1.1rem;
+}
+
+.dialogBody .inputFileContainer,
+.dialogBody .inputField {
+    margin: 0 0 10px 0;
+}

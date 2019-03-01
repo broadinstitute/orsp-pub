@@ -1,9 +1,11 @@
 package org.broadinstitute.orsp
 
+import gorm.logical.delete.LogicalDelete
+
 /**
  * Properties on an issue.
  */
-class IssueExtraProperty {
+class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
 
     public static final String COMMERCIALLY_AVAILABLE = "commercially-available"
     public static final String REVIEW_CATEGORY = "review-category"
@@ -42,8 +44,34 @@ class IssueExtraProperty {
     public static final String DATA_SHARING_BROAD = "dataSharingBroad"
     public static final String DATA_SHARING_COMMENTS = "dataSharingComments"
     public static final String DATA_SHARING_NIH = "dataSharingNih"
-    public static final String COLLABORATORS = "collaborators"
+    public static final String COLLABORATOR = "collaborator"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
+    public static final String REQUIRE_MTA = "requireMta"
+    public static final String ARE_SAMPLES_COMING_FROM_EEAA = "areSamplesComingFromEEAA"
+    public static final String IS_COLLABORATOR_PROVIDING_GOOD_SERVICE = "isCollaboratorProvidingGoodService"
+    public static final String IS_CONSENT_UNAMBIGUOUS = "isConsentUnambiguous"
+    public static final String PII = "pii"
+    public static final String COMPLIANCE = "compliance"
+    public static final String TEXT_COMPLIANCE = "textCompliance"
+    public static final String SENSITIVE = "sensitive"
+    public static final String TEXT_SENSITIVE = "textSensitive"
+    public static final String ACCESSIBLE = "accessible"
+    public static final String TEXT_ACCESSIBLE = "textAccessible"
+    public static final String PROJECT_REVIEW_APPROVED = "projectReviewApproved"
+    public static final String APPROVAL = "approvalStatus"
+    public static final String PROJECT_AVAILABILITY = "projectAvailability"
+    public static final String EDIT_DESCRIPTION = "editDescription"
+    public static final String DESCRIBE_EDIT_TYPE = "describeEditType"
+    public static final String ON_GOING_PROCESS = "onGoingProcess"
+    public static final String SAMPLES = "samples"
+    public static final String INSTITUTIONAL_SOURCES = "institutionalSources"
+    public static final String DATABASE_CONTROLLED = "databaseControlled"
+    public static final String DESCRIBE_CONSENT = "describeConsentGroup"
+    public static final String SHARING_PLAN = "sharingPlan"
+    public static final String INDIVIDUAL_DATA_SOURCED = "individualDataSourced"
+    public static final String IS_LINK_MAINTAINED = "isLinkMaintained"
+    public static final String START_DATE = "startDate"
+    public static final String END_DATE = "endDate"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

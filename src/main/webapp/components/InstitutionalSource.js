@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, div, p, hr, small } from 'react-hyperscript-helpers';
+import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { Btn } from './Btn';
 
@@ -9,70 +9,143 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     super(props);
     this.addInstitutionalSources = this.addInstitutionalSources.bind(this);
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
-  }
-
-  state = {
-    institutionalSources: this.props.institutionalSources,
+    this.state = {
+      institutionalSources: [{ name: '', country: '' }]
+    };
   };
 
-  addInstitutionalSources() {
-    if (this.state.institutionalSources[0].name !== '') {
-      this.setState(prev => {
-        let institutionalSources = prev.institutionalSources;
-        institutionalSources.splice(0, 0, { name: '', country: '' });
-        prev.institutionalSources = institutionalSources;
-        prev.error = false;
-        return prev;
-      });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (!nextProps.edit && nextProps.institutionalSources !== prevState.institutionalSources) {
+      return { institutionalSources: nextProps.institutionalSources};
+    } else {
+      return null
     }
   }
 
-  removeInstitutionalSources = (index) => (e) => {
-    if (this.state.institutionalSources.length > 1) {
-      this.setState(prev => {
-        let institutionalSources = prev.institutionalSources;
+  addInstitutionalSources() {
+    if (this.props.edit) {
+      // Only for edit / review
+      if ((this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
+        || this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country ) {
+        this.setState(prev => {
+          let institutionalSources = this.props.institutionalSources;
+          institutionalSources.splice(0, 0, {
+            current: { name: null, country: null },
+            future: { name: '', country: '' }
+          });
+          prev.institutionalSources = institutionalSources;
+          this.props.error && this.props.edit ? this.props.errorHandler() : prev.error = false;
+          return prev;
+        }, () => {
+          this.props.updateInstitutionalSource(this.state.institutionalSources)
+        });
+      }
+    } else {
+      // For new Projects
+      if (this.props.institutionalSources !== undefined && this.props.institutionalSources[0].name !== '' && this.props.institutionalSources[0].country !== '') {
+        this.setState(prev => {
+          let institutionalSources = this.state.institutionalSources;
+          institutionalSources.splice(0, 0, { name: '', country: '' });
+          prev.institutionalSources = institutionalSources;
+          prev.error = false;
+          return prev
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+      }
+    }
+  }
+
+  removeInstitutionalSources = (index) => {
+    if (this.props.edit) {
+      // Only for edit / review
+      let institutionalSources = this.props.institutionalSources;
+      if (this.isEmpty(this.props.institutionalSources[index].current.name)) {
         institutionalSources.splice(index, 1);
+      } else {
+        institutionalSources[index].future = { name: '', country: '' }
+      }
+      this.setState(prev => {
         prev.institutionalSources = institutionalSources;
-        return prev;
-      });
+        return prev
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources)
+      );
+    } else {
+      // For new Projects
+      if (this.props.institutionalSources.length > 1) {
+        this.setState(prev => {
+          let institutionalSources = prev.institutionalSources;
+          institutionalSources.splice(index, 1);
+          prev.institutionalSources = institutionalSources;
+          return prev;
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources));
+      }
     }
   };
 
   handleInstitutionalChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    const index = e.target.getAttribute('index');
-    this.setState(prev => {
-      prev.institutionalSources[index][field] = value;
-      return prev;
-    }, () => this.props.updateInstitutionalSource(this.state.institutionalSources, field));
+    if (this.props.edit) {
+      let institutionalSources = this.props.institutionalSources;
+      const field = e.target.name;
+      const value = e.target.value;
+      const index = e.target.getAttribute('index');
+      institutionalSources[index].future[field] = value;
+      this.setState(prev => {
+        prev.institutionalSources = institutionalSources;
+        return prev;
+        }, () => this.props.updateInstitutionalSource(this.state.institutionalSources)
+      );
+    } else {
+      let institutionalSources = this.props.institutionalSources;
+      const field = e.target.name;
+      const value = e.target.value;
+      const index = e.target.getAttribute('index');
+      institutionalSources[index][field] = value;
+      this.setState(prev => {
+        prev.institutionalSources = institutionalSources;
+        return prev;
+      }, () => {
+        this.props.updateInstitutionalSource(this.state.institutionalSources, field)
+      });
+    }
   };
 
-  render() {
+  isEmpty(value) {
+    return value === "" || value === null || value === undefined;
+  }
 
+  getError(index, field) {
+    if (field === "name") {
+      return this.props.error === true ? this.props.institutionalNameErrorIndex.includes(index) : false;
+    } else {
+      return this.props.error === true ? this.props.institutionalCountryErrorIndex.includes(index) : false;
+    }
+  }
+
+  render() {
     return (
       h(Fragment, {}, [
-        div({ className: "row" }, [
+        div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                p({ className: "noMargin" }, ["Name"])
+                label({ className: "noMargin" }, ["Name"])
               ]),
               div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                p({ className: "noMargin" }, ["Country"])
+                label({ className: "noMargin" }, ["Country"])
               ])
             ])
           ]),
           div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
-            Btn({ action: { labelClass: "glyphicon glyphicon-plus", handler: this.addInstitutionalSources }, disabled: false }),
+            Btn({
+              action: { labelClass: "glyphicon glyphicon-plus", handler: this.addInstitutionalSources },
+              disabled: false,
+              isRendered: !this.props.readOnly
+            }),
           ])
         ]),
 
         hr({ className: "fullWidth" }),
-
-        this.state.institutionalSources.map((rd, index) => {
+        this.props.institutionalSources.map((rd, index) => {
           return h(Fragment, { key: index }, [
-
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
@@ -82,12 +155,16 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index + "name",
                       name: "name",
                       label: "",
-                      value: this.state.institutionalSources[index].name,
-                      disabled: index > 0,
+                      value: this.props.edit ? rd.future.name : rd.name,
+                      currentValue: this.props.edit ? rd.current.name : rd.name,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.errorName && index === 0,
-                      errorMessage: this.props.errorMessage
+                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0,
+                      disabled: (index > 0) && !this.props.edit,
+                      errorMessage: this.props.errorMessage,
+                      readOnly: this.props.readOnly,
+                      edited: this.props.readOnly,
+                      edit: this.props.edit
                     })
                   ]),
                   div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
@@ -95,18 +172,24 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       id: index + "country",
                       index: index,
                       name: "country",
-                      value: this.state.institutionalSources[index].country,
-                      disabled: index > 0,
+                      value: this.props.edit ? rd.future.country : rd.country,
+                      currentValue: this.props.edit ? rd.current.country : rd.country,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.errorCountry && index === 0,
-                      errorMessage: this.props.errorMessage
+                      error: this.props.edit ? this.getError(index, "country") : this.props.errorCountry && index === 0,
+                      disabled: (index > 0) && !this.props.edit,
+                      errorMessage: this.props.errorMessage,
+                      readOnly: this.props.readOnly
                     })
                   ])
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({ action: { labelClass: "glyphicon glyphicon-remove", handler: this.removeInstitutionalSources(index) }, disabled: !this.state.institutionalSources.length > 1 }),
+                Btn({
+                  action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeInstitutionalSources(index) },
+                  disabled: this.props.institutionalSources.length === 1,
+                  isRendered: !this.props.readOnly
+                }),
               ])
             ]),
           ]);

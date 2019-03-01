@@ -4,21 +4,28 @@ import './InputField.css';
 
 export const InputField = hh(class InputField extends Component {
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
+  }
+
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
   render() {
+    const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 
     return (
-      div({ className: "inputField " + (this.props.error === true ? 'inputFieldError' : '') }, [
+      div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated ' : '') + (additionalClass !== undefined ? additionalClass : '') }, [
         p({ className: "inputFieldLabel" }, [
-          this.props.label,
-          span({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])
+          label,
+          span({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])
         ]),
-        this.props.children,
-        small({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])
+        children,
+        div({ isRendered: edited, className: "inputFieldCurrent" }, [(currentValueStr != null) ? currentValueStr : currentValue]),
+        small({ isRendered: error, className: "errorMessage" }, [errorMessage])
       ])
     )
   }

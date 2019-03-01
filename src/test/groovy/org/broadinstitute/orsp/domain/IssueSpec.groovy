@@ -20,7 +20,8 @@ class IssueSpec extends BaseSpec implements DomainUnitTest<Issue> {
                 description: null,
                 reporter: null,
                 requestDate: new Date(),
-                updateDate: null
+                updateDate: null,
+                approvalStatus: 'Pending'
         )
 
         when:

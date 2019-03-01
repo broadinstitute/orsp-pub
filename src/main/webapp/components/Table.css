@@ -1,0 +1,34 @@
+.tableContainer .table  {
+    margin-bottom: 0;
+}
+
+.tableContainer {
+    position: relative;
+}
+
+.tableContainer .table-search-form {
+    float: left;
+}
+
+.tableContainer .react-bs-table-tool-bar .row .col-lg-8 {
+    display: none;
+}
+
+.tableContainer .react-bs-table-search-form .form-control {
+    height: 35px !important;
+}
+
+.tableContainer .btn-toolbar {
+    position: absolute;
+    margin-top: -5px;
+}
+
+.tableContainer .btn-toolbar .dropdownButton {
+    box-shadow: none !important;
+    padding: 4px 10px !important;
+    outline: none;
+}
+
+.tableContainer .btn-toolbar .dropdownButton .caret {
+    margin-left: 5px;
+}

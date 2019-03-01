@@ -4,19 +4,26 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import { Files, Project } from "../util/ajax";
+import { Files, Project, User } from "../util/ajax";
 import { span } from 'react-hyperscript-helpers';
+import { spinnerService } from "../util/spinner-service";
 
 class NewProject extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      user: {
+        displayName: '',
+        userName: '',
+        emailAddress: ''
+      },
       showErrorStep2: false,
       showErrorStep3: false,
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
+      submitError: false,
       determination: {
         projectType: 400,
         questions: [],
@@ -42,10 +49,20 @@ class NewProject extends Component {
     this.uploadFiles = this.uploadFiles.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
+    this.toggleTrueSubmitError = this.toggleTrueSubmitError.bind(this);
+    this.toggleFalseSubmitError = this.toggleFalseSubmitError.bind(this);
+  }
+
+  componentDidMount() {
+     User.getUserSession(this.props.getUserUrl).then(
+       resp => this.setState({ user : resp.data })
+     )
   }
 
   submitNewProject = () => {
+    this.toggleFalseSubmitError();
 
+    spinnerService.showAll();
     if (this.validateStep3()) {
 
       if (this.validateStep2() && this.validateStep1()) {
@@ -55,6 +72,7 @@ class NewProject extends Component {
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
           this.changeStateSubmitButton();
+          this.toggleTrueSubmitError();
           console.error(error);
         });
       } else {
@@ -67,8 +85,26 @@ class NewProject extends Component {
       this.setState(prev => {
         prev.showErrorStep3 = true;
         return prev;
+      }, () => {
+        spinnerService.hideAll();
       });
     }
+  };
+
+  toggleTrueSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = true;
+      prev.generalError = true;
+      return prev;
+    });
+  };
+
+  toggleFalseSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = false;
+      prev.generalError = false;
+      return prev;
+    });
   };
 
   changeStateSubmitButton = () => {
@@ -82,7 +118,7 @@ class NewProject extends Component {
     let project = {};
     project.type = this.getProjectType(project);
     project.summary = this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null;
-    project.reporter = this.props.user.userName;
+    project.reporter = this.state.user.userName;
     project.description = this.state.step1FormData.studyDescription !== '' ? this.state.step1FormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.step1FormData.fundings);
     let extraProperties = [];
@@ -92,6 +128,7 @@ class NewProject extends Component {
     extraProperties.push({name: 'protocol', value: this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null});
     extraProperties.push({name: 'description', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
+    extraProperties.push({name: 'projectAvailability', value: 'available'});
     let collaborators = this.state.step1FormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
         collaborators.map((collaborator, idx) => {
@@ -284,18 +321,18 @@ class NewProject extends Component {
 
       switch (projectType) {
         case IRB:
-          documents.push({ required: true, fileKey: 'IRB Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: true, fileKey: 'IRB Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
         case NE:
-          documents.push({ required: true, fileKey: 'NE Approval Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: true, fileKey: 'NE Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: false, fileKey: 'NE Consent Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
           break;
 
         case NHSR:
-          documents.push({ required: true, fileKey: 'NHSR Applicationl Doc', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
         default:
@@ -338,11 +375,13 @@ class NewProject extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.props.user.displayName, this.props.user.userName)
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
 
       }).catch(error => {
+        spinnerService.hideAll();
+        this.toggleTrueSubmitError();
         this.changeStateSubmitButton();
         console.error(error);
       });
@@ -378,19 +417,50 @@ class NewProject extends Component {
     } else {
       projectType = key[0].toLowerCase();
     }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=details"].join("/");
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
   render() {
 
     const { currentStep, determination } = this.state;
-    const { user = { email: 'test@broadinstitute.org' } } = this.props;
+    const { user = { emailAddress: 'test@broadinstitute.org', displayName: '' } } = this.state;
     let projectType = determination.projectType;
     return (
-      Wizard({ title: "New Project", stepChanged: this.stepChanged, isValid: this.isValid, submitHandler: this.submitNewProject, showSubmit: this.showSubmit, disabledSubmit: this.state.formSubmitted }, [
-        NewProjectGeneralData({ title: "General Data", currentStep: currentStep, user: user, searchUsersURL: this.props.searchUsersURL, updateForm: this.updateStep1FormData, errors: this.state.errors, removeErrorMessage: this.removeErrorMessage }),
-        NewProjectDetermination({ title: "Determination Questions", currentStep: currentStep, determination: this.state.determination, handler: this.determinationHandler, errors: this.state.showErrorStep2 }),
-        NewProjectDocuments({ title: "Documents", currentStep: currentStep, fileHandler: this.fileHandler, projectType: projectType, files: this.state.files, errors: this.state.showErrorStep3, generalError: this.state.generalError }),
+      Wizard({
+        title: "New Project",
+        stepChanged: this.stepChanged,
+        isValid: this.isValid,
+        submitHandler: this.submitNewProject,
+        showSubmit: this.showSubmit,
+        disabledSubmit: this.state.formSubmitted,
+        loadingImage: this.props.loadingImage,
+      }, [
+        NewProjectGeneralData({
+          title: "General Data",
+          currentStep: currentStep,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateStep1FormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage
+        }),
+        NewProjectDetermination({
+          title: "Determination Questions",
+          currentStep: currentStep,
+          determination: this.state.determination,
+          handler: this.determinationHandler,
+          errors: this.state.showErrorStep2
+        }),
+        NewProjectDocuments({
+          title: "Documents",
+          currentStep: currentStep,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          files: this.state.files,
+          errors: this.state.showErrorStep3,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError
+        }),
       ])
     );
   }

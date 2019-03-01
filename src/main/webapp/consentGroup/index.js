@@ -5,7 +5,7 @@ import '../index.css';
 
 ReactDOM.render(
     <NewConsentGroup
-        user = {component.user}
+        getUserUrl = {component.getUserUrl}
         searchUsersURL = {component.searchUsersURL}
         sampleSearchUrl = {component.sampleSearchUrl}
         consentNamesSearchURL = {component.consentNamesSearchURL}
@@ -14,6 +14,8 @@ ReactDOM.render(
         serverURL = {component.serverURL}
         fillablePdfURL = {component.fillablePdfURL}
         projectKey = {component.projectKey}
+        loadingImage = {component.loadingImage}
+        projectType = {component.projectType}
      />,
     document.getElementById('newConsentGroup')
 );

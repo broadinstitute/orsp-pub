@@ -16,7 +16,22 @@ class UrlMappings {
         '/api/swagger/**'(controller: 'api', action: 'swagger')
         '/api/project'(resource: 'project')
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
+        '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
+        '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
+        '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
+        '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/consent-group'(resource: 'newConsentGroup')
+        '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
+        '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
+        '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
+        '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
+        '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
+        '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
+        '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
+        '/api/dataUseLetter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
+        '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
+
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

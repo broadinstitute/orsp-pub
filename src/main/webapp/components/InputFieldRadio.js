@@ -1,21 +1,40 @@
-import { Component } from 'react';
 import { input, hh, div, label, span, p, small } from 'react-hyperscript-helpers';
 import './InputYesNo.css';
 
 export const InputFieldRadio = (props) => {
 
   let selectOption = (e, value) => {
-    e.preventDefault();
-    props.onChange(e, props.name, value);
+    if (!props.readOnly) {
+      e.preventDefault();
+      props.onChange(e, props.name, value);
+    }
   };
 
   const { id, name, optionValues = ['true', 'false'], optionLabels = ['Yes', 'No'], value } = props;
+  const { currentValue = null, edit = false } = props;
+
+  let currentOptionLabel = '';
 
   const normValue = (value === 'true' || value === true || value === '1') ? 'true' :
     (value === 'false' || value === false || value === '0') ? 'false' : value;
 
+  const normCurrentValue = (currentValue === 'true' || currentValue === true || currentValue === '1') ? 'true' :
+    (currentValue === 'false' || currentValue === false || currentValue === '0') ? 'false' : currentValue;
+
+  let edited = props.value !== currentValue && currentValue != null;
+
+  if (edit && !edited) {
+    edited = value !== undefined && value !== '' && currentValue === null;
+  }
+
+  optionValues.forEach((val, ix) => {
+    if (val === normCurrentValue) {
+      currentOptionLabel = optionLabels[ix];
+    }
+  });
+
   return (
-    
+
     div({ className: "radioContainer" }, [
       p({ className: "bold" }, [
         props.label,
@@ -28,7 +47,8 @@ export const InputFieldRadio = (props) => {
             key: id + ix,
             onClick: (e) => selectOption(e, optionValues[ix]),
             id: "lbl_" + props.id + "_" + ix,
-            className: "radioOptions"
+            className: "radioOptions " + (props.readOnly ? 'radioOptionsReadOnly ' : '') + (edited && (normValue === optionValues[ix]) ? 'radioOptionsUpdated ' : ''),
+            disabled: props.readOnly
           }, [
               input({
                 type: "radio",
@@ -43,6 +63,10 @@ export const InputFieldRadio = (props) => {
             ])
         )
       }),
+      div({ isRendered: edited, className: "radioOptionsCurrent" }, [
+        span({ className: "italic" }, ["Previous value: "]),
+        (currentOptionLabel)
+      ]),
       small({ isRendered: props.error, className: "errorMessage" }, [props.errorMessage])
     ])
   )

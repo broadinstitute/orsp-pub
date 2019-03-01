@@ -54,6 +54,8 @@
     "react-data-export": "0.4.2",
     "react-dom": "16.6.3",
     "react-hyperscript-helpers": "2.0.0",
-    "react-select": "2.1.2"
+    "react-select": "2.1.2",
+    "lodash": "4.17.11",
+    "date-fns": "1.30.1"
   }
 }

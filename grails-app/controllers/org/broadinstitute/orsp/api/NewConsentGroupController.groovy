@@ -1,12 +1,15 @@
 package org.broadinstitute.orsp.api
 
-import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.User
+import org.broadinstitute.orsp.utils.IssueUtils
 
 import javax.ws.rs.core.Response
 
@@ -25,15 +28,14 @@ class NewConsentGroupController extends AuthenticatedController {
             response.setHeader('Content-Length', 'file-size')
             response.setContentType('application/pdf')
             response.outputStream << resource.openStream()
-        } catch (Exception e){
+        } catch (Exception e) {
             response.status = 500
             render([error: "${e}"] as JSON)
         }
     }
 
     def save() {
-        Gson gson = new Gson()
-        Issue issue = gson.fromJson(gson.toJson(request.JSON), Issue.class)
+        Issue issue = IssueUtils.getJson(Issue.class, request.JSON)
         Issue source = queryService.findByKey(issue.getSource())
         if(source != null) {
             issue.setRequestDate(new Date())
@@ -63,6 +65,9 @@ class NewConsentGroupController extends AuthenticatedController {
             } catch (Exception e) {
                 flash.error = e.getMessage()
             }
+            notifyService.sendAdminNotification("Consent Group", consent)
+            notifyService.sendConsentGroupSecurityInfo(issue, user)
+            notifyService.sendConsentGroupRequirementsInfo(issue, user)
             consent.status = 201
             render([message: consent] as JSON)
         } else {
@@ -71,5 +76,52 @@ class NewConsentGroupController extends AuthenticatedController {
             render([message: response] as JSON)
         }
     }
-}
 
+    def approveConsentGroup() {
+        Object input = IssueUtils.getJson(Object.class, request.JSON)
+        String projectKey = params.id
+        Issue issue = queryService.findByKey(projectKey)
+        try {
+            Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
+            render([message: updatedIssue])
+        } catch(Exception e) {
+            render([error: e.message] as JSON)
+        }
+    }
+
+    def delete() {
+        Issue issue = queryService.findByKey(params.consentKey)
+        if(issue != null) {
+            issueService.deleteIssue(params.consentKey)
+            response.status = 200
+            render([message: 'Consent Group was deleted'] as JSON)
+        } else {
+            response.status = 404
+            render([message: 'Consent Group not found'] as JSON)
+        }
+    }
+
+    def update() {
+        Map<String, Object> consent = IssueUtils.getJson(Map.class, request.JSON)
+        Issue issue = Issue.findByProjectKey(params.consentKey)
+        issueService.updateIssue(issue, consent)
+        response.status = 200
+        render([message: 'Consent Group was updated'] as JSON)
+    }
+
+    def findByUUID() {
+        String uid = params.uuid
+        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        Map<String, String> consent = new HashMap<>()
+        if(dul != null) {
+            User user = userService.findUser(dul.getCreator())
+            Issue issue = queryService.findByKey(dul.getConsentGroupKey())
+            consent.put("dataManagerName", user.getDisplayName())
+            consent.put("dataManagerEmail", user.getEmailAddress())
+            consent.put(IssueExtraProperty.SUMMARY, issue.getSummary())
+            consent.put(IssueExtraProperty.PROTOCOL, IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PROTOCOL).getValue())
+        }
+        response.status = 200
+        render([consent: consent] as JSON)
+    }
+}

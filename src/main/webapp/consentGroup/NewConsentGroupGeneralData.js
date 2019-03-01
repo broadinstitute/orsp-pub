@@ -6,11 +6,10 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldSelect } from '../components/InputFieldSelect';
-import { InputYesNo } from '../components/InputYesNo';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 
-import { SampleCollections } from '../util/ajax';
 
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
 
@@ -39,7 +38,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.setState(prev => {
       prev.formData.institutionalSources = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, field.concat("Institutional")));
+    }, () => this.props.updateForm(this.state.formData, field !== undefined ? field.concat("Institutional") : ''));
     this.props.removeErrorMessage();
   };
 
@@ -182,7 +181,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             required: false,
             onChange: null,
             error: this.props.errors.consentGroupName,
-            errorMessage: "An existing Consent Group with this protocol exists. Please choose a different one."
+            errorMessage: "There is already a Consent Group with this protocol number. Please choose a different one."
           }),
 
           InputFieldText({
@@ -218,7 +217,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
             error: this.props.errors.sampleCollections,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
 
           InputFieldRadio({
@@ -235,71 +235,79 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleRadio2Change,
             required: true,
             error: this.props.errors.describeConsentGroup,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            edit: false
           }),
 
-          Panel({
-            title: "Sample Collection Date Range ",
-            moreInfo: "(if data will be deposited to GEO, dbGaP, or other federal repository. Optional)",
-          }, [
-              div({ className: "row" }, [
-                div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                  InputFieldDatePicker({
-                    selected: this.state.formData.startDate,
-                    name: "startDate",
-                    label: "Start Date",
-                    onChange: this.handleChange,
-                    placeholder: "Enter Start Date",
-                    maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
-                  })
-                ]),
-                div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                  InputFieldDatePicker({
-                    startDate: this.state.formData.startDate,
-                    name: "endDate",
-                    label: "End Date",
-                    selected: this.state.formData.endDate,
-                    onChange: this.handleChange,
-                    placeholder: "Enter End Date",
-                    disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
-                    minDate: this.state.formData.startDate
-                  })
-                ]),
-                div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
-                  input({
-                    type: 'checkbox',
-                    id: "onGoingProcess",
-                    name: "onGoingProcess",
-                    onChange: this.handleCheck,
-                    defaultChecked: this.state.formData.onGoingProcess
-                  }),
-                  label({ id: "lbl_onGoingProcess", htmlFor: "onGoingProcess", className: "regular-checkbox" }, ["Ongoing Process"])
-                ])
-              ])
+        Panel({
+          title: "Sample Collection Date Range ",
+          moreInfo: "(if data will be deposited to GEO, dbGaP, or other federal repository. Optional)",
+        }, [
+          div({ className: "row" }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                selected: this.state.formData.startDate,
+                name: "startDate",
+                label: "Start Date",
+                onChange: this.handleChange,
+                placeholder: "Enter Start Date",
+                maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
+              })
             ]),
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                startDate: this.state.formData.startDate,
+                name: "endDate",
+                label: "End Date",
+                selected: this.state.formData.endDate,
+                onChange: this.handleChange,
+                placeholder: "Enter End Date",
+                disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
+                minDate: this.state.formData.startDate
+              })
+            ]),
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+              InputFieldCheckbox({
+                id: "onGoingProcess",
+                name: "onGoingProcess",
+                onChange: this.handleCheck,
+                label: "Ongoing Process",
+                defaultChecked: this.state.formData.onGoingProcess
+              })
+            ])
+          ])
+        ]),
 
-          Panel({ title: "Institutional Source of Data/Samples and Location*" }, [
-            InstitutionalSource({
-              updateInstitutionalSource: this.handleUpdateinstitutionalSources,
-              institutionalSources: this.state.formData.institutionalSources,
-              errorName: this.props.errors.institutionalSourcesName,
-              errorCountry: this.props.errors.institutionalSourcesCountry,
-              errorMessage: "Required field"
-            })
-          ]),
-
-          InputYesNo({
-            id: "radioRequireMta",
-            name: "requireMta",
-            label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
-            moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
-            value: this.state.formData.requireMta,
-            onChange: this.handleRadioChange,
-            required: true,
-            error: this.props.errors.requireMta,
-            errorMessage: "Required field"
+        Panel({ title: "Institutional Source of Data/Samples and Location*" }, [
+          InstitutionalSource({
+            updateInstitutionalSource: this.handleUpdateinstitutionalSources,
+            institutionalSources: this.state.formData.institutionalSources,
+            errorName: this.props.errors.institutionalSourcesName,
+            errorCountry: this.props.errors.institutionalSourcesCountry,
+            errorMessage: "Required field",
+            edit: false
           })
-        ])
+        ]),
+
+        InputFieldRadio({
+          id: "radioRequireMta",
+          name: "requireMta",
+          label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
+          moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
+          value: this.state.formData.requireMta,
+          onChange: this.handleRadio2Change,
+          optionValues: ["true", "false", "uncertain"],
+          optionLabels: [
+            "Yes, the provider does require an MTA/DTA.",
+            "No, the provider does not require an MTA/DTA.",
+            "Not sure"
+          ],
+          required: true,
+          error: this.props.errors.requireMta,
+          errorMessage: "Required field",
+          edit: false
+        })
+      ])
     )
   }
 });

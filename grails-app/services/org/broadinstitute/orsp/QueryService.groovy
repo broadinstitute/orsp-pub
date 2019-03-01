@@ -437,6 +437,24 @@ class QueryService implements Status {
         }
     }
 
+    Collection<SampleCollection> findCollectionByIdInList(Collection<String> idList) {
+        if (!idList.isEmpty()) {
+            final String query = 'select * from sample_collection ' +
+                                 'where lower(collection_id) IN :collectionIds'
+            SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+            final session = sessionFactory.currentSession
+            final SQLQuery sqlQuery = session.createSQLQuery(query)
+            final results = sqlQuery.with {
+                addEntity(SampleCollection)
+                setParameterList('collectionIds', idList)
+                list()
+            }
+            results
+        } else {
+            null
+        }
+    }
+
     List<String> getConsentGroupSummaries() {
         Issue.findAllByType(IssueType.CONSENT_GROUP.name, [cache: true])*.summary
     }
@@ -901,6 +919,24 @@ class QueryService implements Status {
         results
     }
 
+    LinkedHashMap getConsentGroupByKey(String projectKey) {
+        Issue issue = findByKey(projectKey)
+        Collection<ConsentCollectionLink> collectionLinks = findCollectionLinksByConsentKey(projectKey)
+        Collection<String> collectionIds = findAllSampleCollectionIdsForConsent(projectKey)
+        Collection<SampleCollection> sampleCollections
+        if (!collectionIds.isEmpty()) {
+            sampleCollections = findCollectionByIdInList(collectionIds)
+        } else {
+            sampleCollections = Collections.emptyList()
+        }
+        [
+            issue            : issue,
+            extraProperties  : issue.getExtraPropertiesMap(),
+            collectionLinks  : collectionLinks,
+            sampleCollections: sampleCollections
+        ]
+    }
+
     /**
      * Find all data use documents for a consent, ordered by most recent first.
      *
@@ -1007,6 +1043,68 @@ class QueryService implements Status {
             log.warn("Unable to findIssues issue by key [" + key + "]: " + e)
             ""
         }
+    }
+
+    /**
+     * Get last version for the specified project key and file type
+     * @return List of distinct disease terms
+     */
+    Long findNextVersionByFileTypeAndProjectKey(String projectKey, String fileType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select COALESCE(MAX(d.doc_version), 0) ' +
+                        ' from storage_document d ' +
+                        ' where d.project_key = ? ' +
+                        ' and d.file_type = ? '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, projectKey)
+        sqlQuery.setString(1, fileType)
+        String version = (String)sqlQuery.list()?.get(0)
+        ++Long.valueOf(version)
+    }
+
+    Collection<List> getDocumentsVersions() {
+        List<HashMap<String, String>> storageDocumentList = new ArrayList<>()
+        final String singleVersionDocQuery =
+                'select project_key, file_type, count(file_type) as counted ' +
+                        'from storage_document where doc_version = 0 ' +
+                        'group by project_key, file_type  ' +
+                        'order by project_key, file_type'
+
+        getSqlConnection().rows(singleVersionDocQuery).each {
+            HashMap<String, String> documentMap = new HashMap<>()
+            documentMap.put('projectKey', it.get("project_key").toString())
+            documentMap.put('fileType', it.get("file_type").toString())
+            documentMap.put('counted', it.get("counted").toString())
+            storageDocumentList.push(documentMap)
+        }
+
+        storageDocumentList
+    }
+
+    StorageDocument getDocument(String projectKey, String fileType) {
+        getDocuments(projectKey, fileType).first()
+    }
+
+    Collection<StorageDocument> getDocuments(String projectKey, String fileType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select d.* ' +
+                        ' from storage_document as d ' +
+                        ' where d.project_key = ?' +
+                        ' and d.file_type = ?' +
+                        ' order by creation_date'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, projectKey)
+        sqlQuery.setString(1, fileType)
+        final documents = sqlQuery.with {
+            addEntity(StorageDocument)
+            list()
+        }
+
+        documents
     }
 
 }

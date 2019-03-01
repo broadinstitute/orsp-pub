@@ -1,9 +1,10 @@
 package org.broadinstitute.orsp
 
+import gorm.logical.delete.LogicalDelete
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
-class Issue {
+class Issue implements LogicalDelete<Issue> {
 
     Integer id
     String projectKey
@@ -12,6 +13,7 @@ class Issue {
     String summary
     String description
     String reporter
+    String approvalStatus
     Date requestDate
     Date updateDate
     Date expirationDate
@@ -28,6 +30,7 @@ class Issue {
         requestDate nullable: false
         updateDate nullable: true
         expirationDate nullable: true
+        approvalStatus blank: false, nullable: false
     }
 
     // Transients
@@ -81,25 +84,15 @@ class Issue {
         }?.value?.toString())
     }
 
-    transient String getCodedNotIdentifiable() {
-        getExtraProperties().find { it.name == IssueExtraProperty.CODED_NOT_IDENTIFIABLE }?.value
-    }
+    transient String getCodedNotIdentifiable() { getExtraProperties().find { it.name == IssueExtraProperty.CODED_NOT_IDENTIFIABLE }?.value }
 
-    transient String getDataSharingBroad() {
-        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_BROAD }?.value
-    }
+    transient String getDataSharingBroad() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_BROAD }?.value }
 
-    transient String getDataSharingComments() {
-        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_COMMENTS }?.value
-    }
+    transient String getDataSharingComments() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_COMMENTS }?.value }
 
-    transient String getDataSharingNih() {
-        getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_NIH }?.value
-    }
+    transient String getDataSharingNih() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_NIH }?.value }
 
-    transient String getAwardNihHhs() {
-        getExtraProperties().find { it.name == IssueExtraProperty.AWARD_NIH_HHS }?.value
-    }
+    transient String getAwardNihHhs() { getExtraProperties().find { it.name == IssueExtraProperty.AWARD_NIH_HHS }?.value }
 
     transient String getNotHSR() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_HSR }?.value }
 
@@ -109,9 +102,7 @@ class Issue {
         }?.value?.toString())
     }
 
-    transient String getAffiliationOther() {
-        getExtraProperties().find { it.name == IssueExtraProperty.AFFILIATION_OTHER }?.value
-    }
+    transient String getAffiliationOther() { getExtraProperties().find { it.name == IssueExtraProperty.AFFILIATION_OTHER }?.value }
 
     transient String getDbgap() { getExtraProperties().find { it.name == IssueExtraProperty.DBGAP }?.value?.toString() }
 
@@ -155,6 +146,32 @@ class Issue {
 
     transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
 
+    transient String getMTA() { getExtraProperties().find { it.name == IssueExtraProperty.REQUIRE_MTA }?.value }
+
+    transient String areSamplesComingFromEEA() { getExtraProperties().find { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA }?.value }
+
+    transient String isCollaboratorProvidingGoodService() { getExtraProperties().find { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE }?.value }
+
+    transient String isConsentUnambiguous() { getExtraProperties().find { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS }?.value }
+
+    transient String getPII() { getExtraProperties().find { it.name == IssueExtraProperty.PII }?.value }
+
+    transient String getCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.COMPLIANCE }?.value }
+
+    transient String getTextCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_COMPLIANCE }?.value }
+
+    transient String getSensitive() { getExtraProperties().find { it.name == IssueExtraProperty.SENSITIVE }?.value }
+
+    transient String getTextSensitive() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_SENSITIVE }?.value }
+
+    transient String getAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.ACCESSIBLE }?.value }
+
+    transient String getTextAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_ACCESSIBLE }?.value }
+
+    transient String getApproval() { getExtraProperties().find { it.name == IssueExtraProperty.APPROVAL }?.value }
+
+    transient Boolean getProjectReviewApproved() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED }?.value }
+
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.
 
@@ -176,4 +193,32 @@ class Issue {
         properties
     }
 
+    transient LinkedHashMap<String, Object> getExtraPropertiesMap() {
+        LinkedHashMap<String, Object> extraproperties = new LinkedHashMap<>()
+        Collection<String> collaborators = new ArrayList<String>()
+        getExtraProperties().collect {
+            if ( it.name != "collaborator") {
+                extraproperties.put(it.name, it.value)
+            } else {
+                collaborators.add(it.value)
+            }
+        }
+
+        if (!collaborators.isEmpty()) {
+            extraproperties.put("collaborators",  collaborators)
+        }
+        extraproperties
+    }
+
+    /**
+     * Determines if there's any status on attachments other than 'Approved', meaning
+     * the issue still has unapproved or unreviewed attachments.
+     *
+     * @return True if all attachments have the 'Approved' status, false otherwise
+     */
+    transient Boolean attachmentsApproved() {
+        getAttachments()?.collect {
+            it.status
+        }?.findAll{ it != IssueStatus.Approved.getName() }?.isEmpty()
+    }
 }

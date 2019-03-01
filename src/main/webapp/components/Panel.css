@@ -31,5 +31,11 @@
 }
 
 .panelContent {
+  position: relative;
   padding: 15px;
+}
+
+.panelContent>.radioContainer:first-child,
+.panelContent .firstRadioGroup .radioContainer {
+  margin: 0 0 20px 0;
 }
