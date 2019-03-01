@@ -226,8 +226,7 @@ class Issue implements LogicalDelete<Issue> {
         Collection<String> optionalFile = getAttachments().findAll {
             if (getType() == IssueType.CONSENT_GROUP.name) {
                 it.fileType == KeyDocuments.DATA_USE_LETTER.value
-            }
-            if (getType() == IssueType.NE.name) {
+            } else if (getType() == IssueType.NE.name) {
                 it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
             }
         }.fileType
