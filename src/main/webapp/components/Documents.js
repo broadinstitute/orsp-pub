@@ -15,13 +15,6 @@ const headers =
     { name: 'Created', value: 'creationDate' }
   ];
 
-const associatedProjectHeaders = 
-[
-  { name: '-', value: '-' },
-  { name: 'Type', value: 'type' },
-  { name: 'Summary', value: 'summary' }
-];
-
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 }
