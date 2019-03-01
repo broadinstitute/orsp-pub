@@ -1,18 +1,31 @@
 package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
+import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.DataUseLetter
+import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.NotifyArguments
 import org.broadinstitute.orsp.User
+import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 
 @Slf4j
 class DulNotifyController extends AuthenticatedController{
 
+    LinkGenerator grailsLinkGenerator
+    DataUseLetterService dataUseLetterService
+
     def sendNotifications() {
         User user = userService.findUser(request.JSON['userName'].toString())
-        def issue = queryService.findByKey(params.consentKey)
+        Issue issue = queryService.findByKey(params.consentKey)
         def usersNotif = [request.JSON['recipients']]
+        DataUseLetter dataUseLetter = new DataUseLetter()
+        dataUseLetter.setConsentGroupKey(issue.projectKey)
+        dataUseLetter.setCreator(user.userName)
+        String uuid = dataUseLetterService.generateDul(dataUseLetter)[DataUseLetterFields.UID.abbreviation]
+        String urlFormDul = grailsLinkGenerator.getServerBaseURL() + "/dataUseLetter/show?id=" + uuid
 
         usersNotif.each {
             notifyService.sendDulFormLinkNotification(
@@ -21,7 +34,7 @@ class DulNotifyController extends AuthenticatedController{
                             subject: "New Data Use Letter form " + params.consentKey,
                             issue: issue,
                             user: user,
-                            details: 'link-XXXXXXX-formlink'
+                            details: urlFormDul
                     )
             )
         }
