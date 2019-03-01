@@ -54,11 +54,11 @@
         <li><a href="#documents">Documents</a></li>
         <li><a href="#submissions">Submissions</a></li>
         <li><a href="#consent-groups">Consent Groups</a></li>
-        <li><a href="#details">Broad Project Information</a></li>
+        <li><a href="#details">Broad Project Info</a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
-        <li><a href="#review">Review Project</a></li>
-         <li><a href="#documentsNew">Documents New</a></li>
+        <li><b><a href="#review" style="color: blue">Review Project</a></b></li>
+         <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
     </ul>
 
     <div id="review">

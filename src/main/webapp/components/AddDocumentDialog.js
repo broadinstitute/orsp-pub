@@ -7,7 +7,7 @@ import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
 import { ConsentGroup, Files, DUL } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
-import { validateEmail } from "../util/ValidateEmail";
+import { validateEmail } from "../util/Utils";
 import './ConfirmationDialog.css';
 
 export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
@@ -39,13 +39,23 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
 
   getShareableLink = () => {
-      let data = {
-        consentGroupKey: this.props.projectKey,
-        creator: this.props.user.userName
-      };
-      DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-        window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-      });
+    let data = {
+      consentGroupKey: this.props.projectKey,
+      creator: this.props.user.userName
+    };
+    DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
+      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
+    }).catch(
+      error => {
+        this.setState(prev => {
+          prev.disableBtn = false;
+          prev.alertType ="danger";
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          prev.showAlert = true;
+          return prev;
+        })
+      }
+    );
   };
 
   redirectToDul = () => {
@@ -55,7 +65,17 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     };
     DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
       window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-    });
+    }).catch(
+      error => {
+        this.setState(prev => {
+          prev.disableBtn = false;
+          prev.alertType ="danger";
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          prev.showAlert = true;
+          return prev;
+        })
+      }
+    );
   };
 
   handleClose = () => {
@@ -103,7 +123,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
-          console.log(error);
             spinnerService.hideAll();
             this.setState(prev => {
               prev.alertType = 'danger';
@@ -144,11 +163,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         this.setState(prev => {
           prev.alertType = 'danger';
           prev.alertMessage = 'Error sending email sent to: ' + collaboratorEmail + '. Please try again later.';
-          prev.showAlert = true;
+          prev.showAlert = false;
           prev.collaboratorEmail = '';
           return prev;
         });
-        console.error(error);
       });
     }
     spinnerService.hideAll();
@@ -174,6 +192,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
   }
   handleTypeSelect = () => (selectedOption) => {
     this.setState(prev => {
+      prev.disableBtn = false;
       prev.alertMessage = '';
       prev.typeError = false;
       prev.showAlert = false;
@@ -202,6 +221,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     e.target.value = '';
     this.setState(prev => {
       prev.alertMessage = '';
+      prev.disableBtn = false;
       prev.showAlert = false;
       prev.fileError = false;
       prev.file = selectedFile;
@@ -278,7 +298,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               ]),
               div({ className: "row" }, [
                 div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink }, [
+                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink, disabled: true }, [
                     span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
                     "Get shareable link"
                   ])

@@ -225,7 +225,18 @@ class IssueService {
         if (!input.containsKey(IssueExtraProperty.SAMPLES)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SAMPLES})
         }
-
+        if (!input.containsKey(IssueExtraProperty.PI)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.PI})
+        }
+        if (!input.containsKey(IssueExtraProperty.DESCRIBE_EDIT_TYPE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DESCRIBE_EDIT_TYPE})
+        }
+        if (!input.containsKey(IssueExtraProperty.PM)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.PM})
+        }
+        if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
+        }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
             it.delete(hard: true)
@@ -304,7 +315,8 @@ class IssueService {
      * If all conditions are met, then we set its general status to 'Approved'
      */
     void updateProjectApproval(Issue issue) {
-        if (issue != null && issue.getProjectReviewApproved() && issue.attachmentsApproved()) {
+        Boolean approvedAttachments = issue.attachmentsApproved()
+        if (issue != null && issue.getProjectReviewApproved() && approvedAttachments) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)

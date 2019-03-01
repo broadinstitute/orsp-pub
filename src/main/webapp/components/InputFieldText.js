@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import { input, hh, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
+import { areSomeTheseThingsTruthy } from '../util/Utils';
+import { isEmpty } from '../util/Utils';
 import './InputField.css';
 
 export const InputFieldText = hh(class InputFieldText extends Component {
@@ -8,8 +10,9 @@ export const InputFieldText = hh(class InputFieldText extends Component {
   render() {
 
     const { value, currentValue } = this.props;
-    const edited = value !== currentValue && currentValue !== undefined || this.props.valueEdited === true;
-
+    const edited = value !== currentValue && currentValue !== undefined
+      || areSomeTheseThingsTruthy([this.props.valueEdited, this.props.edit]) 
+      && value !== currentValue && currentValue === undefined && value !== '';
     return (
       InputField({
         label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,

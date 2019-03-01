@@ -28,6 +28,7 @@ class UrlMappings {
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
+        '/api/dataUseLetter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
 
 

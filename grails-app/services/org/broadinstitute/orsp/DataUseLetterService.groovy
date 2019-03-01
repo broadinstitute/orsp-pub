@@ -30,11 +30,8 @@ class DataUseLetterService {
         DataUseLetter dul = DataUseLetter.findByUid(input.getUid())
         dul.setDulInfo(input.getDulInfo())
         if (dul != null && !dul.submitted) {
-            dul.setSubmitted(true)
             dul.setDulInfo(input.dulInfo as String)
-            dul.setSubmitDate(new Date())
             dul.save(flush:true)
-
             if (dul.hasErrors()) {
                 throw new DomainException(dul.getErrors())
             }
