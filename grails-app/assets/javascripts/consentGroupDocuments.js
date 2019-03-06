@@ -86631,7 +86631,6 @@ var Table = exports.Table = (0, _reactHyperscriptHelpers.hh)(function (_Componen
     };
 
     _this.unlinkProject = function (row) {
-      console.log("ES ADMIN? ", _this.props.isAdmin);
       return (0, _reactHyperscriptHelpers.button)({
         className: "btn btn-xs",
         onClick: _this.props.unlinkProject(row),

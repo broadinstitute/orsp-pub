@@ -53,7 +53,6 @@ export const Table = hh(class Table extends Component {
   };
 
   unlinkProject = (row) => {
-    console.log("ES ADMIN? ", this.props.isAdmin)
     return button({
       className: "btn btn-xs",
       onClick : this.props.unlinkProject(row),
