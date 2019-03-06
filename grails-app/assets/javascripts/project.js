@@ -46183,6 +46183,13 @@ var ConsentGroup = exports.ConsentGroup = {
   },
   sendEmailDul: function sendEmailDul(url, consentKey, userName, recipients) {
     return _axios2.default.post(url + '?consentKey=' + consentKey, { 'userName': userName, 'recipients': recipients });
+  },
+  getConsentCollectionLinks: function getConsentCollectionLinks(url, consentKey) {
+    return _axios2.default.get(url + '/api/consent-group/associatedProjects?consentKey=' + consentKey);
+  },
+  unlinkProject: function unlinkProject(url, consentKey, projectKey) {
+    var data = { projectKey: projectKey };
+    return _axios2.default.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
   }
 };
 

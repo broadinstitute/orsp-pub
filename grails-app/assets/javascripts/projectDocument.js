@@ -48542,6 +48542,13 @@ var ConsentGroup = exports.ConsentGroup = {
   },
   sendEmailDul: function sendEmailDul(url, consentKey, userName, recipients) {
     return _axios2.default.post(url + '?consentKey=' + consentKey, { 'userName': userName, 'recipients': recipients });
+  },
+  getConsentCollectionLinks: function getConsentCollectionLinks(url, consentKey) {
+    return _axios2.default.get(url + '/api/consent-group/associatedProjects?consentKey=' + consentKey);
+  },
+  unlinkProject: function unlinkProject(url, consentKey, projectKey) {
+    var data = { projectKey: projectKey };
+    return _axios2.default.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
   }
 };
 
@@ -86431,6 +86438,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var headers = [{ name: 'Document Type', value: 'fileType' }, { name: 'File Name', value: 'fileName' }, { name: 'Author', value: 'creator' }, { name: 'Version', value: 'docVersion' }, { name: 'Status', value: 'status' }, { name: 'Created', value: 'creationDate' }];
 
+var associatedProjectsHeaders = [{ name: '', value: 'projectKey' }, { name: 'Type', value: 'type' }, { name: 'Summary', value: 'summary' }];
+
 var addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 };
@@ -86511,7 +86520,15 @@ var Documents = exports.Documents = (0, _reactHyperscriptHelpers.hh)(function (_
         handleDialogConfirm: this.props.handleDialogConfirm,
         downloadDocumentUrl: this.props.downloadDocumentUrl,
         isAdmin: this.props.user.isAdmin
-      })])]);
+      })]), (0, _reactHyperscriptHelpers.div)({ isRendered: this.props.isConsentGroup === true }, [(0, _Panel.Panel)({ title: "Associated Projects" }, [(0, _Table.Table)({
+        headers: associatedProjectsHeaders,
+        data: this.props.associatedProjects,
+        sizePerPage: 10,
+        paginationSize: 10,
+        unlinkProject: this.props.handleUnlinkProject,
+        handleRedirectToProject: this.props.handleRedirectToProject,
+        isAdmin: this.props.user.isAdmin
+      })])])]);
     }
   }]);
 
@@ -86613,6 +86630,22 @@ var Table = exports.Table = (0, _reactHyperscriptHelpers.hh)(function (_Componen
       }, [row.fileName]);
     };
 
+    _this.unlinkProject = function (row) {
+      return (0, _reactHyperscriptHelpers.button)({
+        className: "btn btn-default btn-xs",
+        onClick: _this.props.unlinkProject(row),
+        disabled: _this.props.isAdmin
+      }, ["Unlink"]);
+    };
+
+    _this.redirectToProject = function (cell, row) {
+      var url = _this.props.handleRedirectToProject(row.projectKey);
+      return (0, _reactHyperscriptHelpers.a)({
+        href: url,
+        target: '_blank'
+      }, [cell]);
+    };
+
     return _this;
   }
 
@@ -86656,10 +86689,33 @@ var Table = exports.Table = (0, _reactHyperscriptHelpers.hh)(function (_Componen
                 dataSort: true },
               header.name
             );
+          } else if (header.value === 'projectKey') {
+            return _react2.default.createElement(
+              _reactBootstrapTable.TableHeaderColumn,
+              { isKey: isKey,
+                key: header.name,
+                dataField: header.value,
+                dataFormat: _this2.unlinkProject,
+                dataSort: true },
+              header.name
+            );
+          } else if (header.value === 'summary') {
+            return _react2.default.createElement(
+              _reactBootstrapTable.TableHeaderColumn,
+              { isKey: isKey,
+                key: header.name,
+                dataField: header.value,
+                dataFormat: _this2.redirectToProject,
+                dataSort: true },
+              header.name
+            );
           } else {
             return _react2.default.createElement(
               _reactBootstrapTable.TableHeaderColumn,
-              { isKey: isKey, key: header.name, dataField: header.value, dataSort: true },
+              { isKey: isKey,
+                key: header.name,
+                dataField: header.value,
+                dataSort: true },
               header.name
             );
           }

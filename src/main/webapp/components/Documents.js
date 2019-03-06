@@ -14,6 +14,12 @@ const headers =
     { name: 'Created', value: 'creationDate' }
   ];
 
+const associatedProjectsHeaders = [
+  { name: '', value: 'projectKey' },
+  { name: 'Type', value: 'type' },
+  { name: 'Summary', value: 'summary' }
+];
+
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 }
@@ -97,6 +103,19 @@ export const Documents = hh(class Documents extends Component {
           downloadDocumentUrl: this.props.downloadDocumentUrl,
           isAdmin: this.props.user.isAdmin
         })
+      ]),
+      div({ isRendered: this.props.isConsentGroup === true },[
+        Panel({ title: "Associated Projects" }, [
+          Table({
+            headers: associatedProjectsHeaders,
+            data: this.props.associatedProjects,
+            sizePerPage: 10,
+            paginationSize: 10,
+            unlinkProject: this.props.handleUnlinkProject,
+            handleRedirectToProject: this.props.handleRedirectToProject,
+            isAdmin: this.props.user.isAdmin
+          })
+        ])
       ])
     ]);
   }
