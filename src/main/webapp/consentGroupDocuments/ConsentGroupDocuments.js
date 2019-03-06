@@ -71,7 +71,11 @@ class ConsentGroupDocuments extends Component {
       const restriction = resp.data.restriction.map( du => { return du });
       this.setState(prev => {
        prev.restriction = restriction;
-       prev.restrictionId = resp.data.restrictionId;
+       if (resp.data.restrictionId !== null) {
+         prev.restrictionId = resp.data.restrictionId.id;
+       } else {
+         prev.restrictionId = null;
+       }
        return prev;
      })
     }).catch(error => {

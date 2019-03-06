@@ -43,11 +43,11 @@ export const Documents = hh(class Documents extends Component {
 
   editRestriction = () => {
     window.location.href =  this.props.serverURL + "/dataUse/edit/" + this.props.restrictionId;
-  }
+  };
 
   showRestriction = () => {
     window.location.href =  this.props.serverURL + "/dataUse/show/" + this.props.restrictionId;
-  }
+  };
 
   closeModal = () => {
     this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
@@ -107,14 +107,37 @@ export const Documents = hh(class Documents extends Component {
           isAdmin: this.props.user.isAdmin
         })
       ]),
-      Panel({ isRender: this.props.restriction !== undefined, title: "Data Use Restrictions" }, [
-        h3({ style: { 'marginTop': '10px' }}, ["Summary"]),
-        p({dangerouslySetInnerHTML: { __html: this.props.restriction }}, []),
-        div({}, [
-          button({ className: "btn buttonSecondary", style: {'marginRight': '15px'}, onClick: this.editRestriction }, ["Edit Restrictions"]),
-          button({ className: "btn buttonSecondary", onClick: this.showRestriction }, ["View Restrictions"])
+      div({
+        isRendered: this.props.restriction !== undefined
+      }, [
+        Panel({
+          title: "Data Use Restrictions" }, [
+          h3({
+            style: { 'marginTop': '10px' },
+            isRendered: this.props.restrictionId !== null
+          }, ["Summary"]),
+          p({
+            dangerouslySetInnerHTML: { __html: this.props.restriction },
+            isRendered: this.props.restrictionId !== null
+          }, []),
+          div({}, [
+            button({
+                className: "btn buttonSecondary",
+                style: {'marginRight': '15px'},
+                onClick: this.editRestriction,
+                isRendered: this.props.restrictionId !== null,
+              },
+              ["Edit Restrictions"]),
+            button({
+                className: "btn buttonSecondary",
+                onClick: this.showRestriction,
+                isRendered: this.props.restrictionId !== null,
+              },
+              ["View Restrictions"])
+          ])
         ])
       ])
+
     ]);
   }
 });
