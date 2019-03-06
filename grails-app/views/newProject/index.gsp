@@ -16,7 +16,8 @@
             attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
             createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
             serverURL: "${webRequest.baseUrl}",
-            loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+            loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+            deleteProject: '${createLink(uri: '/api/project/delete', method: 'DELETE')}'
         };
     </script>
 </head>

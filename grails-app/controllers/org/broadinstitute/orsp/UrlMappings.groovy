@@ -15,6 +15,7 @@ class UrlMappings {
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
         '/api/project'(resource: 'project')
+        '/api/project/delete'(controller: 'project', action: 'delete', method: 'DELETE')
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')

@@ -378,13 +378,20 @@ class NewProject extends Component {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
-
       }).catch(error => {
-        spinnerService.hideAll();
         this.toggleTrueSubmitError();
         this.changeStateSubmitButton();
         console.error(error);
+        this.rollback(projectKey);
       });
+  };
+
+  rollback = (projectKey) => {
+    Project.rollbackProject(this.props.deleteProject, projectKey).then(resp => {
+      spinnerService.hideAll();
+    }).catch(error => {
+      console.error(error);
+    });
   };
 
   showSubmit = (currentStep) => {
