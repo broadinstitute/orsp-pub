@@ -17,6 +17,8 @@ class Issue implements LogicalDelete<Issue> {
     Date requestDate
     Date updateDate
     Date expirationDate
+    static final String DATA_USE_LETTER = "Data Use Letter"
+    static final String CONSENT_DOCUMENT = "Consent Document"
 
     static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding]
 
@@ -217,8 +219,36 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
-        getAttachments()?.collect {
-            it.status
-        }?.findAll{ it != IssueStatus.Approved.getName() }?.isEmpty()
+        Boolean optionalKey = true
+        Boolean completed = false
+        ArrayList approvedTypeDocuments = getAttachments().findAll {
+            it.status == IssueStatus.Approved.getName()
+        }.fileType
+
+        Collection<String> optionalFile = getAttachments().findAll {
+            if (getType() == IssueType.CONSENT_GROUP.name) {
+                it.fileType == KeyDocuments.DATA_USE_LETTER.value
+            } else if (getType() == IssueType.NE.name) {
+                it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
+            }
+        }.fileType
+
+        if (optionalFile.size() > 0) {
+            if (getType() == IssueType.CONSENT_GROUP.name) {
+                optionalKey = approvedTypeDocuments.contains(KeyDocuments.DATA_USE_LETTER.value)
+            }
+            if (getType() == IssueType.NE.name) {
+                optionalKey = approvedTypeDocuments.contains(KeyDocuments.NE_CONSENT_DOCUMENT.value)
+            }
+        }
+
+        if (optionalKey) {
+            completed = KeyDocuments.getRequiredEnumByType(getType()).collect {
+                it
+            }.findAll {
+                approvedTypeDocuments.contains(it.getValue()) == false
+            }.size() == 0
+        }
+        completed
     }
 }

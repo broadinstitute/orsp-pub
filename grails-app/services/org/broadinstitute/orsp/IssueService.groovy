@@ -315,7 +315,8 @@ class IssueService {
      * If all conditions are met, then we set its general status to 'Approved'
      */
     void updateProjectApproval(Issue issue) {
-        if (issue != null && issue.getProjectReviewApproved() && issue.attachmentsApproved()) {
+        Boolean approvedAttachments = issue.attachmentsApproved()
+        if (issue != null && issue.getProjectReviewApproved() && approvedAttachments) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)

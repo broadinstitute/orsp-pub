@@ -1,6 +1,6 @@
 <div class="well">
     <div>
-        Copyright © 2018 Eli & Edythe L. Broad Institute. All rights reserved. No unauthorized use or disclosure is permitted.
+        Copyright © 2019 Eli & Edythe L. Broad Institute. All rights reserved. No unauthorized use or disclosure is permitted.
     </div>
     <div style="margin: 3rem 0 1rem 0;">
         <a href="https://www.broadinstitute.org/contact-us/privacy-policy-broad-institute-website" target="_blank">Privacy Policy</a> |

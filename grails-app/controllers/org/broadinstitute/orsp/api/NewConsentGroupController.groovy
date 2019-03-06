@@ -81,9 +81,12 @@ class NewConsentGroupController extends AuthenticatedController {
         Object input = IssueUtils.getJson(Object.class, request.JSON)
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
+        Map<String, Object> simpleInput = new HashMap<>()
+        simpleInput.put(IssueExtraProperty.PROJECT_REVIEW_APPROVED, true)
         try {
-            Issue updatedIssue = issueService.modifyIssueProperties(issue, input)
-            render([message: updatedIssue])
+            issueService.modifyExtraProperties(simpleInput, projectKey)
+            issueService.updateProjectApproval(issue)
+            render([message: issue])
         } catch(Exception e) {
             render([error: e.message] as JSON)
         }

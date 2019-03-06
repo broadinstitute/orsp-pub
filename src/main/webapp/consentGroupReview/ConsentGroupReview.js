@@ -481,6 +481,7 @@ class ConsentGroupReview extends Component {
         }
         this.setState(prev => {
           prev.formData.consentForm.approvalStatus = data.approvalStatus;
+          prev.current.consentExtraProps.projectReviewApproved = "true";
           prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
           prev.questions.length = 0;
           return prev;
@@ -1570,7 +1571,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveInfoDialog,
-            isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
+            isRendered: this.state.current.consentExtraProps.projectReviewApproved !== 'true' && this.state.isAdmin && this.state.readOnly === true,
             disabled: this.state.disableApproveButton
           }, ["Approve"]),
 
@@ -1578,7 +1579,10 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.formData.consentForm.approvalStatus === 'Approved' && this.state.readOnly === true
+            isRendered: this.state.isAdmin
+              && this.state.reviewSuggestion === true
+              && this.state.current.consentExtraProps.projectReviewApproved === 'true'
+              && this.state.readOnly === true
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
@@ -1586,7 +1590,7 @@ class ConsentGroupReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.state.formData.consentForm.approvalStatus !== 'Approved' && this.state.isAdmin && this.state.readOnly === true,
+            isRendered: this.state.current.consentExtraProps.projectReviewApproved !== 'true' && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
