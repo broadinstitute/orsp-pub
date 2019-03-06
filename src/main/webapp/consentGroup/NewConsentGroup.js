@@ -103,7 +103,9 @@ class NewConsentGroup extends Component {
 
       this.changeSubmitState();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
-        this.uploadFiles(resp.data.message.projectKey);
+        if(this.uploadFiles(resp.data.message.projectKey) === 500) {
+          console.log('error uploading file');
+        }
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
@@ -140,7 +142,16 @@ class NewConsentGroup extends Component {
         this.changeSubmitState();
         console.error(error);
         this.toggleSubmitError();
+        this.rollback(projectKey);
       });
+  };
+
+  rollback = (projectKey) => {
+    ConsentGroup.rollbackConsentGroup(this.props.deleteConsentGroup, projectKey).then(resp => {
+      spinnerService.hideAll();
+    }).catch(error => {
+      console.error(error);
+    });
   };
 
   toggleSubmitError = () => {

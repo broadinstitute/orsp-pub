@@ -50,6 +50,10 @@ export const ConsentGroup = {
   sendEmailDul(url, consentKey, userName, recipients) {
    return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
+
+  rollbackConsentGroup(urlRollback, consentKey) {
+    return axios({url: urlRollback + '?consentKey=' + consentKey, method: 'DELETE'})
+  }
 };
 
 export const Files = {
@@ -77,7 +81,6 @@ export const Files = {
   downloadFillable(pdfUrl) {
     return axios({ url: pdfUrl, method: 'GET', responseType: 'blob' });
   }
-
 
 };
 

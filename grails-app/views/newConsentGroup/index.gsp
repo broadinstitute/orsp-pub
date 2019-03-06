@@ -21,7 +21,8 @@
             fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
             projectKey: "${params.projectKey}",
             loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-            projectType: '${params.type}'
+            projectType: '${params.type}',
+            deleteConsentGroup: '${createLink(uri: '/api/consent-group/delete', method: 'DELETE')}'
         };
     </script>
 </head>
