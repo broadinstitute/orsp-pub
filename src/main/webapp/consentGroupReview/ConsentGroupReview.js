@@ -245,6 +245,19 @@ class ConsentGroupReview extends Component {
     );
   };
 
+  parseIntCohorts() {
+    let intCohortsAnswers = [];
+    this.state.questions.forEach(it => {
+      if (this.state.formData.consentExtraProps[it.key] !== undefined) {
+        intCohortsAnswers.push({
+          key: it.key,
+          answer: this.state.formData.consentExtraProps[it.key]
+        });
+      }
+    });
+    return intCohortsAnswers;
+  }
+
   parseInstSources(instSources) {
     let instSourcesArray = [];
     if (instSources !== undefined && instSources !== null && instSources.length > 0) {
@@ -721,8 +734,7 @@ class ConsentGroupReview extends Component {
     if (this.state.formData.consentExtraProps.endDate !== null) {
       consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
     }
-
-    const questions = this.state.intCohortsAnswers;
+    const questions = this.parseIntCohorts();
     if (questions !== null && questions.length > 0) {
       questions.map((q, idx) => {
         if (q.answer !== null) {

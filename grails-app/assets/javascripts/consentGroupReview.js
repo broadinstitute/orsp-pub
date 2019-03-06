@@ -91085,8 +91085,7 @@ var ConsentGroupReview = function (_Component) {
       if (_this.state.formData.consentExtraProps.endDate !== null) {
         consentGroup.endDate = _this.parseDate(_this.state.formData.consentExtraProps.endDate);
       }
-
-      var questions = _this.state.intCohortsAnswers;
+      var questions = _this.parseIntCohorts();
       if (questions !== null && questions.length > 0) {
         questions.map(function (q, idx) {
           if (q.answer !== null) {
@@ -91492,6 +91491,22 @@ var ConsentGroupReview = function (_Component) {
       this.init();
     }
   }, {
+    key: 'parseIntCohorts',
+    value: function parseIntCohorts() {
+      var _this3 = this;
+
+      var intCohortsAnswers = [];
+      this.state.questions.forEach(function (it) {
+        if (_this3.state.formData.consentExtraProps[it.key] !== undefined) {
+          intCohortsAnswers.push({
+            key: it.key,
+            answer: _this3.state.formData.consentExtraProps[it.key]
+          });
+        }
+      });
+      return intCohortsAnswers;
+    }
+  }, {
     key: 'parseInstSources',
     value: function parseInstSources(instSources) {
       var instSourcesArray = [];
@@ -91513,21 +91528,21 @@ var ConsentGroupReview = function (_Component) {
   }, {
     key: 'isCurrentUserAdmin',
     value: function isCurrentUserAdmin() {
-      var _this3 = this;
+      var _this4 = this;
 
       _ajax.User.isCurrentUserAdmin(this.props.isAdminUrl).then(function (resp) {
-        _this3.setState({ isAdmin: resp.data.isAdmin });
+        _this4.setState({ isAdmin: resp.data.isAdmin });
       });
     }
   }, {
     key: 'rejectConsentGroup',
     value: function rejectConsentGroup() {
-      var _this4 = this;
+      var _this5 = this;
 
       _spinnerService.spinnerService.showAll();
 
       _ajax.ConsentGroup.rejectConsent(this.props.rejectConsentUrl, this.props.consentKey).then(function (resp) {
-        window.location.href = _this4.getRedirectUrl(_this4.props.projectKey);
+        window.location.href = _this5.getRedirectUrl(_this5.props.projectKey);
         _spinnerService.spinnerService.hideAll();
       }).catch(function (error) {
         _spinnerService.spinnerService.hideAll();
@@ -91545,12 +91560,12 @@ var ConsentGroupReview = function (_Component) {
   }, {
     key: 'getInstitutionalSrc',
     value: function getInstitutionalSrc(institutionalSources) {
-      var _this5 = this;
+      var _this6 = this;
 
       var institutionalSourcesList = [];
       if (institutionalSources !== null && institutionalSources.length > 0) {
         institutionalSources.map(function (f) {
-          if (!_this5.isEmpty(f.future.name) && !_this5.isEmpty(f.future.country)) {
+          if (!_this6.isEmpty(f.future.name) && !_this6.isEmpty(f.future.country)) {
             institutionalSourcesList.push({ name: f.future.name, country: f.future.country });
           }
         });
