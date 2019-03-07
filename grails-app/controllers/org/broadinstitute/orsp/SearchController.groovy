@@ -146,7 +146,7 @@ class SearchController {
                         key: it.projectKey,
                         reporter: it.reporter,
                         extraProperties: it.extraProperties,
-//                        collaborators: getCollaborators(it.extraProperties),
+                        collaborators: getCollaborators(it.extraProperties),
                         title: it.summary,
                         type: it.type,
                         status: it.status,
@@ -209,6 +209,6 @@ class SearchController {
     }
 
     def getCollaborators(props) {
-        props.findAll { it.name == 'collaborator' || it.name == 'actor' || it.name == 'pm' || it.name == 'pi' }
+        props.findAll { it.name == 'collaborators' || it.name == 'actor' || it.name == 'pm' || it.name == 'pi' }
     }
 }

@@ -54,9 +54,9 @@ class NewProject extends Component {
   }
 
   componentDidMount() {
-     User.getUserSession(this.props.getUserUrl).then(
-       resp => this.setState({ user : resp.data })
-     )
+    User.getUserSession(this.props.getUserUrl).then(resp =>
+      this.setState({ user: resp.data })
+    );
   }
 
   submitNewProject = () => {

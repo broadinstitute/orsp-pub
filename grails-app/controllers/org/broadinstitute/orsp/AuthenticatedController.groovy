@@ -360,6 +360,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
             'isAdmin': isAdmin(),
             'isORSP': isORSP(),
             'isComplianceOffice': isComplianceOffice(),
+            'isReadOnlyAdmin': isReadOnlyAdmin(),
         ] as JSON)
     }
 
