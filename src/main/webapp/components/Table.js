@@ -65,7 +65,7 @@ export const Table = hh(class Table extends Component {
     return a({
       href: url,
       target: '_blank'
-    }, [cell])
+    }, [row.projectKey +  ": " + row.summary])
   };
 
 
