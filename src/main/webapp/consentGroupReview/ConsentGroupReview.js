@@ -9,6 +9,7 @@ import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
+import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
@@ -31,6 +32,7 @@ class ConsentGroupReview extends Component {
       showDiscardEditsDialog: false,
       showApproveDialog: false,
       showRejectProjectDialog: false,
+      showRequestClarification: false,
       readOnly: true,
       isAdmin: false,
       disableApproveButton: false,
@@ -588,6 +590,17 @@ class ConsentGroupReview extends Component {
     });
   };
 
+  requestClarification = () => {
+    this.setState({
+      showRequestClarification: !this.state.showRequestClarification
+    });
+  };
+
+  closeClarificationModal = () => {
+    this.setState({ showRequestClarification: !this.state.showRequestClarification });
+  };
+
+
   cancelEdit = (e) => () => {
     this.cleanErrors();
     this.getReviewSuggestions();
@@ -1099,6 +1112,14 @@ class ConsentGroupReview extends Component {
     let currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
+        RequestClarificationDialog({
+          closeModal: this.closeClarificationModal,
+          show: this.state.showRequestClarification,
+          projectKey: this.props.projectKey,
+          user: this.props.user,
+          emailUrl: this.props.emailUrl,
+          userName: this.props.userName
+        }),
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
           closeModal: this.handleApproveDialog,
@@ -1609,7 +1630,12 @@ class ConsentGroupReview extends Component {
             className: "btn buttonSecondary floatRight",
             onClick: this.handleDiscardEditsDialog,
             isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
-          }, ["Discard Edits"])
+          }, ["Discard Edits"]),
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.requestClarification,
+            isRendered: this.state.isAdmin && this.state.readOnly === true
+          }, ["Request Clarification"])
         ])
       ])
     )
