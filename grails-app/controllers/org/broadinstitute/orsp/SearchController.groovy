@@ -121,7 +121,6 @@ class SearchController {
         def user = session.user
         def userName = session.user?.userName
         def userRoles = session.user?.roles
-        System.out.println("user is : " + userName)
         QueryOptions options = new QueryOptions()
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)

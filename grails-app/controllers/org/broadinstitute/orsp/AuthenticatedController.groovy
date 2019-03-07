@@ -368,7 +368,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     // get issue's collaborators as a List<String>
     def getIssueCollaborators(issue) {
-        def collaborators = issue.extraProperties.findAll ({ it.name == 'collaborators' }).collect { property -> property.value }
+        def collaborators = issue.extraProperties.findAll ({ it.name == 'collaborators' || it.name == 'collaborator' }).collect { property -> property.value }
         collaborators
     }
 
