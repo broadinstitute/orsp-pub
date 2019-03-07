@@ -192,6 +192,9 @@ class ConsentGroupController extends AuthenticatedController {
     @Override
     show() {
         Issue issue = queryService.findByKey(params.id)
+        if (issueIsForbidden(issue)) {
+            redirect(controller: 'Index', action: 'index')
+        }
         def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
         def attachmentTypes = ATTACHMENT_TYPES - attachments?.collect { it.fileType }
         def attachmentsPresent = attachmentTypes.isEmpty()
