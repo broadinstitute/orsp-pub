@@ -1084,6 +1084,10 @@ class ConsentGroupReview extends Component {
     return areFormsEqual;
   };
 
+  sendRequestClarification = (requestText) => {
+    console.log(requestText);
+  };
+
   render() {
     const {
       consent = '',
@@ -1115,10 +1119,11 @@ class ConsentGroupReview extends Component {
         RequestClarificationDialog({
           closeModal: this.closeClarificationModal,
           show: this.state.showRequestClarification,
-          projectKey: this.props.projectKey,
+          issueKey: this.props.consentKey,
           user: this.props.user,
           emailUrl: this.props.emailUrl,
-          userName: this.props.userName
+          userName: this.props.userName,
+          onChange: this.sendRequestClarification
         }),
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({

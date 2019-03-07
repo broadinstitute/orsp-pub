@@ -44,7 +44,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Request Clarification on ' + this.props.projectKey])
+            h(ModalTitle, { className: "dialogTitle" }, ['Request Clarification on ' + this.props.issueKey])
           ]),
           h(ModalBody, { className: "dialogBody" }, [
             InputFieldTextArea({
@@ -53,7 +53,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
               label: "Please describe the clarification you are requesting",
               value: this.state.clarification,
               disabled: false,
-              onChange: this.handleFormDataTextChange
+              onChange: this.handleFormDataTextChange()
             }),
             div({ style: { 'marginTop': '15px' } }, [
               AlertMessage({
