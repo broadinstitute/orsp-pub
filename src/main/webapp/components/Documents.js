@@ -1,9 +1,9 @@
-import { Component } from 'react';
-import { input, hh, h, h3, div, p, hr, small, button } from 'react-hyperscript-helpers';
+import { Component, Fragment } from 'react';
+import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
-import { InputFieldText } from './InputFieldText'
+import {ConsentGroupKeyDocuments} from "../util/KeyDocuments";
 
 const headers =
   [
@@ -17,7 +17,7 @@ const headers =
 
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
-}
+};
 
 export const Documents = hh(class Documents extends Component {
 
@@ -41,6 +41,10 @@ export const Documents = hh(class Documents extends Component {
     });
   };
 
+  newRestriction = () => {
+    window.location.href =  this.props.newRestrictionUrl;
+  };
+
   editRestriction = () => {
     window.location.href =  this.props.serverURL + "/dataUse/edit/" + this.props.restrictionId;
   };
@@ -57,7 +61,21 @@ export const Documents = hh(class Documents extends Component {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
+  findDul = () => {
+    let dulPresent = false;
+    if (this.props.keyDocuments.length !== 0) {
+      this.props.keyDocuments.forEach(docs => {
+        if (docs.fileType === 'Data Use Letter') {
+          dulPresent = true;
+        }
+      });
+    }
+    return dulPresent;
+  };
+
   render() {
+    const { restriction = []} = this.props;
+
     return div({}, [
       AddDocumentDialog({
         closeModal: this.closeModal,
@@ -116,11 +134,22 @@ export const Documents = hh(class Documents extends Component {
             style: { 'marginTop': '10px' },
             isRendered: this.props.restrictionId !== null
           }, ["Summary"]),
-          p({
-            dangerouslySetInnerHTML: { __html: this.props.restriction },
-            isRendered: this.props.restrictionId !== null
-          }, []),
+
+
+          restriction.map((elem, index) => {
+            return h(Fragment, {key: index}, [
+              div({ className: index === 0 ? 'first' : 'indented' }, [elem])
+              ]);
+          }),
+
           div({}, [
+            button({
+                className: "btn buttonSecondary",
+                style: {'marginRight': '15px'},
+                onClick: this.newRestriction,
+                isRendered: this.props.restrictionId === null && this.findDul(),
+              },
+              ["Create Restriction"]),
             button({
                 className: "btn buttonSecondary",
                 style: {'marginRight': '15px'},

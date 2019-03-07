@@ -15,7 +15,7 @@ class ConsentGroupDocuments extends Component {
     super(props);
     this.state = {
       restrictionId: '',
-      restriction: '',
+      restriction: [],
       documentsCollection: [],
       keyDocuments: [],
       additional: [],
@@ -68,9 +68,9 @@ class ConsentGroupDocuments extends Component {
 
   getUseRestriction = () => {
     ConsentGroup.getUseRestriction(this.props.useRestrictionUrl, this.props.projectKey).then(resp => {
-      const restriction = resp.data.restriction.map( du => { return du });
+      const restriction = resp.data.restriction; // .map( du => { return du + '</br>' });
       this.setState(prev => {
-       prev.restriction = restriction;
+       prev.restriction = resp.data.restriction;
        if (resp.data.restrictionId !== null) {
          prev.restrictionId = resp.data.restrictionId.id;
        } else {
@@ -149,6 +149,8 @@ class ConsentGroupDocuments extends Component {
   };
 
   render() {
+
+    console.log('render', this.state.restriction);
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
@@ -173,7 +175,8 @@ class ConsentGroupDocuments extends Component {
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName,
         restriction: this.state.restriction,
-        restrictionId: this.state.restrictionId
+        restrictionId: this.state.restrictionId,
+        newRestrictionUrl: this.props.createRestrictionUrl
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
