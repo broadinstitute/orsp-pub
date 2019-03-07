@@ -208,6 +208,6 @@ class SearchController {
     }
 
     def getCollaborators(props) {
-        props.findAll { it.name == 'collaborators' || it.name == 'actor' || it.name == 'pm' || it.name == 'pi' }
+        props.findAll { it.name == 'collaborator' || it.name == 'actor' || it.name == 'pm' || it.name == 'pi' }
     }
 }
