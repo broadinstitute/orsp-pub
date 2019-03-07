@@ -9,6 +9,7 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.StorageProviderService
+import org.broadinstitute.orsp.User
 import org.springframework.web.multipart.MultipartFile
 
 import java.text.SimpleDateFormat
@@ -42,13 +43,7 @@ class FileHelperController extends AuthenticatedController{
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                 }
             }
-            if (issue.getType() == IssueType.CONSENT_GROUP.name) {
-                notifyService.sendAdminNotification("Consent Group", consent)
-                notifyService.sendConsentGroupSecurityInfo(issue, user)
-                notifyService.sendConsentGroupRequirementsInfo(issue, user)
-            } else {
-                notifyService.sendAdminNotification("Project Type", issue)
-            }
+            notifyService.projectCGCreation(issue)
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
             response.status = 500
