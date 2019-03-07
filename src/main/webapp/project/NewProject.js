@@ -5,8 +5,9 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { Files, Project, User } from "../util/ajax";
-import { span } from 'react-hyperscript-helpers';
+import { span, div, h1 } from 'react-hyperscript-helpers';
 import { spinnerService } from "../util/spinner-service";
+import { NewProjectIntCohorts } from "./NewProjectIntCohorts";
 
 class NewProject extends Component {
 
@@ -20,12 +21,21 @@ class NewProject extends Component {
       },
       showErrorStep2: false,
       showErrorStep3: false,
+      showErrorStep4: false,
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
       submitError: false,
       determination: {
         projectType: 400,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
+      },
+      intCohortsDetermination: {
+        projectType: 900,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -41,7 +51,8 @@ class NewProject extends Component {
         subjectProtection: false,
         fundings: false
       },
-      formerProjectType: null
+      formerProjectType: null,
+      enableIntCohortsQuestions: false
     };
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
     this.isValid = this.isValid.bind(this);
@@ -63,14 +74,15 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateStep3()) {
-
+    // NEED TO VALIDATE INT COHORTS
+    if (this.validateStep4() && this.validateStep3()) {
       if (this.validateStep2() && this.validateStep1()) {
         this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
+          // console.log("error del server??")
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           console.error(error);
@@ -83,7 +95,9 @@ class NewProject extends Component {
       }
     } else {
       this.setState(prev => {
-        prev.showErrorStep3 = true;
+        this.changeStateSubmitButton();
+        this.toggleTrueSubmitError();
+        prev.showErrorStep4 = true;
         return prev;
       }, () => {
         spinnerService.hideAll();
@@ -143,6 +157,16 @@ class NewProject extends Component {
           }
         });
     }
+
+    let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
+    if (internationalCohortsQuestions !== null && internationalCohortsQuestions.length > 1) {
+      internationalCohortsQuestions.map((q, idx) => {
+        if (q.answer !== null) {
+          extraProperties.push({name: q.key, value: q.answer});
+        }
+      });
+    }
+
     project.extraProperties = extraProperties;
     return project;
   }
@@ -266,6 +290,19 @@ class NewProject extends Component {
 
   validateStep3() {
     let isValid = true;
+    if (this.state.intCohortsDetermination.requiredError || this.state.intCohortsDetermination.endState === false) {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.showErrorStep3 = !isValid;
+      return prev;
+    });
+    return isValid;
+  }
+
+  validateStep4() {
+    // ONLY VALIDATE IF PROJECT TYPE IS DIFFERENT TO IRB
+    let isValid = true;
 
     let docs = [];
     if (this.state.files !== null) {
@@ -304,6 +341,7 @@ class NewProject extends Component {
         prev.files = [];
         prev.determination = determination;
         if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
+
           prev.showErrorStep2 = false;
         }
         return prev;
@@ -313,36 +351,58 @@ class NewProject extends Component {
       });
   };
 
+  intCohortsDeterminationHandler = (determination) => {
+    this.setState(prev => {
+      prev.intCohortsDetermination = determination;
+      if (this.state.intCohortsDetermination.projectType !== null && this.state.showErrorStep3 === true) {
+        prev.showErrorStep3 = false;
+      }
+      return prev;
+    });
+  };
+
   initDocuments(projectType) {
 
     if (projectType !== this.state.formerProjectType) {
 
       let documents = [];
+      let enableIntCohortsQuestions = false;
 
       switch (projectType) {
         case IRB:
           documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          enableIntCohortsQuestions = false;
           break;
 
         case NE:
           documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
+          enableIntCohortsQuestions = true;
           break;
 
         case NHSR:
           documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
+          enableIntCohortsQuestions = true;
           break;
 
         default:
           break;
       }
-
       this.setState({
         files: documents,
         projectType: projectType,
-        formerProjectType: projectType
+        formerProjectType: projectType,
+        enableIntCohortsQuestions : enableIntCohortsQuestions,
+        intCohortsDetermination: {
+          projectType: 900,
+          questions: [],
+          requiredError: false,
+          currentQuestionIndex: 0,
+          nextQuestionIndex: 1,
+          endState: false
+        }
       });
 
     }
@@ -389,7 +449,8 @@ class NewProject extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 2) {
+    if (this.state.enableIntCohortsQuestions && currentStep === 3 || !this.state.enableIntCohortsQuestions && currentStep === 2) {
+    // if (currentStep === 2) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -420,6 +481,46 @@ class NewProject extends Component {
     return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
+  newProjectContent = (currentStep, user, projectType) => {
+    let components = [];
+    components.push(NewProjectGeneralData({
+      title: "General Data",
+      currentStep: currentStep,
+      user: this.state.user,
+      searchUsersURL: this.props.searchUsersURL,
+      updateForm: this.updateStep1FormData,
+      errors: this.state.errors,
+      removeErrorMessage: this.removeErrorMessage
+    }));
+    components.push(NewProjectDetermination({
+      title: "Determination Questions",
+      currentStep: currentStep,
+      determination: this.state.determination,
+      handler: this.determinationHandler,
+      errors: this.state.showErrorStep2
+    }));
+    if (this.state.enableIntCohortsQuestions === true) {
+      components.push(NewProjectIntCohorts({
+        title: "International Cohorts",
+        currentStep: currentStep,
+        handler: this.intCohortsDeterminationHandler,
+        determination: this.state.intCohortsDetermination,
+        errors: this.state.showErrorStep3,
+      }))
+    }
+    components.push(NewProjectDocuments({
+      title: "Documents",
+      currentStep: currentStep,
+      fileHandler: this.fileHandler,
+      projectType: projectType,
+      files: this.state.files,
+      errors: this.state.showErrorStep4,
+      generalError: this.state.generalError,
+      submitError: this.state.submitError
+    }));
+    return components
+  };
+
   render() {
 
     const { currentStep, determination } = this.state;
@@ -435,32 +536,7 @@ class NewProject extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage,
       }, [
-        NewProjectGeneralData({
-          title: "General Data",
-          currentStep: currentStep,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateStep1FormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage
-        }),
-        NewProjectDetermination({
-          title: "Determination Questions",
-          currentStep: currentStep,
-          determination: this.state.determination,
-          handler: this.determinationHandler,
-          errors: this.state.showErrorStep2
-        }),
-        NewProjectDocuments({
-          title: "Documents",
-          currentStep: currentStep,
-          fileHandler: this.fileHandler,
-          projectType: projectType,
-          files: this.state.files,
-          errors: this.state.showErrorStep3,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError
-        }),
+        this.newProjectContent(currentStep, user, projectType),
       ])
     );
   }
