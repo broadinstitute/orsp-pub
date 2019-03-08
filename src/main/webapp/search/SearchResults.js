@@ -34,16 +34,12 @@ class SearchResults extends Component {
 
   componentDidMount() {
     User.getUserSession(this.props.getUserUrl).then(resp =>
-      this.setState({ user: resp.data }, () => {})
+      this.setState({ user: resp.data })
     );
   }
 
   linkFormatter = (cell, row) => {
-    let collaborators = row.collaborators != null ? row.collaborators : [];
-    if (
-      row.reporter === this.state.user.userName ||
-      collaborators.includes(this.state.user.userName)
-    ) {
+    if (row.linkDisabled === false) {
       return '<a href="' + row.link + '">' + row.key + "</a>";
     } else {
       return row.key;
@@ -116,10 +112,8 @@ class SearchResults extends Component {
         updated: project.updated,
         expiration: project.expiration,
         reporter: project.reporter,
+        linkDisabled: project.linkDisabled,
         extraProperties: project.extraProperties,
-        collaborators: project.collaborators.map(collab => {
-          return collab.value;
-        })
       };
       this.formattedProjectData.push(row);
     });

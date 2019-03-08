@@ -17,6 +17,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
     IssueService issueService
     PersistenceService persistenceService
     StatusEventService statusEventService
+    PermissionService permissionService
 
     public static final List<String> SUBMISSION_DOC_TYPES =
             [ "Amendment Form",
@@ -81,6 +82,9 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     def show() {
         Issue issue = queryService.findByKey(params.id)
+        if (issueIsForbidden(issue)) {
+            redirect(controller: 'Index', action: 'index')
+        }
         redirect([controller: issue.getController(), action: "show", params: [id: params.id, tab: "details"]])
     }
 
@@ -364,49 +368,8 @@ class AuthenticatedController implements Interceptor, UserInfo {
         ] as JSON)
     }
 
-    def mapUsers = { property -> property.value }
-
-    // get issue's collaborators as a List<String>
-    def getIssueCollaborators(issue) {
-        def collaborators = issue.extraProperties.findAll ({ it.name == 'collaborator' }).collect { property -> property.value }
-        collaborators
-    }
-
-    // get issue's pms as a List<String>
-    def getIssuePMs(issue) {
-        def pms = issue.extraProperties.findAll ({ it.name == 'pm' }).collect { property -> property.value }
-        pms
-    }
-
-    // get issue's pis as a List<String>
-    def getIssuePIs(issue) {
-        def pis = issue.extraProperties.findAll ({ it.name == 'pi' }).collect { property -> property.value }
-        pis
-    }
-
-    // get issue's actors as a List<String>
-    def getIssueActors(issue) {
-        def actors = issue.extraProperties.findAll ({ it.name == 'actor' }).collect { property -> property.value }
-        actors
-    }
-
-
-    // verifies if logged user belogns to some user list ....
     def issueIsForbidden(issue) {
-        List<String> collaborators = getIssueCollaborators(issue)
-        List<String> pms = getIssuePMs(issue)
-        List<String> pis = getIssuePIs(issue)
-        List<String> actors = getIssueActors(issue)
-        String userName = getUser().userName
-
-        if (issue.reporter != userName
-            && collaborators.indexOf(userName) < 0
-                && pms.indexOf(userName) < 0
-                && pis.indexOf(userName) < 0
-                && actors.indexOf(userName) < 0) {
-            return true
-        }
-        false
+        return permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isReadOnlyAdmin())
     }
 
 }
