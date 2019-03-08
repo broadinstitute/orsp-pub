@@ -3,11 +3,11 @@ import { Wizard } from '../components/Wizard';
 import { NewConsentGroupDataSharing } from './NewConsentGroupDataSharing';
 import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
+import { InternationalCohorts } from "../components/InternationalCohorts";
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
-import { InternationalCohorts } from "../components/InternationalCohorts";
 
 class NewConsentGroup extends Component {
 

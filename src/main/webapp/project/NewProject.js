@@ -5,7 +5,7 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { Files, Project, User } from "../util/ajax";
-import { span, div, h1 } from 'react-hyperscript-helpers';
+import { span } from 'react-hyperscript-helpers';
 import { spinnerService } from "../util/spinner-service";
 import { InternationalCohorts } from "../components/InternationalCohorts";
 
@@ -300,7 +300,6 @@ class NewProject extends Component {
     return isValid;
   }
 
-  // Attach documents
   validateStep4() {
     let isValid = true;
 
@@ -340,7 +339,6 @@ class NewProject extends Component {
         prev.files = [];
         prev.determination = determination;
         if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
-
           prev.showErrorStep2 = false;
         }
         return prev;
@@ -449,7 +447,6 @@ class NewProject extends Component {
   showSubmit = (currentStep) => {
     let renderSubmit = false;
     if (this.state.enableIntCohortsQuestions && currentStep === 3 || !this.state.enableIntCohortsQuestions && currentStep === 2) {
-    // if (currentStep === 2) {
       renderSubmit = true;
     }
     return renderSubmit;
