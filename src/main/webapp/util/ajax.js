@@ -58,7 +58,7 @@ export const ConsentGroup = {
 
 export const Files = {
 
-  upload(url, files, projectKey, displayName, userName) {
+  upload(url, files, projectKey, displayName, userName, newIssue = false) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -70,6 +70,8 @@ export const Files = {
     data.append('id', projectKey);
     data.append('displayName', displayName);
     data.append('userName', userName);
+    data.append('isNewIssue', newIssue);
+    console.log(newIssue);
 
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
