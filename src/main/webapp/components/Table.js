@@ -61,7 +61,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToProject = (cell, row) => {
-    let url = this.props.handleRedirectToProject(row.projectKey);
+    const url = this.props.handleRedirectToProject(row.projectKey);
     return a({
       href: url,
       target: '_blank'

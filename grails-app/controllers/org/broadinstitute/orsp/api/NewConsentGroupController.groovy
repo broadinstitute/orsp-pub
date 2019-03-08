@@ -140,23 +140,17 @@ class NewConsentGroupController extends AuthenticatedController {
      *
      */
     def unlinkAssociatedProjects () {
-        Issue issue = queryService.findByKey(params.consentKey)
+        Issue consent = queryService.findByKey(params.consentKey)
         Issue target = queryService.findByKey(request.JSON["projectKey"] as String)
-        def links = ConsentCollectionLink.findAllByProjectKeyAndConsentKey(target.projectKey, issue.projectKey)
-        deleteCollectionLinks(links)
-        response.status = 200
-        render(response)
-    }
-
-    /**
-     * @param links The collection of links to remove.
-     */
-    private deleteCollectionLinks(Collection<ConsentCollectionLink> links) {
+        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByProjectKeyAndConsentKey(target.projectKey, consent.projectKey)
         try {
             persistenceService.deleteCollectionLinks(links)
+            response.status = 200
         } catch (Exception e) {
+            response.status = 204
             log.error("Exception deleting collection links: " + e)
             flash.error = "Error deleting collection links: " + e
         }
+        render(response)
     }
 }
