@@ -1,7 +1,7 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
 import { User } from "../util/ajax";
-import { DocumentHandler } from "../util/ajax";
+import { DocumentHandler, ConsentGroup } from "../util/ajax";
 import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
@@ -23,7 +23,8 @@ class ConsentGroupDocuments extends Component {
       user: {isAdmin: false},
       serverError: false,
       documentKeyOptions: [],
-      documentAdditionalOptions: []
+      documentAdditionalOptions: [],
+      associatedProjects: []
     };
   }
 
@@ -32,6 +33,7 @@ class ConsentGroupDocuments extends Component {
     this.isCurrentUserAdmin();
     this.loadKeyOptions();
     this.loadAdditionalOptions();
+    this.getAssociatedProjects();
   }
 
   loadKeyOptions() {
@@ -61,6 +63,35 @@ class ConsentGroupDocuments extends Component {
       this.setState({serverError: true});
       console.error(error);
     });
+  };
+
+  getAssociatedProjects = () => {
+    ConsentGroup.getConsentCollectionLinks(this.props.serverURL, this.props.projectKey).then(response => {
+      this.setState({ associatedProjects: response.data.collectionLinks })
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
+    });
+  };
+
+  handleUnlinkProject = (target) => () => {
+    ConsentGroup.unlinkProject(this.props.serverURL, this.props.projectKey, target).then(result => {
+      this.getAssociatedProjects()
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
+    });
+  };
+
+  redirectToProject = (projectKey) => {
+    let key = projectKey.split("-");
+    let projectType = '';
+    if (key.length === 3) {
+      projectType = key[1].toLowerCase();
+    } else {
+      projectType = key[0].toLowerCase();
+    }
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   };
 
   setKeyDocuments = (documentsCollection) => {
@@ -137,6 +168,7 @@ class ConsentGroupDocuments extends Component {
         bodyText: 'Are you sure you want to ' + this.state.action + ' this document?',
         actionLabel: 'Yes'
       }, []),
+
       Documents({
         keyDocuments: this.state.keyDocuments,
         additionalDocuments: this.state.additionalDocuments,
@@ -148,9 +180,13 @@ class ConsentGroupDocuments extends Component {
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
+        handleUnlinkProject: this.handleUnlinkProject,
+        handleRedirectToProject: this.redirectToProject,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
-        userName: this.state.user.userName
+        userName: this.state.user.userName,
+        isConsentGroup: true,
+        associatedProjects: this.state.associatedProjects
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
