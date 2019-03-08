@@ -147,7 +147,7 @@ class NewConsentGroupController extends AuthenticatedController {
             persistenceService.deleteCollectionLinks(links)
             response.status = 200
         } catch (Exception e) {
-            response.status = 204
+            response.status = 500
             log.error("Exception deleting collection links: " + e)
             flash.error = "Error deleting collection links: " + e
         }
