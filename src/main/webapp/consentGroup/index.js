@@ -16,7 +16,6 @@ ReactDOM.render(
         projectKey = {component.projectKey}
         loadingImage = {component.loadingImage}
         projectType = {component.projectType}
-        deleteConsentGroup = {component.deleteConsentGroup}
      />,
     document.getElementById('newConsentGroup')
 );

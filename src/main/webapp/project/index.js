@@ -11,7 +11,6 @@ ReactDOM.render(
         createProjectURL = {component.createProjectURL}
         serverURL = {component.serverURL}
         loadingImage = {component.loadingImage}
-        deleteProject = {component.deleteProject}
      />,
     document.getElementById('project')
 );

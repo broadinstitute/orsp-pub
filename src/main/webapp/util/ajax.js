@@ -108,10 +108,6 @@ export const Project = {
   updateProject(url, data, projectKey) {
     return axios.put(url + '?projectKey=' + projectKey, data);
   },
-
-  rollbackProject(urlRollback, projectKey) {
-    return axios({url: urlRollback + '?projectKey=' + projectKey, method: 'DELETE'})
-  }
 };
 
 export const DocumentHandler = {

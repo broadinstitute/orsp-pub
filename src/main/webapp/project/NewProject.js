@@ -379,19 +379,11 @@ class NewProject extends Component {
       .then(resp => {
         window.location.href = this.getRedirectUrl(projectKey);
       }).catch(error => {
+        spinnerService.hideAll();
         this.toggleTrueSubmitError();
         this.changeStateSubmitButton();
         console.error(error);
-        this.rollback(projectKey);
       });
-  };
-
-  rollback = (projectKey) => {
-    Project.rollbackProject(this.props.deleteProject, projectKey).then(resp => {
-      spinnerService.hideAll();
-    }).catch(error => {
-      console.error(error);
-    });
   };
 
   showSubmit = (currentStep) => {

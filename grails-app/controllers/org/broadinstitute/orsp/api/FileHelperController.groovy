@@ -47,6 +47,8 @@ class FileHelperController extends AuthenticatedController{
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
             response.status = 500
+            issueService.deleteIssue(issue.projectKey)
+            deleteDocuments(issue)
             render([error: e.message] as JSON)
         }
     }
@@ -101,5 +103,14 @@ class FileHelperController extends AuthenticatedController{
         storageProviderService.updateSingleDocVersionType()
         response.status = 200
         render (['message': 'documents versions updated'] as JSON)
+    }
+
+    private void deleteDocuments(Issue issue) {
+        Collection<StorageDocument> documents = queryService.getDocumentsForProject(issue.projectKey)
+        if (documents != null) {
+            documents.forEach {
+                storageProviderService.removeStorageDocument(it, getUser()?.userName)
+            }
+        }
     }
 }

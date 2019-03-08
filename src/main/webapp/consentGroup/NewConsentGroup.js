@@ -139,19 +139,11 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }).catch(error => {
+        spinnerService.hideAll();
         this.changeSubmitState();
         console.error(error);
         this.toggleSubmitError();
-        this.rollback(projectKey);
       });
-  };
-
-  rollback = (projectKey) => {
-    ConsentGroup.rollbackConsentGroup(this.props.deleteConsentGroup, projectKey).then(resp => {
-      spinnerService.hideAll();
-    }).catch(error => {
-      console.error(error);
-    });
   };
 
   toggleSubmitError = () => {
