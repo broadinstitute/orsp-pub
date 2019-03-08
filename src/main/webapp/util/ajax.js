@@ -50,6 +50,15 @@ export const ConsentGroup = {
   sendEmailDul(url, consentKey, userName, recipients) {
    return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
+
+  getConsentCollectionLinks(url, consentKey) {
+    return axios.get(url + '/api/consent-group/associatedProjects?consentKey=' + consentKey);
+  },
+
+  unlinkProject(url, consentKey, projectKey) {
+    const data = { projectKey: projectKey };
+    return axios.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
+  }
 };
 
 export const Files = {
