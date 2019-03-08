@@ -129,7 +129,9 @@ export const Documents = hh(class Documents extends Component {
         isRendered: this.props.restriction !== undefined
       }, [
         Panel({
-          title: "Data Use Restrictions" }, [
+          title: "Data Use Restrictions",
+          isRendered: this.props.user.isAdmin && this.findDul()
+        }, [
           h3({
             style: { 'marginTop': '10px' },
             isRendered: this.props.restrictionId !== null
