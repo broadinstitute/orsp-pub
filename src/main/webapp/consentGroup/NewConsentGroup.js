@@ -3,11 +3,11 @@ import { Wizard } from '../components/Wizard';
 import { NewConsentGroupDataSharing } from './NewConsentGroupDataSharing';
 import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
+import { InternationalCohorts } from "../components/InternationalCohorts";
 
 class NewConsentGroup extends Component {
 
@@ -675,7 +675,7 @@ class NewConsentGroup extends Component {
           files: this.state.files,
           fillablePdfURL: this.props.fillablePdfURL
         }),
-        NewConsentGroupIntCohorts({
+        InternationalCohorts({
           title: "International Cohorts",
           currentStep: currentStep,
           handler: this.determinationHandler,

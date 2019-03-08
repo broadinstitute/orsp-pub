@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import { hh, h1, span } from 'react-hyperscript-helpers';
-import { WizardStep } from '../components/WizardStep';
-import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
+import { WizardStep } from './WizardStep';
+import { QuestionnaireWorkflow } from "./QuestionnaireWorkflow";
+
 
 const EXIT = 500;
 const DPA = 600;
@@ -9,7 +10,7 @@ const RA = 700;
 const CTC = 800;
 const OSAP = 900;
 
-export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts extends Component {
+export const InternationalCohorts = hh(class InternationalCohorts extends Component {
 
   state = {};
 
@@ -19,7 +20,7 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
   }
 
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
+    console.log('----------------------- error ----------------------');
     console.log(error, info);
   }
 
@@ -108,8 +109,8 @@ export const NewConsentGroupIntCohorts = hh(class NewConsentGroupIntCohorts exte
         title: this.props.title, step: 2, currentStep: this.props.currentStep,
         questionnaireStep: true, error: this.props.errors, errorMessage: ' Please answer all questions to continue'
       }, [
-          QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })
-        ])
+        QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })
+      ])
     )
   }
 });

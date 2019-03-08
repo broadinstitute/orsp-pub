@@ -7,7 +7,7 @@ import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { Files, Project, User } from "../util/ajax";
 import { span, div, h1 } from 'react-hyperscript-helpers';
 import { spinnerService } from "../util/spinner-service";
-import { NewProjectIntCohorts } from "./NewProjectIntCohorts";
+import { InternationalCohorts } from "../components/InternationalCohorts";
 
 class NewProject extends Component {
 
@@ -75,16 +75,12 @@ class NewProject extends Component {
 
     spinnerService.showAll();
     if (this.validateStep4() && this.validateStep3()) {
-      console.log("step 4 y 3 OK");
       if (this.validateStep2() && this.validateStep1()) {
-        console.log("step 2 y 1 OK");
         this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-          // console.log("intenta crear proyecto");
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
-          // console.log("error del server??");
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           console.error(error);
@@ -97,9 +93,7 @@ class NewProject extends Component {
       }
     } else {
       this.setState(prev => {
-        // prev.submitError = true;
-        // prev.generalError = true;
-        // prev.formSubmitted = false;
+        prev.generalError = true;
         prev.showErrorStep4 = true;
         return prev;
       }, () => {
@@ -164,7 +158,6 @@ class NewProject extends Component {
 
     let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
     if (internationalCohortsQuestions !== null && internationalCohortsQuestions.length > 1) {
-      console.log("guarda international Cohorts");
       internationalCohortsQuestions.map((q, idx) => {
         if (q.answer !== null) {
           extraProperties.push({name: q.key, value: q.answer});
@@ -232,7 +225,6 @@ class NewProject extends Component {
       prev.showErrorStep2 = !isValid;
       return prev;
     });
-    console.log("step 2 is valid? ", isValid);
     return isValid;
   }
 
@@ -293,7 +285,6 @@ class NewProject extends Component {
         return prev;
       });
     }
-    console.log("step 1 is valid? ", isValid);
     return isValid;
   }
 
@@ -510,7 +501,7 @@ class NewProject extends Component {
       errors: this.state.showErrorStep2
     }));
     if (this.state.enableIntCohortsQuestions === true) {
-      components.push(NewProjectIntCohorts({
+      components.push(InternationalCohorts({
         key: 3,
         title: "International Cohorts",
         currentStep: currentStep,
