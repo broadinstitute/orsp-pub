@@ -136,16 +136,17 @@ export const Documents = hh(class Documents extends Component {
             style: { 'marginTop': '10px' },
             isRendered: this.props.restrictionId !== null
           }, ["Summary"]),
-
-
-          restriction.map((elem, index) => {
-            return h(Fragment, {key: index}, [
+          div({
+            isRendered: restriction.length > 1
+          }, [
+            restriction.map((elem, index) => {
+              return h(Fragment, {key: index}, [
                 div({style: {'marginBottom': '10px'}}, [
                   div({ style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented' }, [elem])
                 ]),
-            ]);
-          }),
-
+              ]);
+            }),
+          ]),
           div({}, [
             button({
                 className: "btn buttonSecondary",
