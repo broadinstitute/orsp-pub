@@ -150,7 +150,6 @@ class ConsentGroupDocuments extends Component {
 
   render() {
 
-    console.log('render', this.state.restriction);
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,

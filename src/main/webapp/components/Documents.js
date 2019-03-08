@@ -138,8 +138,10 @@ export const Documents = hh(class Documents extends Component {
 
           restriction.map((elem, index) => {
             return h(Fragment, {key: index}, [
-              div({ className: index === 0 ? 'first' : 'indented' }, [elem])
-              ]);
+                div({style: {'marginBottom': '10px'}}, [
+                  div({ style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented' }, [elem])
+                ]),
+            ]);
           }),
 
           div({}, [
