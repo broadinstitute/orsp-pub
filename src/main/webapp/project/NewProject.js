@@ -4,10 +4,11 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import { Files, Project, User } from "../util/ajax";
+import { Files, Project, User } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import { span } from 'react-hyperscript-helpers';
-import { spinnerService } from "../util/spinner-service";
-import { InternationalCohorts } from "../components/InternationalCohorts";
+import { spinnerService } from '../util/spinner-service';
+import { InternationalCohorts } from '../components/InternationalCohorts';
 
 class NewProject extends Component {
 
@@ -19,9 +20,9 @@ class NewProject extends Component {
         userName: '',
         emailAddress: ''
       },
-      showErrorStep2: false,
-      showErrorStep3: false,
-      showErrorStep4: false,
+      showErrorDeterminationQuestions: false,
+      showErrorIntCohorts: false,
+      showErrorDocuments: false,
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
@@ -54,7 +55,7 @@ class NewProject extends Component {
       formerProjectType: null,
       enableIntCohortsQuestions: false
     };
-    this.updateStep1FormData = this.updateStep1FormData.bind(this);
+    this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.submitNewProject = this.submitNewProject.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
@@ -74,8 +75,8 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateStep4() && this.validateStep3()) {
-      if (this.validateStep2() && this.validateStep1()) {
+    if (this.validateDocuments() && this.validateInternationalCohorts()) {
+      if (this.validateDeterminationQuestions() && this.validateGeneralData()) {
         this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
@@ -94,7 +95,7 @@ class NewProject extends Component {
     } else {
       this.setState(prev => {
         prev.generalError = true;
-        prev.showErrorStep4 = true;
+        prev.showErrorDocuments = true;
         return prev;
       }, () => {
         spinnerService.hideAll();
@@ -206,35 +207,34 @@ class NewProject extends Component {
   isValid = (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateStep1(field);
-    }
-    else if (this.state.currentStep === 1) {
-      isValid = this.validateStep2();
+      isValid = this.validateGeneralData(field);
+    } else if (this.state.currentStep === 1) {
+      isValid = this.validateDeterminationQuestions();
     } else if (this.state.currentStep === 2 && this.state.enableIntCohortsQuestions === true) {
-      isValid = this.validateStep3();
+      isValid = this.validateInternationalCohorts();
     }
     return isValid;
   };
 
-  validateStep2() {
+  validateDeterminationQuestions() {
     let isValid = true;
     if (this.state.determination.requiredError || this.state.determination.endState == false) {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep2 = !isValid;
+      prev.showErrorDeterminationQuestions = !isValid;
       return prev;
     });
     return isValid;
   }
 
-  validateStep1(field) {
+  validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
-    if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
+    if (!isEmpty(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
       isValid = false;
     }
@@ -242,7 +242,7 @@ class NewProject extends Component {
       subjectProtection = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.pTitle)) {
+    if (!isEmpty(this.state.step1FormData.pTitle)) {
       pTitle = true;
       isValid = false;
     }
@@ -251,7 +251,7 @@ class NewProject extends Component {
       isValid = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (!this.isTextValid(funding.source.label)) {
+        if (!isEmpty(funding.source.label)) {
           fundings = true;
           isValid = false;
         }
@@ -288,19 +288,19 @@ class NewProject extends Component {
     return isValid;
   }
 
-  validateStep3() {
+  validateInternationalCohorts() {
     let isValid = true;
     if (this.state.enableIntCohortsQuestions === true && (this.state.intCohortsDetermination.requiredError || this.state.intCohortsDetermination.endState === false)) {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep3 = !isValid;
+      prev.showErrorIntCohorts = !isValid;
       return prev;
     });
     return isValid;
   }
 
-  validateStep4() {
+  validateDocuments() {
     let isValid = true;
 
     let docs = [];
@@ -326,20 +326,12 @@ class NewProject extends Component {
     return isValid;
   }
 
-  isTextValid(value) {
-    let isValid = false;
-    if (value !== '' && value !== null && value !== undefined) {
-      isValid = true;
-    }
-    return isValid;
-  };
-
   determinationHandler = (determination) => {
     this.setState(prev => {
         prev.files = [];
         prev.determination = determination;
-        if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
-          prev.showErrorStep2 = false;
+        if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
+          prev.showErrorDeterminationQuestions = false;
         }
         return prev;
       },
@@ -351,8 +343,8 @@ class NewProject extends Component {
   intCohortsDeterminationHandler = (determination) => {
     this.setState(prev => {
       prev.intCohortsDetermination = determination;
-      if (this.state.intCohortsDetermination.projectType !== null && this.state.showErrorStep3 === true) {
-        prev.showErrorStep3 = false;
+      if (this.state.intCohortsDetermination.projectType !== null && this.state.showErrorIntCohorts === true) {
+        prev.showErrorIntCohorts = false;
       }
       return prev;
     });
@@ -421,9 +413,9 @@ class NewProject extends Component {
     return { hasError: true }
   }
 
-  updateStep1FormData = (updatedForm, field) => {
+  updateGeneralDataFormData = (updatedForm, field) => {
     if (this.currentStep === 0) {
-      this.validateStep1(field);
+      this.validateGeneralData(field);
     }
     this.setState(prev => {
       prev.step1FormData = updatedForm;
@@ -452,13 +444,6 @@ class NewProject extends Component {
     return renderSubmit;
   };
 
-  enableSubmit = () => {
-    this.setState(prev => {
-      prev.formSubmitted = true;
-      return prev;
-    });
-  };
-
   removeErrorMessage() {
     this.setState(prev => {
       prev.generalError = false;
@@ -485,7 +470,7 @@ class NewProject extends Component {
       currentStep: currentStep,
       user: this.state.user,
       searchUsersURL: this.props.searchUsersURL,
-      updateForm: this.updateStep1FormData,
+      updateForm: this.updateGeneralDataFormData,
       errors: this.state.errors,
       removeErrorMessage: this.removeErrorMessage
     }));
@@ -495,7 +480,7 @@ class NewProject extends Component {
       currentStep: currentStep,
       determination: this.state.determination,
       handler: this.determinationHandler,
-      errors: this.state.showErrorStep2
+      errors: this.state.showErrorDeterminationQuestions
     }));
     if (this.state.enableIntCohortsQuestions === true) {
       components.push(InternationalCohorts({
@@ -504,7 +489,7 @@ class NewProject extends Component {
         currentStep: currentStep,
         handler: this.intCohortsDeterminationHandler,
         determination: this.state.intCohortsDetermination,
-        errors: this.state.showErrorStep3,
+        errors: this.state.showErrorIntCohorts,
       }))
     }
     components.push(NewProjectDocuments({
@@ -514,7 +499,7 @@ class NewProject extends Component {
       fileHandler: this.fileHandler,
       projectType: projectType,
       files: this.state.files,
-      errors: this.state.showErrorStep4,
+      errors: this.state.showErrorDocuments,
       generalError: this.state.generalError,
       submitError: this.state.submitError
     }));

@@ -362,8 +362,8 @@ class NewConsentGroup extends Component {
   determinationHandler = (determination) => {
     this.setState(prev => {
       prev.determination = determination;
-      if (this.state.determination.projectType !== null && this.state.showErrorStep3 === true) {
-        prev.showErrorStep3 = false;
+      if (this.state.determination.projectType !== null && this.state.showErrorIntCohorts === true) {
+        prev.showErrorIntCohorts = false;
       }
       return prev;
     });
@@ -413,7 +413,7 @@ class NewConsentGroup extends Component {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep3 = !isValid;
+      prev.showErrorIntCohorts = !isValid;
       return prev;
     });
     return isValid;
