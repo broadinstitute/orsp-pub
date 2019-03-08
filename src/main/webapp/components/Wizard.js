@@ -71,8 +71,6 @@ export const Wizard = hh(class Wizard extends Component {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
     }
-    // console.log("estado de wizard ", this.state);
-    console.log("props de wizard ", this.props);
     const { currentStepIndex } = this.state;
 
     return (
