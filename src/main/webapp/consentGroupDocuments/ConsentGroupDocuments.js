@@ -1,7 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
-import { User } from "../util/ajax";
-import { DocumentHandler, ConsentGroup } from "../util/ajax";
+import { DocumentHandler, User, ConsentGroup } from "../util/ajax";
 import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
@@ -14,6 +13,8 @@ class ConsentGroupDocuments extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      restrictionId: '',
+      restriction: [],
       documentsCollection: [],
       keyDocuments: [],
       additional: [],
@@ -30,6 +31,7 @@ class ConsentGroupDocuments extends Component {
 
   componentDidMount() {
     this.getAttachedDocuments();
+    this.getUseRestriction();
     this.isCurrentUserAdmin();
     this.loadKeyOptions();
     this.loadAdditionalOptions();
@@ -39,8 +41,8 @@ class ConsentGroupDocuments extends Component {
   loadKeyOptions() {
     let documentOptions = [];
     ConsentGroupKeyDocuments.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      }); 
+      documentOptions.push({value: type, label: type});
+    });
     this.setState({documentKeyOptions: documentOptions});
   }
 
@@ -52,7 +54,7 @@ class ConsentGroupDocuments extends Component {
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-        this.setState({user: resp.data});
+      this.setState({user: resp.data});
     });
   }
 
@@ -62,6 +64,17 @@ class ConsentGroupDocuments extends Component {
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
+    });
+  };
+
+  getUseRestriction = () => {
+    ConsentGroup.getUseRestriction(this.props.useRestrictionUrl, this.props.projectKey).then(resp => {
+      const newRestrictionId = resp.data.restrictionId ? resp.data.restrictionId : null;
+      this.setState(prev => {
+        prev.restriction = resp.data.restriction;
+        prev.restrictionId = newRestrictionId;
+        return prev;
+      })
     });
   };
 
@@ -159,6 +172,7 @@ class ConsentGroupDocuments extends Component {
   };
 
   render() {
+
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
@@ -185,6 +199,9 @@ class ConsentGroupDocuments extends Component {
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName,
+        restriction: this.state.restriction,
+        restrictionId: this.state.restrictionId,
+        newRestrictionUrl: this.props.createRestrictionUrl,
         isConsentGroup: true,
         associatedProjects: this.state.associatedProjects
       }),
