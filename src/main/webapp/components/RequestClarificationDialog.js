@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bo
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from './AlertMessage';
 import { spinnerService } from "../util/spinner-service";
+import { ClarificationRequest } from "../util/ajax";
 import './ConfirmationDialog.css';
 
 export const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component {
@@ -31,10 +32,21 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
 
   submit = () => {
     spinnerService.showAll();
-    spinnerService.hideAll();
+    ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey).then(resp => {
+      console.log(`${this.props.serverUrl}/${resp.data.url}`);
+      spinnerService.hideAll();
+    }).catch(error => {
+      console.log(error);
+      spinnerService.hideAll();
+    });
   };
 
   handleFormDataTextChange = (e) => {
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.clarification = value;
+      return prev;
+    });
   };
 
   render() {
@@ -53,7 +65,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
               label: "Please describe the clarification you are requesting",
               value: this.state.clarification,
               disabled: false,
-              onChange: this.handleFormDataTextChange()
+              onChange: this.handleFormDataTextChange
             }),
             div({ style: { 'marginTop': '15px' } }, [
               AlertMessage({

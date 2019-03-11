@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
+import { h, hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -11,7 +11,8 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { Project, Search, User, Review } from "../util/ajax";
+import { Project, Search, Review } from "../util/ajax";
+import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 
 class ProjectReview extends Component {
@@ -661,7 +662,9 @@ class ProjectReview extends Component {
           issueKey: this.props.projectKey,
           user: this.props.user,
           emailUrl: this.props.emailUrl,
-          userName: this.props.userName
+          userName: this.props.userName,
+          clarificationUrl: this.props.clarificationUrl,
+          serverUrl: this.props.serverURL
         }),
         button({
           className: "btn buttonPrimary floatRight",
@@ -1021,7 +1024,10 @@ class ProjectReview extends Component {
             onClick: this.requestClarification,
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+        })
       ])
     )
   }
