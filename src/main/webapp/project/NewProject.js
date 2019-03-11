@@ -52,8 +52,7 @@ class NewProject extends Component {
         subjectProtection: false,
         fundings: false
       },
-      formerProjectType: null,
-      enableIntCohortsQuestions: false
+      formerProjectType: null
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.isValid = this.isValid.bind(this);
@@ -179,7 +178,7 @@ class NewProject extends Component {
     return fundingList;
   }
 
-  getProjectType(project) {
+  getProjectType() {
     let type = '';
     if (this.state.determination.projectType === NE) {
       type = 'NE';
@@ -205,7 +204,7 @@ class NewProject extends Component {
       isValid = this.validateGeneralData(field);
     } else if (this.state.currentStep === 1) {
       isValid = this.validateDeterminationQuestions();
-    } else if (this.state.currentStep === 2 && this.state.enableIntCohortsQuestions === true) {
+    } else if (this.state.currentStep === 2) {
       isValid = this.validateInternationalCohorts();
     }
     return isValid;
@@ -292,7 +291,7 @@ class NewProject extends Component {
 
   validateInternationalCohorts() {
     let isValid = true;
-    if (this.state.enableIntCohortsQuestions === true && (this.state.intCohortsDetermination.requiredError || this.state.intCohortsDetermination.endState === false)) {
+    if (this.state.intCohortsDetermination.requiredError || this.state.intCohortsDetermination.endState === false) {
       isValid = false;
     }
     this.setState(prev => {
@@ -358,25 +357,21 @@ class NewProject extends Component {
     if (projectType !== this.state.formerProjectType) {
 
       let documents = [];
-      let enableIntCohortsQuestions = false;
 
       switch (projectType) {
         case IRB:
           documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          enableIntCohortsQuestions = false;
           break;
 
         case NE:
           documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
-          enableIntCohortsQuestions = true;
           break;
 
         case NHSR:
           documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          enableIntCohortsQuestions = true;
           break;
 
         default:
@@ -386,7 +381,6 @@ class NewProject extends Component {
         files: documents,
         projectType: projectType,
         formerProjectType: projectType,
-        enableIntCohortsQuestions : enableIntCohortsQuestions,
         intCohortsDetermination: {
           projectType: 900,
           questions: [],
@@ -441,7 +435,7 @@ class NewProject extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (this.state.enableIntCohortsQuestions && currentStep === 3 || !this.state.enableIntCohortsQuestions && currentStep === 2) {
+    if (currentStep === 3) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -465,54 +459,9 @@ class NewProject extends Component {
     return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
-  newProjectContent = (currentStep, user, projectType) => {
-    let components = [];
-    components.push(NewProjectGeneralData({
-      key: 1,
-      title: "General Data",
-      currentStep: currentStep,
-      user: this.state.user,
-      searchUsersURL: this.props.searchUsersURL,
-      updateForm: this.updateGeneralDataFormData,
-      errors: this.state.errors,
-      removeErrorMessage: this.removeErrorMessage
-    }));
-    components.push(NewProjectDetermination({
-      key: 2,
-      title: "Determination Questions",
-      currentStep: currentStep,
-      determination: this.state.determination,
-      handler: this.determinationHandler,
-      errors: this.state.showErrorDeterminationQuestions
-    }));
-    if (this.state.enableIntCohortsQuestions === true) {
-      components.push(InternationalCohorts({
-        key: 3,
-        title: "International Cohorts",
-        currentStep: currentStep,
-        handler: this.intCohortsDeterminationHandler,
-        determination: this.state.intCohortsDetermination,
-        errors: this.state.showErrorIntCohorts,
-      }))
-    }
-    components.push(NewProjectDocuments({
-      key: 4,
-      title: "Documents",
-      currentStep: this.state.enableIntCohortsQuestions === true ? currentStep : currentStep + 1,
-      fileHandler: this.fileHandler,
-      projectType: projectType,
-      files: this.state.files,
-      errors: this.state.showErrorDocuments,
-      generalError: this.state.generalError,
-      submitError: this.state.submitError
-    }));
-    return components
-  };
-
   render() {
 
     const { currentStep, determination } = this.state;
-    const { user = { emailAddress: 'test@broadinstitute.org', displayName: '' } } = this.state;
     let projectType = determination.projectType;
     return (
       Wizard({
@@ -524,7 +473,40 @@ class NewProject extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage,
       }, [
-        this.newProjectContent(currentStep, user, projectType),
+        NewProjectGeneralData({
+          title: "General Data",
+          currentStep: currentStep,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateGeneralDataFormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage
+        }),
+        NewProjectDetermination({
+          title: "Determination Questions",
+          currentStep: currentStep,
+          determination: this.state.determination,
+          handler: this.determinationHandler,
+          errors: this.state.showErrorDeterminationQuestions
+        }),
+        InternationalCohorts({
+          title: "International Cohorts",
+          currentStep: currentStep,
+          handler: this.intCohortsDeterminationHandler,
+          determination: this.state.intCohortsDetermination,
+          errors: this.state.showErrorIntCohorts,
+          origin: 'newProject'
+        }),
+        NewProjectDocuments({
+          title: "Documents",
+          currentStep: currentStep,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          files: this.state.files,
+          errors: this.state.showErrorDocuments,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError
+        })
       ])
     );
   }

@@ -57,7 +57,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       noOutput: 4,
       answer: null,
       progress: 34,
-      key: 'feeForService',
+      key: this.props.origin === 'newProject' ? 'feeForServiceWork' : 'feeForService',
       id: 3
     });
 

@@ -680,7 +680,8 @@ class NewConsentGroup extends Component {
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
-          errors: this.state.showErrorStep3
+          errors: this.state.showErrorStep3,
+          origin: 'consentGroup'
         }),
         NewConsentGroupSecurity({
           title: "Security",
