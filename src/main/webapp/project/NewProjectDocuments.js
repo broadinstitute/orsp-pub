@@ -61,7 +61,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     return (
 
       WizardStep({
-        title: this.props.title, step: 2, currentStep: this.props.currentStep,
+        title: this.props.title, step: 3, currentStep: this.props.currentStep,
         errorMessage: errorText,
         error: errors || this.props.generalError
       }, [

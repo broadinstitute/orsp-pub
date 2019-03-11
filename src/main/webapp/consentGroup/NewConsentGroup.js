@@ -8,6 +8,7 @@ import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
+import { Security } from "../components/Security";
 
 class NewConsentGroup extends Component {
 
@@ -19,6 +20,8 @@ class NewConsentGroup extends Component {
         userName: ''
       },
       showErrorStep3: false,
+      showErrorInfoSecurity: false,
+      isInfoSecurityValid: false,
       generalError: false,
       formSubmitted: false,
       submitError: false,
@@ -64,6 +67,7 @@ class NewConsentGroup extends Component {
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
     this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
+    this.handleInfoSecurityValidity = this.handleInfoSecurityValidity.bind(this);
   }
 
   componentDidMount() {
@@ -235,7 +239,7 @@ class NewConsentGroup extends Component {
     } else if (this.state.currentStep === 2) {
       isValid = this.validateStep3();
     } else if (this.state.currentStep === 3) {
-      isValid = this.validateStep4(field);
+      isValid = this.validateInfoSecurity();
     } else if (this.state.currentStep === 4) {
       isValid = this.validateStep5(field);
     }
@@ -263,11 +267,11 @@ class NewConsentGroup extends Component {
       isValid = false;
     }
 
-    if (!this.isTextValid(this.state.step1FormData.investigatorLastName)) {
+    if (isEmpty(this.state.step1FormData.investigatorLastName)) {
       investigatorLastName = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.institutionProtocolNumber)) {
+    if (isEmpty(this.state.step1FormData.institutionProtocolNumber)) {
       institutionProtocolNumber = true;
       isValid = false;
     }
@@ -279,11 +283,11 @@ class NewConsentGroup extends Component {
       requireMta = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.collaboratingInstitution)) {
+    if (isEmpty(this.state.step1FormData.collaboratingInstitution)) {
       collaboratingInstitution = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.describeConsentGroup)) {
+    if (isEmpty(this.state.step1FormData.describeConsentGroup)) {
       describeConsentGroup = true;
       isValid = false;
     }
@@ -293,11 +297,11 @@ class NewConsentGroup extends Component {
       isValid = false;
     } else {
       this.state.step1FormData.institutionalSources.forEach(institutionalSource => {
-        if (!this.isTextValid(institutionalSource.name)) {
+        if (isEmpty(institutionalSource.name)) {
           institutionalSourcesName = true;
           isValid = false;
         }
-        if (!this.isTextValid(institutionalSource.country)) {
+        if (isEmpty(institutionalSource.country)) {
           institutionalSourcesCountry = true;
           isValid = false;
         }
@@ -351,23 +355,19 @@ class NewConsentGroup extends Component {
     return isValid;
   }
 
-  isTextValid(value) {
-    let isValid = false;
-    if (value !== '' && value !== null && value !== undefined) {
-      isValid = true;
-    }
-    return isValid;
-  };
-
   determinationHandler = (determination) => {
     this.setState(prev => {
       prev.determination = determination;
-      if (this.state.determination.projectType !== null && this.state.showErrorStep3 === true) {
-        prev.showErrorStep3 = false;
+      if (this.state.determination.projectType !== null && this.state.showErrorIntCohorts === true) {
+        prev.showErrorIntCohorts = false;
       }
       return prev;
     });
   };
+
+  handleInfoSecurityValidity(isValid) {
+    this.setState({ isInfoSecurityValid: isValid })
+  }
 
   componentDidCatch(error, info) {
     console.log('----------------------- new consent group error ----------------------')
@@ -413,99 +413,25 @@ class NewConsentGroup extends Component {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep3 = !isValid;
+      prev.showErrorIntCohorts = !isValid;
       return prev;
     });
     return isValid;
   }
 
-  validateStep4(field) {
-    let pii = false;
-    let compliance = false;
-    let sensitive = false;
-    let accessible = false;
-    let isValid = true;
-    let textCompliance = false;
-    let textSensitive = false;
-    let textAccessible = false;
-
-    if (!this.isTextValid(this.state.step4FormData.pii)) {
-      pii = true;
-      isValid = false;
-    }
-    if (!this.isTextValid(this.state.step4FormData.compliance)) {
-      compliance = true;
-      isValid = false;
-    }
-    if (this.isTextValid(this.state.step4FormData.compliance) && this.state.step4FormData.compliance === "true" && !this.isTextValid(this.state.step4FormData.textCompliance)) {
-      textCompliance = true;
-      isValid = false;
-    }
-    if (!this.isTextValid(this.state.step4FormData.sensitive)) {
-      sensitive = true;
-      isValid = false;
-    }
-    if (this.isTextValid(this.state.step4FormData.sensitive) && this.state.step4FormData.sensitive === "true" && !this.isTextValid(this.state.step4FormData.textSensitive)) {
-      textSensitive = true;
-      isValid = false;
-    }
-    if (!this.isTextValid(this.state.step4FormData.accessible)) {
-      accessible = true;
-      isValid = false;
-    }
-    if (this.isTextValid(this.state.step4FormData.accessible) && this.state.step4FormData.accessible === "true" && !this.isTextValid(this.state.step4FormData.textAccessible)) {
-      textAccessible = true;
-      isValid = false;
-    }
-
-    if (field === undefined || field === null || field === 3) {
-      this.setState(prev => {
-        prev.errors.pii = pii;
-        prev.errors.compliance = compliance;
-        prev.errors.sensitive = sensitive;
-        prev.errors.accessible = accessible;
-        prev.errors.textCompliance = textCompliance;
-        prev.errors.textSensitive = textSensitive;
-        prev.errors.textAccessible = textAccessible;
-        return prev;
-      });
-    }
-    else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive'
-      || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible') {
-
-      this.setState(prev => {
-        if (field === 'pii') {
-          prev.errors.pii = pii;
-        }
-        else if (field === 'compliance') {
-          prev.errors.compliance = compliance;
-        }
-        else if (field === 'textCompliance') {
-          prev.errors.textCompliance = textCompliance;
-        }
-        else if (field === 'sensitive') {
-          prev.errors.sensitive = sensitive;
-        }
-        else if (field === 'textSensitive') {
-          prev.errors.textSensitive = textSensitive;
-        }
-        else if (field === 'accessible') {
-          prev.errors.accessible = accessible;
-        }
-        else if (field === 'textAccessible') {
-          prev.errors.textAccessible = textAccessible;
-        }
-        return prev;
-      });
-    }
-    return isValid;
+  validateInfoSecurity() {
+    this.setState(prev => {
+      prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
+      return prev;
+    });
+    return this.state.isInfoSecurityValid;
   }
 
   validateStep5(field) {
     let sharingPlan = false;
     let isValid = true;
 
-    if (!this.isTextValid(this.state.step5FormData.sharingPlan)) {
+    if (isEmpty(this.state.step5FormData.sharingPlan)) {
       sharingPlan = true;
       isValid = false;
     }
@@ -546,14 +472,9 @@ class NewConsentGroup extends Component {
   };
 
   updateStep4FormData = (updatedForm, field) => {
-    if (this.state.currentStep === 3) {
-      this.validateStep4(field);
-    }
     this.setState(prev => {
       prev.step4FormData = updatedForm;
       return prev;
-    }, () => {
-      this.isValid(field);
     })
   };
 
@@ -682,14 +603,16 @@ class NewConsentGroup extends Component {
           determination: this.state.determination,
           errors: this.state.showErrorStep3
         }),
-        NewConsentGroupSecurity({
+        Security({
           title: "Security",
+          step: 3,
           currentStep: currentStep,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateStep4FormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage
+          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+          removeErrorMessage: this.removeErrorMessage,
+          handleSecurityValidity: this.handleInfoSecurityValidity
         }),
         NewConsentGroupDataSharing({
           title: "Data Sharing",

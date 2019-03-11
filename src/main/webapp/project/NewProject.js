@@ -4,9 +4,11 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import { Files, Project, User } from "../util/ajax";
+import { Files, Project, User } from '../util/ajax';
 import { span } from 'react-hyperscript-helpers';
-import { spinnerService } from "../util/spinner-service";
+import { spinnerService } from '../util/spinner-service';
+import { Security } from '../components/Security';
+import { isEmpty } from "../util/Utils";
 
 class NewProject extends Component {
 
@@ -18,8 +20,11 @@ class NewProject extends Component {
         userName: '',
         emailAddress: ''
       },
-      showErrorStep2: false,
-      showErrorStep3: false,
+      showErrorDeterminationQuestions: false,
+      showErrorIntCohorts: false,
+      showErrorInfoSecurity: false,
+      isInfoSecurityValid: false,
+      showErrorDocuments: false,
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
@@ -33,6 +38,7 @@ class NewProject extends Component {
         endState: false
       },
       step1FormData: {},
+      infoSecurityForm: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -41,9 +47,10 @@ class NewProject extends Component {
         subjectProtection: false,
         fundings: false
       },
-      formerProjectType: null
+      formerProjectType: null,
+      enableExtraTabs: false
     };
-    this.updateStep1FormData = this.updateStep1FormData.bind(this);
+    this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.submitNewProject = this.submitNewProject.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
@@ -51,6 +58,8 @@ class NewProject extends Component {
     this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
     this.toggleTrueSubmitError = this.toggleTrueSubmitError.bind(this);
     this.toggleFalseSubmitError = this.toggleFalseSubmitError.bind(this);
+    this.handleInfoSecurityValidity = this.handleInfoSecurityValidity.bind(this);
+    this.updateInfoSecurity = this.updateInfoSecurity.bind(this);
   }
 
   componentDidMount() {
@@ -63,9 +72,9 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateStep3()) {
+    if (this.validateDocuments()) {
 
-      if (this.validateStep2() && this.validateStep1()) {
+      if (this.state.isInfoSecurityValid && this.validateInternationalCohorts() && this.validateDeterminationQuestions() && this.validateGeneralData() ) {
         this.changeStateSubmitButton();
 
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
@@ -83,7 +92,7 @@ class NewProject extends Component {
       }
     } else {
       this.setState(prev => {
-        prev.showErrorStep3 = true;
+        prev.showErrorDocuments = true;
         return prev;
       }, () => {
         spinnerService.hideAll();
@@ -184,33 +193,41 @@ class NewProject extends Component {
   isValid = (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateStep1(field);
-    }
-    else if (this.state.currentStep === 1) {
-      isValid = this.validateStep2();
+      isValid = this.validateGeneralData(field);
+    } else if (this.state.currentStep === 1) {
+      isValid = this.validateDeterminationQuestions();
+    } else if (this.state.currentStep === 2) {
+      isValid = this.validateInfoSecurity();
     }
     return isValid;
   };
+  validateInfoSecurity() {
+    this.setState(prev => {
+      prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
+      return prev;
+    });
+    return this.state.isInfoSecurityValid;
+  }
 
-  validateStep2() {
+  validateDeterminationQuestions() {
     let isValid = true;
-    if (this.state.determination.requiredError || this.state.determination.endState == false) {
+    if (this.state.determination.requiredError || this.state.determination.endState === false) {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep2 = !isValid;
+      prev.showErrorDeterminationQuestions = !isValid;
       return prev;
     });
     return isValid;
   }
 
-  validateStep1(field) {
+  validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
-    if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
+    if (isEmpty(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
       isValid = false;
     }
@@ -218,7 +235,7 @@ class NewProject extends Component {
       subjectProtection = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.pTitle)) {
+    if (isEmpty(this.state.step1FormData.pTitle)) {
       pTitle = true;
       isValid = false;
     }
@@ -227,7 +244,7 @@ class NewProject extends Component {
       isValid = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (!this.isTextValid(funding.source.label)) {
+        if (isEmpty(funding.source.label)) {
           fundings = true;
           isValid = false;
         }
@@ -264,7 +281,15 @@ class NewProject extends Component {
     return isValid;
   }
 
-  validateStep3() {
+  validateInternationalCohorts() {
+    return true;
+  }
+
+  handleInfoSecurityValidity(isValid) {
+    this.setState({ isInfoSecurityValid: isValid })
+  }
+
+  validateDocuments() {
     let isValid = true;
 
     let docs = [];
@@ -291,20 +316,12 @@ class NewProject extends Component {
     return isValid;
   }
 
-  isTextValid(value) {
-    let isValid = false;
-    if (value !== '' && value !== null && value !== undefined) {
-      isValid = true;
-    }
-    return isValid;
-  };
-
   determinationHandler = (determination) => {
     this.setState(prev => {
         prev.files = [];
         prev.determination = determination;
-        if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
-          prev.showErrorStep2 = false;
+        if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
+          prev.showErrorDeterminationQuestions = false;
         }
         return prev;
       },
@@ -318,7 +335,6 @@ class NewProject extends Component {
     if (projectType !== this.state.formerProjectType) {
 
       let documents = [];
-
       switch (projectType) {
         case IRB:
           documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
@@ -364,14 +380,21 @@ class NewProject extends Component {
     return { hasError: true }
   }
 
-  updateStep1FormData = (updatedForm, field) => {
+  updateGeneralDataFormData = (updatedForm, field) => {
     if (this.currentStep === 0) {
-      this.validateStep1(field);
+      this.validateGeneralData(field);
     }
     this.setState(prev => {
       prev.step1FormData = updatedForm;
       return prev;
     }, () => this.isValid(field));
+  };
+
+  updateInfoSecurity = (updatedForm, field) => {
+    this.setState(prev => {
+      prev.infoSecurityForm = updatedForm;
+      return prev;
+    })
   };
 
   uploadFiles = (projectKey) => {
@@ -389,17 +412,10 @@ class NewProject extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       renderSubmit = true;
     }
     return renderSubmit;
-  };
-
-  enableSubmit = () => {
-    this.setState(prev => {
-      prev.formSubmitted = true;
-      return prev;
-    });
   };
 
   removeErrorMessage() {
@@ -421,9 +437,7 @@ class NewProject extends Component {
   }
 
   render() {
-
     const { currentStep, determination } = this.state;
-    const { user = { emailAddress: 'test@broadinstitute.org', displayName: '' } } = this.state;
     let projectType = determination.projectType;
     return (
       Wizard({
@@ -440,7 +454,7 @@ class NewProject extends Component {
           currentStep: currentStep,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateStep1FormData,
+          updateForm: this.updateGeneralDataFormData,
           errors: this.state.errors,
           removeErrorMessage: this.removeErrorMessage
         }),
@@ -449,7 +463,18 @@ class NewProject extends Component {
           currentStep: currentStep,
           determination: this.state.determination,
           handler: this.determinationHandler,
-          errors: this.state.showErrorStep2
+          errors: this.state.showErrorDeterminationQuestions
+        }),
+        Security({
+          title: "Security",
+          step: 2,
+          currentStep: currentStep,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateInfoSecurity,
+          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+          removeErrorMessage: this.removeErrorMessage,
+          handleSecurityValidity: this.handleInfoSecurityValidity
         }),
         NewProjectDocuments({
           title: "Documents",
@@ -457,10 +482,10 @@ class NewProject extends Component {
           fileHandler: this.fileHandler,
           projectType: projectType,
           files: this.state.files,
-          errors: this.state.showErrorStep3,
+          errors: this.state.showErrorDocuments,
           generalError: this.state.generalError,
           submitError: this.state.submitError
-        }),
+        })
       ])
     );
   }
