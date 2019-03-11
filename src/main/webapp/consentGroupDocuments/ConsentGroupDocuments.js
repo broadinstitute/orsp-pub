@@ -69,13 +69,10 @@ class ConsentGroupDocuments extends Component {
 
   getUseRestriction = () => {
     ConsentGroup.getUseRestriction(this.props.useRestrictionUrl, this.props.projectKey).then(resp => {
+      const newRestrictionId = resp.data.restrictionId ? resp.data.restrictionId : null;
       this.setState(prev => {
         prev.restriction = resp.data.restriction;
-        if (resp.data.restrictionId !== null) {
-          prev.restrictionId = resp.data.restrictionId.id;
-        } else {
-          prev.restrictionId = null;
-        }
+        prev.restrictionId = newRestrictionId;
         return prev;
       })
     });

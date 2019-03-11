@@ -3,6 +3,7 @@ import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyper
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
+import { KeyDocumentsEnum } from "../util/KeyDocuments";
 
 const headers =
   [
@@ -70,7 +71,7 @@ export const Documents = hh(class Documents extends Component {
     let dulPresent = false;
     if (this.props.keyDocuments.length !== 0) {
       this.props.keyDocuments.forEach(docs => {
-        if (docs.fileType === 'Data Use Letter') {
+        if (docs.fileType === KeyDocumentsEnum.DATA_USE_LETTER) {
           dulPresent = true;
         }
       });
