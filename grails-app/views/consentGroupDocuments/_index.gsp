@@ -9,7 +9,9 @@
         sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
         emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}",
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+        useRestrictionUrl: "${createLink(controller:'newConsentGroup', action: 'getDataUseRestriction')}",
+        createRestrictionUrl: "${createLink(controller: "dataUse", action: "create", params: [create: true, id: issue.projectKey, principalInvestigatorName: issue.consent])}"
     };
 </g:javascript>
 
