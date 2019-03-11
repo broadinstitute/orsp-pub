@@ -51,6 +51,10 @@ export const ConsentGroup = {
    return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
 
+  getUseRestriction(url, consentKey) {
+    return axios.get(url + '?consentKey=' + consentKey);
+  },
+
   getConsentCollectionLinks(url, consentKey) {
     return axios.get(url + '/api/consent-group/associatedProjects?consentKey=' + consentKey);
   },
