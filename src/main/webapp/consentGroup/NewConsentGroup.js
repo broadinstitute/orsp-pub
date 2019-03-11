@@ -103,9 +103,7 @@ class NewConsentGroup extends Component {
 
       this.changeSubmitState();
       ConsentGroup.create(this.props.createConsentGroupURL, this.getConsentGroup()).then(resp => {
-        if(this.uploadFiles(resp.data.message.projectKey) === 500) {
-          console.log('error uploading file');
-        }
+        this.uploadFiles(resp.data.message.projectKey)
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
