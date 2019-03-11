@@ -234,7 +234,7 @@ class NewProject extends Component {
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
-    if (!isEmpty(this.state.step1FormData.studyDescription)) {
+    if (isEmpty(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
       isValid = false;
     }
@@ -242,7 +242,7 @@ class NewProject extends Component {
       subjectProtection = true;
       isValid = false;
     }
-    if (!isEmpty(this.state.step1FormData.pTitle)) {
+    if (isEmpty(this.state.step1FormData.pTitle)) {
       pTitle = true;
       isValid = false;
     }
@@ -251,7 +251,7 @@ class NewProject extends Component {
       isValid = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (!isEmpty(funding.source.label)) {
+        if (isEmpty(funding.source.label)) {
           fundings = true;
           isValid = false;
         }
