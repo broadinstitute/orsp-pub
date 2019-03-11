@@ -84,12 +84,15 @@ class NewProject extends Component {
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
+          spinnerService.hideAll();
           console.error(error);
         });
       } else {
         this.setState(prev => {
           prev.generalError = true;
           return prev;
+        }, () => {
+          spinnerService.hideAll();
         });
       }
     } else {
