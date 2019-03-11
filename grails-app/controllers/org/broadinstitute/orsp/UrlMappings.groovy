@@ -23,6 +23,8 @@ class UrlMappings {
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/consent-group'(resource: 'newConsentGroup')
         '/api/consent-group/delete'(controller: 'newConsentGroup', action: 'delete', method: 'DELETE')
+        '/api/consent-group/associatedProjects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
+        '/api/consent-group/unlinkAssociatedProjects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')

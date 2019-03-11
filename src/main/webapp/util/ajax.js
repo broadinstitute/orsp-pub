@@ -53,6 +53,19 @@ export const ConsentGroup = {
 
   rollbackConsentGroup(urlRollback, consentKey) {
     return axios({url: urlRollback + '?consentKey=' + consentKey, method: 'DELETE'})
+  },
+
+  getUseRestriction(url, consentKey) {
+    return axios.get(url + '?consentKey=' + consentKey);
+  },
+
+  getConsentCollectionLinks(url, consentKey) {
+    return axios.get(url + '/api/consent-group/associatedProjects?consentKey=' + consentKey);
+  },
+
+  unlinkProject(url, consentKey, projectKey) {
+    const data = { projectKey: projectKey };
+    return axios.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
   }
 };
 
