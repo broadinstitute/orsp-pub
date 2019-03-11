@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { hh, h1, span } from 'react-hyperscript-helpers';
 import { WizardStep } from './WizardStep';
-import { QuestionnaireWorkflow } from "./QuestionnaireWorkflow";
+import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 
 const EXIT = 500;
 const DPA = 600;

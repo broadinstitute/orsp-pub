@@ -75,10 +75,9 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateDocuments() && this.validateInternationalCohorts()) {
-      if (this.validateDeterminationQuestions() && this.validateGeneralData()) {
+    if (this.validateDocuments()) {
+      if (this.validateForm()) {
         this.changeStateSubmitButton();
-
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
@@ -96,15 +95,8 @@ class NewProject extends Component {
         });
       }
     } else {
-      this.setState(prev => {
-        prev.generalError = true;
-        prev.showErrorDocuments = true;
-        return prev;
-      }, () => {
         spinnerService.hideAll();
-      });
     }
-
   };
 
   toggleTrueSubmitError = () => {
@@ -219,6 +211,13 @@ class NewProject extends Component {
     return isValid;
   };
 
+  validateForm = () => {
+    let isDeterminationQuestionsValid = this.validateDeterminationQuestions();
+    let isGeneralDataValid = this.validateGeneralData();
+    let isInternationalCohortsValid = this.validateInternationalCohorts();
+    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid
+  };
+
   validateDeterminationQuestions() {
     let isValid = true;
     if (this.state.determination.requiredError || this.state.determination.endState == false) {
@@ -324,6 +323,7 @@ class NewProject extends Component {
 
     this.setState(prev => {
       prev.files = docs;
+      prev.showErrorDocuments = isValid;
       return prev;
     });
     return isValid;

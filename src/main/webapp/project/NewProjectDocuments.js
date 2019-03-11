@@ -47,13 +47,11 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     });
 
     let errorText = '';
-
     if (!this.props.generalError) {
       errorText = 'Please upload all required documents';
     } else if (this.props.generalError && !this.props.submitError) {
       errorText = 'Please check previous steps';
     }
-    
     if (this.props.submitError) {
       errorText = 'Something went wrong in the server. Please try again later.';
     }
