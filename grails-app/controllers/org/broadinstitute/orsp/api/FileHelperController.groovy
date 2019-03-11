@@ -43,18 +43,18 @@ class FileHelperController extends AuthenticatedController{
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                 }
             }
-//            if (params.isNewIssue.toBoolean()) {
+            if (params.isNewIssue.toBoolean()) {
                 notifyService.projectCGCreation(issue)
-//            }
+            }
 
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
             response.status = 500
 
-//            if (params.isNewIssue.toBoolean()) {
+            if (params.isNewIssue.toBoolean()) {
                 issueService.deleteIssue(issue.projectKey)
                 deleteDocuments(issue)
-//            }
+            }
 
             render([error: e.message] as JSON)
         }

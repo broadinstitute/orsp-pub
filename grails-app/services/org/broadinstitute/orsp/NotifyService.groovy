@@ -564,10 +564,7 @@ class NotifyService implements SendgridSupport, Status {
     def projectCGCreation(Issue issue) {
         if (issue.getType() == IssueType.CONSENT_GROUP.name) {
             User user = userService.findUser(issue.reporter)
-            def status = sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-            if (status) {
-
-            }
+            sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
             sendConsentGroupSecurityInfo(issue, user)
             sendConsentGroupRequirementsInfo(issue, user)
         } else {
