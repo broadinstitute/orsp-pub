@@ -84,7 +84,6 @@ export const Files = {
     data.append('displayName', displayName);
     data.append('userName', userName);
     data.append('isNewIssue', newIssue);
-    console.log(newIssue);
 
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
