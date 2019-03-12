@@ -47,7 +47,7 @@ class NewProject extends Component {
         endState: false
       },
       generalDataFormData: {},
-      infoSecurityForm: {},
+      securityInfoFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -143,6 +143,15 @@ class NewProject extends Component {
     extraProperties.push({name: 'description', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
+
+    extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
+    extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
+    extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
+    extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
+    extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
+    extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
+    extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
+
     let collaborators = this.state.generalDataFormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
         collaborators.map((collaborator, idx) => {
@@ -150,7 +159,7 @@ class NewProject extends Component {
         });
     }
     let questions = this.state.determination.questions;
-    if (questions !== null && questions.length > 1) {
+    if (questions.length > 1) {
         questions.map((q, idx) => {
           if (q.answer !== null) {
             extraProperties.push({name: q.key, value: q.answer});
@@ -159,7 +168,7 @@ class NewProject extends Component {
     }
 
     let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
-    if (internationalCohortsQuestions !== null && internationalCohortsQuestions.length > 1) {
+    if (internationalCohortsQuestions.length > 1) {
       internationalCohortsQuestions.map((q, idx) => {
         if (q.answer !== null) {
           extraProperties.push({name: q.key, value: q.answer});
@@ -439,7 +448,7 @@ class NewProject extends Component {
 
   updateInfoSecurity = (updatedForm, field) => {
     this.setState(prev => {
-      prev.infoSecurityForm = updatedForm;
+      prev.securityInfoFormData = updatedForm;
       return prev;
     })
   };
