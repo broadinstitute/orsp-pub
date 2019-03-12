@@ -57,7 +57,7 @@
         <li><a href="#details">Broad Project Info</a></li>
         <li><a href="#comments">Comments</a></li>
         <li><a href="#history">History</a></li>
-        <li><b><a href="#review" style="color: blue">Review Project</a></b></li>
+        <li><b><a href="#review" style="color: blue">Project Details</a></b></li>
         <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
     </ul>
 
