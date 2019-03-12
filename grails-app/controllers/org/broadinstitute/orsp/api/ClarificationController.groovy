@@ -40,11 +40,11 @@ class ClarificationController extends AuthenticatedController{
                 toAddresses.addAll(notifyService.getOrspSpecialRecipients())
             }
 
-            notifyService.sendComment(
+            notifyService.sendClarificationRequest(
                     new NotifyArguments(
                             toAddresses: toAddresses,
                             fromAddress: fromAddress,
-                            subject: "Comment Entered: " + issue.projectKey,
+                            subject: "Clarification Requested: " + issue.projectKey,
                             comment: comment.description,
                             user: getUser(),
                             issue: issue))

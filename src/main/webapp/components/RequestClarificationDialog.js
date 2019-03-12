@@ -32,29 +32,39 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
   };
 
   submit = () => {
-    spinnerService.showAll();
-    ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey).then(resp => {
-      spinnerService.hideAll();
-      this.setState(prev => {
-        prev.showAlert = false;
+    if (this.state.clarification !== '') {
+      spinnerService.showAll();
+      ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey).then(resp => {
+        spinnerService.hideAll();
+        this.setState(prev => {
+          prev.showAlert = false;
+        });
+        this.props.successClarification();
+        this.handleClose();
+      }).catch(error => {
+        console.log(error);
+        this.setState(prev => {
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          prev.showAlert = true;
+          return prev;
+        });
+        spinnerService.hideAll();
       });
-      this.props.successClarification();
-      this.handleClose();
-    }).catch(error => {
-      console.log(error);
+    } else {
       this.setState(prev => {
-        prev.alertMessage = 'Something went wrong. Please try again.';
+        prev.alertMessage = 'Please enter text to send.';
         prev.showAlert = true;
-        return prev; 
+        return prev;
       });
-      spinnerService.hideAll();
-    });
+    }
   };
 
   handleFormDataTextChange = (e) => {
     const value = e.target.value;
     this.setState(prev => {
       prev.clarification = value;
+      prev.alertMessage = '';
+      prev.showAlert = false;
       return prev;
     });
   };
