@@ -12,3 +12,9 @@ export const ProjectKeyDocuments = [
   'Consent Document',
   'Data Use Letter'
 ];
+
+ export const KeyDocumentsEnum = Object.freeze({
+   APPROVAL_MEMO: 'Approval Memo',
+   CONSENT_DOCUMENT: 'Consent Document',
+   DATA_USE_LETTER: 'Data Use Letter',
+ });

@@ -1,7 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
-import { User } from "../util/ajax";
-import { DocumentHandler } from "../util/ajax";
+import { DocumentHandler, User, ConsentGroup } from "../util/ajax";
 import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
@@ -14,6 +13,8 @@ class ConsentGroupDocuments extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      restrictionId: '',
+      restriction: [],
       documentsCollection: [],
       keyDocuments: [],
       additional: [],
@@ -23,22 +24,25 @@ class ConsentGroupDocuments extends Component {
       user: {isAdmin: false},
       serverError: false,
       documentKeyOptions: [],
-      documentAdditionalOptions: []
+      documentAdditionalOptions: [],
+      associatedProjects: []
     };
   }
 
   componentDidMount() {
     this.getAttachedDocuments();
+    this.getUseRestriction();
     this.isCurrentUserAdmin();
     this.loadKeyOptions();
     this.loadAdditionalOptions();
+    this.getAssociatedProjects();
   }
 
   loadKeyOptions() {
     let documentOptions = [];
     ConsentGroupKeyDocuments.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      }); 
+      documentOptions.push({value: type, label: type});
+    });
     this.setState({documentKeyOptions: documentOptions});
   }
 
@@ -50,7 +54,7 @@ class ConsentGroupDocuments extends Component {
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-        this.setState({user: resp.data});
+      this.setState({user: resp.data});
     });
   }
 
@@ -61,6 +65,46 @@ class ConsentGroupDocuments extends Component {
       this.setState({serverError: true});
       console.error(error);
     });
+  };
+
+  getUseRestriction = () => {
+    ConsentGroup.getUseRestriction(this.props.useRestrictionUrl, this.props.projectKey).then(resp => {
+      const newRestrictionId = resp.data.restrictionId ? resp.data.restrictionId : null;
+      this.setState(prev => {
+        prev.restriction = resp.data.restriction;
+        prev.restrictionId = newRestrictionId;
+        return prev;
+      })
+    });
+  };
+
+  getAssociatedProjects = () => {
+    ConsentGroup.getConsentCollectionLinks(this.props.serverURL, this.props.projectKey).then(response => {
+      this.setState({ associatedProjects: response.data.collectionLinks })
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
+    });
+  };
+
+  handleUnlinkProject = (target) => () => {
+    ConsentGroup.unlinkProject(this.props.serverURL, this.props.projectKey, target).then(result => {
+      this.getAssociatedProjects()
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
+    });
+  };
+
+  redirectToProject = (projectKey) => {
+    let key = projectKey.split("-");
+    let projectType = '';
+    if (key.length === 3) {
+      projectType = key[1].toLowerCase();
+    } else {
+      projectType = key[0].toLowerCase();
+    }
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   };
 
   setKeyDocuments = (documentsCollection) => {
@@ -128,6 +172,7 @@ class ConsentGroupDocuments extends Component {
   };
 
   render() {
+
     return h(Fragment, {}, [
       ConfirmationDialog({
         closeModal: this.closeModal,
@@ -137,6 +182,7 @@ class ConsentGroupDocuments extends Component {
         bodyText: 'Are you sure you want to ' + this.state.action + ' this document?',
         actionLabel: 'Yes'
       }, []),
+
       Documents({
         keyDocuments: this.state.keyDocuments,
         additionalDocuments: this.state.additionalDocuments,
@@ -148,9 +194,16 @@ class ConsentGroupDocuments extends Component {
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
+        handleUnlinkProject: this.handleUnlinkProject,
+        handleRedirectToProject: this.redirectToProject,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
-        userName: this.state.user.userName
+        userName: this.state.user.userName,
+        restriction: this.state.restriction,
+        restrictionId: this.state.restrictionId,
+        newRestrictionUrl: this.props.createRestrictionUrl,
+        isConsentGroup: true,
+        associatedProjects: this.state.associatedProjects
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',

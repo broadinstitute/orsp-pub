@@ -109,8 +109,6 @@ export const Security = hh(class Security extends Component {
       textAccessible = true;
       isValid = false;
     }
-    console.log("HEEEEEEEEEEEEEEEEEEEEEEEY")
-console.log(field)
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
@@ -121,7 +119,7 @@ console.log(field)
         prev.errors.textSensitive = textSensitive;
         prev.errors.textAccessible = textAccessible;
         return prev;
-      }, () => console.log("state de security", this.state));
+      });
     }
     else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive'
       || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible') {

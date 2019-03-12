@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { a, hh, small } from 'react-hyperscript-helpers';
+import { a, hh, small, button } from 'react-hyperscript-helpers';
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
@@ -52,6 +52,23 @@ export const Table = hh(class Table extends Component {
     }, [row.fileName])
   };
 
+  unlinkProject = (row) => {
+    return button({
+      className: "btn btn-xs",
+      onClick : this.props.unlinkProject(row),
+      disabled: !this.props.isAdmin
+    }, ["Unlink"])
+  };
+
+  redirectToProject = (cell, row) => {
+    const url = this.props.handleRedirectToProject(row.projectKey);
+    return a({
+      href: url,
+      target: '_blank'
+    }, [row.projectKey +  ": " + row.summary])
+  };
+
+
   render() {
     let isKey = false;
 
@@ -80,8 +97,23 @@ export const Table = hh(class Table extends Component {
                                         dataField={header.value}
                                         dataFormat={this.formatUrlDocument}
                                         dataSort={true}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'projectKey') {
+              return <TableHeaderColumn isKey={isKey}
+                                        key={header.name}
+                                        dataField={header.value}
+                                        dataFormat={this.unlinkProject}
+                                        dataSort={ true }>{header.name}</TableHeaderColumn>
+            }  else if (header.value === 'summary') {
+              return <TableHeaderColumn isKey={isKey}
+                                        key={header.name}
+                                        dataField={header.value}
+                                        dataFormat={this.redirectToProject}
+                                        dataSort={ true }>{header.name}</TableHeaderColumn>
             } else {
-              return <TableHeaderColumn isKey={isKey} key={header.name} dataField={header.value} dataSort={ true }>{header.name}</TableHeaderColumn>
+              return <TableHeaderColumn isKey={isKey}
+                                        key={header.name}
+                                        dataField={header.value}
+                                        dataSort={ true }>{header.name}</TableHeaderColumn>
             }
           })
         }
