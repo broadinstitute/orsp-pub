@@ -101,9 +101,11 @@ trait SendgridSupport {
         } catch (HttpResponseException e) {
             log.error(e.getResponse().getStatusLine().getReasonPhrase())
             status.put(false, "HttpResponseException: " + e.getResponse().getStatusLine().getReasonPhrase())
+            throw new HttpResponseException(e.getResponse())
         } catch (Exception e) {
             log.error(e.message)
             status.put(false, "Exception: " + e.message)
+            throw  new Exception(e.message)
         }
         status
     }

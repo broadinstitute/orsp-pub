@@ -51,6 +51,10 @@ export const ConsentGroup = {
    return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
 
+  rollbackConsentGroup(urlRollback, consentKey) {
+    return axios({url: urlRollback + '?consentKey=' + consentKey, method: 'DELETE'})
+  },
+
   getUseRestriction(url, consentKey) {
     return axios.get(url + '?consentKey=' + consentKey);
   },
@@ -78,7 +82,7 @@ export const ClarificationRequest = {
 
 export const Files = {
 
-  upload(url, files, projectKey, displayName, userName) {
+  upload(url, files, projectKey, displayName, userName, newIssue = false) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -90,6 +94,7 @@ export const Files = {
     data.append('id', projectKey);
     data.append('displayName', displayName);
     data.append('userName', userName);
+    data.append('isNewIssue', newIssue);
 
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
@@ -101,7 +106,6 @@ export const Files = {
   downloadFillable(pdfUrl) {
     return axios({ url: pdfUrl, method: 'GET', responseType: 'blob' });
   }
-
 
 };
 
@@ -128,7 +132,7 @@ export const Project = {
 
   updateProject(url, data, projectKey) {
     return axios.put(url + '?projectKey=' + projectKey, data);
-  }
+  },
 };
 
 export const DocumentHandler = {
