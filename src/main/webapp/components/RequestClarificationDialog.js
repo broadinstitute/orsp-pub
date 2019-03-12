@@ -52,7 +52,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       });
     } else {
       this.setState(prev => {
-        prev.alertMessage = 'Please enter text to send.';
+        prev.alertMessage = 'Please describe the clarification.';
         prev.showAlert = true;
         return prev;
       });
