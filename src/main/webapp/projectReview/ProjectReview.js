@@ -37,6 +37,9 @@ class ProjectReview extends Component {
       showRequestClarification: false,
       readOnly: true,
       editedForm: {},
+      alertType: '',
+      alertMessage: '',
+      showAlert: false,
       formData: {
         description: '',
         projectType: '',
@@ -619,6 +622,25 @@ class ProjectReview extends Component {
     })
   };
 
+  successClarification = () => {
+    setTimeout(this.clearAlertMessage, 5000, null);
+    this.setState(prev => {
+      prev.showAlert = true;
+      prev.alertMessage = 'Request clarification sent.';
+      prev.alertType = 'success';
+      return prev;
+    });
+  };
+
+  clearAlertMessage = () => {
+    this.setState(prev => {
+      prev.showAlert = false;
+      prev.alertMessage = '';
+      prev.alertType = '';
+      return prev;
+    });
+  };
+
   render() {
     const { projectReviewApproved = 'false' } = this.state.formData.projectExtraProps;
     return (
@@ -664,7 +686,7 @@ class ProjectReview extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           clarificationUrl: this.props.clarificationUrl,
-          serverUrl: this.props.serverURL
+          successClarification: this.successClarification
         }),
         button({
           className: "btn buttonPrimary floatRight",
@@ -965,8 +987,9 @@ class ProjectReview extends Component {
           ])
         ]),
         AlertMessage({
-          msg: 'Please complete all required fields',
-          show: this.state.generalError
+          msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
+          show: this.state.generalError || this.state.showAlert,
+          type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({

@@ -25,6 +25,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       prev.disableBtn = false;
       prev.disableSendBtn = false;
       prev.alertMessage = '';
+      prev.clarification = '';
       return prev;
     });
     this.props.closeModal();
@@ -33,10 +34,19 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
   submit = () => {
     spinnerService.showAll();
     ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey).then(resp => {
-      console.log(`${this.props.serverUrl}/${resp.data.url}`);
       spinnerService.hideAll();
+      this.setState(prev => {
+        prev.showAlert = false;
+      });
+      this.props.successClarification();
+      this.handleClose();
     }).catch(error => {
       console.log(error);
+      this.setState(prev => {
+        prev.alertMessage = 'Something went wrong. Please try again.';
+        prev.showAlert = true;
+        return prev; 
+      });
       spinnerService.hideAll();
     });
   };

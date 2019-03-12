@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, p, div, h2, h3, input, label, span, a, button } from 'react-hyperscript-helpers';
+import { h, hh, p, div, h2, h3, input, label, span, a, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -14,6 +14,7 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
 import { AlertMessage } from "../components/AlertMessage";
+import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { format } from 'date-fns';
 
@@ -38,6 +39,7 @@ class ConsentGroupReview extends Component {
       disableApproveButton: false,
       reviewSuggestion: false,
       submitted: false,
+      alertType: '',
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
@@ -1088,6 +1090,25 @@ class ConsentGroupReview extends Component {
     console.log(requestText);
   };
 
+  successClarification = () => {
+    setTimeout(this.clearAlertMessage, 5000, null);
+    this.setState(prev => {
+      prev.errorSubmit = true;
+      prev.errorMessage = 'Request clarification sent.';
+      prev.alertType = 'success';
+      return prev;
+    });
+  };
+
+  clearAlertMessage = () => {
+    this.setState(prev => {
+      prev.errorSubmit = false;
+      prev.errorMessage = '';
+      prev.alertType = '';
+      return prev;
+    });
+  };
+
   render() {
     const {
       consent = '',
@@ -1123,7 +1144,9 @@ class ConsentGroupReview extends Component {
           user: this.props.user,
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
-          onChange: this.sendRequestClarification
+          onChange: this.sendRequestClarification,
+          clarificationUrl: this.props.clarificationUrl,
+          successClarification: this.successClarification
         }),
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
@@ -1582,7 +1605,8 @@ class ConsentGroupReview extends Component {
         ]),
         AlertMessage({
           msg: this.state.errorMessage,
-          show: this.state.errorSubmit
+          show: this.state.errorSubmit,
+          type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
@@ -1641,7 +1665,10 @@ class ConsentGroupReview extends Component {
             onClick: this.requestClarification,
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+        })
       ])
     )
   }

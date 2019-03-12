@@ -1,13 +1,12 @@
 package org.broadinstitute.orsp.api
 
-import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.NotifyArguments
 
-import javax.ws.rs.core.Response
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ClarificationController extends AuthenticatedController{
@@ -22,18 +21,19 @@ class ClarificationController extends AuthenticatedController{
                 render([message: "Error saving comment"])
             }
 
-            // By default, comments should go to ORSP
             List<String> toAddresses = new ArrayList<>()
-            toAddresses.addAll(notifyService.getOrspSpecialRecipients())
             String fromAddress = (String) getUser()?.emailAddress
 
-            // If the user is ORSP/Admin, and there are PMs available, send the comment to the PMs.
-            if (isAdmin() && !issue.getPMs().isEmpty()) {
-                toAddresses?.clear()
-                toAddresses.addAll(userService.findUsers(issue.getPMs())?.collect {it.emailAddress})
-                fromAddress = notifyService.ORSP_ADDRESS
+            if (issue.getType() != IssueType.CONSENT_GROUP.name) {
+                if (issue.getPMs().toString() == issue.getReporter().toString()) {
+                    toAddresses.addAll(userService.findUser(issue.getReporter())?.collect {it.emailAddress})
+                } else {
+                    toAddresses.addAll(userService.findUser(issue.getReporter())?.collect {it.emailAddress})
+                    toAddresses.addAll(userService.findUsers(issue.getPMs())?.collect {it.emailAddress})
+                }
+            } else {
+                toAddresses.addAll(userService.findUser(issue.getReporter())?.collect {it.emailAddress})
             }
-
             // Extra check to cover error condition of empty PMs
             if (toAddresses.isEmpty()) {
                 log.error("Issue " + issue.projectKey + " has empty PMs.")
@@ -49,8 +49,7 @@ class ClarificationController extends AuthenticatedController{
                             user: getUser(),
                             issue: issue))
         }
-        String url = issue.controller + '/show/' + params.id + '?tab=comments'
         response.status = 201
-        render([url: url] as JSON)
+        response
     }
 }
