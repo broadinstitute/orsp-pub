@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
-import { NewConsentGroupDataSharing } from './NewConsentGroupDataSharing';
 import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { InternationalCohorts } from '../components/InternationalCohorts';
@@ -8,6 +7,7 @@ import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
+import { DataSharing } from '../components/DataSharing';
 
 class NewConsentGroup extends Component {
 
@@ -18,7 +18,9 @@ class NewConsentGroup extends Component {
         displayName: '',
         userName: ''
       },
-      showErrorStep3: false,
+      showErrorIntCohorts: false,
+      showErrorDataSharing: false,
+      isDataSharingValid: false,
       generalError: false,
       formSubmitted: false,
       submitError: false,
@@ -32,7 +34,7 @@ class NewConsentGroup extends Component {
       },
       step1FormData: {},
       step4FormData: {},
-      step5FormData: {},
+      dataSharingFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -52,13 +54,12 @@ class NewConsentGroup extends Component {
         textCompliance: false,
         textSensitive: false,
         textAccessible: false,
-        sharingPlan: false
       }
     };
 
     this.updateStep1FormData = this.updateStep1FormData.bind(this);
     this.updateStep4FormData = this.updateStep4FormData.bind(this);
-    this.updateStep5FormData = this.updateStep5FormData.bind(this);
+    this.updateDataSharingFormData = this.updateDataSharingFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
@@ -98,7 +99,7 @@ class NewConsentGroup extends Component {
     this.setState({submitError: false});
 
     if (this.validateStep1() && this.validateStep2() &&
-      this.validateStep3() && this.validateStep4() && this.validateStep5()) {
+      this.validateStep3() && this.validateStep4() && this.validateDataSharing()) {
       this.removeErrorMessage();
 
       this.changeSubmitState();
@@ -190,9 +191,9 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'accessible', value: this.state.step4FormData.accessible });
     extraProperties.push({ name: 'textAccessible', value: this.state.step4FormData.textAccessible });
     // step 5
-    extraProperties.push({ name: 'sharingPlan', value: this.state.step5FormData.sharingPlan });
-    extraProperties.push({ name: 'databaseControlled', value: this.state.step5FormData.databaseControlled });
-    extraProperties.push({ name: 'databaseOpen', value: this.state.step5FormData.databaseOpen });
+    extraProperties.push({ name: 'sharingPlan', value: this.state.dataSharingFormData.sharingPlan });
+    extraProperties.push({ name: 'databaseControlled', value: this.state.dataSharingFormData.databaseControlled });
+    extraProperties.push({ name: 'databaseOpen', value: this.state.dataSharingFormData.databaseOpen });
     consentGroup.extraProperties = extraProperties;
     return consentGroup;
 
@@ -238,7 +239,7 @@ class NewConsentGroup extends Component {
     } else if (this.state.currentStep === 3) {
       isValid = this.validateStep4(field);
     } else if (this.state.currentStep === 4) {
-      isValid = this.validateStep5(field);
+      isValid = this.validateDataSharing();
     }
     return isValid;
   };
@@ -502,31 +503,12 @@ class NewConsentGroup extends Component {
     return isValid;
   }
 
-  validateStep5(field) {
-    let sharingPlan = false;
-    let isValid = true;
-
-    if (!this.isTextValid(this.state.step5FormData.sharingPlan)) {
-      sharingPlan = true;
-      isValid = false;
-    }
-
-    if (field === undefined || field === null || field === 4) {
-      this.setState(prev => {
-        prev.errors.sharingPlan = sharingPlan;
-        return prev;
-      });
-    }
-    else if (field === 'sharingPlan') {
-
-      this.setState(prev => {
-        if (field === 'sharingPlan') {
-          prev.errors.sharingPlan = sharingPlan;
-        }
-        return prev;
-      });
-    }
-    return isValid;
+  validateDataSharing() {
+    this.setState(prev => {
+      prev.showErrorDataSharing = !this.state.isDataSharingValid;
+      return prev;
+    });
+    return this.state.isDataSharingValid;
   }
 
   static getDerivedStateFromError(error) {
@@ -558,17 +540,19 @@ class NewConsentGroup extends Component {
     })
   };
 
-  updateStep5FormData = (updatedForm, field) => {
-    if (this.state.currentStep === 4) {
-      this.validateStep5(field);
-    }
+  updateDataSharingFormData = (updatedForm) => {
     this.setState(prev => {
-      prev.step5FormData = updatedForm;
+      prev.dataSharingFormData = updatedForm;
       return prev;
     }, () => {
-      this.isValid(field);
+      this.isValid();
     })
   };
+
+  handleDataSharingValidity = (isValid) => {
+    this.setState({ isDataSharingValid: isValid })
+  };
+
 
   initDocuments() {
     let documents = [];
@@ -681,7 +665,7 @@ class NewConsentGroup extends Component {
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
-          errors: this.state.showErrorStep3,
+          showErrorIntCohorts: this.state.showErrorIntCohorts,
           origin: 'consentGroup'
         }),
         NewConsentGroupSecurity({
@@ -693,17 +677,19 @@ class NewConsentGroup extends Component {
           errors: this.state.errors,
           removeErrorMessage: this.removeErrorMessage
         }),
-        NewConsentGroupDataSharing({
+        DataSharing({
           title: "Data Sharing",
           currentStep: currentStep,
+          step: 4,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateStep5FormData,
-          errors: this.state.errors,
+          updateForm: this.updateDataSharingFormData,
           removeErrorMessage: this.removeErrorMessage,
           generalError: this.state.generalError,
-          submitError: this.state.submitError
-        }),
+          submitError: this.state.submitError,
+          showErrorDataSharing: this.state.showErrorDataSharing,
+          handleDataSharingValidity: this.handleDataSharingValidity
+        })
       ])
     );
   }

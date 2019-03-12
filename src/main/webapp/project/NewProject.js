@@ -9,6 +9,7 @@ import { isEmpty } from '../util/Utils';
 import { span } from 'react-hyperscript-helpers';
 import { spinnerService } from '../util/spinner-service';
 import { InternationalCohorts } from '../components/InternationalCohorts';
+import { DataSharing } from "../components/DataSharing";
 
 class NewProject extends Component {
 
@@ -23,6 +24,8 @@ class NewProject extends Component {
       showErrorDeterminationQuestions: false,
       showErrorIntCohorts: false,
       showErrorDocuments: false,
+      showErrorDataSharing: false,
+      isDataSharingValid: false,
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
@@ -44,6 +47,7 @@ class NewProject extends Component {
         endState: false
       },
       step1FormData: {},
+      dataSharingFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -136,6 +140,11 @@ class NewProject extends Component {
     extraProperties.push({name: 'description', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
+
+    extraProperties.push({ name: 'sharingPlan', value: this.state.dataSharingFormData.sharingPlan });
+    extraProperties.push({ name: 'databaseControlled', value: this.state.dataSharingFormData.databaseControlled });
+    extraProperties.push({ name: 'databaseOpen', value: this.state.dataSharingFormData.databaseOpen });
+
     let collaborators = this.state.step1FormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
         collaborators.map((collaborator, idx) => {
@@ -206,6 +215,8 @@ class NewProject extends Component {
       isValid = this.validateDeterminationQuestions();
     } else if (this.state.currentStep === 2) {
       isValid = this.validateInternationalCohorts();
+    } else if (this.state.currentStep === 3) {
+      isValid = this.validateDataSharing();
     }
     return isValid;
   };
@@ -214,7 +225,8 @@ class NewProject extends Component {
     let isDeterminationQuestionsValid = this.validateDeterminationQuestions();
     let isGeneralDataValid = this.validateGeneralData();
     let isInternationalCohortsValid = this.validateInternationalCohorts();
-    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid
+    let isDataSharingValid = this.validateDataSharing();
+    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid && isDataSharingValid;
   };
 
   validateDeterminationQuestions() {
@@ -227,6 +239,14 @@ class NewProject extends Component {
       return prev;
     });
     return isValid;
+  }
+
+  validateDataSharing() {
+    this.setState(prev => {
+      prev.showErrorDataSharing = !this.state.isDataSharingValid;
+      return prev;
+    });
+    return this.state.isDataSharingValid;
   }
 
   validateGeneralData(field) {
@@ -420,6 +440,19 @@ class NewProject extends Component {
     }, () => this.isValid(field));
   };
 
+  updateDataSharingFormData = (updatedForm, field) => {
+    this.setState(prev => {
+      prev.dataSharingFormData = updatedForm;
+      return prev;
+    }, () => {
+      this.isValid(field);
+    })
+  };
+
+  handleDataSharingValidity = (isValid) => {
+    this.setState({ isDataSharingValid: isValid })
+  };
+
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
@@ -434,7 +467,7 @@ class NewProject extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -496,9 +529,23 @@ class NewProject extends Component {
           errors: this.state.showErrorIntCohorts,
           origin: 'newProject'
         }),
+        DataSharing({
+          title: "Data Sharing",
+          currentStep: currentStep,
+          step: 3,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateDataSharingFormData,
+          removeErrorMessage: this.removeErrorMessage,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError,
+          showErrorDataSharing: this.state.showErrorDataSharing,
+          handleDataSharingValidity: this.handleDataSharingValidity
+        }),
         NewProjectDocuments({
           title: "Documents",
           currentStep: currentStep,
+          step: 4,
           fileHandler: this.fileHandler,
           projectType: projectType,
           files: this.state.files,
