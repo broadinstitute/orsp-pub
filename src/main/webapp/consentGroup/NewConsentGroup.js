@@ -128,7 +128,7 @@ class NewConsentGroup extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
         window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
@@ -137,6 +137,7 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }).catch(error => {
+        spinnerService.hideAll();
         this.changeSubmitState();
         console.error(error);
         this.toggleSubmitError();
