@@ -4,9 +4,11 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
-import { Files, Project, User } from "../util/ajax";
+import { Files, Project, User } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import { span } from 'react-hyperscript-helpers';
-import { spinnerService } from "../util/spinner-service";
+import { spinnerService } from '../util/spinner-service';
+import { InternationalCohorts } from '../components/InternationalCohorts';
 
 class NewProject extends Component {
 
@@ -18,14 +20,23 @@ class NewProject extends Component {
         userName: '',
         emailAddress: ''
       },
-      showErrorStep2: false,
-      showErrorStep3: false,
+      showErrorDeterminationQuestions: false,
+      showErrorIntCohorts: false,
+      showErrorDocuments: false,
       isReadyToSubmit: false,
       generalError: false,
       formSubmitted: false,
       submitError: false,
       determination: {
         projectType: 400,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
+      },
+      intCohortsDetermination: {
+        projectType: 900,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -43,7 +54,7 @@ class NewProject extends Component {
       },
       formerProjectType: null
     };
-    this.updateStep1FormData = this.updateStep1FormData.bind(this);
+    this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.submitNewProject = this.submitNewProject.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
@@ -63,31 +74,27 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateStep3()) {
-
-      if (this.validateStep2() && this.validateStep1()) {
+    if (this.validateDocuments()) {
+      if (this.validateForm()) {
         this.changeStateSubmitButton();
-
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
           this.uploadFiles(resp.data.message.projectKey);
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
+          spinnerService.hideAll();
           console.error(error);
         });
       } else {
         this.setState(prev => {
           prev.generalError = true;
           return prev;
+        }, () => {
+          spinnerService.hideAll();
         });
       }
     } else {
-      this.setState(prev => {
-        prev.showErrorStep3 = true;
-        return prev;
-      }, () => {
         spinnerService.hideAll();
-      });
     }
   };
 
@@ -143,6 +150,16 @@ class NewProject extends Component {
           }
         });
     }
+
+    let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
+    if (internationalCohortsQuestions !== null && internationalCohortsQuestions.length > 1) {
+      internationalCohortsQuestions.map((q, idx) => {
+        if (q.answer !== null) {
+          extraProperties.push({name: q.key, value: q.answer});
+        }
+      });
+    }
+
     project.extraProperties = extraProperties;
     return project;
   }
@@ -161,7 +178,7 @@ class NewProject extends Component {
     return fundingList;
   }
 
-  getProjectType(project) {
+  getProjectType() {
     let type = '';
     if (this.state.determination.projectType === NE) {
       type = 'NE';
@@ -184,33 +201,41 @@ class NewProject extends Component {
   isValid = (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateStep1(field);
-    }
-    else if (this.state.currentStep === 1) {
-      isValid = this.validateStep2();
+      isValid = this.validateGeneralData(field);
+    } else if (this.state.currentStep === 1) {
+      isValid = this.validateDeterminationQuestions();
+    } else if (this.state.currentStep === 2) {
+      isValid = this.validateInternationalCohorts();
     }
     return isValid;
   };
 
-  validateStep2() {
+  validateForm = () => {
+    let isDeterminationQuestionsValid = this.validateDeterminationQuestions();
+    let isGeneralDataValid = this.validateGeneralData();
+    let isInternationalCohortsValid = this.validateInternationalCohorts();
+    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid
+  };
+
+  validateDeterminationQuestions() {
     let isValid = true;
     if (this.state.determination.requiredError || this.state.determination.endState == false) {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep2 = !isValid;
+      prev.showErrorDeterminationQuestions = !isValid;
       return prev;
     });
     return isValid;
   }
 
-  validateStep1(field) {
+  validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
-    if (!this.isTextValid(this.state.step1FormData.studyDescription)) {
+    if (isEmpty(this.state.step1FormData.studyDescription)) {
       studyDescription = true;
       isValid = false;
     }
@@ -218,7 +243,7 @@ class NewProject extends Component {
       subjectProtection = true;
       isValid = false;
     }
-    if (!this.isTextValid(this.state.step1FormData.pTitle)) {
+    if (isEmpty(this.state.step1FormData.pTitle)) {
       pTitle = true;
       isValid = false;
     }
@@ -227,7 +252,7 @@ class NewProject extends Component {
       isValid = false;
     } else {
       this.state.step1FormData.fundings.forEach(funding => {
-        if (!this.isTextValid(funding.source.label)) {
+        if (isEmpty(funding.source.label)) {
           fundings = true;
           isValid = false;
         }
@@ -264,11 +289,23 @@ class NewProject extends Component {
     return isValid;
   }
 
-  validateStep3() {
+  validateInternationalCohorts() {
+    let isValid = true;
+    if (this.state.intCohortsDetermination.requiredError || this.state.intCohortsDetermination.endState === false) {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.showErrorIntCohorts = !isValid;
+      return prev;
+    });
+    return isValid;
+  }
+
+  validateDocuments() {
     let isValid = true;
 
     let docs = [];
-    if (this.state.files !== null) {
+    if (this.state.files !== null && this.state.files.length > 0) {
       this.state.files.forEach(file => {
         if (file.required === true && file.file === null) {
           file.error = true;
@@ -285,32 +322,34 @@ class NewProject extends Component {
 
     this.setState(prev => {
       prev.files = docs;
+      prev.showErrorDocuments = isValid;
       return prev;
     });
-
     return isValid;
   }
-
-  isTextValid(value) {
-    let isValid = false;
-    if (value !== '' && value !== null && value !== undefined) {
-      isValid = true;
-    }
-    return isValid;
-  };
 
   determinationHandler = (determination) => {
     this.setState(prev => {
         prev.files = [];
         prev.determination = determination;
-        if (prev.determination.projectType !== null && prev.showErrorStep2 === true) {
-          prev.showErrorStep2 = false;
+        if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
+          prev.showErrorDeterminationQuestions = false;
         }
         return prev;
       },
       () => {
         this.initDocuments(this.state.determination.projectType);
       });
+  };
+
+  intCohortsDeterminationHandler = (determination) => {
+    this.setState(prev => {
+      prev.intCohortsDetermination = determination;
+      if (this.state.intCohortsDetermination.projectType !== null && this.state.showErrorIntCohorts === true) {
+        prev.showErrorIntCohorts = false;
+      }
+      return prev;
+    });
   };
 
   initDocuments(projectType) {
@@ -338,11 +377,18 @@ class NewProject extends Component {
         default:
           break;
       }
-
       this.setState({
         files: documents,
         projectType: projectType,
-        formerProjectType: projectType
+        formerProjectType: projectType,
+        intCohortsDetermination: {
+          projectType: 900,
+          questions: [],
+          requiredError: false,
+          currentQuestionIndex: 0,
+          nextQuestionIndex: 1,
+          endState: false
+        }
       });
 
     }
@@ -364,9 +410,9 @@ class NewProject extends Component {
     return { hasError: true }
   }
 
-  updateStep1FormData = (updatedForm, field) => {
+  updateGeneralDataFormData = (updatedForm, field) => {
     if (this.currentStep === 0) {
-      this.validateStep1(field);
+      this.validateGeneralData(field);
     }
     this.setState(prev => {
       prev.step1FormData = updatedForm;
@@ -389,17 +435,10 @@ class NewProject extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       renderSubmit = true;
     }
     return renderSubmit;
-  };
-
-  enableSubmit = () => {
-    this.setState(prev => {
-      prev.formSubmitted = true;
-      return prev;
-    });
   };
 
   removeErrorMessage() {
@@ -423,7 +462,6 @@ class NewProject extends Component {
   render() {
 
     const { currentStep, determination } = this.state;
-    const { user = { emailAddress: 'test@broadinstitute.org', displayName: '' } } = this.state;
     let projectType = determination.projectType;
     return (
       Wizard({
@@ -440,7 +478,7 @@ class NewProject extends Component {
           currentStep: currentStep,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateStep1FormData,
+          updateForm: this.updateGeneralDataFormData,
           errors: this.state.errors,
           removeErrorMessage: this.removeErrorMessage
         }),
@@ -449,7 +487,15 @@ class NewProject extends Component {
           currentStep: currentStep,
           determination: this.state.determination,
           handler: this.determinationHandler,
-          errors: this.state.showErrorStep2
+          errors: this.state.showErrorDeterminationQuestions
+        }),
+        InternationalCohorts({
+          title: "International Cohorts",
+          currentStep: currentStep,
+          handler: this.intCohortsDeterminationHandler,
+          determination: this.state.intCohortsDetermination,
+          errors: this.state.showErrorIntCohorts,
+          origin: 'newProject'
         }),
         NewProjectDocuments({
           title: "Documents",
@@ -457,10 +503,10 @@ class NewProject extends Component {
           fileHandler: this.fileHandler,
           projectType: projectType,
           files: this.state.files,
-          errors: this.state.showErrorStep3,
+          errors: this.state.showErrorDocuments,
           generalError: this.state.generalError,
           submitError: this.state.submitError
-        }),
+        })
       ])
     );
   }
