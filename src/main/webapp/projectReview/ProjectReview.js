@@ -118,9 +118,7 @@ class ProjectReview extends Component {
     let currentStr = {};
     let future = {};
     let futureCopy = {};
-    let futureStr = {};
     let formData = {};
-    let formDataStr = {};
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
@@ -269,8 +267,8 @@ class ProjectReview extends Component {
 
   discardEdits() {
     spinnerService.showAll();
+    this.setState({ discardEditsDialog: false });
     this.removeEdits();
-    this.toggleState('discardEditsDialog');
   }
 
   approveEdits = () => {

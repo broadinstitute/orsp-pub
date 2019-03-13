@@ -530,11 +530,8 @@ class ConsentGroupReview extends Component {
 
   discardEdits = () => {
     spinnerService.showAll();
+    this.setState({ discardEditsDialog: false });
     this.removeEdits();
-    this.setState(prev => {
-      prev.discardEditsDialog = false;
-      return prev;
-    });
   };
 
   approveEdits = () => {
