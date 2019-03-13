@@ -29,11 +29,12 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showDialog: false,
-      showDiscardEditsDialog: false,
-      showApproveDialog: false,
-      showRejectProjectDialog: false,
-      showRequestClarification: false,
+      dialog: false,
+      discardEditsDialog: false,
+      approveDialog: false,
+      approveInfoDialog: false,
+      rejectProjectDialog: false,
+      requestClarification: false,
       readOnly: true,
       isAdmin: false,
       disableApproveButton: false,
@@ -499,7 +500,7 @@ class ConsentGroupReview extends Component {
         this.setState(prev => {
           prev.formData.consentForm.approvalStatus = data.approvalStatus;
           prev.current.consentExtraProps.projectReviewApproved = "true";
-          prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
+          prev.approveInfoDialog = false;
           prev.questions.length = 0;
           return prev;
         })
@@ -531,7 +532,7 @@ class ConsentGroupReview extends Component {
     spinnerService.showAll();
     this.removeEdits();
     this.setState(prev => {
-      prev.showDiscardEditsDialog = !this.state.showDiscardEditsDialog;
+      prev.discardEditsDialog = false;
       return prev;
     });
   };
@@ -541,8 +542,8 @@ class ConsentGroupReview extends Component {
     let consentGroup = this.getConsentGroup();
     ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
       this.setState(prev => {
-        prev.showApproveDialog = !this.state.showApproveDialog;
         prev.questions.length = 0;
+        prev.approveDialog = false;
         return prev;
       });
       this.removeEdits();
@@ -555,7 +556,7 @@ class ConsentGroupReview extends Component {
   handleApproveDialog = () => {
     if (this.isValid()) {
       this.setState({
-        showApproveDialog: !this.state.showApproveDialog,
+        approveDialog: true,
         isEdited: true,
         errorSubmit: false
       });
@@ -570,8 +571,8 @@ class ConsentGroupReview extends Component {
   handleApproveInfoDialog = () => {
     if (this.isValid()) {
       this.setState({
-        showApproveInfoDialog: !this.state.showApproveInfoDialog,
-        errorSubmit: false
+        approveInfoDialog: true,
+        errorSubmit: false,
       });
     }
     else {
@@ -592,16 +593,11 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  requestClarification = () => {
-    this.setState({
-      showRequestClarification: !this.state.showRequestClarification
+  toggleState = (e) => () => {
+    this.setState((state, props) => {
+      return { [e]: !state[e]}
     });
   };
-
-  closeClarificationModal = () => {
-    this.setState({ showRequestClarification: !this.state.showRequestClarification });
-  };
-
 
   cancelEdit = (e) => () => {
     this.cleanErrors();
@@ -878,22 +874,6 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  closeModal = () => {
-    this.setState({ showDialog: !this.state.showDialog });
-  };
-
-  closeEditsModal = () => {
-    this.setState({
-      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
-    });
-  };
-
-  handleDialog = () => {
-    this.setState({
-      showDialog: !this.state.showDialog
-    });
-  };
-
   getRedirectUrl(projectKey) {
     if (projectKey === "") {
       return this.props.serverURL + "/search/index";
@@ -1015,12 +995,6 @@ class ConsentGroupReview extends Component {
     })
   };
 
-  handleDiscardEditsDialog = () => {
-    this.setState({
-      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
-    });
-  };
-
   stringAnswer = (current) => {
     let answer = '';
     if (current === 'true' || current === true) {
@@ -1086,10 +1060,6 @@ class ConsentGroupReview extends Component {
     return areFormsEqual;
   };
 
-  sendRequestClarification = (requestText) => {
-    console.log(requestText);
-  };
-
   successClarification = () => {
     setTimeout(this.clearAlertMessage, 5000, null);
     this.setState(prev => {
@@ -1138,44 +1108,43 @@ class ConsentGroupReview extends Component {
     return (
       div({}, [
         RequestClarificationDialog({
-          closeModal: this.closeClarificationModal,
-          show: this.state.showRequestClarification,
+          closeModal: this.toggleState('requestClarification'),
+          show: this.state.requestClarification,
           issueKey: this.props.consentKey,
           user: this.props.user,
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
-          onChange: this.sendRequestClarification,
           clarificationUrl: this.props.clarificationUrl,
           successClarification: this.successClarification
         }),
         h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
-          closeModal: this.handleApproveDialog,
-          show: this.state.showApproveDialog,
+          closeModal: this.toggleState('approveDialog'),
+          show: this.state.approveDialog,
           handleOkAction: this.approveEdits,
           title: 'Approve Edits Confirmation',
           bodyText: 'Are you sure you want to approve these edits?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
-          closeModal: this.closeEditsModal,
-          show: this.state.showDiscardEditsDialog,
+          closeModal: this.toggleState('discardEditsDialog'),
+          show: this.state.discardEditsDialog,
           handleOkAction: this.discardEdits,
           title: 'Discard Edits Confirmation',
           bodyText: 'Are you sure you want to remove these edits?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
-          closeModal: this.handleApproveInfoDialog,
-          show: this.state.showApproveInfoDialog,
+          closeModal: this.toggleState('approveInfoDialog'),
+          show: this.state.approveInfoDialog,
           handleOkAction: this.approveConsentGroup,
           title: 'Approve Project Information',
           bodyText: 'Are you sure you want to approve this Consent Group Details?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
-          closeModal: this.closeModal,
-          show: this.state.showDialog,
+          closeModal: this.toggleState('dialog'),
+          show: this.state.dialog,
           handleOkAction: this.rejectConsentGroup,
           title: 'Remove Confirmation',
           bodyText: 'Are you sure you want to remove this Consent Group?',
@@ -1650,19 +1619,19 @@ class ConsentGroupReview extends Component {
           /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.handleDialog,
+            onClick: this.toggleState('dialog'),
             disabled: this.state.disableApproveButton,
             isRendered: this.state.current.consentExtraProps.projectReviewApproved !== 'true' && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.handleDiscardEditsDialog,
+            onClick: this.toggleState('discardEditsDialog'),
             isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
           }, ["Discard Edits"]),
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.requestClarification,
+            onClick: this.toggleState('requestClarification'),
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
         ]),

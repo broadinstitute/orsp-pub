@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp.api
 
+import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
@@ -9,7 +10,7 @@ import org.broadinstitute.orsp.NotifyArguments
 
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
-class ClarificationController extends AuthenticatedController{
+class ClarificationController extends AuthenticatedController {
 
     def addClarificationRequest() {
         Issue issue = queryService.findByKey(params.id)
@@ -40,16 +41,21 @@ class ClarificationController extends AuthenticatedController{
                 toAddresses.addAll(notifyService.getOrspSpecialRecipients())
             }
 
-            notifyService.sendClarificationRequest(
-                    new NotifyArguments(
-                            toAddresses: toAddresses,
-                            fromAddress: fromAddress,
-                            subject: "Clarification Requested: " + issue.projectKey,
-                            comment: comment.description,
-                            user: getUser(),
-                            issue: issue))
+            try {
+                notifyService.sendClarificationRequest(
+                        new NotifyArguments(
+                                toAddresses: toAddresses,
+                                fromAddress: fromAddress,
+                                subject: "Clarification Requested: " + issue.projectKey,
+                                comment: comment.description,
+                                user: getUser(),
+                                issue: issue))
+                response.status = 201
+            } catch (Exception e) {
+                response.status = 500
+                render([error: "${e}"] as JSON)
+            }
         }
-        response.status = 201
         response
     }
 }
