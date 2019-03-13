@@ -772,15 +772,21 @@ class ProjectReview extends Component {
             valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol),
             edit: true
           }),
-          InputYesNo({
+          InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",
             label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
             moreInfo: "i.e. responsible for oversight and submissions?",
             value: this.state.formData.projectExtraProps.subjectProtection,
             currentValue: this.state.current.projectExtraProps.subjectProtection,
+            optionValues: ["true", "false", "notapplicable"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "N/A - No IRB submission required"
+            ],
             onChange: this.handleProjectExtraPropsChangeRadio,
-            required: false,
+            required: true,
             readOnly: this.state.readOnly,
             error: this.state.subjectProtectionError,
             errorMessage: "Required field"

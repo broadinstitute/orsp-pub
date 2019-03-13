@@ -133,7 +133,6 @@ class NewProject extends Component {
     extraProperties.push({name: 'pi', value: this.state.step1FormData.piName.value !== '' ? this.state.step1FormData.piName.key : null});
     extraProperties.push({name: 'projectTitle', value: this.state.step1FormData.pTitle !== '' ? this.state.step1FormData.pTitle : null});
     extraProperties.push({name: 'protocol', value: this.state.step1FormData.irbProtocolId !== '' ? this.state.step1FormData.irbProtocolId : null});
-    extraProperties.push({name: 'description', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.step1FormData.subjectProtection !== '' ? this.state.step1FormData.subjectProtection : null});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
     let collaborators = this.state.step1FormData.collaborators;
@@ -239,7 +238,7 @@ class NewProject extends Component {
       studyDescription = true;
       isValid = false;
     }
-    if (this.state.step1FormData.subjectProtection !== true && this.state.step1FormData.subjectProtection !== false) {
+    if (this.state.step1FormData.subjectProtection === undefined || this.state.step1FormData.subjectProtection === '') {
       subjectProtection = true;
       isValid = false;
     }
