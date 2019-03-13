@@ -19,4 +19,4 @@
 </g:javascript>
 
 <div id="projectReview"></div>
-<asset:javascript src="projectReview.js"/>
+<asset:javascript src="build/projectReview.js"/>
