@@ -239,6 +239,7 @@ task deploy(type: Deploy) {
     dependsOn renderConfigs
     dependsOn webpackProd
     dependsOn war
+    tasks.findByName('war').mustRunAfter webpackProd
     tasks.findByName('war').mustRunAfter renderConfigs
 }
 
