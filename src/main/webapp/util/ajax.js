@@ -69,6 +69,17 @@ export const ConsentGroup = {
   }
 };
 
+export const ClarificationRequest = {
+
+  sendNewClarification(url, comment, issueId) {
+    let data= new FormData();
+    data.append('comment', comment);
+    data.append('id', issueId);
+
+    return axios.post(url, data);
+  }
+};
+
 export const Files = {
 
   upload(url, files, projectKey, displayName, userName, newIssue = false) {
