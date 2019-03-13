@@ -205,12 +205,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         small({ isRendered: this.state.requiredError === true, className: "errorMessage" }, ["Required field"]),
 
         div({ className: "buttonContainer" }, [
-          button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary circleBtn floatLeft", onClick: this.prevQuestion }, [
-            span({ className: "glyphicon glyphicon-chevron-left" }, [])
-          ]),
-          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary circleBtn floatRight", onClick: this.nextQuestion }, [
-            span({ className: "glyphicon glyphicon-chevron-right" }, [])
-          ])
+          button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary floatLeft", onClick: this.prevQuestion }, ["Previous Question"]),
+          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary floatRight", onClick: this.nextQuestion }, ["Next Question"])
         ])
       ])
     )
