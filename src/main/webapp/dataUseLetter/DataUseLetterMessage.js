@@ -11,7 +11,7 @@ class DataUseLetterMessage extends Component {
   render() {
      return (
        div({}, [
-        h2({ isRendered: this.props.error === 'submitted', className: "pageSubtitle" }, ["The Data Use Letter form was submitted to ORSP."]),
+        h2({ isRendered: this.props.error === 'submitted', className: "pageSubtitle" }, ["The Data Use Letter form was submitted to the Broad Institute's Office of Research Subject Protection (ORSP)."]),
         h2({ isRendered: this.props.error === 'notFound', className: "pageSubtitle" }, ["Sorry, this page could not be found."])
        ])
      )

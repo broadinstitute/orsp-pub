@@ -15,12 +15,16 @@ class UrlMappings {
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
         '/api/project'(resource: 'project')
+        '/api/project/delete'(controller: 'project', action: 'delete', method: 'DELETE')
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/consent-group'(resource: 'newConsentGroup')
+        '/api/consent-group/delete'(controller: 'newConsentGroup', action: 'delete', method: 'DELETE')
+        '/api/consent-group/associatedProjects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
+        '/api/consent-group/unlinkAssociatedProjects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
@@ -30,6 +34,7 @@ class UrlMappings {
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
         '/api/dataUseLetter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
+        '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
 
 
         // Custom Error handlers.

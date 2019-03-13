@@ -421,6 +421,18 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     /**
+     * Send a request of clarification to the appropriate users
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendClarificationRequest(NotifyArguments arguments) {
+        arguments.view = "/notify/clarificationRequest"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    /**
      * Send a Closed message
      *
      * @param arguments NotifyArguments
@@ -559,5 +571,16 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/dulFormLink"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    def projectCGCreation(Issue issue) {
+        if (issue.getType() == IssueType.CONSENT_GROUP.name) {
+            User user = userService.findUser(issue.reporter)
+            sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+            sendConsentGroupSecurityInfo(issue, user)
+            sendConsentGroupRequirementsInfo(issue, user)
+        } else {
+            sendAdminNotification("Project Type", issue)
+        }
     }
 }

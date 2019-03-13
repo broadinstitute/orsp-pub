@@ -1,8 +1,9 @@
-import { Component } from 'react';
-import { input, hh, h, div, p, hr, small, button } from 'react-hyperscript-helpers';
+import { Component, Fragment } from 'react';
+import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
+import { KeyDocumentsEnum } from "../util/KeyDocuments";
 
 const headers =
   [
@@ -14,9 +15,15 @@ const headers =
     { name: 'Created', value: 'creationDate' }
   ];
 
+const associatedProjectsHeaders = [
+  { name: '', value: 'projectKey' },
+  { name: 'Type', value: 'type' },
+  { name: 'Summary', value: 'summary' }
+];
+
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
-}
+};
 
 export const Documents = hh(class Documents extends Component {
 
@@ -40,6 +47,18 @@ export const Documents = hh(class Documents extends Component {
     });
   };
 
+  newRestriction = () => {
+    window.location.href =  this.props.newRestrictionUrl;
+  };
+
+  editRestriction = () => {
+    window.location.href =  this.props.serverURL + "/dataUse/edit/" + this.props.restrictionId;
+  };
+
+  showRestriction = () => {
+    window.location.href =  this.props.serverURL + "/dataUse/show/" + this.props.restrictionId;
+  };
+
   closeModal = () => {
     this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
   };
@@ -48,7 +67,21 @@ export const Documents = hh(class Documents extends Component {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
+  findDul = () => {
+    let dulPresent = false;
+    if (this.props.keyDocuments.length !== 0) {
+      this.props.keyDocuments.forEach(docs => {
+        if (docs.fileType === KeyDocumentsEnum.DATA_USE_LETTER) {
+          dulPresent = true;
+        }
+      });
+    }
+    return dulPresent;
+  };
+
   render() {
+    const {restriction = []} = this.props;
+
     return div({}, [
       AddDocumentDialog({
         closeModal: this.closeModal,
@@ -74,8 +107,12 @@ export const Documents = hh(class Documents extends Component {
         handleLoadDocuments: this.props.handleLoadDocuments,
         serverURL: this.props.serverURL,
       }),
-      Panel({ title: "Key Documents" }, [
-        button({ className: "btn buttonSecondary", style: addDocumentBtn, onClick: this.addKeyDocuments }, ["Add Document"]),
+      Panel({title: "Key Documents"}, [
+        button({
+          className: "btn buttonSecondary",
+          style: addDocumentBtn,
+          onClick: this.addKeyDocuments
+        }, ["Add Document"]),
         Table({
           headers: headers,
           data: this.props.keyDocuments,
@@ -86,8 +123,12 @@ export const Documents = hh(class Documents extends Component {
           isAdmin: this.props.user.isAdmin
         })
       ]),
-      Panel({ title: "Additional Documents" }, [
-        button({ className: "btn buttonSecondary", style: addDocumentBtn, onClick: this.addAdditionalDocuments }, ["Add Document"]),
+      Panel({title: "Additional Documents"}, [
+        button({
+          className: "btn buttonSecondary",
+          style: addDocumentBtn,
+          onClick: this.addAdditionalDocuments
+        }, ["Add Document"]),
         Table({
           headers: headers,
           data: this.props.additionalDocuments,
@@ -97,7 +138,66 @@ export const Documents = hh(class Documents extends Component {
           downloadDocumentUrl: this.props.downloadDocumentUrl,
           isAdmin: this.props.user.isAdmin
         })
+      ]),
+      div({
+        isRendered: this.props.restriction !== undefined
+      }, [
+        Panel({
+          title: "Data Use Restrictions",
+          isRendered: this.props.user.isAdmin && this.findDul()
+        }, [
+          h3({
+            style: {'marginTop': '10px'},
+            isRendered: this.props.restrictionId !== null
+          }, ["Summary"]),
+          div({
+            isRendered: restriction.length > 1
+          }, [
+            restriction.map((elem, index) => {
+              return h(Fragment, {key: index}, [
+                div({style: {'marginBottom': '10px'}}, [
+                  div({style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented'}, [elem])
+                ]),
+              ]);
+            }),
+          ]),
+          div({}, [
+            button({
+                className: "btn buttonSecondary",
+                style: {'marginRight': '15px'},
+                onClick: this.newRestriction,
+                isRendered: this.props.restrictionId === null && this.findDul(),
+              },
+              ["Create Restriction"]),
+            button({
+                className: "btn buttonSecondary",
+                style: {'marginRight': '15px'},
+                onClick: this.editRestriction,
+                isRendered: this.props.restrictionId !== null,
+              },
+              ["Edit Restrictions"]),
+            button({
+                className: "btn buttonSecondary",
+                onClick: this.showRestriction,
+                isRendered: this.props.restrictionId !== null,
+              },
+              ["View Restrictions"])
+          ]),
+        ]),
+        div({isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0}, [
+          Panel({title: "Associated Projects"}, [
+            Table({
+              headers: associatedProjectsHeaders,
+              data: this.props.associatedProjects,
+              sizePerPage: 10,
+              paginationSize: 10,
+              unlinkProject: this.props.handleUnlinkProject,
+              handleRedirectToProject: this.props.handleRedirectToProject,
+              isAdmin: this.props.user.isAdmin
+            })
+          ])
+        ])
       ])
-    ]);
+    ])
   }
 });

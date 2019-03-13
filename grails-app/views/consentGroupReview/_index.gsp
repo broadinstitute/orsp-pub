@@ -11,6 +11,8 @@
       approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",
       discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
       consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
+      loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+      clarificationUrl: "${createLink(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')}"
     };
 
 </g:javascript>

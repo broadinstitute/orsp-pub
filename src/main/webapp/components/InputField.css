@@ -22,7 +22,7 @@
   pointer-events: none;
 }
 
-.inputFieldReadOnly .inputFieldTextarea:read-only, .inputFieldReadOnly .inputFieldSelect .select__control--is-disabled {
+.inputFieldReadOnly .inputFieldTextarea:read-only, .inputFieldReadOnly .inputFieldSelect>div, .inputFieldReadOnly .inputFieldSelect .select__control--is-disabled {
   background-color: transparent;
 }
 

@@ -125,7 +125,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     return (
       WizardStep({ title: this.props.title, step: 1, currentStep: this.props.currentStep, questionnaireStep: true,
-                   error: this.props.errors, errorMessage: ' Please answer all questions to continue'}, [
+                   error: this.props.errors, errorMessage: 'Please answer the next question(s) above before moving to the next step'}, [
         QuestionnaireWorkflow({ questions: this.state.questions, determination: this.props.determination, handler: this.props.handler })
       ])
     )

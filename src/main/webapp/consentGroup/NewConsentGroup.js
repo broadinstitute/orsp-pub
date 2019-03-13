@@ -3,11 +3,11 @@ import { Wizard } from '../components/Wizard';
 import { NewConsentGroupDataSharing } from './NewConsentGroupDataSharing';
 import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { NewConsentGroupIntCohorts } from './NewConsentGroupIntCohorts';
+import { InternationalCohorts } from '../components/InternationalCohorts';
 import { NewConsentGroupSecurity } from './NewConsentGroupSecurity';
 import { span, a } from 'react-hyperscript-helpers';
-import { Files, ConsentGroup, SampleCollections, User } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
+import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
+import { spinnerService } from '../util/spinner-service';
 
 class NewConsentGroup extends Component {
 
@@ -128,7 +128,7 @@ class NewConsentGroup extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName)
+    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
         window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
@@ -137,6 +137,7 @@ class NewConsentGroup extends Component {
           return prev;
         });
       }).catch(error => {
+        spinnerService.hideAll();
         this.changeSubmitState();
         console.error(error);
         this.toggleSubmitError();
@@ -362,8 +363,8 @@ class NewConsentGroup extends Component {
   determinationHandler = (determination) => {
     this.setState(prev => {
       prev.determination = determination;
-      if (this.state.determination.projectType !== null && this.state.showErrorStep3 === true) {
-        prev.showErrorStep3 = false;
+      if (this.state.determination.projectType !== null && this.state.showErrorIntCohorts === true) {
+        prev.showErrorIntCohorts = false;
       }
       return prev;
     });
@@ -413,7 +414,7 @@ class NewConsentGroup extends Component {
       isValid = false;
     }
     this.setState(prev => {
-      prev.showErrorStep3 = !isValid;
+      prev.showErrorIntCohorts = !isValid;
       return prev;
     });
     return isValid;
@@ -675,12 +676,13 @@ class NewConsentGroup extends Component {
           files: this.state.files,
           fillablePdfURL: this.props.fillablePdfURL
         }),
-        NewConsentGroupIntCohorts({
+        InternationalCohorts({
           title: "International Cohorts",
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
-          errors: this.state.showErrorStep3
+          errors: this.state.showErrorStep3,
+          origin: 'consentGroup'
         }),
         NewConsentGroupSecurity({
           title: "Security",
