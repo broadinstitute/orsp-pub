@@ -421,6 +421,18 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     /**
+     * Send a request of clarification to the appropriate users
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendClarificationRequest(NotifyArguments arguments) {
+        arguments.view = "/notify/clarificationRequest"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    /**
      * Send a Closed message
      *
      * @param arguments NotifyArguments
