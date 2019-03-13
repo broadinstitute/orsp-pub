@@ -121,40 +121,20 @@ export const Security = hh(class Security extends Component {
         return prev;
       });
     }
-    else if (field === 'pii' || field === 'compliance' || field === 'textCompliance' || field === 'sensitive'
-      || field === 'textSensitive' || field === 'accessible' || field === 'textAccessible') {
-
-      this.setState(prev => {
-        if (field === 'pii') {
-          prev.errors.pii = pii;
-        }
-        else if (field === 'compliance') {
-          prev.errors.compliance = compliance;
-        }
-        else if (field === 'textCompliance') {
-          prev.errors.textCompliance = textCompliance;
-        }
-        else if (field === 'sensitive') {
-          prev.errors.sensitive = sensitive;
-        }
-        else if (field === 'textSensitive') {
-          prev.errors.textSensitive = textSensitive;
-        }
-        else if (field === 'accessible') {
-          prev.errors.accessible = accessible;
-        }
-        else if (field === 'textAccessible') {
-          prev.errors.textAccessible = textAccessible;
-        }
-        return prev;
-      });
-    }
     return isValid;
   };
- 
+
+  formHasError() {
+    let stateError = false;
+    Object.keys(this.state.errors).forEach(key => {
+      if (this.state.errors[key] === true) {
+        stateError = true;
+      }
+    });
+    return stateError;
+  }
 
   render() {
-
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
@@ -163,9 +143,7 @@ export const Security = hh(class Security extends Component {
     return (
       WizardStep({
         title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        error: this.props.showErrorInfoSecurity && (this.state.errors.pii || this.state.errors.compliance
-        || this.state.errors.sensitive || this.state.errors.accessible
-        || this.state.errors.textCompliance || this.state.errors.textSensitive || this.state.errors.textAccessible),
+        error: this.props.showErrorInfoSecurity && this.formHasError(),
         errorMessage: 'Please complete all required fields'
       }, [
         div({ className: "questionnaireContainer" }, [
