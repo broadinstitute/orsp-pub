@@ -262,10 +262,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             optionLabels: [
               "Yes",
               "No",
-              "N/A - No IRB s∫ubmission required"
+              "N/A - No IRB submission required"
             ],
             onChange: this.handleRadioChange,
-            required: false,
+            required: true,
             error: this.props.errors.subjectProtection,
             errorMessage: "Required field",
             edit: false
