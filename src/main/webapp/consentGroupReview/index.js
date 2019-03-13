@@ -16,6 +16,8 @@ ReactDOM.render(
         serverURL = {consentGroupReviewComponent.serverURL}
         discardReviewUrl = {consentGroupReviewComponent.discardReviewUrl}
         consentNamesSearchURL = {consentGroupReviewComponent.consentNamesSearchURL}
+        clarificationUrl = {consentGroupReviewComponent.clarificationUrl}
+        loadingImage = {consentGroupReviewComponent.loadingImage}
     />,
     document.getElementById('consentGroupReview')
 );

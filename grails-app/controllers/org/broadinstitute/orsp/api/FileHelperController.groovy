@@ -6,8 +6,10 @@ import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.StorageProviderService
+import org.broadinstitute.orsp.User
 import org.springframework.web.multipart.MultipartFile
 
 import java.text.SimpleDateFormat
@@ -41,9 +43,19 @@ class FileHelperController extends AuthenticatedController{
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                 }
             }
+            if (params.isNewIssue.toBoolean()) {
+                notifyService.projectCGCreation(issue)
+            }
+
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
             response.status = 500
+
+            if (params.isNewIssue.toBoolean()) {
+                issueService.deleteIssue(issue.projectKey)
+                deleteDocuments(issue)
+            }
+
             render([error: e.message] as JSON)
         }
     }
@@ -98,5 +110,14 @@ class FileHelperController extends AuthenticatedController{
         storageProviderService.updateSingleDocVersionType()
         response.status = 200
         render (['message': 'documents versions updated'] as JSON)
+    }
+
+    private void deleteDocuments(Issue issue) {
+        Collection<StorageDocument> documents = queryService.getDocumentsForProject(issue.projectKey)
+        if (documents != null) {
+            documents.forEach {
+                storageProviderService.removeStorageDocument(it, getUser()?.userName)
+            }
+        }
     }
 }
