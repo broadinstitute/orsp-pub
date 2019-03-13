@@ -526,7 +526,7 @@ class NewProject extends Component {
           currentStep: currentStep,
           handler: this.intCohortsDeterminationHandler,
           determination: this.state.intCohortsDetermination,
-          errors: this.state.showErrorIntCohorts,
+          showErrorIntCohorts: this.state.showErrorIntCohorts,
           origin: 'newProject'
         }),
         DataSharing({
