@@ -42,7 +42,7 @@ class PermissionService implements UserInfo{
                 && getIssuePIs(issue).indexOf(userName) < 0
                 && getIssueActors(issue).indexOf(userName) < 0
                 && !isAdmin
-                && isReadOnlyAdmin) {
+                && !isReadOnlyAdmin) {
             return true
         }
         false
