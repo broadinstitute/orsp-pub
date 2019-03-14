@@ -15,5 +15,5 @@
     };
 </g:javascript>
 
- <div id="projectReview"></div>
-<asset:javascript src="consentGroupDocuments.js"/>
+<div id="projectReview"></div>
+<asset:javascript src="build/consentGroupDocuments.js"/>

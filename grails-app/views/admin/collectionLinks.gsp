@@ -20,7 +20,7 @@
 <body>
 
 <div id="app"></div>
-<asset:javascript src="collectionLinks.js"/>
+<asset:javascript src="build/collectionLinks.js"/>
 
 </body>
 </html>
