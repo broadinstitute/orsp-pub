@@ -13,6 +13,7 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
+import { Security } from "../components/Security";
 import get from 'lodash/get';
 
 class ProjectReview extends Component {
@@ -54,7 +55,14 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: 'false'
+          projectReviewApproved: 'false',
+          accessible: false,
+          compliance: false,
+          pii: false,
+          sensitive: false,
+          textAccessible: '',
+          textCompliance: '',
+          textSensitive: ''
         },
         fundings: [{
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
@@ -860,6 +868,15 @@ class ProjectReview extends Component {
           })
         ]),
         /*UNTIL HERE*/
+        Security({
+          title: "Security",
+          user: this.props.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateInfoSecurityFormData,
+          showErrorInfoSecurity: this.state.showInfoSecurityError,
+          removeErrorMessage: this.removeErrorMessage,
+          handleSecurityValidity: this.handleInfoSecurityValidity
+        }, []),
 
         Panel({ title: "Determination Questions" }, [
           div({ isRendered: this.state.readOnly === false }, [
