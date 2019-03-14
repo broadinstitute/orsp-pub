@@ -18,14 +18,6 @@ the react to javascript: `gradle webpackDev`
 
 That will recompile `webapp` when any of the source files are changed.
 
-## After Dev ...
-
-When you're done, run the webpackProd task that will generate a cleaned up version of
-the compiled javascript files from `src/main/webapp`. That's what you need to check
-into source control when completed.
-
-TODO: This really should be part of the build process. The compiled code should be in .gitignore 
-
 ## Testing
 
 See https://medium.freecodecamp.org/the-right-way-to-test-react-components-548a4736ab22 for

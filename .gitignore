@@ -82,3 +82,6 @@ gradle-app.setting
 /..bfg-report
 .idea_modules/
 /.asscache
+
+# Compiled Javascript
+grails-app/assets/javascripts/build

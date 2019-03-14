@@ -23,7 +23,7 @@
 <body>
 
 <div id="project"></div>
-<asset:javascript src="project.js"/>
+<asset:javascript src="build/project.js"/>
 
 </body>
 </html>

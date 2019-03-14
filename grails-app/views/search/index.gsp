@@ -39,7 +39,7 @@
 <body>
 
 <div id="app"></div>
-<asset:javascript src="search.js"/>
+<asset:javascript src="build/search.js"/>
 
 </body>
 </html>

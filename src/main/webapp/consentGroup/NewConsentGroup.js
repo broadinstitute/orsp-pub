@@ -1,12 +1,12 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
-import { NewConsentGroupDataSharing } from './NewConsentGroupDataSharing';
 import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
+import { DataSharing } from '../components/DataSharing';
 import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
 
@@ -22,6 +22,8 @@ class NewConsentGroup extends Component {
       showInternationalCohortsError: false,
       showInfoSecurityError: false,
       isInfoSecurityValid: false,
+      showErrorDataSharing: false,
+      isDataSharingValid: false,
       generalError: false,
       formSubmitted: false,
       submitError: false,
@@ -55,7 +57,6 @@ class NewConsentGroup extends Component {
         textCompliance: false,
         textSensitive: false,
         textAccessible: false,
-        sharingPlan: false
       }
     };
 
@@ -100,6 +101,7 @@ class NewConsentGroup extends Component {
 
     spinnerService.showAll();
     this.setState({submitError: false});
+
     if (this.validateForm()) {
       this.removeErrorMessage();
 
@@ -240,7 +242,7 @@ class NewConsentGroup extends Component {
     } else if (this.state.currentStep === 3) {
       isValid = this.validateInfoSecurity();
     } else if (this.state.currentStep === 4) {
-      isValid = this.validateDataSharing(field);
+      isValid = this.validateDataSharing();
     }
     return isValid;
   };
@@ -435,31 +437,12 @@ class NewConsentGroup extends Component {
     return this.state.isInfoSecurityValid;
   }
 
-  validateDataSharing(field) {
-    let sharingPlan = false;
-    let isValid = true;
-
-    if (isEmpty(this.state.dataSharingFormData.sharingPlan)) {
-      sharingPlan = true;
-      isValid = false;
-    }
-
-    if (field === undefined || field === null || field === 4) {
-      this.setState(prev => {
-        prev.errors.sharingPlan = sharingPlan;
-        return prev;
-      });
-    }
-    else if (field === 'sharingPlan') {
-
-      this.setState(prev => {
-        if (field === 'sharingPlan') {
-          prev.errors.sharingPlan = sharingPlan;
-        }
-        return prev;
-      });
-    }
-    return isValid;
+  validateDataSharing() {
+    this.setState(prev => {
+      prev.showErrorDataSharing = !this.state.isDataSharingValid;
+      return prev;
+    });
+    return this.state.isDataSharingValid;
   }
 
   static getDerivedStateFromError(error) {
@@ -479,24 +462,26 @@ class NewConsentGroup extends Component {
     })
   };
 
-  updateInfoSecurityFormData = (updatedForm, field) => {
+  updateInfoSecurityFormData = (updatedForm) => {
     this.setState(prev => {
       prev.securityInfoFormData = updatedForm;
       return prev;
     })
   };
 
-  updateDataSharingFormData = (updatedForm, field) => {
-    if (this.state.currentStep === 4) {
-      this.validateDataSharing(field);
-    }
+  updateDataSharingFormData = (updatedForm) => {
     this.setState(prev => {
       prev.dataSharingFormData = updatedForm;
       return prev;
     }, () => {
-      this.isValid(field);
+      this.isValid();
     })
   };
+
+  handleDataSharingValidity = (isValid) => {
+    this.setState({ isDataSharingValid: isValid })
+  };
+
 
   initDocuments() {
     let documents = [];
@@ -609,7 +594,7 @@ class NewConsentGroup extends Component {
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
-          errors: this.state.showInternationalCohortsError,
+          showErrorIntCohorts: this.state.showErrorIntCohorts,
           origin: 'consentGroup'
         }),
         Security({
@@ -623,17 +608,19 @@ class NewConsentGroup extends Component {
           removeErrorMessage: this.removeErrorMessage,
           handleSecurityValidity: this.handleInfoSecurityValidity
         }),
-        NewConsentGroupDataSharing({
+        DataSharing({
           title: "Data Sharing",
           currentStep: currentStep,
+          step: 4,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateDataSharingFormData,
-          errors: this.state.errors,
           removeErrorMessage: this.removeErrorMessage,
           generalError: this.state.generalError,
-          submitError: this.state.submitError
-        }),
+          submitError: this.state.submitError,
+          showErrorDataSharing: this.state.showErrorDataSharing,
+          handleDataSharingValidity: this.handleDataSharingValidity
+        })
       ])
     );
   }

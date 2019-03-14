@@ -21,7 +21,7 @@
 <body>
 
 <div id="dataUseLetter"></div>
-<asset:javascript src="dataUseLetter.js"/>
+<asset:javascript src="build/dataUseLetter.js"/>
 
 </body>
 </html>
