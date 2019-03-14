@@ -376,6 +376,7 @@ class NewConsentGroup extends Component {
   };
 
   handleInfoSecurityValidity(isValid) {
+    console.log(isValid);
     this.setState({ isInfoSecurityValid: isValid })
   }
 
@@ -463,6 +464,7 @@ class NewConsentGroup extends Component {
   };
 
   updateInfoSecurityFormData = (updatedForm) => {
+    console.log(updatedForm);
     this.setState(prev => {
       prev.securityInfoFormData = updatedForm;
       return prev;
@@ -606,7 +608,10 @@ class NewConsentGroup extends Component {
           updateForm: this.updateInfoSecurityFormData,
           showErrorInfoSecurity: this.state.showInfoSecurityError,
           removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity
+          handleSecurityValidity: this.handleInfoSecurityValidity,
+          edit: false,
+          review: false,
+          readOnly: false
         }),
         DataSharing({
           title: "Data Sharing",

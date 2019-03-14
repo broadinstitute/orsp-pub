@@ -13,8 +13,8 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
-import { Security } from "../components/Security";
 import get from 'lodash/get';
+import { Security } from "../components/Security";
 
 class ProjectReview extends Component {
 
@@ -22,6 +22,7 @@ class ProjectReview extends Component {
     super(props);
 
     this.state = {
+      isInfoSecurityValid: false,
       generalError: false,
       subjectProtectionError: false,
       descriptionError: false,
@@ -102,10 +103,17 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: 'false'
+          projectReviewApproved: 'false',
+          accessible: false,
+          compliance: false,
+          pii: false,
+          sensitive: false,
+          textAccessible: '',
+          textCompliance: '',
+          textSensitive: ''
         }
       }
-    }
+    };
     this.rejectProject = this.rejectProject.bind(this);
     this.approveEdits = this.approveEdits.bind(this);
     this.removeEdits = this.removeEdits.bind(this);
@@ -625,6 +633,18 @@ class ProjectReview extends Component {
     });
   };
 
+  handleInfoSecurityValidity(isValid) {
+    this.setState({ isInfoSecurityValid: isValid });
+  }
+
+  updateInfoSecurityFormData = (updatedForm) => {
+    console.log(updatedForm);
+    // this.setState(prev => {
+    //   prev.securityInfoFormData = updatedForm;
+    //   return prev;
+    // })
+  };
+
   render() {
     const { projectReviewApproved = 'false' } = this.state.formData.projectExtraProps;
     return (
@@ -868,16 +888,36 @@ class ProjectReview extends Component {
           })
         ]),
         /*UNTIL HERE*/
-        Security({
-          title: "Security",
-          user: this.props.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateInfoSecurityFormData,
-          showErrorInfoSecurity: this.state.showInfoSecurityError,
-          removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity
-        }, []),
-
+        Panel({ title: "Security" }, [
+          // Security({
+          //   user: this.props.user,
+          //   current: this.state.current.projectExtraProps,
+          //   formData: this.state.formData.projectExtraProps,
+          //   searchUsersURL: this.props.searchUsersURL,
+          //   updateForm: null,
+          //   showErrorInfoSecurity: this.state.showInfoSecurityError,
+          //   removeErrorMessage: this.removeErrorMessage,
+          //   handleSecurityValidity: this.handleInfoSecurityValidity,
+          //   handleChangeRadio: this.handleProjectExtraPropsChangeRadio,
+          //   readOnly: this.state.readOnly,
+          // }),
+          Security({
+            title: "Security",
+            step: 3,
+            currentStep: 3,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateInfoSecurityFormData,
+            showErrorInfoSecurity: this.state.showInfoSecurityError,
+            removeErrorMessage: null /* revisar -> this.removeErrorMessage*/,
+            handleSecurityValidity: this.handleInfoSecurityValidity,
+            readOnly: this.state.readOnly,
+            current: this.state.current.projectExtraProps,
+            formData: this.state.formData.projectExtraProps,
+            edit: true,
+            review: true,
+          }),
+        ]),
         Panel({ title: "Determination Questions" }, [
           div({ isRendered: this.state.readOnly === false }, [
             AlertMessage({
