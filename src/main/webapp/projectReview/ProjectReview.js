@@ -757,14 +757,14 @@ class ProjectReview extends Component {
 
           MultiSelect({
             id: "collaborator_select",
-            label: "Individuals who require access to this project record",
+            label: "Broad individuals who require access to this project record",
             isDisabled: false,
             readOnly: this.state.readOnly,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
             currentValue: this.state.current.collaborators,
-            placeholder: "Start typing collaborator names",
+            placeholder: "Start typing names for project access",
             isMulti: true
           }),
 
@@ -893,7 +893,7 @@ class ProjectReview extends Component {
               name: "broadInvestigator",
               value: this.state.formData.projectExtraProps.broadInvestigator,
               currentValue: this.state.current.projectExtraProps.broadInvestigator,
-              moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+              moreInfo: '(generating, contributing to generalizable knowledge)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects.',
               label: 'Is a Broad investigator conducting research ',
               readOnly: true,
               onChange: () => { }
