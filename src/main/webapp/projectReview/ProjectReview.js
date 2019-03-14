@@ -775,8 +775,8 @@ class ProjectReview extends Component {
           InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",
-            label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
-            moreInfo: "i.e. responsible for oversight and submissions?",
+            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
+            moreInfo: "(as opposed to the study team independently managing the submissions)?",
             value: this.state.formData.projectExtraProps.subjectProtection,
             currentValue: this.state.current.projectExtraProps.subjectProtection,
             optionValues: ["true", "false", "notapplicable"],
