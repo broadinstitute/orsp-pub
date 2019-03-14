@@ -9,6 +9,8 @@
         updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
         serverURL: "${webRequest.baseUrl}",
         discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
+        clarificationUrl: "${createLink(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')}",
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
     };
 
     const urls = {
@@ -17,4 +19,4 @@
 </g:javascript>
 
 <div id="projectReview"></div>
-<asset:javascript src="projectReview.js"/>
+<asset:javascript src="build/projectReview.js"/>

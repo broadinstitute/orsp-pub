@@ -1,16 +1,18 @@
 import { Component } from 'react';
-import { hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
+import { h, hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
 import { Fundings } from '../components/Fundings';
-import { AlertMessage } from '../components/AlertMessage'
+import { AlertMessage } from '../components/AlertMessage';
+import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { Project, Search, User, Review } from "../util/ajax";
+import { Project, Search, Review } from "../util/ajax";
+import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 
 class ProjectReview extends Component {
@@ -29,11 +31,16 @@ class ProjectReview extends Component {
       fundingError: false,
       fundingErrorIndex: [],
       showDialog: false,
-      showDiscardEditsDialog: false,
-      showApproveDialog: false,
-      showRejectProjectDialog: false,
+      approveInfoDialog: false,
+      discardEditsDialog: false,
+      approveDialog: false,
+      rejectProjectDialog: false,
+      requestClarification: false,
       readOnly: true,
       editedForm: {},
+      alertType: '',
+      alertMessage: '',
+      showAlert: false,
       formData: {
         description: '',
         projectType: '',
@@ -111,9 +118,7 @@ class ProjectReview extends Component {
     let currentStr = {};
     let future = {};
     let futureCopy = {};
-    let futureStr = {};
     let formData = {};
-    let formDataStr = {};
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
@@ -218,14 +223,19 @@ class ProjectReview extends Component {
   }
 
   approveRevision = () => {
-    this.setState({ disableApproveButton: true })
-    const data = { projectReviewApproved: 'true' }
+    this.setState({
+      disableApproveButton: true,
+      approveInfoDialog: false
+    });
+    const data = { projectReviewApproved: 'true' };
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
-      () => this.setState(prev => {
-        prev.formData.projectExtraProps.projectReviewApproved = 'true';
-        prev.showApproveInfoDialog = !this.state.showApproveInfoDialog;
-        return prev;
-      })
+      () => {
+        this.toggleState('approveInfoDialog');
+        this.setState(prev => {
+          prev.formData.projectExtraProps.projectReviewApproved = 'true';
+          return prev;
+        });
+      }
     );
     if (this.state.reviewSuggestion) {
       let project = this.getProject();
@@ -237,13 +247,13 @@ class ProjectReview extends Component {
           console.error(error);
         });
     }
-  }
+  };
 
   rejectProject() {
     spinnerService.showAll();
     Project.rejectProject(this.props.rejectProjectUrl, this.props.projectKey).then(resp => {
       this.setState(prev => {
-        prev.showRejectProjectDialog = !this.state.showRejectProjectDialog;
+        prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
       window.location.href = [this.props.serverURL, "index"].join("/");
@@ -257,11 +267,8 @@ class ProjectReview extends Component {
 
   discardEdits() {
     spinnerService.showAll();
+    this.setState({ discardEditsDialog: false });
     this.removeEdits();
-    this.setState(prev => {
-      prev.showDiscardEditsDialog = !this.state.showDiscardEditsDialog;
-      return prev;
-    });
   }
 
   approveEdits = () => {
@@ -270,16 +277,15 @@ class ProjectReview extends Component {
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
         this.removeEdits();
-        this.setState(prev => {
-          prev.showApproveDialog = !this.state.showApproveDialog;
-          return prev;
+        this.setState((state, props) => {
+          return { approveDialog: !state.approveDialog }
         });
       })
       .catch(error => {
         spinnerService.hideAll();
         console.error(error);
       });
-  }
+  };
 
   removeEdits() {
     Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
@@ -314,7 +320,7 @@ class ProjectReview extends Component {
         pmList.push(pm.key);
       });
       project.pm = pmList;
-    } 
+    }
 
     if (this.state.formData.piList !== null && this.state.formData.piList.length > 0) {
       let piList = [];
@@ -374,7 +380,7 @@ class ProjectReview extends Component {
     this.setState({
       readOnly: false
     });
-  }
+  };
 
   cancelEdit = (e) => () => {
     this.init();
@@ -444,19 +450,19 @@ class ProjectReview extends Component {
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
-      if(data !== null) {
+      if (data !== null) {
         prev.formData.piList = [data];
         prev.formData.projectExtraProps.pi = data.key;
       } else {
         prev.formData.piList = [];
-      }  
+      }
       return prev;
     });
   };
 
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
-      if(data !== null) {
+      if (data !== null) {
         prev.formData.pmList = [data];
         prev.formData.projectExtraProps.pm = data.key;
       } else {
@@ -506,42 +512,28 @@ class ProjectReview extends Component {
       });
   };
 
-  closeModal = () => {
-    this.setState({
-      showRejectProjectDialog: !this.state.showRejectProjectDialog
-    });
-  };
-
-  closeEditsModal = () => {
-    this.setState({
-      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
-    });
-  };
-
   handleApproveDialog = () => {
-      this.setState({
-        showApproveDialog: !this.state.showApproveDialog,
+    this.setState((state, props) => {
+      return {
+        approveDialog: !state.approveDialog,
         editedForm: {},
         errorSubmit: false
-      });
+      }
+    });
   };
 
   handleApproveInfoDialog = () => {
-      this.setState({
-        showApproveInfoDialog: !this.state.showApproveInfoDialog,
+    this.setState((state, props) => {
+      return {
+        approveInfoDialog: !state.approveInfoDialog,
         errorSubmit: false
-      });
-  };
-
-  handleDiscardEditsDialog = () => {
-    this.setState({
-      showDiscardEditsDialog: !this.state.showDiscardEditsDialog
+      }
     });
   };
 
-  handleRejectProjectDialog = () => {
-    this.setState({
-      showRejectProjectDialog: !this.state.showRejectProjectDialog
+  toggleState = (e) => () => {
+    this.setState((state, props) => {
+      return { [e]: !state[e]}
     });
   };
 
@@ -556,15 +548,15 @@ class ProjectReview extends Component {
 
     // Todo: Fundings error will be handled inside its component
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
-      if (this.isEmpty(obj.future.source.label) && ( !this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier) )
-        || ( idx === 0 && this.isEmpty(obj.future.source.label) && this.isEmpty(obj.current.source.label) )) {
+      if (this.isEmpty(obj.future.source.label) && (!this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier))
+        || (idx === 0 && this.isEmpty(obj.future.source.label) && this.isEmpty(obj.current.source.label))) {
         fundingErrorIndex.push(idx);
         return true
       } else {
         return false;
       }
     }).length > 0;
-    if(fundingError) generalError = true;
+    if (fundingError) generalError = true;
     if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
       generalError = true;
@@ -606,30 +598,49 @@ class ProjectReview extends Component {
     })
   };
 
+  successClarification = () => {
+    setTimeout(this.clearAlertMessage, 5000, null);
+    this.setState(prev => {
+      prev.showAlert = true;
+      prev.alertMessage = 'Request clarification sent.';
+      prev.alertType = 'success';
+      return prev;
+    });
+  };
+
+  clearAlertMessage = () => {
+    this.setState(prev => {
+      prev.showAlert = false;
+      prev.alertMessage = '';
+      prev.alertType = '';
+      return prev;
+    });
+  };
+
   render() {
     const { projectReviewApproved = 'false' } = this.state.formData.projectExtraProps;
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
         ConfirmationDialog({
-          closeModal: this.closeModal,
-          show: this.state.showRejectProjectDialog,
+          closeModal: this.toggleState('rejectProjectDialog'),
+          show: this.state.rejectProjectDialog,
           handleOkAction: this.rejectProject,
           title: 'Remove Project Confirmation',
           bodyText: 'Are you sure you want to remove this project?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
-          closeModal: this.closeEditsModal,
-          show: this.state.showDiscardEditsDialog,
+          closeModal: this.toggleState('discardEditsDialog'),
+          show: this.state.discardEditsDialog,
           handleOkAction: this.discardEdits,
           title: 'Discard Edits Confirmation',
           bodyText: 'Are you sure you want to remove these edits?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
-          closeModal: this.handleApproveDialog,
-          show: this.state.showApproveDialog,
+          closeModal: this.toggleState('approveDialog'),
+          show: this.state.approveDialog,
           handleOkAction: this.approveEdits,
           title: 'Approve Edits Confirmation',
           bodyText: 'Are you sure you want to approve these edits?',
@@ -637,12 +648,22 @@ class ProjectReview extends Component {
         }, []),
         ConfirmationDialog({
           closeModal: this.handleApproveInfoDialog,
-          show: this.state.showApproveInfoDialog,
+          show: this.state.approveInfoDialog,
           handleOkAction: this.approveRevision,
           title: 'Approve Project Information',
           bodyText: 'Are you sure you want to approve Project Information?',
           actionLabel: 'Yes'
         }, []),
+        RequestClarificationDialog({
+          closeModal: this.toggleState('requestClarification'),
+          show: this.state.requestClarification,
+          issueKey: this.props.projectKey,
+          user: this.props.user,
+          emailUrl: this.props.emailUrl,
+          userName: this.props.userName,
+          clarificationUrl: this.props.clarificationUrl,
+          successClarification: this.successClarification
+        }),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
@@ -811,7 +832,7 @@ class ProjectReview extends Component {
           })
         ]),
 
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false ||  (this.state.formData.projectExtraProps.editDescription !== null && this.state.formData.projectExtraProps.editDescription !== undefined)}, [
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || (this.state.formData.projectExtraProps.editDescription !== null && this.state.formData.projectExtraProps.editDescription !== undefined) }, [
           div({ isRendered: this.projectType === "IRB Project" }, [
             InputFieldRadio({
               id: "radioDescribeEdits",
@@ -948,8 +969,9 @@ class ProjectReview extends Component {
           ])
         ]),
         AlertMessage({
-          msg: 'Please complete all required fields',
-          show: this.state.generalError
+          msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
+          show: this.state.generalError || this.state.showAlert,
+          type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
@@ -969,8 +991,8 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
             disabled: this.isEmpty(this.state.editedForm) ?
-                      !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
-                      : this.compareObj("formData", "editedForm"),
+              !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
+              : this.compareObj("formData", "editedForm"),
             isRendered: this.state.readOnly === false
           }, ["Submit Edits"]),
 
@@ -992,17 +1014,25 @@ class ProjectReview extends Component {
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.handleRejectProjectDialog,
+            onClick: this.toggleState('rejectProjectDialog'),
             isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
           }, ["Reject"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
-            onClick: this.handleDiscardEditsDialog,
+            onClick: this.toggleState('discardEditsDialog'),
             isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
-          }, ["Discard Edits"])
-        ])
+          }, ["Discard Edits"]),
+          button({
+            className: "btn buttonSecondary floatRight",
+            onClick: this.toggleState('requestClarification'),
+            isRendered: this.state.isAdmin && this.state.readOnly === true
+          }, ["Request Clarification"])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+        })
       ])
     )
   }
