@@ -36,15 +36,15 @@ class PermissionService implements UserInfo{
     // verifies if logged user belogns to some user list ....
     def issueIsForbidden(issue, userName, isAdmin, isReadOnlyAdmin) {
 
-        if (issue.reporter != userName
-                && getIssueCollaborators(issue).indexOf(userName) < 0
-                && getIssuePMs(issue).indexOf(userName) < 0
-                && getIssuePIs(issue).indexOf(userName) < 0
-                && getIssueActors(issue).indexOf(userName) < 0
-                && !isAdmin
-                && !isReadOnlyAdmin) {
-            return true
+        if (issue.reporter == userName
+                || getIssueCollaborators(issue).indexOf(userName) >= 0
+                || getIssuePMs(issue).indexOf(userName) >= 0
+                || getIssuePIs(issue).indexOf(userName) >= 0
+                || isAdmin
+                || isReadOnlyAdmin) {
+            return false
         }
-        false
+        true
     }
 }
+
