@@ -59,21 +59,21 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     return (
 
       WizardStep({
-        title: this.props.title, step: 4, currentStep: this.props.currentStep,
+        title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
         errorMessage: errorText,
         error: errors || this.props.generalError
       }, [
-          documents.map((document, index) => {
-            return h(Fragment, { key: index }, [
-              InputFieldFile({
-                label: document.label,
-                callback: this.setFilesToUpload(documents, index),
-                fileName: (document.file != null ? document.file.name : ''),
-                required: document.required,
-                error: document.error,
-                errorMessage: "Required field",
-                removeHandler:() => this.removeFile(documents, index)
-              }),
+        documents.map((document, index) => {
+          return h(Fragment, { key: index }, [
+            InputFieldFile({
+              label: document.label,
+              callback: this.setFilesToUpload(documents, index),
+              fileName: (document.file != null ? document.file.name : ''),
+              required: document.required,
+              error: document.error,
+              errorMessage: "Required field",
+              removeHandler:() => this.removeFile(documents, index)
+            })
           ])
         })
       ])
