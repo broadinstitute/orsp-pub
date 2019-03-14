@@ -12,7 +12,7 @@
       loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
     };
 
- </g:javascript>
+</g:javascript>
 
- <div id="projectDocument"></div>
-<asset:javascript src="projectDocument.js"/>
+<div id="projectDocument"></div>
+<asset:javascript src="build/projectDocument.js"/>

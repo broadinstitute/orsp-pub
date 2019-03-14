@@ -18,4 +18,4 @@
 </g:javascript>
 
 <div id="consentGroupReview"></div>
-<asset:javascript src="consentGroupReview.js"/>
+<asset:javascript src="build/consentGroupReview.js"/>
