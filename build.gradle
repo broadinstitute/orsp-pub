@@ -237,7 +237,9 @@ task deploy(type: Deploy) {
     user = ''   // Required option
     pass = ''   // Required option
     dependsOn renderConfigs
+    dependsOn webpackProd
     dependsOn war
+    tasks.findByName('war').mustRunAfter webpackProd
     tasks.findByName('war').mustRunAfter renderConfigs
 }
 
