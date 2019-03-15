@@ -195,22 +195,22 @@ class Issue implements LogicalDelete<Issue> {
         properties
     }
 
-    transient LinkedHashMap<String, Object> getExtraPropertiesMap() {
-        LinkedHashMap<String, Object> extraproperties = new LinkedHashMap<>()
-        
-        Collection<String> collaborators = new ArrayList<String>()
-        getExtraProperties().collect {
-            if ( it.name != IssueExtraProperty.COLLABORATOR ) {
-                extraproperties.put(it.name, it.value)
-            } else {
-              collaborators.add(it.value);
-            }
+    /**
+     * Returns a map of IssueExtraProperty values for an issue, grouped by name.
+     *
+     * @return Map of extra properties, grouped by name
+     */
+    @SuppressWarnings("GroovyAssignabilityCheck")
+    transient Map<String, List<String>> getExtraPropertiesMap() {
+        Map<String, List<IssueExtraProperty>> propsByName = getExtraProperties().groupBy { it -> it.name }
+        if (propsByName.containsKey(IssueExtraProperty.COLLABORATOR)) {
+            List<IssueExtraProperty> props = propsByName.get(IssueExtraProperty.COLLABORATOR)
+            propsByName.put("collaborators", props)
+            propsByName.remove(IssueExtraProperty.COLLABORATOR)
         }
-
-        if (!collaborators.isEmpty()) {	
-            extraproperties.put("collaborators",  collaborators)	
-        }	
-        extraproperties
+        propsByName.collectEntries { key, list ->
+            [key, list*.value]
+        }
     }
 
     /**
