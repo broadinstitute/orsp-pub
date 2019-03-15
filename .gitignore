@@ -76,6 +76,7 @@ gradle-app.setting
 
 # IntelliJ
 **.iml
+**/*.iml
 .idea
 /out/
 /buildSrc/out/

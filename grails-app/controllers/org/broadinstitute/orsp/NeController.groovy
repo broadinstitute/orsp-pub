@@ -49,6 +49,9 @@ class NeController extends AuthenticatedController {
     @Override
     show() {
         Issue issue = queryService.findByKey(params.id)
+        if (issueIsForbidden(issue)) {
+            redirect(controller: 'Index', action: 'index')
+        }
         Collection<Submission> submissions = queryService.getSubmissionsByProject(issue.projectKey)
         Map<String, List<Submission>> groupedSubmissions = groupSubmissions(issue, submissions)
         Collection<StorageDocument> storageDocuments = queryService.getDocumentsForProject(issue.projectKey)
