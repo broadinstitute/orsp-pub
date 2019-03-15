@@ -7,7 +7,7 @@ import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { DataSharing } from '../components/DataSharing';
-import { Security } from '../components/Security';
+import { SecurityStep } from '../components/SecurityStep';
 import { isEmpty } from "../util/Utils";
 
 class NewConsentGroup extends Component {
@@ -599,7 +599,7 @@ class NewConsentGroup extends Component {
           showErrorIntCohorts: this.state.showErrorIntCohorts,
           origin: 'consentGroup'
         }),
-        Security({
+        SecurityStep({
           title: "Security",
           step: 3,
           currentStep: currentStep,

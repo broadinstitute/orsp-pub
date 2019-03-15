@@ -14,7 +14,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
-import { Security } from "../components/Security";
+import { SecurityStep } from "../components/SecurityStep";
 
 class ProjectReview extends Component {
 
@@ -63,7 +63,8 @@ class ProjectReview extends Component {
           sensitive: false,
           textAccessible: '',
           textCompliance: '',
-          textSensitive: ''
+          textSensitive: '',
+          isIdReceive: false
         },
         fundings: [{
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
@@ -110,7 +111,8 @@ class ProjectReview extends Component {
           sensitive: false,
           textAccessible: '',
           textCompliance: '',
-          textSensitive: ''
+          textSensitive: '',
+          isIdReceive: false
         }
       }
     };
@@ -118,6 +120,8 @@ class ProjectReview extends Component {
     this.approveEdits = this.approveEdits.bind(this);
     this.removeEdits = this.removeEdits.bind(this);
     this.discardEdits = this.discardEdits.bind(this);
+    this.handleInfoSecurityValidity = this.handleInfoSecurityValidity.bind(this);
+    this.updateInfoSecurityFormData = this.updateInfoSecurityFormData.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -639,10 +643,20 @@ class ProjectReview extends Component {
 
   updateInfoSecurityFormData = (updatedForm) => {
     console.log(updatedForm);
-    // this.setState(prev => {
-    //   prev.securityInfoFormData = updatedForm;
-    //   return prev;
-    // })
+    this.setState(prev => {
+      prev.current.projectExtraProps.pii = updatedForm.pii;
+      prev.current.projectExtraProps.compliance = updatedForm.compliance;
+      prev.current.projectExtraProps.sensitive = updatedForm.sensitive;
+      prev.current.projectExtraProps.accessible = updatedForm.accessible;
+      prev.current.projectExtraProps.textAccessible = updatedForm.textAccessible;
+      prev.current.projectExtraProps.textCompliance = updatedForm.textCompliance;
+      prev.current.projectExtraProps.textSensitive = updatedForm.textSensitive;
+      return prev;
+    })
+  };
+
+  removeErrorMessage = () => {
+
   };
 
   render() {
@@ -889,27 +903,12 @@ class ProjectReview extends Component {
         ]),
         /*UNTIL HERE*/
         Panel({ title: "Security" }, [
-          // Security({
-          //   user: this.props.user,
-          //   current: this.state.current.projectExtraProps,
-          //   formData: this.state.formData.projectExtraProps,
-          //   searchUsersURL: this.props.searchUsersURL,
-          //   updateForm: null,
-          //   showErrorInfoSecurity: this.state.showInfoSecurityError,
-          //   removeErrorMessage: this.removeErrorMessage,
-          //   handleSecurityValidity: this.handleInfoSecurityValidity,
-          //   handleChangeRadio: this.handleProjectExtraPropsChangeRadio,
-          //   readOnly: this.state.readOnly,
-          // }),
-          Security({
-            title: "Security",
-            step: 3,
-            currentStep: 3,
+          SecurityStep({
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,
             updateForm: this.updateInfoSecurityFormData,
             showErrorInfoSecurity: this.state.showInfoSecurityError,
-            removeErrorMessage: null /* revisar -> this.removeErrorMessage*/,
+            removeErrorMessage: this.removeErrorMessage,
             handleSecurityValidity: this.handleInfoSecurityValidity,
             readOnly: this.state.readOnly,
             current: this.state.current.projectExtraProps,
