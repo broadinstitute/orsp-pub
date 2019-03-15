@@ -22,6 +22,7 @@
 
         // Using a component allows us to pass GSP values to javascript objects
         const component = {
+            getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
             searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
             projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
             userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",

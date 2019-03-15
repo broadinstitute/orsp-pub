@@ -142,6 +142,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Collection<String> getPMs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value } }
 
+    transient Collection<String> getCollaborators() { getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR }.collect { it.value } }
+
     transient Collection<String> getAffiliations() { getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS }.collect { it.value } }
 
     transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
@@ -195,18 +197,19 @@ class Issue implements LogicalDelete<Issue> {
 
     transient LinkedHashMap<String, Object> getExtraPropertiesMap() {
         LinkedHashMap<String, Object> extraproperties = new LinkedHashMap<>()
+        
         Collection<String> collaborators = new ArrayList<String>()
         getExtraProperties().collect {
-            if ( it.name != "collaborator") {
+            if ( it.name != IssueExtraProperty.COLLABORATOR ) {
                 extraproperties.put(it.name, it.value)
             } else {
-                collaborators.add(it.value)
+              collaborators.add(it.value);
             }
         }
 
-        if (!collaborators.isEmpty()) {
-            extraproperties.put("collaborators",  collaborators)
-        }
+        if (!collaborators.isEmpty()) {	
+            extraproperties.put("collaborators",  collaborators)	
+        }	
         extraproperties
     }
 

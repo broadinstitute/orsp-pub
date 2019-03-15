@@ -7,11 +7,12 @@ import org.grails.plugins.web.taglib.ApplicationTagLib
 import java.text.SimpleDateFormat
 
 @SuppressWarnings("GroovyAssignabilityCheck")
-class SearchController {
+class SearchController implements UserInfo {
 
     UserService userService
     OntologyService ontologyService
     QueryService queryService
+    PermissionService permissionService
 
     SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy")
     ApplicationTagLib applicationTagLib = grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
@@ -118,6 +119,8 @@ class SearchController {
     }
 
     def generalReactTablesJsonSearch() {
+        def user = getUser()
+        def userName = user.userName
         QueryOptions options = new QueryOptions()
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)
@@ -127,6 +130,8 @@ class SearchController {
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
         def rows = []
+        def isAdmin = isAdmin()
+        def isReadOnlyAdmin = isReadOnlyAdmin()
         // Only query if we really have values to query for.
         if (options.projectKey ||
                 options.issueTypeNames ||
@@ -140,6 +145,9 @@ class SearchController {
                 [
                         link: link,
                         key: it.projectKey,
+                        reporter: it.reporter,
+                        extraProperties: it.extraProperties,
+                        linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isReadOnlyAdmin),
                         title: it.summary,
                         type: it.type,
                         status: it.status,
@@ -200,4 +208,5 @@ class SearchController {
         }
         render([text: data as JSON, contentType: "application/json"])
     }
+
 }

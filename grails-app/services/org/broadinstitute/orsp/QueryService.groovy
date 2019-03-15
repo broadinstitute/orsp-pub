@@ -651,11 +651,12 @@ class QueryService implements Status {
 
         def rows = getSqlConnection().rows(query, params)
         def ids = rows.collect{it.get("id")}
+        Collection result = Collections.emptyList()
+
         if (ids.size() > 0) {
-            Issue.findAllByIdInList(ids)
-        } else {
-            Collections.emptyList()
+            result = Issue.findAllByIdInList(ids)
         }
+        result
     }
 
     /**

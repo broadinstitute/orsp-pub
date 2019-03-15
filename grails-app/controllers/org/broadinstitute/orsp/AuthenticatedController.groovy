@@ -17,6 +17,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
     IssueService issueService
     PersistenceService persistenceService
     StatusEventService statusEventService
+    PermissionService permissionService
 
     public static final List<String> SUBMISSION_DOC_TYPES =
             [ "Amendment Form",
@@ -81,6 +82,9 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     def show() {
         Issue issue = queryService.findByKey(params.id)
+        if (issueIsForbidden(issue)) {
+            redirect(controller: 'Index', action: 'index')
+        }
         redirect([controller: issue.getController(), action: "show", params: [id: params.id, tab: "details"]])
     }
 
@@ -360,7 +364,12 @@ class AuthenticatedController implements Interceptor, UserInfo {
             'isAdmin': isAdmin(),
             'isORSP': isORSP(),
             'isComplianceOffice': isComplianceOffice(),
+            'isReadOnlyAdmin': isReadOnlyAdmin(),
         ] as JSON)
+    }
+
+    def issueIsForbidden(issue) {
+        return permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isReadOnlyAdmin())
     }
 
 }
