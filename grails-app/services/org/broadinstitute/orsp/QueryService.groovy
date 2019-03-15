@@ -656,7 +656,7 @@ class QueryService implements Status {
         if (ids.size() > 0) {
             result = Issue.findAllByIdInList(ids)
         }
-        return result;
+        result
     }
 
     /**

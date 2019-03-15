@@ -5,7 +5,7 @@ class SupplementalRole {
     public static final String COMPLIANCE_OFFICE = "Compliance Office"
     public static final String ORSP = "orsp"
     public static final String ADMIN = "admin"
-    public static final String RONLY_ADMIN = "ro_admin"
+    public static final String READ_ONLY_ADMIN = "ro_admin"
 
     public static final List<String> CCO_USERS = ["sdonnell", "saltzman"]
     public static final List<String> ORSP_ROLES = [COMPLIANCE_OFFICE, ORSP]
@@ -35,7 +35,7 @@ class SupplementalRole {
     }
 
     static boolean isReadOnlyAdmin(Collection<String> roles) {
-        roles?.contains(RONLY_ADMIN)
+        roles?.contains(READ_ONLY_ADMIN)
     }
 }
 

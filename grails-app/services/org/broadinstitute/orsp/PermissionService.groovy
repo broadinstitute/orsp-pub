@@ -10,41 +10,31 @@ class PermissionService implements UserInfo{
     UserService userService
 
     // get issue's collaborators as a List<String>
-    def getIssueCollaborators(issue) {
-        def collaborators = issue.extraProperties.findAll ({ it.name == 'collaborator' }).collect { property -> property.value }
-        collaborators
+    List<String> getIssueCollaborators(Issue issue) {
+      issue.extraProperties.findAll ({ it.name == 'collaborator' }).collect { property -> property.value }
     }
 
     // get issue's pms as a List<String>
-    def getIssuePMs(issue) {
-        def pms = issue.extraProperties.findAll ({ it.name == 'pm' }).collect { property -> property.value }
-        pms
+    List<String> getIssuePMs(Issue issue) {
+      issue.extraProperties.findAll ({ it.name == 'pm' }).collect { property -> property.value }
     }
 
     // get issue's pis as a List<String>
-    def getIssuePIs(issue) {
-        def pis = issue.extraProperties.findAll ({ it.name == 'pi' }).collect { property -> property.value }
-        pis
-    }
-
-    // get issue's actors as a List<String>
-    def getIssueActors(issue) {
-        def actors = issue.extraProperties.findAll ({ it.name == 'actor' }).collect { property -> property.value }
-        actors
+    List<String> getIssuePIs(Issue issue) {
+      issue.extraProperties.findAll ({ it.name == 'pi' }).collect { property -> property.value }
     }
 
     // verifies if logged user belogns to some user list ....
     def issueIsForbidden(issue, userName, isAdmin, isReadOnlyAdmin) {
 
-        if (issue.reporter == userName
+        boolean userHasAcess = (issue.reporter == userName
                 || getIssueCollaborators(issue).indexOf(userName) >= 0
                 || getIssuePMs(issue).indexOf(userName) >= 0
                 || getIssuePIs(issue).indexOf(userName) >= 0
                 || isAdmin
-                || isReadOnlyAdmin) {
-            return false
-        }
-        true
+                || isReadOnlyAdmin)
+
+      !userHasAcess
     }
 }
 

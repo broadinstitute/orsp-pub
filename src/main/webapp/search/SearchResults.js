@@ -74,11 +74,11 @@ class SearchResults extends Component {
   };
 
   expirationSort = (a, b, order) => {
-    return compareDateString(a.expiration, b.expiration, order);
+    return this.compareDateString(a.expiration, b.expiration, order);
   };
 
   updateSort = (a, b, order) => {
-    return compareDateString(a.updated, b.updated, order);
+    return this.compareDateString(a.updated, b.updated, order);
   };
 
   loadData = projectData => {
