@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j
 
 @Transactional
 @Slf4j
-class PermissionService implements UserInfo{
+class PermissionService implements UserInfo {
 
     UserService userService
 
@@ -24,7 +24,7 @@ class PermissionService implements UserInfo{
       issue.extraProperties.findAll ({ it.name == 'pi' }).collect { property -> property.value }
     }
 
-    // verifies if logged user belogns to some user list ....
+    // verifies if logged user belongs to some user list ....
     def issueIsForbidden(issue, userName, isAdmin, isReadOnlyAdmin) {
 
         boolean userHasAcess = (issue.reporter == userName
