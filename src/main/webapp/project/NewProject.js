@@ -139,11 +139,11 @@ class NewProject extends Component {
     project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
     let extraProperties = [];
+
     extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
     extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
     extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
     extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
-    extraProperties.push({name: 'description', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
 
@@ -284,7 +284,7 @@ class NewProject extends Component {
       studyDescription = true;
       isValid = false;
     }
-    if (this.state.generalDataFormData.subjectProtection !== true && this.state.generalDataFormData.subjectProtection !== false) {
+    if (this.state.generalDataFormData.subjectProtection === undefined || this.state.generalDataFormData.subjectProtection === '') {
       subjectProtection = true;
       isValid = false;
     }

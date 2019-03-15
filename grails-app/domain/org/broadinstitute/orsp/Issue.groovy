@@ -203,13 +203,13 @@ class Issue implements LogicalDelete<Issue> {
             if ( it.name != IssueExtraProperty.COLLABORATOR ) {
                 extraproperties.put(it.name, it.value)
             } else {
-                collaborators.add(it.value)
+              collaborators.add(it.value);
             }
         }
 
-        if (!collaborators.isEmpty()) {
-            extraproperties.put("collaborators",  collaborators)
-        }
+        if (!collaborators.isEmpty()) {	
+            extraproperties.put("collaborators",  collaborators)	
+        }	
         extraproperties
     }
 

@@ -7,7 +7,7 @@ import { InputFieldText } from '../components/InputFieldText';
 
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 
-import { InputYesNo } from '../components/InputYesNo';
+import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 
@@ -79,21 +79,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.props.removeErrorMessage();
   };
 
-
   handleRadioChange = (e, field, value) => {
-    if (value === 'true') {
-      value = true;
-    } else if (value === 'false') {
-      value = false;
-    }
-
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
     this.props.removeErrorMessage();
   };
-
+  
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
       prev.formData.projectManager = data;
@@ -227,12 +220,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           MultiSelect({
             id: "collaborator_select",
-            label: "Individuals who require access to this project record",
+            label: "Broad individuals who require access to this project record",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
-            placeholder: "Start typing collaborator names",
+            placeholder: "Start typing names for project access",
             isMulti: true,
             currentValue: this.state.formData.collaborators
           }),
@@ -259,14 +252,20 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange,
             edit: false
           }),
-          InputYesNo({
+          InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",
-            label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
-            moreInfo: "i.e. responsible for oversight and submissions? *",
+            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
+            moreInfo: "(as opposed to the study team independently managing the submissions)? *",
             value: this.state.formData.subjectProtection,
+            optionValues: ["true", "false", "notapplicable"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "N/A - No IRB submission required"
+            ],
             onChange: this.handleRadioChange,
-            required: false,
+            required: true,
             error: this.props.errors.subjectProtection,
             errorMessage: "Required field",
             edit: false
