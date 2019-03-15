@@ -33,7 +33,7 @@ class PermissionService implements UserInfo{
         actors
     }
 
-    // verifies if logged user belogns to some user list ....
+    // verifies if logged user belongs to some user list ....
     def issueIsForbidden(issue, userName, isAdmin, isReadOnlyAdmin) {
 
         if (issue.reporter == userName
