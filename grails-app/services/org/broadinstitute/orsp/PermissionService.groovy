@@ -12,7 +12,9 @@ class PermissionService implements UserInfo {
     // get issue's collaborators as a List<String>
     List<String> getIssueCollaborators(Issue issue) {
         def collaborators = issue.extraProperties.findAll ({ it.name == 'collaborator' }).collect { property -> property.value }
-        collaborators
+List<String> getIssueCollaborators(issue) {
+        issue.extraProperties.findAll ({ it.name == 'collaborator' }).collect { property -> property.value }
+}
     }
 
     // get issue's pms as a List<String>
