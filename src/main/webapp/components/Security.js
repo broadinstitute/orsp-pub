@@ -32,6 +32,7 @@ export const Security = hh(class Security extends Component {
         textAccessible: false,
       },
     };
+    this.formHasError = this.formHasError.bind(this);
   }
 
   componentDidMount() {
@@ -132,6 +133,7 @@ export const Security = hh(class Security extends Component {
       textAccessible = true;
       isValid = false;
     }
+    console.log(field);
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
