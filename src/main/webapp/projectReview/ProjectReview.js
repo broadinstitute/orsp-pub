@@ -799,14 +799,14 @@ class ProjectReview extends Component {
 
           MultiSelect({
             id: "collaborator_select",
-            label: "Individuals who require access to this project record",
+            label: "Broad individuals who require access to this project record",
             isDisabled: false,
             readOnly: this.state.readOnly,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectCollaboratorChange,
             value: this.state.formData.collaborators,
             currentValue: this.state.current.collaborators,
-            placeholder: "Start typing collaborator names",
+            placeholder: "Start typing names for project access",
             isMulti: true
           }),
 
@@ -835,15 +835,21 @@ class ProjectReview extends Component {
             valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol),
             edit: true
           }),
-          InputYesNo({
+          InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",
-            label: "Is the Broad Institute's Office of Research Subject Protection administratively managing this project, ",
-            moreInfo: "i.e. responsible for oversight and submissions?",
+            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
+            moreInfo: "(as opposed to the study team independently managing the submissions)?",
             value: this.state.formData.projectExtraProps.subjectProtection,
             currentValue: this.state.current.projectExtraProps.subjectProtection,
+            optionValues: ["true", "false", "notapplicable"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "N/A - No IRB submission required"
+            ],
             onChange: this.handleProjectExtraPropsChangeRadio,
-            required: false,
+            required: true,
             readOnly: this.state.readOnly,
             error: this.state.subjectProtectionError,
             errorMessage: "Required field"
@@ -943,7 +949,7 @@ class ProjectReview extends Component {
               name: "broadInvestigator",
               value: this.state.formData.projectExtraProps.broadInvestigator,
               currentValue: this.state.current.projectExtraProps.broadInvestigator,
-              moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+              moreInfo: '(generating, contributing to generalizable knowledge)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects.',
               label: 'Is a Broad investigator conducting research ',
               readOnly: true,
               onChange: () => { }
