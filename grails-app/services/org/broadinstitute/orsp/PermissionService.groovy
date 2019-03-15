@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j
 
 @Transactional
 @Slf4j
-class PermissionService implements UserInfo{
+class PermissionService implements UserInfo {
 
     UserService userService
 
