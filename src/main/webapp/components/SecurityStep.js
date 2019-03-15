@@ -24,13 +24,13 @@ export const SecurityStep = hh(class SecurityStep extends Component {
       },
       current: { },
       errors: {
-        pii: false,
-        compliance: false,
-        sensitive: false,
-        accessible: false,
-        textCompliance: false,
-        textSensitive: false,
-        textAccessible: false,
+        pii: true,
+        compliance: true,
+        sensitive: true,
+        accessible: true,
+        textCompliance: true,
+        textSensitive: true,
+        textAccessible: true,
       },
     };
     this.formHasError = this.formHasError.bind(this);
@@ -54,6 +54,14 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         prev.current.textCompliance = this.props.current.textCompliance;
         prev.current.textAccessible = this.props.current.textAccessible;
         prev.current.textSensitive = this.props.formData.textSensitive;
+
+        prev.errors.pii = false;
+        prev.errors.compliance = false;
+        prev.errors.accessible = false;
+        prev.errors.sensitive = false;
+        prev.errors.textAccessible = true;
+        prev.errors.textCompliance = true;
+        prev.errors.textSensitive = true;
         return prev;
       });
     }
@@ -134,7 +142,6 @@ export const SecurityStep = hh(class SecurityStep extends Component {
       textAccessible = true;
       isValid = false;
     }
-    console.log(field);
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
@@ -240,7 +247,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         name: "textSensitive",
         label: "Please explain*",
         value: this.state.formData.textSensitive,
-        currentValue: this.state.current.sensitive,
+        currentValue: this.state.current.textSensitive,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,

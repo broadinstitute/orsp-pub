@@ -133,6 +133,14 @@ class ProjectReview extends Component {
     this.init();
   }
 
+  validateInfoSecurity() {
+    this.setState(prev => {
+      prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
+      return prev;
+    });
+    return this.state.isInfoSecurityValid;
+  }
+
   init() {
     let current = {};
     let currentStr = {};
@@ -608,7 +616,13 @@ class ProjectReview extends Component {
       prev.generalError = generalError;
       return prev;
     });
-    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
+    console.log(this.validateInfoSecurity());
+    return !subjectProtectionError &&
+      !projectTitleError &&
+      !descriptionError &&
+      !editTypeError &&
+      !editDescriptionError &&
+      !fundingError;
   }
 
   changeFundingError = () => {
@@ -642,15 +656,14 @@ class ProjectReview extends Component {
   }
 
   updateInfoSecurityFormData = (updatedForm) => {
-    console.log(updatedForm);
     this.setState(prev => {
-      prev.current.projectExtraProps.pii = updatedForm.pii;
-      prev.current.projectExtraProps.compliance = updatedForm.compliance;
-      prev.current.projectExtraProps.sensitive = updatedForm.sensitive;
-      prev.current.projectExtraProps.accessible = updatedForm.accessible;
-      prev.current.projectExtraProps.textAccessible = updatedForm.textAccessible;
-      prev.current.projectExtraProps.textCompliance = updatedForm.textCompliance;
-      prev.current.projectExtraProps.textSensitive = updatedForm.textSensitive;
+      prev.formData.projectExtraProps.pii = updatedForm.pii;
+      prev.formData.projectExtraProps.compliance = updatedForm.compliance;
+      prev.formData.projectExtraProps.sensitive = updatedForm.sensitive;
+      prev.formData.projectExtraProps.accessible = updatedForm.accessible;
+      prev.formData.projectExtraProps.textAccessible = updatedForm.textAccessible;
+      prev.formData.projectExtraProps.textCompliance = updatedForm.textCompliance;
+      prev.formData.projectExtraProps.textSensitive = updatedForm.textSensitive;
       return prev;
     })
   };
