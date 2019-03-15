@@ -193,21 +193,14 @@ class Issue implements LogicalDelete<Issue> {
         properties
     }
 
-    transient LinkedHashMap<String, Object> getExtraPropertiesMap() {
-        LinkedHashMap<String, Object> extraproperties = new LinkedHashMap<>()
-        Collection<String> collaborators = new ArrayList<String>()
-        getExtraProperties().collect {
-            if ( it.name != "collaborator") {
-                extraproperties.put(it.name, it.value)
+    transient Map<String, Object> getExtraPropertiesMap() {
+        getExtraProperties().collectEntries {
+            if (it.name == IssueExtraProperty.COLLABORATOR) {
+                ["collaborators", it.value]
             } else {
-                collaborators.add(it.value)
+                [it.name, it.value]
             }
         }
-
-        if (!collaborators.isEmpty()) {
-            extraproperties.put("collaborators",  collaborators)
-        }
-        extraproperties
     }
 
     /**
