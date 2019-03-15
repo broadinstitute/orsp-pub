@@ -16,12 +16,12 @@ class PermissionService implements UserInfo {
 
     // get issue's pms as a List<String>
     List<String> getIssuePMs(Issue issue) {
-      issue.extraProperties.findAll ({ IssueExtraProperty.PM }).collect { property -> property.value }
+      issue.extraProperties.findAll ({ it.name == IssueExtraProperty.PM }).collect { property -> property.value }
     }
 
     // get issue's pis as a List<String>
     List<String> getIssuePIs(Issue issue) {
-      issue.extraProperties.findAll ({ IssueExtraProperty.PI }).collect { property -> property.value }
+      issue.extraProperties.findAll ({ it.name == IssueExtraProperty.PI }).collect { property -> property.value }
     }
 
     // verifies if logged user belongs to some user list ....
