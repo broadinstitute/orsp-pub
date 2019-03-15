@@ -41,7 +41,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
     questions.push({
       question: 'Is a Broad investigator conducting research ',
-      moreInfo: '(generating, contributing to generalizable knowledge)? Examples include case studies, internal technology development projects.',
+      moreInfo: '(generating, contributing to generalizable knowledge)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects.',
       progress: 12,
       yesOutput: 3,
       noOutput: NHSR,
