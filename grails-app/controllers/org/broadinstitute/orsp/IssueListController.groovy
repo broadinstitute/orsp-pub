@@ -25,7 +25,7 @@ class IssueListController extends AuthenticatedController {
         }
 
         if (isReadOnlyAdmin()) {
-            users.add(SupplementalRole.RONLY_ADMIN)
+            users.add(SupplementalRole.READ_ONLY_ADMIN)
         }
 
         Integer limit = null
