@@ -87,6 +87,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   handleRadioChange = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
+      if (field === 'uploadConsentGroup' && value !== 'notCGSpecify') {
+        prev.formData.notCGSpecify = '';
+      }
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
     this.props.removeErrorMessage();

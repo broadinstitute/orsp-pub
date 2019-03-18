@@ -76,7 +76,8 @@ class IssueService {
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
             IssueExtraProperty.PII,
-
+            IssueExtraProperty.UPLOAD_CONSENT_GROUP,
+            IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY
     ]
 
 

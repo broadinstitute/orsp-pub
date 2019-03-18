@@ -311,7 +311,7 @@ class ProjectReview extends Component {
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
     project.uploadConsentGroup = this.state.formData.projectExtraProps.uploadConsentGroup;
-    project.notCGSpecify = this.state.formData.projectExtraProps.notCGSpecify;    
+    project.notCGSpecify = this.state.formData.projectExtraProps.uploadConsentGroup !== 'notUpload' ? null : this.state.formData.projectExtraProps.notCGSpecify;
     project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
