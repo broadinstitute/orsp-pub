@@ -22,7 +22,15 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         textSensitive: '',
         textAccessible: '',
       },
-      current: { },
+      current: {
+        pii: '',
+        compliance: '',
+        sensitive: '',
+        accessible: '',
+        textCompliance: '',
+        textSensitive: '',
+        textAccessible: '',
+      },
       errors: {
         pii: true,
         compliance: true,
@@ -38,34 +46,31 @@ export const SecurityStep = hh(class SecurityStep extends Component {
 
   componentDidMount() {
     if (this.props.review === true) {
-      this.setState(prev => {
-        prev.formData.pii = this.props.formData.pii.toString();
-        prev.formData.compliance = this.props.formData.compliance.toString();
-        prev.formData.sensitive = this.props.formData.sensitive.toString();
-        prev.formData.accessible = this.props.formData.accessible.toString();
-        prev.formData.textCompliance = this.props.formData.textCompliance;
-        prev.formData.textAccessible = this.props.formData.textAccessible;
-        prev.formData.textSensitive = this.props.formData.textSensitive;
-
-        prev.current.pii = this.props.current.pii.toString();
-        prev.current.compliance = this.props.current.compliance.toString();
-        prev.current.sensitive = this.props.current.sensitive.toString();
-        prev.current.accessible = this.props.current.accessible.toString();
-        prev.current.textCompliance = this.props.current.textCompliance;
-        prev.current.textAccessible = this.props.current.textAccessible;
-        prev.current.textSensitive = this.props.formData.textSensitive;
-
-        prev.errors.pii = false;
-        prev.errors.compliance = false;
-        prev.errors.accessible = false;
-        prev.errors.sensitive = false;
-        prev.errors.textAccessible = true;
-        prev.errors.textCompliance = true;
-        prev.errors.textSensitive = true;
-        return prev;
-      });
+      this.updateStateReview();
     }
   }
+
+  updateStateReview = () => {
+    this.setState(prev => {
+      prev.formData.pii = this.props.current.projectExtraProps.pii.toString();
+      prev.formData.compliance = this.props.current.projectExtraProps.compliance.toString();
+      prev.formData.sensitive = this.props.current.projectExtraProps.sensitive.toString();
+      prev.formData.accessible = this.props.current.projectExtraProps.accessible.toString();
+      prev.formData.textCompliance = this.props.current.projectExtraProps.textCompliance;
+      prev.formData.textAccessible = this.props.current.projectExtraProps.textAccessible;
+      prev.formData.textSensitive = this.props.current.projectExtraProps.textSensitive;
+
+      prev.errors.pii = false;
+      prev.errors.compliance = false;
+      prev.errors.accessible = false;
+      prev.errors.sensitive = false;
+      prev.errors.textAccessible = false;
+      prev.errors.textCompliance = false;
+      prev.errors.textSensitive = false;
+      return prev;
+    });
+
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------');
@@ -174,8 +179,8 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         name: "pii",
         label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
         moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
-        value: this.state.formData.pii,
-        currentValue: this.state.current.pii,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.pii : this.props.currentValue.securityInfoFormData.pii,
+        currentValue: this.props.review === true ? this.props.current.projectExtraProps.pii : null,
         optionValues: ["true", "false"],
         optionLabels: [
           "Yes",
@@ -186,14 +191,15 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         error: this.state.errors.pii && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       }),
       InputFieldRadio({
         id: "radioCompliance",
         name: "compliance",
         label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
-        value: this.state.formData.compliance,
-        currentValue: this.state.current.compliance,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.compliance : this.props.currentValue.securityInfoFormData.compliance,
+        currentValue: this.props.review === true ? this.props.current.projectExtraProps.compliance : null,
         optionValues: ["true", "false", "uncertain"],
         optionLabels: [
           "Yes",
@@ -205,29 +211,31 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         error: this.state.errors.compliance && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       }),
       InputFieldText({
-        isRendered: this.state.formData.compliance === "true",
+        isRendered: this.props.review === true ? this.props.formData.projectExtraProps.compliance === 'true' : this.props.currentValue.securityInfoFormData.compliance === 'true',
         id: "inputCompliance",
         name: "textCompliance",
         label: "Please specify which regulations must be adhered to below:*",
-        value: this.state.formData.textCompliance,
-        currentValue: this.state.current.textCompliance,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.textCompliance : this.props.currentValue.securityInfoFormData.textCompliance,
+        currentValue: this.props.review === true ? this.props.current.projectExtraProps.textCompliance : undefined,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
         error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       }),
       InputFieldRadio({
         id: "radioSensitive",
         name: "sensitive",
         label: span({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
-        value: this.state.formData.sensitive,
-        currentValue: this.state.current.sensitive,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.sensitive : this.props.currentValue.securityInfoFormData.sensitive,
+        currentValue: this.props.review === true ? this.props.current.projectExtraProps.sensitive : null,
         optionValues: ["true", "false", "uncertain"],
         optionLabels: [
           "Yes",
@@ -239,29 +247,31 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         error: this.state.errors.sensitive && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       }),
       InputFieldText({
-        isRendered: this.state.formData.sensitive === "true",
+        isRendered: this.props.review === true ?  this.props.formData.projectExtraProps.sensitive === 'true' : this.props.currentValue.securityInfoFormData.sensitive === 'true',
         id: "inputSensitive",
         name: "textSensitive",
         label: "Please explain*",
-        value: this.state.formData.textSensitive,
-        currentValue: this.state.current.textSensitive,
+        value: this.props.review === true ?  this.props.formData.projectExtraProps.textSensitive : this.props.currentValue.securityInfoFormData.textSensitive,
+        currentValue: this.props.review === true ?  this.props.current.projectExtraProps.textSensitive : undefined,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
         error: this.state.errors.textSensitive && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       }),
       InputFieldRadio({
         id: "radioAccessible",
         name: "accessible",
         label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
-        value: this.state.formData.accessible,
-        currentValue: this.state.current.accessible,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.accessible : this.props.currentValue.securityInfoFormData.accessible,
+        currentValue: this.props.review === true ? this.props.current.projectExtraProps.accessible : null,
         optionValues: ["true", "false", "uncertain"],
         optionLabels: [
           "Yes",
@@ -273,22 +283,24 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         error: this.state.errors.accessible && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       }),
       InputFieldText({
-        isRendered: this.state.formData.accessible === "true",
+        isRendered: this.props.review === true ?  this.props.formData.projectExtraProps.accessible === 'true' : this.props.currentValue.securityInfoFormData.accessible === 'true',
         id: "inputAccessible",
         name: "textAccessible",
         label: "Please explain*",
-        value: this.state.formData.textAccessible,
-        currentValue: this.state.current.textAccessible,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.textAccessible : this.props.currentValue.securityInfoFormData.textAccessible,
+        currentValue:  this.props.review === true ? this.props.current.projectExtraProps.textAccessible : undefined,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
         error: this.state.errors.textAccessible && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
-        edit: this.props.review
+        edit: this.props.edit,
+        review: this.props.review
       })
     ])
   };

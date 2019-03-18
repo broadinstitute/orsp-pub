@@ -570,7 +570,9 @@ class NewProject extends Component {
           showErrorInfoSecurity: this.state.showErrorInfoSecurity,
           removeErrorMessage: this.removeErrorMessage,
           handleSecurityValidity: this.handleInfoSecurityValidity,
-          review: false
+          currentValue: this.state,
+          review: false,
+          edit: false
         }),
         DataSharing({
           title: "Data Sharing",

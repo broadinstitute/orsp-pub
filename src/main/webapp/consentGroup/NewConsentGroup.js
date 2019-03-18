@@ -608,6 +608,7 @@ class NewConsentGroup extends Component {
           showErrorInfoSecurity: this.state.showInfoSecurityError,
           removeErrorMessage: this.removeErrorMessage,
           handleSecurityValidity: this.handleInfoSecurityValidity,
+          currentValue: this.state,
           edit: false,
           review: false,
           readOnly: false

@@ -113,7 +113,8 @@ class ProjectReview extends Component {
           textCompliance: '',
           textSensitive: '',
           isIdReceive: false
-        }
+        },
+        showInfoSecurityError: false
       }
     };
     this.rejectProject = this.rejectProject.bind(this);
@@ -158,22 +159,36 @@ class ProjectReview extends Component {
         current.fundings = this.getFundingsArray(issue.data.fundings);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         currentStr = JSON.stringify(current);
-
-        this.getReviewSuggestions();
-        this.projectType = issue.data.issue.type;
-        formData = JSON.parse(currentStr);
-        current = JSON.parse(currentStr);
         future = JSON.parse((currentStr));
         futureCopy = JSON.parse(currentStr);
-        // store current issue info here ....
-        this.setState(prev => {
-          // prepare form data here, initially same as current ....
-          prev.formData = formData;
-          prev.current = current;
-          prev.future = future;
-          prev.futureCopy = futureCopy;
-          return prev;
-        });
+        this.projectType = issue.data.issue.type;
+
+        Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+          data => {
+            if (data.data !== '') {
+              formData = JSON.parse(data.data.suggestions);
+
+              this.setState(prev => {
+                prev.formData = formData;
+                prev.current = current;
+                prev.future = future;
+                prev.futureCopy = futureCopy;
+                prev.editedForm = JSON.parse(data.data.suggestions);
+                prev.reviewSuggestion = true;
+                return prev;
+              });
+            } else {
+              formData =  JSON.parse(currentStr);
+              this.setState(prev => {
+                prev.formData = formData;
+                prev.current = current;
+                prev.future = future;
+                prev.futureCopy = futureCopy;
+                prev.reviewSuggestion = false;
+                return prev;
+              });
+            }
+          });
       });
   }
 
@@ -605,6 +620,9 @@ class ProjectReview extends Component {
       subjectProtectionError = true;
       generalError = true;
     }
+    if (!this.state.isInfoSecurityValid) {
+      generalError = true;
+    }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -614,15 +632,17 @@ class ProjectReview extends Component {
       prev.fundingError = fundingError;
       prev.fundingErrorIndex = fundingErrorIndex;
       prev.generalError = generalError;
+      prev.showInfoSecurityError = !this.validateInfoSecurity();
       return prev;
     });
-    console.log(this.validateInfoSecurity());
+
     return !subjectProtectionError &&
       !projectTitleError &&
       !descriptionError &&
       !editTypeError &&
       !editDescriptionError &&
-      !fundingError;
+      !fundingError &&
+      this.validateInfoSecurity();
   }
 
   changeFundingError = () => {
@@ -655,21 +675,23 @@ class ProjectReview extends Component {
     this.setState({ isInfoSecurityValid: isValid });
   }
 
-  updateInfoSecurityFormData = (updatedForm) => {
+  updateInfoSecurityFormData = (updatedForm, field) => {
     this.setState(prev => {
-      prev.formData.projectExtraProps.pii = updatedForm.pii;
-      prev.formData.projectExtraProps.compliance = updatedForm.compliance;
-      prev.formData.projectExtraProps.sensitive = updatedForm.sensitive;
-      prev.formData.projectExtraProps.accessible = updatedForm.accessible;
-      prev.formData.projectExtraProps.textAccessible = updatedForm.textAccessible;
-      prev.formData.projectExtraProps.textCompliance = updatedForm.textCompliance;
-      prev.formData.projectExtraProps.textSensitive = updatedForm.textSensitive;
+      if (updatedForm[field] !== '') {
+        prev.formData.projectExtraProps[field] = updatedForm[field];
+      }
+      prev.showInfoSecurityError = false;
       return prev;
+    }, () => {
+      this.removeErrorMessage();
     })
   };
 
   removeErrorMessage = () => {
-
+    this.setState(prev => {
+      prev.generalError = false;
+      return prev;
+    });
   };
 
   render() {
@@ -930,8 +952,8 @@ class ProjectReview extends Component {
             removeErrorMessage: this.removeErrorMessage,
             handleSecurityValidity: this.handleInfoSecurityValidity,
             readOnly: this.state.readOnly,
-            current: this.state.current.projectExtraProps,
-            formData: this.state.formData.projectExtraProps,
+            current: this.state.current,
+            formData: this.state.formData,
             edit: true,
             review: true,
           }),
