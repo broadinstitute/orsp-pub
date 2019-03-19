@@ -11,8 +11,8 @@ class ProjectExtraProperties {
     String editDescription = ""
     String describeEditType = ""
     List<String> collaborators = []
-    List<String> pm
-    List<String> pi
+    List<String> pm = []
+    List<String> pi = []
     String actor = ""
 
     // Info Security
@@ -28,7 +28,6 @@ class ProjectExtraProperties {
     String sharingPlan = ""
     String databaseControlled = ""
     String databaseOpen = ""
-
 
     // Determination questions
     String feeForService = ""
@@ -50,124 +49,53 @@ class ProjectExtraProperties {
     String isConsentUnambiguous = ""
 
     transient ProjectExtraProperties buildProjectExtraProps(Map<String, List<String>> extraPropsMap) {
-        if (extraPropsMap.containsKey(IssueExtraProperty.SUMMARY)) {
-            this.setSummary(extraPropsMap[IssueExtraProperty.SUMMARY].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.SUBJECT_PROTECTION)) {
-            this.setSubjectProtection(extraPropsMap[IssueExtraProperty.SUBJECT_PROTECTION].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.PROJECT_REVIEW_APPROVED)) {
-            this.setProjectReviewApproved(extraPropsMap[IssueExtraProperty.PROJECT_REVIEW_APPROVED].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.PROTOCOL)) {
-            this.setProtocol(extraPropsMap[IssueExtraProperty.PROTOCOL].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.PROJECT_TITLE)) {
-            this.setProjectTitle(extraPropsMap[IssueExtraProperty.PROJECT_TITLE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.PROJECT_AVAILABILITY)) {
-            this.setProjectAvailability(extraPropsMap[IssueExtraProperty.PROJECT_AVAILABILITY].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.EDIT_DESCRIPTION)) {
-            this.setEditDescription(extraPropsMap[IssueExtraProperty.EDIT_DESCRIPTION].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.DESCRIBE_EDIT_TYPE)) {
-            this.setDescribeEditType(extraPropsMap[IssueExtraProperty.DESCRIBE_EDIT_TYPE].first())
-        }
-        if (extraPropsMap.containsKey("collaborators")) {
-            this.setCollaborators(extraPropsMap[IssueExtraProperty.DESCRIBE_EDIT_TYPE])
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.PM)) {
-            this.setPm(extraPropsMap[IssueExtraProperty.PM])
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.PI)) {
-            this.setPi(extraPropsMap[IssueExtraProperty.PI])
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.ACTOR)) {
-            this.setActor(extraPropsMap[IssueExtraProperty.ACTOR].first())
-        }
+        if(!extraPropsMap.isEmpty()) {
+            // General Data
+            this.setSummary(extraPropsMap.get(IssueExtraProperty.SUMMARY, [""]).first())
+            this.setSubjectProtection(extraPropsMap.get(IssueExtraProperty.SUBJECT_PROTECTION, [""]).first())
+            this.setProjectReviewApproved(extraPropsMap.get(IssueExtraProperty.PROJECT_REVIEW_APPROVED, ["false"]).first())
+            this.setProtocol(extraPropsMap.get(IssueExtraProperty.PROTOCOL, [""]).first())
+            this.setProjectTitle(extraPropsMap.get(IssueExtraProperty.PROJECT_TITLE, [""]).first())
+            this.setProjectAvailability(extraPropsMap.get(IssueExtraProperty.PROJECT_AVAILABILITY, [""]).first())
+            this.setEditDescription(extraPropsMap.get(IssueExtraProperty.EDIT_DESCRIPTION, [""]).first())
+            this.setDescribeEditType(extraPropsMap.get(IssueExtraProperty.DESCRIBE_EDIT_TYPE, [""]).first())
+            this.setCollaborators(extraPropsMap.get("collaborators", []))
+            this.setPm(extraPropsMap.get(IssueExtraProperty.PM, []))
+            this.setPi(extraPropsMap.get(IssueExtraProperty.PI, []))
+            this.setActor(extraPropsMap.get(IssueExtraProperty.ACTOR, [""]).first())
 
+            // Info Security
+            this.setPii(extraPropsMap.get(IssueExtraProperty.PII, [""]).first())
+            this.setCompliance(extraPropsMap.get(IssueExtraProperty.COMPLIANCE, [""]).first())
+            this.setTextCompliance(extraPropsMap.get(IssueExtraProperty.TEXT_COMPLIANCE, [""]).first())
+            this.setSensitive(extraPropsMap.get(IssueExtraProperty.SENSITIVE, [""]).first())
+            this.setTextSensitive(extraPropsMap.get(IssueExtraProperty.TEXT_SENSITIVE, [""]).first())
+            this.setAccessible(extraPropsMap.get(IssueExtraProperty.ACCESSIBLE, [""]).first())
+            this.setTextAccessible(extraPropsMap.get(IssueExtraProperty.TEXT_ACCESSIBLE, [""]).first())
 
-        // Info Security
-        if (extraPropsMap.containsKey(IssueExtraProperty.PII)) {
-            this.setPii(extraPropsMap[IssueExtraProperty.PII].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.COMPLIANCE)) {
-            this.setCompliance(extraPropsMap[IssueExtraProperty.COMPLIANCE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.TEXT_COMPLIANCE)) {
-            this.setTextCompliance(extraPropsMap[IssueExtraProperty.TEXT_COMPLIANCE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.SENSITIVE)) {
-            this.setSensitive(extraPropsMap[IssueExtraProperty.SENSITIVE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.TEXT_SENSITIVE)) {
-            this.setTextSensitive(extraPropsMap[IssueExtraProperty.TEXT_SENSITIVE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.ACCESSIBLE)) {
-            this.setAccessible(extraPropsMap[IssueExtraProperty.ACCESSIBLE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.TEXT_ACCESSIBLE)) {
-            this.setTextAccessible(extraPropsMap[IssueExtraProperty.TEXT_ACCESSIBLE].first())
-        }
+            // Sharing data
+            this.setSharingPlan(extraPropsMap.get(IssueExtraProperty.SHARING_PLAN, [""]).first())
+            this.setDatabaseControlled(extraPropsMap.get(IssueExtraProperty.DATABASE_CONTROLLED, [""]).first())
+            this.setDatabaseOpen(extraPropsMap.get(IssueExtraProperty.DATABASE_OPEN, [""]).first())
 
+            // Determination questions
+            this.setFeeForService(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE, [""]).first())
+            this.setBroadInvestigator(extraPropsMap.get(IssueExtraProperty.BROAD_INVESTIGATOR, [""]).first())
+            this.setSubjectsDeceased(extraPropsMap.get(IssueExtraProperty.SUBJECTS_DECEASED, [""]).first())
+            this.setSensitiveInformationSource(extraPropsMap.get(IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE, [""]).first())
+            this.setInteractionSource(extraPropsMap.get(IssueExtraProperty.INTERACTION_SOURCE, [""]).first())
+            this.setIsIdReceive(extraPropsMap.get(IssueExtraProperty.IS_ID_RECEIVE, [""]).first())
+            this.setIsCoPublishing(extraPropsMap.get(IssueExtraProperty.IS_CO_PUBLISHING, [""]).first())
+            this.setFederalFunding(extraPropsMap.get(IssueExtraProperty.FEDERAL_FUNDING, [""]).first())
 
-        // Sharing data
-        if (extraPropsMap.containsKey(IssueExtraProperty.SHARING_PLAN)) {
-            this.setSharingPlan(extraPropsMap[IssueExtraProperty.SHARING_PLAN].first())
+            // InternationalCohorts
+            this.setIndividualDataSourced(extraPropsMap.get(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED, [""]).first())
+            this.setIsLinkMaintained(extraPropsMap.get(IssueExtraProperty.IS_LINK_MAINTAINED, [""]).first())
+            this.setFeeForServiceWork(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE_WORK, [""]).first())
+            this.setAreSamplesComingFromEEAA(extraPropsMap.get(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, [""]).first())
+            this.setIsCollaboratorProvidingGoodService(extraPropsMap.get(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, [""]).first())
+            this.setIsConsentUnambiguous(extraPropsMap.get(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, [""]).first())
         }
-        if (extraPropsMap.containsKey(IssueExtraProperty.DATABASE_CONTROLLED)) {
-            this.setDatabaseControlled(extraPropsMap[IssueExtraProperty.DATABASE_CONTROLLED].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.DATABASE_OPEN)) {
-            this.setDatabaseOpen(extraPropsMap[IssueExtraProperty.DATABASE_OPEN].first())
-        }
-
-        // Determination questions
-        if (extraPropsMap.containsKey(IssueExtraProperty.FEE_FOR_SERVICE)) {
-            this.setFeeForService(extraPropsMap[IssueExtraProperty.FEE_FOR_SERVICE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR)) {
-            this.setBroadInvestigator(extraPropsMap[IssueExtraProperty.BROAD_INVESTIGATOR].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.SUBJECTS_DECEASED)) {
-            this.setSubjectsDeceased(extraPropsMap[IssueExtraProperty.SUBJECTS_DECEASED].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE)) {
-            this.setSensitiveInformationSource(extraPropsMap[IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.INTERACTION_SOURCE)) {
-            this.setInteractionSource(extraPropsMap[IssueExtraProperty.INTERACTION_SOURCE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.IS_ID_RECEIVE)) {
-            this.setIsIdReceive(extraPropsMap[IssueExtraProperty.IS_ID_RECEIVE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.IS_CO_PUBLISHING)) {
-            this.setIsCoPublishing(extraPropsMap[IssueExtraProperty.IS_CO_PUBLISHING].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.FEDERAL_FUNDING)) {
-            this.setFederalFunding(extraPropsMap[IssueExtraProperty.FEDERAL_FUNDING].first())
-        }
-
-        // InternationalCohorts
-        if (extraPropsMap.containsKey(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED)) {
-            this.setIndividualDataSourced(extraPropsMap[IssueExtraProperty.INDIVIDUAL_DATA_SOURCED].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.IS_LINK_MAINTAINED)) {
-            this.setIsLinkMaintained(extraPropsMap[IssueExtraProperty.IS_LINK_MAINTAINED].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.FEE_FOR_SERVICE_WORK)) {
-            this.setFeeForServiceWork(extraPropsMap[IssueExtraProperty.FEE_FOR_SERVICE_WORK].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA)) {
-            this.setAreSamplesComingFromEEAA(extraPropsMap[IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE)) {
-            this.setIsCollaboratorProvidingGoodService(extraPropsMap[IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE].first())
-        }
-        if (extraPropsMap.containsKey(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS)) {
-            this.setIsConsentUnambiguous(extraPropsMap[IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS].first())
-        }
-        return this
+        this
     }
 }

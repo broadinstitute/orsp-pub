@@ -8,6 +8,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
+import org.broadinstitute.orsp.ConsentGroupExtraProperties
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
@@ -924,6 +925,7 @@ class QueryService implements Status {
         Collection<ConsentCollectionLink> collectionLinks = findCollectionLinksByConsentKey(projectKey)
         Collection<String> collectionIds = findAllSampleCollectionIdsForConsent(projectKey)
         Collection<SampleCollection> sampleCollections
+        ConsentGroupExtraProperties consentGroupExtraProperties = new ConsentGroupExtraProperties().buildConsentGroupExtraProperties(issue.getExtraPropertiesMap())
         if (!collectionIds.isEmpty()) {
             sampleCollections = findCollectionByIdInList(collectionIds)
         } else {
@@ -931,7 +933,7 @@ class QueryService implements Status {
         }
         [
             issue            : issue,
-            extraProperties  : issue.getExtraPropertiesMap(),
+            extraProperties  : consentGroupExtraProperties,
             collectionLinks  : collectionLinks,
             sampleCollections: sampleCollections
         ]

@@ -57,15 +57,14 @@ class ProjectController extends AuthenticatedController {
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
         Collection<Funding> fundingList = issue.getFundings()
-//        LinkedHashMap<String, Object> extraProperties =  issue.getExtraPropertiesMap()
-        ProjectExtraProperties extraPropTest = new ProjectExtraProperties().buildProjectExtraProps(issue.getExtraPropertiesMap())
+        ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties().buildProjectExtraProps(issue.getExtraPropertiesMap())
         Collection<User> colls = getCollaborators(extraPropTest.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
                 pms               : getProjectManagersForIssue(issue),
                 pis               : getPIsForIssue(issue),
                 fundings          : fundingList,
-                extraProperties   : extraPropTest,
+                extraProperties   : projectExtraProperties,
                 collaborators     : colls
         ] as JSON)
     }
