@@ -2,7 +2,7 @@
     Hello,
 </p>
 <p>
-    Below is a summary of information provided for the recently created Consent Group <a href="${issueLink}">${issue.summary}</a>
+    Below is a summary of information provided for the recently created ${values.get("type")} <a href="${issueLink}">${issue.summary}</a>
 </p>
 
 
@@ -38,7 +38,7 @@
         </ol>
     </div>
 <p>
-    If you have any questions or concerns, please contact our colleague who created this Consent Group and is cc’d on this email.
+    If you have any questions or concerns, please contact our colleague who created this ${values.get("type")} and is cc’d on this email.
 </p>
 <p>
     Thank you,

@@ -465,7 +465,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user) {
+    Map<Boolean, String> sendConsentGroupSecurityInfo(Issue issue, User user) {
         Map<String, String> values = new HashMap<>()
         values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
         values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
@@ -478,12 +478,18 @@ class NotifyService implements SendgridSupport, Status {
         if (StringUtils.isNotEmpty(issue.getTextAccessible()))
             values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
 
+        if (issue.getType() == IssueType.CONSENT_GROUP.name) {
+            values.put('type', IssueType.CONSENT_GROUP.name)
+        } else {
+            values.put('type', 'Project')
+        }
+
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getSecurityRecipient()),
                         fromAddress: getDefaultFromAddress(),
                         ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                        subject: issue.projectKey + " - Required OSAP Follow-up",
+                        subject: issue.projectKey + " - Required InfoSec Follow-up",
                         user: user,
                         issue: issue,
                         values: values)
@@ -499,7 +505,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupSecurityInfo(Issue issue, User user) {
+    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user) {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
@@ -525,7 +531,7 @@ class NotifyService implements SendgridSupport, Status {
                             toAddresses: Collections.singletonList(user.getEmailAddress()),
                             fromAddress: getDefaultFromAddress(),
                             ccAddresses: Collections.singletonList(getAgreementsRecipient()),
-                            subject: issue.projectKey + " - Required InfoSec Follow-up",
+                            subject: issue.projectKey + " - Required OSAP Follow-up",
                             user: user,
                             issue: issue,
                             values: values)
@@ -573,14 +579,19 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
+    def sendProjectSecurityInfo(Issue issue) {
+
+    }
+
     def projectCGCreation(Issue issue) {
+        User user = userService.findUser(issue.reporter)
         if (issue.getType() == IssueType.CONSENT_GROUP.name) {
-            User user = userService.findUser(issue.reporter)
             sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
             sendConsentGroupSecurityInfo(issue, user)
             sendConsentGroupRequirementsInfo(issue, user)
         } else {
             sendAdminNotification("Project Type", issue)
+            sendConsentGroupSecurityInfo(issue, user)
         }
     }
 }
