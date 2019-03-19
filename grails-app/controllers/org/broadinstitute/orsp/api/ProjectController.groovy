@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.ProjectExtraProperties
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 
@@ -57,6 +58,7 @@ class ProjectController extends AuthenticatedController {
         Issue issue = queryService.findByKey(projectKey)
         Collection<Funding> fundingList = issue.getFundings()
         LinkedHashMap<String, Object> extraProperties =  issue.getExtraPropertiesMap()
+        ProjectExtraProperties extraPropTest = new ProjectExtraProperties().buildProjectExtraProps(extraProperties)
         Collection<User> colls = getCollaborators(extraProperties.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
