@@ -58,7 +58,7 @@ class ProjectController extends AuthenticatedController {
         Issue issue = queryService.findByKey(projectKey)
         Collection<Funding> fundingList = issue.getFundings()
         ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties().buildProjectExtraProps(issue.getExtraPropertiesMap())
-        Collection<User> colls = getCollaborators(extraPropTest.collaborators)
+        Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
                 pms               : getProjectManagersForIssue(issue),
