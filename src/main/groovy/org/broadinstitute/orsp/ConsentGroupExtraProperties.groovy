@@ -41,7 +41,7 @@ class ConsentGroupExtraProperties {
         if(!extraPropsMap.isEmpty()) {
             // General Data
             this.setStartDate(extraPropsMap.get(IssueExtraProperty.START_DATE, [""]).first())
-            this.setEndDate(extraPropsMap.get(IssueExtraProperty.END_DATE, [""]).first())
+            this.setEndDate(extraPropsMap.get(IssueExtraProperty.END_DATE, [null]).first())
             this.setOnGoingProcess(extraPropsMap.get(IssueExtraProperty.ON_GOING_PROCESS, [""]).first())
             this.setSource(extraPropsMap.get(IssueExtraProperty.SOURCE, [""]).first())
             this.setCollInst(extraPropsMap.get(IssueExtraProperty.COLL_INST, [""]).first())
@@ -68,12 +68,12 @@ class ConsentGroupExtraProperties {
             this.setDatabaseOpen(extraPropsMap.get(IssueExtraProperty.DATABASE_OPEN, [""]).first())
 
             // InternationalCohorts
-            this.setIndividualDataSourced(extraPropsMap.get(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED, [""]).first())
-            this.setIsLinkMaintained(extraPropsMap.get(IssueExtraProperty.IS_LINK_MAINTAINED, [""]).first())
-            this.setFeeForServiceWork(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE_WORK, [""]).first())
-            this.setAreSamplesComingFromEEAA(extraPropsMap.get(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, [""]).first())
-            this.setIsCollaboratorProvidingGoodService(extraPropsMap.get(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, [""]).first())
-            this.setIsConsentUnambiguous(extraPropsMap.get(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, [""]).first())
+            this.setIndividualDataSourced(extraPropsMap.get(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED, [null]).first())
+            this.setIsLinkMaintained(extraPropsMap.get(IssueExtraProperty.IS_LINK_MAINTAINED, [null]).first())
+            this.setFeeForServiceWork(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE_WORK, [null]).first())
+            this.setAreSamplesComingFromEEAA(extraPropsMap.get(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, [null]).first())
+            this.setIsCollaboratorProvidingGoodService(extraPropsMap.get(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, [null]).first())
+            this.setIsConsentUnambiguous(extraPropsMap.get(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, [null]).first())
         }
 
         this
