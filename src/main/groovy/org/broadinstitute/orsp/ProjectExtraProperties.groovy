@@ -8,8 +8,8 @@ class ProjectExtraProperties {
     String protocol = ""
     String projectTitle = ""
     String projectAvailability = ""
-    String editDescription = ""
-    String describeEditType = ""
+    String editDescription = null
+    String describeEditType = null
     List<String> collaborators = []
     List<String> pm = []
     List<String> pi = []
@@ -57,8 +57,10 @@ class ProjectExtraProperties {
             this.setProtocol(extraPropsMap.get(IssueExtraProperty.PROTOCOL, [""]).first())
             this.setProjectTitle(extraPropsMap.get(IssueExtraProperty.PROJECT_TITLE, [""]).first())
             this.setProjectAvailability(extraPropsMap.get(IssueExtraProperty.PROJECT_AVAILABILITY, [""]).first())
-            this.setEditDescription(extraPropsMap.get(IssueExtraProperty.EDIT_DESCRIPTION, [""]).first())
-            this.setDescribeEditType(extraPropsMap.get(IssueExtraProperty.DESCRIBE_EDIT_TYPE, [""]).first())
+
+            this.setEditDescription(extraPropsMap.get(IssueExtraProperty.EDIT_DESCRIPTION, [null]).first())
+            this.setDescribeEditType(extraPropsMap.get(IssueExtraProperty.DESCRIBE_EDIT_TYPE, [null]).first())
+
             this.setCollaborators(extraPropsMap.get("collaborators", []))
             this.setPm(extraPropsMap.get(IssueExtraProperty.PM, []))
             this.setPi(extraPropsMap.get(IssueExtraProperty.PI, []))

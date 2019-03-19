@@ -14,6 +14,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
+import { isEmpty } from '../util/Utils';
 
 class ProjectReview extends Component {
 
@@ -485,12 +486,6 @@ class ProjectReview extends Component {
   };
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
-    if (value === 'true') {
-      value = true;
-    } else if (value === 'false') {
-      value = false;
-    }
-
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = value;
       return prev;
@@ -831,8 +826,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly
           })
         ]),
-
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || (this.state.formData.projectExtraProps.editDescription !== null && this.state.formData.projectExtraProps.editDescription !== undefined) }, [
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
           div({ isRendered: this.projectType === "IRB Project" }, [
             InputFieldRadio({
               id: "radioDescribeEdits",
@@ -857,7 +851,7 @@ class ProjectReview extends Component {
             name: "editDescription",
             label: "Please use the space below to describe any additional edits or clarifications to the edits above",
             currentValue: this.state.current.projectExtraProps.editDescription,
-            value: this.state.formData.projectExtraProps.editDescription,
+            value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
             readOnly: this.state.readOnly,
             required: true,
             onChange: this.handleProjectExtraPropsChange,
