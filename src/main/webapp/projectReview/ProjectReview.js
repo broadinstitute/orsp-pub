@@ -355,6 +355,20 @@ class ProjectReview extends Component {
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
+    project.accessible = this.state.formData.projectExtraProps.accessible;
+    project.compliance = this.state.formData.projectExtraProps.compliance;
+    project.pii = this.state.formData.projectExtraProps.pii;
+    project.sensitive = this.state.formData.projectExtraProps.sensitive;
+
+    if (this.state.formData.projectExtraProps.textAccessible !== undefined) {
+      project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
+    }
+    if (this.state.formData.projectExtraProps.textCompliance !== undefined) {
+      project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
+    }
+    if (this.state.formData.projectExtraProps.textSensitive !== undefined) {
+      project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
+    }
 
     let collaborators = this.state.formData.collaborators;
     let pmList = [];
