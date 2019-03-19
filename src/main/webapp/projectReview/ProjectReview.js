@@ -618,7 +618,7 @@ class ProjectReview extends Component {
   };
 
   render() {
-    const { projectReviewApproved = 'false' } = this.state.formData.projectExtraProps;
+    const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
