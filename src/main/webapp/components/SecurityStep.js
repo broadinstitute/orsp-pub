@@ -101,7 +101,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
       return prev;
     }, () => {
       this.props.handleSecurityValidity(this.validate());
-      this.props.updateForm(this.state.formData, field);
+      this.props.updateForm(this.state.formData, field, value);
       this.props.removeErrorMessage();
     })
   };

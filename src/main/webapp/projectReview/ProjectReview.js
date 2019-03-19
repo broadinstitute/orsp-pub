@@ -675,10 +675,12 @@ class ProjectReview extends Component {
     this.setState({ isInfoSecurityValid: isValid });
   }
 
-  updateInfoSecurityFormData = (updatedForm, field) => {
+  updateInfoSecurityFormData = (updatedForm, field, value) => {
     this.setState(prev => {
-      if (updatedForm[field] !== '') {
+      if (updatedForm[field] !== '' && value === undefined) {
         prev.formData.projectExtraProps[field] = updatedForm[field];
+      } else if (value !== undefined) {
+        prev.formData.projectExtraProps[field] = value ;
       }
       prev.showInfoSecurityError = false;
       return prev;
