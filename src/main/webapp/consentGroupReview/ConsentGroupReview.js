@@ -1101,7 +1101,7 @@ class ConsentGroupReview extends Component {
     const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
 
     let currentEndDate = this.state.current.consentExtraProps.endDate !== null ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
-    let currentStartDate = this.state.current.consentExtraProps.startDate !== undefined ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
+    let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
         RequestClarificationDialog({

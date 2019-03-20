@@ -95,11 +95,11 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Collection<String> getPMs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value } }
 
-    transient String getStartDate() { getExtraProperties().findAll { it.name == IssueExtraProperty.START_DATE }.collect { it.value } }
+    transient String getStartDate() { getExtraProperties().find { it.name == IssueExtraProperty.START_DATE }?.value }
 
-    transient String getEndDate() { getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE }.collect { it.value } }
+    transient String getEndDate() { getExtraProperties().find { it.name == IssueExtraProperty.END_DATE }?.value }
 
-    transient String getOnGoingProcess() { getExtraProperties().findAll { it.name == IssueExtraProperty.ON_GOING_PROCESS }.collect { it.value } }
+    transient String getOnGoingProcess() { getExtraProperties().find { it.name == IssueExtraProperty.ON_GOING_PROCESS }?.value }
 
     transient String getSource() { getExtraProperties().find { it.name == IssueExtraProperty.SOURCE }?.value }
 
