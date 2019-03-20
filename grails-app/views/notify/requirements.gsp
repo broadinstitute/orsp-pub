@@ -2,7 +2,7 @@
     Hello,
 </p>
 <p>
-    Based on the information you provided, your recently created Consent Group  <a href="${issueLink}">${issue.summary}</a> will require the following:
+    Based on the information you provided, your recently created ${values.type} <a href="${issueLink}">${issue.summary}</a> will require the following:
 </p>
     <div>
         <ul>
@@ -25,7 +25,7 @@
         </ul>
     </div>
 <p>
-    If you have any questions or concerns, please contact our colleague who created this Consent Group and is cc’d on this email.
+    If you have any questions or concerns, please contact our colleague who created this ${values.type} and is cc’d on this email.
 </p>
 <p>
     Thank you,

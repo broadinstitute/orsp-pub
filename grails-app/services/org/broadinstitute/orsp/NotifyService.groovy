@@ -465,7 +465,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupSecurityInfo(Issue issue, User user) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, String type) {
         Map<String, String> values = new HashMap<>()
         values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
         values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
@@ -478,11 +478,7 @@ class NotifyService implements SendgridSupport, Status {
         if (StringUtils.isNotEmpty(issue.getTextAccessible()))
             values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
 
-        if (issue.getType() == IssueType.CONSENT_GROUP.name) {
-            values.put('type', IssueType.CONSENT_GROUP.name)
-        } else {
-            values.put('type', 'Project')
-        }
+        values.put('type', type)
 
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -505,7 +501,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user) {
+    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user, String type) {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
@@ -524,6 +520,8 @@ class NotifyService implements SendgridSupport, Status {
         else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
             values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
         }
+
+        values.put('type', type)
 
         if (!values.isEmpty()) {
             NotifyArguments arguments =
@@ -579,19 +577,17 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def sendProjectSecurityInfo(Issue issue) {
-
-    }
-
     def projectCGCreation(Issue issue) {
+        String type = ''
         User user = userService.findUser(issue.reporter)
         if (issue.getType() == IssueType.CONSENT_GROUP.name) {
-            sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-            sendConsentGroupSecurityInfo(issue, user)
-            sendConsentGroupRequirementsInfo(issue, user)
+            type = IssueType.CONSENT_GROUP.name
         } else {
+            type = 'Project'
             sendAdminNotification("Project Type", issue)
-            sendConsentGroupSecurityInfo(issue, user)
         }
+        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendConsentGroupRequirementsInfo(issue, user, type)
+        sendSecurityInfo(issue, user, type)
     }
 }
