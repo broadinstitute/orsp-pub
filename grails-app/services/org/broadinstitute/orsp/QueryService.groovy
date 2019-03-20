@@ -925,7 +925,6 @@ class QueryService implements Status {
         Collection<ConsentCollectionLink> collectionLinks = findCollectionLinksByConsentKey(projectKey)
         Collection<String> collectionIds = findAllSampleCollectionIdsForConsent(projectKey)
         Collection<SampleCollection> sampleCollections
-        ConsentGroupExtraProperties consentGroupExtraProperties = new ConsentGroupExtraProperties().buildConsentGroupExtraProperties(issue.getExtraPropertiesMap())
         if (!collectionIds.isEmpty()) {
             sampleCollections = findCollectionByIdInList(collectionIds)
         } else {
@@ -933,7 +932,7 @@ class QueryService implements Status {
         }
         [
             issue            : issue,
-            extraProperties  : consentGroupExtraProperties,
+            extraProperties  : new ConsentGroupExtraProperties(issue),
             collectionLinks  : collectionLinks,
             sampleCollections: sampleCollections
         ]

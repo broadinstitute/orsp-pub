@@ -2,80 +2,76 @@ package org.broadinstitute.orsp
 
 class ConsentGroupExtraProperties {
     // General Data
-    String startDate = ""
-    String endDate = ""
-    String onGoingProcess = ""
-    String source = ""
-    String collInst = ""
-    String collContact = ""
-    String consent = ""
-    String protocol = ""
-    String institutionalSources = ""
-    String describeConsentGroup = ""
-    String requireMta = ""
-    String projectReviewApproved = "false"
+    String startDate
+    String endDate
+    String onGoingProcess
+    String source
+    String collInst
+    String collContact
+    String consent
+    String protocol
+    String institutionalSources
+    String describeConsentGroup
+    String requireMta
+    Boolean projectReviewApproved
 
     // Info Security
-    String pii = ""
-    String compliance = ""
-    String textCompliance = ""
-    String sensitive = ""
-    String textSensitive = ""
-    String accessible = ""
-    String textAccessible = ""
+    String pii
+    String compliance
+    String textCompliance
+    String sensitive
+    String textSensitive
+    String accessible
+    String textAccessible
 
     // Sharing data
-    String sharingPlan = ""
-    String databaseControlled = ""
-    String databaseOpen = ""
+    String sharingPlan
+    String databaseControlled
+    String databaseOpen
 
     // InternationalCohorts
-    String individualDataSourced = ""
-    String isLinkMaintained = ""
-    String feeForServiceWork = ""
-    String areSamplesComingFromEEAA = ""
-    String isCollaboratorProvidingGoodService = ""
-    String isConsentUnambiguous = ""
+    String individualDataSourced
+    String isLinkMaintained
+    String feeForServiceWork
+    String areSamplesComingFromEEAA
+    String isCollaboratorProvidingGoodService
+    String isConsentUnambiguous
 
-    transient ConsentGroupExtraProperties buildConsentGroupExtraProperties(Map<String, List<String>> extraPropsMap) {
-        if(!extraPropsMap.isEmpty()) {
-            // General Data
-            this.setStartDate(extraPropsMap.get(IssueExtraProperty.START_DATE, [""]).first())
-            this.setEndDate(extraPropsMap.get(IssueExtraProperty.END_DATE, [null]).first())
-            this.setOnGoingProcess(extraPropsMap.get(IssueExtraProperty.ON_GOING_PROCESS, [""]).first())
-            this.setSource(extraPropsMap.get(IssueExtraProperty.SOURCE, [""]).first())
-            this.setCollInst(extraPropsMap.get(IssueExtraProperty.COLL_INST, [""]).first())
-            this.setCollContact(extraPropsMap.get(IssueExtraProperty.COLL_CONTACT, [""]).first())
-            this.setConsent(extraPropsMap.get(IssueExtraProperty.CONSENT, [""]).first())
-            this.setProtocol(extraPropsMap.get(IssueExtraProperty.PROTOCOL, [""]).first())
-            this.setInstitutionalSources(extraPropsMap.get(IssueExtraProperty.INSTITUTIONAL_SOURCES, [""]).first())
-            this.setDescribeConsentGroup(extraPropsMap.get(IssueExtraProperty.DESCRIBE_CONSENT, [""]).first())
-            this.setRequireMta(extraPropsMap.get(IssueExtraProperty.REQUIRE_MTA, [""]).first())
-            this.setProjectReviewApproved(extraPropsMap.get(IssueExtraProperty.PROJECT_REVIEW_APPROVED, ["false"]).first())
+    ConsentGroupExtraProperties(Issue consentGroup) {
+        // General Data
+        this.setStartDate(consentGroup.getStartDate())
+        this.setEndDate(consentGroup.getEndDate())
+        this.setOnGoingProcess(consentGroup.getOnGoingProcess())
+        this.setSource(consentGroup.getSource())
+        this.setCollInst(consentGroup.getCollInst())
+        this.setCollContact(consentGroup.getCollContact())
+        this.setConsent(consentGroup.getConsent())
+        this.setProtocol(consentGroup.getProtocol())
+        this.setInstitutionalSources(consentGroup.getInstitutionalSources())
+        this.setDescribeConsentGroup(consentGroup.getDescribeConsentGroup())
+        this.setRequireMta(consentGroup.getMTA())
+        this.setProjectReviewApproved(consentGroup.getProjectReviewApproved())
 
-            // Info Security
-            this.setPii(extraPropsMap.get(IssueExtraProperty.PII, [""]).first())
-            this.setCompliance(extraPropsMap.get(IssueExtraProperty.COMPLIANCE, [""]).first())
-            this.setTextCompliance(extraPropsMap.get(IssueExtraProperty.TEXT_COMPLIANCE, [""]).first())
-            this.setSensitive(extraPropsMap.get(IssueExtraProperty.SENSITIVE, [""]).first())
-            this.setTextSensitive(extraPropsMap.get(IssueExtraProperty.TEXT_SENSITIVE, [""]).first())
-            this.setAccessible(extraPropsMap.get(IssueExtraProperty.ACCESSIBLE, [""]).first())
-            this.setTextAccessible(extraPropsMap.get(IssueExtraProperty.TEXT_ACCESSIBLE, [""]).first())
+        // Info Security
+        this.setPii(consentGroup.getPII())
+        this.setCompliance(consentGroup.getCompliance())
+        this.setTextCompliance(consentGroup.getTextCompliance())
+        this.setSensitive(consentGroup.getSensitive())
+        this.setTextSensitive(consentGroup.getTextSensitive())
+        this.setAccessible(consentGroup.getAccessible())
+        this.setTextAccessible(consentGroup.getTextAccessible())
 
-            // Sharing data
-            this.setSharingPlan(extraPropsMap.get(IssueExtraProperty.SHARING_PLAN, [""]).first())
-            this.setDatabaseControlled(extraPropsMap.get(IssueExtraProperty.DATABASE_CONTROLLED, [""]).first())
-            this.setDatabaseOpen(extraPropsMap.get(IssueExtraProperty.DATABASE_OPEN, [""]).first())
+        // Sharing data
+        this.setSharingPlan(consentGroup.getSharingPlan())
+        this.setDatabaseControlled(consentGroup.getDataBaseControlled())
+        this.setDatabaseOpen(consentGroup.getDatabaseOpen())
 
-            // InternationalCohorts
-            this.setIndividualDataSourced(extraPropsMap.get(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED, [null]).first())
-            this.setIsLinkMaintained(extraPropsMap.get(IssueExtraProperty.IS_LINK_MAINTAINED, [null]).first())
-            this.setFeeForServiceWork(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE_WORK, [null]).first())
-            this.setAreSamplesComingFromEEAA(extraPropsMap.get(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, [null]).first())
-            this.setIsCollaboratorProvidingGoodService(extraPropsMap.get(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, [null]).first())
-            this.setIsConsentUnambiguous(extraPropsMap.get(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, [null]).first())
-        }
-
-        this
+        // InternationalCohorts
+        this.setIndividualDataSourced(consentGroup.getIndividualDataSourced())
+        this.setIsLinkMaintained(consentGroup.getIsLinkMaintained())
+        this.setFeeForServiceWork(consentGroup.getFeeForServiceWork())
+        this.setAreSamplesComingFromEEAA(consentGroup.areSamplesComingFromEEA())
+        this.setIsCollaboratorProvidingGoodService(consentGroup.isCollaboratorProvidingGoodService())
+        this.setIsConsentUnambiguous(consentGroup.isConsentUnambiguous())
     }
 }

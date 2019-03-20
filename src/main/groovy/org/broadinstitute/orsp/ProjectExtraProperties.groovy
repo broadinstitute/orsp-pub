@@ -2,102 +2,98 @@ package org.broadinstitute.orsp
 
 class ProjectExtraProperties {
     // General Data
-    String summary = ""
-    String subjectProtection = ""
-    String projectReviewApproved = "false"
-    String protocol = ""
-    String projectTitle = ""
-    String projectAvailability = ""
-    String editDescription = null
-    String describeEditType = null
-    List<String> collaborators = []
-    List<String> pm = []
-    List<String> pi = []
-    String actor = ""
+    String summary
+    String subjectProtection
+    Boolean projectReviewApproved
+    String protocol
+    String projectTitle
+    String projectAvailability
+    String editDescription
+    String describeEditType
+    Collection<String> collaborators
+    Collection<String> pm
+    Collection<String> pi
+    Collection actor
 
     // Info Security
-    String pii = ""
-    String compliance = ""
-    String textCompliance = ""
-    String sensitive = ""
-    String textSensitive = ""
-    String accessible = ""
-    String textAccessible = ""
+    String pii
+    String compliance
+    String textCompliance
+    String sensitive
+    String textSensitive
+    String accessible
+    String textAccessible
 
     // Sharing data
-    String sharingPlan = ""
-    String databaseControlled = ""
-    String databaseOpen = ""
+    String sharingPlan
+    String databaseControlled
+    String databaseOpen
 
     // Determination questions
-    String feeForService = ""
-    String broadInvestigator = ""
-    String subjectsDeceased = ""
-    String sensitiveInformationSource = ""
-    String interactionSource = ""
-    String isIdReceive = ""
-    String isCoPublishing = ""
-    String federalFunding = ""
+    String feeForService
+    String broadInvestigator
+    String subjectsDeceased
+    String sensitiveInformationSource
+    String interactionSource
+    String isIdReceive
+    String isCoPublishing
+    String federalFunding
 
 
     // InternationalCohorts
-    String individualDataSourced = ""
-    String isLinkMaintained = ""
-    String feeForServiceWork = ""
-    String areSamplesComingFromEEAA = ""
-    String isCollaboratorProvidingGoodService = ""
-    String isConsentUnambiguous = ""
+    String individualDataSourced
+    String isLinkMaintained
+    String feeForServiceWork
+    String areSamplesComingFromEEAA
+    String isCollaboratorProvidingGoodService
+    String isConsentUnambiguous
 
-    transient ProjectExtraProperties buildProjectExtraProps(Map<String, List<String>> extraPropsMap) {
-        if(!extraPropsMap.isEmpty()) {
-            // General Data
-            this.setSummary(extraPropsMap.get(IssueExtraProperty.SUMMARY, [""]).first())
-            this.setSubjectProtection(extraPropsMap.get(IssueExtraProperty.SUBJECT_PROTECTION, [""]).first())
-            this.setProjectReviewApproved(extraPropsMap.get(IssueExtraProperty.PROJECT_REVIEW_APPROVED, ["false"]).first())
-            this.setProtocol(extraPropsMap.get(IssueExtraProperty.PROTOCOL, [""]).first())
-            this.setProjectTitle(extraPropsMap.get(IssueExtraProperty.PROJECT_TITLE, [""]).first())
-            this.setProjectAvailability(extraPropsMap.get(IssueExtraProperty.PROJECT_AVAILABILITY, [""]).first())
+    ProjectExtraProperties(Issue project) {
 
-            this.setEditDescription(extraPropsMap.get(IssueExtraProperty.EDIT_DESCRIPTION, [null]).first())
-            this.setDescribeEditType(extraPropsMap.get(IssueExtraProperty.DESCRIBE_EDIT_TYPE, [null]).first())
+        this.setSummary(project.getExtraPropertySummary())
+        this.setSubjectProtection(project.getSubjectProtection())
+        this.setProjectReviewApproved(project.getProjectReviewApproved())
+        this.setProtocol(project.getProtocol())
+        this.setProjectTitle(project.getProjectTitle())
+        this.setProjectAvailability(project.getProjectAvailability())
+        this.setEditDescription(project.getEditDescription())
+        this.setDescribeEditType(project.getDescribeEditType())
 
-            this.setCollaborators(extraPropsMap.get("collaborators", []))
-            this.setPm(extraPropsMap.get(IssueExtraProperty.PM, []))
-            this.setPi(extraPropsMap.get(IssueExtraProperty.PI, []))
-            this.setActor(extraPropsMap.get(IssueExtraProperty.ACTOR, [""]).first())
+        this.setCollaborators(project.getCollaborators())
+        this.setPm(project.getPMs())
+        this.setPi(project.getPIs())
+        this.setActor(project.getActors())
 
-            // Info Security
-            this.setPii(extraPropsMap.get(IssueExtraProperty.PII, [""]).first())
-            this.setCompliance(extraPropsMap.get(IssueExtraProperty.COMPLIANCE, [""]).first())
-            this.setTextCompliance(extraPropsMap.get(IssueExtraProperty.TEXT_COMPLIANCE, [""]).first())
-            this.setSensitive(extraPropsMap.get(IssueExtraProperty.SENSITIVE, [""]).first())
-            this.setTextSensitive(extraPropsMap.get(IssueExtraProperty.TEXT_SENSITIVE, [""]).first())
-            this.setAccessible(extraPropsMap.get(IssueExtraProperty.ACCESSIBLE, [""]).first())
-            this.setTextAccessible(extraPropsMap.get(IssueExtraProperty.TEXT_ACCESSIBLE, [""]).first())
+        // Info Security
+        this.setPii(project.getPII())
+        this.setCompliance(project.getCompliance())
+        this.setTextCompliance(project.getTextCompliance())
+        this.setSensitive(project.getSensitive())
+        this.setTextSensitive(project.getTextSensitive())
+        this.setAccessible(project.getAccessible())
+        this.setTextAccessible(project.getTextAccessible())
 
-            // Sharing data
-            this.setSharingPlan(extraPropsMap.get(IssueExtraProperty.SHARING_PLAN, [""]).first())
-            this.setDatabaseControlled(extraPropsMap.get(IssueExtraProperty.DATABASE_CONTROLLED, [""]).first())
-            this.setDatabaseOpen(extraPropsMap.get(IssueExtraProperty.DATABASE_OPEN, [""]).first())
+        // Sharing data
+        this.setSharingPlan(project.getSharingPlan())
+        this.setDatabaseControlled(project.getDataBaseControlled())
+        this.setDatabaseOpen(project.getDatabaseOpen())
 
-            // Determination questions
-            this.setFeeForService(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE, [""]).first())
-            this.setBroadInvestigator(extraPropsMap.get(IssueExtraProperty.BROAD_INVESTIGATOR, [""]).first())
-            this.setSubjectsDeceased(extraPropsMap.get(IssueExtraProperty.SUBJECTS_DECEASED, [""]).first())
-            this.setSensitiveInformationSource(extraPropsMap.get(IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE, [""]).first())
-            this.setInteractionSource(extraPropsMap.get(IssueExtraProperty.INTERACTION_SOURCE, [""]).first())
-            this.setIsIdReceive(extraPropsMap.get(IssueExtraProperty.IS_ID_RECEIVE, [""]).first())
-            this.setIsCoPublishing(extraPropsMap.get(IssueExtraProperty.IS_CO_PUBLISHING, [""]).first())
-            this.setFederalFunding(extraPropsMap.get(IssueExtraProperty.FEDERAL_FUNDING, [""]).first())
+        // Determination questions
+        this.setFeeForService(project.getFeeForService())
+        this.setBroadInvestigator(project.getBroadInvestigator())
+        this.setSubjectsDeceased(project.getSubjectDeceased())
+        this.setSensitiveInformationSource(project.getSensitiveInformationSource())
+        this.setInteractionSource(project.getInteractionSource())
+        this.setIsIdReceive(project.getIsIdReceive())
+        this.setIsCoPublishing(project.getIsCoPublishing())
+        this.setFederalFunding(project.getFederalFunding())
 
-            // InternationalCohorts
-            this.setIndividualDataSourced(extraPropsMap.get(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED, [""]).first())
-            this.setIsLinkMaintained(extraPropsMap.get(IssueExtraProperty.IS_LINK_MAINTAINED, [""]).first())
-            this.setFeeForServiceWork(extraPropsMap.get(IssueExtraProperty.FEE_FOR_SERVICE_WORK, [""]).first())
-            this.setAreSamplesComingFromEEAA(extraPropsMap.get(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, [""]).first())
-            this.setIsCollaboratorProvidingGoodService(extraPropsMap.get(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, [""]).first())
-            this.setIsConsentUnambiguous(extraPropsMap.get(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, [""]).first())
-        }
-        this
+        // InternationalCohorts
+        this.setIndividualDataSourced(project.getIndividualDataSourced())
+        this.setIsLinkMaintained(project.getIsLinkMaintained())
+        this.setFeeForServiceWork(project.getFeeForServiceWork())
+        this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA())
+        this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService())
+        this.setIsConsentUnambiguous(project.isConsentUnambiguous())
     }
 }
