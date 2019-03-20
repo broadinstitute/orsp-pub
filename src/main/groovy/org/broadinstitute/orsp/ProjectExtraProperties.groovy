@@ -88,11 +88,11 @@ class ProjectExtraProperties {
         this.setFederalFunding(project.getFederalFunding() ?: "")
 
         // InternationalCohorts
-        this.setIndividualDataSourced(project.getIndividualDataSourced() ?: "")
-        this.setIsLinkMaintained(project.getIsLinkMaintained() ?: "")
-        this.setFeeForServiceWork(project.getFeeForServiceWork() ?: "")
-        this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA() ?: "")
-        this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService() ?: "")
-        this.setIsConsentUnambiguous(project.isConsentUnambiguous() ?: "")
+        this.setIndividualDataSourced(project.getIndividualDataSourced() ?: null)
+        this.setIsLinkMaintained(project.getIsLinkMaintained() ?: null)
+        this.setFeeForServiceWork(project.getFeeForServiceWork() ?: null)
+        this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA() ?: null)
+        this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService() ?: null)
+        this.setIsConsentUnambiguous(project.isConsentUnambiguous() ?: null)
     }
 }

@@ -47,7 +47,7 @@ class ConsentGroupExtraProperties {
         this.setCollContact(consentGroup.getCollContact() ?: "")
         this.setConsent(consentGroup.getConsent() ?: "")
         this.setProtocol(consentGroup.getProtocol() ?: "")
-        this.setInstitutionalSources(consentGroup.getInstitutionalSources() ?: "")
+        this.setInstitutionalSources(consentGroup.getInstitutionalSources() ?: null)
         this.setDescribeConsentGroup(consentGroup.getDescribeConsentGroup() ?: "")
         this.setRequireMta(consentGroup.getMTA() ?: "")
         this.setProjectReviewApproved(consentGroup.getProjectReviewApproved() ?: false)
@@ -67,11 +67,11 @@ class ConsentGroupExtraProperties {
         this.setDatabaseOpen(consentGroup.getDatabaseOpen() ?: "")
 
         // InternationalCohorts
-        this.setIndividualDataSourced(consentGroup.getIndividualDataSourced() ?: "")
-        this.setIsLinkMaintained(consentGroup.getIsLinkMaintained() ?: "")
-        this.setFeeForService(consentGroup.getFeeForService() ?: "")
-        this.setAreSamplesComingFromEEAA(consentGroup.areSamplesComingFromEEA() ?: "")
-        this.setIsCollaboratorProvidingGoodService(consentGroup.isCollaboratorProvidingGoodService() ?: "")
-        this.setIsConsentUnambiguous(consentGroup.isConsentUnambiguous() ?: "")
+        this.setIndividualDataSourced(consentGroup.getIndividualDataSourced() ?: null)
+        this.setIsLinkMaintained(consentGroup.getIsLinkMaintained() ?: null)
+        this.setFeeForService(consentGroup.getFeeForService() ?: null)
+        this.setAreSamplesComingFromEEAA(consentGroup.areSamplesComingFromEEA() ?: null)
+        this.setIsCollaboratorProvidingGoodService(consentGroup.isCollaboratorProvidingGoodService() ?: null)
+        this.setIsConsentUnambiguous(consentGroup.isConsentUnambiguous() ?: null)
     }
 }

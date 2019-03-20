@@ -1021,7 +1021,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('requestClarification'),
-            isRendered: this.state.isAdmin && this.state.readOnly === true
+            isRendered: this.isAdmin() && this.state.readOnly === true
           }, ["Request Clarification"])
         ]),
         h(Spinner, {
