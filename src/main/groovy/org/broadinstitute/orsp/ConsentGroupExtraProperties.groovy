@@ -32,7 +32,7 @@ class ConsentGroupExtraProperties {
     // InternationalCohorts
     String individualDataSourced
     String isLinkMaintained
-    String feeForServiceWork
+    String feeForService
     String areSamplesComingFromEEAA
     String isCollaboratorProvidingGoodService
     String isConsentUnambiguous
@@ -69,7 +69,7 @@ class ConsentGroupExtraProperties {
         // InternationalCohorts
         this.setIndividualDataSourced(consentGroup.getIndividualDataSourced() ?: "")
         this.setIsLinkMaintained(consentGroup.getIsLinkMaintained() ?: "")
-        this.setFeeForServiceWork(consentGroup.getFeeForServiceWork() ?: "")
+        this.setFeeForService(consentGroup.getFeeForService() ?: "")
         this.setAreSamplesComingFromEEAA(consentGroup.areSamplesComingFromEEA() ?: "")
         this.setIsCollaboratorProvidingGoodService(consentGroup.isCollaboratorProvidingGoodService() ?: "")
         this.setIsConsentUnambiguous(consentGroup.isConsentUnambiguous() ?: "")
