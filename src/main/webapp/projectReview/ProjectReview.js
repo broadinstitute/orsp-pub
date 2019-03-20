@@ -55,7 +55,7 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: 'false'
+          projectReviewApproved: false
         },
         fundings: [{
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
@@ -95,7 +95,7 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          projectReviewApproved: 'false'
+          projectReviewApproved: false
         }
       }
     }
@@ -228,12 +228,12 @@ class ProjectReview extends Component {
       disableApproveButton: true,
       approveInfoDialog: false
     });
-    const data = { projectReviewApproved: 'true' };
+    const data = { projectReviewApproved: true };
     Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
-          prev.formData.projectExtraProps.projectReviewApproved = 'true';
+          prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
         });
       }
@@ -995,21 +995,21 @@ class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveInfoDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
+            isRendered: this.isAdmin() && projectReviewApproved === false && this.state.readOnly === true
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === 'true'
+            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === true
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('rejectProjectDialog'),
-            isRendered: this.isAdmin() && projectReviewApproved === 'false' && this.state.readOnly === true
+            isRendered: this.isAdmin() && projectReviewApproved === false && this.state.readOnly === true
           }, ["Reject"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
