@@ -49,51 +49,50 @@ class ProjectExtraProperties {
     String isConsentUnambiguous
 
     ProjectExtraProperties(Issue project) {
-
-        this.setSummary(project.getExtraPropertySummary() ? project.getExtraPropertySummary() : "")
-        this.setSubjectProtection(project.getSubjectProtection() ? project.getSubjectProtection() : "")
-        this.setProjectReviewApproved(project.getProjectReviewApproved() ? project.getProjectReviewApproved() : false)
-        this.setProtocol(project.getProtocol() ? project.getProtocol() : "")
-        this.setProjectTitle(project.getProjectTitle() ? project.getProjectTitle() : "")
-        this.setProjectAvailability(project.getProjectAvailability() ? project.getProjectAvailability() : "")
-        this.setEditDescription(project.getEditDescription() ? project.getEditDescription() : null)
-        this.setDescribeEditType(project.getDescribeEditType() ? project.getDescribeEditType() : null)
-
+        // General Data
+        this.setSummary(project.getExtraPropertySummary() ?: "")
+        this.setSubjectProtection(project.getSubjectProtection() ?: "")
+        this.setProjectReviewApproved(project.getProjectReviewApproved() ?: false)
+        this.setProtocol(project.getProtocol() ?: "")
+        this.setProjectTitle(project.getProjectTitle() ?: "")
+        this.setProjectAvailability(project.getProjectAvailability() ?: "")
+        this.setEditDescription(project.getEditDescription() ?: null)
+        this.setDescribeEditType(project.getDescribeEditType() ?: null)
         this.setCollaborators(project.getCollaborators())
         this.setPm(project.getPMs())
         this.setPi(project.getPIs())
         this.setActor(project.getActors())
 
         // Info Security
-        this.setPii(project.getPII() ? project.getPII() : "")
-        this.setCompliance(project.getCompliance() ? project.getCompliance() : "")
-        this.setTextCompliance(project.getTextCompliance() ? project.getTextCompliance() : "")
-        this.setSensitive(project.getSensitive() ? project.getSensitive() : "")
-        this.setTextSensitive(project.getTextSensitive() ? project.getTextSensitive() : "")
-        this.setAccessible(project.getAccessible() ? project.getAccessible() : "")
-        this.setTextAccessible(project.getTextAccessible() ? project.getTextAccessible() : "")
+        this.setPii(project.getPII() ?: "")
+        this.setCompliance(project.getCompliance() ?: "")
+        this.setTextCompliance(project.getTextCompliance() ?: "")
+        this.setSensitive(project.getSensitive() ?: "")
+        this.setTextSensitive(project.getTextSensitive() ?: "")
+        this.setAccessible(project.getAccessible() ?: "")
+        this.setTextAccessible(project.getTextAccessible() ?: "")
 
         // Sharing data
-        this.setSharingPlan(project.getSharingPlan() ? project.getSharingPlan() : "")
-        this.setDatabaseControlled(project.getDataBaseControlled() ? project.getDataBaseControlled() : "")
-        this.setDatabaseOpen(project.getDatabaseOpen() ? project.getDatabaseOpen() : "")
+        this.setSharingPlan(project.getSharingPlan() ?: "")
+        this.setDatabaseControlled(project.getDataBaseControlled() ?: "")
+        this.setDatabaseOpen(project.getDatabaseOpen() ?: "")
 
         // Determination questions
-        this.setFeeForService(project.getFeeForService() ? project.getFeeForService() : "")
-        this.setBroadInvestigator(project.getBroadInvestigator() ? project.getBroadInvestigator() : "")
-        this.setSubjectsDeceased(project.getSubjectDeceased() ? project.getSubjectDeceased() : "")
-        this.setSensitiveInformationSource(project.getSensitiveInformationSource() ? project.getSensitiveInformationSource() : "")
-        this.setInteractionSource(project.getInteractionSource() ? project.getInteractionSource() : "")
-        this.setIsIdReceive(project.getIsIdReceive() ? project.getIsIdReceive() : "")
-        this.setIsCoPublishing(project.getIsCoPublishing() ? project.getIsCoPublishing() : "")
-        this.setFederalFunding(project.getFederalFunding() ? project.getFederalFunding() : "")
+        this.setFeeForService(project.getFeeForService() ?: "")
+        this.setBroadInvestigator(project.getBroadInvestigator() ?: "")
+        this.setSubjectsDeceased(project.getSubjectDeceased() ?: "")
+        this.setSensitiveInformationSource(project.getSensitiveInformationSource() ?: "")
+        this.setInteractionSource(project.getInteractionSource() ?: "")
+        this.setIsIdReceive(project.getIsIdReceive() ?: "")
+        this.setIsCoPublishing(project.getIsCoPublishing() ?: "")
+        this.setFederalFunding(project.getFederalFunding() ?: "")
 
         // InternationalCohorts
-        this.setIndividualDataSourced(project.getIndividualDataSourced() ? project.getIndividualDataSourced() : "")
-        this.setIsLinkMaintained(project.getIsLinkMaintained() ? project.getIsLinkMaintained() : "")
-        this.setFeeForServiceWork(project.getFeeForServiceWork() ? project.getFeeForServiceWork() : "")
-        this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA() ? project.areSamplesComingFromEEA() : "")
-        this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService() ? project.isCollaboratorProvidingGoodService() : "")
-        this.setIsConsentUnambiguous(project.isConsentUnambiguous() ? project.isConsentUnambiguous() : "")
+        this.setIndividualDataSourced(project.getIndividualDataSourced() ?: "")
+        this.setIsLinkMaintained(project.getIsLinkMaintained() ?: "")
+        this.setFeeForServiceWork(project.getFeeForServiceWork() ?: "")
+        this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA() ?: "")
+        this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService() ?: "")
+        this.setIsConsentUnambiguous(project.isConsentUnambiguous() ?: "")
     }
 }
