@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.ProjectExtraProperties
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 
@@ -56,14 +57,14 @@ class ProjectController extends AuthenticatedController {
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
         Collection<Funding> fundingList = issue.getFundings()
-        LinkedHashMap<String, Object> extraProperties =  issue.getExtraPropertiesMap()
-        Collection<User> colls = getCollaborators(extraProperties.collaborators)
+        ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
+        Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
         render([issue             : issue,
                 requestor         : getRequestorForIssue(issue),
                 pms               : getProjectManagersForIssue(issue),
                 pis               : getPIsForIssue(issue),
                 fundings          : fundingList,
-                extraProperties   : extraProperties,
+                extraProperties   : projectExtraProperties,
                 collaborators     : colls
         ] as JSON)
     }

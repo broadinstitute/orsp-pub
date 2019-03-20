@@ -8,6 +8,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
+import org.broadinstitute.orsp.ConsentGroupExtraProperties
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
@@ -931,7 +932,7 @@ class QueryService implements Status {
         }
         [
             issue            : issue,
-            extraProperties  : issue.getExtraPropertiesMap(),
+            extraProperties  : new ConsentGroupExtraProperties(issue),
             collectionLinks  : collectionLinks,
             sampleCollections: sampleCollections
         ]
