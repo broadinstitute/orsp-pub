@@ -632,6 +632,7 @@ class ProjectReview extends Component {
     if (!this.state.isInfoSecurityValid) {
       generalError = true;
     }
+    const infoSecValidate = !this.validateInfoSecurity();
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -641,7 +642,7 @@ class ProjectReview extends Component {
       prev.fundingError = fundingError;
       prev.fundingErrorIndex = fundingErrorIndex;
       prev.generalError = generalError;
-      prev.showInfoSecurityError = !this.validateInfoSecurity();
+      prev.showInfoSecurityError = infoSecValidate;
       return prev;
     });
 
@@ -692,10 +693,9 @@ class ProjectReview extends Component {
         prev.formData.projectExtraProps[field] = value ;
       }
       prev.showInfoSecurityError = false;
+      prev.generalError = false;
       return prev;
-    }, () => {
-      this.removeErrorMessage();
-    })
+    });
   };
 
   removeErrorMessage = () => {
