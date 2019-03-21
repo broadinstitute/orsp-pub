@@ -360,6 +360,9 @@ class ProjectReview extends Component {
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
     project.sensitive = this.state.formData.projectExtraProps.sensitive;
+    project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
+    project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
+    project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
 
     if (this.state.formData.projectExtraProps.textAccessible !== undefined) {
       project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
@@ -687,6 +690,15 @@ class ProjectReview extends Component {
 
   updateInfoSecurityFormData = (updatedForm, field, value) => {
     this.setState(prev => {
+      // if (field === 'accessible' && value !== 'true') {
+      //   prev.formData.projectExtraProps.textAccessible = '';
+      // }
+      // if (field === 'sensitive' && value !== 'true') {
+      //   prev.formData.projectExtraProps.textSensitive = '';
+      // }
+      // if (field === 'compliance' && value !== 'true') {
+      //   prev.formData.projectExtraProps.textCompliance = '';
+      // }
       if (updatedForm[field] !== '' && value === undefined) {
         prev.formData.projectExtraProps[field] = updatedForm[field];
       } else if (value !== undefined) {
