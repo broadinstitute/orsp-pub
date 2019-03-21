@@ -753,11 +753,24 @@ class ConsentGroupReview extends Component {
 
     consentGroup.pii = this.state.formData.consentExtraProps.pii;
     consentGroup.compliance = this.state.formData.consentExtraProps.compliance;
-    consentGroup.textCompliance = this.state.formData.consentExtraProps.textCompliance;
     consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
-    consentGroup.textSensitive = this.state.formData.consentExtraProps.textSensitive;
     consentGroup.accessible = this.state.formData.consentExtraProps.accessible;
-    consentGroup.textAccessible = this.state.formData.consentExtraProps.textAccessible;
+
+    if (consentGroup.accessible === 'true') {
+      consentGroup.textAccessible = this.state.formData.consentExtraProps.textAccessible;
+    } else {
+      consentGroup.textAccessible = "";
+    }
+    if (consentGroup.sensitive === 'true') {
+      consentGroup.textSensitive = this.state.formData.consentExtraProps.textSensitive;
+    } else {
+      consentGroup.textSensitive = "";
+    }
+    if (consentGroup.compliance === 'true') {
+      consentGroup.textCompliance = this.state.formData.consentExtraProps.textCompliance;
+    } else {
+      consentGroup.textCompliance = "";
+    }
 
     consentGroup.sharingPlan = this.state.formData.consentExtraProps.sharingPlan;
     consentGroup.databaseControlled = this.state.formData.consentExtraProps.databaseControlled;

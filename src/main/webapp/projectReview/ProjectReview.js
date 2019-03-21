@@ -360,18 +360,21 @@ class ProjectReview extends Component {
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
     project.sensitive = this.state.formData.projectExtraProps.sensitive;
-    project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
-    project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
-    project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
 
-    if (this.state.formData.projectExtraProps.textAccessible !== undefined) {
+    if (project.accessible === 'true') {
       project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
+    } else {
+      project.textAccessible = "";
     }
-    if (this.state.formData.projectExtraProps.textCompliance !== undefined) {
-      project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
-    }
-    if (this.state.formData.projectExtraProps.textSensitive !== undefined) {
+    if (project.compliance === 'true') {
       project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
+    } else {
+      project.textSensitive = "";
+    }
+    if (project.compliance === 'true') {
+      project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
+    } else {
+      project.textCompliance = "";
     }
 
     let collaborators = this.state.formData.collaborators;
