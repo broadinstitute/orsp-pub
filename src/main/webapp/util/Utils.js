@@ -18,7 +18,7 @@ export const areSomeTheseThingsTruthy = (values) => {
 }
 
 export const isEmpty = (value) => {
-  if (typeof value === 'object') {
+  if (typeof value === 'object' && value !== null  && value !== undefined) {
     return !Object.keys(value).length
   } else {
     return value === '' || value === null || value === undefined;
