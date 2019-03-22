@@ -14,6 +14,8 @@ class ProjectExtraProperties {
     Collection<String> pm
     Collection<String> pi
     Collection actor
+    String uploadConsentGroup
+    String notCGSpecify
 
     // Info Security
     String pii
@@ -62,6 +64,8 @@ class ProjectExtraProperties {
         this.setPm(project.getPMs())
         this.setPi(project.getPIs())
         this.setActor(project.getActors())
+        this.setUploadConsentGroup(project.getUploadConsent() ?: null)
+        this.setNotCGSpecify(project.getNotCGSpecify() ?: "")
 
         // Info Security
         this.setPii(project.getPII() ?: "")
