@@ -526,7 +526,7 @@ class NotifyService implements SendgridSupport, Status {
 
         values.put('type', type)
 
-        if (!values.isEmpty()) {
+        if (values.size() >= 2) {
             NotifyArguments arguments =
                     new NotifyArguments(
                             toAddresses: Collections.singletonList(user.getEmailAddress()),
