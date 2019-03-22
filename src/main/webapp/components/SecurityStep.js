@@ -87,10 +87,13 @@ export const SecurityStep = hh(class SecurityStep extends Component {
       prev.formData[field] = value;
       return prev;
     }, () => {
+      const valid = this.validate();
       this.props.updateForm(this.state.formData, field);
-      this.props.handleSecurityValidity(this.validate());
+      this.props.handleSecurityValidity(valid);
       this.props.removeErrorMessage();
     });
+    this.updateStateReview();
+    console.log('handleRadio2Change', this.state.formData);
   };
 
   handleInputChange = (e) => {
@@ -100,7 +103,9 @@ export const SecurityStep = hh(class SecurityStep extends Component {
       prev.formData[field] = value;
       return prev;
     }, () => {
-      this.props.handleSecurityValidity(this.validate());
+      const valid = this.validate();
+      console.log('handleInputChange', valid);
+      this.props.handleSecurityValidity(valid);
       this.props.updateForm(this.state.formData, field, value);
       this.props.removeErrorMessage();
     })

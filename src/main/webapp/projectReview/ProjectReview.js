@@ -140,6 +140,7 @@ class ProjectReview extends Component {
       prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
       return prev;
     });
+    console.log(this.state.isInfoSecurityValid);
     return this.state.isInfoSecurityValid;
   }
 
@@ -639,6 +640,7 @@ class ProjectReview extends Component {
       generalError = true;
     }
     const infoSecValidate = !this.validateInfoSecurity();
+    console.log(infoSecValidate);
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -693,15 +695,6 @@ class ProjectReview extends Component {
 
   updateInfoSecurityFormData = (updatedForm, field, value) => {
     this.setState(prev => {
-      // if (field === 'accessible' && value !== 'true') {
-      //   prev.formData.projectExtraProps.textAccessible = '';
-      // }
-      // if (field === 'sensitive' && value !== 'true') {
-      //   prev.formData.projectExtraProps.textSensitive = '';
-      // }
-      // if (field === 'compliance' && value !== 'true') {
-      //   prev.formData.projectExtraProps.textCompliance = '';
-      // }
       if (updatedForm[field] !== '' && value === undefined) {
         prev.formData.projectExtraProps[field] = updatedForm[field];
       } else if (value !== undefined) {
