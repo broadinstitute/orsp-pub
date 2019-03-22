@@ -116,7 +116,16 @@ class ProjectReview extends Component {
           projectReviewApproved: false
         },
         showInfoSecurityError: false,
-        }
+      },
+      infoSecurityErrors: {
+        sensitive: false,
+        accessible: false,
+        compliance: false,
+        pii: false,
+        textSensitive: false,
+        textAccessible: false,
+        textCompliance: false
+      }
     };
     this.rejectProject = this.rejectProject.bind(this);
     this.approveEdits = this.approveEdits.bind(this);
@@ -133,15 +142,6 @@ class ProjectReview extends Component {
 
   componentDidMount() {
     this.init();
-  }
-
-  validateInfoSecurity() {
-    this.setState(prev => {
-      prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
-      return prev;
-    });
-    console.log(this.state.isInfoSecurityValid);
-    return this.state.isInfoSecurityValid;
   }
 
   init() {
@@ -541,9 +541,9 @@ class ProjectReview extends Component {
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    },
+        prev.formData[field] = value;
+        return prev;
+      },
       () => {
         if (this.state.errorSubmit == true) this.isValid()
       });
@@ -551,9 +551,9 @@ class ProjectReview extends Component {
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
     this.setState(prev => {
-      prev.formData.projectExtraProps[field] = value;
-      return prev;
-    },
+        prev.formData.projectExtraProps[field] = value;
+        return prev;
+      },
       () => {
         if (this.state.errorSubmit == true) this.isValid()
       });
@@ -563,9 +563,9 @@ class ProjectReview extends Component {
     const field = e.currentTarget.name;
     const value = e.currentTarget.value;
     this.setState(prev => {
-      prev.formData.projectExtraProps[field] = value;
-      return prev;
-    },
+        prev.formData.projectExtraProps[field] = value;
+        return prev;
+      },
       () => {
         if (this.state.errorSubmit == true) this.isValid()
       });
@@ -636,11 +636,10 @@ class ProjectReview extends Component {
       subjectProtectionError = true;
       generalError = true;
     }
-    if (!this.state.isInfoSecurityValid) {
+    const infoSecValidate = !this.validateInfoSecurity();
+    if (infoSecValidate) {
       generalError = true;
     }
-    const infoSecValidate = !this.validateInfoSecurity();
-    console.log(infoSecValidate);
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -692,6 +691,76 @@ class ProjectReview extends Component {
   handleInfoSecurityValidity(isValid) {
     this.setState({ isInfoSecurityValid: isValid });
   }
+
+  validateInfoSecurity = (field) => {
+    let pii = false;
+    let compliance = false;
+    let sensitive = false;
+    let accessible = false;
+    let isValid = true;
+    let textCompliance = false;
+    let textSensitive = false;
+    let textAccessible = false;
+
+    if (isEmpty(this.state.formData.projectExtraProps.pii)) {
+      pii = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.formData.projectExtraProps.compliance)) {
+      compliance = true;
+      isValid = false;
+    }
+
+    if (!isEmpty(this.state.formData.projectExtraProps.compliance)
+      && this.state.formData.projectExtraProps.compliance === "true"
+      && isEmpty(this.state.formData.projectExtraProps.textCompliance)) {
+      textCompliance = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.formData.projectExtraProps.sensitive)) {
+      sensitive = true;
+      isValid = false;
+    }
+    if (!isEmpty(this.state.formData.projectExtraProps.sensitive)
+      && this.state.formData.projectExtraProps.sensitive === "true"
+      && isEmpty(this.state.formData.projectExtraProps.textSensitive)) {
+      textSensitive = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
+      accessible = true;
+      isValid = false;
+    }
+    if (!isEmpty(this.state.formData.projectExtraProps.accessible)
+      && this.state.formData.projectExtraProps.accessible === "true"
+      && isEmpty(this.state.formData.projectExtraProps.textAccessible)) {
+      textAccessible = true;
+      isValid = false;
+    }
+    if (field === undefined || field === null || field === 3) {
+      this.setState(prev => {
+        prev.infoSecurityErrors.pii = pii;
+        prev.infoSecurityErrors.compliance = compliance;
+        prev.infoSecurityErrors.sensitive = sensitive;
+        prev.infoSecurityErrors.accessible = accessible;
+        prev.infoSecurityErrors.textCompliance = textCompliance;
+        prev.infoSecurityErrors.textSensitive = textSensitive;
+        prev.infoSecurityErrors.textAccessible = textAccessible;
+        return prev;
+      });
+    }
+    return isValid;
+  };
+
+  updateInfoSecurityForm = (field, value) => {
+    this.setState(prev => {
+      prev.formData.projectExtraProps[field] = value;
+      prev.generalError = false;
+      return prev;
+    }, () => {
+      this.validateInfoSecurity();
+    });
+  };
 
   updateInfoSecurityFormData = (updatedForm, field, value) => {
     this.setState(prev => {
@@ -965,13 +1034,14 @@ class ProjectReview extends Component {
           SecurityStep({
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,
-            updateForm: this.updateInfoSecurityFormData,
+            updateForm: this.updateInfoSecurityForm,
             showErrorInfoSecurity: this.state.showInfoSecurityError,
             removeErrorMessage: this.removeErrorMessage,
             handleSecurityValidity: this.handleInfoSecurityValidity,
             readOnly: this.state.readOnly,
             current: this.state.current,
             formData: this.state.formData,
+            infoSecurityErrors: this.state.infoSecurityErrors,
             edit: true,
             review: true,
           }),

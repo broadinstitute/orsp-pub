@@ -13,24 +13,6 @@ export const SecurityStep = hh(class SecurityStep extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: {
-        pii: '',
-        compliance: '',
-        sensitive: '',
-        accessible: '',
-        textCompliance: '',
-        textSensitive: '',
-        textAccessible: '',
-      },
-      current: {
-        pii: '',
-        compliance: '',
-        sensitive: '',
-        accessible: '',
-        textCompliance: '',
-        textSensitive: '',
-        textAccessible: '',
-      },
       errors: {
         pii: true,
         compliance: true,
@@ -44,33 +26,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
     this.formHasError = this.formHasError.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.review === true) {
-      this.updateStateReview();
-    }
-  }
-
-  updateStateReview = () => {
-    this.setState(prev => {
-      prev.formData.pii = this.props.current.projectExtraProps.pii.toString();
-      prev.formData.compliance = this.props.current.projectExtraProps.compliance.toString();
-      prev.formData.sensitive = this.props.current.projectExtraProps.sensitive.toString();
-      prev.formData.accessible = this.props.current.projectExtraProps.accessible.toString();
-      prev.formData.textCompliance = this.props.current.projectExtraProps.textCompliance;
-      prev.formData.textAccessible = this.props.current.projectExtraProps.textAccessible;
-      prev.formData.textSensitive = this.props.current.projectExtraProps.textSensitive;
-
-      prev.errors.pii = false;
-      prev.errors.compliance = false;
-      prev.errors.accessible = false;
-      prev.errors.sensitive = false;
-      prev.errors.textAccessible = false;
-      prev.errors.textCompliance = false;
-      prev.errors.textSensitive = false;
-      return prev;
-    });
-
-  };
+  componentDidMount() { }
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------');
@@ -83,89 +39,15 @@ export const SecurityStep = hh(class SecurityStep extends Component {
   }
 
   handleRadio2Change = (e, field, value) => {
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }, () => {
-      const valid = this.validate();
-      this.props.updateForm(this.state.formData, field);
-      this.props.handleSecurityValidity(valid);
-      this.props.removeErrorMessage();
-    });
-    this.updateStateReview();
-    console.log('handleRadio2Change', this.state.formData);
+    this.props.updateForm(field, value);
   };
 
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }, () => {
-      const valid = this.validate();
-      console.log('handleInputChange', valid);
-      this.props.handleSecurityValidity(valid);
-      this.props.updateForm(this.state.formData, field, value);
-      this.props.removeErrorMessage();
-    })
+    this.props.updateForm(field, value);
   };
 
-  validate = (field) => {
-    let pii = false;
-    let compliance = false;
-    let sensitive = false;
-    let accessible = false;
-    let isValid = true;
-    let textCompliance = false;
-    let textSensitive = false;
-    let textAccessible = false;
-
-    if (isEmpty(this.state.formData.pii)) {
-      pii = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.formData.compliance)) {
-      compliance = true;
-      isValid = false;
-    }
-
-    if (!isEmpty(this.state.formData.compliance)
-      && this.state.formData.compliance === "true"
-      && isEmpty(this.state.formData.textCompliance)) {
-      textCompliance = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.formData.sensitive)) {
-      sensitive = true;
-      isValid = false;
-    }
-    if (!isEmpty(this.state.formData.sensitive) && this.state.formData.sensitive === "true" && isEmpty(this.state.formData.textSensitive)) {
-      textSensitive = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.formData.accessible)) {
-      accessible = true;
-      isValid = false;
-    }
-    if (!isEmpty(this.state.formData.accessible) && this.state.formData.accessible === "true" && isEmpty(this.state.formData.textAccessible)) {
-      textAccessible = true;
-      isValid = false;
-    }
-    if (field === undefined || field === null || field === 3) {
-      this.setState(prev => {
-        prev.errors.pii = pii;
-        prev.errors.compliance = compliance;
-        prev.errors.sensitive = sensitive;
-        prev.errors.accessible = accessible;
-        prev.errors.textCompliance = textCompliance;
-        prev.errors.textSensitive = textSensitive;
-        prev.errors.textAccessible = textAccessible;
-        return prev;
-      });
-    }
-    return isValid;
-  };
 
   formHasError() {
     let stateError = false;
@@ -193,7 +75,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         ],
         onChange: this.handleRadio2Change,
         required: true,
-        error: this.state.errors.pii && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.pii && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
@@ -213,7 +95,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         ],
         onChange: this.handleRadio2Change,
         required: true,
-        error: this.state.errors.compliance && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.compliance && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
@@ -229,7 +111,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
-        error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.textCompliance && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
@@ -249,7 +131,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         ],
         onChange: this.handleRadio2Change,
         required: true,
-        error: this.state.errors.sensitive && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.sensitive && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
@@ -265,7 +147,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
-        error: this.state.errors.textSensitive && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.textSensitive && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
@@ -285,7 +167,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         ],
         onChange: this.handleRadio2Change,
         required: true,
-        error: this.state.errors.accessible && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.accessible && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
@@ -301,7 +183,7 @@ export const SecurityStep = hh(class SecurityStep extends Component {
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
-        error: this.state.errors.textAccessible && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.textAccessible && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
