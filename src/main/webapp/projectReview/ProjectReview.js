@@ -168,6 +168,7 @@ class ProjectReview extends Component {
           });
         } else {
           this.setState(prev => {
+            prev.editedForm = {};
             prev.reviewSuggestion = false;
             return prev;
           });
