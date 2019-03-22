@@ -238,6 +238,9 @@ class IssueService {
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
         }
+        if (!input.containsKey(IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY})
+        }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
             it.delete(hard: true)

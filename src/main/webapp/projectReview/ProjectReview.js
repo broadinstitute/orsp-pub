@@ -500,7 +500,7 @@ class ProjectReview extends Component {
       return prev;
     },
       () => {
-        if (this.state.errorSubmit == true) this.isValid()
+        if (this.state.errorSubmit === true) this.isValid()
       });
   };
 
@@ -512,7 +512,7 @@ class ProjectReview extends Component {
       return prev;
     },
       () => {
-        if (this.state.errorSubmit == true) this.isValid()
+        if (this.state.errorSubmit === true) this.isValid()
       });
   };
 
