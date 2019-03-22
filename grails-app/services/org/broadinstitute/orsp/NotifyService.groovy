@@ -511,6 +511,9 @@ class NotifyService implements SendgridSupport, Status {
         if (issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
+        else if (issue.getFeeForServiceWork() != null && Boolean.valueOf(issue.getFeeForServiceWork())){
+            values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
+        }
         else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
             values.put(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, "true")
         }
@@ -584,9 +587,8 @@ class NotifyService implements SendgridSupport, Status {
             type = IssueType.CONSENT_GROUP.name
         } else {
             type = 'Project'
-            sendAdminNotification("Project Type", issue)
         }
-        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendAdminNotification(type, issue)
         sendConsentGroupRequirementsInfo(issue, user, type)
         sendSecurityInfo(issue, user, type)
     }
