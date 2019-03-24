@@ -508,7 +508,7 @@ class NotifyService implements SendgridSupport, Status {
         if (Boolean.valueOf(issue.getMTA())) {
             values.put(IssueExtraProperty.REQUIRE_MTA, "true")
         }
-        if (issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
+        if (type != 'Project' && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
         else if (issue.getFeeForServiceWork() != null && Boolean.valueOf(issue.getFeeForServiceWork())){
