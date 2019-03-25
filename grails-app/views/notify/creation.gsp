@@ -4,5 +4,5 @@
 
 <p>
     Thank you,
-    <br> BRICC
+    <br>The BRICC team.
 </p>

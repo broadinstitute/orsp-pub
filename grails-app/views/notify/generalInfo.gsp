@@ -42,6 +42,6 @@
 </p>
 <p>
     Thank you,
-    <br> The ORSP team
+    <br> The BRICC team.
 </p>
 
