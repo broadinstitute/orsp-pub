@@ -1,20 +1,47 @@
 package org.broadinstitute.orsp
 
+import com.google.api.client.http.GenericUrl
+import com.google.api.client.http.HttpContent
+import com.google.api.client.http.HttpRequest
+import com.google.api.client.http.HttpRequestFactory
+import com.google.api.client.http.HttpResponse
+import com.google.api.client.http.HttpTransport
+import com.google.api.client.http.InputStreamContent
+import com.google.api.client.http.MultipartContent
+import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import grails.web.http.HttpHeaders
+import grails.web.mime.MimeType
 import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
+import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.HttpBuilder
+import groovyx.net.http.Method
 import groovyx.net.http.OkHttpEncoders
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ContentType
+import org.apache.http.entity.FileEntity
+import org.apache.http.entity.mime.HttpMultipartMode
+import org.apache.http.entity.mime.MultipartEntity
+import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.entity.mime.content.FileBody
+import org.apache.http.entity.mime.content.InputStreamBody
+import org.apache.http.entity.mime.content.StringBody
+import org.apache.http.impl.client.DefaultHttpClient
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.consent.DataUseDTO
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.OntologyTerm
+import org.codehaus.groovy.runtime.MethodClosure
 import org.jsoup.Jsoup
 import org.jsoup.examples.HtmlToPlainText
+import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
+import sun.text.resources.FormatData
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -130,7 +157,7 @@ class ConsentService implements Status {
     def postDataUseLetter(String consentLocation, InputStream inputStream, String fileName) {
         String url = consentLocation + "/dul"
         HttpBuilder http = getMultipartBuilder(url)
-        String fileType = URLConnection.guessContentTypeFromName(fileName)
+        String fileType = MediaType.APPLICATION_OCTET_STREAM_VALUE
         http.post(Boolean) {
             // "data" is the expected form field name in the consent service
             request.body = multipart {
@@ -150,6 +177,7 @@ class ConsentService implements Status {
             }
         }
     }
+
 
     /**
      * Create or replace associations for a consent.
