@@ -64,7 +64,7 @@ class ProjectExtraProperties {
         this.setPm(project.getPMs())
         this.setPi(project.getPIs())
         this.setActor(project.getActors())
-        this.setUploadConsentGroup(project.getUploadConsent() ?: null)
+        this.setUploadConsentGroup(project.getUploadConsent() ?: "")
         this.setNotCGSpecify(project.getNotCGSpecify() ?: "")
 
         // Info Security
