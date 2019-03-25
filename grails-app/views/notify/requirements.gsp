@@ -29,7 +29,7 @@
 </p>
 <g:if test="${values.get("type").equals("Project") || values.get("feeForService")?.equals("true") || values.get("areSamplesComingFromEEAA")?.equals("true") || values.get("isConsentUnambiguous")?.equals("true")}">
 <p>
-    NOTE: GDPR applies to this Consent Group.
+    NOTE: GDPR applies to this ${values.type}.
 </p>
 </g:if>
 <p>

@@ -501,7 +501,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user, String type) {
+    Map<Boolean, String> sendRequirementsInfo(Issue issue, User user, String type) {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
@@ -589,7 +589,7 @@ class NotifyService implements SendgridSupport, Status {
             type = 'Project'
         }
         sendAdminNotification(type, issue)
-        sendConsentGroupRequirementsInfo(issue, user, type)
+        sendRequirementsInfo(issue, user, type)
         sendSecurityInfo(issue, user, type)
     }
 }
