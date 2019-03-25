@@ -1,6 +1,7 @@
 import { Component, React } from 'react';
 import { hh, h1, span, a, div } from 'react-hyperscript-helpers';
 
+import { WizardStep } from './WizardStep';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { isEmpty } from '../util/Utils'
@@ -21,45 +22,20 @@ export const Security = hh(class Security extends Component {
         textSensitive: '',
         textAccessible: '',
       },
-      current: { },
       errors: {
-        pii: false,
-        compliance: false,
-        sensitive: false,
-        accessible: false,
-        textCompliance: false,
-        textSensitive: false,
-        textAccessible: false,
-      },
+        pii: true,
+        compliance: true,
+        sensitive: true,
+        accessible: true,
+        textCompliance: true,
+        textSensitive: true,
+        textAccessible: true,
+      }
     };
-    this.formHasError = this.formHasError.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.props.review === true) {
-      this.setState(prev => {
-        prev.formData.pii = this.props.formData.pii.toString();
-        prev.formData.compliance = this.props.formData.compliance.toString();
-        prev.formData.sensitive = this.props.formData.sensitive.toString();
-        prev.formData.accessible = this.props.formData.accessible.toString();
-        prev.formData.textCompliance = this.props.formData.textCompliance;
-        prev.formData.textAccessible = this.props.formData.textAccessible;
-        prev.formData.textSensitive = this.props.formData.textSensitive;
-
-        prev.current.pii = this.props.current.pii.toString();
-        prev.current.compliance = this.props.current.compliance.toString();
-        prev.current.sensitive = this.props.current.sensitive.toString();
-        prev.current.accessible = this.props.current.accessible.toString();
-        prev.current.textCompliance = this.props.current.textCompliance;
-        prev.current.textAccessible = this.props.current.textAccessible;
-        prev.current.textSensitive = this.props.formData.textSensitive;
-        return prev;
-      });
-    }
   }
 
   componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
+    console.log('----------------------- error ----------------------')
     console.log(error, info);
   }
 
@@ -133,7 +109,6 @@ export const Security = hh(class Security extends Component {
       textAccessible = true;
       isValid = false;
     }
-    console.log(field);
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
@@ -166,128 +141,115 @@ export const Security = hh(class Security extends Component {
     }
 
     return (
-      div({ className: this.props.review === false ? "questionnaireContainer" : "" }, [
-        InputFieldRadio({
-          id: "radioPII",
-          name: "pii",
-          label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
-          moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
-          value: this.state.formData.pii,
-          currentValue: this.state.current.pii,
-          optionValues: ["true", "false"],
-          optionLabels: [
-            "Yes",
-            "No"
-          ],
-          onChange: this.handleRadio2Change,
-          required: true,
-          error: this.state.errors.pii && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        }),
-        InputFieldRadio({
-          id: "radioCompliance",
-          name: "compliance",
-          label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
-          value: this.state.formData.compliance,
-          currentValue: this.state.current.compliance,
-          optionValues: ["true", "false", "uncertain"],
-          optionLabels: [
-            "Yes",
-            "No",
-            "Uncertain"
-          ],
-          onChange: this.handleRadio2Change,
-          required: true,
-          error: this.state.errors.compliance && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        }),
-        InputFieldText({
-          isRendered: this.state.formData.compliance === "true",
-          id: "inputCompliance",
-          name: "textCompliance",
-          label: "Please specify which regulations must be adhered to below:*",
-          value: this.state.formData.textCompliance,
-          currentValue: this.state.current.textCompliance,
-          disabled: false,
-          required: false,
-          onChange: this.handleInputChange,
-          error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        }),
-        InputFieldRadio({
-          id: "radioSensitive",
-          name: "sensitive",
-          label: span({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
-          value: this.state.formData.sensitive,
-          currentValue: this.state.current.sensitive,
-          optionValues: ["true", "false", "uncertain"],
-          optionLabels: [
-            "Yes",
-            "No",
-            "Uncertain"
-          ],
-          onChange: this.handleRadio2Change,
-          required: true,
-          error: this.state.errors.sensitive && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        }),
-        InputFieldText({
-          isRendered: this.state.formData.sensitive === "true",
-          id: "inputSensitive",
-          name: "textSensitive",
-          label: "Please explain*",
-          value: this.state.formData.textSensitive,
-          currentValue: this.state.current.sensitive,
-          disabled: false,
-          required: false,
-          onChange: this.handleInputChange,
-          error: this.state.errors.textSensitive && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        }),
-        InputFieldRadio({
-          id: "radioAccessible",
-          name: "accessible",
-          label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
-          value: this.state.formData.accessible,
-          currentValue: this.state.current.accessible,
-          optionValues: ["true", "false", "uncertain"],
-          optionLabels: [
-            "Yes",
-            "No",
-            "Uncertain"
-          ],
-          onChange: this.handleRadio2Change,
-          required: true,
-          error: this.state.errors.accessible && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        }),
-        InputFieldText({
-          isRendered: this.state.formData.accessible === "true",
-          id: "inputAccessible",
-          name: "textAccessible",
-          label: "Please explain*",
-          value: this.state.formData.textAccessible,
-          currentValue: this.state.current.textAccessible,
-          disabled: false,
-          required: false,
-          onChange: this.handleInputChange,
-          error: this.state.errors.textAccessible && this.props.showErrorInfoSecurity,
-          errorMessage: "Required field",
-          readOnly: this.props.readOnly,
-          edit: this.props.review
-        })
+      WizardStep({
+        title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
+        error: this.props.showErrorInfoSecurity && this.formHasError(),
+        errorMessage: 'Please complete all required fields'
+      }, [
+        div({ className: "questionnaireContainer" }, [
+          InputFieldRadio({
+            id: "radioPII",
+            name: "pii",
+            label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
+            moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
+            value: this.state.formData.pii,
+            optionValues: ["true", "false"],
+            optionLabels: [
+              "Yes",
+              "No"
+            ],
+            onChange: this.handleRadio2Change,
+            required: true,
+            error: this.state.errors.pii && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field",
+            edit: false
+          }),
+          InputFieldRadio({
+            id: "radioCompliance",
+            name: "compliance",
+            label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
+            value: this.state.formData.compliance,
+            optionValues: ["true", "false", "uncertain"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "Uncertain"
+            ],
+            onChange: this.handleRadio2Change,
+            required: true,
+            error: this.state.errors.compliance && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field",
+            edit: false
+          }),
+          InputFieldText({
+            isRendered: this.state.formData.compliance === "true",
+            id: "inputCompliance",
+            name: "textCompliance",
+            label: "Please specify which regulations must be adhered to below:*",
+            value: this.state.formData.textCompliance,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field"
+          }),
+          InputFieldRadio({
+            id: "radioSensitive",
+            name: "sensitive",
+            label: span({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
+            value: this.state.formData.sensitive,
+            optionValues: ["true", "false", "uncertain"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "Uncertain"
+            ],
+            onChange: this.handleRadio2Change,
+            required: true,
+            error: this.state.errors.sensitive && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field"
+          }),
+          InputFieldText({
+            isRendered: this.state.formData.sensitive === "true",
+            id: "inputSensitive",
+            name: "textSensitive",
+            label: "Please explain*",
+            value: this.state.formData.textSensitive,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            error: this.state.errors.textSensitive && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field"
+          }),
+          InputFieldRadio({
+            id: "radioAccessible",
+            name: "accessible",
+            label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
+            value: this.state.formData.accessible,
+            optionValues: ["true", "false", "uncertain"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "Uncertain"
+            ],
+            onChange: this.handleRadio2Change,
+            required: true,
+            error: this.state.errors.accessible && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field"
+          }),
+          InputFieldText({
+            isRendered: this.state.formData.accessible === "true",
+            id: "inputAccessible",
+            name: "textAccessible",
+            label: "Please explain*",
+            value: this.state.formData.textAccessible,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            error: this.state.errors.textAccessible && this.props.showErrorInfoSecurity,
+            errorMessage: "Required field"
+          })
+        ])
       ])
     )
   }

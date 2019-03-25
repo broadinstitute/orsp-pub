@@ -6,7 +6,7 @@ import { InputFieldRadio } from './InputFieldRadio';
 import { isEmpty } from '../util/Utils'
 
 
-export const SecurityStep = hh(class SecurityStep extends Component {
+export const SecurityReview = hh(class SecurityReview extends Component {
 
   state = {};
 

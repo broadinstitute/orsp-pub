@@ -14,7 +14,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
-import { SecurityStep } from "../components/SecurityStep";
+import { SecurityReview } from "../components/SecurityReview";
 import { isEmpty } from '../util/Utils';
 
 class ProjectReview extends Component {
@@ -1031,7 +1031,7 @@ class ProjectReview extends Component {
         ]),
         /*UNTIL HERE*/
         Panel({ title: "Security" }, [
-          SecurityStep({
+          SecurityReview({
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,
             updateForm: this.updateInfoSecurityForm,

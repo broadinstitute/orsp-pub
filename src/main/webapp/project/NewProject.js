@@ -10,7 +10,7 @@ import { span } from 'react-hyperscript-helpers';
 import { spinnerService } from '../util/spinner-service';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { DataSharing } from "../components/DataSharing";
-import { SecurityStep } from '../components/SecurityStep';
+import { Security } from '../components/Security';
 
 class NewProject extends Component {
 
@@ -569,7 +569,7 @@ class NewProject extends Component {
           showErrorIntCohorts: this.state.showErrorIntCohorts,
           origin: 'newProject'
         }),
-        SecurityStep({
+        Security({
           title: "Security",
           step: 3,
           currentStep: currentStep,
@@ -578,11 +578,7 @@ class NewProject extends Component {
           updateForm: this.updateInfoSecurity,
           showErrorInfoSecurity: this.state.showErrorInfoSecurity,
           removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity,
-          infoSecurityErrors: this.state.infoSecurityErrors,
-          currentValue: this.state,
-          review: false,
-          edit: false
+          handleSecurityValidity: this.handleInfoSecurityValidity
         }),
         DataSharing({
           title: "Data Sharing",
