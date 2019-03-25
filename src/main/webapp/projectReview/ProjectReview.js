@@ -15,6 +15,7 @@ import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
+import { IntCohortsReview } from "../components/IntCohortsReview";
 
 class ProjectReview extends Component {
 
@@ -96,6 +97,14 @@ class ProjectReview extends Component {
           describeEditType: null,
           editDescription: null,
           projectReviewApproved: false
+        },
+        determination: {
+          projectType: 900,
+          questions: [],
+          requiredError: false,
+          currentQuestionIndex: 0,
+          nextQuestionIndex: 1,
+          endState: false
         }
       }
     }
@@ -961,6 +970,15 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ])
+        ]),
+        Panel({ title: "Int Cohorts Review Test "}, [
+          IntCohortsReview({
+            future: get(this.state.formData, 'projectExtraProps', ''),
+            current: this.state.current.projectExtraProps,
+            readOnly: this.state.readOnly,
+            determination: this.state.determination,
+            questions: this.state.questions
+          })
         ]),
         AlertMessage({
           msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
