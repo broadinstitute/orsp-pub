@@ -367,7 +367,7 @@ class ProjectReview extends Component {
     } else {
       project.textAccessible = "";
     }
-    if (project.compliance === 'true') {
+    if (project.sensitive === 'true') {
       project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
     } else {
       project.textSensitive = "";
