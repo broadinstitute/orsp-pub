@@ -672,7 +672,39 @@ class ProjectReview extends Component {
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
-
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
+          div({ isRendered: this.projectType === "IRB Project" }, [
+            InputFieldRadio({
+              id: "radioDescribeEdits",
+              name: "describeEditType",
+              currentValue: this.state.current.projectExtraProps.describeEditType,
+              label: "Please choose one of the following to describe the proposed edits: ",
+              value: this.state.formData.projectExtraProps.describeEditType,
+              optionValues: ["newAmendment", "requestingAssistance"],
+              optionLabels: [
+                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+                "I am requesting assistance in updating and existing project"
+              ],
+              onChange: this.handleProjectExtraPropsChangeRadio,
+              readOnly: this.state.readOnly,
+              required: true,
+              error: this.state.editTypeError,
+              errorMessage: "Required field"
+            })
+          ]),
+          InputFieldTextArea({
+            id: "inputDescribeEdits",
+            name: "editDescription",
+            label: "Please use the space below to describe any additional edits or clarifications to the edits above",
+            currentValue: this.state.current.projectExtraProps.editDescription,
+            value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
+            readOnly: this.state.readOnly,
+            required: true,
+            onChange: this.handleProjectExtraPropsChange,
+            error: this.state.editDescriptionError,
+            errorMessage: "Required field"
+          })
+        ]),
         Panel({ title: "Requestor" }, [
           InputFieldText({
             id: "inputRequestorName",
@@ -826,39 +858,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly
           })
         ]),
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
-          div({ isRendered: this.projectType === "IRB Project" }, [
-            InputFieldRadio({
-              id: "radioDescribeEdits",
-              name: "describeEditType",
-              currentValue: this.state.current.projectExtraProps.describeEditType,
-              label: "Please choose one of the following to describe the proposed edits: ",
-              value: this.state.formData.projectExtraProps.describeEditType,
-              optionValues: ["newAmendment", "requestingAssistance"],
-              optionLabels: [
-                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                "I am requesting assistance in updating and existing project"
-              ],
-              onChange: this.handleProjectExtraPropsChangeRadio,
-              readOnly: this.state.readOnly,
-              required: true,
-              error: this.state.editTypeError,
-              errorMessage: "Required field"
-            })
-          ]),
-          InputFieldTextArea({
-            id: "inputDescribeEdits",
-            name: "editDescription",
-            label: "Please use the space below to describe any additional edits or clarifications to the edits above",
-            currentValue: this.state.current.projectExtraProps.editDescription,
-            value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
-            readOnly: this.state.readOnly,
-            required: true,
-            onChange: this.handleProjectExtraPropsChange,
-            error: this.state.editDescriptionError,
-            errorMessage: "Required field"
-          })
-        ]),
+
         /*UNTIL HERE*/
 
         Panel({ title: "Determination Questions" }, [
