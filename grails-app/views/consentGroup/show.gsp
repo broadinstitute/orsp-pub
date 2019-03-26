@@ -39,7 +39,7 @@
         <li><a href="#documents">Documents</a></li>
         <li><a href="#details">Details</a></li>
         <li><b><a href="#consentGroupReview" style="color: blue">Review</a></b></li>
-        <li><a href="#comments">Comments</a></li>
+        <li><a href="#comments">Messages</a></li>
         <li><a href="#history">History</a></li>
         %{--<auth:isOrsp>--}%
             %{--<li><a href="#checklist">Reviewer Checklist</a></li>--}%
