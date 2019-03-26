@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 @Slf4j
 class NotifyService implements SendgridSupport, Status {
 
-    public static final String PROJECT = "Project"
     public static final String ORSP_ADDRESS = "orsp-portal@broadinstitute.org"
     PageRenderer groovyPageRenderer
     LinkGenerator grailsLinkGenerator
@@ -509,7 +508,7 @@ class NotifyService implements SendgridSupport, Status {
         if (Boolean.valueOf(issue.getMTA())) {
             values.put(IssueExtraProperty.REQUIRE_MTA, "true")
         }
-        if (type != PROJECT && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
+        if (type != ProjectCGTypes.PROJECT.name && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
         else if (issue.getFeeForServiceWork() != null && Boolean.valueOf(issue.getFeeForServiceWork())){
@@ -587,7 +586,7 @@ class NotifyService implements SendgridSupport, Status {
         if (issue.getType() == IssueType.CONSENT_GROUP.name) {
             type = IssueType.CONSENT_GROUP.name
         } else {
-            type = PROJECT
+            type = ProjectCGTypes.PROJECT.name
         }
         sendAdminNotification(type, issue)
         sendRequirementsInfo(issue, user, type)
