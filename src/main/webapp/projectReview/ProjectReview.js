@@ -32,6 +32,7 @@ class ProjectReview extends Component {
       subjectProtection: false,
       fundingError: false,
       fundingErrorIndex: [],
+      internationalCohortsError: false,
       showDialog: false,
       approveInfoDialog: false,
       discardEditsDialog: false,
@@ -98,20 +99,24 @@ class ProjectReview extends Component {
           editDescription: null,
           projectReviewApproved: false
         },
-        determination: {
-          projectType: 900,
-          questions: [],
-          requiredError: false,
-          currentQuestionIndex: 0,
-          nextQuestionIndex: 1,
-          endState: false
-        }
-      }
+      },
+      determination: {
+        projectType: 900,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
+      },
+      intCohortsAnswers: [],
+      resetIntCohorts: false,
+      questions: [],
     }
     this.rejectProject = this.rejectProject.bind(this);
     this.approveEdits = this.approveEdits.bind(this);
     this.removeEdits = this.removeEdits.bind(this);
     this.discardEdits = this.discardEdits.bind(this);
+    this.resetHandler = this.resetHandler.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -143,6 +148,25 @@ class ProjectReview extends Component {
 
         this.getReviewSuggestions();
         this.projectType = issue.data.issue.type;
+
+        const intCohortsQuestions = [
+          {key: 'individualDataSourced', answer: null },
+          {key: 'isLinkMaintained', answer: null},
+          {key: 'feeForService', answer: null},
+          {key: 'areSamplesComingFromEEAA', answer: null},
+          {key: 'isCollaboratorProvidingGoodService', answer: null},
+          {key: 'isConsentUnambiguous', answer: null}
+        ];
+
+        let intCohortsAnswers = [];
+        intCohortsQuestions.forEach(it => {
+          if (current.projectExtraProps[it.key] !== undefined) {
+            intCohortsAnswers.push({
+              key: it.key,
+              answer: current.projectExtraProps[it.key]
+            });
+          }
+        });
         formData = JSON.parse(currentStr);
         current = JSON.parse(currentStr);
         future = JSON.parse((currentStr));
@@ -154,6 +178,8 @@ class ProjectReview extends Component {
           prev.current = current;
           prev.future = future;
           prev.futureCopy = futureCopy;
+          prev.intCohortsQuestions = intCohortsQuestions;
+          prev.intCohortsAnswers = intCohortsAnswers;
           return prev;
         });
       });
@@ -181,6 +207,87 @@ class ProjectReview extends Component {
   isAdmin() {
     return this.props.isAdmin === "true";
   }
+
+  parseIntCohorts = () => {
+    let intCohortsAnswers = [];
+    this.state.intCohortsQuestions.forEach(it => {
+      if (this.state.formData.projectExtraProps[it.key] !== undefined) {
+        intCohortsAnswers.push({
+          key: it.key,
+          answer: this.state.formData.projectExtraProps[it.key]
+        });
+      }
+    });
+    return intCohortsAnswers;
+  };
+
+  validateQuestionnaire = () => {
+    let isValid = false;
+    const determination = this.state.determination;
+    if (determination.questions.length === 0 || determination.endState === true) {
+      isValid = true;
+    }
+    if (this.state.intCohortsAnswers.length === 0) {
+      isValid = false;
+    }
+    return isValid;
+  };
+
+  resetHandler () {
+    this.setState(prev => {
+      prev.resetIntCohorts = false;
+      prev.determination = this.resetIntCohortsDetermination();
+      return prev;
+    })
+  }
+
+  resetIntCohortsDetermination() {
+    return {
+      projectType: 900,
+      questions: [],
+      requiredError: false,
+      currentQuestionIndex: 0,
+      nextQuestionIndex: 1,
+      endState: false
+    }
+  }
+
+  determinationHandler = (determination) => {
+    let newValues = {};
+    const answers = [];
+    this.clearAlertMessage();
+    determination.questions.forEach(question => {
+
+      if (question.answer !== null) {
+        let singleAnswer = {};
+        singleAnswer.key = question.key;
+        singleAnswer.answer = question.answer;
+        answers.push(singleAnswer);
+      }
+      newValues[question.key] = question.answer;
+    });
+    this.setState(prev => {
+      Object.keys(newValues).forEach(key => {
+        prev.formData.projectExtraProps[key] = newValues[key];
+      });
+      prev.resetIntCohorts = false;
+      prev.intCohortsAnswers = [...answers];
+      prev.determination = determination;
+      prev.internationalCohortsError = false;
+      return prev;
+    });
+  };
+
+  cleanAnswersIntCohorts = (questionIndex) => {
+    this.setState(prev => {
+      this.state.intCohortsQuestions.forEach((q, index) => {
+        if (index > questionIndex.currentQuestionIndex) {
+          prev.formData.projectExtraProps[q.key] = null;
+        }
+      });
+      return prev;
+    })
+  };
 
   getUsersArray(array) {
     let usersArray = [];
@@ -222,14 +329,6 @@ class ProjectReview extends Component {
       });
     }
     return fundingsArray;
-  }
-
-  isEmpty(value) {
-    if (typeof value === 'object') {
-      return !Object.keys(value).length
-    } else {
-      return value === '' || value === null || value === undefined;
-    }
   }
 
   approveRevision = () => {
@@ -340,6 +439,15 @@ class ProjectReview extends Component {
       project.pi = piList;
     }
 
+    const questions = this.parseIntCohorts();
+    if (questions !== null && questions.length > 0) {
+      questions.map((q, idx) => {
+        if (q.answer !== null) {
+          project[q.key] = q.answer;
+        }
+      });
+    }
+
     if (collaborators !== null && collaborators.length > 0) {
       let collaboratorList = [];
       collaborators.map((collaborator, idx) => {
@@ -355,7 +463,7 @@ class ProjectReview extends Component {
     if (fundings !== null && fundings.length > 0) {
       fundings.map((f, idx) => {
         let funding = {};
-        if (!this.isEmpty(f.future.source.label)) {
+        if (!isEmpty(f.future.source.label)) {
           funding.source = f.future.source.label;
           funding.award = f.future.identifier;
           funding.name = f.future.sponsor;
@@ -375,7 +483,7 @@ class ProjectReview extends Component {
   }
 
   sortFundingsBySource = (fundings) => {
-    if (!this.isEmpty(fundings)) {
+    if (!isEmpty(fundings)) {
       return fundings.sort(function (a, b) {
         let x = a.future.source.label;
         let y = b.future.source.label;
@@ -387,42 +495,57 @@ class ProjectReview extends Component {
 
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
-    this.setState({
-      readOnly: false
+    this.setState(prev => {
+      prev.resetIntCohorts = true;
+      prev.readOnly = false;
+      return prev
     });
   };
 
   cancelEdit = (e) => () => {
     this.init();
-    this.setState({
-      formData: this.state.futureCopy,
-      current: this.state.futureCopy,
-      readOnly: true
+    this.setState(prev => {
+      prev.resetIntCohorts = false;
+      prev.formData = this.state.futureCopy;
+      prev.current = this.state.futureCopy;
+      prev.readOnly = true;
+      return prev;
     });
   };
 
   submitEdit = (e) => () => {
-    if (this.isValid()) {
-      this.setState({
-        readOnly: true,
-        errorSubmit: false
-      });
-      const data = {
-        projectKey: this.props.projectKey,
-        suggestions: JSON.stringify(this.state.formData)
-      };
-      if (this.state.reviewSuggestion) {
-        Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
-          this.getReviewSuggestions()
-        );
+    if (this.validateQuestionnaire()) {
+      if (this.isValid()) {
+        this.setState(prev => {
+          prev.resetIntCohorts = false;
+          prev.readOnly = true;
+          prev.errorSubmit = false;
+          return prev;
+        });
+        const data = {
+          projectKey: this.props.projectKey,
+          suggestions: JSON.stringify(this.state.formData)
+        };
+        if (this.state.reviewSuggestion) {
+          Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
+            this.getReviewSuggestions()
+          );
+        } else {
+          Review.submitReview(this.props.serverURL, data).then(() =>
+            this.getReviewSuggestions()
+          );
+        }
       } else {
-        Review.submitReview(this.props.serverURL, data).then(() =>
-          this.getReviewSuggestions()
-        );
+        this.setState({
+          errorSubmit: true
+        });
       }
     } else {
-      this.setState({
-        errorSubmit: true
+      this.setState(prev => {
+        prev.errorSubmit = true;
+        prev.showAlert = true;
+        prev.alertMessage = 'Please complete International Cohorts';
+        return prev;
       });
     }
   };
@@ -549,11 +672,13 @@ class ProjectReview extends Component {
     let editDescriptionError = false;
     let fundingErrorIndex = [];
     let generalError = false;
+    let intCohortsAnswers = false;
+    let questions = false;
 
     // Todo: Fundings error will be handled inside its component
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
-      if (this.isEmpty(obj.future.source.label) && (!this.isEmpty(obj.future.sponsor) || !this.isEmpty(obj.future.identifier))
-        || (idx === 0 && this.isEmpty(obj.future.source.label) && this.isEmpty(obj.current.source.label))) {
+      if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
+        || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
         fundingErrorIndex.push(idx);
         return true
       } else {
@@ -561,26 +686,33 @@ class ProjectReview extends Component {
       }
     }).length > 0;
     if (fundingError) generalError = true;
-    if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.editDescription)) {
+    if (this.state.projectType === "IRB Project" && isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
       generalError = true;
     }
-    if (this.state.projectType === "IRB Project" && this.isEmpty(this.state.formData.projectExtraProps.describeEditType)) {
+    if (this.state.projectType === "IRB Project" && isEmpty(this.state.formData.projectExtraProps.describeEditType)) {
       editTypeError = true;
       generalError = true;
     }
-    if (this.isEmpty(this.state.formData.description)) {
+    if (isEmpty(this.state.formData.description)) {
       descriptionError = true;
       generalError = true;
     }
-    if (this.isEmpty(this.state.formData.projectExtraProps.projectTitle)) {
+    if (isEmpty(this.state.formData.projectExtraProps.projectTitle)) {
       projectTitleError = true;
       generalError = true;
     }
-    if (this.isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
+    if (isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
       subjectProtectionError = true;
       generalError = true;
     }
+    if (!this.validateQuestionnaire()) {
+      questions = true;
+    }
+    if (this.state.intCohortsAnswers.length === 0) {
+      intCohortsAnswers = true;
+    }
+
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -590,9 +722,17 @@ class ProjectReview extends Component {
       prev.fundingError = fundingError;
       prev.fundingErrorIndex = fundingErrorIndex;
       prev.generalError = generalError;
+      prev.internationalCohortsError = intCohortsAnswers;
       return prev;
     });
-    return !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
+    return !subjectProtectionError &&
+      !projectTitleError &&
+      !descriptionError &&
+      !editTypeError &&
+      !editDescriptionError &&
+      !fundingError &&
+      !questions &&
+      !intCohortsAnswers;
   }
 
   changeFundingError = () => {
@@ -794,7 +934,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             required: false,
             onChange: this.handleProjectExtraPropsChange,
-            valueEdited: this.isEmpty(this.state.current.projectExtraProps.protocol) === !this.isEmpty(this.state.formData.projectExtraProps.protocol),
+            valueEdited: isEmpty(this.state.current.projectExtraProps.protocol) === !isEmpty(this.state.formData.projectExtraProps.protocol),
             edit: true
           }),
           InputFieldRadio({
@@ -878,7 +1018,7 @@ class ProjectReview extends Component {
               show: true
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
               id: "radioPII",
               name: "radioPII",
@@ -890,7 +1030,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [
             InputYesNo({
               id: "broadInvestigator",
               name: "broadInvestigator",
@@ -902,7 +1042,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
             InputYesNo({
               id: "subjectsDeceased",
               name: "subjectsDeceased",
@@ -913,7 +1053,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
             InputYesNo({
               id: "sensitiveInformationSource",
               name: "sensitiveInformationSource",
@@ -925,7 +1065,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [
             InputYesNo({
               id: "interactionSource",
               name: "interactionSource",
@@ -937,7 +1077,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
             InputYesNo({
               id: "isIdReceive",
               name: "isIdReceive",
@@ -948,7 +1088,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
             InputYesNo({
               id: "isCoPublishing",
               name: 'isCoPublishing',
@@ -959,7 +1099,7 @@ class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !this.isEmpty(this.state.formData.projectExtraProps.federalFunding) }, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.federalFunding) }, [
             InputYesNo({
               id: "federalFunding",
               name: 'federalFunding',
@@ -977,7 +1117,10 @@ class ProjectReview extends Component {
             current: this.state.current.projectExtraProps,
             readOnly: this.state.readOnly,
             determination: this.state.determination,
-            questions: this.state.questions
+            resetHandler: this.resetHandler,
+            handler: this.determinationHandler,
+            cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
+            resetIntCohorts: this.state.resetIntCohorts
           })
         ]),
         AlertMessage({
@@ -1002,7 +1145,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
-            disabled: this.isEmpty(this.state.editedForm) ?
+            disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
             isRendered: this.state.readOnly === false

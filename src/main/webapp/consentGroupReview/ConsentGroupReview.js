@@ -47,7 +47,6 @@ class ConsentGroupReview extends Component {
         nextQuestionIndex: 1,
         endState: false
       },
-
       consentExtraProps: {
         consent: '',
         protocol: '',
@@ -138,9 +137,11 @@ class ConsentGroupReview extends Component {
       dataSharingError: false,
       isEdited: false,
       intCohortsAnswers: [],
+      resetIntCohorts: false
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
     this.consentGroupNameExists = this.consentGroupNameExists.bind(this);
+    this.resetHandler = this.resetHandler.bind(this);
   }
 
   componentDidMount() {
@@ -158,7 +159,6 @@ class ConsentGroupReview extends Component {
     let futureCopy = {};
     let futureStr = {};
     let formData = {};
-    let formDataStr = {};
     let sampleCollectionList = [];
 
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
@@ -216,7 +216,7 @@ class ConsentGroupReview extends Component {
               futureCopy = JSON.parse(currentStr);
             }
 
-            let intCohortsQuestions = [
+            const intCohortsQuestions = [
               {key: 'individualDataSourced', answer: null },
               {key: 'isLinkMaintained', answer: null},
               {key: 'feeForService', answer: null},
@@ -224,8 +224,6 @@ class ConsentGroupReview extends Component {
               {key: 'isCollaboratorProvidingGoodService', answer: null},
               {key: 'isConsentUnambiguous', answer: null}
             ];
-
-// /*->*/            let questions = this.initQuestions();
 
             let intCohortsAnswers = [];
             intCohortsQuestions.forEach(it => {
@@ -244,10 +242,8 @@ class ConsentGroupReview extends Component {
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
-// /*->*/        prev.questions.length = 0;
               prev.intCohortsQuestions = intCohortsQuestions;
               prev.intCohortsAnswers = intCohortsAnswers;
-// /*->*/        prev.questions = questions;
               return prev;
             });
           }
@@ -478,7 +474,7 @@ class ConsentGroupReview extends Component {
     });
   };
 
-/*->*/  validateQuestionnaire = () => {
+  validateQuestionnaire = () => {
     let isValid = false;
     const determination = this.state.determination;
     if (determination.questions.length === 0 || determination.endState === true) {
@@ -488,7 +484,7 @@ class ConsentGroupReview extends Component {
       isValid = false;
     }
     return isValid;
-/*->*/};
+  };
 
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true });
@@ -507,7 +503,6 @@ class ConsentGroupReview extends Component {
           prev.formData.consentForm.approvalStatus = data.approvalStatus;
           prev.current.consentExtraProps.projectReviewApproved = true;
           prev.approveInfoDialog = false;
-// /*->*/    prev.questions.length = 0;
           return prev;
         })
       }
@@ -545,7 +540,6 @@ class ConsentGroupReview extends Component {
     let consentGroup = this.getConsentGroup();
     ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
       this.setState(prev => {
-/*->*/        prev.questions.length = 0;
         prev.approveDialog = false;
         return prev;
       });
@@ -585,12 +579,30 @@ class ConsentGroupReview extends Component {
     }
   };
 
+  resetHandler () {
+    this.setState(prev => {
+      prev.resetIntCohorts = false;
+      prev.determination = this.resetIntCohortsDetermination();
+      return prev;
+    })
+  }
+
+  resetIntCohortsDetermination() {
+    return {
+      projectType: 900,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
+    }
+  }
+
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
     this.setState(prev => {
       prev.readOnly = false;
-      // prev.questions.length = 0;
-// /*->*/prev.questions = this.initQuestions();
+      prev.resetIntCohorts = true;
       prev.isEdited = false;
       return prev;
     });
@@ -609,7 +621,7 @@ class ConsentGroupReview extends Component {
       prev.formData = this.state.futureCopy;
       prev.readOnly = true;
       prev.errorSubmit = false;
-      // prev.questions.length = 0;
+      prev.resetIntCohorts = false;
       return prev;
     });
   };
@@ -621,6 +633,7 @@ class ConsentGroupReview extends Component {
         this.setState(prev => {
           prev.readOnly = true;
           prev.errorSubmit = false;
+          prev.resetIntCohorts = false;
           prev.intCohortsAnswers.forEach(question => {
             prev.formData.consentExtraProps[question.key] = question.answer;
           });
@@ -900,7 +913,7 @@ class ConsentGroupReview extends Component {
       Object.keys(newValues).forEach(key => {
         prev.formData.consentExtraProps[key] = newValues[key];
       });
-      prev.questions = determination.questions;
+      prev.resetIntCohorts = false;
       prev.isEdited = true;
       prev.intCohortsAnswers = [...answers];
       prev.determination = determination;
@@ -916,7 +929,6 @@ class ConsentGroupReview extends Component {
       this.state.intCohortsQuestions.forEach((q, index) => {
         if (index > questionIndex.currentQuestionIndex) {
           prev.formData.consentExtraProps[q.key] = null;
-          // prev.questions[index].answer = null
         }
       });
       return prev;
@@ -1231,15 +1243,16 @@ class ConsentGroupReview extends Component {
             error: this.state.errors.instError
           })
         ]),
-
-        Panel({ title: "Int Cohorts Review Test "}, [
+        Panel({ title: "Int Cohorts Review"}, [
           IntCohortsReview({
             future: get(this.state.formData, 'consentExtraProps', ''),
             current: this.state.current.consentExtraProps,
             readOnly: this.state.readOnly,
+            resetHandler: this.resetHandler,
             determination: this.state.determination,
             handler: this.determinationHandler,
             cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
+            resetIntCohorts: this.state.resetIntCohorts
           })
         ]),
         Panel({ title: "Security" }, [

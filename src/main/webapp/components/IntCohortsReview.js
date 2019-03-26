@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { hh, h1, span, div, label, h3, button } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
-
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 import { AlertMessage } from "./AlertMessage";
 
@@ -13,36 +12,33 @@ const OSAP = 900;
 
 export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
-
   constructor(props) {
     super(props);
     this.state = {
       questions: []
     }
-    // this.state = {
-    //   questions : this.initQuestions()
-    // }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.readOnly){
-      return { readOnly : nextProps.readOnly};
+    if (nextProps.resetIntCohorts){
+      const questions = IntCohortsReview.initQuestions();
+      return { questions: questions};
     }
     else return null;
+
   }
 
   componentDidMount() {
-    let questions = this.initQuestions();
     this.setState(prev => {
-      prev.questions = questions;
+      prev.questions = IntCohortsReview.initQuestions();
       return prev;
     })
   }
 
-  initQuestions = () => {
-    // console.log("initQuestions");
+  static initQuestions = () => {
+    // console.log(" initQuestions ");
     const questions = [];
-
+    // this.setState({questions: []});
     questions.push({
       question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
       yesOutput: 2,
@@ -70,6 +66,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
       answer: null,
       progress: 34,
       key: 'feeForService',
+      // key: this.props.origin === 'project' ? 'feeForServiceWork' : 'feeForService',
       id: 3
     });
 
@@ -88,7 +85,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
       yesOutput: OSAP,
       noOutput: 6,
       answer: null,
-      progress: 67,.
+      progress: 67,
       key: 'isCollaboratorProvidingGoodService',
       id: 5
     });
@@ -133,18 +130,24 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
   };
 
   handler = (answer) => {
-    // console.log("Handler -> ", answer);
-    this.props.handler(answer);
+    this.setState(prev => {
+      prev.questions = answer.questions;
+      return prev;
+    }, () => this.props.handler(answer));
   };
 
   cleanUnanswered = (answers) => {
-    // console.log("CLEAN QUESTIONS UNANSWERED >_< -> ", answers);
-
-    this.props.cleanQuestionsUnanswered(answers);
+    this.setState(prev => {
+    answers.questions.forEach((q, index) => {
+      if (index > answers.currentQuestionIndex) {
+        prev.questions[index].answer = null;
+      }
+    });
+    return prev;
+  }, () => this.props.cleanQuestionsUnanswered(answers));
   };
 
   render() {
-console.log("render ^o^");
     const {
       individualDataSourced : futureIndividualDataSourced = '',
       isLinkMaintained : futureIsLinkMaintained = '',
@@ -243,14 +246,15 @@ console.log("render ^o^");
           ]),
           h3({}, ["International Cohorts' Questionnaire"]),
           QuestionnaireWorkflow({
-            questions: this.initQuestions(),
+            questions: this.props.resetIntCohorts ? IntCohortsReview.initQuestions() : this.state.questions,
             edit: true,
             cleanQuestionsUnanswered: this.cleanUnanswered,
             handler: this.handler,
             determination: this.props.determination,
-            readOnly: this.props.readOnly
-          }),
-          button({onClick: () => this.forceUpdate()}, ["Render!"])
+            readOnly: this.props.readOnly,
+            resetHandler: this.props.resetHandler,
+            resetIntCohorts : this.props.resetIntCohorts
+          })
         ]),
       ]
     ))
