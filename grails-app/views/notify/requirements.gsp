@@ -2,7 +2,7 @@
     Hello,
 </p>
 <p>
-    Based on the information you provided, your recently created Consent Group  <a href="${issueLink}">${issue.summary}</a> will require the following:
+    Based on the information you provided, your recently created ${values.type} <a href="${issueLink}">${issue.summary}</a> will require the following:
 </p>
     <div>
         <ul>
@@ -25,11 +25,16 @@
         </ul>
     </div>
 <p>
-    If you have any questions or concerns, please contact our colleague who created this Consent Group and is cc’d on this email.
+    A member from the OSAP team, cc’d here will be in touch with you shortly to proceed with obtaining them.
 </p>
+<g:if test="${values.get("type").equals("Project") || values.get("feeForService")?.equals("true") || values.get("areSamplesComingFromEEAA")?.equals("true") || values.get("isConsentUnambiguous")?.equals("true")}">
+<p>
+    NOTE: GDPR applies to this ${values.type}.
+</p>
+</g:if>
 <p>
     Thank you,
-    <br> The ORSP team
+    <br> The BRICC team
 </p>
 
 

@@ -57,6 +57,7 @@ class NewProject extends Component {
       errors: {
         studyDescription: false,
         pTitle: false,
+        uploadConsentGroup: false,
         subjectProtection: false,
         fundings: false
       },
@@ -144,6 +145,8 @@ class NewProject extends Component {
     extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
     extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
     extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
+    extraProperties.push({name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null});
+    extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
 
@@ -277,11 +280,16 @@ class NewProject extends Component {
   validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
+    let uploadConsentGroup = false;
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
     if (isEmpty(this.state.generalDataFormData.studyDescription)) {
       studyDescription = true;
+      isValid = false;
+    }
+    if (this.state.generalDataFormData.uploadConsentGroup === undefined || this.state.generalDataFormData.uploadConsentGroup === '') {
+      uploadConsentGroup = true;
       isValid = false;
     }
     if (this.state.generalDataFormData.subjectProtection === undefined || this.state.generalDataFormData.subjectProtection === '') {
@@ -306,6 +314,7 @@ class NewProject extends Component {
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.studyDescription = studyDescription;
+        prev.errors.uploadConsentGroup = uploadConsentGroup;
         prev.errors.subjectProtection = subjectProtection;
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
@@ -313,7 +322,7 @@ class NewProject extends Component {
       });
     }
     else if (field === 'fundings' || field === 'studyDescription' ||
-      field === 'subjectProtection' || field === 'pTitle') {
+      field === 'uploadConsentGroup' || field === 'subjectProtection' || field === 'pTitle') {
 
       this.setState(prev => {
         if (field === 'fundings') {
@@ -321,6 +330,9 @@ class NewProject extends Component {
         }
         else if (field === 'studyDescription') {
           prev.errors.studyDescription = studyDescription;
+        }
+        else if (field === 'uploadConsentGroup') {
+          prev.errors.uploadConsentGroup = uploadConsentGroup;
         }
         else if (field === 'subjectProtection') {
           prev.errors.subjectProtection = subjectProtection;

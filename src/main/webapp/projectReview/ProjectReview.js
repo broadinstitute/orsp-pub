@@ -24,11 +24,13 @@ class ProjectReview extends Component {
 
     this.state = {
       generalError: false,
+      uploadConsentGroupError: false,
       subjectProtectionError: false,
       descriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
+      uploadConsentGroup: false,
       subjectProtection: false,
       fundingError: false,
       fundingErrorIndex: [],
@@ -53,6 +55,8 @@ class ProjectReview extends Component {
         projectExtraProps: {
           projectTitle: '',
           protocol: '',
+          uploadConsentGroup: null,
+          notCGSpecify: '',
           subjectProtection: null,
           projectAvailability: null,
           describeEditType: null,
@@ -93,6 +97,8 @@ class ProjectReview extends Component {
           irbProtocolId: '',
           projectTitle: '',
           protocol: '',
+          uploadConsentGroup: null,
+          notCGSpecify: '',
           subjectProtection: null,
           projectAvailability: null,
           describeEditType: null,
@@ -197,6 +203,7 @@ class ProjectReview extends Component {
           });
         } else {
           this.setState(prev => {
+            prev.editedForm = {};
             prev.reviewSuggestion = false;
             return prev;
           });
@@ -413,6 +420,8 @@ class ProjectReview extends Component {
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
+    project.uploadConsentGroup = this.state.formData.projectExtraProps.uploadConsentGroup;
+    project.notCGSpecify = this.state.formData.projectExtraProps.uploadConsentGroup !== 'notUpload' ? null : this.state.formData.projectExtraProps.notCGSpecify;
     project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
@@ -623,7 +632,7 @@ class ProjectReview extends Component {
       return prev;
     },
       () => {
-        if (this.state.errorSubmit == true) this.isValid()
+        if (this.state.errorSubmit === true) this.isValid()
       });
   };
 
@@ -635,7 +644,7 @@ class ProjectReview extends Component {
       return prev;
     },
       () => {
-        if (this.state.errorSubmit == true) this.isValid()
+        if (this.state.errorSubmit === true) this.isValid()
       });
   };
 
@@ -667,6 +676,7 @@ class ProjectReview extends Component {
   isValid() {
     let descriptionError = false;
     let projectTitleError = false;
+    let uploadConsentGroupError = false;
     let subjectProtectionError = false;
     let editTypeError = false;
     let editDescriptionError = false;
@@ -702,7 +712,11 @@ class ProjectReview extends Component {
       projectTitleError = true;
       generalError = true;
     }
-    if (isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
+    if (this.isEmpty(this.state.formData.projectExtraProps.uploadConsentGroup)) {
+      uploadConsentGroupError = true;
+      generalError = true;
+    }
+    if (this.isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
       subjectProtectionError = true;
       generalError = true;
     }
@@ -716,6 +730,7 @@ class ProjectReview extends Component {
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
+      prev.uploadConsentGroupError = uploadConsentGroupError;
       prev.subjectProtectionError = subjectProtectionError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
@@ -725,14 +740,15 @@ class ProjectReview extends Component {
       prev.internationalCohortsError = intCohortsAnswers;
       return prev;
     });
-    return !subjectProtectionError &&
-      !projectTitleError &&
-      !descriptionError &&
-      !editTypeError &&
-      !editDescriptionError &&
-      !fundingError &&
-      !questions &&
-      !intCohortsAnswers;
+    return !uploadConsentGroupError &&
+    !subjectProtectionError &&
+    !projectTitleError &&
+    !descriptionError &&
+    !editTypeError &&
+    !editDescriptionError &&
+    !fundingError &&
+    !questions &&
+    !intCohortsAnswers;
   }
 
   changeFundingError = () => {
@@ -821,7 +837,39 @@ class ProjectReview extends Component {
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
-
+        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
+          div({ isRendered: this.projectType === "IRB Project" }, [
+            InputFieldRadio({
+              id: "radioDescribeEdits",
+              name: "describeEditType",
+              currentValue: this.state.current.projectExtraProps.describeEditType,
+              label: "Please choose one of the following to describe the proposed edits: ",
+              value: this.state.formData.projectExtraProps.describeEditType,
+              optionValues: ["newAmendment", "requestingAssistance"],
+              optionLabels: [
+                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+                "I am requesting assistance in updating and existing project"
+              ],
+              onChange: this.handleProjectExtraPropsChangeRadio,
+              readOnly: this.state.readOnly,
+              required: true,
+              error: this.state.editTypeError,
+              errorMessage: "Required field"
+            })
+          ]),
+          InputFieldTextArea({
+            id: "inputDescribeEdits",
+            name: "editDescription",
+            label: "Please use the space below to describe any additional edits or clarifications to the edits above",
+            currentValue: this.state.current.projectExtraProps.editDescription,
+            value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
+            readOnly: this.state.readOnly,
+            required: true,
+            onChange: this.handleProjectExtraPropsChange,
+            error: this.state.editDescriptionError,
+            errorMessage: "Required field"
+          })
+        ]),
         Panel({ title: "Requestor" }, [
           InputFieldText({
             id: "inputRequestorName",
@@ -938,6 +986,38 @@ class ProjectReview extends Component {
             edit: true
           }),
           InputFieldRadio({
+            id: "radioUploadConsentGroup",
+            name: "uploadConsentGroup",
+            label: "Will you be uploading a Consent Group?",
+            value: this.state.formData.projectExtraProps.uploadConsentGroup,
+            currentValue: this.state.current.projectExtraProps.uploadConsentGroup,
+            optionValues: ["uploadNow", "uploadLater", "notUpload"],
+            optionLabels: [
+              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["now"]) ]),
+              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["later"]) ]),
+              "No, I will not upload a Consent Group"
+            ],
+            onChange: this.handleProjectExtraPropsChangeRadio,
+            required: true,
+            readOnly: this.state.readOnly,
+            error: this.state.uploadConsentGroupError,
+            errorMessage: "Required field"
+          }),
+          div({ isRendered: this.state.formData.projectExtraProps.uploadConsentGroup === "notUpload" }, [
+            InputFieldText({
+              id: "inputNotCGSpecify",
+              name: "notCGSpecify",
+              label: "Please specify",
+              value: this.state.formData.projectExtraProps.notCGSpecify,
+              currentValue: this.state.current.projectExtraProps.notCGSpecify,
+              readOnly: this.state.readOnly,
+              required: false,
+              onChange: this.handleProjectExtraPropsChange,
+              valueEdited: this.isEmpty(this.state.current.projectExtraProps.notCGSpecify) === !this.isEmpty(this.state.formData.projectExtraProps.notCGSpecify),
+              edit: true
+            })
+          ]),
+          InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",
             label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
@@ -975,39 +1055,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly
           })
         ]),
-        Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
-          div({ isRendered: this.projectType === "IRB Project" }, [
-            InputFieldRadio({
-              id: "radioDescribeEdits",
-              name: "describeEditType",
-              currentValue: this.state.current.projectExtraProps.describeEditType,
-              label: "Please choose one of the following to describe the proposed edits: ",
-              value: this.state.formData.projectExtraProps.describeEditType,
-              optionValues: ["newAmendment", "requestingAssistance"],
-              optionLabels: [
-                "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                "I am requesting assistance in updating and existing project"
-              ],
-              onChange: this.handleProjectExtraPropsChangeRadio,
-              readOnly: this.state.readOnly,
-              required: true,
-              error: this.state.editTypeError,
-              errorMessage: "Required field"
-            })
-          ]),
-          InputFieldTextArea({
-            id: "inputDescribeEdits",
-            name: "editDescription",
-            label: "Please use the space below to describe any additional edits or clarifications to the edits above",
-            currentValue: this.state.current.projectExtraProps.editDescription,
-            value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
-            readOnly: this.state.readOnly,
-            required: true,
-            onChange: this.handleProjectExtraPropsChange,
-            error: this.state.editDescriptionError,
-            errorMessage: "Required field"
-          })
-        ]),
+
         /*UNTIL HERE*/
 
         Panel({ title: "Determination Questions" }, [

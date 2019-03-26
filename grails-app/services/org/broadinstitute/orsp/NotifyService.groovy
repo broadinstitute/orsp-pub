@@ -465,7 +465,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupRequirementsInfo(Issue issue, User user) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, String type) {
         Map<String, String> values = new HashMap<>()
         values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
         values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
@@ -478,12 +478,14 @@ class NotifyService implements SendgridSupport, Status {
         if (StringUtils.isNotEmpty(issue.getTextAccessible()))
             values.put(IssueExtraProperty.TEXT_ACCESSIBLE, issue.getTextAccessible())
 
+        values.put('type', type)
+
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getSecurityRecipient()),
                         fromAddress: getDefaultFromAddress(),
                         ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                        subject: issue.projectKey + " - Required OSAP Follow-up",
+                        subject: issue.projectKey + " - Required InfoSec Follow-up",
                         user: user,
                         issue: issue,
                         values: values)
@@ -499,14 +501,17 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendConsentGroupSecurityInfo(Issue issue, User user) {
+    Map<Boolean, String> sendRequirementsInfo(Issue issue, User user, String type) {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
         if (Boolean.valueOf(issue.getMTA())) {
             values.put(IssueExtraProperty.REQUIRE_MTA, "true")
         }
-        if (issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
+        if (type != ProjectCGTypes.PROJECT.name && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
+            values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
+        }
+        else if (issue.getFeeForServiceWork() != null && Boolean.valueOf(issue.getFeeForServiceWork())){
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
         else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
@@ -519,13 +524,15 @@ class NotifyService implements SendgridSupport, Status {
             values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
         }
 
-        if (!values.isEmpty()) {
+        values.put('type', type)
+
+        if (values.size() >= 2) {
             NotifyArguments arguments =
                     new NotifyArguments(
                             toAddresses: Collections.singletonList(user.getEmailAddress()),
                             fromAddress: getDefaultFromAddress(),
                             ccAddresses: Collections.singletonList(getAgreementsRecipient()),
-                            subject: issue.projectKey + " - Required InfoSec Follow-up",
+                            subject: issue.projectKey + " - Required OSAP Follow-up",
                             user: user,
                             issue: issue,
                             values: values)
@@ -573,14 +580,16 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def projectCGCreation(Issue issue) {
+    Map<Boolean, String> projectCGCreation(Issue issue) {
+        String type = ''
+        User user = userService.findUser(issue.reporter)
         if (issue.getType() == IssueType.CONSENT_GROUP.name) {
-            User user = userService.findUser(issue.reporter)
-            sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-            sendConsentGroupSecurityInfo(issue, user)
-            sendConsentGroupRequirementsInfo(issue, user)
+            type = IssueType.CONSENT_GROUP.name
         } else {
-            sendAdminNotification("Project Type", issue)
+            type = ProjectCGTypes.PROJECT.name
         }
+        sendAdminNotification(type, issue)
+        sendRequirementsInfo(issue, user, type)
+        sendSecurityInfo(issue, user, type)
     }
 }
