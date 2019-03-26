@@ -75,7 +75,8 @@ class IssueService {
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
             IssueExtraProperty.PII,
-
+            IssueExtraProperty.UPLOAD_CONSENT_GROUP,
+            IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY
     ]
 
 
@@ -246,7 +247,10 @@ class IssueService {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_COMPLIANCE})
         }
         if (input.get(IssueExtraProperty.COLL_CONTACT) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLL_CONTACT})
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLL_CONTACT })
+        }
+        if (!input.containsKey(IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY})
         }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
