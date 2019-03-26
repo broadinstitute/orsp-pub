@@ -50,7 +50,6 @@
 
 <div class="orsp-tabs" style="display: none;">
     <ul>
-        <li><a href="#workspace">Workspace</a></li>
         <li><b><a href="#review" style="color: blue">Project Details</a></b></li>
         <li><a href="#details">Broad Project Info</a></li>
         <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
@@ -59,6 +58,7 @@
         <li><a href="#submissions">Submissions</a></li>
         <li><a href="#comments">Messages</a></li>
         <li><a href="#history">History</a></li>
+        <li><a href="#workspace">Workspace</a></li>
     </ul>
 
     <div id="review">
