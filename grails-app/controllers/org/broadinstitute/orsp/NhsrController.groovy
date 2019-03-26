@@ -43,7 +43,8 @@ class NhsrController extends NeController {
          tab               : params.tab,
          amendmentTypes    : SUBMISSION_DOC_TYPES,
          storageDocuments  : storageDocuments,
-         groupedSubmissions: groupedSubmissions
+         groupedSubmissions: groupedSubmissions,
+         attachmentsApproved: issue.attachmentsApproved()
         ]
     }
 

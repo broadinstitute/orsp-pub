@@ -66,7 +66,9 @@ class NeController extends AuthenticatedController {
          tab               : params.tab,
          amendmentTypes    : SUBMISSION_DOC_TYPES,
          storageDocuments  : storageDocuments,
-         groupedSubmissions: groupedSubmissions
+         groupedSubmissions: groupedSubmissions,
+         attachmentsApproved: issue.attachmentsApproved(),
+         projectReviewApproved: issue.getProjectReviewApproved()
         ]
     }
 
