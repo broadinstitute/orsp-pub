@@ -712,11 +712,11 @@ class ProjectReview extends Component {
       projectTitleError = true;
       generalError = true;
     }
-    if (this.isEmpty(this.state.formData.projectExtraProps.uploadConsentGroup)) {
+    if (isEmpty(this.state.formData.projectExtraProps.uploadConsentGroup)) {
       uploadConsentGroupError = true;
       generalError = true;
     }
-    if (this.isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
+    if (isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
       subjectProtectionError = true;
       generalError = true;
     }
@@ -1013,7 +1013,7 @@ class ProjectReview extends Component {
               readOnly: this.state.readOnly,
               required: false,
               onChange: this.handleProjectExtraPropsChange,
-              valueEdited: this.isEmpty(this.state.current.projectExtraProps.notCGSpecify) === !this.isEmpty(this.state.formData.projectExtraProps.notCGSpecify),
+              valueEdited: isEmpty(this.state.current.projectExtraProps.notCGSpecify) === !isEmpty(this.state.formData.projectExtraProps.notCGSpecify),
               edit: true
             })
           ]),
@@ -1168,7 +1168,8 @@ class ProjectReview extends Component {
             resetHandler: this.resetHandler,
             handler: this.determinationHandler,
             cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
-            resetIntCohorts: this.state.resetIntCohorts
+            resetIntCohorts: this.state.resetIntCohorts,
+            origin: "project"
           })
         ]),
         AlertMessage({
