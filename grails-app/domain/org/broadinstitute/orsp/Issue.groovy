@@ -115,6 +115,10 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getMTA() { getExtraProperties().find { it.name == IssueExtraProperty.REQUIRE_MTA }?.value }
 
+    transient String getUploadConsent() { getExtraProperties().find { it.name == IssueExtraProperty.UPLOAD_CONSENT_GROUP }?.value }
+
+    transient String getNotCGSpecify() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY }?.value }
+
     // Info Security
     transient String getPII() { getExtraProperties().find { it.name == IssueExtraProperty.PII }?.value }
 
