@@ -5,19 +5,19 @@ import DataUseLetterMessage from './DataUseLetterMessage';
 import '../index.css';
 
 function DUL(props) {
-  const error = dataUseLetterComponent.error;
+  const error = component.error;
   if (error !== undefined && error !== '') {
-    return <DataUseLetterMessage error = {dataUseLetterComponent.error}/>;
+    return <DataUseLetterMessage error = {component.error}/>;
   }
   return  <DataUseLetter
-                     serverUrl = {dataUseLetterComponent.serverURL}
-                     consentGroupUrl = {dataUseLetterComponent.consentGroupUrl}
-                     projectUrl = {dataUseLetterComponent.projectUrl}
-                     loadingImage = {dataUseLetterComponent.loadingImage}
+                     serverUrl = {component.serverURL}
+                     consentGroupUrl = {component.consentGroupUrl}
+                     projectUrl = {component.projectUrl}
+                     loadingImage = {component.loadingImage}
   />;
 }
 
 ReactDOM.render(
-    <DUL isMessage={dataUseLetterComponent.error}/>,
+    <DUL isMessage={component.error}/>,
     document.getElementById('dataUseLetter')
 );

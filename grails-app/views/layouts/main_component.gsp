@@ -43,57 +43,57 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <script>
-        if (location.protocol !== "https:") location.protocol = "https:";
-        function onSignIn(googleUser) {
-            // show spinner while the page is re-loading
-            document.getElementById("login_spinner").setAttribute("class", "visible");
-            var profile = googleUser.getBasicProfile();
-            var token = googleUser.getAuthResponse().id_token;
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.then(function() {
-                var xhttp = new XMLHttpRequest();
+      if (location.protocol !== "https:") location.protocol = "https:";
+      function onSignIn(googleUser) {
+        // show spinner while the page is re-loading
+        document.getElementById("login_spinner").setAttribute("class", "visible");
+        let profile = googleUser.getBasicProfile();
+        let token = googleUser.getAuthResponse().id_token;
+        let auth2 = gapi.auth2.getAuthInstance();
+        auth2.then(function() {
+          let xhttp = new XMLHttpRequest();
 
-                %{--
-                    This is here so that after a Broad user signs in, their page is refreshed with valid content
-                    Overwrites previous onreadystatechange
-                --}%
-                <auth:isNotAuthenticated>
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        location.reload();
-                    }
-                };
-                </auth:isNotAuthenticated>
-                var url = "${raw(createLink(controller: "auth", action: "authUser"))}";
-                var postData = "token=" + token;
-                xhttp.open("POST", url, true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send(postData);
-            });
-        }
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function (){
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        window.location = "${request.contextPath}";
-                    }
-                };
-                var url = "${raw(createLink(controller: "logout", action: "logout"))}";
-                xhttp.open("POST", url, true);
-                xhttp.send();
-            });
-        }
+          %{--
+              This is here so that after a Broad user signs in, their page is refreshed with valid content
+              Overwrites previous onreadystatechange
+          --}%
+          <auth:isNotAuthenticated>
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              location.reload();
+            }
+          };
+          </auth:isNotAuthenticated>
+          let url = "${raw(createLink(controller: "auth", action: "authUser"))}";
+          let postData = "token=" + token;
+          xhttp.open("POST", url, true);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhttp.send(postData);
+        });
+      }
+      function signOut() {
+        let auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function (){
+          let xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              window.location = "${request.contextPath}";
+            }
+          };
+          let url = "${raw(createLink(controller: "logout", action: "logout"))}";
+          xhttp.open("POST", url, true);
+          xhttp.send();
+        });
+      }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-typeahead/css/Typeahead.css"/>
 
-     %{--
-        Add all component based code here.
-        TODO: These constants should all be refactored into a static utility class
-     --}%
+    %{--
+       Add all react component based code here.
+       TODO: These constants should all be refactored into a static utility class
+    --}%
     <script type="application/javascript">
       const issueTypes = [
         <g:each status="count" in="${IssueType.values()}" var="type">"${raw(type.name)}"<g:if test="${count < IssueType.values().size() - 1}">,</g:if>
@@ -107,34 +107,30 @@
           <g:each status="count" in="${PreferredIrb.values()}" var="map">{ id:"${raw(map.key)}", value:"${raw(map.label)}"}<g:if test="${count < PreferredIrb.values().size() - 1}">,</g:if>
         </g:each>];
 
-      // dataUseLetter TODO: Make the data use letter component use `component` instead.
-      const dataUseLetterComponent = {
-        serverURL: "${webRequest.baseUrl}",
-        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
-        error: "${error}",
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
-      };
-
-      // newConsentGroup, newProject, search
+      // TODO: Many of these should be static values directly accessible from the components directly.
+      // Look into moving these values out of
+      // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
-        getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
-        searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-        sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+        attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
+        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
         consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
         createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consent-group', method: 'POST')}",
-        attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-        serverURL: "${webRequest.baseUrl}",
-        fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
-        projectKey: "${params.projectKey}",
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-        projectType: '${params.type}',
         createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
-        projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
-        userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
+        error: "${error}",
+        fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
+        getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
-        irbs: irbs
+        irbs: irbs,
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+        projectKey: "${params.projectKey}",
+        projectType: '${params.type}',
+        projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
+        sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+        searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
+        searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
+        serverURL: "${webRequest.baseUrl}",
+        userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
       };
     </script>
 
