@@ -3,7 +3,6 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.ConsentCollectionLink
 
 /**
  * This class handles the general update or creation of issues and nothing more.

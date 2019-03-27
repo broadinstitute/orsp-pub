@@ -19,7 +19,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
     StatusEventService statusEventService
     PermissionService permissionService
 
-    public static final List<String> SUBMISSION_DOC_TYPES =
+    public static final List<String> PROJECT_DOC_TYPES =
             [ "Amendment Form",
               "Appendix",
               "Application",
