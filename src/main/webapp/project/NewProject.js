@@ -85,7 +85,7 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateDocuments()) {
+    // if (this.validateDocuments()) {
       if (this.validateForm()) {
         this.changeStateSubmitButton();
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
@@ -104,9 +104,10 @@ class NewProject extends Component {
           spinnerService.hideAll();
         });
       }
-    } else {
-        spinnerService.hideAll();
-    }
+    // }
+    // else {
+    //     spinnerService.hideAll();
+    // }
   };
 
   toggleTrueSubmitError = () => {
@@ -498,15 +499,18 @@ class NewProject extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
-      .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
-      }).catch(error => {
+    // intentar guardar solo si hay archivos
+    if (this.state.files !== null && this.state.files.length > 0) {
+      Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
+        .then(resp => {
+          window.location.href = this.getRedirectUrl(projectKey);
+        }).catch(error => {
         spinnerService.hideAll();
         this.toggleTrueSubmitError();
         this.changeStateSubmitButton();
         console.error(error);
       });
+    }
   };
 
   showSubmit = (currentStep) => {
