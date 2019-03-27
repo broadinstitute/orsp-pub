@@ -431,4 +431,16 @@ class IssueService {
         props
     }
 
+    String getProjectType(String projectKey) {
+        String projectType
+        Issue issue = queryService.findByKey(projectKey)
+        if(issue != null) {
+            projectType = IssueType.valueOfName(issue.getType()).prefix.toLowerCase()
+            projectType
+        } else {
+            projectType = null
+        }
+        projectType
+    }
+
 }

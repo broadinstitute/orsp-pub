@@ -100,4 +100,16 @@ class ProjectController extends AuthenticatedController {
             transitionService.handleIntake(issue, actors*.userName, IssueStatus.SubmittingToORSP.name, getUser()?.displayName)
         }
     }
+
+    String getProjectType() {
+        String projectType = issueService.getProjectType(params.id)
+        if (projectType != null) {
+            response.status = 200
+            render([projectType: projectType] as JSON)
+        } else {
+            response.status = 404
+            render([message: "Project not found"] as JSON)
+        }
+        projectType
+    }
 }

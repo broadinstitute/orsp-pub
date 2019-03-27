@@ -611,6 +611,9 @@ class ProjectReview extends Component {
       return prev;
     });
   };
+  redirectToNewConsentGroup = () => {
+    window.location.href = this.props.serverURL + '/api/consent-group?projectKey=' + this.props.projectKey;
+  };
 
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
@@ -670,7 +673,7 @@ class ProjectReview extends Component {
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
-          onClick: this.enableEdit(),
+          onClick: this.redirectToNewConsentGroup,
           isRendered: this.state.readOnly === true,
         }, ["Add New Consent Group"]),
 

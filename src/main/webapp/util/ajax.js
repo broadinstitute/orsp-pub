@@ -133,6 +133,9 @@ export const Project = {
   updateProject(url, data, projectKey) {
     return axios.put(url + '?projectKey=' + projectKey, data);
   },
+  getProjectType(url, projectKey) {
+    return axios.get(url + '/api/project/get-type?id=' + projectKey);
+  }
 };
 
 export const DocumentHandler = {

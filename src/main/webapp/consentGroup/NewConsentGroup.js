@@ -4,7 +4,7 @@ import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { span, a } from 'react-hyperscript-helpers';
-import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { DataSharing } from '../components/DataSharing';
 import { Security } from '../components/Security';
@@ -134,7 +134,11 @@ class NewConsentGroup extends Component {
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-        window.location.href = this.getRedirectUrl();
+
+        Project.getProjectType(this.props.serverURL, this.props.projectKey).then(type => {
+          window.location.href =  [this.props.serverURL, type.data.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+        });
+        // window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
@@ -226,10 +230,6 @@ class NewConsentGroup extends Component {
     }
     return renderSubmit;
   };
-
-  getRedirectUrl() {
-    return [this.props.serverURL, this.props.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
-  }
 
   isValid = (field) => {
     let isValid = true;
