@@ -1347,7 +1347,7 @@ class ProjectReview extends Component {
             })
           ])
         ]),
-        Panel({ title: "Int Cohorts Review Test "}, [
+        Panel({ title: "International Cohorts"}, [
           IntCohortsReview({
             future: get(this.state.formData, 'projectExtraProps', ''),
             current: this.state.current.projectExtraProps,

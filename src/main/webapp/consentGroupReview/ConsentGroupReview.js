@@ -1256,7 +1256,7 @@ class ConsentGroupReview extends Component {
             error: this.state.errors.instError
           })
         ]),
-        Panel({ title: "Int Cohorts Review"}, [
+        Panel({ title: "International Cohorts"}, [
           IntCohortsReview({
             future: get(this.state.formData, 'consentExtraProps', ''),
             current: this.state.current.consentExtraProps,
