@@ -44,22 +44,6 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Boolean isLocked() { isFlagSet(IssueExtraProperty.LOCKED) }
 
-    transient nonProjAttachTypes() {
-        def existingFileTypes = [attachments*.fileType].flatten()
-        def options = (type == IssueType.CONSENT_GROUP.name) ? ConsentGroupController.ATTACHMENT_TYPES : []
-        if (options) {
-            options -= existingFileTypes
-        }
-        if (type == IssueType.CONSENT_GROUP.name) {
-            if (!options.contains(ConsentGroupController.IC_LETTER)) {
-                options += ConsentGroupController.IC_LETTER
-            }
-            options += ConsentGroupController.ADDTL_ATTACHMENT_TYPES
-        }
-        return options
-    }
-
-
     transient String getController() {
         IssueUtils.getControllerForIssueTypeName(type)
     }
