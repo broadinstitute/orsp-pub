@@ -659,12 +659,20 @@ class ProjectReview extends Component {
           clarificationUrl: this.props.clarificationUrl,
           successClarification: this.successClarification
         }),
+        
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
           isRendered: this.state.readOnly === true
         }, ["Edit Information"]),
+
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.enableEdit(),
+          isRendered: this.state.readOnly === true,
+        }, ["Add New Consent Group"]),
 
         button({
           className: "btn buttonSecondary floatRight",
