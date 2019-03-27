@@ -8,12 +8,6 @@ import org.springframework.web.multipart.MultipartFile
  */
 class IrbController extends AuthenticatedController {
 
-    public static final List<String> ATTACHMENT_DOC_TYPES =
-            ["Draft IRB Application",
-             "Final IRB Application",
-             "Broad's IRB approval",
-             "Other"]
-
     // TODO: Look into handling this better. The templates are tied to issue status and determine
     // which gsp template to show in a particular tab. I don't like handling this at the controller
     // level and would like to see this kind of view-specific logic moved closer to the view page.
@@ -69,9 +63,8 @@ class IrbController extends AuthenticatedController {
          workspaceTemplate : IRB_STATUS_TEMPLATES.get(issue?.status?.toLowerCase(), ""),
          extraProperties   : issue.getExtraProperties(),
          isProject         : true,
-         attachmentTypes   : ATTACHMENT_DOC_TYPES,
+         attachmentTypes   : PROJECT_DOC_TYPES,
          tab               : params.tab,
-         amendmentTypes    : SUBMISSION_DOC_TYPES,
          storageDocuments  : storageDocuments,
          groupedSubmissions: groupedSubmissions
         ]

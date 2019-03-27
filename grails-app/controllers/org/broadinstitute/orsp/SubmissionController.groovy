@@ -32,7 +32,7 @@ class SubmissionController extends AuthenticatedController {
         render(view: '/submission/submission',
                 model: [issue:                      issue,
                         submission:                 submission,
-                        docTypes:                   SUBMISSION_DOC_TYPES,
+                        docTypes:                   PROJECT_DOC_TYPES,
                         submissionTypes:            submissionTypes,
                         submissionNumberMaximums:   submissionNumberMaximums,
                         defaultType:                defaultType
@@ -69,7 +69,7 @@ class SubmissionController extends AuthenticatedController {
                 model: [issue     : issue,
                         submission: submission,
                         minNumber : number,
-                        docTypes  : SUBMISSION_DOC_TYPES,
+                        docTypes  : PROJECT_DOC_TYPES,
                         submissionTypes: getSubmissionTypesForIssueType(issue.getType())])
     }
 
@@ -119,7 +119,7 @@ class SubmissionController extends AuthenticatedController {
                 model: [issue     : issue,
                         submission: submission,
                         minNumber : submission.number,
-                        docTypes  : SUBMISSION_DOC_TYPES,
+                        docTypes  : PROJECT_DOC_TYPES,
                         submissionTypes: getSubmissionTypesForIssueType(issue.getType())])
     }
 
@@ -143,7 +143,7 @@ class SubmissionController extends AuthenticatedController {
                 model: [issue     : issue,
                         submission: submission,
                         minNumber : submission.number,
-                        docTypes  : SUBMISSION_DOC_TYPES,
+                        docTypes  : PROJECT_DOC_TYPES,
                         submissionTypes: getSubmissionTypesForIssueType(issue.getType())])
     }
 
