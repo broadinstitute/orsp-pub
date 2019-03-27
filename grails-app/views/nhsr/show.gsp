@@ -44,21 +44,25 @@
     </g:if>
     <div class="issue-type">
     <span>New Status:</span>
-    <span>${issue?.approvalStatus}</span>
+      <span>${issue?.approvalStatus}</span>
+      <br/><span>Information Sub-Status:</span>
+      <span>${projectReviewApproved ? 'Approved' : 'Pending'}</span>
+      <br/><span>Documents Sub-Status:</span>
+      <span>${attachmentsApproved ? 'Approved' : 'Pending'}</span>
     </div>
 </div>
 
 <div class="orsp-tabs" style="display: none;">
     <ul>
-        <li><a href="#workspace">Workspace</a></li>
-        <li><a href="#documents">Documents</a></li>
-        <li><a href="#submissions">Submissions</a></li>
-        <li><a href="#consent-groups">Consent Groups</a></li>
-        <li><a href="#details">Broad Project Info</a></li>
-        <li><a href="#comments">Comments</a></li>
-        <li><a href="#history">History</a></li>
         <li><b><a href="#review" style="color: blue">Project Details</a></b></li>
-         <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
+        <li><a href="#details">Broad Project Info</a></li>
+        <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
+        <li><a href="#documents">Documents</a></li>
+        <li><a href="#consent-groups">Consent Groups</a></li>
+        <li><a href="#submissions">Submissions</a></li>
+        <li><a href="#comments">Messages</a></li>
+        <li><a href="#history">History</a></li>
+        <li><a href="#workspace">Workspace</a></li>
     </ul>
 
     <div id="review">
@@ -177,7 +181,6 @@
                                 {
                                     issueKey: $(this).data("issue"),
                                     consentKey: $(this).data("consent"),
-                                    type: $(this).data("type"),
                                     controller: "${issue.controller}"
                                 },
                                 function() {

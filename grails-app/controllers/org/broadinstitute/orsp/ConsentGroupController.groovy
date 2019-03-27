@@ -8,17 +8,7 @@ import org.springframework.web.multipart.MultipartFile
  */
 class ConsentGroupController extends AuthenticatedController {
 
-    public static final String IC_LETTER = "Institutional Certification Letter"
     public static final String DU_LETTER = "Data Use Letter"
-    public static final String CONSENT_FORM = "Consent Form"
-    public static final String COLLAB_APPROVAL = "Collab. IRB approval"
-    public static final String MOU = "Memorandum of Understanding"
-    public static final String WAIVER = "Waiver of Consent"
-    public static final String ADDITIONAL_CONSENT_FORM = "Additional " + CONSENT_FORM
-    public static final String OTHER = "Other"
-
-    public static List<String> ATTACHMENT_TYPES = [CONSENT_FORM, COLLAB_APPROVAL, MOU, DU_LETTER, IC_LETTER, WAIVER]
-    public static List<String> ADDTL_ATTACHMENT_TYPES = [IC_LETTER, ADDITIONAL_CONSENT_FORM, OTHER]
 
     ConsentService consentService
 
@@ -196,9 +186,6 @@ class ConsentGroupController extends AuthenticatedController {
             redirect(controller: 'Index', action: 'index')
         }
         def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
-        def attachmentTypes = ATTACHMENT_TYPES - attachments?.collect { it.fileType }
-        def attachmentsPresent = attachmentTypes.isEmpty()
-        attachmentTypes += ADDTL_ATTACHMENT_TYPES
         def restriction = DataUseRestriction.findByConsentGroupKey(issue.projectKey)
         Collection<String> duSummary = consentService.getSummary(restriction)
         def collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
@@ -206,12 +193,13 @@ class ConsentGroupController extends AuthenticatedController {
         [issue: issue,
          collectionLinks: collectionLinks,
          attachments: attachments,
-         attachmentsPresent: attachmentsPresent,
-         attachmentTypes: attachmentTypes,
+         attachmentTypes: PROJECT_DOC_TYPES,
          restriction: restriction,
          duSummary: duSummary,
          tab: params.tab,
          duLetter: DU_LETTER,
+         attachmentsApproved: issue.attachmentsApproved(),
+         projectReviewApproved: issue.getProjectReviewApproved()
 //         checklistAnswers: checklistAnswers
         ]
     }
@@ -224,7 +212,9 @@ class ConsentGroupController extends AuthenticatedController {
                 view: "/consentGroup/list",
                 model: [
                         issue: issue,
-                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()}
+                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()},
+                        attachmentTypes: PROJECT_DOC_TYPES,
+                        controller: IssueType.CONSENT_GROUP.controller
                 ]
         )
     }
@@ -354,8 +344,7 @@ class ConsentGroupController extends AuthenticatedController {
                 model:
                         [issue: issue,
                          consent: consent,
-                         type: params.type
-                        ])
+                         attachmentTypes: PROJECT_DOC_TYPES])
     }
 
     def attachConsentDocument() {
@@ -372,7 +361,7 @@ class ConsentGroupController extends AuthenticatedController {
         } catch (Exception e) {
             flash.error = "Unable to attach consent document: " + e.getMessage()
         }
-        redirect(controller: issue.controller, action: "show", params: [id: issue.projectKey, tab: "documents"])
+        redirect(controller: issue.controller, action: "show", params: [id: issue.projectKey, tab: "consent-groups"])
     }
 
 }

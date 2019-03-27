@@ -44,22 +44,6 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Boolean isLocked() { isFlagSet(IssueExtraProperty.LOCKED) }
 
-    transient nonProjAttachTypes() {
-        def existingFileTypes = [attachments*.fileType].flatten()
-        def options = (type == IssueType.CONSENT_GROUP.name) ? ConsentGroupController.ATTACHMENT_TYPES : []
-        if (options) {
-            options -= existingFileTypes
-        }
-        if (type == IssueType.CONSENT_GROUP.name) {
-            if (!options.contains(ConsentGroupController.IC_LETTER)) {
-                options += ConsentGroupController.IC_LETTER
-            }
-            options += ConsentGroupController.ADDTL_ATTACHMENT_TYPES
-        }
-        return options
-    }
-
-
     transient String getController() {
         IssueUtils.getControllerForIssueTypeName(type)
     }
@@ -114,6 +98,10 @@ class Issue implements LogicalDelete<Issue> {
     transient String getDescribeConsentGroup() { getExtraProperties().find { it.name == IssueExtraProperty.DESCRIBE_CONSENT }?.value }
 
     transient String getMTA() { getExtraProperties().find { it.name == IssueExtraProperty.REQUIRE_MTA }?.value }
+
+    transient String getUploadConsent() { getExtraProperties().find { it.name == IssueExtraProperty.UPLOAD_CONSENT_GROUP }?.value }
+
+    transient String getNotCGSpecify() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY }?.value }
 
     // Info Security
     transient String getPII() { getExtraProperties().find { it.name == IssueExtraProperty.PII }?.value }
@@ -272,36 +260,9 @@ class Issue implements LogicalDelete<Issue> {
      * @return True if all attachments have the 'Approved' status, false otherwise
      */
     transient Boolean attachmentsApproved() {
-        Boolean optionalKey = true
-        Boolean completed = false
-        ArrayList approvedTypeDocuments = getAttachments().findAll {
-            it.status == IssueStatus.Approved.getName()
+        ArrayList pendingDocuments = getAttachments().findAll {
+            it.status == DocumentStatus.PENDING.status
         }.fileType
-
-        Collection<String> optionalFile = getAttachments().findAll {
-            if (getType() == IssueType.CONSENT_GROUP.name) {
-                it.fileType == KeyDocuments.DATA_USE_LETTER.value
-            } else if (getType() == IssueType.NE.name) {
-                it.fileType == KeyDocuments.NE_CONSENT_DOCUMENT.value
-            }
-        }.fileType
-
-        if (optionalFile.size() > 0) {
-            if (getType() == IssueType.CONSENT_GROUP.name) {
-                optionalKey = approvedTypeDocuments.contains(KeyDocuments.DATA_USE_LETTER.value)
-            }
-            if (getType() == IssueType.NE.name) {
-                optionalKey = approvedTypeDocuments.contains(KeyDocuments.NE_CONSENT_DOCUMENT.value)
-            }
-        }
-
-        if (optionalKey) {
-            completed = KeyDocuments.getRequiredEnumByType(getType()).collect {
-                it
-            }.findAll {
-                approvedTypeDocuments.contains(it.getValue()) == false
-            }.size() == 0
-        }
-        completed
+        pendingDocuments?.size() == 0
     }
 }

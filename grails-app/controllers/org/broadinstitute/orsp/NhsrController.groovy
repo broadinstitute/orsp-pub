@@ -39,11 +39,12 @@ class NhsrController extends NeController {
          workspaceTemplate : NON_IRB_STATUS_TEMPLATES.get(issue?.status?.toLowerCase(), ""),
          extraProperties   : issue.getExtraProperties(),
          attachments       : issue.attachments?.sort { a, b -> b.createDate <=> a.createDate },
-         attachmentTypes   : ATTACHMENT_DOC_TYPES,
+         attachmentTypes   : PROJECT_DOC_TYPES,
          tab               : params.tab,
-         amendmentTypes    : SUBMISSION_DOC_TYPES,
          storageDocuments  : storageDocuments,
-         groupedSubmissions: groupedSubmissions
+         groupedSubmissions: groupedSubmissions,
+         attachmentsApproved: issue.attachmentsApproved(),
+         projectReviewApproved: issue.getProjectReviewApproved()
         ]
     }
 

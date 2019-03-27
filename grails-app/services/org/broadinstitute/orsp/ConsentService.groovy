@@ -130,7 +130,7 @@ class ConsentService implements Status {
     def postDataUseLetter(String consentLocation, InputStream inputStream, String fileName) {
         String url = consentLocation + "/dul"
         HttpBuilder http = getMultipartBuilder(url)
-        String fileType = URLConnection.guessContentTypeFromName(fileName)
+        String fileType = MediaType.APPLICATION_OCTET_STREAM_VALUE
         http.post(Boolean) {
             // "data" is the expected form field name in the consent service
             request.body = multipart {
@@ -150,6 +150,7 @@ class ConsentService implements Status {
             }
         }
     }
+
 
     /**
      * Create or replace associations for a consent.

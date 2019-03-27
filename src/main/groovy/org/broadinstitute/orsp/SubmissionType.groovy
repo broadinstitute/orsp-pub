@@ -2,14 +2,18 @@ package org.broadinstitute.orsp;
 
 enum SubmissionType {
 
-    ContinuingReview ("Continuing Review", [IssueType.IRB]),
     Amendment ("Amendment", [IssueType.IRB, IssueType.NE, IssueType.NHSR]),
+    ContinuingReview ("Continuing Review", [IssueType.IRB]),
     OtherEvent ("Other Event", [IssueType.IRB]),
     Other ("Other", [IssueType.IRB, IssueType.NE, IssueType.NHSR])
 
     String label
     Collection<IssueType> issueTypes
 
+    /**
+     * @param label Label string
+     * @param issueTypes Collection of issue types for which the submission type is applicable
+     */
     SubmissionType(String label, Collection<IssueType> issueTypes) {
         this.label = label
         this.issueTypes = issueTypes
