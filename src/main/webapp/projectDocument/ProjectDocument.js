@@ -3,7 +3,7 @@ import { Documents } from '../components/Documents'
 import { DocumentHandler } from "../util/ajax";
 import { User } from "../util/ajax";
 import { ProjectKeyDocuments } from '../util/KeyDocuments';
-import { IRB, NHSR, NE } from '../util/DocumentType';
+import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
@@ -16,14 +16,14 @@ class ProjectDocument extends Component {
     super(props);
     this.state = {
       documentsCollection: [],
-      keyDocuments: [],
+      documents: [],
       additional: [],
       showDialog: false,
       action: '',
       uuid: '',
       user: {isAdmin: false},
       serverError: false,
-      documentKeyOptions: [],
+      documentOptions: [],
       documentAdditionalOptions: []
     };
   }
@@ -31,8 +31,7 @@ class ProjectDocument extends Component {
   componentDidMount() {
     this.getAttachedDocuments();
     this.isCurrentUserAdmin();
-    this.loadKeyOptions();
-    this.loadAdditionalOptions();
+    this.loadOptions();
   }
 
   isCurrentUserAdmin() {
@@ -43,31 +42,11 @@ class ProjectDocument extends Component {
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachedDocumentsUrl, this.props.projectKey).then(resp => {
-      this.setKeyDocuments(JSON.parse(resp.data.documents));
+      this.setState({documents: JSON.parse(resp.data.documents)});
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
     });
-  };
-
-  setKeyDocuments = (documentsCollection) => {
-    const keyDocuments = [];
-    const additionalDocuments = [];
-    documentsCollection.forEach(documentData => {
-      if (ProjectKeyDocuments.lastIndexOf(documentData.fileType) !== -1) {
-        if(documentData.documentType === 'key') {
-          keyDocuments.push(documentData);
-        } else {
-          additionalDocuments.push(documentData);
-        }        
-      } else {
-        additionalDocuments.push(documentData);
-      }
-    });
-    this.setState({
-      keyDocuments: keyDocuments,
-      additionalDocuments: additionalDocuments
-    })
   };
 
   approveDocument = (uuid) => {
@@ -112,41 +91,18 @@ class ProjectDocument extends Component {
     this.setState({showDialog: !this.state.showDialog});
   };
 
-  loadAdditionalOptions() {
+  loadOptions () {
     let documentOptions = [];
-    documentOptions.push({value: 'Other', label: 'Other'});
-    this.setState({documentAdditionalOptions: documentOptions});
-  }
-
-  loadKeyOptions () {
-    let key = this.props.projectKey.split("-");
-    let projectType;
-    if (key.length === 3) {
-      projectType = key[1].toUpperCase();
-    } else {
-      projectType = key[0].toUpperCase();
-    }
-    let documentOptions = [];
-    if (projectType === 'IRB') {
-      IRB.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      });
-    } 
-    else if (projectType === 'NE') {
-      NE.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      });
-    }
-    else if (projectType === 'NHSR') {
-      NHSR.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      });
-    } 
-    this.setState({documentKeyOptions: documentOptions});
+    DOCUMENT_TYPE.forEach(type => {
+      documentOptions.push({value: type, label: type});
+    });
+    console.log('documents options: *****', JSON.stringify(documentOptions));
+    this.setState({documentOptions: documentOptions});
   };
   
 
   render() {
+    console.log('render********',this.state.documentOptions);
     return (
       h( Fragment, {},[
         ConfirmationDialog({
@@ -158,13 +114,11 @@ class ProjectDocument extends Component {
           actionLabel: 'Yes'
         }, []),
         Documents({
-          keyDocuments: this.state.keyDocuments,
-          additionalDocuments: this.state.additionalDocuments,
+          documents: this.state.documents,
           handleDialogConfirm: this.handleDialog,
           user: this.state.user,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
-          keyOptions: this.state.documentKeyOptions,
-          additionalOptions: this.state.documentAdditionalOptions,
+          options: this.state.documentOptions,
           projectKey: this.props.projectKey,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           handleLoadDocuments: this.getAttachedDocuments

@@ -33,17 +33,12 @@ export const Documents = hh(class Documents extends Component {
       showAddKeyDocuments: false,
       showAddAdditionalDocuments: false
     }
+    console.log("options-vvvv---documents ---",JSON.stringify(this.props.options));
   }
 
-  addKeyDocuments = () => {
+  addDocuments = () => {
     this.setState({
       showAddKeyDocuments: !this.state.showAddKeyDocuments
-    });
-  };
-
-  addAdditionalDocuments = () => {
-    this.setState({
-      showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments
     });
   };
 
@@ -69,8 +64,8 @@ export const Documents = hh(class Documents extends Component {
 
   findDul = () => {
     let dulPresent = false;
-    if (this.props.keyDocuments.length !== 0) {
-      this.props.keyDocuments.forEach(docs => {
+    if (this.props.documents.length !== 0) {
+      this.props.documents.forEach(docs => {
         if (docs.fileType === KeyDocumentsEnum.DATA_USE_LETTER) {
           dulPresent = true;
         }
@@ -86,8 +81,7 @@ export const Documents = hh(class Documents extends Component {
       AddDocumentDialog({
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
-        title: 'Key ',
-        options: this.props.keyOptions,
+        options: this.props.options,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         projectKey: this.props.projectKey,
         user: this.props.user,
@@ -96,42 +90,15 @@ export const Documents = hh(class Documents extends Component {
         emailUrl: this.props.emailUrl,
         userName: this.props.userName
       }),
-      AddDocumentDialog({
-        closeModal: this.closeAdditionalModal,
-        show: this.state.showAddAdditionalDocuments,
-        title: 'Additional ',
-        options: this.props.additionalOptions,
-        attachDocumentsUrl: this.props.attachDocumentsUrl,
-        projectKey: this.props.projectKey,
-        user: this.props.user,
-        handleLoadDocuments: this.props.handleLoadDocuments,
-        serverURL: this.props.serverURL,
-      }),
-      Panel({title: "Key Documents"}, [
+      Panel({title: "Documents"}, [
         button({
           className: "btn buttonSecondary",
           style: addDocumentBtn,
-          onClick: this.addKeyDocuments
+          onClick: this.addDocuments
         }, ["Add Document"]),
         Table({
           headers: headers,
-          data: this.props.keyDocuments,
-          sizePerPage: 10,
-          paginationSize: 10,
-          handleDialogConfirm: this.props.handleDialogConfirm,
-          downloadDocumentUrl: this.props.downloadDocumentUrl,
-          isAdmin: this.props.user.isAdmin
-        })
-      ]),
-      Panel({title: "Additional Documents"}, [
-        button({
-          className: "btn buttonSecondary",
-          style: addDocumentBtn,
-          onClick: this.addAdditionalDocuments
-        }, ["Add Document"]),
-        Table({
-          headers: headers,
-          data: this.props.additionalDocuments,
+          data: this.props.documents,
           sizePerPage: 10,
           paginationSize: 10,
           handleDialogConfirm: this.props.handleDialogConfirm,
