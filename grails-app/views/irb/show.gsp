@@ -43,13 +43,12 @@
     </span>
     </g:if>
     <div class="issue-type">
-      <span>New Status:</span>
+    <span>New Status:</span>
       <span>${issue?.approvalStatus}</span>
       <br/><span>Information Sub-Status:</span>
       <span>${projectReviewApproved ? 'Approved' : 'Pending'}</span>
       <br/><span>Documents Sub-Status:</span>
       <span>${attachmentsApproved ? 'Approved' : 'Pending'}</span>
-    </div>
     </div>
 </div>
 
