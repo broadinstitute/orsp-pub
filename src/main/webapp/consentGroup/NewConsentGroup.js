@@ -376,7 +376,6 @@ class NewConsentGroup extends Component {
   };
 
   handleInfoSecurityValidity(isValid) {
-    console.log('handleInfoSecurityValidity', isValid);
     this.setState({ isInfoSecurityValid: isValid })
   }
 

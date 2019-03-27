@@ -26,8 +26,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     this.formHasError = this.formHasError.bind(this);
   }
 
-  componentDidMount() { }
-
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------');
     console.log(error, info);
