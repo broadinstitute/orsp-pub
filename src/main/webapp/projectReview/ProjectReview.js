@@ -14,6 +14,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
+import { SecurityReview } from "../components/SecurityReview";
 import { isEmpty } from '../util/Utils';
 
 class ProjectReview extends Component {
@@ -22,6 +23,7 @@ class ProjectReview extends Component {
     super(props);
 
     this.state = {
+      isInfoSecurityValid: false,
       generalError: false,
       uploadConsentGroupError: false,
       subjectProtectionError: false,
@@ -59,6 +61,14 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
+          accessible: false,
+          compliance: false,
+          pii: false,
+          sensitive: false,
+          textAccessible: '',
+          textCompliance: '',
+          textSensitive: '',
+          isIdReceive: false,
           projectReviewApproved: false
         },
         fundings: [{
@@ -101,14 +111,34 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
+          accessible: false,
+          compliance: false,
+          pii: false,
+          sensitive: false,
+          textAccessible: '',
+          textCompliance: '',
+          textSensitive: '',
+          isIdReceive: false,
           projectReviewApproved: false
-        }
+        },
+        showInfoSecurityError: false,
+      },
+      infoSecurityErrors: {
+        sensitive: false,
+        accessible: false,
+        compliance: false,
+        pii: false,
+        textSensitive: false,
+        textAccessible: false,
+        textCompliance: false
       }
-    }
+    };
     this.rejectProject = this.rejectProject.bind(this);
     this.approveEdits = this.approveEdits.bind(this);
     this.removeEdits = this.removeEdits.bind(this);
     this.discardEdits = this.discardEdits.bind(this);
+    this.handleInfoSecurityValidity = this.handleInfoSecurityValidity.bind(this);
+    this.updateInfoSecurityFormData = this.updateInfoSecurityFormData.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -137,22 +167,36 @@ class ProjectReview extends Component {
         current.fundings = this.getFundingsArray(issue.data.fundings);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         currentStr = JSON.stringify(current);
-
-        this.getReviewSuggestions();
-        this.projectType = issue.data.issue.type;
-        formData = JSON.parse(currentStr);
-        current = JSON.parse(currentStr);
         future = JSON.parse((currentStr));
         futureCopy = JSON.parse(currentStr);
-        // store current issue info here ....
-        this.setState(prev => {
-          // prepare form data here, initially same as current ....
-          prev.formData = formData;
-          prev.current = current;
-          prev.future = future;
-          prev.futureCopy = futureCopy;
-          return prev;
-        });
+        this.projectType = issue.data.issue.type;
+
+        Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+          data => {
+            if (data.data !== '') {
+              formData = JSON.parse(data.data.suggestions);
+
+              this.setState(prev => {
+                prev.formData = formData;
+                prev.current = current;
+                prev.future = future;
+                prev.futureCopy = futureCopy;
+                prev.editedForm = JSON.parse(data.data.suggestions);
+                prev.reviewSuggestion = true;
+                return prev;
+              });
+            } else {
+              formData =  JSON.parse(currentStr);
+              this.setState(prev => {
+                prev.formData = formData;
+                prev.current = current;
+                prev.future = future;
+                prev.futureCopy = futureCopy;
+                prev.reviewSuggestion = false;
+                return prev;
+              });
+            }
+          });
       });
   }
 
@@ -322,6 +366,26 @@ class ProjectReview extends Component {
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
+    project.accessible = this.state.formData.projectExtraProps.accessible;
+    project.compliance = this.state.formData.projectExtraProps.compliance;
+    project.pii = this.state.formData.projectExtraProps.pii;
+    project.sensitive = this.state.formData.projectExtraProps.sensitive;
+
+    if (project.accessible === 'true') {
+      project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
+    } else {
+      project.textAccessible = "";
+    }
+    if (project.sensitive === 'true') {
+      project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
+    } else {
+      project.textSensitive = "";
+    }
+    if (project.compliance === 'true') {
+      project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
+    } else {
+      project.textCompliance = "";
+    }
 
     let collaborators = this.state.formData.collaborators;
     let pmList = [];
@@ -486,9 +550,9 @@ class ProjectReview extends Component {
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    },
+        prev.formData[field] = value;
+        return prev;
+      },
       () => {
         if (this.state.errorSubmit == true) this.isValid()
       });
@@ -496,9 +560,9 @@ class ProjectReview extends Component {
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
     this.setState(prev => {
-      prev.formData.projectExtraProps[field] = value;
-      return prev;
-    },
+        prev.formData.projectExtraProps[field] = value;
+        return prev;
+      },
       () => {
         if (this.state.errorSubmit === true) this.isValid()
       });
@@ -508,9 +572,9 @@ class ProjectReview extends Component {
     const field = e.currentTarget.name;
     const value = e.currentTarget.value;
     this.setState(prev => {
-      prev.formData.projectExtraProps[field] = value;
-      return prev;
-    },
+        prev.formData.projectExtraProps[field] = value;
+        return prev;
+      },
       () => {
         if (this.state.errorSubmit === true) this.isValid()
       });
@@ -586,6 +650,10 @@ class ProjectReview extends Component {
       subjectProtectionError = true;
       generalError = true;
     }
+    const infoSecValidate = !this.validateInfoSecurity();
+    if (infoSecValidate) {
+      generalError = true;
+    }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -596,9 +664,18 @@ class ProjectReview extends Component {
       prev.fundingError = fundingError;
       prev.fundingErrorIndex = fundingErrorIndex;
       prev.generalError = generalError;
+      prev.showInfoSecurityError = infoSecValidate;
       return prev;
     });
-    return !uploadConsentGroupError && !subjectProtectionError && !projectTitleError && !descriptionError && !editTypeError && !editDescriptionError && !fundingError;
+
+    return !uploadConsentGroupError &&
+      !subjectProtectionError &&
+      !projectTitleError &&
+      !descriptionError &&
+      !editTypeError &&
+      !editDescriptionError &&
+      !fundingError &&
+      this.validateInfoSecurity();
   }
 
   changeFundingError = () => {
@@ -623,6 +700,100 @@ class ProjectReview extends Component {
       prev.showAlert = false;
       prev.alertMessage = '';
       prev.alertType = '';
+      return prev;
+    });
+  };
+
+  handleInfoSecurityValidity(isValid) {
+    this.setState({ isInfoSecurityValid: isValid });
+  }
+
+  validateInfoSecurity = (field) => {
+    let pii = false;
+    let compliance = false;
+    let sensitive = false;
+    let accessible = false;
+    let isValid = true;
+    let textCompliance = false;
+    let textSensitive = false;
+    let textAccessible = false;
+
+    if (isEmpty(this.state.formData.projectExtraProps.pii)) {
+      pii = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.formData.projectExtraProps.compliance)) {
+      compliance = true;
+      isValid = false;
+    }
+
+    if (!isEmpty(this.state.formData.projectExtraProps.compliance)
+      && this.state.formData.projectExtraProps.compliance === "true"
+      && isEmpty(this.state.formData.projectExtraProps.textCompliance)) {
+      textCompliance = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.formData.projectExtraProps.sensitive)) {
+      sensitive = true;
+      isValid = false;
+    }
+    if (!isEmpty(this.state.formData.projectExtraProps.sensitive)
+      && this.state.formData.projectExtraProps.sensitive === "true"
+      && isEmpty(this.state.formData.projectExtraProps.textSensitive)) {
+      textSensitive = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
+      accessible = true;
+      isValid = false;
+    }
+    if (!isEmpty(this.state.formData.projectExtraProps.accessible)
+      && this.state.formData.projectExtraProps.accessible === "true"
+      && isEmpty(this.state.formData.projectExtraProps.textAccessible)) {
+      textAccessible = true;
+      isValid = false;
+    }
+    if (field === undefined || field === null || field === 3) {
+      this.setState(prev => {
+        prev.infoSecurityErrors.pii = pii;
+        prev.infoSecurityErrors.compliance = compliance;
+        prev.infoSecurityErrors.sensitive = sensitive;
+        prev.infoSecurityErrors.accessible = accessible;
+        prev.infoSecurityErrors.textCompliance = textCompliance;
+        prev.infoSecurityErrors.textSensitive = textSensitive;
+        prev.infoSecurityErrors.textAccessible = textAccessible;
+        return prev;
+      });
+    }
+    return isValid;
+  };
+
+  updateInfoSecurityForm = (field, value) => {
+    this.setState(prev => {
+      prev.formData.projectExtraProps[field] = value;
+      prev.generalError = false;
+      return prev;
+    }, () => {
+      this.validateInfoSecurity();
+    });
+  };
+
+  updateInfoSecurityFormData = (updatedForm, field, value) => {
+    this.setState(prev => {
+      if (updatedForm[field] !== '' && value === undefined) {
+        prev.formData.projectExtraProps[field] = updatedForm[field];
+      } else if (value !== undefined) {
+        prev.formData.projectExtraProps[field] = value ;
+      }
+      prev.showInfoSecurityError = false;
+      prev.generalError = false;
+      return prev;
+    });
+  };
+
+  removeErrorMessage = () => {
+    this.setState(prev => {
+      prev.generalError = false;
       return prev;
     });
   };
@@ -907,7 +1078,22 @@ class ProjectReview extends Component {
         ]),
 
         /*UNTIL HERE*/
-
+        Panel({ title: "Security" }, [
+          SecurityReview({
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateInfoSecurityForm,
+            showErrorInfoSecurity: this.state.showInfoSecurityError,
+            removeErrorMessage: this.removeErrorMessage,
+            handleSecurityValidity: this.handleInfoSecurityValidity,
+            readOnly: this.state.readOnly,
+            current: this.state.current,
+            formData: this.state.formData,
+            infoSecurityErrors: this.state.infoSecurityErrors,
+            edit: true,
+            review: true,
+          }),
+        ]),
         Panel({ title: "Determination Questions" }, [
           div({ isRendered: this.state.readOnly === false }, [
             AlertMessage({

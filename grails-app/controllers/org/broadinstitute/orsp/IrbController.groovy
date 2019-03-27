@@ -66,7 +66,9 @@ class IrbController extends AuthenticatedController {
          attachmentTypes   : PROJECT_DOC_TYPES,
          tab               : params.tab,
          storageDocuments  : storageDocuments,
-         groupedSubmissions: groupedSubmissions
+         groupedSubmissions: groupedSubmissions,
+         attachmentsApproved: issue.attachmentsApproved(),
+         projectReviewApproved: issue.getProjectReviewApproved()
         ]
     }
 
