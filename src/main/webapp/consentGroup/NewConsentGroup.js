@@ -606,7 +606,11 @@ class NewConsentGroup extends Component {
           updateForm: this.updateInfoSecurityFormData,
           showErrorInfoSecurity: this.state.showInfoSecurityError,
           removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity
+          handleSecurityValidity: this.handleInfoSecurityValidity,
+          currentValue: this.state,
+          edit: false,
+          review: false,
+          readOnly: false
         }),
         DataSharing({
           title: "Data Sharing",

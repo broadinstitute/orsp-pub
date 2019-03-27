@@ -198,6 +198,8 @@ class ConsentGroupController extends AuthenticatedController {
          duSummary: duSummary,
          tab: params.tab,
          duLetter: DU_LETTER,
+         attachmentsApproved: issue.attachmentsApproved(),
+         projectReviewApproved: issue.getProjectReviewApproved()
 //         checklistAnswers: checklistAnswers
         ]
     }
