@@ -3,6 +3,7 @@ import { hh, h1, span, div, label, h3, button } from 'react-hyperscript-helpers'
 import { isEmpty } from "../util/Utils";
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 import { AlertMessage } from "./AlertMessage";
+import get from 'lodash/get';
 
 const EXIT = 500;
 const DPA = 600;
@@ -21,7 +22,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.resetIntCohorts){
-      const questions = IntCohortsReview.initQuestions();
+      const questions = IntCohortsReview.initQuestions(nextProps.origin);
       return { questions: questions};
     }
     else return null;
@@ -30,13 +31,12 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
   componentDidMount() {
     this.setState(prev => {
-      prev.questions = IntCohortsReview.initQuestions();
+      prev.questions = IntCohortsReview.initQuestions(this.props.origin);
       return prev;
     })
   }
 
-  static initQuestions = () => {
-    // console.log(" initQuestions ");
+  static initQuestions = (origin) => {
     const questions = [];
     // this.setState({questions: []});
     questions.push({
@@ -65,8 +65,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
       noOutput: 4,
       answer: null,
       progress: 34,
-      key: 'feeForService',
-      // key: this.props.origin === 'project' ? 'feeForServiceWork' : 'feeForService',
+      key: origin === 'project' ? 'feeForServiceWork' : 'feeForService',
       id: 3
     });
 
@@ -151,22 +150,19 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
     const {
       individualDataSourced : futureIndividualDataSourced = '',
       isLinkMaintained : futureIsLinkMaintained = '',
-      feeForService : futureFeeForService = '',
       areSamplesComingFromEEAA : futureAreSamplesComingFromEEAA = '',
       isCollaboratorProvidingGoodService: futureIsCollaboratorProvidingGoodService = '',
       isConsentUnambiguous: futureIsConsentUnambiguous = ''
     } = this.props.future;
-
+    const futureProjectFeeForService = this.props.origin === 'project' ? get(this.props.future, 'feeForServiceWork', '') : get(this.props.future, 'feeForService', '');
     const {
       individualDataSourced : currentIndividualDataSourced = '',
       isLinkMaintained : currentIsLinkMaintained = '',
-      feeForService : currentFeeForService = '',
       areSamplesComingFromEEAA : currentAreSamplesComingFromEEAA = '',
       isCollaboratorProvidingGoodService: currentIsCollaboratorProvidingGoodService = '',
       isConsentUnambiguous: currentIsConsentUnambiguous = ''
     } = this.props.current;
-
-
+    const currentProjectFeeForService  = this.props.origin === 'project' ? get(this.props.current, 'feeForServiceWork', '') : get(this.props.current, 'feeForService', '');
     return (
       div({}, [
         div({ className: "answerWrapper" }, [
@@ -195,12 +191,12 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
         div({ className: "answerWrapper" }, [
           label({}, ["Is the Broad work being performed as fee-for-service?"]),
           div({
-            className: !this.isEquals(futureFeeForService, currentFeeForService) ? 'answerUpdated' : ''
-          }, [this.stringAnswer(futureFeeForService)]),
+            className: !this.isEquals(futureProjectFeeForService, currentProjectFeeForService) ? 'answerUpdated' : ''
+          }, [this.stringAnswer(futureProjectFeeForService)]),
           div({
-            isRendered: !this.isEquals(futureFeeForService, currentFeeForService),
+            isRendered: !this.isEquals(futureProjectFeeForService, currentProjectFeeForService),
             className: "answerCurrent"
-          }, [this.stringAnswer(currentFeeForService)])
+          }, [this.stringAnswer(currentProjectFeeForService)])
         ]),
 
         div({ className: "answerWrapper" }, [
@@ -246,7 +242,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
           ]),
           h3({}, ["International Cohorts' Questionnaire"]),
           QuestionnaireWorkflow({
-            questions: this.props.resetIntCohorts ? IntCohortsReview.initQuestions() : this.state.questions,
+            questions: this.props.resetIntCohorts ? IntCohortsReview.initQuestions(this.props.origin) : this.state.questions,
             edit: true,
             cleanQuestionsUnanswered: this.cleanUnanswered,
             handler: this.handler,

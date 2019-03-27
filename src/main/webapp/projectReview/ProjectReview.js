@@ -53,6 +53,7 @@ class ProjectReview extends Component {
         pmList: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
+          feeForServiceWork: '',
           projectTitle: '',
           protocol: '',
           uploadConsentGroup: null,
@@ -94,6 +95,7 @@ class ProjectReview extends Component {
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
+          feeForServiceWork: '',
           irbProtocolId: '',
           projectTitle: '',
           protocol: '',
@@ -158,7 +160,7 @@ class ProjectReview extends Component {
         const intCohortsQuestions = [
           {key: 'individualDataSourced', answer: null },
           {key: 'isLinkMaintained', answer: null},
-          {key: 'feeForService', answer: null},
+          {key: 'feeForServiceWork', answer: null},
           {key: 'areSamplesComingFromEEAA', answer: null},
           {key: 'isCollaboratorProvidingGoodService', answer: null},
           {key: 'isConsentUnambiguous', answer: null}
@@ -217,7 +219,7 @@ class ProjectReview extends Component {
 
   parseIntCohorts = () => {
     let intCohortsAnswers = [];
-    this.state.intCohortsQuestions.forEach(it => {
+    this.state.intCohortsAnswers.forEach(it => {
       if (this.state.formData.projectExtraProps[it.key] !== undefined) {
         intCohortsAnswers.push({
           key: it.key,
@@ -426,6 +428,7 @@ class ProjectReview extends Component {
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
+    project.feeForServiceWork = this.state.formData.projectExtraProps.feeForServiceWork.toString();
     project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
