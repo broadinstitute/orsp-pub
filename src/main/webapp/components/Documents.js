@@ -33,7 +33,6 @@ export const Documents = hh(class Documents extends Component {
       showAddKeyDocuments: false,
       showAddAdditionalDocuments: false
     }
-    console.log("options-vvvv---documents ---",JSON.stringify(this.props.options));
   }
 
   addDocuments = () => {

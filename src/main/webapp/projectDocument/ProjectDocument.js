@@ -96,13 +96,11 @@ class ProjectDocument extends Component {
     DOCUMENT_TYPE.forEach(type => {
       documentOptions.push({value: type, label: type});
     });
-    console.log('documents options: *****', JSON.stringify(documentOptions));
     this.setState({documentOptions: documentOptions});
   };
   
 
   render() {
-    console.log('render********',this.state.documentOptions);
     return (
       h( Fragment, {},[
         ConfirmationDialog({
