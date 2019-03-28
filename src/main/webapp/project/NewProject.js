@@ -448,14 +448,6 @@ class NewProject extends Component {
         files: documents,
         projectType: projectType,
         formerProjectType: projectType,
-        intCohortsDetermination: {
-          projectType: 900,
-          questions: [],
-          requiredError: false,
-          currentQuestionIndex: 0,
-          nextQuestionIndex: 1,
-          endState: false
-        }
       });
     }
   }

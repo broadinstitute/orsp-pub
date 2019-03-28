@@ -594,7 +594,7 @@ class NewConsentGroup extends Component {
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
-          showErrorIntCohorts: this.state.showErrorIntCohorts,
+          showErrorIntCohorts: this.state.showInternationalCohortsError,
           origin: 'consentGroup'
         }),
         Security({

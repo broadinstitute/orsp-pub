@@ -38,7 +38,6 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
   static initQuestions = (origin) => {
     const questions = [];
-    // this.setState({questions: []});
     questions.push({
       question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
       yesOutput: 2,

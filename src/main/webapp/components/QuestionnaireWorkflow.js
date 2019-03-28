@@ -28,7 +28,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
   }
 
   componentDidMount() {
-    if (this.props.determination.questions.length > 0) {
+    if (this.props.determination.questions.length > 0 && this.props.edit) {
       this.setState({
         endState: false,
         requiredError: false,
@@ -36,6 +36,16 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         nextQuestionIndex: this.props.determination.nextQuestionIndex,
         questions: this.props.questions,
         projectType: null
+      });
+    } else if (this.props.determination.questions.length > 0 ) {
+     this.setState({
+       // This state set is to maintain project or consent group creation questionnaires state
+        endState: this.props.determination.endState,
+        requiredError: this.props.determination.requiredError,
+        currentQuestionIndex: this.props.determination.currentQuestionIndex,
+        nextQuestionIndex: this.props.determination.nextQuestionIndex,
+        questions: this.props.determination.questions,
+        projectType: this.props.determination.projectType
       });
     } else {
       this.setState({
