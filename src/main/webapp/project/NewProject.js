@@ -509,7 +509,9 @@ class NewProject extends Component {
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
+        Project.getProjectType(this.props.serverURL, projectKey).then(type => {
+          window.location.href =  [this.props.serverURL, type.data.projectType, "show", projectKey, "?tab=review"].join("/");
+        });
       }).catch(error => {
         spinnerService.hideAll();
         this.toggleTrueSubmitError();
@@ -531,17 +533,6 @@ class NewProject extends Component {
       prev.generalError = false;
       return prev;
     });
-  }
-
-  getRedirectUrl(projectKey) {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
   render() {

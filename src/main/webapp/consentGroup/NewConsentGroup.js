@@ -134,11 +134,9 @@ class NewConsentGroup extends Component {
   uploadFiles = (projectKey) => {
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-
         Project.getProjectType(this.props.serverURL, this.props.projectKey).then(type => {
           window.location.href =  [this.props.serverURL, type.data.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
         });
-        // window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
