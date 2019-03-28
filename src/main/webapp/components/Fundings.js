@@ -168,7 +168,7 @@ export const Fundings = hh(class Fundings extends Component {
                 label({ className: "noMargin" }, ["Funding Source"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "noMargin" }, ["Prime Sponsor Name"])
+                label({ className: "noMargin" }, ["Sponsor Name"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 label({ className: "noMargin" }, ["Award Number/Identifier"])
