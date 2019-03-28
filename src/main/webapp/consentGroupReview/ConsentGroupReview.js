@@ -1454,7 +1454,7 @@ class ConsentGroupReview extends Component {
           InputFieldRadio({
             id: "radioCompliance",
             name: "compliance",
-            label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, HIPPA, etc.)"]), "?"]),
+            label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?"]),
             value: this.state.formData.consentExtraProps.compliance,
             currentValue: this.state.current.consentExtraProps.compliance,
             optionValues: ["true", "false", "uncertain"],
