@@ -36,40 +36,11 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   }
 
 
-  // load file types options to header
-  loadKeyOptions () {
-    let key = this.props.projectKey.split("-");
-    let projectType;
-    if (key.length === 3) {
-      projectType = key[1].toUpperCase();
-    } else {
-      projectType = key[0].toUpperCase();
-    }
-    let documentOptions = [];
-    if (projectType === 'IRB') {
-      IRB.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      });
-    }
-    else if (projectType === 'NE') {
-      NE.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      });
-    }
-    else if (projectType === 'NHSR') {
-      NHSR.forEach(type => {
-        documentOptions.push({value: type, label: type});
-      });
-    }
-    this.setState({documentKeyOptions: documentOptions});
-  };
-
-  setFilesToUpload = (docs, ix) => (e) => {
-    let selectedFile = e.target.files[0];
-    e.target.value = '';
-    docs[ix].file = selectedFile;
-    docs[ix].error = false;
-    this.props.fileHandler(docs);
+  setFilesToUpload(file) {
+    this.setState(prev => {
+      prev.documents = prev.documents.push({ fileKey: file.fileKey, file: file.file});
+      return prev;
+    }, this.props.fileHandler(docs));
   };
 
   removeFile = (docs, index) => {
@@ -98,10 +69,6 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     let documents = this.props.files;
 
     let errors = false;
-    documents.forEach(doc => {
-      errors = errors || doc.error;
-    });
-
     let errorText = '';
     if (!this.props.generalError) {
       errorText = 'Please upload all required documents';
@@ -129,7 +96,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
           handleLoadDocuments: this.props.handleLoadDocuments,
           serverURL: this.props.serverURL,
           emailUrl: this.props.emailUrl,
-          userName: this.props.userName
+          userName: this.props.userName,
+          documentHandler: this.setFilesToUpload
         }),
         Panel({title: "Documents"}, [
           button({
