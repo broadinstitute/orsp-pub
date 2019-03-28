@@ -271,7 +271,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               errorMessage: "Required field",
               removeHandler: () => this.removeFile(document)
             }),
-            div({ isRendered: this.state.type.value === 'Data Use Letter', style: { 'marginTop': '10px' } }, [
+            div({ isRendered: this.state.type.value === 'Data Use Letter' && this.props.isConsentGroup === true, style: { 'marginTop': '10px' } }, [
               p({ className: "bold" }, [
                 "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
                 br({}),
