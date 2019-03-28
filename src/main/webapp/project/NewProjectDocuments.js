@@ -1,15 +1,28 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, span } from 'react-hyperscript-helpers';
+import { hh, h, h1, span, button } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 import { IRB, NHSR, NE } from '../util/DocumentType';
+import { AddDocumentDialog } from '../components/AddDocumentDialog'
+
+const addDocumentBtn = {
+  position: 'absolute', right: '15px', zIndex: '1'
+};
+
+
+const headers =
+  [
+    { name: 'Document Type', value: 'fileType' },
+    { name: 'File Name', value: 'fileName' }
+  ];
 
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
 
   state = {
-    documents: []
+    documents: [],
+    showAddDocuments: false
   };
 
   componentDidCatch(error, info) {
@@ -63,6 +76,17 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     docs[index].file = null;
     this.props.fileHandler(docs);
   }
+  
+  addDocuments = () => {
+    this.setState({
+      showAddDocuments: !this.state.showAddDocuments
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
+  };
+
 
   render() {
 
@@ -95,12 +119,23 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         errorMessage: errorText,
         error: errors || this.props.generalError
       }, [
-
+        AddDocumentDialog({
+          closeModal: this.closeModal,
+          show: this.state.showAddDocuments,
+          options: this.props.options,
+          attachDocumentsUrl: this.props.attachDocumentsUrl,
+          projectKey: this.props.projectKey,
+          user: this.props.user,
+          handleLoadDocuments: this.props.handleLoadDocuments,
+          serverURL: this.props.serverURL,
+          emailUrl: this.props.emailUrl,
+          userName: this.props.userName
+        }),
         Panel({title: "Documents"}, [
           button({
             className: "btn buttonSecondary",
             style: addDocumentBtn,
-            onClick: this.addKeyDocuments
+            onClick: this.addDocuments
           }, ["Add Document"]),
           Table({
             headers: headers,
@@ -108,28 +143,9 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             sizePerPage: 10,
             paginationSize: 10,
             handleDialogConfirm: this.props.handleDialogConfirm,
-            downloadDocumentUrl: this.props.downloadDocumentUrl,
-            isAdmin: this.props.user.isAdmin
+            downloadDocumentUrl: this.props.downloadDocumentUrl
           })
-        ]),
-
-
-        //
-        // documents.map((document, index) => {
-        //   return h(Fragment, { key: index }, [
-        //     InputFieldFile({
-        //       label: document.label,
-        //       callback: this.setFilesToUpload(documents, index),
-        //       fileName: (document.file != null ? document.file.name : ''),
-        //       required: document.required,
-        //       error: document.error,
-        //       errorMessage: "Required field",
-        //       removeHandler:() => this.removeFile(documents, index)
-        //     })
-        //   ])
-        // })
-
-
+        ])
       ])
     )
   }

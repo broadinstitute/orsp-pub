@@ -4,6 +4,7 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
+import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { Files, Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 import { span } from 'react-hyperscript-helpers';
@@ -88,7 +89,16 @@ class NewProject extends Component {
     User.getUserSession(this.props.getUserUrl).then(resp =>
       this.setState({ user: resp.data })
     );
+    this.loadOptions();
   }
+
+  loadOptions () {
+    let documentOptions = [];
+    DOCUMENT_TYPE.forEach(type => {
+      documentOptions.push({value: type, label: type});
+    });
+    this.setState({documentOptions: documentOptions});
+  };
 
   submitNewProject = () => {
     this.toggleFalseSubmitError();
@@ -618,7 +628,8 @@ class NewProject extends Component {
           files: this.state.files,
           errors: this.state.showErrorDocuments,
           generalError: this.state.generalError,
-          submitError: this.state.submitError
+          submitError: this.state.submitError,
+          options: this.state.documentOptions
         })
       ])
     );
