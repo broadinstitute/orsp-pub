@@ -10,3 +10,24 @@ export const NE = [
  export const NHSR = [
   'NHSR Application'
 ];
+
+export const DOCUMENT_TYPE =[
+  'Amendment Form',
+  'Appendix',
+  'Application',
+  'Approval Memo',
+  'Consent Document',
+  'Assent',
+  'Attestation',
+  'Waiver of Consent',
+  'Continuing Review',
+  'Data Use Letter',
+  'IC pre-2015',
+  'IC post-2015',
+  'Other',
+  'Other Event',
+  'Protocol',
+  'Response to Conditions',
+  'Summary of Changes',
+  'Supplemental Document' 
+];

@@ -2,6 +2,7 @@ import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
 import { DocumentHandler, User, ConsentGroup } from "../util/ajax";
 import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
+import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import '../index.css';
@@ -23,8 +24,7 @@ class ConsentGroupDocuments extends Component {
       uuid: '',
       user: {isAdmin: false},
       serverError: false,
-      documentKeyOptions: [],
-      documentAdditionalOptions: [],
+      documentOptions: [],
       associatedProjects: []
     };
   }
@@ -33,24 +33,18 @@ class ConsentGroupDocuments extends Component {
     this.getAttachedDocuments();
     this.getUseRestriction();
     this.isCurrentUserAdmin();
-    this.loadKeyOptions();
-    this.loadAdditionalOptions();
+    this.loadOptions();
     this.getAssociatedProjects();
   }
 
-  loadKeyOptions() {
+  loadOptions () {
     let documentOptions = [];
-    ConsentGroupKeyDocuments.forEach(type => {
+    DOCUMENT_TYPE.forEach(type => {
       documentOptions.push({value: type, label: type});
     });
-    this.setState({documentKeyOptions: documentOptions});
-  }
+    this.setState({documentOptions: documentOptions});
+  };
 
-  loadAdditionalOptions() {
-    let documentOptions = [];
-    documentOptions.push({value: 'Other', label: 'Other'});
-    this.setState({documentAdditionalOptions: documentOptions});
-  }
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
@@ -184,13 +178,11 @@ class ConsentGroupDocuments extends Component {
       }, []),
 
       Documents({
-        keyDocuments: this.state.keyDocuments,
-        additionalDocuments: this.state.additionalDocuments,
+        documents: this.state.keyDocuments,
         handleDialogConfirm: this.handleDialog,
         user: this.state.user,
         downloadDocumentUrl: this.props.downloadDocumentUrl,
-        keyOptions: this.state.documentKeyOptions,
-        additionalOptions: this.state.documentAdditionalOptions,
+        options: this.state.documentOptions,
         projectKey: this.props.projectKey,
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
