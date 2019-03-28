@@ -62,6 +62,15 @@ class NewProject extends Component {
         fundings: false
       },
       formerProjectType: null,
+      infoSecurityErrors: {
+        sensitive: false,
+        accessible: false,
+        compliance: false,
+        pii: false,
+        textSensitive: false,
+        textAccessible: false,
+        textCompliance: false
+      }
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.isValid = this.isValid.bind(this);

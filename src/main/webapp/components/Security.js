@@ -88,8 +88,8 @@ export const Security = hh(class Security extends Component {
     }
 
     if (!isEmpty(this.state.formData.compliance)
-        && this.state.formData.compliance === "true"
-        && isEmpty(this.state.formData.textCompliance)) {
+      && this.state.formData.compliance === "true"
+      && isEmpty(this.state.formData.textCompliance)) {
       textCompliance = true;
       isValid = false;
     }
