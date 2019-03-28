@@ -82,7 +82,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       InputFieldRadio({
         id: "radioCompliance",
         name: "compliance",
-        label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
+        label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPPA, etc.)"]), "?*"]),
         value: this.props.review === true ? this.props.formData.projectExtraProps.compliance : this.props.currentValue.securityInfoFormData.compliance,
         currentValue: this.props.review === true ? this.props.current.projectExtraProps.compliance : null,
         optionValues: ["true", "false", "uncertain"],
