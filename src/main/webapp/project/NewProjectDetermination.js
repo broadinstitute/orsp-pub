@@ -69,8 +69,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
-      moreInfo: '(i.e. is conductin HSR)?',
+      question: 'Are samples/data being provided by an investigator who has access to identifiers or obtains samples through an intervention or interaction? ',
       progress: 50,
       yesOutput: 6,
       noOutput: DETERMINATION.NHSR,

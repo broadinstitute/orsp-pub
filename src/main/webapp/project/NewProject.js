@@ -543,6 +543,7 @@ class NewProject extends Component {
     return (
       Wizard({
         title: "New Project",
+        note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
         stepChanged: this.stepChanged,
         isValid: this.isValid,
         submitHandler: this.submitNewProject,
