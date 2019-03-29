@@ -167,7 +167,7 @@ export const Security = hh(class Security extends Component {
           InputFieldRadio({
             id: "radioCompliance",
             name: "compliance",
-            label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?*"]),
+            label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?*"]),
             value: this.state.formData.compliance,
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [

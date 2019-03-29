@@ -1166,8 +1166,7 @@ class ProjectReview extends Component {
               name: "interactionSource",
               value: this.state.formData.projectExtraProps.interactionSource,
               currentValue: this.state.current.projectExtraProps.interactionSource,
-              moreInfo: '(i.e. is conductin HSR)?',
-              label: 'Are samples/data being provied by an investigator who has identifiers or obtains samples through and interaction ',
+              label: 'Are samples/data being provided by an investigator who has access to identifiers or obtains samples through an intervention or interaction?',
               readOnly: true,
               onChange: () => { }
             })

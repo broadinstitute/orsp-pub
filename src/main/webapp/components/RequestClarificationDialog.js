@@ -98,7 +98,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
 
           h(ModalFooter, {}, [
             button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.submit }, ["Submit Clarification"])
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.submit }, ["Request Clarification"])
           ])
         ])
     )
