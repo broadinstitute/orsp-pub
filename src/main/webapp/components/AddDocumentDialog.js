@@ -39,29 +39,14 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     this.getShareableLink = this.getShareableLink.bind(this);
   }
 
-  copyLinkToClipboard = (e, link) => {
-    const textLink = document.getElementById('textLink');
-    textLink.value = 'texto del link';
-    textLink.select();
-    const out = document.execCommand('copy');
-    console.log(out);
-  };
-
   getShareableLink = () => {
     let data = {
       consentGroupKey: this.props.projectKey,
       creator: this.props.user.userName
     };
     DUL.generateRedirectLink(data, this.props.serverURL).then(resp => {
-      console.log(resp.data.dulToken);
-      // link = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-      this.copyLinkToClipboard(resp.data.dulToken);
-      this.setState(prev => {
-        prev.alertType = "success";
-        prev.alertMessage = "Link copied to clipboard!";
-        prev.showAlert = true;
-        return prev;
-      });
+      navigator.clipboard.writeText(this.props.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
+      this.successTimeAlert();
     }).catch(error => {
       this.setState(prev => {
         prev.disableBtn = false;
@@ -70,6 +55,25 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         prev.showAlert = true;
         return prev;
       });
+    });
+  };
+
+  successTimeAlert = () => {
+    setTimeout(this.removeAlertMessage, 3000, null);
+    this.setState(prev => {
+      prev.alertType = "success";
+      prev.alertMessage = "Link copied to clipboard!";
+      prev.showAlert = true;
+      return prev;
+    });
+  };
+
+  removeAlertMessage = () => {
+    this.setState(prev => {
+      prev.alertType = "success";
+      prev.alertMessage = "";
+      prev.showAlert = false;
+      return prev;
     });
   };
 
@@ -317,7 +321,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
                     className: "btn buttonSecondary fullWidth",
                     onClick: this.getShareableLink,
                     name: "getLink",
-                    disabled: false
+                    disabled: false,
+                    id: 'shareable-link'
                   }, [
                     span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
                     "Get shareable link"
