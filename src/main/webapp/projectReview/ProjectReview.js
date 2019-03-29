@@ -49,6 +49,7 @@ class ProjectReview extends Component {
       alertMessage: '',
       showAlert: false,
       formData: {
+        approvalStatus: '',
         description: '',
         projectType: '',
         piList: [{ key: '', label: '', value: '' }],
@@ -87,6 +88,7 @@ class ProjectReview extends Component {
       reviewSuggestion: false,
       futureCopy: {},
       current: {
+        approvalStatus: '',
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -176,6 +178,7 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
+        current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.projectExtraProps = issue.data.extraProperties;
         current.piList = this.getUsersArray(issue.data.pis);
@@ -280,13 +283,10 @@ class ProjectReview extends Component {
   };
 
   validateQuestionnaire = () => {
-    let isValid = false;
+    let isValid = true;
     const determination = this.state.determination;
-    if (determination.questions.length === 0 || determination.endState === true) {
-      isValid = true;
-    }
-    if (this.state.intCohortsAnswers.length === 0) {
-      isValid = false;
+    if (this.state.current.approvalStatus !== 'Legacy') {
+      isValid = determination.questions.length !== 0 && determination.endState === true;
     }
     return isValid;
   };
@@ -795,7 +795,7 @@ class ProjectReview extends Component {
     if (!this.validateQuestionnaire()) {
       questions = true;
     }
-    if (this.state.intCohortsAnswers.length === 0) {
+    if (this.state.current.approvalStatus !== 'Legacy' && this.state.intCohortsAnswers.length === 0) {
       intCohortsAnswers = true;
     }
 
@@ -870,40 +870,42 @@ class ProjectReview extends Component {
     let textSensitive = false;
     let textAccessible = false;
 
-    if (isEmpty(this.state.formData.projectExtraProps.pii)) {
-      pii = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.formData.projectExtraProps.compliance)) {
-      compliance = true;
-      isValid = false;
-    }
+    if (this.state.current.approvalStatus !== 'Legacy') {
+      if (isEmpty(this.state.formData.projectExtraProps.pii)) {
+        pii = true;
+        isValid = false;
+      }
+      if (isEmpty(this.state.formData.projectExtraProps.compliance)) {
+        compliance = true;
+        isValid = false;
+      }
 
-    if (!isEmpty(this.state.formData.projectExtraProps.compliance)
-      && this.state.formData.projectExtraProps.compliance === "true"
-      && isEmpty(this.state.formData.projectExtraProps.textCompliance)) {
-      textCompliance = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.formData.projectExtraProps.sensitive)) {
-      sensitive = true;
-      isValid = false;
-    }
-    if (!isEmpty(this.state.formData.projectExtraProps.sensitive)
-      && this.state.formData.projectExtraProps.sensitive === "true"
-      && isEmpty(this.state.formData.projectExtraProps.textSensitive)) {
-      textSensitive = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
-      accessible = true;
-      isValid = false;
-    }
-    if (!isEmpty(this.state.formData.projectExtraProps.accessible)
-      && this.state.formData.projectExtraProps.accessible === "true"
-      && isEmpty(this.state.formData.projectExtraProps.textAccessible)) {
-      textAccessible = true;
-      isValid = false;
+      if (!isEmpty(this.state.formData.projectExtraProps.compliance)
+        && this.state.formData.projectExtraProps.compliance === "true"
+        && isEmpty(this.state.formData.projectExtraProps.textCompliance)) {
+        textCompliance = true;
+        isValid = false;
+      }
+      if (isEmpty(this.state.formData.projectExtraProps.sensitive)) {
+        sensitive = true;
+        isValid = false;
+      }
+      if (!isEmpty(this.state.formData.projectExtraProps.sensitive)
+        && this.state.formData.projectExtraProps.sensitive === "true"
+        && isEmpty(this.state.formData.projectExtraProps.textSensitive)) {
+        textSensitive = true;
+        isValid = false;
+      }
+      if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
+        accessible = true;
+        isValid = false;
+      }
+      if (!isEmpty(this.state.formData.projectExtraProps.accessible)
+        && this.state.formData.projectExtraProps.accessible === "true"
+        && isEmpty(this.state.formData.projectExtraProps.textAccessible)) {
+        textAccessible = true;
+        isValid = false;
+      }
     }
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
