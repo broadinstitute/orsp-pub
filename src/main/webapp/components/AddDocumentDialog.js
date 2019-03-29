@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, div, h, p, small, span, br, button } from 'react-hyperscript-helpers';
+import { hh, div, h, p, small, span, br, button, textarea } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
@@ -36,26 +36,41 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
+    this.getShareableLink = this.getShareableLink.bind(this);
   }
+
+  copyLinkToClipboard = (e, link) => {
+    const textLink = document.getElementById('textLink');
+    textLink.value = 'texto del link';
+    textLink.select();
+    const out = document.execCommand('copy');
+    console.log(out);
+  };
 
   getShareableLink = () => {
     let data = {
       consentGroupKey: this.props.projectKey,
       creator: this.props.user.userName
     };
-    DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-    }).catch(
-      error => {
-        this.setState(prev => {
-          prev.disableBtn = false;
-          prev.alertType ="danger";
-          prev.alertMessage = 'Something went wrong. Please try again.';
-          prev.showAlert = true;
-          return prev;
-        })
-      }
-    );
+    DUL.generateRedirectLink(data, this.props.serverURL).then(resp => {
+      console.log(resp.data.dulToken);
+      // link = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
+      this.copyLinkToClipboard(resp.data.dulToken);
+      this.setState(prev => {
+        prev.alertType = "success";
+        prev.alertMessage = "Link copied to clipboard!";
+        prev.showAlert = true;
+        return prev;
+      });
+    }).catch(error => {
+      this.setState(prev => {
+        prev.disableBtn = false;
+        prev.alertType = "danger";
+        prev.alertMessage = 'Something went wrong. Please try again.';
+        prev.showAlert = true;
+        return prev;
+      });
+    });
   };
 
   redirectToDul = () => {
@@ -271,6 +286,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               errorMessage: "Required field",
               removeHandler: () => this.removeFile(document)
             }),
+            textarea({id: 'textLink'}, []),
             div({ isRendered: this.state.type.value === 'Data Use Letter', style: { 'marginTop': '10px' } }, [
               p({ className: "bold" }, [
                 "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
@@ -298,7 +314,12 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               ]),
               div({ className: "row" }, [
                 div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink, disabled: true }, [
+                  button({
+                    className: "btn buttonSecondary fullWidth",
+                    onClick: this.getShareableLink,
+                    name: "getLink",
+                    disabled: false
+                  }, [
                     span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
                     "Get shareable link"
                   ])
