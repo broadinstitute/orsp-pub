@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { div, hh, h2, h, button, h1, p } from 'react-hyperscript-helpers';
+import { div, hh, h3, h, button, h1, p } from 'react-hyperscript-helpers';
 import './Wizard.css';
 import { Spinner } from './Spinner';
 
@@ -77,6 +77,7 @@ export const Wizard = hh(class Wizard extends Component {
     return (
       div({ className: "wizardWrapper" }, [
         h1({ className: "wizardTitle" }, [this.props.title]),
+        h3({ isRendered: this.props.note !== undefined, className: "italic" }, [this.props.note]),
         div({ className: "wizardContainer" }, [
           div({ className: "tabContainer" }, [
             this.props.children.map((child, idx) => {
