@@ -563,6 +563,7 @@ class NewConsentGroup extends Component {
     return (
       Wizard({
         title: "New Consent Group",
+        note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
         stepChanged: this.stepChanged,
         isValid: this.isValid,
         showSubmit: this.showSubmit,

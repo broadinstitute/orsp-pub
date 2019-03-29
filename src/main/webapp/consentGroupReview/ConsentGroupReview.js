@@ -592,7 +592,7 @@ class ConsentGroupReview extends Component {
 
   toggleState = (e) => () => {
     this.setState((state, props) => {
-      return { [e]: !state[e]}
+      return { [e]: !state[e] }
     });
   };
 
@@ -656,7 +656,7 @@ class ConsentGroupReview extends Component {
   };
 
   institutionalSrcHasErrors = () => {
-    const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
+    const instSources = this.state.formData.instSources == undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
     let institutionalNameErrorIndex = [];
     let institutionalCountryErrorIndex = [];
     let institutionalError = instSources.filter((obj, idx) => {
@@ -903,7 +903,10 @@ class ConsentGroupReview extends Component {
     const questions = [];
 
     questions.push({
-      question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
+      question: span({}, [
+        "Are samples or individual-level data sourced from a country in the European Economic Area? ",
+        a({ href: "https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm", target: "_blank", className: "normal" }, "(List of member states of European Economic Area)")
+      ]),
       yesOutput: 2,
       noOutput: EXIT,
       answer: null,
@@ -1111,7 +1114,7 @@ class ConsentGroupReview extends Component {
       isCollaboratorProvidingGoodService = '',
       isConsentUnambiguous = '',
     } = get(this.state.formData, 'consentExtraProps', '');
-    const instSources = this.state.formData.instSources == undefined ? [{current: {name: '', country: ''}, future: {name: '', country: ''}}] : this.state.formData.instSources;
+    const instSources = this.state.formData.instSources == undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
 
     let currentEndDate = this.state.current.consentExtraProps.endDate !== null ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
     let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
@@ -1295,7 +1298,7 @@ class ConsentGroupReview extends Component {
             div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
               InputFieldDatePicker({
                 selected: startDate,
-                value: startDate !== null ? format(new Date(startDate), 'MM/DD/YYYY'): null,
+                value: startDate !== null ? format(new Date(startDate), 'MM/DD/YYYY') : null,
                 currentValue: currentStartDate,
                 name: "startDate",
                 label: "Start Date",
@@ -1454,7 +1457,7 @@ class ConsentGroupReview extends Component {
           InputFieldRadio({
             id: "radioCompliance",
             name: "compliance",
-            label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, CLIA, etc.)"]), "?"]),
+            label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?"]),
             value: this.state.formData.consentExtraProps.compliance,
             currentValue: this.state.current.consentExtraProps.compliance,
             optionValues: ["true", "false", "uncertain"],

@@ -20,10 +20,14 @@ const headers =
 
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
 
-  state = {
-    documents: [],
-    showAddDocuments: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      documents: [],
+      showAddDocuments: false
+    };
+    this.setFilesToUpload = this.setFilesToUpload.bind(this);
+  }
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -36,16 +40,21 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   }
 
 
-  setFilesToUpload(file) {
+  setFilesToUpload(doc) {
     this.setState(prev => {
-      prev.documents = prev.documents.push({ fileKey: file.fileKey, file: file.file});
+      let documents = [{ fileType: doc.fileKey, file: doc.file, fileName: doc.file.name}];
+      prev.documents = documents;
       return prev;
-    }, this.props.fileHandler(docs));
+    }, () => {
+      this.props.fileHandler(this.state.documents);
+      this.closeModal();
+    });
   };
 
   removeFile = (docs, index) => {
     docs[index].file = null;
     this.props.fileHandler(docs);
+    this.closeModal();
   }
   
   addDocuments = () => {
@@ -55,7 +64,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   };
 
   closeModal = () => {
-    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
+    this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
 
 
@@ -107,7 +116,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
           }, ["Add Document"]),
           Table({
             headers: headers,
-            data: this.props.keyDocuments,
+            data: documents,
             sizePerPage: 10,
             paginationSize: 10,
             handleDialogConfirm: this.props.handleDialogConfirm,

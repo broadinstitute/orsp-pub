@@ -87,7 +87,8 @@ export const Documents = hh(class Documents extends Component {
         handleLoadDocuments: this.props.handleLoadDocuments,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailUrl,
-        userName: this.props.userName
+        userName: this.props.userName,
+        isConsentGroup: this.props.isConsentGroup
       }),
       Panel({title: "Documents"}, [
         button({
