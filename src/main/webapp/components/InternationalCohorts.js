@@ -34,7 +34,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     questions.push({
       question: span({}, [
         "Are samples or individual-level data sourced from a country in the European Economic Area? ", 
-        a({ href:"https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm", target: "_blank", className: "normal" }, ["[https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm]"])
+        a({ href:"https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm", target: "_blank", className: "normal" }, ["(List of member states of European Economic Area)"])
     ]),
       yesOutput: 2,
       noOutput: EXIT,
