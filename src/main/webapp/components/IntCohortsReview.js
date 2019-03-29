@@ -4,12 +4,7 @@ import { isEmpty } from "../util/Utils";
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 import { AlertMessage } from "./AlertMessage";
 import get from 'lodash/get';
-
-const EXIT = 500;
-const DPA = 600;
-const RA = 700;
-const CTC = 800;
-const OSAP = 900;
+import { DETERMINATION } from "../util/TypeDescription";
 
 export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
@@ -41,7 +36,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
     questions.push({
       question: span({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ", span({ className: "normal" }, ["[provide link to list of countries included]"])]),
       yesOutput: 2,
-      noOutput: EXIT,
+      noOutput: DETERMINATION.EXIT,
       answer: null,
       progress: 0,
       key: 'individualDataSourced',
@@ -51,7 +46,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
     questions.push({
       question: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
       yesOutput: 3,
-      noOutput: EXIT,
+      noOutput: DETERMINATION.EXIT,
       answer: null,
       progress: 17,
       key: 'isLinkMaintained',
@@ -60,7 +55,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
     questions.push({
       question: 'Is the Broad work being performed as fee-for-service?',
-      yesOutput: DPA,
+      yesOutput: DETERMINATION.DPA,
       noOutput: 4,
       answer: null,
       progress: 34,
@@ -71,7 +66,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
     questions.push({
       question: 'Are samples/data coming directly to the Broad from the EEA?',
       yesOutput: 5,
-      noOutput: RA,
+      noOutput: DETERMINATION.RA,
       answer: null,
       progress: 50,
       key: 'areSamplesComingFromEEAA',
@@ -80,7 +75,7 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
     questions.push({
       question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-      yesOutput: OSAP,
+      yesOutput: DETERMINATION.OSAP,
       noOutput: 6,
       answer: null,
       progress: 67,
@@ -90,8 +85,8 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
 
     questions.push({
       question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-      yesOutput: EXIT,
-      noOutput: CTC,
+      yesOutput: DETERMINATION.EXIT,
+      noOutput: DETERMINATION.CTC,
       answer: null,
       progress: 83,
       key: 'isConsentUnambiguous',

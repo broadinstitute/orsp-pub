@@ -28,7 +28,7 @@ class NewConsentGroup extends Component {
       formSubmitted: false,
       submitError: false,
       determination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,

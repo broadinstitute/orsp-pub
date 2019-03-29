@@ -3,7 +3,8 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-import { NE, NHSR, IRB } from './NewProjectDetermination';
+// import { NE, NHSR, IRB } from './NewProjectDetermination';
+import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 import { span } from 'react-hyperscript-helpers';
@@ -34,7 +35,7 @@ class NewProject extends Component {
       formSubmitted: false,
       submitError: false,
       determination: {
-        projectType: 400,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -42,7 +43,7 @@ class NewProject extends Component {
         endState: false
       },
       intCohortsDetermination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -215,13 +216,13 @@ class NewProject extends Component {
 
   getProjectType() {
     let type = '';
-    if (this.state.determination.projectType === NE) {
+    if (this.state.determination.projectType === DETERMINATION.NE) {
       type = 'NE';
     }
-    else if (this.state.determination.projectType === NHSR) {
+    else if (this.state.determination.projectType === DETERMINATION.NHSR) {
       type = 'NHSR';
     }
-    else if (this.state.determination.projectType === IRB) {
+    else if (this.state.determination.projectType === DETERMINATION.IRB) {
       type = 'IRB';
     }
     return type;
@@ -426,18 +427,18 @@ class NewProject extends Component {
       let documents = [];
 
       switch (projectType) {
-        case IRB:
+        case DETERMINATION.IRB:
           documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
-        case NE:
+        case DETERMINATION.NE:
           documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
           break;
 
-        case NHSR:
+        case DETERMINATION.NHSR:
           documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 

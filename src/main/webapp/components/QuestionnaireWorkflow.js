@@ -182,19 +182,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       this.evaluateAnswer(value);
     });
   }
-
-
-  getTypeDescription = (t) => {
-    if (t === 200) return 'NE';
-    if (t === 300) return 'NHSR';
-    if (t === 400) return 'IRB';
-    if (t === 500) return 'EXIT';
-    if (t === 600) return 'DPA';
-    if (t === 700) return 'RA';
-    if (t === 800) return 'CTC';
-    if (t === 900) return 'OSAP';
-  }
-
   render() {
 
     if (this.state.hasError) {

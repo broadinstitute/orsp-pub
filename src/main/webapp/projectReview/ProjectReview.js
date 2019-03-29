@@ -137,7 +137,7 @@ class ProjectReview extends Component {
         textCompliance: false
       },
       determination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -301,7 +301,7 @@ class ProjectReview extends Component {
 
   resetIntCohortsDetermination() {
     return {
-      projectType: 900,
+      projectType: null,
       questions: [],
       requiredError: false,
       currentQuestionIndex: 0,

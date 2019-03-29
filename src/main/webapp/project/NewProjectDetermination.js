@@ -2,10 +2,7 @@ import { Component } from 'react';
 import { hh, h1 } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
-
-export const NE = 200;
-export const NHSR = 300;
-export const IRB = 400;
+import { DETERMINATION } from "../util/TypeDescription";
 
 export const NewProjectDetermination = hh(class NewProjectDetermination extends Component {
 
@@ -32,7 +29,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       question: 'Is this a "fee-for-service" project? ',
       moreInfo: '(commercial service only, no Broad publication privileges)',
       progress: 0,
-      yesOutput: NE,
+      yesOutput: DETERMINATION.NE,
       noOutput: 2,
       answer: null,
       key: 'feeForService',
@@ -44,7 +41,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       moreInfo: '(generating, contributing to generalizable knowledge)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects.',
       progress: 12,
       yesOutput: 3,
-      noOutput: NHSR,
+      noOutput: DETERMINATION.NHSR,
       answer: null,
       key: 'broadInvestigator',
       id: 2
@@ -53,7 +50,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Are all subjects who provided samples and/or data now deceased?',
       progress: 25,
-      yesOutput: NHSR,
+      yesOutput: DETERMINATION.NHSR,
       noOutput: 4,
       answer: null,
       key: 'subjectsDeceased',
@@ -64,7 +61,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
       moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
       progress: 37,
-      yesOutput: IRB,
+      yesOutput: DETERMINATION.IRB,
       noOutput: 5,
       answer: null,
       key: 'sensitiveInformationSource',
@@ -76,7 +73,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       moreInfo: '(i.e. is conductin HSR)?',
       progress: 50,
       yesOutput: 6,
-      noOutput: NHSR,
+      noOutput: DETERMINATION.NHSR,
       answer: null,
       key: 'interactionSource',
       id: 5
@@ -85,7 +82,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Is the Broad receiving subject identifiers?',
       progress: 62,
-      yesOutput: IRB,
+      yesOutput: DETERMINATION.IRB,
       noOutput: 7,
       answer: null,
       key: 'isIdReceive',
@@ -96,7 +93,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
       progress: 75,
       yesOutput: 8,
-      noOutput: NHSR,
+      noOutput: DETERMINATION.NHSR,
       answer: null,
       key: 'isCoPublishing',
       id: 7
@@ -105,8 +102,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       question: 'Is Broad receiving direct federal funding?',
       progress: 87,
-      yesOutput: IRB,
-      noOutput: NE,
+      yesOutput: DETERMINATION.IRB,
+      noOutput: DETERMINATION.NE,
       answer: null,
       key: 'federalFunding',
       id: 8

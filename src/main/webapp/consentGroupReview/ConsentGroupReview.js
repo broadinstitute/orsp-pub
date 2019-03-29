@@ -40,7 +40,7 @@ class ConsentGroupReview extends Component {
         approvalStatus: 'Pending'
       },
       determination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -589,7 +589,7 @@ class ConsentGroupReview extends Component {
 
   resetIntCohortsDetermination() {
     return {
-      projectType: 900,
+      projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
