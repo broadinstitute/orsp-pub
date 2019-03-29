@@ -95,6 +95,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         errorMessage: errorText,
         error: errors || this.props.generalError
       }, [
+
+
         AddDocumentDialog({
           closeModal: this.closeModal,
           show: this.state.showAddDocuments,
@@ -123,6 +125,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             downloadDocumentUrl: this.props.downloadDocumentUrl
           })
         ])
+
       ])
     )
   }
