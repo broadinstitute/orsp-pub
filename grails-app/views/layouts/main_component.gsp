@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="//cdn.datatables.net/tabletools/2.2.3/css/dataTables.tableTools.css">
     %{-- We need this custom table tools css file to override display issues with cdn version --}%
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-typeahead/css/Typeahead.css"/>
 
     <asset:stylesheet src="jquery.dataTables.css"/>
     <asset:stylesheet src="style.css"/>
@@ -43,57 +45,55 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <script>
-        if (location.protocol !== "https:") location.protocol = "https:";
-        function onSignIn(googleUser) {
-            // show spinner while the page is re-loading
-            document.getElementById("login_spinner").setAttribute("class", "visible");
-            var profile = googleUser.getBasicProfile();
-            var token = googleUser.getAuthResponse().id_token;
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.then(function() {
-                var xhttp = new XMLHttpRequest();
+      if (location.protocol !== "https:") location.protocol = "https:";
+      function onSignIn(googleUser) {
+        // show spinner while the page is re-loading
+        document.getElementById("login_spinner").setAttribute("class", "visible");
+        let profile = googleUser.getBasicProfile();
+        let token = googleUser.getAuthResponse().id_token;
+        let auth2 = gapi.auth2.getAuthInstance();
+        auth2.then(function() {
+          let xhttp = new XMLHttpRequest();
 
-                %{--
-                    This is here so that after a Broad user signs in, their page is refreshed with valid content
-                    Overwrites previous onreadystatechange
-                --}%
-                <auth:isNotAuthenticated>
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        location.reload();
-                    }
-                };
-                </auth:isNotAuthenticated>
-                var url = "${raw(createLink(controller: "auth", action: "authUser"))}";
-                var postData = "token=" + token;
-                xhttp.open("POST", url, true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send(postData);
-            });
-        }
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function (){
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        window.location = "${request.contextPath}";
-                    }
-                };
-                var url = "${raw(createLink(controller: "logout", action: "logout"))}";
-                xhttp.open("POST", url, true);
-                xhttp.send();
-            });
-        }
+          %{--
+              This is here so that after a Broad user signs in, their page is refreshed with valid content
+              Overwrites previous onreadystatechange
+          --}%
+          <auth:isNotAuthenticated>
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              location.reload();
+            }
+          };
+          </auth:isNotAuthenticated>
+          let url = "${raw(createLink(controller: "auth", action: "authUser"))}";
+          let postData = "token=" + token;
+          xhttp.open("POST", url, true);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhttp.send(postData);
+        });
+      }
+      function signOut() {
+        let auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function (){
+          let xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              window.location = "${request.contextPath}";
+            }
+          };
+          let url = "${raw(createLink(controller: "logout", action: "logout"))}";
+          xhttp.open("POST", url, true);
+          xhttp.send();
+        });
+      }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-table/4.3.1/react-bootstrap-table-all.min.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/react-bootstrap-typeahead/css/Typeahead.css"/>
 
-     %{--
-        Add all component based code here.
-        TODO: These constants should all be refactored into a static utility class
-     --}%
+    %{--
+       Add all react component based code here.
+       TODO: These constants should all be refactored into a static utility class
+    --}%
     <script type="application/javascript">
       const issueTypes = [
         <g:each status="count" in="${IssueType.values()}" var="type">"${raw(type.name)}"<g:if test="${count < IssueType.values().size() - 1}">,</g:if>
@@ -107,36 +107,53 @@
           <g:each status="count" in="${PreferredIrb.values()}" var="map">{ id:"${raw(map.key)}", value:"${raw(map.label)}"}<g:if test="${count < PreferredIrb.values().size() - 1}">,</g:if>
         </g:each>];
 
-      // dataUseLetter TODO: Make the data use letter component use `component` instead.
-      const dataUseLetterComponent = {
-        serverURL: "${webRequest.baseUrl}",
-        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
-        error: "${error}",
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
-      };
-
-      // newConsentGroup, newProject, search
+      // TODO: Many of these should be static values directly accessible from the components directly.
+      // Look into moving these values out of
+      // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
-        getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
-        searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-        sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+        attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
+        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
         consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
         createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consent-group', method: 'POST')}",
-        attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-        serverURL: "${webRequest.baseUrl}",
-        fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
-        projectKey: "${params.projectKey}",
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-        projectType: '${params.type}',
         createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
-        projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
-        userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
+        error: "${error}",
+        fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
+        getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
-        irbs: irbs
+        irbs: irbs,
+        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+        projectKey: "${params.projectKey}",
+        projectType: '${params.type}',
+        projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
+        sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+        searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
+        searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
+        serverURL: "${webRequest.baseUrl}",
+        userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
       };
     </script>
+
+    %{-- Set context path for all scripts to use --}%
+    <script type="text/javascript">
+      window.appContext = '${request.contextPath}';
+    </script>
+
+    %{-- TODO: A lot of this code should go away once react conversion is complete --}%
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=8zknubfnjvv9l3sg0cpxrome1qk6r2wlpdw7j4ebb3gjxige"></script>
 
     <g:layoutHead/>
 </head>
@@ -173,11 +190,124 @@
     </div>
 </auth:broadSession>
 
-<div id="footer">
-    <div class="container">
-        <g:render template="/layouts/footer" />
-    </div>
+<div id="footer"></div>
+<asset:javascript src="build/footer.js"/>
+
+
+%{-- TODO: A lot of this code should go away once react conversion is complete --}%
+<asset:javascript src="jquery.fn.dataTablesExt.ticket.js"/>
+<asset:javascript src="jquery.fn.dataTablesExt.ticket.js"/>
+<asset:javascript src="chosen.jquery.min.js"/>
+<asset:javascript src="jasny-bootstrap.min.js"/>
+<asset:javascript src="jquery.validate.min.js"/>
+<asset:javascript src="jsrender.js"/>
+
+<asset:javascript src="jquery.file.upload-9.9.2/js/vendor/jquery.ui.widget.js"/>
+<asset:javascript src="jquery.file.upload-9.9.2/js/jquery.iframe-transport.js"/>
+<asset:javascript src="jquery.file.upload-9.9.2/js/jquery.fileupload.js"/>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".chosen-select").chosen({width: "100%"});
+    initializeEditor();
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+  function initializeEditor() {
+    tinymce.init({
+      selector:'textarea.editor',
+      width: '100%',
+      menubar: false,
+      statusbar: false,
+      plugins: "paste",
+      paste_data_images: false
+    });
+  }
+
+  function loadComments(url) {
+    $("#comments").load(
+      url,
+      function() {
+        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
+        $("#comments-table").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          order: [1, "desc"]
+        });
+        initializeEditor();
+      }
+    );
+  }
+
+  function loadHistory(url) {
+    $("#history").load(
+      url,
+      function() {
+        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
+        $("#history-table").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          order: [1, "desc"]
+        });
+      }
+    );
+  }
+
+  // Toggle pattern for Jira-style objects. Relies on "-id" naming pattern
+  function toggleContinueMessage(elementId, val1, val2) {
+    $("input[name='" + elementId + "-id'], input[name='" + elementId + "']").change(
+      function() {
+        if ($(this).val() === val1) {
+          $('*[data-id="' + val1 + '"]').show();
+          $('*[data-id="' + val2 + '"]').hide();
+        } else {
+          $('*[data-id="' + val1 + '"]').hide();
+          $('*[data-id="' + val2 + '"]').show();
+        }
+      }
+    );
+  }
+
+  // Toggle pattern for property style objects. Slightly different from Jira-style objects.
+  function togglePropertyMessage(elementName, val1, val2) {
+    $("input[name='" + elementName + "']").change(
+      function() {
+        prop1Message = $('*[data-id="' + elementName + "." + val1 + '"]');
+        prop2Message = $('*[data-id="' + elementName + "." + val2 + '"]');
+        if ($(this).val() === val1) {
+          prop1Message.show();
+          prop2Message.hide();
+        } else {
+          prop1Message.hide();
+          prop2Message.show();
+        }
+      }
+    );
+  }
+
+</script>
+
+<script id="uploadedFileTemplate" type="text/x-jsrender">
+<div class="alert alert-success" role="alert" id="{{:fileUuid}}">
+    <i class="fa {{:icon}}"></i>
+    <span style="padding-left: 10px;">{{:type}}: {{:name}}</span>
+    <i class="btn btn-danger fa fa-trash pull-right" onclick="removeDocument('{{:fileUuid}}', '{{:amendmentId}}');"></i>
 </div>
+</script>
+
+<asset:javascript src="application.js"/>
+
+<g:if test="${tab}">
+    <asset:script type="text/javascript">
+        $(document).ready(function () {
+            $('a[href="#${tab}"]').click();
+    });
+    </asset:script>
+</g:if>
 
 <asset:deferredScripts/>
 </body>
