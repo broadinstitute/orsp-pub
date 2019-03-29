@@ -16,7 +16,7 @@ class ConsentGroupDocuments extends Component {
     this.state = {
       restrictionId: '',
       restriction: [],
-      documentsCollection: [],
+      documents: [],
       keyDocuments: [],
       additional: [],
       showDialog: false,
@@ -54,7 +54,7 @@ class ConsentGroupDocuments extends Component {
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachmentsUrl, this.props.projectKey).then(resp => {
-      this.setKeyDocuments(JSON.parse(resp.data.documents));
+      this.setState({documents: JSON.parse(resp.data.documents)});
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -100,28 +100,6 @@ class ConsentGroupDocuments extends Component {
     }
     return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   };
-
-  setKeyDocuments = (documentsCollection) => {
-    const keyDocuments = [];
-    const additionalDocuments = [];
-    documentsCollection.forEach(documentData => {
-      if (ConsentGroupKeyDocuments.lastIndexOf(documentData.fileType) !== -1) {
-        if(documentData.documentType === 'key') {
-          keyDocuments.push(documentData);
-        } else {
-          additionalDocuments.push(documentData);
-        }
-      } else {
-        additionalDocuments.push(documentData);
-      }
-    });
-
-    this.setState({
-      keyDocuments: keyDocuments,
-      additionalDocuments: additionalDocuments
-    })
-  };
-
 
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
@@ -178,7 +156,7 @@ class ConsentGroupDocuments extends Component {
       }, []),
 
       Documents({
-        documents: this.state.keyDocuments,
+        documents: this.state.documents,
         handleDialogConfirm: this.handleDialog,
         user: this.state.user,
         downloadDocumentUrl: this.props.downloadDocumentUrl,
