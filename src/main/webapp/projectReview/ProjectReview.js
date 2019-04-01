@@ -1024,8 +1024,9 @@ class ProjectReview extends Component {
         }, ["Cancel"]),
 
         AlertMessage({
-          msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection.',
+          msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
           show: true,
+          // show: this.state.generalError || this.state.showAlert,
           type: 'success'
         }),
 

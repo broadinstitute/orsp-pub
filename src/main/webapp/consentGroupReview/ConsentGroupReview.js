@@ -1086,11 +1086,11 @@ class ConsentGroupReview extends Component {
         }, ["Cancel"]),
 
         AlertMessage({
-          msg: 'Your Consent Group was successfully submitted to the Broad Institute’s Office of Research Subject Protection.',
+          msg: 'Your Consent Group was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
           show: true,
           type: 'success'
         }),
-
+        
         Panel({ title: "Consent Group Details" }, [
           InputFieldText({
             id: "inputConsentGroupName",
