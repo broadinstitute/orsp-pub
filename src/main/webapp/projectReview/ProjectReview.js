@@ -855,6 +855,9 @@ class ProjectReview extends Component {
       return prev;
     });
   };
+  redirectToNewConsentGroup = () => {
+    window.location.href = this.props.serverURL + '/api/consent-group?projectKey=' + this.props.projectKey;
+  };
 
   handleInfoSecurityValidity(isValid) {
     this.setState({ isInfoSecurityValid: isValid });
@@ -999,12 +1002,20 @@ class ProjectReview extends Component {
           clarificationUrl: this.props.clarificationUrl,
           successClarification: this.successClarification
         }),
+        
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
           isRendered: this.state.readOnly === true
         }, ["Edit Information"]),
+
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.redirectToNewConsentGroup,
+          isRendered: this.state.readOnly === true,
+        }, ["Add New Consent Group"]),
 
         button({
           className: "btn buttonSecondary floatRight",

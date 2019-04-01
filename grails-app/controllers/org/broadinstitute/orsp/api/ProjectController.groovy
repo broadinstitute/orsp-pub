@@ -2,6 +2,7 @@ package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
 import grails.rest.Resource
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
@@ -99,5 +100,17 @@ class ProjectController extends AuthenticatedController {
         } else {
             transitionService.handleIntake(issue, actors*.userName, IssueStatus.SubmittingToORSP.name, getUser()?.displayName)
         }
+    }
+
+    String getProjectType() {
+        String projectType = issueService.getProjectType(params.id)
+        if (StringUtils.isNotEmpty(projectType)) {
+            response.status = 200
+            render([projectType: projectType] as JSON)
+        } else {
+            response.status = 404
+            render([message: "Project not found"] as JSON)
+        }
+        projectType
     }
 }

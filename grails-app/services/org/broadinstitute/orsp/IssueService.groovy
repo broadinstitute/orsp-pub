@@ -450,4 +450,9 @@ class IssueService {
         props
     }
 
+    String getProjectType(String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
+    }
+
 }

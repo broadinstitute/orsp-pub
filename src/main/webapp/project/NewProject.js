@@ -7,11 +7,12 @@ import { NewProjectDocuments } from './NewProjectDocuments';
 import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-import { span } from 'react-hyperscript-helpers';
+import { span,button } from 'react-hyperscript-helpers';
 import { spinnerService } from '../util/spinner-service';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { DataSharing } from "../components/DataSharing";
 import { Security } from '../components/Security';
+import "regenerator-runtime/runtime";
 
 class NewProject extends Component {
 
@@ -499,10 +500,13 @@ class NewProject extends Component {
     })
   };
 
-  uploadFiles = (projectKey) => {
+  uploadFiles = async (projectKey) => {
+    let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
+        // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
+        // transitioning from old gsps style is solved.
+        window.location.href =  [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
       }).catch(error => {
         spinnerService.hideAll();
         this.toggleTrueSubmitError();
@@ -524,17 +528,6 @@ class NewProject extends Component {
       prev.generalError = false;
       return prev;
     });
-  }
-
-  getRedirectUrl(projectKey) {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
   render() {
