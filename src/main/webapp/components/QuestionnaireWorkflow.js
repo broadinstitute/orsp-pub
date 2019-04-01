@@ -19,9 +19,27 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     };
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.resetIntCohorts && nextProps.questions !== prevState.questions && nextProps.determination !== prevState){
+      nextProps.resetHandler();
+      return { questions: nextProps.questions, currentQuestionIndex: 0, nextQuestionIndex: 1, projectType: null, endState: false};
+    }
+    else return null;
+  }
+
   componentDidMount() {
-    if (this.props.determination.questions.length > 0) {
+    if (this.props.determination.questions.length > 0 && this.props.edit) {
       this.setState({
+        endState: false,
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: this.props.determination.nextQuestionIndex,
+        questions: this.props.questions,
+        projectType: null
+      });
+    } else if (this.props.determination.questions.length > 0 ) {
+     this.setState({
+       // This state set is to maintain project or consent group creation questionnaires state
         endState: this.props.determination.endState,
         requiredError: this.props.determination.requiredError,
         currentQuestionIndex: this.props.determination.currentQuestionIndex,
@@ -50,13 +68,13 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
       return prev;
     })
-  }
+  };
 
   nextQuestion = (e) => {
     let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
 
     if (this.props.edit === true) {
-      this.props.cleanQuestionsUnanswered(this.state, "next");
+      this.props.cleanQuestionsUnanswered(this.state);
     }
 
     if (currentAnswer !== null) {
@@ -80,7 +98,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         this.props.handler(this.state);
       });
     }
-  }
+  };
 
   evaluateAnswer = (answer) => {
     let onYes = this.state.questions[this.state.currentQuestionIndex].yesOutput;
@@ -105,7 +123,9 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         } else {
           nextQuestionIndex = null;
           projectType = onYes;
-          if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "end - true");
+          if (this.props.edit === true){
+            this.props.cleanQuestionsUnanswered(this.state);
+          }
           endState = true;
         }
         break;
@@ -117,7 +137,9 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
           endState = false;
         } else {
           nextQuestionIndex = null;
-          if (this.props.edit === true) this.props.cleanQuestionsUnanswered(this.state, "end - false");
+          if (this.props.edit === true) {
+            this.props.cleanQuestionsUnanswered(this.state);
+          }
           projectType = onNo;
           endState = true;
         }
@@ -160,19 +182,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       this.evaluateAnswer(value);
     });
   }
-
-
-  getTypeDescription = (t) => {
-    if (t === 200) return 'NE';
-    if (t === 300) return 'NHSR';
-    if (t === 400) return 'IRB';
-    if (t === 500) return 'EXIT';
-    if (t === 600) return 'DPA';
-    if (t === 700) return 'RA';
-    if (t === 800) return 'CTC';
-    if (t === 900) return 'OSAP';
-  }
-
   render() {
 
     if (this.state.hasError) {
