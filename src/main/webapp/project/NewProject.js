@@ -506,7 +506,7 @@ class NewProject extends Component {
       .then(resp => {
         // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
         // transitioning from old gsps style is solved.
-        window.location.href =  [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+        window.location.href =  [this.props.serverURL, projectType, "show", projectKey, "?tab=review?new"].join("/");
       }).catch(error => {
         spinnerService.hideAll();
         this.toggleTrueSubmitError();

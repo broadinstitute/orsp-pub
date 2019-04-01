@@ -48,6 +48,8 @@ class ProjectReview extends Component {
       alertType: '',
       alertMessage: '',
       showAlert: false,
+      showSubmissionAlert: false,
+      showSuccessClarification: false,
       formData: {
         approvalStatus: '',
         description: '',
@@ -166,6 +168,9 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    if (new URLSearchParams(window.location.search).has('new')) {
+      this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.');
+    }
     this.init();
   }
 
@@ -313,7 +318,7 @@ class ProjectReview extends Component {
   determinationHandler = (determination) => {
     let newValues = {};
     const answers = [];
-    this.clearAlertMessage();
+    this.clearAlertMessage('showAlert');
     determination.questions.forEach(question => {
 
       if (question.answer !== null) {
@@ -837,19 +842,19 @@ class ProjectReview extends Component {
     })
   };
 
-  successClarification = () => {
-    setTimeout(this.clearAlertMessage, 5000, null);
+  successNotification = (type, message) => {
+    setTimeout(this.clearAlertMessage(type), 5000, null);
     this.setState(prev => {
-      prev.showAlert = true;
-      prev.alertMessage = 'Request clarification sent.';
+      prev[type] = true;
+      prev.alertMessage = message;
       prev.alertType = 'success';
       return prev;
     });
   };
 
-  clearAlertMessage = () => {
+  clearAlertMessage = (type) => () => {
     this.setState(prev => {
-      prev.showAlert = false;
+      prev[type] = false;
       prev.alertMessage = '';
       prev.alertType = '';
       return prev;
@@ -1000,7 +1005,7 @@ class ProjectReview extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           clarificationUrl: this.props.clarificationUrl,
-          successClarification: this.successClarification
+          successClarification: this.successNotification
         }),
         
         button({
@@ -1025,7 +1030,7 @@ class ProjectReview extends Component {
 
         AlertMessage({
           msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
-          show: true,
+          show: this.state.showSubmissionAlert,
           // show: this.state.generalError || this.state.showAlert,
           type: 'success'
         }),
@@ -1381,7 +1386,7 @@ class ProjectReview extends Component {
         ]),
         AlertMessage({
           msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
-          show: this.state.generalError || this.state.showAlert,
+          show: this.state.generalError || this.state.showAlert || this.state.showSuccessClarification,
           type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
