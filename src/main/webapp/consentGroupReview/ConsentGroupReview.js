@@ -12,17 +12,11 @@ import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { QuestionnaireWorkflow } from "../components/QuestionnaireWorkflow";
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { format } from 'date-fns';
-
-const EXIT = 500;
-const DPA = 600;
-const RA = 700;
-const CTC = 800;
-const OSAP = 900;
+import { IntCohortsReview } from "../components/IntCohortsReview";
 
 class ConsentGroupReview extends Component {
 
@@ -46,14 +40,13 @@ class ConsentGroupReview extends Component {
         approvalStatus: 'Pending'
       },
       determination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
         nextQuestionIndex: 1,
         endState: false
       },
-
       consentExtraProps: {
         consent: '',
         protocol: '',
@@ -144,9 +137,11 @@ class ConsentGroupReview extends Component {
       dataSharingError: false,
       isEdited: false,
       intCohortsAnswers: [],
+      resetIntCohorts: false
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
     this.consentGroupNameExists = this.consentGroupNameExists.bind(this);
+    this.resetHandler = this.resetHandler.bind(this);
   }
 
   componentDidMount() {
@@ -164,7 +159,6 @@ class ConsentGroupReview extends Component {
     let futureCopy = {};
     let futureStr = {};
     let formData = {};
-    let formDataStr = {};
     let sampleCollectionList = [];
 
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
@@ -221,9 +215,18 @@ class ConsentGroupReview extends Component {
               future = JSON.parse((currentStr));
               futureCopy = JSON.parse(currentStr);
             }
-            let questions = this.initQuestions();
+
+            const intCohortsQuestions = [
+              {key: 'individualDataSourced', answer: null },
+              {key: 'isLinkMaintained', answer: null},
+              {key: 'feeForService', answer: null},
+              {key: 'areSamplesComingFromEEAA', answer: null},
+              {key: 'isCollaboratorProvidingGoodService', answer: null},
+              {key: 'isConsentUnambiguous', answer: null}
+            ];
+
             let intCohortsAnswers = [];
-            questions.forEach(it => {
+            intCohortsQuestions.forEach(it => {
               if (current.consentExtraProps[it.key] !== undefined) {
                 intCohortsAnswers.push({
                   key: it.key,
@@ -239,9 +242,8 @@ class ConsentGroupReview extends Component {
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
-              prev.questions.length = 0;
+              prev.intCohortsQuestions = intCohortsQuestions;
               prev.intCohortsAnswers = intCohortsAnswers;
-              prev.questions = questions;
               return prev;
             });
           }
@@ -252,7 +254,7 @@ class ConsentGroupReview extends Component {
 
   parseIntCohorts() {
     let intCohortsAnswers = [];
-    this.state.questions.forEach(it => {
+    this.state.intCohortsQuestions.forEach(it => {
       if (this.state.formData.consentExtraProps[it.key] !== undefined) {
         intCohortsAnswers.push({
           key: it.key,
@@ -501,7 +503,6 @@ class ConsentGroupReview extends Component {
           prev.formData.consentForm.approvalStatus = data.approvalStatus;
           prev.current.consentExtraProps.projectReviewApproved = true;
           prev.approveInfoDialog = false;
-          prev.questions.length = 0;
           return prev;
         })
       }
@@ -539,7 +540,6 @@ class ConsentGroupReview extends Component {
     let consentGroup = this.getConsentGroup();
     ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
       this.setState(prev => {
-        prev.questions.length = 0;
         prev.approveDialog = false;
         return prev;
       });
@@ -579,12 +579,30 @@ class ConsentGroupReview extends Component {
     }
   };
 
+  resetHandler () {
+    this.setState(prev => {
+      prev.resetIntCohorts = false;
+      prev.determination = this.resetIntCohortsDetermination();
+      return prev;
+    })
+  }
+
+  resetIntCohortsDetermination() {
+    return {
+      projectType: null,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
+    }
+  }
+
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
     this.setState(prev => {
       prev.readOnly = false;
-      prev.questions.length = 0;
-      prev.questions = this.initQuestions();
+      prev.resetIntCohorts = true;
       prev.isEdited = false;
       return prev;
     });
@@ -603,7 +621,7 @@ class ConsentGroupReview extends Component {
       prev.formData = this.state.futureCopy;
       prev.readOnly = true;
       prev.errorSubmit = false;
-      prev.questions.length = 0;
+      prev.resetIntCohorts = false;
       return prev;
     });
   };
@@ -615,6 +633,7 @@ class ConsentGroupReview extends Component {
         this.setState(prev => {
           prev.readOnly = true;
           prev.errorSubmit = false;
+          prev.resetIntCohorts = false;
           prev.intCohortsAnswers.forEach(question => {
             prev.formData.consentExtraProps[question.key] = question.answer;
           });
@@ -815,15 +834,6 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  addDays(date, days) {
-    if (date !== null) {
-      var result = new Date(date);
-      result.setDate(result.getDate() + days);
-      return result;
-    }
-    return null
-  }
-
   handleUpdateinstitutionalSources = (updated) => {
     this.setState(prev => {
       prev.formData.instSources = updated;
@@ -899,75 +909,6 @@ class ConsentGroupReview extends Component {
     }
   }
 
-  initQuestions = () => {
-    const questions = [];
-
-    questions.push({
-      question: span({}, [
-        "Are samples or individual-level data sourced from a country in the European Economic Area? ",
-        a({ href: "https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm", target: "_blank", className: "normal" }, "(List of member states of European Economic Area)")
-      ]),
-      yesOutput: 2,
-      noOutput: EXIT,
-      answer: null,
-      progress: 0,
-      key: 'individualDataSourced',
-      id: 1
-    });
-
-    questions.push({
-      question: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
-      yesOutput: 3,
-      noOutput: EXIT,
-      answer: null,
-      progress: 17,
-      key: 'isLinkMaintained',
-      id: 2
-    });
-
-    questions.push({
-      question: 'Is the Broad work being performed as fee-for-service?',
-      yesOutput: DPA,
-      noOutput: 4,
-      answer: null,
-      progress: 34,
-      key: 'feeForService',
-      id: 3
-    });
-
-    questions.push({
-      question: 'Are samples/data coming directly to the Broad from the EEA?',
-      yesOutput: 5,
-      noOutput: RA,
-      answer: null,
-      progress: 50,
-      key: 'areSamplesComingFromEEAA',
-      id: 4
-    });
-
-    questions.push({
-      question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-      yesOutput: OSAP,
-      noOutput: 6,
-      answer: null,
-      progress: 67,
-      key: 'isCollaboratorProvidingGoodService',
-      id: 5
-    });
-
-    questions.push({
-      question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-      yesOutput: EXIT,
-      noOutput: CTC,
-      answer: null,
-      progress: 83,
-      key: 'isConsentUnambiguous',
-      id: 6
-    });
-
-    return questions;
-  };
-
   determinationHandler = (determination) => {
     let newValues = {};
     const answers = [];
@@ -985,7 +926,7 @@ class ConsentGroupReview extends Component {
       Object.keys(newValues).forEach(key => {
         prev.formData.consentExtraProps[key] = newValues[key];
       });
-      prev.questions = determination.questions;
+      prev.resetIntCohorts = false;
       prev.isEdited = true;
       prev.intCohortsAnswers = [...answers];
       prev.determination = determination;
@@ -998,40 +939,13 @@ class ConsentGroupReview extends Component {
 
   cleanAnswersIntCohorts = (questionIndex, where) => {
     this.setState(prev => {
-      this.state.questions.forEach((q, index) => {
+      this.state.intCohortsQuestions.forEach((q, index) => {
         if (index > questionIndex.currentQuestionIndex) {
           prev.formData.consentExtraProps[q.key] = null;
-          prev.questions[index].answer = null
         }
       });
       return prev;
     })
-  };
-
-  stringAnswer = (current) => {
-    let answer = '';
-    if (current === 'true' || current === true) {
-      answer = 'Yes';
-    } else if (current === 'false' || current === false) {
-      answer = 'No'
-    } else if (current === 'null' || current === null || this.isEmpty(current)) {
-      answer = '--';
-    }
-    return answer
-  };
-
-  isEquals = (a, b) => {
-    if (this.isEmpty(b) && !this.isEmpty(a) || !this.isEmpty(a) && this.isEmpty(b)) {
-      return false;
-    }
-    if (a !== undefined && b !== undefined) {
-      if (JSON.parse(a) === JSON.parse(b)) {
-        return true;
-      } else if ((JSON.parse(a) !== JSON.parse(b))) {
-        return false;
-      }
-    }
-    return true;
   };
 
   areObjectsEqual(formData, current) {
@@ -1106,13 +1020,7 @@ class ConsentGroupReview extends Component {
       describeConsentGroup = '',
       requireMta = '',
       startDate = null,
-      endDate = null,
-      individualDataSourced = '',
-      isLinkMaintained = '',
-      feeForService = '',
-      areSamplesComingFromEEAA = '',
-      isCollaboratorProvidingGoodService = '',
-      isConsentUnambiguous = '',
+      endDate = null
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources == undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
 
@@ -1354,93 +1262,18 @@ class ConsentGroupReview extends Component {
             error: this.state.errors.instError
           })
         ]),
-
-        Panel({ title: "International Cohorts" }, [
-          div({ className: "answerWrapper" }, [
-            label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
-            div({
-              className: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(individualDataSourced)]),
-            div({
-              isRendered: !this.isEquals(individualDataSourced, this.state.current.consentExtraProps.individualDataSourced),
-              className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.individualDataSourced),])
-          ]),
-
-          div({ className: "answerWrapper" }, [
-            label({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
-            div({
-              className: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(isLinkMaintained)]),
-            div({
-              isRendered: !this.isEquals(isLinkMaintained, this.state.current.consentExtraProps.isLinkMaintained),
-              className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.isLinkMaintained)])
-          ]),
-
-          div({ className: "answerWrapper" }, [
-            label({}, ["Is the Broad work being performed as fee-for-service?"]),
-            div({
-              className: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(feeForService)]),
-            div({
-              isRendered: !this.isEquals(feeForService, this.state.current.consentExtraProps.feeForService),
-              className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.feeForService)])
-          ]),
-
-          div({ className: "answerWrapper" }, [
-            label({}, ["Are samples/data coming directly to the Broad from the EEA?"]),
-            div({
-              className: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(areSamplesComingFromEEAA)]),
-            div({
-              isRendered: !this.isEquals(areSamplesComingFromEEAA, this.state.current.consentExtraProps.areSamplesComingFromEEAA),
-              className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.areSamplesComingFromEEAA)])
-          ]),
-
-          div({ className: "answerWrapper" }, [
-            label({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-            div({
-              className: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(isCollaboratorProvidingGoodService)]),
-            div({
-              isRendered: !this.isEquals(isCollaboratorProvidingGoodService, this.state.current.consentExtraProps.isCollaboratorProvidingGoodService),
-              className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.isCollaboratorProvidingGoodService)])
-          ]),
-
-          div({ className: "answerWrapper" }, [
-            label({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-            div({
-              className: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous) ? 'answerUpdated' : ''
-            }, [this.stringAnswer(isConsentUnambiguous)]),
-            div({
-              isRendered: !this.isEquals(isConsentUnambiguous, this.state.current.consentExtraProps.isConsentUnambiguous),
-              className: "answerCurrent"
-            }, [this.stringAnswer(this.state.current.consentExtraProps.isConsentUnambiguous)])
-          ]),
-
-          div({ isRendered: !this.state.readOnly, className: "questionnaireEdits" }, [
-            div({ style: { 'margin': '15px 0 40px 0' } }, [
-              AlertMessage({
-                type: 'info',
-                msg: "If you would like to change the answers to any of the International Cohort questions displayed above, please proceed through the questions below to change your answers accordingly.",
-                show: true
-              })
-            ]),
-            h3({}, ["International Cohorts' Questionnaire"]),
-            QuestionnaireWorkflow({
-              questions: this.state.questions,
-              edit: true,
-              cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
-              handler: this.determinationHandler,
-              determination: this.state.determination
-            })
-          ])
+        Panel({ title: "International Cohorts"}, [
+          IntCohortsReview({
+            future: get(this.state.formData, 'consentExtraProps', ''),
+            current: this.state.current.consentExtraProps,
+            readOnly: this.state.readOnly,
+            resetHandler: this.resetHandler,
+            determination: this.state.determination,
+            handler: this.determinationHandler,
+            cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
+            resetIntCohorts: this.state.resetIntCohorts
+          })
         ]),
-
         Panel({ title: "Security" }, [
           InputFieldRadio({
             edit: true,
