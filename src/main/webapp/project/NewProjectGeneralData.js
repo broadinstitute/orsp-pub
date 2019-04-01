@@ -12,6 +12,8 @@ import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 
 import { Search } from '../util/ajax';
+import { InputFieldSelect } from "../components/InputFieldSelect";
+import * as TypeDescription from "../util/TypeDescription";
 
 const fundingTooltip =
   ul({}, [
@@ -40,6 +42,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         uploadConsentGroup: '',
         notCGSpecify: '',
         subjectProtection: '',
+        irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
       },
@@ -52,6 +55,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         uploadConsentGroup: '',
         notCGSpecify: '',
         subjectProtection: '',
+        irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
       },
@@ -63,6 +67,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         fundings: false
       }
     };
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+
   }
 
   handleUpdateFundings = (updated) => {
@@ -101,6 +107,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'projectManager'));
     this.props.removeErrorMessage();
+  };
+
+  handleSelectChange = (field) => () => (selectedOption) => {
+    this.setState(prev => {
+        prev.formData[field] = selectedOption;
+        return prev;
+      }, () => {
+        this.props.updateForm(this.state.formData, field);
+        this.props.removeErrorMessage();
+      }
+    )
   };
 
   componentDidCatch(error, info) {
@@ -305,6 +322,19 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             required: true,
             error: this.props.errors.subjectProtection,
             errorMessage: "Required field",
+            edit: false
+          }),
+          InputFieldSelect({
+            label: "Irb Referral",
+            id: "irbReferral",
+            name: "irbReferral",
+            options: TypeDescription.PREFERRED_IRB,
+            value: this.state.formData.irbReferral,
+            currentValue: '',
+            onChange: this.handleSelectChange("irbReferral"),
+            error: () => console.log("poio"),//this.getSourceError(idx),
+            readOnly: false,
+            edited: false,
             edit: false
           })
         ])
