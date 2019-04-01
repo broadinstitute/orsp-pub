@@ -12,6 +12,11 @@
 
 <g:if test="${consentGroups}">
     <h3>Consent Groups</h3>
+
+    <div id="alert" class="alert alert-success" style="display:none;" >
+        <p>Your Consent Group was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.</p>
+    </div>
+
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <g:each in="${consentGroups}" var="consent" status="panelIndex">
             <div class="panel panel-default">
@@ -97,3 +102,16 @@
 
 </body>
 </html>
+
+
+<script>
+// Display for 8 seconds a message indicating the submission of a new consent group. This is temporal until this page is moved to react.
+    $( document ).ready(function(){
+        var url = new URLSearchParams(window.location.search);
+        if (url.get('tab') === 'consent-groups' && url.has('new')) {
+            $('#alert').fadeIn('slow', function(){
+                   $('#alert').delay(8000).fadeOut();
+            });
+        }
+    });
+</script>

@@ -137,7 +137,7 @@ class NewConsentGroup extends Component {
       .then(resp => {
         // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
         // transitioning from old gsps style is solved.
-        window.location.href =  [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+        window.location.href =  [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
