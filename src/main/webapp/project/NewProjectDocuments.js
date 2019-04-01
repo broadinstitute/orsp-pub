@@ -14,7 +14,7 @@ const addDocumentBtn = {
 
 const headers =
   [
-    { name: 'Document Type', value: 'fileType' },
+    { name: 'Document Type', value: 'fileKey' },
     { name: 'File Name', value: 'fileName' }
   ];
 
@@ -42,7 +42,9 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
   setFilesToUpload(doc) {
     this.setState(prev => {
-      let documents = [{ fileType: doc.fileKey, file: doc.file, fileName: doc.file.name}];
+      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name};
+      let documents = prev.documents;
+      documents.push(document);
       prev.documents = documents;
       return prev;
     }, () => {

@@ -123,10 +123,6 @@ class NewProject extends Component {
           spinnerService.hideAll();
         });
       }
-    // }
-    // else {
-    //     spinnerService.hideAll();
-    // }
   };
 
   toggleTrueSubmitError = () => {

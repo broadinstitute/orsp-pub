@@ -104,7 +104,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       return prev;
     }, () => {
       if (this.isValid()) {
-        spinnerService.showAll();
         this.setState(prev => {
           prev.disableBtn = true;
           return prev;
@@ -112,6 +111,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         if(this.props.projectKey !== undefined) {
+          spinnerService.showAll();
           Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             spinnerService.hideAll();
@@ -137,6 +137,13 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
           });
         } else {
           this.props.documentHandler(file);
+          this.setState(prev => {
+            prev.submit = false;
+            prev.disableBtn = false;
+            prev.file = { name: '' };
+            prev.type = '';
+            return prev;
+          });
         }
 
       }
@@ -251,7 +258,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Add Document' + this.props.projectKey !== undefined ? ' to ' + this.props.projectKey : ''])
+            h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
           ]),
           h(ModalBody, { className: "dialogBody" }, [
             InputFieldSelect({
