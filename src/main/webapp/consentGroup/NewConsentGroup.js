@@ -131,12 +131,13 @@ class NewConsentGroup extends Component {
     });
   };
 
-  uploadFiles = (projectKey) => {
+  uploadFiles = async (projectKey) => {
+    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-        Project.getProjectType(this.props.serverURL, this.props.projectKey).then(type => {
-          window.location.href =  [this.props.serverURL, type.data.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
-        });
+        // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
+        // transitioning from old gsps style is solved.
+        window.location.href =  [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;

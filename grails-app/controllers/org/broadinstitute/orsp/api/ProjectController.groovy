@@ -2,6 +2,7 @@ package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
 import grails.rest.Resource
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
@@ -103,7 +104,7 @@ class ProjectController extends AuthenticatedController {
 
     String getProjectType() {
         String projectType = issueService.getProjectType(params.id)
-        if (projectType != null) {
+        if (StringUtils.isNotEmpty(projectType)) {
             response.status = 200
             render([projectType: projectType] as JSON)
         } else {
