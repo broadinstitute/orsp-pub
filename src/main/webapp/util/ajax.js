@@ -1,4 +1,5 @@
 import axios from 'axios';
+import "regenerator-runtime/runtime";
 
 export const Search = {
 
@@ -133,6 +134,14 @@ export const Project = {
   updateProject(url, data, projectKey) {
     return axios.put(url + '?projectKey=' + projectKey, data);
   },
+
+  async getProjectType(url, projectKey) {
+    let type = '';
+    await axios.get(url + '/api/project/get-type?id=' + projectKey)
+      .then(resp => type = resp.data.projectType)
+      .catch(err => console.error(err));
+    return type;
+  }
 };
 
 export const DocumentHandler = {

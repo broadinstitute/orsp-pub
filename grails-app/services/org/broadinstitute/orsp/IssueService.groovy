@@ -34,6 +34,7 @@ class IssueService {
             IssueExtraProperty.DBGAP,
             IssueExtraProperty.DECEASED,
             IssueExtraProperty.FEE_FOR_SERVICE,
+            IssueExtraProperty.FEE_FOR_SERVICE_WORK,
             IssueExtraProperty.IDENTIFIABLE,
             IssueExtraProperty.INTERACT,
             IssueExtraProperty.IRB,
@@ -209,6 +210,9 @@ class IssueService {
         }
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE})
+        }
+        if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE_WORK)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE_WORK})
         }
         if (!input.containsKey(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA})
@@ -444,6 +448,11 @@ class IssueService {
                 }
         }.flatten().findAll { it != null }
         props
+    }
+
+    String getProjectType(String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
     }
 
 }
