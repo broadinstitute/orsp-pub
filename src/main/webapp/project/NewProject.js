@@ -379,13 +379,12 @@ class NewProject extends Component {
 
   determinationHandler = (determination) => {
     this.setState(prev => {
-        prev.files = [];
         prev.determination = determination;
         if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
           prev.showErrorDeterminationQuestions = false;
         }
         return prev;
-      }, () => this.initDocuments(this.state.determination.projectType));
+      });
   };
 
   intCohortsDeterminationHandler = (determination) => {
@@ -397,25 +396,6 @@ class NewProject extends Component {
       return prev;
     });
   };
-
-  initDocuments(projectType) {
-
-    if (projectType !== this.state.formerProjectType) {
-      let documents = [];
-      this.setState({
-        projectType: projectType,
-        formerProjectType: projectType,
-        intCohortsDetermination: {
-          projectType: 900,
-          questions: [],
-          requiredError: false,
-          currentQuestionIndex: 0,
-          nextQuestionIndex: 1,
-          endState: false
-        }
-      });
-    }
-  }
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -464,7 +444,6 @@ class NewProject extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    // intentar guardar solo si hay archivos
     if (this.state.files !== null && this.state.files.length > 0) {
       Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
         .then(resp => {
