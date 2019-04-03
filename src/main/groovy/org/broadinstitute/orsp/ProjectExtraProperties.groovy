@@ -16,6 +16,7 @@ class ProjectExtraProperties {
     Collection actor
     String uploadConsentGroup
     String notCGSpecify
+    String irbReferral
 
     // Info Security
     String pii
@@ -66,6 +67,7 @@ class ProjectExtraProperties {
         this.setActor(project.getActors())
         this.setUploadConsentGroup(project.getUploadConsent() ?: "")
         this.setNotCGSpecify(project.getNotCGSpecify() ?: "")
+        this.setIrbReferral(project.getIrbReferral() ?: null)
 
         // Info Security
         this.setPii(project.getPII() ?: "")

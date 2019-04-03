@@ -330,11 +330,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             name: "irbReferral",
             options: TypeDescription.PREFERRED_IRB,
             value: this.state.formData.irbReferral,
-            currentValue: '',
             onChange: this.handleSelectChange("irbReferral"),
-            error: () => console.log("poio"),//this.getSourceError(idx),
             readOnly: false,
-            edited: false,
             edit: false
           })
         ])
