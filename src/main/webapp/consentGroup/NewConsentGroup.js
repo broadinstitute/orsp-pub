@@ -9,6 +9,7 @@ import { spinnerService } from '../util/spinner-service';
 import { DataSharing } from '../components/DataSharing';
 import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
+import { DOCUMENT_TYPE } from '../util/DocumentType'; 
 
 class NewConsentGroup extends Component {
 
@@ -19,6 +20,7 @@ class NewConsentGroup extends Component {
         displayName: '',
         userName: ''
       },
+      documentOptions: [],
       showInternationalCohortsError: false,
       showInfoSecurityError: false,
       isInfoSecurityValid: false,
@@ -132,7 +134,8 @@ class NewConsentGroup extends Component {
   };
 
   uploadFiles = (projectKey) => {
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
+    if (this.state.files !== null && this.state.files.length > 0) {
+      Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
         window.location.href = this.getRedirectUrl();
         spinnerService.hideAll();
@@ -146,6 +149,7 @@ class NewConsentGroup extends Component {
         console.error(error);
         this.toggleSubmitError();
       });
+    }    
   };
 
   toggleSubmitError = () => {
@@ -235,8 +239,6 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateGeneralData(field);
-    } else if (this.state.currentStep === 1) {
-      isValid = this.validateDocuments();
     } else if (this.state.currentStep === 2) {
       isValid = this.validateInternationalCohorts();
     } else if (this.state.currentStep === 3) {
@@ -390,33 +392,6 @@ class NewConsentGroup extends Component {
     });
   };
 
-  validateDocuments = () => {
-    let isValid = true;
-
-    let docs = [];
-    if (this.state.files !== null) {
-      this.state.files.forEach(file => {
-        if (file.required === true && file.file === null) {
-          file.error = true;
-          isValid = false;
-        } else {
-          file.error = false;
-        }
-        docs.push(file);
-      });
-    }
-    else {
-      isValid = false;
-    }
-
-    this.setState(prev => {
-      prev.files = docs;
-      return prev;
-    });
-
-    return isValid;
-  };
-
   validateInternationalCohorts() {
     let isValid = true;
     if (this.state.determination.requiredError || this.state.determination.endState === false) {
@@ -485,45 +460,11 @@ class NewConsentGroup extends Component {
 
   initDocuments() {
     let documents = [];
-
-    documents.push({
-      required: true,
-      fileKey: 'Consent Document',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" }, ["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
-      file: null,
-      fileName: null,
-      error: false
+    DOCUMENT_TYPE.forEach(type => {
+      documents.push({value: type, label: type});
     });
-    documents.push({
-      required: true,
-      fileKey: 'Approval Memo',
-      label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document ", span({ className: "italic" }, ["(required for DFCI & MIT IRBs only):"])]),
-      file: null,
-      fileName: null,
-      error: false
-    });
-
-    documents.push({
-      required: false,
-      fileKey: 'Sample Providers Permission',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Sample Provider's Permission to add cohort "]), "to this Broad project ", span({ className: "italic" }, ["(DFCI IRB only. Optional):"])]),
-      file: null,
-      fileName: null,
-      error: false
-    });
-
-    documents.push({
-      required: false,
-      fileKey: 'Data Use Letter',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Data Use Letter "]), "here ", span({ className: "italic" }, ["(optional):"])]),
-      file: null,
-      fileName: null,
-      error: false,
-      link: a({ className: "link", onClick: this.downloadFillablePDF, style: {'position' : 'absolute', 'right' : '0', 'bottom' : '60px'} }, ["Download fillable PDF here"])
-    });
-
     this.setState({
-      files: documents
+      documentOptions: documents
     });
   }
 
@@ -587,8 +528,10 @@ class NewConsentGroup extends Component {
           currentStep: currentStep,
           fileHandler: this.fileHandler,
           projectType: projectType,
-          files: this.state.files,
-          fillablePdfURL: this.props.fillablePdfURL
+          options: this.state.documentOptions,
+          fillablePdfURL: this.props.fillablePdfURL,
+          fileHandler: this.fileHandler,
+          files: this.state.files
         }),
         InternationalCohorts({
           title: "International Cohorts",

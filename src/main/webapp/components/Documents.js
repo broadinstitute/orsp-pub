@@ -103,7 +103,8 @@ export const Documents = hh(class Documents extends Component {
           paginationSize: 10,
           handleDialogConfirm: this.props.handleDialogConfirm,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
-          isAdmin: this.props.user.isAdmin
+          isAdmin: this.props.user.isAdmin,
+          remove: this.props.remove
         })
       ]),
       div({

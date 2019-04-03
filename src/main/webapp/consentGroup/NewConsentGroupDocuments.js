@@ -6,41 +6,30 @@ import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
+
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 };
 
 const headers =
   [
-    { name: '',  value:'remove' },
-    { name: 'Document Type', value: 'fileType' },
-    { name: 'File Name', value: 'fileName' }
+    { name: 'Document Type', value: 'fileKey' },
+    { name: 'File Name', value: 'fileName' },
+    { name: '',  value:'remove' }
   ];
 
 export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extends Component {
 
-  state = {
-    documents: [],
-    showAddDocuments: false,
-    showAddKeyDocuments: false,
-    documentOptions: [],
-    keyDocuments: [{
-      creationDate:"3/26/19 4:56 PM",
-      creator:"Leo Forconesi",
-      docVersion:1,
-      documentType: "key",
-      fileName: "images.jpeg",
-      fileType: "NHSR Application",
-      gorm_logical_delete_LogicalDelete__deleted:false,
-      id:14442,
-      mimeType: "image/jpeg",
-      projectKey:"DEV-NHSR-5314",
-      status:"Pending",
-      username:"lforcone",
-      uuid:"acc08f5a-61ef-498b-a245-7e50b6b8ad45",
-      version:0
-    }]
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      documents: [],
+      showAddDocuments: false,
+      documentOptions: []
+    };
+    this.setFilesToUpload = this.setFilesToUpload.bind(this);
+    this.removeFile = this.removeFile.bind(this);
+  }
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------');
@@ -56,20 +45,26 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     this.loadOptions();
   }
 
-  setFilesToUpload = (docs, ix) => (e) => {
-    docs[ix].file = e.target.files[0];
-    docs[ix].error = false;
-    e.target.value = '';
-    this.props.fileHandler(docs);
+  setFilesToUpload(doc) {
+    this.setState(prev => {
+      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name};
+      let documents = prev.documents;
+      documents.push(document);
+      prev.documents = documents;
+      return prev;
+    }, () => {
+      this.props.fileHandler(this.state.documents);
+      this.closeModal();
+    });
   };
 
-  removeFile = (docs, index) => {
-    docs[index].file = null;
-    this.props.fileHandler(docs);
+  removeFile(docs){
+    let documents = this.state.documents;
+    console.log(docs);
   }
 
   closeModal = () => {
-    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
+    this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
 
   addDocuments = () => {
@@ -95,10 +90,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
     let documents = this.props.files;
     let errors = false;
-    documents.forEach(doc => {
-      errors = errors || doc.error;
-    });
-
     return (
 
       WizardStep({
@@ -110,14 +101,15 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
         AddDocumentDialog({
           closeModal: this.closeModal,
           show: this.state.showAddDocuments,
-          options: this.state.documentOptions,
+          options: this.props.options,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           projectKey: this.props.projectKey,
           user: this.props.user,
           handleLoadDocuments: this.props.handleLoadDocuments,
           serverURL: this.props.serverURL,
           emailUrl: this.props.emailUrl,
-          userName: this.props.userName
+          userName: this.props.userName,
+          documentHandler: this.setFilesToUpload
         }),
         Panel({title: "Documents"}, [
           button({
@@ -127,34 +119,15 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
           }, ["Add Document"]),
           Table({
             headers: headers,
-            data: this.state.keyDocuments,
+            data: documents,
             sizePerPage: 10,
             paginationSize: 10,
             handleDialogConfirm: this.props.handleDialogConfirm,
-            downloadDocumentUrl: this.props.downloadDocumentUrl
+            downloadDocumentUrl: this.props.downloadDocumentUrl,
+            remove: this.removeFile
           })
         ])
-          //
-          // div({ className: "positionRelative" }, [
-          //   documents.map((document, index) => {
-          //     return h(Fragment, { key: index }, [
-          //       InputFieldFile({
-          //         label: document.label,
-          //         callback: this.setFilesToUpload(documents, index),
-          //         fileName: (document.file != null ? document.file.name : ''),
-          //         required: document.required,
-          //         error: document.error,
-          //         errorMessage: "Required field",
-          //         removeHandler: () => this.removeFile(documents, index)
-          //       }),
-          //       document.link != null ? document.link : null
-          //     ])
-          //   })
-          // ])
-          //
-
-
-        ])
+      ])
     )
   }
 });

@@ -52,6 +52,13 @@ export const Table = hh(class Table extends Component {
     }, [row.fileName])
   };
 
+  formatRemoveBtn = (cell, row) => {
+    return button({
+      className: "delete",
+      onClick : this.props.remove(row)
+    }, ["Delete"])
+  }
+
   unlinkProject = (row) => {
     return button({
       className: "btn btn-xs",
@@ -109,12 +116,16 @@ export const Table = hh(class Table extends Component {
                                         dataField={header.value}
                                         dataFormat={this.redirectToProject}
                                         dataSort={ true }>{header.name}</TableHeaderColumn>
-            } else {
+            } else if (header.value === 'remove') {
+              return <TableHeaderColumn dataField={header.value}
+                                        dataFormat={this.formatRemoveBtn}></TableHeaderColumn>
+            }            
+            else {
               return <TableHeaderColumn isKey={isKey}
                                         key={header.name}
                                         dataField={header.value}
                                         dataSort={ true }>{header.name}</TableHeaderColumn>
-            }
+            } 
           })
         }
       </BootstrapTable>

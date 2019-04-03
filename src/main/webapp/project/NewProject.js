@@ -104,7 +104,6 @@ class NewProject extends Component {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    // if (this.validateDocuments()) {
       if (this.validateForm()) {
         this.changeStateSubmitButton();
         Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {

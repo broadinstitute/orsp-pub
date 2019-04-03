@@ -15,7 +15,8 @@ const addDocumentBtn = {
 const headers =
   [
     { name: 'Document Type', value: 'fileKey' },
-    { name: 'File Name', value: 'fileName' }
+    { name: 'File Name', value: 'fileName' },
+    { name: '',  value:'remove' }
   ];
 
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
@@ -69,7 +70,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
 
-
+  
   render() {
 
     if (this.state.hasError) {
@@ -97,8 +98,6 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         errorMessage: errorText,
         error: errors || this.props.generalError
       }, [
-
-
         AddDocumentDialog({
           closeModal: this.closeModal,
           show: this.state.showAddDocuments,
@@ -124,7 +123,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             sizePerPage: 10,
             paginationSize: 10,
             handleDialogConfirm: this.props.handleDialogConfirm,
-            downloadDocumentUrl: this.props.downloadDocumentUrl
+            downloadDocumentUrl: this.props.downloadDocumentUrl,
+            remove: this.removeFile
           })
         ])
 
