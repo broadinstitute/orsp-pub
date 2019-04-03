@@ -1,14 +1,16 @@
 import { Component } from 'react';
-import { a, hh, small, button, p} from 'react-hyperscript-helpers';
+import { a, hh, small, button, span } from 'react-hyperscript-helpers';
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
+import { Btn } from './Btn';
 import './Table.css';
 
 export const Table = hh(class Table extends Component {
 
   constructor(props) {
     super(props);
+    this.formatUrlDocument = this.formatUrlDocument.bind(this);
   }
 
   formatStatusColumn = (cell, row) => {
@@ -46,27 +48,29 @@ export const Table = hh(class Table extends Component {
   };
 
   formatUrlDocument = (cell, row) => {
-    if(false) {
+    if (this.props.reviewFlow) {
       return a({
         href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
         target: '_blank'
       }, [row.fileName])
     } else {
-      return p({}, [row.fileName])
-    }    
+      return span({}, [row.fileName])
+    }
   };
 
   formatRemoveBtn = (cell, row) => {
-    return button({
-      className: "delete",
-      onClick : this.props.remove(row)
-    }, ["Delete"])
+    return Btn({
+      action: {
+        labelClass: "glyphicon glyphicon-remove",
+        handler: this.props.remove(row)
+      },
+    })
   }
 
   unlinkProject = (row) => {
     return button({
       className: "btn btn-xs",
-      onClick : this.props.unlinkProject(row),
+      onClick: this.props.unlinkProject(row),
       disabled: !this.props.isAdmin
     }, ["Unlink"])
   };
@@ -76,7 +80,7 @@ export const Table = hh(class Table extends Component {
     return a({
       href: url,
       target: '_blank'
-    }, [row.projectKey +  ": " + row.summary])
+    }, [row.projectKey + ": " + row.summary])
   };
 
 
@@ -85,53 +89,55 @@ export const Table = hh(class Table extends Component {
 
     return (
       <BootstrapTable data={this.props.data}
-                      striped
-                      hover
-                      className='tableContainer'
-                      pagination={true}
-                      search={true}
-                      options={{
-                        paginationSize: this.props.paginationSize,
-                        paginationPosition: 'bottom',
-                        sizePerPage: this.props.sizePerPage
-                      }}>
+        striped
+        hover
+        className='tableContainer'
+        pagination={this.props.reviewFlow}
+        search={this.props.reviewFlow}
+        options={{
+          paginationSize: this.props.paginationSize,
+          paginationPosition: 'bottom',
+          sizePerPage: this.props.sizePerPage
+        }}>
         {
           this.props.headers.map((header, index) => {
             isKey = (index === 0);
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
-                                        dataField={header.value}
-                                        dataFormat={this.formatStatusColumn}
-                                        dataSort={true}>{header.name}</TableHeaderColumn>
+                dataField={header.value}
+                dataFormat={this.formatStatusColumn}
+                dataSort={true}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
-                                        dataField={header.value}
-                                        dataFormat={this.formatUrlDocument}
-                                        dataSort={true}>{header.name}</TableHeaderColumn>
+                dataField={header.value}
+                dataFormat={this.formatUrlDocument}
+                dataSort={true}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'projectKey') {
               return <TableHeaderColumn isKey={isKey}
-                                        key={header.name}
-                                        dataField={header.value}
-                                        dataFormat={this.unlinkProject}
-                                        dataSort={ true }>{header.name}</TableHeaderColumn>
-            }  else if (header.value === 'summary') {
+                key={header.name}
+                dataField={header.value}
+                dataFormat={this.unlinkProject}
+                dataSort={true}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'summary') {
               return <TableHeaderColumn isKey={isKey}
-                                        key={header.name}
-                                        dataField={header.value}
-                                        dataFormat={this.redirectToProject}
-                                        dataSort={ true }>{header.name}</TableHeaderColumn>
+                key={header.name}
+                dataField={header.value}
+                dataFormat={this.redirectToProject}
+                dataSort={true}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
               return <TableHeaderColumn isKey={isKey}
                                         dataField={header.value}
                                         key={header.value}
-                                        dataFormat={this.formatRemoveBtn}></TableHeaderColumn>
+                                        dataFormat={this.formatRemoveBtn}
+                                        width={'45px'}></TableHeaderColumn>
             }            
+
             else {
               return <TableHeaderColumn isKey={isKey}
-                                        key={header.name}
-                                        dataField={header.value}
-                                        dataSort={ true }>{header.name}</TableHeaderColumn>
-            } 
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}>{header.name}</TableHeaderColumn>
+            }
           })
         }
       </BootstrapTable>

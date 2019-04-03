@@ -104,7 +104,7 @@ export const Documents = hh(class Documents extends Component {
           handleDialogConfirm: this.props.handleDialogConfirm,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
           isAdmin: this.props.user.isAdmin,
-          remove: this.props.remove
+          reviewFlow: true
         })
       ]),
       div({
