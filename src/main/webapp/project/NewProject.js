@@ -3,14 +3,16 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-import { NE, NHSR, IRB } from './NewProjectDetermination';
+// import { NE, NHSR, IRB } from './NewProjectDetermination';
+import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-import { span } from 'react-hyperscript-helpers';
+import { span,button } from 'react-hyperscript-helpers';
 import { spinnerService } from '../util/spinner-service';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { DataSharing } from "../components/DataSharing";
 import { Security } from '../components/Security';
+import "regenerator-runtime/runtime";
 
 class NewProject extends Component {
 
@@ -34,7 +36,7 @@ class NewProject extends Component {
       formSubmitted: false,
       submitError: false,
       determination: {
-        projectType: 400,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -42,7 +44,7 @@ class NewProject extends Component {
         endState: false
       },
       intCohortsDetermination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -215,13 +217,13 @@ class NewProject extends Component {
 
   getProjectType() {
     let type = '';
-    if (this.state.determination.projectType === NE) {
+    if (this.state.determination.projectType === DETERMINATION.NE) {
       type = 'NE';
     }
-    else if (this.state.determination.projectType === NHSR) {
+    else if (this.state.determination.projectType === DETERMINATION.NHSR) {
       type = 'NHSR';
     }
-    else if (this.state.determination.projectType === IRB) {
+    else if (this.state.determination.projectType === DETERMINATION.IRB) {
       type = 'IRB';
     }
     return type;
@@ -426,18 +428,18 @@ class NewProject extends Component {
       let documents = [];
 
       switch (projectType) {
-        case IRB:
+        case DETERMINATION.IRB:
           documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
-        case NE:
+        case DETERMINATION.NE:
           documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
           break;
 
-        case NHSR:
+        case DETERMINATION.NHSR:
           documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
           break;
 
@@ -448,14 +450,6 @@ class NewProject extends Component {
         files: documents,
         projectType: projectType,
         formerProjectType: projectType,
-        intCohortsDetermination: {
-          projectType: 900,
-          questions: [],
-          requiredError: false,
-          currentQuestionIndex: 0,
-          nextQuestionIndex: 1,
-          endState: false
-        }
       });
     }
   }
@@ -506,10 +500,13 @@ class NewProject extends Component {
     })
   };
 
-  uploadFiles = (projectKey) => {
+  uploadFiles = async (projectKey) => {
+    let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-        window.location.href = this.getRedirectUrl(projectKey);
+        // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
+        // transitioning from old gsps style is solved.
+        window.location.href =  [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
       }).catch(error => {
         spinnerService.hideAll();
         this.toggleTrueSubmitError();
@@ -531,17 +528,6 @@ class NewProject extends Component {
       prev.generalError = false;
       return prev;
     });
-  }
-
-  getRedirectUrl(projectKey) {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   }
 
   render() {

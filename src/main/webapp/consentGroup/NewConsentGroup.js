@@ -4,7 +4,7 @@ import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { span, a } from 'react-hyperscript-helpers';
-import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { DataSharing } from '../components/DataSharing';
 import { Security } from '../components/Security';
@@ -28,7 +28,7 @@ class NewConsentGroup extends Component {
       formSubmitted: false,
       submitError: false,
       determination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -131,10 +131,13 @@ class NewConsentGroup extends Component {
     });
   };
 
-  uploadFiles = (projectKey) => {
+  uploadFiles = async (projectKey) => {
+    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
     Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
       .then(resp => {
-        window.location.href = this.getRedirectUrl();
+        // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
+        // transitioning from old gsps style is solved.
+        window.location.href =  [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
         spinnerService.hideAll();
         this.setState(prev => {
           prev.formSubmitted = true;
@@ -226,10 +229,6 @@ class NewConsentGroup extends Component {
     }
     return renderSubmit;
   };
-
-  getRedirectUrl() {
-    return [this.props.serverURL, this.props.projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
-  }
 
   isValid = (field) => {
     let isValid = true;
@@ -595,7 +594,7 @@ class NewConsentGroup extends Component {
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
-          showErrorIntCohorts: this.state.showErrorIntCohorts,
+          showErrorIntCohorts: this.state.showInternationalCohortsError,
           origin: 'consentGroup'
         }),
         Security({

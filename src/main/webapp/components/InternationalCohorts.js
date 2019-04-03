@@ -2,12 +2,7 @@ import { Component } from 'react';
 import { hh, h1, span, a } from 'react-hyperscript-helpers';
 import { WizardStep } from './WizardStep';
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
-
-const EXIT = 500;
-const DPA = 600;
-const RA = 700;
-const CTC = 800;
-const OSAP = 900;
+import { DETERMINATION } from "../util/TypeDescription";
 
 export const InternationalCohorts = hh(class InternationalCohorts extends Component {
 
@@ -37,7 +32,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
         a({ href:"https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm", target: "_blank", className: "normal" }, "(List of member states of European Economic Area)")
     ]),
       yesOutput: 2,
-      noOutput: EXIT,
+      noOutput: DETERMINATION.EXIT,
       answer: null,
       progress: 0,
       key: 'individualDataSourced',
@@ -47,7 +42,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     questions.push({
       question: span({}, ["Is a link maintained ", span({ className: "normal" }, ["(by anyone) "]), "between samples/data being sent to the Broad and the identities of living EEA subjects?"]),
       yesOutput: 3,
-      noOutput: EXIT,
+      noOutput: DETERMINATION.EXIT,
       answer: null,
       progress: 17,
       key: 'isLinkMaintained',
@@ -56,7 +51,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
 
     questions.push({
       question: 'Is the Broad work being performed as fee-for-service?',
-      yesOutput: DPA,
+      yesOutput: DETERMINATION.DPA,
       noOutput: 4,
       answer: null,
       progress: 34,
@@ -67,7 +62,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     questions.push({
       question: 'Are samples/data coming directly to the Broad from the EEA?',
       yesOutput: 5,
-      noOutput: RA,
+      noOutput: DETERMINATION.RA,
       answer: null,
       progress: 50,
       key: 'areSamplesComingFromEEAA',
@@ -76,7 +71,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
 
     questions.push({
       question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
-      yesOutput: OSAP,
+      yesOutput: DETERMINATION.OSAP,
       noOutput: 6,
       answer: null,
       progress: 67,
@@ -86,8 +81,8 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
 
     questions.push({
       question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-      yesOutput: EXIT,
-      noOutput: CTC,
+      yesOutput: DETERMINATION.EXIT,
+      noOutput: DETERMINATION.CTC,
       answer: null,
       progress: 83,
       key: 'isConsentUnambiguous',
