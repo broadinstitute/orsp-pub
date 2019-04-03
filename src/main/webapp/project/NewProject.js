@@ -5,13 +5,15 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-import { span } from 'react-hyperscript-helpers';
+import { span, button } from 'react-hyperscript-helpers';
 import { spinnerService } from '../util/spinner-service';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { DataSharing } from "../components/DataSharing";
 import { Security } from '../components/Security';
+import "regenerator-runtime/runtime";
 
 class NewProject extends Component {
 
@@ -35,7 +37,7 @@ class NewProject extends Component {
       formSubmitted: false,
       submitError: false,
       determination: {
-        projectType: 400,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -43,7 +45,7 @@ class NewProject extends Component {
         endState: false
       },
       intCohortsDetermination: {
-        projectType: 900,
+        projectType: null,
         questions: [],
         requiredError: false,
         currentQuestionIndex: 0,
@@ -92,36 +94,36 @@ class NewProject extends Component {
     this.loadOptions();
   }
 
-  loadOptions () {
+  loadOptions() {
     let documentOptions = [];
     DOCUMENT_TYPE.forEach(type => {
-      documentOptions.push({value: type, label: type});
+      documentOptions.push({ value: type, label: type });
     });
-    this.setState({documentOptions: documentOptions});
+    this.setState({ documentOptions: documentOptions });
   };
 
   submitNewProject = () => {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-      if (this.validateForm()) {
+    if (this.validateForm()) {
+      this.changeStateSubmitButton();
+      Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
+        this.uploadFiles(resp.data.message.projectKey);
+      }).catch(error => {
         this.changeStateSubmitButton();
-        Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-          this.uploadFiles(resp.data.message.projectKey);
-        }).catch(error => {
-          this.changeStateSubmitButton();
-          this.toggleTrueSubmitError();
-          spinnerService.hideAll();
-          console.error(error);
-        });
-      } else {
-        this.setState(prev => {
-          prev.generalError = true;
-          return prev;
-        }, () => {
-          spinnerService.hideAll();
-        });
-      }
+        this.toggleTrueSubmitError();
+        spinnerService.hideAll();
+        console.error(error);
+      });
+    } else {
+      this.setState(prev => {
+        prev.generalError = true;
+        return prev;
+      }, () => {
+        spinnerService.hideAll();
+      });
+    }
   };
 
   toggleTrueSubmitError = () => {
@@ -156,14 +158,14 @@ class NewProject extends Component {
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
     let extraProperties = [];
 
-    extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
-    extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
-    extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
-    extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
-    extraProperties.push({name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null});
-    extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
-    extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
-    extraProperties.push({name: 'projectAvailability', value: 'available'});
+    extraProperties.push({ name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null });
+    extraProperties.push({ name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null });
+    extraProperties.push({ name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null });
+    extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null });
+    extraProperties.push({ name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null });
+    extraProperties.push({ name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null });
+    extraProperties.push({ name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null });
+    extraProperties.push({ name: 'projectAvailability', value: 'available' });
 
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
@@ -179,24 +181,24 @@ class NewProject extends Component {
 
     let collaborators = this.state.generalDataFormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
-        collaborators.map((collaborator, idx) => {
-          extraProperties.push({name: 'collaborator', value: collaborator.key});
-        });
+      collaborators.map((collaborator, idx) => {
+        extraProperties.push({ name: 'collaborator', value: collaborator.key });
+      });
     }
     let questions = this.state.determination.questions;
     if (questions.length > 1) {
-        questions.map(q => {
-          if (q.answer !== null) {
-            extraProperties.push({name: q.key, value: q.answer});
-          }
-        });
+      questions.map(q => {
+        if (q.answer !== null) {
+          extraProperties.push({ name: q.key, value: q.answer });
+        }
+      });
     }
 
     let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
     if (internationalCohortsQuestions.length > 1) {
       internationalCohortsQuestions.map((q, idx) => {
         if (q.answer !== null) {
-          extraProperties.push({name: q.key, value: q.answer});
+          extraProperties.push({ name: q.key, value: q.answer });
         }
       });
     }
@@ -221,13 +223,13 @@ class NewProject extends Component {
 
   getProjectType() {
     let type = '';
-    if (this.state.determination.projectType === NE) {
+    if (this.state.determination.projectType === DETERMINATION.NE) {
       type = 'NE';
     }
-    else if (this.state.determination.projectType === NHSR) {
+    else if (this.state.determination.projectType === DETERMINATION.NHSR) {
       type = 'NHSR';
     }
-    else if (this.state.determination.projectType === IRB) {
+    else if (this.state.determination.projectType === DETERMINATION.IRB) {
       type = 'IRB';
     }
     return type;
@@ -374,17 +376,17 @@ class NewProject extends Component {
   }
 
   handleInfoSecurityValidity(isValid) {
-    this.setState({isInfoSecurityValid: isValid})
+    this.setState({ isInfoSecurityValid: isValid })
   }
 
   determinationHandler = (determination) => {
     this.setState(prev => {
-        prev.determination = determination;
-        if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
-          prev.showErrorDeterminationQuestions = false;
-        }
-        return prev;
-      });
+      prev.determination = determination;
+      if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
+        prev.showErrorDeterminationQuestions = false;
+      }
+      return prev;
+    });
   };
 
   intCohortsDeterminationHandler = (determination) => {
@@ -443,19 +445,22 @@ class NewProject extends Component {
     })
   };
 
-  uploadFiles = (projectKey) => {
+  uploadFiles = async (projectKey) => {
     if (this.state.files !== null && this.state.files.length > 0) {
+      let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
       Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
         .then(resp => {
-          window.location.href = this.getRedirectUrl(projectKey);
+          // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
+          // transitioning from old gsps style is solved.
+          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
         }).catch(error => {
-        spinnerService.hideAll();
-        this.toggleTrueSubmitError();
-        this.changeStateSubmitButton();
-        console.error(error);
-      });
+          spinnerService.hideAll();
+          this.toggleTrueSubmitError();
+          this.changeStateSubmitButton();
+          console.error(error);
+        });
     }
-  };
+  }
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
@@ -472,17 +477,6 @@ class NewProject extends Component {
     });
   }
 
-  getRedirectUrl(projectKey) {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
-  }
-
   render() {
     const { currentStep, determination } = this.state;
     let projectType = determination.projectType;
@@ -497,67 +491,67 @@ class NewProject extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage,
       }, [
-        NewProjectGeneralData({
-          title: "General Data",
-          currentStep: currentStep,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateGeneralDataFormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage
-        }),
-        NewProjectDetermination({
-          title: "Determination Questions",
-          currentStep: currentStep,
-          determination: this.state.determination,
-          handler: this.determinationHandler,
-          errors: this.state.showErrorDeterminationQuestions
-        }),
-        InternationalCohorts({
-          title: "International Cohorts",
-          currentStep: currentStep,
-          handler: this.intCohortsDeterminationHandler,
-          determination: this.state.intCohortsDetermination,
-          showErrorIntCohorts: this.state.showErrorIntCohorts,
-          origin: 'newProject'
-        }),
-        Security({
-          title: "Security",
-          step: 3,
-          currentStep: currentStep,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateInfoSecurity,
-          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-          removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity
-        }),
-        DataSharing({
-          title: "Data Sharing",
-          currentStep: currentStep,
-          step: 4,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateDataSharingFormData,
-          removeErrorMessage: this.removeErrorMessage,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          showErrorDataSharing: this.state.showErrorDataSharing,
-          handleDataSharingValidity: this.handleDataSharingValidity
-        }),
-        NewProjectDocuments({
-          title: "Documents",
-          currentStep: currentStep,
-          step: 5,
-          fileHandler: this.fileHandler,
-          projectType: projectType,
-          files: this.state.files,
-          errors: this.state.showErrorDocuments,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          options: this.state.documentOptions
-        })
-      ])
+          NewProjectGeneralData({
+            title: "General Data",
+            currentStep: currentStep,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateGeneralDataFormData,
+            errors: this.state.errors,
+            removeErrorMessage: this.removeErrorMessage
+          }),
+          NewProjectDetermination({
+            title: "Determination Questions",
+            currentStep: currentStep,
+            determination: this.state.determination,
+            handler: this.determinationHandler,
+            errors: this.state.showErrorDeterminationQuestions
+          }),
+          InternationalCohorts({
+            title: "International Cohorts",
+            currentStep: currentStep,
+            handler: this.intCohortsDeterminationHandler,
+            determination: this.state.intCohortsDetermination,
+            showErrorIntCohorts: this.state.showErrorIntCohorts,
+            origin: 'newProject'
+          }),
+          Security({
+            title: "Security",
+            step: 3,
+            currentStep: currentStep,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateInfoSecurity,
+            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+            removeErrorMessage: this.removeErrorMessage,
+            handleSecurityValidity: this.handleInfoSecurityValidity
+          }),
+          DataSharing({
+            title: "Data Sharing",
+            currentStep: currentStep,
+            step: 4,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateDataSharingFormData,
+            removeErrorMessage: this.removeErrorMessage,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            showErrorDataSharing: this.state.showErrorDataSharing,
+            handleDataSharingValidity: this.handleDataSharingValidity
+          }),
+          NewProjectDocuments({
+            title: "Documents",
+            currentStep: currentStep,
+            step: 5,
+            fileHandler: this.fileHandler,
+            projectType: projectType,
+            files: this.state.files,
+            errors: this.state.showErrorDocuments,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            options: this.state.documentOptions
+          })
+        ])
     );
   }
 }
