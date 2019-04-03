@@ -153,6 +153,7 @@ class ProjectReview extends Component {
       intCohortsAnswers: [],
       intCohortsQuestions: [],
       resetIntCohorts: false,
+      intCohortsModified: false,
       questions: [],
     };
     this.rejectProject = this.rejectProject.bind(this);
@@ -288,14 +289,17 @@ class ProjectReview extends Component {
   };
 
   validateQuestionnaire = () => {
-    let isValid = false;
+    let isValid = true;
     const determination = this.state.determination;
     if (this.state.current.approvalStatus === 'Legacy') {
-      // if current project is Legacy, international Cohorts is not required.
-      // but if the questionnaire workflow has started will be required to complete it.
+      // if current project is Legacy, international Cohorts is not required, but if the questionnaire workflow has started will be required to complete it.
       isValid = determination.questions.length === 0 || determination.endState === true;
-    } else {
+    } else if (this.state.intCohortsAnswers.every(element => element.answer === null)) {
+      // if current project is not Legacy but doesn't have international Cohorts completed
       isValid = determination.questions.length !== 0 && determination.endState === true;
+    } else if (this.state.intCohortsModified) {
+      // if current project started int cohorts questionnaire but is not completed
+      isValid = determination.endState === true;
     }
     return isValid;
   };
@@ -338,6 +342,7 @@ class ProjectReview extends Component {
         prev.formData.projectExtraProps[key] = newValues[key];
       });
       prev.resetIntCohorts = false;
+      prev.intCohortsModified = true;
       prev.intCohortsAnswers = [...answers];
       prev.determination = determination;
       prev.internationalCohortsError = false;
@@ -587,6 +592,7 @@ class ProjectReview extends Component {
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
     this.setState(prev => {
+      prev.intCohortsModified = false;
       prev.resetIntCohorts = true;
       prev.readOnly = false;
       return prev
@@ -596,6 +602,7 @@ class ProjectReview extends Component {
   cancelEdit = (e) => () => {
     this.init();
     this.setState(prev => {
+      prev.intCohortsModified = false;
       prev.resetIntCohorts = false;
       prev.formData = this.state.futureCopy;
       prev.current = this.state.futureCopy;
@@ -1268,6 +1275,7 @@ class ProjectReview extends Component {
             currentValue: this.state.current.projectExtraProps.irbReferral,
             onChange: this.handleSelect("irbReferral"),
             readOnly: this.state.readOnly,
+            placeholder: isEmpty(this.state.formData.projectExtraProps.irbReferral) && this.state.readOnly ? "--" : "Select...",
             edit: true
           })
         ]),
