@@ -6,6 +6,7 @@ import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 import { IRB, NHSR, NE } from '../util/DocumentType';
 import { AddDocumentDialog } from '../components/AddDocumentDialog'
+import { domainToASCII } from 'url';
 
 const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
@@ -44,7 +45,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
   setFilesToUpload(doc) {
     this.setState(prev => {
-      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name};
+      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random()};
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
@@ -55,10 +56,13 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     });
   };
 
-
-  removeFile(docs){
-    let documents = this.state.documents;
-    console.log(docs);
+  removeFile = (row) => (e) => {
+    let docs = this.state.documents;
+    var documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
+    this.setState(prev => {
+      prev.documents = documentsToUpdate;  
+      return prev;
+    }, () =>  this.props.fileHandler(this.state.documents));
   }
   
   addDocuments = () => {

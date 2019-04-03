@@ -121,7 +121,8 @@ export const Table = hh(class Table extends Component {
                                         dataFormat={this.redirectToProject}
                                         dataSort={ true }>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
-              return <TableHeaderColumn dataField={header.value}
+              return <TableHeaderColumn isKey={isKey}
+                                        dataField={header.value}
                                         key={header.value}
                                         dataFormat={this.formatRemoveBtn}></TableHeaderColumn>
             }            

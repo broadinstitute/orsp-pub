@@ -251,11 +251,10 @@ class NewConsentGroup extends Component {
 
   validateForm() {
     let isGeneralDataValid = this.validateGeneralData();
-    let isDocumentsValid = this.validateDocuments();
     let isInternationalCohortsValid = this.validateInternationalCohorts();
     let isInfoSecurityValid = this.validateInfoSecurity();
     let isDataSharingValid = this.validateDataSharing();
-    return isGeneralDataValid && isDocumentsValid && isInternationalCohortsValid && isInfoSecurityValid && isDataSharingValid;
+    return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isDataSharingValid;
   }
 
   consentGroupNameExists() {

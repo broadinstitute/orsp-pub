@@ -47,8 +47,8 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
   setFilesToUpload(doc) {
     this.setState(prev => {
-      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name};
       let documents = prev.documents;
+      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random()};
       documents.push(document);
       prev.documents = documents;
       return prev;
@@ -58,9 +58,13 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     });
   };
 
-  removeFile(docs){
-    let documents = this.state.documents;
-    console.log(docs);
+  removeFile = (row) => (e) => {
+    let docs = this.state.documents;
+    var documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
+    this.setState(prev => {
+      prev.documents = documentsToUpdate;  
+      return prev;
+    }, () =>  this.props.fileHandler(this.state.documents));
   }
 
   closeModal = () => {

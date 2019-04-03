@@ -377,33 +377,6 @@ class NewProject extends Component {
     this.setState({isInfoSecurityValid: isValid})
   }
 
-  validateDocuments() {
-    let isValid = true;
-
-    let docs = [];
-    if (this.state.files !== null && this.state.files.length > 0) {
-      this.state.files.forEach(file => {
-        if (file.required === true && file.file === null) {
-          file.error = true;
-          isValid = false;
-        } else {
-          file.error = false;
-        }
-        docs.push(file);
-      });
-    }
-    else {
-      isValid = false;
-    }
-
-    this.setState(prev => {
-      prev.files = docs;
-      prev.showErrorDocuments = isValid;
-      return prev;
-    });
-    return isValid;
-  }
-
   determinationHandler = (determination) => {
     this.setState(prev => {
         prev.files = [];
