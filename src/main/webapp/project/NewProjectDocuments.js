@@ -1,22 +1,26 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, span, button } from 'react-hyperscript-helpers';
+import { hh, h, h1, span, button, div } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 import { IRB, NHSR, NE } from '../util/DocumentType';
 import { AddDocumentDialog } from '../components/AddDocumentDialog'
 
-const addDocumentBtn = {
-  position: 'absolute', right: '15px', zIndex: '1'
+
+const addDocumentContainer = {
+  display: 'block', height: '40px', marginTop: '15px'
 };
 
+const addDocumentBtn = {
+  position: 'relative', float: 'right'
+};
 
 const headers =
   [
     { name: 'Document Type', value: 'fileKey' },
     { name: 'File Name', value: 'fileName' },
-    { name: '',  value:'remove' }
+    { name: '', value: 'remove' }
   ];
 
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
@@ -44,7 +48,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
   setFilesToUpload(doc) {
     this.setState(prev => {
-      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name};
+      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name };
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
@@ -55,12 +59,11 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     });
   };
 
-
-  removeFile(docs){
+  removeFile(docs) {
     let documents = this.state.documents;
     console.log(docs);
   }
-  
+
   addDocuments = () => {
     this.setState({
       showAddDocuments: !this.state.showAddDocuments
@@ -71,7 +74,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
 
-  
+
   render() {
 
     if (this.state.hasError) {
@@ -99,37 +102,38 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         errorMessage: errorText,
         error: errors || this.props.generalError
       }, [
-        AddDocumentDialog({
-          closeModal: this.closeModal,
-          show: this.state.showAddDocuments,
-          options: this.props.options,
-          attachDocumentsUrl: this.props.attachDocumentsUrl,
-          projectKey: this.props.projectKey,
-          user: this.props.user,
-          handleLoadDocuments: this.props.handleLoadDocuments,
-          serverURL: this.props.serverURL,
-          emailUrl: this.props.emailUrl,
-          userName: this.props.userName,
-          documentHandler: this.setFilesToUpload
-        }),
-        Panel({title: "Documents"}, [
-          button({
-            className: "btn buttonSecondary",
-            style: addDocumentBtn,
-            onClick: this.addDocuments
-          }, ["Add Document"]),
-          Table({
-            headers: headers,
-            data: documents,
-            sizePerPage: 10,
-            paginationSize: 10,
-            handleDialogConfirm: this.props.handleDialogConfirm,
-            downloadDocumentUrl: this.props.downloadDocumentUrl,
-            remove: this.removeFile
-          })
+          div({ className: "questionnaireContainer" }, [
+            AddDocumentDialog({
+              closeModal: this.closeModal,
+              show: this.state.showAddDocuments,
+              options: this.props.options,
+              attachDocumentsUrl: this.props.attachDocumentsUrl,
+              projectKey: this.props.projectKey,
+              user: this.props.user,
+              handleLoadDocuments: this.props.handleLoadDocuments,
+              serverURL: this.props.serverURL,
+              emailUrl: this.props.emailUrl,
+              userName: this.props.userName,
+              documentHandler: this.setFilesToUpload
+            }),
+            div({ style: addDocumentContainer }, [
+              button({
+                className: "btn buttonSecondary",
+                style: addDocumentBtn,
+                onClick: this.addDocuments
+              }, ["Add Document"])
+            ]),
+            Table({
+              headers: headers,
+              data: documents,
+              sizePerPage: 10,
+              paginationSize: 10,
+              handleDialogConfirm: this.props.handleDialogConfirm,
+              downloadDocumentUrl: this.props.downloadDocumentUrl,
+              remove: this.removeFile
+            })
+          ])
         ])
-
-      ])
     )
   }
 });
