@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { a, hh, small, button } from 'react-hyperscript-helpers';
+import { a, hh, small, button, p} from 'react-hyperscript-helpers';
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
@@ -46,10 +46,14 @@ export const Table = hh(class Table extends Component {
   };
 
   formatUrlDocument = (cell, row) => {
-    return a({
-      href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
-      target: '_blank'
-    }, [row.fileName])
+    if(false) {
+      return a({
+        href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
+        target: '_blank'
+      }, [row.fileName])
+    } else {
+      return p({}, [row.fileName])
+    }    
   };
 
   formatRemoveBtn = (cell, row) => {
@@ -118,6 +122,7 @@ export const Table = hh(class Table extends Component {
                                         dataSort={ true }>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
               return <TableHeaderColumn dataField={header.value}
+                                        key={header.value}
                                         dataFormat={this.formatRemoveBtn}></TableHeaderColumn>
             }            
             else {

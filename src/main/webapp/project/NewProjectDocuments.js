@@ -28,6 +28,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       showAddDocuments: false
     };
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
+    this.removeFile = this.removeFile.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -54,10 +55,10 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     });
   };
 
-  removeFile = (docs, index) => {
-    docs[index].file = null;
-    this.props.fileHandler(docs);
-    this.closeModal();
+
+  removeFile(docs){
+    let documents = this.state.documents;
+    console.log(docs);
   }
   
   addDocuments = () => {
