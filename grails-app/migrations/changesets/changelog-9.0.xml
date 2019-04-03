@@ -3,21 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <changeSet id="changelog-9.0-1" author="tadeork">
-        <createTable tableName="temp_document">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="creation_date" type="DATETIME">
-            </column>
-        </createTable>
-        <sql>insert into temp_document(id, creation_date) select id, STR_TO_DATE(creation_date, "%m/%d/%y %h:%i %r")
-            from storage_document;</sql>
-        <dropColumn tableName="creation_date" tableName="storage_document" />
         <addColumn tableName="storage_document">
-            <column name="creation_date" type="datetime"/>
+            <column name="created_date" type="datetime" defaultValue="null" />
         </addColumn>
-        <sql>insert into (id, creation_date) select id, STR_TO_DATE(creation_date, "%m/%d/%y %h:%i %r")
-            from storage_document;</sql>
-        <dropTable tableName="temp_document" />
+        <sql>update storage_document set created_date = STR_TO_DATE(creation_date, "%m/%d/%y %h:%i %p");</sql>
+        <dropNotNullConstraint tableName="storage_document" columnName="creation_date" columnDataType="varchar(255)" />
+        <addNotNullConstraint tableName="storage_document" columnName="created_date" columnDataType="datetime" />
+        <dropColumn tableName="storage_document" columnName="creation_date" />
+        <renameColumn tableName="storage_document" oldColumnName="created_date" newColumnName="creation_date" columnDataType="datetime" />
     </changeSet>
 </databaseChangeLog>
