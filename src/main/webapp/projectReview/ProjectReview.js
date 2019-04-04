@@ -173,10 +173,10 @@ class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    if (new URLSearchParams(window.location.search).has('new')) {
-      this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.');
-    }
     this.init();
+    if (new URLSearchParams(window.location.search).has('new')) {
+      this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
+    }
   }
 
   init() {
@@ -220,8 +220,6 @@ class ProjectReview extends Component {
             });
           }
         });
-
-
 
         Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
           data => {
@@ -867,8 +865,8 @@ class ProjectReview extends Component {
     })
   };
 
-  successNotification = (type, message) => {
-    setTimeout(this.clearAlertMessage(type), 5000, null);
+  successNotification = (type, message, time) => {
+    setTimeout(this.clearAlertMessage(type), time, null);
     this.setState(prev => {
       prev[type] = true;
       prev.alertMessage = message;
