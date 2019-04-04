@@ -134,8 +134,8 @@ class NewConsentGroup extends Component {
   };
 
   uploadFiles = async (projectKey) => {
+    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
     if (this.state.files !== null && this.state.files.length > 0) {
-      let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
       Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
@@ -152,6 +152,8 @@ class NewConsentGroup extends Component {
           console.error(error);
           this.toggleSubmitError();
         });
+    } else {
+      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
     }
   }
 
