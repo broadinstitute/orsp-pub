@@ -1,6 +1,5 @@
 import { Component, React, Fragment } from 'react';
 import { hh, div, h, button, h1, ul, li, span, p, small } from 'react-hyperscript-helpers';
-
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -11,6 +10,8 @@ import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 
 import { Search } from '../util/ajax';
+import { InputFieldSelect } from "../components/InputFieldSelect";
+import { PREFERRED_IRB } from "../util/TypeDescription";
 
 const fundingTooltip =
   ul({}, [
@@ -39,6 +40,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         uploadConsentGroup: '',
         notCGSpecify: '',
         subjectProtection: '',
+        irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: [],
         attestation: false
@@ -52,6 +54,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         uploadConsentGroup: '',
         notCGSpecify: '',
         subjectProtection: '',
+        irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: [],
         attestation: false
@@ -65,6 +68,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         attestation: false
       }
     };
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+
   }
 
   handleUpdateFundings = (updated) => {
@@ -103,6 +108,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'projectManager'));
     this.props.removeErrorMessage();
+  };
+
+  handleSelectChange = (field) => () => (selectedOption) => {
+    this.setState(prev => {
+        prev.formData[field] = selectedOption;
+        return prev;
+      }, () => {
+        this.props.updateForm(this.state.formData, field);
+        this.props.removeErrorMessage();
+      }
+    )
   };
 
   componentDidCatch(error, info) {
@@ -316,6 +332,34 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
               required: true,
               error: this.props.errors.subjectProtection,
               errorMessage: "Required field",
+              edit: false
+            }),
+            InputFieldRadio({
+              id: "radioSubjectProtection",
+              name: "subjectProtection",
+              label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
+              moreInfo: "(as opposed to the study team independently managing the submissions)? *",
+              value: this.state.formData.subjectProtection,
+              optionValues: ["true", "false", "notapplicable"],
+              optionLabels: [
+                "Yes",
+                "No",
+                "N/A - No IRB submission required"
+              ],
+              onChange: this.handleRadioChange,
+              required: true,
+              error: this.props.errors.subjectProtection,
+              errorMessage: "Required field",
+              edit: false
+            }),
+            InputFieldSelect({
+              label: "If IRB submission is anticipated, please indicate the IRB-of-record:",
+              id: "irbReferral",
+              name: "irbReferral",
+              options: PREFERRED_IRB,
+              value: this.state.formData.irbReferral,
+              onChange: this.handleSelectChange("irbReferral"),
+              readOnly: false,
               edit: false
             })
           ]),

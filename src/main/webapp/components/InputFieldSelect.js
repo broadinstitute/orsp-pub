@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
@@ -52,7 +52,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         });
       }
     } else {
-      edited = _.get(current, 'value', '') !== _.get(futureValue, 'value', ' ') || current.value === undefined
+      edited = get(current, 'value', '') !== get(futureValue, 'value', '')
     }
     return edited;
   };
@@ -89,7 +89,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
       edited = this.isEdited(currentKeys, keys);
     } else {
       let currentValue = this.props.currentValue;
-      currentValueStr  = _.get(this.props.currentValue, 'label', '');
+      currentValueStr  = get(this.props.currentValue, 'label', '');
       edited = this.props.edit ? this.isEdited(this.props.currentValue, this.props.value) : false;
     }
 

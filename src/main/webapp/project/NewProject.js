@@ -162,6 +162,7 @@ class NewProject extends Component {
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'attestation', value: this.state.generalDataFormData.attestation !== '' ? this.state.generalDataFormData.attestation : null});
+    extraProperties.push({name: 'irbReferral', value: isEmpty(this.state.generalDataFormData.irbReferral.value) ? null : JSON.stringify(this.state.generalDataFormData.irbReferral)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
 
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });

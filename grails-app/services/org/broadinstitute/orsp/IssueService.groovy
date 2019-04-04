@@ -77,7 +77,8 @@ class IssueService {
             IssueExtraProperty.START_DATE,
             IssueExtraProperty.PII,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
-            IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY
+            IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
+            IssueExtraProperty.IRB_REFERRAL
     ]
 
 
@@ -255,6 +256,9 @@ class IssueService {
         }
         if (!input.containsKey(IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY})
+        }
+        if (!input.containsKey(IssueExtraProperty.IRB_REFERRAL)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REFERRAL})
         }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
