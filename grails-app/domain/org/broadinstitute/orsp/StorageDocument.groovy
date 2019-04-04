@@ -2,8 +2,6 @@ package org.broadinstitute.orsp
 
 import gorm.logical.delete.LogicalDelete
 
-import java.text.SimpleDateFormat
-
 class StorageDocument  implements LogicalDelete<StorageDocument> {
 
     String projectKey

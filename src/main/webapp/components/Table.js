@@ -1,8 +1,9 @@
 import { Component } from 'react';
-import { a, hh, small, button } from 'react-hyperscript-helpers';
+import { a, hh, button } from 'react-hyperscript-helpers';
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
+import { format } from 'date-fns';
 import './Table.css';
 
 export const Table = hh(class Table extends Component {
@@ -16,6 +17,13 @@ export const Table = hh(class Table extends Component {
       return this.renderDropdownButton(row.uuid);
     } else {
       return row.status;
+    }
+  };
+
+  parseDate = (date) => {
+    if (date !== null) {
+      const simpleDate = new Date(date);
+      return format(simpleDate, 'M/D/YY h:m A')
     }
   };
 
@@ -108,6 +116,12 @@ export const Table = hh(class Table extends Component {
                                         key={header.name}
                                         dataField={header.value}
                                         dataFormat={this.redirectToProject}
+                                        dataSort={ true }>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'creationDate') {
+              return <TableHeaderColumn isKey={isKey}
+                                        key={header.name}
+                                        dataField={header.value}
+                                        dataFormat={this.parseDate}
                                         dataSort={ true }>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}

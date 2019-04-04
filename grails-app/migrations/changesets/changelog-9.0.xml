@@ -6,7 +6,7 @@
         <addColumn tableName="storage_document">
             <column name="created_date" type="datetime" defaultValue="null" />
         </addColumn>
-        <sql>update storage_document set created_date = STR_TO_DATE(creation_date, "%m/%d/%y %h:%i %p");</sql>
+        <sql>update storage_document SET created_date = STR_TO_DATE(creation_date, "%m/%d/%y %h:%i %p");</sql>
         <dropNotNullConstraint tableName="storage_document" columnName="creation_date" columnDataType="varchar(255)" />
         <addNotNullConstraint tableName="storage_document" columnName="created_date" columnDataType="datetime" />
         <dropColumn tableName="storage_document" columnName="creation_date" />
