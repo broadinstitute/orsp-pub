@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DocumentStatus
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
@@ -26,6 +27,7 @@ class DataUseLetterController extends AuthenticatedController {
         DataUseLetter inputDul = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
             DataUseLetter newDul = dataUseLetterService.generateDul(inputDul)
+            persistenceService.saveEvent(issue.projectKey, params.userName, "DUL copied to clipboard", EventType.COPY_DUL_LINK_TO_CLIPBOARD)
             response.status = 200
             render([dulToken: newDul.getUid()] as JSON)
         } catch(Exception e) {
@@ -40,6 +42,7 @@ class DataUseLetterController extends AuthenticatedController {
         DataUseLetter input = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
             dataUseLetterService.udpateDataUseLetter(input)
+            persistenceService.saveEvent(issue.projectKey, params.userName, "DUL Added", EventType.SUBMIT_DUL)
             response.status = 200
             render(response.status)
         } catch(IllegalArgumentException e) {

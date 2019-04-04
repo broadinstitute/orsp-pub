@@ -5,9 +5,11 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
+import org.broadinstitute.orsp.PersistenceService
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -24,10 +26,10 @@ class IssueReviewController extends AuthenticatedController {
             render([message: "Project key does not exist"] as JSON)
         } else {
             issueReviewService.create(issueReview)
+            persistenceService.saveEvent(issueReview.projectKey, getUser().userName, "Edits Added", EventType.SUBMIT_EDITS)
             response.status = 201
             render([issueReview] as JSON)
         }
-
     }
 
     def update() {
@@ -47,6 +49,7 @@ class IssueReviewController extends AuthenticatedController {
 
     def delete() {
         issueReviewService.delete(params.projectKey)
+        persistenceService.saveEvent(params.projectKey, getUser().userName, "Edits Rejected", EventType.REJECT_EDITS)
         response.status = 200
         response
     }

@@ -5,6 +5,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
@@ -16,8 +17,6 @@ import java.text.SimpleDateFormat
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
-
-    StorageProviderService storageProviderService;
 
     def attachDocument() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
@@ -41,6 +40,7 @@ class FileHelperController extends AuthenticatedController{
                             status: DocumentStatus.PENDING.status
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
+                    persistenceService.saveEvent(issue.projectKey, params.userName, "Document Added", EventType.UPLOAD_DOCUMENT)
                 }
             }
             if (params.isNewIssue.toBoolean()) {
@@ -66,6 +66,7 @@ class FileHelperController extends AuthenticatedController{
             if (document != null) {
                 document.setStatus(DocumentStatus.REJECTED.status)
                 document.save(flush: true)
+                persistenceService.saveEvent(document.projectKey, getUser().userName, "Reject Document", EventType.REJECT_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
                 response.status = 404
@@ -86,7 +87,7 @@ class FileHelperController extends AuthenticatedController{
 
                 Issue issue = queryService.findByKey(document.projectKey)
                 issueService.updateProjectApproval(issue)
-
+                persistenceService.saveEvent(document.projectKey, getUser().userName, "Approve Document", EventType.APPROVE_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
                 response.status = 404

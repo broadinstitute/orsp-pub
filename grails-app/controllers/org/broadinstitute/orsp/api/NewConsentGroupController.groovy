@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
@@ -44,7 +45,7 @@ class NewConsentGroupController extends AuthenticatedController {
         if(source != null) {
             issue.setRequestDate(new Date())
             Issue consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
-
+            persistenceService.saveEvent(issue.projectKey, issue.getReporter(), "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
             try {
                 // If any sample collections were linked, we need to add them to the consent group.
                 def sampleCollectionIds = []
@@ -87,6 +88,7 @@ class NewConsentGroupController extends AuthenticatedController {
         try {
             issueService.modifyExtraProperties(simpleInput, projectKey)
             issueService.updateProjectApproval(issue)
+            persistenceService.saveEvent(issue.projectKey, issue.getReporter(), "Consent Group Approved", EventType.APPROVE_CONSENT_GROUP)
             render([message: issue])
         } catch(Exception e) {
             render([error: e.message] as JSON)
@@ -97,6 +99,7 @@ class NewConsentGroupController extends AuthenticatedController {
         Issue issue = queryService.findByKey(params.consentKey)
         if(issue != null) {
             issueService.deleteIssue(params.consentKey)
+            persistenceService.saveEvent(issue.projectKey, issue.getReporter(), "Consent Group Rejected", EventType.REJECT_CONSENT_GROUP)
             response.status = 200
             render([message: 'Consent Group was deleted'] as JSON)
         } else {

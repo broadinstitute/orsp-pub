@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.NotifyArguments
 import org.broadinstitute.orsp.User
@@ -38,6 +39,7 @@ class DulNotifyController extends AuthenticatedController{
                     )
             )
         }
+        persistenceService.saveEvent(issue.projectKey, getUser().userName, "DUL linked by email", EventType.SEND_DUL_LINK_BY_EMAIL)
         response.status = 200
         render (['sended': 'ok'] as JSON)
     }

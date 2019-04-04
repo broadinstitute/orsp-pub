@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
@@ -35,6 +36,7 @@ class ProjectController extends AuthenticatedController {
         Issue project = IssueUtils.getJson(Issue.class, request.JSON)
         Issue issue = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
         handleIntake(issue.projectKey)
+        persistenceService.saveEvent(issue.projectKey, issue.getReporter(), "New Project Added", EventType.SUBMIT_PROJECT)
         issue.status = 201
         render([message: issue] as JSON)
     }
@@ -74,6 +76,7 @@ class ProjectController extends AuthenticatedController {
         Issue issue = queryService.findByKey(params.projectKey)
         if(issue != null) {
             issueService.deleteIssue(params.projectKey)
+            persistenceService.saveEvent(issue.projectKey, getUser().userName, "Project Rejected", EventType.REJECT_PROJECT)
             response.status = 200
             render([message: 'Project was deleted'] as JSON)
         } else {
