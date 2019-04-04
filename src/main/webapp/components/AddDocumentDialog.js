@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, div, h, p, small, span, br, button } from 'react-hyperscript-helpers';
+import { hh, div, h, p, small, span, br, button, textarea } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
@@ -36,6 +36,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
+    this.setFilesToUpload = this.setFilesToUpload.bind(this);
+    this.getShareableLink = this.getShareableLink.bind(this);
   }
 
   getShareableLink = () => {
@@ -43,19 +45,37 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       consentGroupKey: this.props.projectKey,
       creator: this.props.user.userName
     };
-    DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-    }).catch(
-      error => {
-        this.setState(prev => {
-          prev.disableBtn = false;
-          prev.alertType ="danger";
-          prev.alertMessage = 'Something went wrong. Please try again.';
-          prev.showAlert = true;
-          return prev;
-        })
-      }
-    );
+    DUL.generateRedirectLink(data, this.props.serverURL).then(resp => {
+      navigator.clipboard.writeText(this.props.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
+      this.successTimeAlert();
+    }).catch(error => {
+      this.setState(prev => {
+        prev.disableBtn = false;
+        prev.alertType = "danger";
+        prev.alertMessage = 'Something went wrong. Please try again.';
+        prev.showAlert = true;
+        return prev;
+      });
+    });
+  };
+
+  successTimeAlert = () => {
+    setTimeout(this.removeAlertMessage, 3000, null);
+    this.setState(prev => {
+      prev.alertType = "success";
+      prev.alertMessage = "Link copied to clipboard!";
+      prev.showAlert = true;
+      return prev;
+    });
+  };
+
+  removeAlertMessage = () => {
+    this.setState(prev => {
+      prev.alertType = "success";
+      prev.alertMessage = "";
+      prev.showAlert = false;
+      return prev;
+    });
   };
 
   redirectToDul = () => {
@@ -103,14 +123,15 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       return prev;
     }, () => {
       if (this.isValid()) {
-        spinnerService.showAll();
         this.setState(prev => {
           prev.disableBtn = true;
           return prev;
         });
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
-        Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
+        if(this.props.projectKey !== undefined) {
+          spinnerService.showAll();
+          Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             spinnerService.hideAll();
             this.setState(prev => {
@@ -133,6 +154,17 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               return prev;
             });
           });
+        } else {
+          this.props.documentHandler(file);
+          this.setState(prev => {
+            prev.submit = false;
+            prev.disableBtn = false;
+            prev.file = { name: '' };
+            prev.type = '';
+            return prev;
+          });
+        }
+
       }
     });
   };
@@ -245,7 +277,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Add Document to ' + this.props.projectKey])
+            h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
           ]),
           h(ModalBody, { className: "dialogBody" }, [
             InputFieldSelect({
@@ -298,7 +330,13 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               ]),
               div({ className: "row" }, [
                 div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({ className: "btn buttonSecondary fullWidth", onClick: this.getShareableLink, disabled: true }, [
+                  button({
+                    className: "btn buttonSecondary fullWidth",
+                    onClick: this.getShareableLink,
+                    name: "getLink",
+                    disabled: false,
+                    id: 'shareable-link'
+                  }, [
                     span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
                     "Get shareable link"
                   ])
@@ -319,7 +357,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
 
           h(ModalFooter, {}, [
             button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, ["Upload"])
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
           ])
         ])
     )
