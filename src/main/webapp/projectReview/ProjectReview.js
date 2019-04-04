@@ -17,6 +17,8 @@ import get from 'lodash/get';
 import { SecurityReview } from "../components/SecurityReview";
 import { isEmpty } from '../util/Utils';
 import { IntCohortsReview } from "../components/IntCohortsReview";
+import { InputFieldSelect } from "../components/InputFieldSelect";
+import { PREFERRED_IRB } from "../util/TypeDescription";
 
 class ProjectReview extends Component {
 
@@ -56,6 +58,7 @@ class ProjectReview extends Component {
         pmList: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
+          irbReferral: '',
           feeForServiceWork: '',
           projectTitle: '',
           protocol: '',
@@ -107,6 +110,7 @@ class ProjectReview extends Component {
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
+          irbReferral: '',
           feeForServiceWork: '',
           irbProtocolId: '',
           projectTitle: '',
@@ -149,6 +153,7 @@ class ProjectReview extends Component {
       intCohortsAnswers: [],
       intCohortsQuestions: [],
       resetIntCohorts: false,
+      intCohortsModified: false,
       questions: [],
     };
     this.rejectProject = this.rejectProject.bind(this);
@@ -181,6 +186,7 @@ class ProjectReview extends Component {
         current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.projectExtraProps = issue.data.extraProperties;
+        current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
@@ -285,8 +291,15 @@ class ProjectReview extends Component {
   validateQuestionnaire = () => {
     let isValid = true;
     const determination = this.state.determination;
-    if (this.state.current.approvalStatus !== 'Legacy') {
+    if (this.state.current.approvalStatus === 'Legacy') {
+      // if current project is Legacy, international Cohorts is not required, but if the questionnaire workflow has started will be required to complete it.
+      isValid = determination.questions.length === 0 || determination.endState === true;
+    } else if (this.state.intCohortsAnswers.every(element => element.answer === null)) {
+      // if current project is not Legacy but doesn't have international Cohorts completed
       isValid = determination.questions.length !== 0 && determination.endState === true;
+    } else if (this.state.intCohortsModified) {
+      // if current project started int cohorts questionnaire but is not completed
+      isValid = determination.endState === true;
     }
     return isValid;
   };
@@ -329,6 +342,7 @@ class ProjectReview extends Component {
         prev.formData.projectExtraProps[key] = newValues[key];
       });
       prev.resetIntCohorts = false;
+      prev.intCohortsModified = true;
       prev.intCohortsAnswers = [...answers];
       prev.determination = determination;
       prev.internationalCohortsError = false;
@@ -486,6 +500,7 @@ class ProjectReview extends Component {
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
     project.sensitive = this.state.formData.projectExtraProps.sensitive;
+    project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
 
     if (project.accessible === 'true') {
       project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
@@ -577,6 +592,7 @@ class ProjectReview extends Component {
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
     this.setState(prev => {
+      prev.intCohortsModified = false;
       prev.resetIntCohorts = true;
       prev.readOnly = false;
       return prev
@@ -586,9 +602,12 @@ class ProjectReview extends Component {
   cancelEdit = (e) => () => {
     this.init();
     this.setState(prev => {
+      prev.intCohortsModified = false;
       prev.resetIntCohorts = false;
       prev.formData = this.state.futureCopy;
       prev.current = this.state.futureCopy;
+      prev.errorSubmit = false;
+      prev.showAlert = false;
       prev.readOnly = true;
       return prev;
     });
@@ -739,6 +758,13 @@ class ProjectReview extends Component {
     });
   };
 
+  handleSelect = (field) => () => (selectedOption) => {
+    this.setState(prev => {
+      prev.formData.projectExtraProps[field] = selectedOption;
+      return prev;
+    })
+  };
+
   toggleState = (e) => () => {
     this.setState((state, props) => {
       return { [e]: !state[e]}
@@ -826,7 +852,6 @@ class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
-      !intCohortsAnswers &&
       this.validateInfoSecurity();
   }
 
@@ -1239,6 +1264,18 @@ class ProjectReview extends Component {
             ],
             onChange: this.handleProjectExtraPropsChangeRadio,
             readOnly: this.state.readOnly
+          }),
+          InputFieldSelect({
+            label: "Irb Referral",
+            id: "irbReferral",
+            name: "irbReferral",
+            options: PREFERRED_IRB,
+            value: this.state.formData.projectExtraProps.irbReferral,
+            currentValue: this.state.current.projectExtraProps.irbReferral,
+            onChange: this.handleSelect("irbReferral"),
+            readOnly: this.state.readOnly,
+            placeholder: isEmpty(this.state.formData.projectExtraProps.irbReferral) && this.state.readOnly ? "--" : "Select...",
+            edit: true
           })
         ]),
 
