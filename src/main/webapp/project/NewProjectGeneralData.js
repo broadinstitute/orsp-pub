@@ -325,7 +325,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             edit: false
           }),
           InputFieldSelect({
-            label: "Irb Referral",
+            label: "If IRB submission is anticipated, please indicate the IRB-of-record:",
             id: "irbReferral",
             name: "irbReferral",
             options: TypeDescription.PREFERRED_IRB,
