@@ -3,8 +3,6 @@ import { hh, h1, span, a, div } from 'react-hyperscript-helpers';
 import { WizardStep } from "./WizardStep";
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
-import { isEmpty } from '../util/Utils'
-
 
 export const SecurityReview = hh(class SecurityReview extends Component {
 
@@ -16,10 +14,8 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       errors: {
         pii: true,
         compliance: true,
-        sensitive: true,
         accessible: true,
         textCompliance: true,
-        textSensitive: true,
         textAccessible: true,
       },
     };
@@ -110,42 +106,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         required: false,
         onChange: this.handleInputChange,
         error: this.props.infoSecurityErrors.textCompliance && this.props.showErrorInfoSecurity,
-        errorMessage: "Required field",
-        readOnly: this.props.readOnly,
-        edit: this.props.edit,
-        review: this.props.review
-      }),
-      InputFieldRadio({
-        id: "radioSensitive",
-        name: "sensitive",
-        label: span({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
-        value: this.props.review === true ? this.props.formData.projectExtraProps.sensitive : this.props.currentValue.securityInfoFormData.sensitive,
-        currentValue: this.props.review === true ? this.props.current.projectExtraProps.sensitive : null,
-        optionValues: ["true", "false", "uncertain"],
-        optionLabels: [
-          "Yes",
-          "No",
-          "Uncertain"
-        ],
-        onChange: this.handleRadio2Change,
-        required: true,
-        error: this.props.infoSecurityErrors.sensitive && this.props.showErrorInfoSecurity,
-        errorMessage: "Required field",
-        readOnly: this.props.readOnly,
-        edit: this.props.edit,
-        review: this.props.review
-      }),
-      InputFieldText({
-        isRendered: this.props.review === true ?  this.props.formData.projectExtraProps.sensitive === 'true' : this.props.currentValue.securityInfoFormData.sensitive === 'true',
-        id: "inputSensitive",
-        name: "textSensitive",
-        label: "Please explain*",
-        value: this.props.review === true ?  this.props.formData.projectExtraProps.textSensitive : this.props.currentValue.securityInfoFormData.textSensitive,
-        currentValue: this.props.review === true ?  this.props.current.projectExtraProps.textSensitive : undefined,
-        disabled: false,
-        required: false,
-        onChange: this.handleInputChange,
-        error: this.props.infoSecurityErrors.textSensitive && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,

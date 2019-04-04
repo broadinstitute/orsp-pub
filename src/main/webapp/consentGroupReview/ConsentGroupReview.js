@@ -68,8 +68,6 @@ class ConsentGroupReview extends Component {
         pii: null,
         compliance: null,
         textCompliance: null,
-        sensitive: null,
-        textSensitive: null,
         accessible: null,
         textAccessible: null,
         sharingPlan: null,
@@ -95,10 +93,8 @@ class ConsentGroupReview extends Component {
         institutionalSourcesCountry: false,
         pii: false,
         compliance: false,
-        sensitive: false,
         accessible: false,
         textCompliance: false,
-        textSensitive: false,
         textAccessible: false,
         sharingPlan: false,
         endDate: false,
@@ -310,10 +306,8 @@ class ConsentGroupReview extends Component {
     let requireMta = false;
     let pii = false;
     let compliance = false;
-    let sensitive = false;
     let accessible = false;
     let textCompliance = false;
-    let textSensitive = false;
     let textAccessible = false;
     let sharingPlan = false;
     let questions = false;
@@ -356,14 +350,6 @@ class ConsentGroupReview extends Component {
 
     if (this.state.formData.consentExtraProps.compliance === "true" && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
       textCompliance = true;
-    }
-
-    if (this.isEmpty(this.state.formData.consentExtraProps.sensitive)) {
-      sensitive = true;
-    }
-
-    if (this.state.formData.consentExtraProps.sensitive === "true" && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
-      textSensitive = true;
     }
 
     if (this.state.formData.consentExtraProps.accessible === "true" && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
@@ -412,11 +398,9 @@ class ConsentGroupReview extends Component {
       !sharingPlan &&
       !questions &&
       !textCompliance &&
-      !textSensitive &&
       !accessible &&
       !textAccessible &&
       !compliance &&
-      !sensitive &&
       !startDate &&
       !consentGroupName &&
       !endDate &&
@@ -432,11 +416,9 @@ class ConsentGroupReview extends Component {
       prev.errors.pii = pii;
       prev.errors.sharingPlan = sharingPlan;
       prev.errors.textCompliance = textCompliance;
-      prev.errors.textSensitive = textSensitive;
       prev.errors.textAccessible = textAccessible;
       prev.errors.endDate = endDate;
       prev.errors.compliance = compliance;
-      prev.errors.sensitive = sensitive;
       prev.errors.accessible = accessible;
       prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
@@ -458,11 +440,9 @@ class ConsentGroupReview extends Component {
       prev.errors.pii = false;
       prev.errors.sharingPlan = false;
       prev.errors.textCompliance = false;
-      prev.errors.textSensitive = false;
       prev.errors.textAccessible = false;
       prev.errors.endDate = false;
       prev.errors.compliance = false;
-      prev.errors.sensitive = false;
       prev.errors.accessible = false;
       prev.errors.startDate = false;
       prev.errors.consentGroupName = false;
@@ -763,7 +743,7 @@ class ConsentGroupReview extends Component {
     }
     const questions = this.parseIntCohorts();
     if (questions !== null && questions.length > 0) {
-      questions.map((q, idx) => {
+      questions.map((q) => {
         if (q.answer !== null) {
           consentGroup[q.key] = q.answer;
         }
@@ -772,18 +752,12 @@ class ConsentGroupReview extends Component {
 
     consentGroup.pii = this.state.formData.consentExtraProps.pii;
     consentGroup.compliance = this.state.formData.consentExtraProps.compliance;
-    consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
     consentGroup.accessible = this.state.formData.consentExtraProps.accessible;
 
     if (consentGroup.accessible === 'true') {
       consentGroup.textAccessible = this.state.formData.consentExtraProps.textAccessible;
     } else {
       consentGroup.textAccessible = "";
-    }
-    if (consentGroup.sensitive === 'true') {
-      consentGroup.textSensitive = this.state.formData.consentExtraProps.textSensitive;
-    } else {
-      consentGroup.textSensitive = "";
     }
     if (consentGroup.compliance === 'true') {
       consentGroup.textCompliance = this.state.formData.consentExtraProps.textCompliance;
@@ -1013,7 +987,6 @@ class ConsentGroupReview extends Component {
       collInst = '',
       collContact = '',
       textCompliance = '',
-      textSensitive = '',
       databaseControlled = '',
       databaseOpen = '',
       onGoingProcess = false,
@@ -1315,36 +1288,6 @@ class ConsentGroupReview extends Component {
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
             error: this.state.errors.textCompliance,
-            errorMessage: "Required field"
-          }),
-          InputFieldRadio({
-            edit: true,
-            id: "radioSensitive",
-            name: "sensitive",
-            label: span({}, ["Is this data ", span({ className: 'italic' }, ["“sensitive” "]), "for any reason?"]),
-            value: this.state.formData.consentExtraProps.sensitive,
-            currentValue: this.state.current.consentExtraProps.sensitive,
-            optionValues: ["true", "false", "uncertain"],
-            optionLabels: [
-              "Yes",
-              "No",
-              "Uncertain"
-            ],
-            readOnly: this.state.readOnly,
-            onChange: this.handleRadio2Change,
-            error: this.state.errors.sensitive,
-            errorMessage: "Required field"
-          }),
-          InputFieldText({
-            isRendered: this.state.formData.consentExtraProps.sensitive === "true",
-            id: "inputSensitive",
-            name: "textSensitive",
-            label: "Please explain",
-            value: textSensitive,
-            currentValue: this.state.current.consentExtraProps.textSensitive,
-            onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly,
-            error: this.state.errors.textSensitive,
             errorMessage: "Required field"
           }),
           InputFieldRadio({

@@ -71,10 +71,8 @@ class ProjectReview extends Component {
           accessible: false,
           compliance: false,
           pii: false,
-          sensitive: false,
           textAccessible: '',
           textCompliance: '',
-          textSensitive: '',
           isIdReceive: false,
           projectReviewApproved: false
         },
@@ -124,21 +122,17 @@ class ProjectReview extends Component {
           accessible: false,
           compliance: false,
           pii: false,
-          sensitive: false,
           textAccessible: '',
           textCompliance: '',
-          textSensitive: '',
           isIdReceive: false,
           projectReviewApproved: false
         },
         showInfoSecurityError: false,
       },
       infoSecurityErrors: {
-        sensitive: false,
         accessible: false,
         compliance: false,
         pii: false,
-        textSensitive: false,
         textAccessible: false,
         textCompliance: false
       },
@@ -499,18 +493,12 @@ class ProjectReview extends Component {
     project.accessible = this.state.formData.projectExtraProps.accessible;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
-    project.sensitive = this.state.formData.projectExtraProps.sensitive;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
 
     if (project.accessible === 'true') {
       project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
     } else {
       project.textAccessible = "";
-    }
-    if (project.sensitive === 'true') {
-      project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
-    } else {
-      project.textSensitive = "";
     }
     if (project.compliance === 'true') {
       project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
@@ -891,11 +879,9 @@ class ProjectReview extends Component {
   validateInfoSecurity = (field) => {
     let pii = false;
     let compliance = false;
-    let sensitive = false;
     let accessible = false;
     let isValid = true;
     let textCompliance = false;
-    let textSensitive = false;
     let textAccessible = false;
 
     if (this.state.current.approvalStatus !== 'Legacy') {
@@ -914,16 +900,6 @@ class ProjectReview extends Component {
         textCompliance = true;
         isValid = false;
       }
-      if (isEmpty(this.state.formData.projectExtraProps.sensitive)) {
-        sensitive = true;
-        isValid = false;
-      }
-      if (!isEmpty(this.state.formData.projectExtraProps.sensitive)
-        && this.state.formData.projectExtraProps.sensitive === "true"
-        && isEmpty(this.state.formData.projectExtraProps.textSensitive)) {
-        textSensitive = true;
-        isValid = false;
-      }
       if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
         accessible = true;
         isValid = false;
@@ -939,10 +915,8 @@ class ProjectReview extends Component {
       this.setState(prev => {
         prev.infoSecurityErrors.pii = pii;
         prev.infoSecurityErrors.compliance = compliance;
-        prev.infoSecurityErrors.sensitive = sensitive;
         prev.infoSecurityErrors.accessible = accessible;
         prev.infoSecurityErrors.textCompliance = textCompliance;
-        prev.infoSecurityErrors.textSensitive = textSensitive;
         prev.infoSecurityErrors.textAccessible = textAccessible;
         return prev;
       });
