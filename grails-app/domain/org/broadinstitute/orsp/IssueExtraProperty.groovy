@@ -53,6 +53,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String DATA_SHARING_NIH = "dataSharingNih"
     public static final String COLLABORATOR = "collaborator"
     public static final String UPLOAD_CONSENT_GROUP = "uploadConsentGroup"
+    public static final String IRB_REFERRAL = "irbReferral"
     public static final String NOT_UPLOAD_CONSENT_GROUP_SPECIFY = "notCGSpecify"
     public static final String SUBJECT_PROTECTION = "subjectProtection"
     public static final String REQUIRE_MTA = "requireMta"
