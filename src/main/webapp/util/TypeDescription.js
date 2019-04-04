@@ -8,7 +8,6 @@ export const DETERMINATION = {
   CTC : 800,
   OSAP : 900,
 };
-// { label: 'federal_prime', value: 'Federal Prime' },
 
 export const PREFERRED_IRB = [
   { label: 'Partners Health Care', value: 'healthCare' },

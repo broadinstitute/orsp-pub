@@ -1,4 +1,4 @@
-import { Component, React, Fragment } from 'react';
+import { Component, React } from 'react';
 import { hh, div, h, button, h1, ul, li, span, p } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
@@ -13,7 +13,7 @@ import { MultiSelect } from '../components/MultiSelect';
 
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from "../components/InputFieldSelect";
-import * as TypeDescription from "../util/TypeDescription";
+import { PREFERRED_IRB } from "../util/TypeDescription";
 
 const fundingTooltip =
   ul({}, [
@@ -328,7 +328,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             label: "If IRB submission is anticipated, please indicate the IRB-of-record:",
             id: "irbReferral",
             name: "irbReferral",
-            options: TypeDescription.PREFERRED_IRB,
+            options: PREFERRED_IRB,
             value: this.state.formData.irbReferral,
             onChange: this.handleSelectChange("irbReferral"),
             readOnly: false,

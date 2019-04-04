@@ -18,7 +18,7 @@ import { SecurityReview } from "../components/SecurityReview";
 import { isEmpty } from '../util/Utils';
 import { IntCohortsReview } from "../components/IntCohortsReview";
 import { InputFieldSelect } from "../components/InputFieldSelect";
-import * as TypeDescription from "../util/TypeDescription";
+import { PREFERRED_IRB } from "../util/TypeDescription";
 
 class ProjectReview extends Component {
 
@@ -852,7 +852,6 @@ class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
-      // !intCohortsAnswers &&
       this.validateInfoSecurity();
   }
 
@@ -1270,7 +1269,7 @@ class ProjectReview extends Component {
             label: "Irb Referral",
             id: "irbReferral",
             name: "irbReferral",
-            options: TypeDescription.PREFERRED_IRB,
+            options: PREFERRED_IRB,
             value: this.state.formData.projectExtraProps.irbReferral,
             currentValue: this.state.current.projectExtraProps.irbReferral,
             onChange: this.handleSelect("irbReferral"),
