@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
+import { h, hh, p, div, h2, span, a, button, small } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -9,6 +9,7 @@ import { RequestClarificationDialog } from "../components/RequestClarificationDi
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
@@ -28,12 +29,14 @@ class ProjectReview extends Component {
       generalError: false,
       uploadConsentGroupError: false,
       subjectProtectionError: false,
+      attestationError: false,
       descriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
       uploadConsentGroup: false,
       subjectProtection: false,
+      attestation: false,
       fundingError: false,
       fundingErrorIndex: [],
       internationalCohortsError: false,
@@ -63,6 +66,7 @@ class ProjectReview extends Component {
           notCGSpecify: '',
           subjectProtection: null,
           projectAvailability: null,
+          attestation: '',
           describeEditType: null,
           editDescription: null,
           accessible: false,
@@ -115,6 +119,7 @@ class ProjectReview extends Component {
           notCGSpecify: '',
           subjectProtection: null,
           projectAvailability: null,
+          attestation: '',
           describeEditType: null,
           editDescription: null,
           accessible: false,
@@ -192,12 +197,12 @@ class ProjectReview extends Component {
         this.projectType = issue.data.issue.type;
 
         const intCohortsQuestions = [
-          {key: 'individualDataSourced', answer: null },
-          {key: 'isLinkMaintained', answer: null},
-          {key: 'feeForServiceWork', answer: null},
-          {key: 'areSamplesComingFromEEAA', answer: null},
-          {key: 'isCollaboratorProvidingGoodService', answer: null},
-          {key: 'isConsentUnambiguous', answer: null}
+          { key: 'individualDataSourced', answer: null },
+          { key: 'isLinkMaintained', answer: null },
+          { key: 'feeForServiceWork', answer: null },
+          { key: 'areSamplesComingFromEEAA', answer: null },
+          { key: 'isCollaboratorProvidingGoodService', answer: null },
+          { key: 'isConsentUnambiguous', answer: null }
         ];
 
         let intCohortsAnswers = [];
@@ -229,7 +234,7 @@ class ProjectReview extends Component {
                 return prev;
               });
             } else {
-              formData =  JSON.parse(currentStr);
+              formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -291,7 +296,7 @@ class ProjectReview extends Component {
     return isValid;
   };
 
-  resetHandler () {
+  resetHandler() {
     this.setState(prev => {
       prev.resetIntCohorts = false;
       prev.determination = this.resetIntCohortsDetermination();
@@ -474,6 +479,7 @@ class ProjectReview extends Component {
     project.uploadConsentGroup = this.state.formData.projectExtraProps.uploadConsentGroup;
     project.notCGSpecify = this.state.formData.projectExtraProps.uploadConsentGroup !== 'notUpload' ? null : this.state.formData.projectExtraProps.notCGSpecify;
     project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
+    project.attestation = this.state.formData.projectExtraProps.attestation;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
@@ -690,9 +696,9 @@ class ProjectReview extends Component {
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
-        prev.formData[field] = value;
-        return prev;
-      },
+      prev.formData[field] = value;
+      return prev;
+    },
       () => {
         if (this.state.errorSubmit == true) this.isValid()
       });
@@ -700,9 +706,9 @@ class ProjectReview extends Component {
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
     this.setState(prev => {
-        prev.formData.projectExtraProps[field] = value;
-        return prev;
-      },
+      prev.formData.projectExtraProps[field] = value;
+      return prev;
+    },
       () => {
         if (this.state.errorSubmit === true) this.isValid()
       });
@@ -712,9 +718,9 @@ class ProjectReview extends Component {
     const field = e.currentTarget.name;
     const value = e.currentTarget.value;
     this.setState(prev => {
-        prev.formData.projectExtraProps[field] = value;
-        return prev;
-      },
+      prev.formData.projectExtraProps[field] = value;
+      return prev;
+    },
       () => {
         if (this.state.errorSubmit === true) this.isValid()
       });
@@ -741,7 +747,7 @@ class ProjectReview extends Component {
 
   toggleState = (e) => () => {
     this.setState((state, props) => {
-      return { [e]: !state[e]}
+      return { [e]: !state[e] }
     });
   };
 
@@ -750,6 +756,7 @@ class ProjectReview extends Component {
     let projectTitleError = false;
     let uploadConsentGroupError = false;
     let subjectProtectionError = false;
+    let attestationError = false;
     let editTypeError = false;
     let editDescriptionError = false;
     let fundingErrorIndex = [];
@@ -792,6 +799,10 @@ class ProjectReview extends Component {
       subjectProtectionError = true;
       generalError = true;
     }
+    if (isEmpty(this.state.formData.projectExtraProps.attestation)) {
+      attestationError = true;
+      generalError = true;
+    }
     if (!this.validateQuestionnaire()) {
       questions = true;
     }
@@ -808,6 +819,7 @@ class ProjectReview extends Component {
       prev.projectTitleError = projectTitleError;
       prev.uploadConsentGroupError = uploadConsentGroupError;
       prev.subjectProtectionError = subjectProtectionError;
+      prev.attestationError = attestationError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
       prev.fundingError = fundingError;
@@ -815,11 +827,12 @@ class ProjectReview extends Component {
       prev.generalError = generalError;
       prev.showInfoSecurityError = infoSecValidate;
       prev.internationalCohortsError = intCohortsAnswers;
-    return prev;
+      return prev;
     });
 
     return !uploadConsentGroupError &&
       !subjectProtectionError &&
+      !attestationError &&
       !projectTitleError &&
       !descriptionError &&
       !editTypeError &&
@@ -857,6 +870,14 @@ class ProjectReview extends Component {
   };
   redirectToNewConsentGroup = () => {
     window.location.href = this.props.serverURL + '/api/consent-group?projectKey=' + this.props.projectKey;
+  };
+
+  handleAttestationCheck = (e) => {
+    const checked = e.target.checked;
+    this.setState(prev => {
+      prev.formData.projectExtraProps.attestation = checked;
+      return prev;
+    });
   };
 
   handleInfoSecurityValidity(isValid) {
@@ -940,7 +961,7 @@ class ProjectReview extends Component {
       if (updatedForm[field] !== '' && value === undefined) {
         prev.formData.projectExtraProps[field] = updatedForm[field];
       } else if (value !== undefined) {
-        prev.formData.projectExtraProps[field] = value ;
+        prev.formData.projectExtraProps[field] = value;
       }
       prev.showInfoSecurityError = false;
       prev.generalError = false;
@@ -1002,7 +1023,7 @@ class ProjectReview extends Component {
           clarificationUrl: this.props.clarificationUrl,
           successClarification: this.successClarification
         }),
-        
+
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
@@ -1023,6 +1044,7 @@ class ProjectReview extends Component {
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
+
         Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
           div({ isRendered: this.projectType === "IRB Project" }, [
             InputFieldRadio({
@@ -1179,8 +1201,8 @@ class ProjectReview extends Component {
             currentValue: this.state.current.projectExtraProps.uploadConsentGroup,
             optionValues: ["uploadNow", "uploadLater", "notUpload"],
             optionLabels: [
-              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["now"]) ]),
-              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["later"]) ]),
+              span({}, ["Yes, I will upload a Consent Group ", span({ className: "bold" }, ["now"])]),
+              span({}, ["Yes, I will upload a Consent Group ", span({ className: "bold" }, ["later"])]),
               "No, I will not upload a Consent Group"
             ],
             onChange: this.handleProjectExtraPropsChangeRadio,
@@ -1241,8 +1263,23 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly
           })
         ]),
-
         /*UNTIL HERE*/
+
+        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
+          p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
+          p({}, 'If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
+          InputFieldCheckbox({
+            id: "ckb_attestation",
+            name: "attestation",
+            onChange: this.handleAttestationCheck,
+            label: "I confirm",
+            checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
+            // defaultChecked: this.state.formData.projectExtraProps.attestation,
+            readOnly: true
+          }),
+          small({ isRendered: this.state.errors.attestation, className: "errorMessage" }, 'Required Field')
+        ]),
+
         Panel({ title: "Security" }, [
           SecurityReview({
             user: this.state.user,
@@ -1359,7 +1396,7 @@ class ProjectReview extends Component {
             })
           ])
         ]),
-        Panel({ title: "International Cohorts"}, [
+        Panel({ title: "International Cohorts" }, [
           IntCohortsReview({
             future: get(this.state.formData, 'projectExtraProps', ''),
             current: this.state.current.projectExtraProps,
