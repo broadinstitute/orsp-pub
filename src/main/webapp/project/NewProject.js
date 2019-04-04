@@ -158,14 +158,15 @@ class NewProject extends Component {
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
     let extraProperties = [];
 
-    extraProperties.push({ name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null });
-    extraProperties.push({ name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null });
-    extraProperties.push({ name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null });
-    extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null });
-    extraProperties.push({ name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null });
-    extraProperties.push({ name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null });
-    extraProperties.push({ name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null });
-    extraProperties.push({ name: 'projectAvailability', value: 'available' });
+    extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
+    extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
+    extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
+    extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
+    extraProperties.push({name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null});
+    extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
+    extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
+    extraProperties.push({name: 'irbReferral', value: isEmpty(this.state.generalDataFormData.irbReferral.value) ? null : JSON.stringify(this.state.generalDataFormData.irbReferral)});
+    extraProperties.push({name: 'projectAvailability', value: 'available'});
 
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });

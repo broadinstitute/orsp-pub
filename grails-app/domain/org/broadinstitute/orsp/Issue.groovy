@@ -101,6 +101,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getUploadConsent() { getExtraProperties().find { it.name == IssueExtraProperty.UPLOAD_CONSENT_GROUP }?.value }
 
+    transient String getIrbReferral() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_REFERRAL }?.value }
+
     transient String getNotCGSpecify() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY }?.value }
 
     // Info Security
