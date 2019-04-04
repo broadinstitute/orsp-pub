@@ -239,145 +239,127 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             }),
           ]),
 
-          Panel({ title: "Project Summary" }, [
-            InputFieldTextArea({
-              id: "inputStudyActivitiesDescription",
-              name: "studyDescription",
-              label: "Describe Broad study activities* ",
-              moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
-              value: this.state.formData.studyDescription,
-              disabled: false,
-              required: false,
-              onChange: this.handleInputChange,
-              error: this.props.errors.studyDescription,
-              errorMessage: "Required field",
-              edit: false
-            }),
-            MultiSelect({
-              id: "collaborator_select",
-              label: "Broad individuals who require access to this project record",
-              isDisabled: false,
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handleProjectCollaboratorChange,
-              value: this.state.formData.collaborators,
-              placeholder: "Start typing names for project access",
-              isMulti: true,
-              currentValue: this.state.formData.collaborators
-            }),
+        Panel({ title: "Project Summary" }, [
+          InputFieldTextArea({
+            id: "inputStudyActivitiesDescription",
+            name: "studyDescription",
+            label: "Describe Broad study activities* ",
+            moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, future data sharing plans, and commercial or academic sample/data sources. For commercially purchased products, please cite product URL.)",
+            value: this.state.formData.studyDescription,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            error: this.props.errors.studyDescription,
+            errorMessage: "Required field",
+            edit: false
+          }),
+          MultiSelect({
+            id: "collaborator_select",
+            label: "Broad individuals who require access to this project record",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleProjectCollaboratorChange,
+            value: this.state.formData.collaborators,
+            placeholder: "Start typing names for project access",
+            isMulti: true,
+            currentValue: this.state.formData.collaborators
+          }),
+          InputFieldText({
+            id: "inputPTitle",
+            name: "pTitle",
+            label: "Title of project/protocol*",
+            value: this.state.formData.pTitle,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            error: this.props.errors.pTitle,
+            errorMessage: "Required field",
+            edit: false
+          }),
+          InputFieldText({
+            id: "inputIrbProtocolId",
+            name: "irbProtocolId",
+            label: "Protocol # at Broad IRB-of-record ",
+            moreInfo: "(if applicable/available)",
+            value: this.state.formData.irbProtocolId,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            edit: false
+          }),
+          InputFieldRadio({
+            id: "radioUploadConsentGroup",
+            name: "uploadConsentGroup",
+            label: "Will you be uploading a Consent Group?",
+            value: this.state.formData.uploadConsentGroup,
+            optionValues: ["uploadNow", "uploadLater", "notUpload"],
+            optionLabels: [
+              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["now"]) ]),
+              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["later"]) ]),
+              "No, I will not upload a Consent Group"
+            ],
+            onChange: this.handleRadioChange,
+            required: true,
+            error: this.props.errors.uploadConsentGroup,
+            errorMessage: "Required field",
+            edit: false
+          }),
+          div({ isRendered: this.state.formData.uploadConsentGroup === "notUpload" }, [
             InputFieldText({
-              id: "inputPTitle",
-              name: "pTitle",
-              label: "Title of project/protocol*",
-              value: this.state.formData.pTitle,
+              id: "inputNotCGSpecify",
+              name: "notCGSpecify",
+              label: "Please specify",
+              value: this.state.formData.notCGSpecify,
               disabled: false,
               required: false,
               onChange: this.handleInputChange,
-              error: this.props.errors.pTitle,
-              errorMessage: "Required field",
-              edit: false
-            }),
-            InputFieldText({
-              id: "inputIrbProtocolId",
-              name: "irbProtocolId",
-              label: "Protocol # at Broad IRB-of-record ",
-              moreInfo: "(if applicable/available)",
-              value: this.state.formData.irbProtocolId,
-              disabled: false,
-              required: false,
-              onChange: this.handleInputChange,
-              edit: false
-            }),
-            InputFieldRadio({
-              id: "radioUploadConsentGroup",
-              name: "uploadConsentGroup",
-              label: "Will you be uploading a Consent Group?",
-              value: this.state.formData.uploadConsentGroup,
-              optionValues: ["uploadNow", "uploadLater", "notUpload"],
-              optionLabels: [
-                span({}, ["Yes, I will upload a Consent Group ", span({ className: "bold" }, ["now"])]),
-                span({}, ["Yes, I will upload a Consent Group ", span({ className: "bold" }, ["later"])]),
-                "No, I will not upload a Consent Group"
-              ],
-              onChange: this.handleRadioChange,
-              required: true,
-              error: this.props.errors.uploadConsentGroup,
-              errorMessage: "Required field",
-              edit: false
-            }),
-            div({ isRendered: this.state.formData.uploadConsentGroup === "notUpload" }, [
-              InputFieldText({
-                id: "inputNotCGSpecify",
-                name: "notCGSpecify",
-                label: "Please specify",
-                value: this.state.formData.notCGSpecify,
-                disabled: false,
-                required: false,
-                onChange: this.handleInputChange,
-                edit: false
-              })
-            ]),
-            InputFieldRadio({
-              id: "radioSubjectProtection",
-              name: "subjectProtection",
-              label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
-              moreInfo: "(as opposed to the study team independently managing the submissions)? *",
-              value: this.state.formData.subjectProtection,
-              optionValues: ["true", "false", "notapplicable"],
-              optionLabels: [
-                "Yes",
-                "No",
-                "N/A - No IRB submission required"
-              ],
-              onChange: this.handleRadioChange,
-              required: true,
-              error: this.props.errors.subjectProtection,
-              errorMessage: "Required field",
-              edit: false
-            }),
-            InputFieldRadio({
-              id: "radioSubjectProtection",
-              name: "subjectProtection",
-              label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
-              moreInfo: "(as opposed to the study team independently managing the submissions)? *",
-              value: this.state.formData.subjectProtection,
-              optionValues: ["true", "false", "notapplicable"],
-              optionLabels: [
-                "Yes",
-                "No",
-                "N/A - No IRB submission required"
-              ],
-              onChange: this.handleRadioChange,
-              required: true,
-              error: this.props.errors.subjectProtection,
-              errorMessage: "Required field",
-              edit: false
-            }),
-            InputFieldSelect({
-              label: "If IRB submission is anticipated, please indicate the IRB-of-record:",
-              id: "irbReferral",
-              name: "irbReferral",
-              options: PREFERRED_IRB,
-              value: this.state.formData.irbReferral,
-              onChange: this.handleSelectChange("irbReferral"),
-              readOnly: false,
               edit: false
             })
           ]),
+          InputFieldRadio({
+            id: "radioSubjectProtection",
+            name: "subjectProtection",
+            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
+            moreInfo: "(as opposed to the study team independently managing the submissions)? *",
+            value: this.state.formData.subjectProtection,
+            optionValues: ["true", "false", "notapplicable"],
+            optionLabels: [
+              "Yes",
+              "No",
+              "N/A - No IRB submission required"
+            ],
+            onChange: this.handleRadioChange,
+            required: true,
+            error: this.props.errors.subjectProtection,
+            errorMessage: "Required field",
+            edit: false
+          }),
+          InputFieldSelect({
+            label: "If IRB submission is anticipated, please indicate the IRB-of-record:",
+            id: "irbReferral",
+            name: "irbReferral",
+            options: PREFERRED_IRB,
+            value: this.state.formData.irbReferral,
+            onChange: this.handleSelectChange("irbReferral"),
+            readOnly: false,
+            edit: false
+          })
+        ]),
 
-          Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
-            p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
-            p({}, 'If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
-            InputFieldCheckbox({
-              id: "ckb_attestation",
-              name: "attestation",
-              onChange: this.handleAttestationCheck,
-              label: "I confirm",
-              defaultChecked: this.state.formData.attestation,
-              required: true
-            }),
-            small({ isRendered: this.state.errors.attestation, className: "errorMessage" }, 'Required Field')
-          ])
+        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
+          p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
+          p({}, 'If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
+          InputFieldCheckbox({
+            id: "ckb_attestation",
+            name: "attestation",
+            onChange: this.handleAttestationCheck,
+            label: "I confirm",
+            defaultChecked: this.state.formData.attestation,
+            required: true
+          }),
+          small({ isRendered: this.props.errors.attestation, className: "errorMessage" }, 'Required Field')
         ])
+      ])
     );
   }
 });

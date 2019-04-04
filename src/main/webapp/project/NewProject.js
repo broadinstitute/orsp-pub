@@ -312,7 +312,9 @@ class NewProject extends Component {
       subjectProtection = true;
       isValid = false;
     }
-    if (this.state.generalDataFormData.attestation === undefined || this.state.generalDataFormData.attestation === '') {
+    if (this.state.generalDataFormData.attestation === undefined ||
+      this.state.generalDataFormData.attestation === '' ||
+      this.state.generalDataFormData.attestation === false) {
       attestation = true;
       isValid = false;
     }
