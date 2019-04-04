@@ -9,14 +9,14 @@ import { AddDocumentDialog } from '../components/AddDocumentDialog'
 import { domainToASCII } from 'url';
 
 
-const addDocumentContainer = {
-  display: 'block', height: '40px', marginTop: '15px'
+const styles = {
+  addDocumentContainer: {
+    display: 'block', height: '40px', marginTop: '15px'
+  },
+  addDocumentBtn: {
+    position: 'relative', float: 'right'
+  }
 };
-
-const addDocumentBtn = {
-  position: 'relative', float: 'right'
-};
-
 const headers =
   [
     { name: 'Document Type', value: 'fileKey' },
@@ -120,10 +120,10 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload
             }),
-            div({ style: addDocumentContainer }, [
+            div({ style: styles.addDocumentContainer }, [
               button({
                 className: "btn buttonSecondary",
-                style: addDocumentBtn,
+                style: styles.addDocumentBtn,
                 onClick: this.addDocuments
               }, ["Add Document"])
             ]),

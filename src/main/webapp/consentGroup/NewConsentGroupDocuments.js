@@ -7,12 +7,13 @@ import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 
-const addDocumentContainer = {
-  display: 'block', height: '40px', marginTop: '15px'
-};
-
-const addDocumentBtn = {
-  position: 'relative', float: 'right'
+const styles = {
+  addDocumentContainer: {
+    display: 'block', height: '40px', marginTop: '15px'
+  },
+  addDocumentBtn: {
+    position: 'relative', float: 'right'
+  }
 };
 
 const headers =
@@ -119,10 +120,10 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload
             }),
-            div({ style: addDocumentContainer }, [
+            div({ style: styles.addDocumentContainer }, [
               button({
                 className: "btn buttonSecondary",
-                style: addDocumentBtn,
+                style: styles.addDocumentBtn,
                 onClick: this.addDocuments
               }, ["Add Document"])
             ]),
