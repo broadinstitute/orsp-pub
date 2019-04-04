@@ -169,7 +169,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection,
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection,
         errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
@@ -224,6 +224,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             fundings: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
             error: this.props.errors.fundings,
+            fundingAwardNumberError: this.props.errors.fundingAwardNumber,
             errorMessage: "Required field",
             edit: false
           }),
