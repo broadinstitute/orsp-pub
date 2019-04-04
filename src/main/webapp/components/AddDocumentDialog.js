@@ -36,6 +36,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
+    this.setFilesToUpload = this.setFilesToUpload.bind(this);
     this.getShareableLink = this.getShareableLink.bind(this);
   }
 
@@ -122,14 +123,15 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       return prev;
     }, () => {
       if (this.isValid()) {
-        spinnerService.showAll();
         this.setState(prev => {
           prev.disableBtn = true;
           return prev;
         });
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
-        Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
+        if(this.props.projectKey !== undefined) {
+          spinnerService.showAll();
+          Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             spinnerService.hideAll();
             this.setState(prev => {
@@ -152,6 +154,17 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
               return prev;
             });
           });
+        } else {
+          this.props.documentHandler(file);
+          this.setState(prev => {
+            prev.submit = false;
+            prev.disableBtn = false;
+            prev.file = { name: '' };
+            prev.type = '';
+            return prev;
+          });
+        }
+
       }
     });
   };
@@ -264,7 +277,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         show: this.props.show
       }, [
           h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Add Document to ' + this.props.projectKey])
+            h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
           ]),
           h(ModalBody, { className: "dialogBody" }, [
             InputFieldSelect({
@@ -344,7 +357,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
 
           h(ModalFooter, {}, [
             button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, ["Upload"])
+            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
           ])
         ])
     )
