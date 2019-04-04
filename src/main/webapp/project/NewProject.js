@@ -3,10 +3,11 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
+import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-import { span,button } from 'react-hyperscript-helpers';
+import { span, button } from 'react-hyperscript-helpers';
 import { spinnerService } from '../util/spinner-service';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { DataSharing } from "../components/DataSharing";
@@ -87,33 +88,38 @@ class NewProject extends Component {
     User.getUserSession(this.props.getUserUrl).then(resp =>
       this.setState({ user: resp.data })
     );
+    this.loadOptions();
   }
+
+  loadOptions() {
+    let documentOptions = [];
+    DOCUMENT_TYPE.forEach(type => {
+      documentOptions.push({ value: type, label: type });
+    });
+    this.setState({ documentOptions: documentOptions });
+  };
 
   submitNewProject = () => {
     this.toggleFalseSubmitError();
 
     spinnerService.showAll();
-    if (this.validateDocuments()) {
-      if (this.validateForm()) {
+    if (this.validateForm()) {
+      this.changeStateSubmitButton();
+      Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
+        this.uploadFiles(resp.data.message.projectKey);
+      }).catch(error => {
         this.changeStateSubmitButton();
-        Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-          this.uploadFiles(resp.data.message.projectKey);
-        }).catch(error => {
-          this.changeStateSubmitButton();
-          this.toggleTrueSubmitError();
-          spinnerService.hideAll();
-          console.error(error);
-        });
-      } else {
-        this.setState(prev => {
-          prev.generalError = true;
-          return prev;
-        }, () => {
-          spinnerService.hideAll();
-        });
-      }
-    } else {
+        this.toggleTrueSubmitError();
         spinnerService.hideAll();
+        console.error(error);
+      });
+    } else {
+      this.setState(prev => {
+        prev.generalError = true;
+        return prev;
+      }, () => {
+        spinnerService.hideAll();
+      });
     }
   };
 
@@ -171,24 +177,24 @@ class NewProject extends Component {
 
     let collaborators = this.state.generalDataFormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
-        collaborators.map((collaborator, idx) => {
-          extraProperties.push({name: 'collaborator', value: collaborator.key});
-        });
+      collaborators.map((collaborator, idx) => {
+        extraProperties.push({ name: 'collaborator', value: collaborator.key });
+      });
     }
     let questions = this.state.determination.questions;
     if (questions.length > 1) {
-        questions.map(q => {
-          if (q.answer !== null) {
-            extraProperties.push({name: q.key, value: q.answer});
-          }
-        });
+      questions.map(q => {
+        if (q.answer !== null) {
+          extraProperties.push({ name: q.key, value: q.answer });
+        }
+      });
     }
 
     let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
     if (internationalCohortsQuestions.length > 1) {
       internationalCohortsQuestions.map((q, idx) => {
         if (q.answer !== null) {
-          extraProperties.push({name: q.key, value: q.answer});
+          extraProperties.push({ name: q.key, value: q.answer });
         }
       });
     }
@@ -366,45 +372,17 @@ class NewProject extends Component {
   }
 
   handleInfoSecurityValidity(isValid) {
-    this.setState({isInfoSecurityValid: isValid})
-  }
-
-  validateDocuments() {
-    let isValid = true;
-
-    let docs = [];
-    if (this.state.files !== null && this.state.files.length > 0) {
-      this.state.files.forEach(file => {
-        if (file.required === true && file.file === null) {
-          file.error = true;
-          isValid = false;
-        } else {
-          file.error = false;
-        }
-        docs.push(file);
-      });
-    }
-    else {
-      isValid = false;
-    }
-
-    this.setState(prev => {
-      prev.files = docs;
-      prev.showErrorDocuments = isValid;
-      return prev;
-    });
-    return isValid;
+    this.setState({ isInfoSecurityValid: isValid })
   }
 
   determinationHandler = (determination) => {
     this.setState(prev => {
-        prev.files = [];
-        prev.determination = determination;
-        if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
-          prev.showErrorDeterminationQuestions = false;
-        }
-        return prev;
-      }, () => this.initDocuments(this.state.determination.projectType));
+      prev.determination = determination;
+      if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
+        prev.showErrorDeterminationQuestions = false;
+      }
+      return prev;
+    });
   };
 
   intCohortsDeterminationHandler = (determination) => {
@@ -416,39 +394,6 @@ class NewProject extends Component {
       return prev;
     });
   };
-
-  initDocuments(projectType) {
-
-    if (projectType !== this.state.formerProjectType) {
-
-      let documents = [];
-
-      switch (projectType) {
-        case DETERMINATION.IRB:
-          documents.push({ required: true, fileKey: 'IRB Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: true, fileKey: 'IRB Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["IRB Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          break;
-
-        case DETERMINATION.NE:
-          documents.push({ required: true, fileKey: 'NE Approval', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Approval "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: true, fileKey: 'NE Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NE Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          documents.push({ required: false, fileKey: 'Consent Document', label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Project here ", span({ className: "italic" }, ["(if applicable)"])]), file: null, fileName: null, error: false });
-          break;
-
-        case DETERMINATION.NHSR:
-          documents.push({ required: true, fileKey: 'NHSR Application', label: span({}, ["Upload the ", span({ className: "bold" }, ["NHSR Application "]), "for this Project here*"]), file: null, fileName: null, error: false });
-          break;
-
-        default:
-          break;
-      }
-      this.setState({
-        files: documents,
-        projectType: projectType,
-        formerProjectType: projectType,
-      });
-    }
-  }
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -498,18 +443,22 @@ class NewProject extends Component {
 
   uploadFiles = async (projectKey) => {
     let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
-      .then(resp => {
-        // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
-        // transitioning from old gsps style is solved.
-        window.location.href =  [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
-      }).catch(error => {
-        spinnerService.hideAll();
-        this.toggleTrueSubmitError();
-        this.changeStateSubmitButton();
-        console.error(error);
-      });
-  };
+    if (this.state.files !== null && this.state.files.length > 0) {     
+      Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
+        .then(resp => {
+          // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
+          // transitioning from old gsps style is solved.
+          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+        }).catch(error => {
+          spinnerService.hideAll();
+          this.toggleTrueSubmitError();
+          this.changeStateSubmitButton();
+          console.error(error);
+        });
+    } else {
+      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+    }
+  }
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
@@ -540,66 +489,67 @@ class NewProject extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage,
       }, [
-        NewProjectGeneralData({
-          title: "General Data",
-          currentStep: currentStep,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateGeneralDataFormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage
-        }),
-        NewProjectDetermination({
-          title: "Determination Questions",
-          currentStep: currentStep,
-          determination: this.state.determination,
-          handler: this.determinationHandler,
-          errors: this.state.showErrorDeterminationQuestions
-        }),
-        InternationalCohorts({
-          title: "International Cohorts",
-          currentStep: currentStep,
-          handler: this.intCohortsDeterminationHandler,
-          determination: this.state.intCohortsDetermination,
-          showErrorIntCohorts: this.state.showErrorIntCohorts,
-          origin: 'newProject'
-        }),
-        Security({
-          title: "Security",
-          step: 3,
-          currentStep: currentStep,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateInfoSecurity,
-          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-          removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity
-        }),
-        DataSharing({
-          title: "Data Sharing",
-          currentStep: currentStep,
-          step: 4,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateDataSharingFormData,
-          removeErrorMessage: this.removeErrorMessage,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          showErrorDataSharing: this.state.showErrorDataSharing,
-          handleDataSharingValidity: this.handleDataSharingValidity
-        }),
-        NewProjectDocuments({
-          title: "Documents",
-          currentStep: currentStep,
-          step: 5,
-          fileHandler: this.fileHandler,
-          projectType: projectType,
-          files: this.state.files,
-          errors: this.state.showErrorDocuments,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError
-        })
-      ])
+          NewProjectGeneralData({
+            title: "General Data",
+            currentStep: currentStep,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateGeneralDataFormData,
+            errors: this.state.errors,
+            removeErrorMessage: this.removeErrorMessage
+          }),
+          NewProjectDetermination({
+            title: "Determination Questions",
+            currentStep: currentStep,
+            determination: this.state.determination,
+            handler: this.determinationHandler,
+            errors: this.state.showErrorDeterminationQuestions
+          }),
+          InternationalCohorts({
+            title: "International Cohorts",
+            currentStep: currentStep,
+            handler: this.intCohortsDeterminationHandler,
+            determination: this.state.intCohortsDetermination,
+            showErrorIntCohorts: this.state.showErrorIntCohorts,
+            origin: 'newProject'
+          }),
+          Security({
+            title: "Security",
+            step: 3,
+            currentStep: currentStep,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateInfoSecurity,
+            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+            removeErrorMessage: this.removeErrorMessage,
+            handleSecurityValidity: this.handleInfoSecurityValidity
+          }),
+          DataSharing({
+            title: "Data Sharing",
+            currentStep: currentStep,
+            step: 4,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateDataSharingFormData,
+            removeErrorMessage: this.removeErrorMessage,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            showErrorDataSharing: this.state.showErrorDataSharing,
+            handleDataSharingValidity: this.handleDataSharingValidity
+          }),
+          NewProjectDocuments({
+            title: "Documents",
+            currentStep: currentStep,
+            step: 5,
+            fileHandler: this.fileHandler,
+            projectType: projectType,
+            files: this.state.files,
+            errors: this.state.showErrorDocuments,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            options: this.state.documentOptions
+          })
+        ])
     );
   }
 }
