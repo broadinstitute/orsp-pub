@@ -60,6 +60,7 @@ class ProjectReview extends Component {
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbReferral: '',
+          accurate: '',
           feeForServiceWork: '',
           projectTitle: '',
           protocol: '',
@@ -113,6 +114,7 @@ class ProjectReview extends Component {
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbReferral: '',
+          accurate: '',
           feeForServiceWork: '',
           irbProtocolId: '',
           projectTitle: '',
@@ -1000,6 +1002,7 @@ class ProjectReview extends Component {
   };
 
   render() {
+    console.log('this.state.readOnly', this.state.readOnly);
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
       div({}, [
@@ -1309,8 +1312,7 @@ class ProjectReview extends Component {
             onChange: this.handleAttestationCheck,
             label: "I confirm",
             checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
-            readOnly: !(this.state.current.approvalStatus === 'Legacy' && this.state.readOnly),
-            // defaultChecked: this.state.formData.projectExtraProps.attestation,
+            readOnly: true,
           }),
         ]),
 

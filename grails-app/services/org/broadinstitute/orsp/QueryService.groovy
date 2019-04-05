@@ -1108,4 +1108,12 @@ class QueryService implements Status {
         documents
     }
 
+    Collection<String> findByProjectsStatus(String status, String issueType) {
+        final String query = 'select project_key from issue ' +
+                'where approval_status = ? and type != ? '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString(0, status)
+        sqlQuery.setString(1, issueType)
+        getSqlConnection().rows(query).collect { it.get("project_key").toString() }
+    }
 }
