@@ -315,7 +315,7 @@ class IssueService implements UserInfo {
         }
         issue.extraProperties.addAll(extraPropertiesList)
         if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
-            persistenceService.saveEvent(issue.projectKey, getUser().userName, "Edits Approved", EventType.APPROVE_EDITS)
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
             updateProjectApproval(issue)
         }
         issue
@@ -345,7 +345,7 @@ class IssueService implements UserInfo {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)
-            persistenceService.saveEvent(issue.projectKey, getUser().userName, "Project Approved", EventType.APPROVE_PROJECT)
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project Approved", EventType.APPROVE_PROJECT)
         }
     }
 

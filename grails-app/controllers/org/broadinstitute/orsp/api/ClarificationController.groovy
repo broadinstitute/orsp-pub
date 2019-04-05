@@ -51,7 +51,7 @@ class ClarificationController extends AuthenticatedController {
                                 comment: comment.description,
                                 user: getUser(),
                                 issue: issue))
-                persistenceService.saveEvent(issue.projectKey, getUser().userName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500

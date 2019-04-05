@@ -26,7 +26,7 @@ class IssueReviewController extends AuthenticatedController {
             render([message: "Project key does not exist"] as JSON)
         } else {
             issueReviewService.create(issueReview)
-            persistenceService.saveEvent(issueReview.projectKey, getUser().userName, "Edits Added", EventType.SUBMIT_EDITS)
+            persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
             response.status = 201
             render([issueReview] as JSON)
         }
@@ -49,7 +49,7 @@ class IssueReviewController extends AuthenticatedController {
 
     def delete() {
         issueReviewService.delete(params.projectKey)
-        persistenceService.saveEvent(params.projectKey, getUser().userName, "Edits Rejected", EventType.REJECT_EDITS)
+        persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         response.status = 200
         response
     }

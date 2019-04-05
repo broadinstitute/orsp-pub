@@ -39,7 +39,7 @@ class DulNotifyController extends AuthenticatedController{
                     )
             )
         }
-        persistenceService.saveEvent(issue.projectKey, getUser().userName, "DUL linked by email", EventType.SEND_DUL_LINK_BY_EMAIL)
+        persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "DUL linked by email", EventType.SEND_DUL_LINK_BY_EMAIL)
         response.status = 200
         render (['sended': 'ok'] as JSON)
     }
