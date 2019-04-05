@@ -72,9 +72,6 @@ class ConsentGroupReview extends Component {
         textSensitive: null,
         accessible: null,
         textAccessible: null,
-        sharingPlan: null,
-        databaseControlled: null,
-        databaseOpen: null,
         instSources: []
       },
       errorSubmit: false,
@@ -100,7 +97,6 @@ class ConsentGroupReview extends Component {
         textCompliance: false,
         textSensitive: false,
         textAccessible: false,
-        sharingPlan: false,
         endDate: false,
         startDate: false,
       },
@@ -134,7 +130,6 @@ class ConsentGroupReview extends Component {
       institutionalSourceError: false,
       internationalCohortsError: false,
       securityError: false,
-      dataSharingError: false,
       isEdited: false,
       intCohortsAnswers: [],
       resetIntCohorts: false
@@ -315,7 +310,6 @@ class ConsentGroupReview extends Component {
     let textCompliance = false;
     let textSensitive = false;
     let textAccessible = false;
-    let sharingPlan = false;
     let questions = false;
     let endDate = false;
     let startDate = false;
@@ -370,10 +364,6 @@ class ConsentGroupReview extends Component {
       textAccessible = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
-      sharingPlan = true;
-    }
-
     if (!this.validateQuestionnaire()) {
       questions = true;
     }
@@ -409,7 +399,6 @@ class ConsentGroupReview extends Component {
       !requireMta &&
       !sampleCollections &&
       !pii &&
-      !sharingPlan &&
       !questions &&
       !textCompliance &&
       !textSensitive &&
@@ -430,7 +419,6 @@ class ConsentGroupReview extends Component {
       prev.errors.requireMta = requireMta;
       prev.errors.sampleCollections = sampleCollections;
       prev.errors.pii = pii;
-      prev.errors.sharingPlan = sharingPlan;
       prev.errors.textCompliance = textCompliance;
       prev.errors.textSensitive = textSensitive;
       prev.errors.textAccessible = textAccessible;
@@ -456,7 +444,6 @@ class ConsentGroupReview extends Component {
       prev.errors.requireMta = false;
       prev.errors.sampleCollections = false;
       prev.errors.pii = false;
-      prev.errors.sharingPlan = false;
       prev.errors.textCompliance = false;
       prev.errors.textSensitive = false;
       prev.errors.textAccessible = false;
@@ -791,9 +778,6 @@ class ConsentGroupReview extends Component {
       consentGroup.textCompliance = "";
     }
 
-    consentGroup.sharingPlan = this.state.formData.consentExtraProps.sharingPlan;
-    consentGroup.databaseControlled = this.state.formData.consentExtraProps.databaseControlled;
-    consentGroup.databaseOpen = this.state.formData.consentExtraProps.databaseOpen;
     return consentGroup;
 
   };
@@ -1014,8 +998,6 @@ class ConsentGroupReview extends Component {
       collContact = '',
       textCompliance = '',
       textSensitive = '',
-      databaseControlled = '',
-      databaseOpen = '',
       onGoingProcess = false,
       describeConsentGroup = '',
       requireMta = '',
@@ -1379,45 +1361,6 @@ class ConsentGroupReview extends Component {
           })
         ]),
 
-        Panel({ title: "Data Sharing" }, [
-          InputFieldRadio({
-            edit: true,
-            id: "radioSharingPlan",
-            name: "sharingPlan",
-            label: "What is your Data Sharing plan?",
-            moreInfo: "",
-            optionValues: ["controlled", "open", "none", "undetermined"],
-            optionLabels: ["Controlled Access", "Open Access", "No Sharing", "Data Sharing plan not yet determined"],
-            value: this.state.formData.consentExtraProps.sharingPlan,
-            currentValue: this.state.current.consentExtraProps.sharingPlan,
-            onChange: this.handleRadio2Change,
-            readOnly: this.state.readOnly,
-            error: this.state.errors.sharingPlan,
-            errorMessage: "Required field"
-          }),
-          InputFieldText({
-            isRendered: this.state.formData.consentExtraProps.sharingPlan === "controlled",
-            id: "inputDatabaseControlled",
-            name: "databaseControlled",
-            label: "Name of Database(s) ",
-            moreInfo: "(Data Use LetterNR/link, consent or waiver of consent)",
-            value: databaseControlled,
-            currentValue: this.state.current.consentExtraProps.databaseControlled,
-            onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
-          }),
-          InputFieldText({
-            isRendered: this.state.formData.consentExtraProps.sharingPlan === "open",
-            id: "inputDatabaseOpen",
-            name: "databaseOpen",
-            label: "Name of Database(s) ",
-            moreInfo: "(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)",
-            value: databaseOpen,
-            currentValue: this.state.current.consentExtraProps.databaseOpen,
-            onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly
-          })
-        ]),
         AlertMessage({
           msg: this.state.errorMessage,
           show: this.state.errorSubmit,

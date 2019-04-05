@@ -6,7 +6,6 @@ import { InternationalCohorts } from '../components/InternationalCohorts';
 import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
-import { DataSharing } from '../components/DataSharing';
 import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
@@ -24,8 +23,6 @@ class NewConsentGroup extends Component {
       showInternationalCohortsError: false,
       showInfoSecurityError: false,
       isInfoSecurityValid: false,
-      showErrorDataSharing: false,
-      isDataSharingValid: false,
       generalError: false,
       formSubmitted: false,
       submitError: false,
@@ -39,7 +36,6 @@ class NewConsentGroup extends Component {
       },
       generalDataFormData: {},
       securityInfoFormData: {},
-      dataSharingFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -64,7 +60,6 @@ class NewConsentGroup extends Component {
 
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateInfoSecurityFormData = this.updateInfoSecurityFormData.bind(this);
-    this.updateDataSharingFormData = this.updateDataSharingFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
@@ -202,10 +197,7 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
     extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
     extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
-    // step 5
-    extraProperties.push({ name: 'sharingPlan', value: this.state.dataSharingFormData.sharingPlan });
-    extraProperties.push({ name: 'databaseControlled', value: this.state.dataSharingFormData.databaseControlled });
-    extraProperties.push({ name: 'databaseOpen', value: this.state.dataSharingFormData.databaseOpen });
+
     consentGroup.extraProperties = extraProperties;
     return consentGroup;
 
@@ -230,7 +222,7 @@ class NewConsentGroup extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 4) {
+    if (currentStep === 3) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -244,8 +236,6 @@ class NewConsentGroup extends Component {
       isValid = this.validateInternationalCohorts();
     } else if (this.state.currentStep === 3) {
       isValid = this.validateInfoSecurity();
-    } else if (this.state.currentStep === 4) {
-      isValid = this.validateDataSharing();
     }
     return isValid;
   };
@@ -254,8 +244,7 @@ class NewConsentGroup extends Component {
     let isGeneralDataValid = this.validateGeneralData();
     let isInternationalCohortsValid = this.validateInternationalCohorts();
     let isInfoSecurityValid = this.validateInfoSecurity();
-    let isDataSharingValid = this.validateDataSharing();
-    return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isDataSharingValid;
+    return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid;
   }
 
   consentGroupNameExists() {
@@ -412,14 +401,6 @@ class NewConsentGroup extends Component {
     return this.state.isInfoSecurityValid;
   }
 
-  validateDataSharing() {
-    this.setState(prev => {
-      prev.showErrorDataSharing = !this.state.isDataSharingValid;
-      return prev;
-    });
-    return this.state.isDataSharingValid;
-  }
-
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
@@ -443,20 +424,6 @@ class NewConsentGroup extends Component {
       return prev;
     })
   };
-
-  updateDataSharingFormData = (updatedForm) => {
-    this.setState(prev => {
-      prev.dataSharingFormData = updatedForm;
-      return prev;
-    }, () => {
-      this.isValid();
-    })
-  };
-
-  handleDataSharingValidity = (isValid) => {
-    this.setState({ isDataSharingValid: isValid })
-  };
-
 
   initDocuments() {
     let documents = [];
@@ -512,64 +479,51 @@ class NewConsentGroup extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage
       }, [
-          NewConsentGroupGeneralData({
-            title: "General Data",
-            currentStep: currentStep,
-            user: this.state.user,
-            sampleSearchUrl: this.props.sampleSearchUrl,
-            updateForm: this.updateGeneralDataFormData,
-            errors: this.state.errors,
-            removeErrorMessage: this.removeErrorMessage,
-            projectKey: this.props.projectKey,
-            sampleCollectionList: this.state.sampleCollectionList
-          }),
-          NewConsentGroupDocuments({
-            title: "Documents",
-            currentStep: currentStep,
-            fileHandler: this.fileHandler,
-            projectType: projectType,
-            options: this.state.documentOptions,
-            fillablePdfURL: this.props.fillablePdfURL,
-            fileHandler: this.fileHandler,
-            files: this.state.files
-          }),
-          InternationalCohorts({
-            title: "International Cohorts",
-            currentStep: currentStep,
-            handler: this.determinationHandler,
-            determination: this.state.determination,
-            showErrorIntCohorts: this.state.showInternationalCohortsError,
-            origin: 'consentGroup'
-          }),
-          Security({
-            title: "Security",
-            step: 3,
-            currentStep: currentStep,
-            user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
-            updateForm: this.updateInfoSecurityFormData,
-            showErrorInfoSecurity: this.state.showInfoSecurityError,
-            removeErrorMessage: this.removeErrorMessage,
-            handleSecurityValidity: this.handleInfoSecurityValidity,
-            currentValue: this.state,
-            edit: false,
-            review: false,
-            readOnly: false
-          }),
-          DataSharing({
-            title: "Data Sharing",
-            currentStep: currentStep,
-            step: 4,
-            user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
-            updateForm: this.updateDataSharingFormData,
-            removeErrorMessage: this.removeErrorMessage,
-            generalError: this.state.generalError,
-            submitError: this.state.submitError,
-            showErrorDataSharing: this.state.showErrorDataSharing,
-            handleDataSharingValidity: this.handleDataSharingValidity
-          })
-        ])
+        NewConsentGroupGeneralData({
+          title: "General Data",
+          currentStep: currentStep,
+          user: this.state.user,
+          sampleSearchUrl: this.props.sampleSearchUrl,
+          updateForm: this.updateGeneralDataFormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          projectKey: this.props.projectKey,
+          sampleCollectionList: this.state.sampleCollectionList
+        }),
+        NewConsentGroupDocuments({
+          title: "Documents",
+          currentStep: currentStep,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          options: this.state.documentOptions,
+          fillablePdfURL: this.props.fillablePdfURL,
+          fileHandler: this.fileHandler,
+          files: this.state.files
+        }),
+        InternationalCohorts({
+          title: "International Cohorts",
+          currentStep: currentStep,
+          handler: this.determinationHandler,
+          determination: this.state.determination,
+          showErrorIntCohorts: this.state.showInternationalCohortsError,
+          origin: 'consentGroup'
+        }),
+        Security({
+          title: "Security",
+          step: 3,
+          currentStep: currentStep,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateForm: this.updateInfoSecurityFormData,
+          showErrorInfoSecurity: this.state.showInfoSecurityError,
+          removeErrorMessage: this.removeErrorMessage,
+          handleSecurityValidity: this.handleInfoSecurityValidity,
+          currentValue: this.state,
+          edit: false,
+          review: false,
+          readOnly: false
+        })
+      ])
     );
   }
 }

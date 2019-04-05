@@ -27,11 +27,6 @@ class ProjectExtraProperties {
     String accessible
     String textAccessible
 
-    // Sharing data
-    String sharingPlan
-    String databaseControlled
-    String databaseOpen
-
     // Determination questions
     String feeForService
     String broadInvestigator
@@ -77,11 +72,6 @@ class ProjectExtraProperties {
         this.setTextSensitive(project.getTextSensitive() ?: "")
         this.setAccessible(project.getAccessible() ?: "")
         this.setTextAccessible(project.getTextAccessible() ?: "")
-
-        // Sharing data
-        this.setSharingPlan(project.getSharingPlan() ?: "")
-        this.setDatabaseControlled(project.getDataBaseControlled() ?: "")
-        this.setDatabaseOpen(project.getDatabaseOpen() ?: "")
 
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
