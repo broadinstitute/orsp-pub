@@ -786,12 +786,10 @@ class ProjectReview extends Component {
     let intCohortsAnswers = false;
     let questions = false;
     let fundingAwardNumber = false;
-// DEBUGUBUGU
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
         fundingErrorIndex.push(idx);
-        // fundingAwardNumber = obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier);
         return true
       } else if (obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier)) {
         fundingAwardNumber = obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier);
