@@ -70,8 +70,8 @@ class ConsentGroupReview extends Component {
         textCompliance: null,
         sensitive: null,
         textSensitive: null,
-        accessible: null,
-        textAccessible: null,
+        sharingType: null,
+        textSharingType: null,
         sharingPlan: null,
         databaseControlled: null,
         databaseOpen: null,
@@ -96,10 +96,10 @@ class ConsentGroupReview extends Component {
         pii: false,
         compliance: false,
         sensitive: false,
-        accessible: false,
+        accessharingTypesible: false,
         textCompliance: false,
         textSensitive: false,
-        textAccessible: false,
+        textSharingType: false,
         sharingPlan: false,
         endDate: false,
         startDate: false,
@@ -311,10 +311,10 @@ class ConsentGroupReview extends Component {
     let pii = false;
     let compliance = false;
     let sensitive = false;
-    let accessible = false;
+    let sharingType = false;
     let textCompliance = false;
     let textSensitive = false;
-    let textAccessible = false;
+    let textSharingType = false;
     let sharingPlan = false;
     let questions = false;
     let endDate = false;
@@ -366,8 +366,8 @@ class ConsentGroupReview extends Component {
       textSensitive = true;
     }
 
-    if (this.state.formData.consentExtraProps.accessible === "true" && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
-      textAccessible = true;
+    if (this.state.formData.consentExtraProps.sharingType === "true" && this.isEmpty(this.state.formData.consentExtraProps.textSharingType)) {
+      textSharingType= true;
     }
 
     if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
@@ -389,8 +389,8 @@ class ConsentGroupReview extends Component {
       startDate = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.accessible)) {
-      accessible = true;
+    if (this.isEmpty(this.state.formData.consentExtraProps.sharingType)) {
+      sharingType = true;
     }
 
     if (this.consentGroupNameExists()) {
@@ -413,8 +413,8 @@ class ConsentGroupReview extends Component {
       !questions &&
       !textCompliance &&
       !textSensitive &&
-      !accessible &&
-      !textAccessible &&
+      !sharingType &&
+      !textSharingType &&
       !compliance &&
       !sensitive &&
       !startDate &&
@@ -433,11 +433,11 @@ class ConsentGroupReview extends Component {
       prev.errors.sharingPlan = sharingPlan;
       prev.errors.textCompliance = textCompliance;
       prev.errors.textSensitive = textSensitive;
-      prev.errors.textAccessible = textAccessible;
+      prev.errors.textSharingType = textSharingType;
       prev.errors.endDate = endDate;
       prev.errors.compliance = compliance;
       prev.errors.sensitive = sensitive;
-      prev.errors.accessible = accessible;
+      prev.errors.sharingType = sharingType;
       prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
       prev.internationalCohortsError = intCohortsAnswers;
@@ -459,11 +459,11 @@ class ConsentGroupReview extends Component {
       prev.errors.sharingPlan = false;
       prev.errors.textCompliance = false;
       prev.errors.textSensitive = false;
-      prev.errors.textAccessible = false;
+      prev.errors.textSharingType = false;
       prev.errors.endDate = false;
       prev.errors.compliance = false;
       prev.errors.sensitive = false;
-      prev.errors.accessible = false;
+      prev.errors.sharingType = false;
       prev.errors.startDate = false;
       prev.errors.consentGroupName = false;
       prev.errors.instError = false;
@@ -773,12 +773,12 @@ class ConsentGroupReview extends Component {
     consentGroup.pii = this.state.formData.consentExtraProps.pii;
     consentGroup.compliance = this.state.formData.consentExtraProps.compliance;
     consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
-    consentGroup.accessible = this.state.formData.consentExtraProps.accessible;
+    consentGroup.sharingType = this.state.formData.consentExtraProps.sharingType;
 
-    if (consentGroup.accessible === 'true') {
-      consentGroup.textAccessible = this.state.formData.consentExtraProps.textAccessible;
+    if (consentGroup.sharingType === 'open' || consentGroup.sharingType === "controlled" || consentGroup.sharingType === "both") {
+      consentGroup.textSharingType = this.state.formData.consentExtraProps.textSharingType;
     } else {
-      consentGroup.textAccessible = "";
+      consentGroup.textSharingType = "";
     }
     if (consentGroup.sensitive === 'true') {
       consentGroup.textSensitive = this.state.formData.consentExtraProps.textSensitive;
@@ -1350,10 +1350,10 @@ class ConsentGroupReview extends Component {
           InputFieldRadio({
             edit: true,
             id: "radioAccessible",
-            name: "accessible",
+            name: "sharingType",
             label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?"]),
-            value: this.state.formData.consentExtraProps.accessible,
-            currentValue: this.state.current.consentExtraProps.accessible,
+            value: this.state.formData.consentExtraProps.sharingType,
+            currentValue: this.state.current.consentExtraProps.sharingType,
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
               "Yes",
@@ -1362,19 +1362,19 @@ class ConsentGroupReview extends Component {
             ],
             readOnly: this.state.readOnly,
             onChange: this.handleRadio2Change,
-            error: this.state.errors.accessible,
+            error: this.state.errors.sharingType,
             errorMessage: "Required field"
           }),
           InputFieldText({
-            isRendered: this.state.formData.consentExtraProps.accessible === "true",
+            isRendered: this.state.formData.consentExtraProps.sharingType === "open" || this.state.formData.consentExtraProps.sharingType === "controlled" || this.state.formData.consentExtraProps.sharingType === "both",
             id: "inputAccessible",
-            name: "textAccessible",
+            name: "textSharingType",
             label: "Please explain",
-            value: this.state.formData.consentExtraProps.textAccessible,
-            currentValue: this.state.current.consentExtraProps.textAccessible,
+            value: this.state.formData.consentExtraProps.textSharingType,
+            currentValue: this.state.current.consentExtraProps.textSharingType,
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
-            error: this.state.errors.textAccessible,
+            error: this.state.errors.textSharingType,
             errorMessage: "Required field"
           })
         ]),

@@ -67,11 +67,11 @@ class NewProject extends Component {
       formerProjectType: null,
       infoSecurityErrors: {
         sensitive: false,
-        accessible: false,
+        sharingType: false,
         compliance: false,
         pii: false,
         textSensitive: false,
-        textAccessible: false,
+        textSharingType: false,
         textCompliance: false
       }
     };
@@ -173,8 +173,8 @@ class NewProject extends Component {
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
     extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
     extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
-    extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
-    extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
+    extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
+    extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
 
     extraProperties.push({ name: 'sharingPlan', value: this.state.dataSharingFormData.sharingPlan });
     extraProperties.push({ name: 'databaseControlled', value: this.state.dataSharingFormData.databaseControlled });

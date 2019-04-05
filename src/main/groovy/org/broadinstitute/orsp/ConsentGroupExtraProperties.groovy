@@ -21,8 +21,8 @@ class ConsentGroupExtraProperties {
     String textCompliance
     String sensitive
     String textSensitive
-    String accessible
-    String textAccessible
+    String sharingType
+    String textSharingType
 
     // Sharing data
     String sharingPlan
@@ -58,8 +58,8 @@ class ConsentGroupExtraProperties {
         this.setTextCompliance(consentGroup.getTextCompliance() ?: "")
         this.setSensitive(consentGroup.getSensitive() ?: "")
         this.setTextSensitive(consentGroup.getTextSensitive() ?: "")
-        this.setAccessible(consentGroup.getAccessible() ?: "")
-        this.setTextAccessible(consentGroup.getTextAccessible() ?: "")
+        this.setSharingType(consentGroup.getSharingType() ?: "")
+        this.setTextSharingType(consentGroup.getTextSharingType() ?: "")
 
         // Sharing data
         this.setSharingPlan(consentGroup.getSharingPlan() ?: "")

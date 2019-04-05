@@ -24,8 +24,8 @@ class ProjectExtraProperties {
     String textCompliance
     String sensitive
     String textSensitive
-    String accessible
-    String textAccessible
+    String sharingType
+    String textSharingType
 
     // Sharing data
     String sharingPlan
@@ -75,8 +75,8 @@ class ProjectExtraProperties {
         this.setTextCompliance(project.getTextCompliance() ?: "")
         this.setSensitive(project.getSensitive() ?: "")
         this.setTextSensitive(project.getTextSensitive() ?: "")
-        this.setAccessible(project.getAccessible() ?: "")
-        this.setTextAccessible(project.getTextAccessible() ?: "")
+        this.setSharingType(project.getSharingType() ?: "")
+        this.setTextSharingType(project.getTextSharingType() ?: "")
 
         // Sharing data
         this.setSharingPlan(project.getSharingPlan() ?: "")

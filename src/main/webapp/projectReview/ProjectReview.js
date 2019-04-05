@@ -68,11 +68,11 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          accessible: false,
+          sharingType: false,
           compliance: false,
           pii: false,
           sensitive: false,
-          textAccessible: '',
+          textSharingType: '',
           textCompliance: '',
           textSensitive: '',
           isIdReceive: false,
@@ -121,11 +121,11 @@ class ProjectReview extends Component {
           projectAvailability: null,
           describeEditType: null,
           editDescription: null,
-          accessible: false,
+          sharingType: false,
           compliance: false,
           pii: false,
           sensitive: false,
-          textAccessible: '',
+          textSharingType: '',
           textCompliance: '',
           textSensitive: '',
           isIdReceive: false,
@@ -135,11 +135,11 @@ class ProjectReview extends Component {
       },
       infoSecurityErrors: {
         sensitive: false,
-        accessible: false,
+        sharingType: false,
         compliance: false,
         pii: false,
         textSensitive: false,
-        textAccessible: false,
+        textSharingType: false,
         textCompliance: false
       },
       determination: {
@@ -496,16 +496,16 @@ class ProjectReview extends Component {
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
-    project.accessible = this.state.formData.projectExtraProps.accessible;
+    project.sharingType = this.state.formData.projectExtraProps.sharingType;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
     project.sensitive = this.state.formData.projectExtraProps.sensitive;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
 
-    if (project.accessible === 'true') {
-      project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
+    if (project.sharingType === 'open' || project.sharingType === 'controlled' || project.sharingType === 'both') {
+      project.textSharingType= this.state.formData.projectExtraProps.textSharingType;
     } else {
-      project.textAccessible = "";
+      project.textSharingType = "";
     }
     if (project.sensitive === 'true') {
       project.textSensitive = this.state.formData.projectExtraProps.textSensitive;
@@ -892,11 +892,11 @@ class ProjectReview extends Component {
     let pii = false;
     let compliance = false;
     let sensitive = false;
-    let accessible = false;
+    let sharingType = false;
     let isValid = true;
     let textCompliance = false;
     let textSensitive = false;
-    let textAccessible = false;
+    let textSharingType= false;
 
     if (this.state.current.approvalStatus !== 'Legacy') {
       if (isEmpty(this.state.formData.projectExtraProps.pii)) {
@@ -924,14 +924,14 @@ class ProjectReview extends Component {
         textSensitive = true;
         isValid = false;
       }
-      if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
-        accessible = true;
+      if (isEmpty(this.state.formData.projectExtraProps.sharingType)) {
+        sharingType = true;
         isValid = false;
       }
-      if (!isEmpty(this.state.formData.projectExtraProps.accessible)
-        && this.state.formData.projectExtraProps.accessible === "true"
-        && isEmpty(this.state.formData.projectExtraProps.textAccessible)) {
-        textAccessible = true;
+      if (!isEmpty(this.state.formData.projectExtraProps.sharingType)
+        && (this.state.formData.projectExtraProps.sharingType === "open" || this.state.formData.projectExtraProps.sharingType === "controlled" || this.state.formData.projectExtraProps.sharingType === "both")
+        && isEmpty(this.state.formData.projectExtraProps.textSharingType)) {
+        textSharingType = true;
         isValid = false;
       }
     }
@@ -940,10 +940,10 @@ class ProjectReview extends Component {
         prev.infoSecurityErrors.pii = pii;
         prev.infoSecurityErrors.compliance = compliance;
         prev.infoSecurityErrors.sensitive = sensitive;
-        prev.infoSecurityErrors.accessible = accessible;
+        prev.infoSecurityErrors.sharingType = accessibsharingTypele;
         prev.infoSecurityErrors.textCompliance = textCompliance;
         prev.infoSecurityErrors.textSensitive = textSensitive;
-        prev.infoSecurityErrors.textAccessible = textAccessible;
+        prev.infoSecurityErrors.textSharingType = textSharingType;
         return prev;
       });
     }

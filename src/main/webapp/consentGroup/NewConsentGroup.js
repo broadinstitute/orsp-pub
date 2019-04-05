@@ -55,10 +55,10 @@ class NewConsentGroup extends Component {
         pii: false,
         compliance: false,
         sensitive: false,
-        accessible: false,
+        sharingType: false,
         textCompliance: false,
         textSensitive: false,
-        textAccessible: false,
+        textSharingType: false,
       }
     };
 
@@ -200,8 +200,8 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
     extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
     extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
-    extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
-    extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
+    extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
+    extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
     // step 5
     extraProperties.push({ name: 'sharingPlan', value: this.state.dataSharingFormData.sharingPlan });
     extraProperties.push({ name: 'databaseControlled', value: this.state.dataSharingFormData.databaseControlled });
