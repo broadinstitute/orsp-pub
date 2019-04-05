@@ -31,14 +31,12 @@ class ProjectReview extends Component {
       generalError: false,
       uploadConsentGroupError: false,
       subjectProtectionError: false,
-      attestationError: false,
       descriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
       uploadConsentGroup: false,
       subjectProtection: false,
-      attestation: false,
       fundingError: false,
       fundingErrorIndex: [],
       internationalCohortsError: false,
@@ -1311,10 +1309,9 @@ class ProjectReview extends Component {
             onChange: this.handleAttestationCheck,
             label: "I confirm",
             checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
+            readOnly: !(this.state.current.approvalStatus === 'Legacy' && this.state.readOnly),
             // defaultChecked: this.state.formData.projectExtraProps.attestation,
-            readOnly: true
           }),
-          small({ isRendered: this.state.errors.attestation, className: "errorMessage" }, 'Required Field')
         ]),
 
         Panel({ title: "Security" }, [
