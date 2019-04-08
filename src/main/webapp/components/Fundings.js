@@ -3,6 +3,7 @@ import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helper
 import { InputFieldText } from './InputFieldText';
 import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
+import { isEmpty } from "../util/Utils";
 
 const fundingOptions = [
   { value: 'federal_prime', label: 'Federal Prime' },
@@ -154,6 +155,15 @@ export const Fundings = hh(class Fundings extends Component {
     return hasError
   };
 
+  getIdentifierError = (element) => {
+    let identifierHasError = false;
+    const source = this.props.edit ? element.future.source : element.source;
+    if (this.props.fundingAwardNumberError && source.value === 'federal_prime') {
+      identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
+    }
+    return identifierHasError;
+  };
+
   render() {
     let {
       fundings = [],
@@ -227,6 +237,8 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
+                      error: this.getIdentifierError(rd),
+                      errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
                       disabled: false,
