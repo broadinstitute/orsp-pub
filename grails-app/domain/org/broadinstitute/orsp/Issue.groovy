@@ -17,8 +17,6 @@ class Issue implements LogicalDelete<Issue> {
     Date requestDate
     Date updateDate
     Date expirationDate
-    static final String DATA_USE_LETTER = "Data Use Letter"
-    static final String CONSENT_DOCUMENT = "Consent Document"
 
     static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding]
 

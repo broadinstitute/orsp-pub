@@ -18,6 +18,8 @@ import get from 'lodash/get';
 import { format } from 'date-fns';
 import { IntCohortsReview } from "../components/IntCohortsReview";
 
+const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 class ConsentGroupReview extends Component {
 
   constructor(props) {
@@ -96,7 +98,7 @@ class ConsentGroupReview extends Component {
         pii: false,
         compliance: false,
         sensitive: false,
-        accessharingTypesible: false,
+        sharingType: false,
         textCompliance: false,
         textSensitive: false,
         textSharingType: false,
@@ -775,7 +777,7 @@ class ConsentGroupReview extends Component {
     consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
     consentGroup.sharingType = this.state.formData.consentExtraProps.sharingType;
 
-    if (consentGroup.sharingType === 'open' || consentGroup.sharingType === "controlled" || consentGroup.sharingType === "both") {
+    if (TEXT_SHARING_TYPES.some((type) => type === consentGroup.sharingType)) {
       consentGroup.textSharingType = this.state.formData.consentExtraProps.textSharingType;
     } else {
       consentGroup.textSharingType = "";
@@ -1348,35 +1350,49 @@ class ConsentGroupReview extends Component {
             errorMessage: "Required field"
           }),
           InputFieldRadio({
-            edit: true,
             id: "radioAccessible",
             name: "sharingType",
-            label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?"]),
+            label: span({}, ["Will the individual level data collected or generated as part of this project be shared via: *"]),
             value: this.state.formData.consentExtraProps.sharingType,
             currentValue: this.state.current.consentExtraProps.sharingType,
-            optionValues: ["true", "false", "uncertain"],
             optionLabels: [
-              "Yes",
-              "No",
-              "Uncertain"
+              "An open/unrestricted repository (such as GEO)",
+              "A controlled-access repository (such as dbGaP or DUOS)",
+              "Both a controlled-access and an open-access repository",
+              "No data sharing via a repository (data returned to research collaborator only)",
+              "Data sharing plan not yet determined"
             ],
-            readOnly: this.state.readOnly,
+            optionValues: [
+              "open",
+              "controlled",
+              "both",
+              "noDataSharing",
+              "undetermined"
+            ],
             onChange: this.handleRadio2Change,
+            required: true,
             error: this.state.errors.sharingType,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            readOnly: this.state.readOnly,
+            edit: this.state.edit,
           }),
           InputFieldText({
-            isRendered: this.state.formData.consentExtraProps.sharingType === "open" || this.state.formData.consentExtraProps.sharingType === "controlled" || this.state.formData.consentExtraProps.sharingType === "both",
+            isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.consentExtraProps.sharingType),
             id: "inputAccessible",
             name: "textSharingType",
-            label: "Please explain",
+            label: "Please explain*",
             value: this.state.formData.consentExtraProps.textSharingType,
             currentValue: this.state.current.consentExtraProps.textSharingType,
+            disabled: false,
+            required: false,
             onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly,
             error: this.state.errors.textSharingType,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            readOnly: this.state.readOnly,
+            edit: true,
+            review: true
           })
+
         ]),
 
         Panel({ title: "Data Sharing" }, [

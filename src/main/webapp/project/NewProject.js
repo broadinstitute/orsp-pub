@@ -486,7 +486,7 @@ class NewProject extends Component {
     this.setState(prev => {
       prev.generalError = false;
       return prev;
-    });
+    }, () => console.log("general error? ", this.state.generalError));
   }
 
   render() {

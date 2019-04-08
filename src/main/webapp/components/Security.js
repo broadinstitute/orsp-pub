@@ -6,6 +6,8 @@ import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { isEmpty } from '../util/Utils'
 
+const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 export const Security = hh(class Security extends Component {
 
   state = {};
@@ -106,8 +108,8 @@ export const Security = hh(class Security extends Component {
       isValid = false;
     }
     if (!isEmpty(this.state.formData.sharingType)
-      && (this.state.formData.sharingType === "open" || this.state.formData.sharingType === "controlled" || this.state.formData.sharingType === "both")
-      && isEmpty(this.state.formData.textAccessible)) {
+      && TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType)
+      && isEmpty(this.state.formData.textSharingType)) {
       textSharingType = true;
       isValid = false;
     }
@@ -249,7 +251,7 @@ export const Security = hh(class Security extends Component {
           }),
 
           InputFieldText({
-            isRendered: this.state.formData.sharingType === "open" || this.state.formData.sharingType === "controlled" || this.state.formData.sharingType === "both",
+            isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType),
             id: "inputAccessible",
             name: "textSharingType",
             label: "Please explain*",

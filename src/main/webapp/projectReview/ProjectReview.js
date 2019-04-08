@@ -20,6 +20,8 @@ import { IntCohortsReview } from "../components/IntCohortsReview";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 
+const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 class ProjectReview extends Component {
 
   constructor(props) {
@@ -503,7 +505,7 @@ class ProjectReview extends Component {
     project.sensitive = this.state.formData.projectExtraProps.sensitive;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
 
-    if (project.sharingType === 'open' || project.sharingType === 'controlled' || project.sharingType === 'both') {
+    if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
       project.textSharingType= this.state.formData.projectExtraProps.textSharingType;
     } else {
       project.textSharingType = "";
@@ -936,7 +938,7 @@ class ProjectReview extends Component {
         isValid = false;
       }
       if (!isEmpty(this.state.formData.projectExtraProps.sharingType)
-        && (this.state.formData.projectExtraProps.sharingType === "open" || this.state.formData.projectExtraProps.sharingType === "controlled" || this.state.formData.projectExtraProps.sharingType === "both")
+        && TEXT_SHARING_TYPES.some((type) => type === this.state.formData.projectExtraProps.sharingType)
         && isEmpty(this.state.formData.projectExtraProps.textSharingType)) {
         textSharingType = true;
         isValid = false;
@@ -947,7 +949,7 @@ class ProjectReview extends Component {
         prev.infoSecurityErrors.pii = pii;
         prev.infoSecurityErrors.compliance = compliance;
         prev.infoSecurityErrors.sensitive = sensitive;
-        prev.infoSecurityErrors.sharingType = accessibsharingTypele;
+        prev.infoSecurityErrors.sharingType = sharingType;
         prev.infoSecurityErrors.textCompliance = textCompliance;
         prev.infoSecurityErrors.textSensitive = textSensitive;
         prev.infoSecurityErrors.textSharingType = textSharingType;
