@@ -470,7 +470,7 @@ class NewProject extends Component {
           console.error(error);
         });
     } else {
-      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
     }
   }
 

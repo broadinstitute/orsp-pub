@@ -153,7 +153,7 @@ class NewConsentGroup extends Component {
           this.toggleSubmitError();
         });
     } else {
-      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
     }
   }
 
