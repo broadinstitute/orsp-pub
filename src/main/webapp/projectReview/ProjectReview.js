@@ -173,11 +173,8 @@ class ProjectReview extends Component {
     console.log(error, info);
   }
 
-  componentDidMount() {
+    componentDidMount() {
     this.init();
-    if (new URLSearchParams(window.location.search).has('new')) {
-      this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
-    }
   }
 
   init() {
@@ -224,6 +221,9 @@ class ProjectReview extends Component {
 
         Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
           data => {
+            if (new URLSearchParams(window.location.search).has('new')) {
+              this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
+            }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
 
