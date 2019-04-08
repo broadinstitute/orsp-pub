@@ -116,6 +116,6 @@ class ProjectController extends AuthenticatedController {
     }
 
     def addAttestationExtraProps() {
-        Integer updatedRecords = issueService.updateIssueExtraProps()
+        Integer updatedRecords = issueService.addAttestationToIssueExtraProps()
         render([result: updatedRecords + ' Issue extra properties updated'] as JSON) }
 }
