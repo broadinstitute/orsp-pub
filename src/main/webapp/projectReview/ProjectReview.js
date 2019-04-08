@@ -40,6 +40,7 @@ class ProjectReview extends Component {
       fundingError: false,
       fundingErrorIndex: [],
       internationalCohortsError: false,
+      fundingAwardNumberError: false,
       showDialog: false,
       approveInfoDialog: false,
       discardEditsDialog: false,
@@ -675,6 +676,8 @@ class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     this.setState(prev => {
       prev.formData.fundings = updated;
+      prev.fundingAwardNumberError = false;
+      prev.generalError = false;
       prev.fundingError = false;
       return prev;
     });
@@ -789,13 +792,15 @@ class ProjectReview extends Component {
     let generalError = false;
     let intCohortsAnswers = false;
     let questions = false;
-
-    // Todo: Fundings error will be handled inside its component
+    let fundingAwardNumber = false;
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
         fundingErrorIndex.push(idx);
         return true
+      } else if (obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier)) {
+        fundingAwardNumber = obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier);
+        return true;
       } else {
         return false;
       }
@@ -853,6 +858,7 @@ class ProjectReview extends Component {
       prev.generalError = generalError;
       prev.showInfoSecurityError = infoSecValidate;
       prev.internationalCohortsError = intCohortsAnswers;
+      prev.fundingAwardNumberError = fundingAwardNumber;
       return prev;
     });
 
@@ -865,6 +871,7 @@ class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
+      !fundingAwardNumber &&
       this.validateInfoSecurity();
   }
 
@@ -1160,6 +1167,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly,
             error: this.state.fundingError,
             errorIndex: this.state.fundingErrorIndex,
+            fundingAwardNumberError: this.state.fundingAwardNumberError,
             setError: this.changeFundingError,
             errorMessage: "Required field",
             edit: true
