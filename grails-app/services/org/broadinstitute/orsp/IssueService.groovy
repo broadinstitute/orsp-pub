@@ -459,4 +459,18 @@ class IssueService {
         IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
     }
 
+    Integer updateIssueExtraProps() {
+        Collection<String> projectsKeys = queryService.findByProjectsStatus('Legacy', 'Consent Group')
+        Integer countUpdated = 0
+        projectsKeys.collect { key ->
+            Issue issue = queryService.findByKey(key)
+            if (issue) {
+                IssueExtraProperty extraProperty = new IssueExtraProperty(issue: issue, name: IssueExtraProperty.ATTESTATION, value: 'true', projectKey: issue.projectKey)
+                extraProperty.save(flush: true)
+                countUpdated++
+            }
+        }
+        countUpdated
+    }
+
 }

@@ -116,6 +116,6 @@ class ProjectController extends AuthenticatedController {
     }
 
     def addAttestationExtraProps() {
-        Collection<String> projectsKeys = queryService.findByProjectsStatus('Legacy', 'Consent Group')
-    }
+        Integer updatedRecords = issueService.updateIssueExtraProps()
+        render([result: updatedRecords + ' Issue extra properties updated'] as JSON) }
 }

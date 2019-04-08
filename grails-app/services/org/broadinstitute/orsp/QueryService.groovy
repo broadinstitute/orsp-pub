@@ -1108,12 +1108,18 @@ class QueryService implements Status {
         documents
     }
 
-    Collection<String> findByProjectsStatus(String status, String issueType) {
-        final String query = 'select project_key from issue ' +
-                'where approval_status = ? and type != ? '
+    Collection<String> findByProjectsStatus(String status, String notRequiredIssueType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = 'select i.project_key from issue as i ' +
+                'where i.approval_status = :status and i.type != :notRequiredIssueType '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        sqlQuery.setString(0, status)
-        sqlQuery.setString(1, issueType)
-        getSqlConnection().rows(query).collect { it.get("project_key").toString() }
+        final projectKeys = sqlQuery.with {
+            setString("status", status)
+            setString("notRequiredIssueType", notRequiredIssueType)
+            list()
+        }
+        projectKeys
+//        getSqlConnection().rows(query).collect { it.get("project_key").toString() }
     }
 }
