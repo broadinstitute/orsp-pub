@@ -62,7 +62,8 @@ class NewProject extends Component {
         pTitle: false,
         uploadConsentGroup: false,
         subjectProtection: false,
-        fundings: false
+        fundings: false,
+        fundingAwardNumber: false
       },
       formerProjectType: null,
       infoSecurityErrors: {
@@ -302,6 +303,8 @@ class NewProject extends Component {
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
+    let fundingAwardNumber = false;
+
     if (isEmpty(this.state.generalDataFormData.studyDescription)) {
       studyDescription = true;
       isValid = false;
@@ -327,6 +330,10 @@ class NewProject extends Component {
           fundings = true;
           isValid = false;
         }
+        if (!fundings && funding.source.value === 'federal_prime' && isEmpty(funding.identifier)) {
+          fundingAwardNumber = true;
+          isValid = false;
+        }
       });
     }
     if (field === undefined || field === null || field === 0) {
@@ -336,6 +343,7 @@ class NewProject extends Component {
         prev.errors.subjectProtection = subjectProtection;
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
+        prev.errors.fundingAwardNumber = fundingAwardNumber;
         return prev;
       });
     }
@@ -345,6 +353,7 @@ class NewProject extends Component {
       this.setState(prev => {
         if (field === 'fundings') {
           prev.errors.fundings = fundings;
+          prev.errors.fundingAwardNumber = fundingAwardNumber;
         }
         else if (field === 'studyDescription') {
           prev.errors.studyDescription = studyDescription;
