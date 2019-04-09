@@ -105,7 +105,7 @@
 
 
 <script>
-// Display for 8 seconds a message indicating the submission of a new consent group. This is temporal until this page is moved to react.
+// Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
     $( document ).ready(function(){
         var url = new URLSearchParams(window.location.search);
         if (url.get('tab') === 'consent-groups' && url.has('new')) {
