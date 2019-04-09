@@ -54,10 +54,8 @@ class NewConsentGroup extends Component {
         institutionalSourcesCountry: false,
         pii: false,
         compliance: false,
-        sensitive: false,
         accessible: false,
         textCompliance: false,
-        textSensitive: false,
         textAccessible: false,
       }
     };
@@ -198,8 +196,6 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
-    extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
     extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
     extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
     // step 5
