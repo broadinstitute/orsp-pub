@@ -142,7 +142,6 @@ class ProjectReview extends Component {
         compliance: false,
         pii: false,
         textSensitive: false,
-        textSharingType: false,
         textCompliance: false
       },
       determination: {
@@ -905,7 +904,6 @@ class ProjectReview extends Component {
     let isValid = true;
     let textCompliance = false;
     let textSensitive = false;
-    let textSharingType= false;
 
     if (this.state.current.approvalStatus !== 'Legacy') {
       if (isEmpty(this.state.formData.projectExtraProps.pii)) {
@@ -937,12 +935,6 @@ class ProjectReview extends Component {
         sharingType = true;
         isValid = false;
       }
-      if (!isEmpty(this.state.formData.projectExtraProps.sharingType)
-        && TEXT_SHARING_TYPES.some((type) => type === this.state.formData.projectExtraProps.sharingType)
-        && isEmpty(this.state.formData.projectExtraProps.textSharingType)) {
-        textSharingType = true;
-        isValid = false;
-      }
     }
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
@@ -952,7 +944,6 @@ class ProjectReview extends Component {
         prev.infoSecurityErrors.sharingType = sharingType;
         prev.infoSecurityErrors.textCompliance = textCompliance;
         prev.infoSecurityErrors.textSensitive = textSensitive;
-        prev.infoSecurityErrors.textSharingType = textSharingType;
         return prev;
       });
     }

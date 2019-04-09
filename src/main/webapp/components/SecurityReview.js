@@ -3,7 +3,6 @@ import { hh, h1, span, a, div } from 'react-hyperscript-helpers';
 import { WizardStep } from "./WizardStep";
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
-import { isEmpty } from '../util/Utils'
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -20,9 +19,10 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         sensitive: true,
         sharingType: true,
         textCompliance: true,
-        textSensitive: true,
-        textSharingType: true,
+        textSensitive: true
       },
+      openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
+      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
     };
     this.formHasError = this.formHasError.bind(this);
   }
@@ -184,14 +184,13 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         isRendered: this.props.review === true ?  TEXT_SHARING_TYPES.some((type) => type === this.props.formData.projectExtraProps.sharingType) : TEXT_SHARING_TYPES.some((type) => type === this.props.currentValue.securityInfoFormData.sharingType),
         id: "inputAccessible",
         name: "textSharingType",
-        label: "Please explain*",
+        label: "Name of Database(s) ",
+        moreInfo: this.props.formData.projectExtraProps.sharingType !== 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
         value: this.props.review === true ? this.props.formData.projectExtraProps.textSharingType : this.props.currentValue.securityInfoFormData.textSharingType,
         currentValue:  this.props.review === true ? this.props.current.projectExtraProps.textSharingType : undefined,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
-        error: this.props.infoSecurityErrors.textSharingType && this.props.showErrorInfoSecurity,
-        errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
         review: this.props.review

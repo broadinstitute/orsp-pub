@@ -57,8 +57,7 @@ class NewConsentGroup extends Component {
         sensitive: false,
         sharingType: false,
         textCompliance: false,
-        textSensitive: false,
-        textSharingType: false,
+        textSensitive: false
       }
     };
 

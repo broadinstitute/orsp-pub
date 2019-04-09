@@ -101,7 +101,6 @@ class ConsentGroupReview extends Component {
         sharingType: false,
         textCompliance: false,
         textSensitive: false,
-        textSharingType: false,
         sharingPlan: false,
         endDate: false,
         startDate: false,
@@ -139,7 +138,10 @@ class ConsentGroupReview extends Component {
       dataSharingError: false,
       isEdited: false,
       intCohortsAnswers: [],
-      resetIntCohorts: false
+      resetIntCohorts: false,
+
+      openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
+      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
     this.consentGroupNameExists = this.consentGroupNameExists.bind(this);
@@ -316,7 +318,6 @@ class ConsentGroupReview extends Component {
     let sharingType = false;
     let textCompliance = false;
     let textSensitive = false;
-    let textSharingType = false;
     let sharingPlan = false;
     let questions = false;
     let endDate = false;
@@ -368,10 +369,6 @@ class ConsentGroupReview extends Component {
       textSensitive = true;
     }
 
-    if (this.state.formData.consentExtraProps.sharingType === "true" && this.isEmpty(this.state.formData.consentExtraProps.textSharingType)) {
-      textSharingType= true;
-    }
-
     if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
       sharingPlan = true;
     }
@@ -416,7 +413,6 @@ class ConsentGroupReview extends Component {
       !textCompliance &&
       !textSensitive &&
       !sharingType &&
-      !textSharingType &&
       !compliance &&
       !sensitive &&
       !startDate &&
@@ -435,7 +431,6 @@ class ConsentGroupReview extends Component {
       prev.errors.sharingPlan = sharingPlan;
       prev.errors.textCompliance = textCompliance;
       prev.errors.textSensitive = textSensitive;
-      prev.errors.textSharingType = textSharingType;
       prev.errors.endDate = endDate;
       prev.errors.compliance = compliance;
       prev.errors.sensitive = sensitive;
@@ -461,7 +456,6 @@ class ConsentGroupReview extends Component {
       prev.errors.sharingPlan = false;
       prev.errors.textCompliance = false;
       prev.errors.textSensitive = false;
-      prev.errors.textSharingType = false;
       prev.errors.endDate = false;
       prev.errors.compliance = false;
       prev.errors.sensitive = false;
@@ -1380,14 +1374,13 @@ class ConsentGroupReview extends Component {
             isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.consentExtraProps.sharingType),
             id: "inputAccessible",
             name: "textSharingType",
-            label: "Please explain*",
+            label: "Name of Database(s) ",
+            moreInfo: this.state.formData.consentExtraProps.sharingType !== 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
             value: this.state.formData.consentExtraProps.textSharingType,
             currentValue: this.state.current.consentExtraProps.textSharingType,
             disabled: false,
             required: false,
             onChange: this.handleExtraPropsInputChange,
-            error: this.state.errors.textSharingType,
-            errorMessage: "Required field",
             readOnly: this.state.readOnly,
             edit: true,
             review: true

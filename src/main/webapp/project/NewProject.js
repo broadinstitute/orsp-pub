@@ -72,7 +72,6 @@ class NewProject extends Component {
         compliance: false,
         pii: false,
         textSensitive: false,
-        textSharingType: false,
         textCompliance: false
       }
     };
@@ -486,7 +485,7 @@ class NewProject extends Component {
     this.setState(prev => {
       prev.generalError = false;
       return prev;
-    }, () => console.log("general error? ", this.state.generalError));
+    });
   }
 
   render() {

@@ -30,9 +30,10 @@ export const Security = hh(class Security extends Component {
         sensitive: true,
         sharingType: true,
         textCompliance: true,
-        textSensitive: true,
-        textSharingType: true,
-      }
+        textSensitive: true
+      },
+      openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
+      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
     };
   }
 
@@ -78,7 +79,6 @@ export const Security = hh(class Security extends Component {
     let isValid = true;
     let textCompliance = false;
     let textSensitive = false;
-    let textSharingType = false;
 
     if (isEmpty(this.state.formData.pii)) {
       pii = true;
@@ -107,12 +107,6 @@ export const Security = hh(class Security extends Component {
       sharingType = true;
       isValid = false;
     }
-    if (!isEmpty(this.state.formData.sharingType)
-      && TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType)
-      && isEmpty(this.state.formData.textSharingType)) {
-      textSharingType = true;
-      isValid = false;
-    }
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
@@ -121,7 +115,6 @@ export const Security = hh(class Security extends Component {
         prev.errors.sharingType = sharingType;
         prev.errors.textCompliance = textCompliance;
         prev.errors.textSensitive = textSensitive;
-        prev.errors.textSharingType = textSharingType;
         return prev;
       });
     }
@@ -254,13 +247,12 @@ export const Security = hh(class Security extends Component {
             isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType),
             id: "inputAccessible",
             name: "textSharingType",
-            label: "Please explain*",
+            label: "Name of Database(s) ",
+            moreInfo: this.state.formData.sharingType !== 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
             value: this.state.formData.textSharingType,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
-            error: this.state.errors.textSharingType && this.props.showErrorInfoSecurity,
-            errorMessage: "Required field"
           })
         ])
       ])
