@@ -455,16 +455,13 @@ class IssueService {
     }
 
     Integer addAttestationToIssueExtraProps() {
-        Collection<String> projectsKeys = queryService.getLegacyProjects()
+        Collection<Issue> projectsKeys = queryService.getLegacyProjects()
         Integer countUpdated = 0
-        projectsKeys.collect { key ->
-            Issue issue = queryService.findByKey(key)
-            if (issue) {
-                if (issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ATTESTATION }.size() == 0) {
-                    IssueExtraProperty extraProperty = new IssueExtraProperty(issue: issue, name: IssueExtraProperty.ATTESTATION, value: 'true', projectKey: issue.projectKey)
-                    extraProperty.save(flush: true)
-                    countUpdated++
-                }
+        projectsKeys.collect { issue ->
+            if (issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ATTESTATION }.size() == 0) {
+                IssueExtraProperty extraProperty = new IssueExtraProperty(issue: issue, name: IssueExtraProperty.ATTESTATION, value: 'true', projectKey: issue.projectKey)
+                extraProperty.save(flush: true)
+                countUpdated++
             }
         }
         countUpdated

@@ -1108,15 +1108,16 @@ class QueryService implements Status {
         documents
     }
 
-    Collection<String> getLegacyProjects() {
+    Collection<Issue> getLegacyProjects() {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query = 'select i.project_key from issue as i ' +
+        final String query = 'select * from issue as i ' +
                 'where i.approval_status = "Legacy" and i.type != "Consent Group"'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final projectKeys = sqlQuery.with {
+        final issuesLegacy = sqlQuery.with {
+            addEntity(Issue)
             list()
         }
-        projectKeys
+        issuesLegacy
     }
 }
