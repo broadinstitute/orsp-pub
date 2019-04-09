@@ -1001,6 +1001,7 @@ class ConsentGroupReview extends Component {
     let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
+        h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
@@ -1011,7 +1012,6 @@ class ConsentGroupReview extends Component {
           clarificationUrl: this.props.clarificationUrl,
           successClarification: this.successClarification
         }),
-        h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
           closeModal: this.toggleState('approveDialog'),
           show: this.state.approveDialog,
@@ -1044,13 +1044,13 @@ class ConsentGroupReview extends Component {
           bodyText: 'Are you sure you want to remove this Consent Group?',
           actionLabel: 'Yes'
         }, []),
+
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
           isRendered: this.state.readOnly === true
         }, ["Edit Information"]),
-
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
@@ -1412,12 +1412,14 @@ class ConsentGroupReview extends Component {
             disabled: this.state.disableApproveButton,
             isRendered: this.state.current.consentExtraProps.projectReviewApproved !== true && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
+
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('discardEditsDialog'),
             isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
           }, ["Discard Edits"]),
+          
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('requestClarification'),

@@ -51,6 +51,8 @@ class ProjectReview extends Component {
       alertType: '',
       alertMessage: '',
       showAlert: false,
+      showSubmissionAlert: false,
+      showSuccessClarification: false,
       formData: {
         approvalStatus: '',
         description: '',
@@ -165,7 +167,7 @@ class ProjectReview extends Component {
     console.log(error, info);
   }
 
-  componentDidMount() {
+    componentDidMount() {
     this.init();
   }
 
@@ -211,10 +213,11 @@ class ProjectReview extends Component {
           }
         });
 
-
-
         Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
           data => {
+            if (new URLSearchParams(window.location.search).has('new')) {
+              this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
+            }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
 
@@ -230,7 +233,7 @@ class ProjectReview extends Component {
                 return prev;
               });
             } else {
-              formData =  JSON.parse(currentStr);
+              formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -321,7 +324,7 @@ class ProjectReview extends Component {
   determinationHandler = (determination) => {
     let newValues = {};
     const answers = [];
-    this.clearAlertMessage();
+    this.clearAlertMessage('showAlert');
     determination.questions.forEach(question => {
 
       if (question.answer !== null) {
@@ -700,9 +703,9 @@ class ProjectReview extends Component {
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
-        prev.formData[field] = value;
-        return prev;
-      },
+      prev.formData[field] = value;
+      return prev;
+    },
       () => {
         if (this.state.errorSubmit == true) this.isValid()
       });
@@ -710,9 +713,9 @@ class ProjectReview extends Component {
 
   handleProjectExtraPropsChangeRadio = (e, field, value) => {
     this.setState(prev => {
-        prev.formData.projectExtraProps[field] = value;
-        return prev;
-      },
+      prev.formData.projectExtraProps[field] = value;
+      return prev;
+    },
       () => {
         if (this.state.errorSubmit === true) this.isValid()
       });
@@ -722,9 +725,9 @@ class ProjectReview extends Component {
     const field = e.currentTarget.name;
     const value = e.currentTarget.value;
     this.setState(prev => {
-        prev.formData.projectExtraProps[field] = value;
-        return prev;
-      },
+      prev.formData.projectExtraProps[field] = value;
+      return prev;
+    },
       () => {
         if (this.state.errorSubmit === true) this.isValid()
       });
@@ -758,7 +761,7 @@ class ProjectReview extends Component {
 
   toggleState = (e) => () => {
     this.setState((state, props) => {
-      return { [e]: !state[e]}
+      return { [e]: !state[e] }
     });
   };
 
@@ -857,19 +860,19 @@ class ProjectReview extends Component {
     })
   };
 
-  successClarification = () => {
-    setTimeout(this.clearAlertMessage, 5000, null);
+  successNotification = (type, message, time) => {
+    setTimeout(this.clearAlertMessage(type), time, null);
     this.setState(prev => {
-      prev.showAlert = true;
-      prev.alertMessage = 'Request clarification sent.';
+      prev[type] = true;
+      prev.alertMessage = message;
       prev.alertType = 'success';
       return prev;
     });
   };
 
-  clearAlertMessage = () => {
+  clearAlertMessage = (type) => () => {
     this.setState(prev => {
-      prev.showAlert = false;
+      prev[type] = false;
       prev.alertMessage = '';
       prev.alertType = '';
       return prev;
@@ -946,7 +949,7 @@ class ProjectReview extends Component {
       if (updatedForm[field] !== '' && value === undefined) {
         prev.formData.projectExtraProps[field] = updatedForm[field];
       } else if (value !== undefined) {
-        prev.formData.projectExtraProps[field] = value ;
+        prev.formData.projectExtraProps[field] = value;
       }
       prev.showInfoSecurityError = false;
       prev.generalError = false;
@@ -1006,7 +1009,7 @@ class ProjectReview extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           clarificationUrl: this.props.clarificationUrl,
-          successClarification: this.successClarification
+          successClarification: this.successNotification
         }),
         
         button({
@@ -1015,7 +1018,6 @@ class ProjectReview extends Component {
           onClick: this.enableEdit(),
           isRendered: this.state.readOnly === true
         }, ["Edit Information"]),
-
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
@@ -1029,6 +1031,13 @@ class ProjectReview extends Component {
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
+
+        AlertMessage({
+          msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
+          show: this.state.showSubmissionAlert,
+          type: 'success'
+        }),
+
         Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
           div({ isRendered: this.projectType === "IRB Project" }, [
             InputFieldRadio({
@@ -1186,8 +1195,8 @@ class ProjectReview extends Component {
             currentValue: this.state.current.projectExtraProps.uploadConsentGroup,
             optionValues: ["uploadNow", "uploadLater", "notUpload"],
             optionLabels: [
-              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["now"]) ]),
-              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["later"]) ]),
+              span({}, ["Yes, I will upload a Consent Group ", span({ className: "bold" }, ["now"])]),
+              span({}, ["Yes, I will upload a Consent Group ", span({ className: "bold" }, ["later"])]),
               "No, I will not upload a Consent Group"
             ],
             onChange: this.handleProjectExtraPropsChangeRadio,
@@ -1393,7 +1402,7 @@ class ProjectReview extends Component {
         ]),
         AlertMessage({
           msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
-          show: this.state.generalError || this.state.showAlert,
+          show: this.state.generalError || this.state.showAlert || this.state.showSuccessClarification,
           type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [

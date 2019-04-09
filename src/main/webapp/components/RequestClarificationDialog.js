@@ -40,7 +40,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
         this.setState(prev => {
           prev.showAlert = false;
         });
-        this.props.successClarification();
+        this.props.successClarification('showSuccessClarification', 'Request clarification sent.', 5000);
         this.handleClose();
       }).catch(error => {
         console.log(error);
