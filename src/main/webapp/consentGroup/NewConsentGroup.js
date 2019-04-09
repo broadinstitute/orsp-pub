@@ -9,6 +9,7 @@ import { spinnerService } from '../util/spinner-service';
 import { DataSharing } from '../components/DataSharing';
 import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
+import { DOCUMENT_TYPE } from '../util/DocumentType';
 
 class NewConsentGroup extends Component {
 
@@ -19,6 +20,7 @@ class NewConsentGroup extends Component {
         displayName: '',
         userName: ''
       },
+      documentOptions: [],
       showInternationalCohortsError: false,
       showInfoSecurityError: false,
       isInfoSecurityValid: false,
@@ -93,14 +95,14 @@ class NewConsentGroup extends Component {
 
   getUserSession() {
     User.getUserSession(this.props.getUserUrl).then(
-      resp => this.setState({ user : resp.data })
+      resp => this.setState({ user: resp.data })
     )
   }
 
   submitNewConsentGroup = () => {
 
     spinnerService.showAll();
-    this.setState({submitError: false});
+    this.setState({ submitError: false });
 
     if (this.validateForm()) {
       this.removeErrorMessage();
@@ -133,23 +135,27 @@ class NewConsentGroup extends Component {
 
   uploadFiles = async (projectKey) => {
     let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
-    Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
-      .then(resp => {
-        // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
-        // transitioning from old gsps style is solved.
-        window.location.href =  [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
-        spinnerService.hideAll();
-        this.setState(prev => {
-          prev.formSubmitted = true;
-          return prev;
+    if (this.state.files !== null && this.state.files.length > 0) {
+      Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
+        .then(resp => {
+          // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
+          // transitioning from old gsps style is solved.
+          window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
+          spinnerService.hideAll();
+          this.setState(prev => {
+            prev.formSubmitted = true;
+            return prev;
+          });
+        }).catch(error => {
+          spinnerService.hideAll();
+          this.changeSubmitState();
+          console.error(error);
+          this.toggleSubmitError();
         });
-      }).catch(error => {
-        spinnerService.hideAll();
-        this.changeSubmitState();
-        console.error(error);
-        this.toggleSubmitError();
-      });
-  };
+    } else {
+      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
+    }
+  }
 
   toggleSubmitError = () => {
     this.setState(prev => {
@@ -182,11 +188,11 @@ class NewConsentGroup extends Component {
     // step 3
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
-     questions.map((q, idx) => {
+      questions.map((q, idx) => {
         if (q.answer !== null) {
-          extraProperties.push({name: q.key, value: q.answer});
+          extraProperties.push({ name: q.key, value: q.answer });
         }
-     });
+      });
     }
     // step 4
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
@@ -234,8 +240,6 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateGeneralData(field);
-    } else if (this.state.currentStep === 1) {
-      isValid = this.validateDocuments();
     } else if (this.state.currentStep === 2) {
       isValid = this.validateInternationalCohorts();
     } else if (this.state.currentStep === 3) {
@@ -248,11 +252,10 @@ class NewConsentGroup extends Component {
 
   validateForm() {
     let isGeneralDataValid = this.validateGeneralData();
-    let isDocumentsValid = this.validateDocuments();
     let isInternationalCohortsValid = this.validateInternationalCohorts();
     let isInfoSecurityValid = this.validateInfoSecurity();
     let isDataSharingValid = this.validateDataSharing();
-    return isGeneralDataValid && isDocumentsValid && isInternationalCohortsValid && isInfoSecurityValid && isDataSharingValid;
+    return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isDataSharingValid;
   }
 
   consentGroupNameExists() {
@@ -389,33 +392,6 @@ class NewConsentGroup extends Component {
     });
   };
 
-  validateDocuments = () => {
-    let isValid = true;
-
-    let docs = [];
-    if (this.state.files !== null) {
-      this.state.files.forEach(file => {
-        if (file.required === true && file.file === null) {
-          file.error = true;
-          isValid = false;
-        } else {
-          file.error = false;
-        }
-        docs.push(file);
-      });
-    }
-    else {
-      isValid = false;
-    }
-
-    this.setState(prev => {
-      prev.files = docs;
-      return prev;
-    });
-
-    return isValid;
-  };
-
   validateInternationalCohorts() {
     let isValid = true;
     if (this.state.determination.requiredError || this.state.determination.endState === false) {
@@ -484,45 +460,11 @@ class NewConsentGroup extends Component {
 
   initDocuments() {
     let documents = [];
-
-    documents.push({
-      required: true,
-      fileKey: 'Consent Document',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Consent Document "]), "for this Consent Group here ", span({ className: "italic" }, ["(this may be a Consent Form, Assent Form, or Waiver of Consent)"]), ":"]),
-      file: null,
-      fileName: null,
-      error: false
+    DOCUMENT_TYPE.forEach(type => {
+      documents.push({ value: type, label: type });
     });
-    documents.push({
-      required: true,
-      fileKey: 'Approval Memo',
-      label: span({}, ["Upload local ", span({ className: "bold" }, ["IRB approval "]), "document ", span({ className: "italic" }, ["(required for DFCI & MIT IRBs only):"])]),
-      file: null,
-      fileName: null,
-      error: false
-    });
-
-    documents.push({
-      required: false,
-      fileKey: 'Sample Providers Permission',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Sample Provider's Permission to add cohort "]), "to this Broad project ", span({ className: "italic" }, ["(DFCI IRB only. Optional):"])]),
-      file: null,
-      fileName: null,
-      error: false
-    });
-
-    documents.push({
-      required: false,
-      fileKey: 'Data Use Letter',
-      label: span({}, ["Upload the ", span({ className: "bold" }, ["Data Use Letter "]), "here ", span({ className: "italic" }, ["(optional):"])]),
-      file: null,
-      fileName: null,
-      error: false,
-      link: a({ className: "link", onClick: this.downloadFillablePDF, style: {'position' : 'absolute', 'right' : '0', 'bottom' : '60px'} }, ["Download fillable PDF here"])
-    });
-
     this.setState({
-      files: documents
+      documentOptions: documents
     });
   }
 
@@ -537,7 +479,7 @@ class NewConsentGroup extends Component {
     }).catch(error => {
       console.error(error);
     });
-  };
+  }
 
   removeErrorMessage() {
     this.setState(prev => {
@@ -570,62 +512,64 @@ class NewConsentGroup extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage
       }, [
-        NewConsentGroupGeneralData({
-          title: "General Data",
-          currentStep: currentStep,
-          user: this.state.user,
-          sampleSearchUrl: this.props.sampleSearchUrl,
-          updateForm: this.updateGeneralDataFormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage,
-          projectKey: this.props.projectKey,
-          sampleCollectionList: this.state.sampleCollectionList
-        }),
-        NewConsentGroupDocuments({
-          title: "Documents",
-          currentStep: currentStep,
-          fileHandler: this.fileHandler,
-          projectType: projectType,
-          files: this.state.files,
-          fillablePdfURL: this.props.fillablePdfURL
-        }),
-        InternationalCohorts({
-          title: "International Cohorts",
-          currentStep: currentStep,
-          handler: this.determinationHandler,
-          determination: this.state.determination,
-          showErrorIntCohorts: this.state.showInternationalCohortsError,
-          origin: 'consentGroup'
-        }),
-        Security({
-          title: "Security",
-          step: 3,
-          currentStep: currentStep,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateInfoSecurityFormData,
-          showErrorInfoSecurity: this.state.showInfoSecurityError,
-          removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity,
-          currentValue: this.state,
-          edit: false,
-          review: false,
-          readOnly: false
-        }),
-        DataSharing({
-          title: "Data Sharing",
-          currentStep: currentStep,
-          step: 4,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateDataSharingFormData,
-          removeErrorMessage: this.removeErrorMessage,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          showErrorDataSharing: this.state.showErrorDataSharing,
-          handleDataSharingValidity: this.handleDataSharingValidity
-        })
-      ])
+          NewConsentGroupGeneralData({
+            title: "General Data",
+            currentStep: currentStep,
+            user: this.state.user,
+            sampleSearchUrl: this.props.sampleSearchUrl,
+            updateForm: this.updateGeneralDataFormData,
+            errors: this.state.errors,
+            removeErrorMessage: this.removeErrorMessage,
+            projectKey: this.props.projectKey,
+            sampleCollectionList: this.state.sampleCollectionList
+          }),
+          NewConsentGroupDocuments({
+            title: "Documents",
+            currentStep: currentStep,
+            fileHandler: this.fileHandler,
+            projectType: projectType,
+            options: this.state.documentOptions,
+            fillablePdfURL: this.props.fillablePdfURL,
+            fileHandler: this.fileHandler,
+            files: this.state.files
+          }),
+          InternationalCohorts({
+            title: "International Cohorts",
+            currentStep: currentStep,
+            handler: this.determinationHandler,
+            determination: this.state.determination,
+            showErrorIntCohorts: this.state.showInternationalCohortsError,
+            origin: 'consentGroup'
+          }),
+          Security({
+            title: "Security",
+            step: 3,
+            currentStep: currentStep,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateInfoSecurityFormData,
+            showErrorInfoSecurity: this.state.showInfoSecurityError,
+            removeErrorMessage: this.removeErrorMessage,
+            handleSecurityValidity: this.handleInfoSecurityValidity,
+            currentValue: this.state,
+            edit: false,
+            review: false,
+            readOnly: false
+          }),
+          DataSharing({
+            title: "Data Sharing",
+            currentStep: currentStep,
+            step: 4,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateForm: this.updateDataSharingFormData,
+            removeErrorMessage: this.removeErrorMessage,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            showErrorDataSharing: this.state.showErrorDataSharing,
+            handleDataSharingValidity: this.handleDataSharingValidity
+          })
+        ])
     );
   }
 }
