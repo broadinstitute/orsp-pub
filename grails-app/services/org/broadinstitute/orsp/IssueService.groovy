@@ -62,8 +62,6 @@ class IssueService {
             IssueExtraProperty.DATABASE_CONTROLLED,
             IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.REQUIRE_MTA,
-            IssueExtraProperty.SENSITIVE,
-            IssueExtraProperty.TEXT_SENSITIVE,
             IssueExtraProperty.ACCESSIBLE,
             IssueExtraProperty.TEXT_ACCESSIBLE,
             IssueExtraProperty.TEXT_COMPLIANCE,
@@ -244,9 +242,6 @@ class IssueService {
         }
         if (input.get(IssueExtraProperty.TEXT_ACCESSIBLE) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_ACCESSIBLE})
-        }
-        if (input.get(IssueExtraProperty.TEXT_SENSITIVE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SENSITIVE})
         }
         if (input.get(IssueExtraProperty.TEXT_COMPLIANCE) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_COMPLIANCE})

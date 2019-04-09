@@ -3,7 +3,6 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
@@ -68,11 +67,9 @@ class NewProject extends Component {
       },
       formerProjectType: null,
       infoSecurityErrors: {
-        sensitive: false,
         accessible: false,
         compliance: false,
         pii: false,
-        textSensitive: false,
         textAccessible: false,
         textCompliance: false
       }
@@ -175,8 +172,6 @@ class NewProject extends Component {
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
-    extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
     extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
     extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
 

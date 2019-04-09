@@ -22,8 +22,6 @@ class ProjectExtraProperties {
     String pii
     String compliance
     String textCompliance
-    String sensitive
-    String textSensitive
     String accessible
     String textAccessible
 
@@ -74,8 +72,6 @@ class ProjectExtraProperties {
         this.setPii(project.getPII() ?: "")
         this.setCompliance(project.getCompliance() ?: "")
         this.setTextCompliance(project.getTextCompliance() ?: "")
-        this.setSensitive(project.getSensitive() ?: "")
-        this.setTextSensitive(project.getTextSensitive() ?: "")
         this.setAccessible(project.getAccessible() ?: "")
         this.setTextAccessible(project.getTextAccessible() ?: "")
 
