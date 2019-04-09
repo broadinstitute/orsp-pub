@@ -4,6 +4,7 @@ import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
 
 const headers =
   [
@@ -12,7 +13,8 @@ const headers =
     { name: 'Author', value: 'creator' },
     { name: 'Version', value: 'docVersion' },
     { name: 'Status', value: 'status' },
-    { name: 'Created', value: 'creationDate' }
+    { name: 'Created', value: 'creationDate' },
+    { name: '', value: 'remove' }
   ];
 
 const associatedProjectsHeaders = [
@@ -31,7 +33,9 @@ export const Documents = hh(class Documents extends Component {
     super(props);
     this.state = {
       showAddKeyDocuments: false,
-      showAddAdditionalDocuments: false
+      showAddAdditionalDocuments: false,
+      showRemoveDocuments: false,
+      documentToRemove: null
     }
   }
 
@@ -53,13 +57,32 @@ export const Documents = hh(class Documents extends Component {
     window.location.href =  this.props.serverURL + "/dataUse/show/" + this.props.restrictionId;
   };
 
-  closeModal = () => {
-    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
+  closeRemoveModal = () => {
+    this.setState({ showRemoveDocuments: !this.state.showRemoveDocuments });
   };
 
+  closeModal = () => {
+    this.setState({showDialog: !this.state.showDialog});
+  };
   closeAdditionalModal = () => {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
+
+  remove = (row) => (e) => {
+    this.setState({ 
+      showRemoveDocuments: !this.state.showRemoveDocuments,
+      documentToRemove: row
+    });
+    console.log("veronica")
+  };
+
+  removeDocument() {
+    console.log("rowwwwwwwwww" + this.state.row);
+  }
+
+  // remove = (row) => (e) => {
+  //   console.log("rowwwwwwwwww" + row);
+  // }
 
   findDul = () => {
     let dulPresent = false;
@@ -90,6 +113,14 @@ export const Documents = hh(class Documents extends Component {
         userName: this.props.userName,
         isConsentGroup: this.props.isConsentGroup
       }),
+      ConfirmationDialog({
+        closeModal: this.closeRemoveModal,
+        show: this.state.showRemoveDocuments,
+        handleOkAction: this.removeDocument,
+        title: 'Remove Document Confirmation',
+        bodyText: 'Are you sure you want to remove this document?',
+        actionLabel: 'Yes'
+      }, []),
       Panel({title: "Documents"}, [
         button({
           className: "btn buttonSecondary",
@@ -104,7 +135,8 @@ export const Documents = hh(class Documents extends Component {
           handleDialogConfirm: this.props.handleDialogConfirm,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
           isAdmin: this.props.user.isAdmin,
-          reviewFlow: true
+          reviewFlow: true,
+          remove: this.remove
         })
       ]),
       div({
