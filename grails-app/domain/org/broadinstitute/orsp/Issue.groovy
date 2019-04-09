@@ -20,6 +20,12 @@ class Issue implements LogicalDelete<Issue> {
 
     static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding]
 
+    // Eagerly fetch associations
+    static mapping = {
+        extraProperties fetch: 'join'
+        fundings fetch: 'join'
+    }
+
     static constraints = {
         projectKey blank: false, nullable: false
         type blank: false, nullable: false
