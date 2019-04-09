@@ -506,6 +506,7 @@
     }
 
     function validateGruHmbDisease() {
+        let nres = $("#noRestrictionYes").prop("checked");
         let gru = $("#generalUseYes").prop("checked");
         let hmb = $("#hmbResearchYes").prop("checked");
         let diseases = $(".diseaseAutocomplete")
@@ -514,7 +515,7 @@
             .get()
             .filter((elem) => elem);
         let dis = (diseases !== undefined && diseases.length > 0);
-        let checkedVals = [gru, hmb, dis].filter(function(v){return v === true;});
+        let checkedVals = [gru, hmb, dis, nres].filter(function(v){return v === true;});
         if (checkedVals.length === 1) {
             return true;
         } else  {
@@ -571,6 +572,16 @@
                 $("#populationOriginsAncestryNo").prop("checked", false);
             }
          });
+
+        $("input[name='noRestriction']").on("click", function() {
+            if ($("#noRestrictionYes").prop("checked")) {
+                $("#generalUseYes").prop("checked", false);
+                $("#hmbResearchYes").prop("checked", true);
+                $("#hmbResearchNo").prop("checked", false);
+                $(".diseaseAutocomplete").each(function( index ) { $(this).val(""); });
+                $("#controlSetOptionNo").prop("checked", true);
+            }
+        });
 
         $("input[name='recontactingDataSubjects']").on("click", function() {
             if ($("#recontactingDataSubjectsYes").prop("checked")) {
