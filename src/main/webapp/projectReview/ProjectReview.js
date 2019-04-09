@@ -52,6 +52,8 @@ class ProjectReview extends Component {
       alertType: '',
       alertMessage: '',
       showAlert: false,
+      showSubmissionAlert: false,
+      showSuccessClarification: false,
       formData: {
         approvalStatus: '',
         description: '',
@@ -176,7 +178,7 @@ class ProjectReview extends Component {
     console.log(error, info);
   }
 
-  componentDidMount() {
+    componentDidMount() {
     this.init();
   }
 
@@ -222,10 +224,11 @@ class ProjectReview extends Component {
           }
         });
 
-
-
         Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
           data => {
+            if (new URLSearchParams(window.location.search).has('new')) {
+              this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
+            }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
 
@@ -332,7 +335,7 @@ class ProjectReview extends Component {
   determinationHandler = (determination) => {
     let newValues = {};
     const answers = [];
-    this.clearAlertMessage();
+    this.clearAlertMessage('showAlert');
     determination.questions.forEach(question => {
 
       if (question.answer !== null) {
@@ -882,19 +885,19 @@ class ProjectReview extends Component {
     })
   };
 
-  successClarification = () => {
-    setTimeout(this.clearAlertMessage, 5000, null);
+  successNotification = (type, message, time) => {
+    setTimeout(this.clearAlertMessage(type), time, null);
     this.setState(prev => {
-      prev.showAlert = true;
-      prev.alertMessage = 'Request clarification sent.';
+      prev[type] = true;
+      prev.alertMessage = message;
       prev.alertType = 'success';
       return prev;
     });
   };
 
-  clearAlertMessage = () => {
+  clearAlertMessage = (type) => () => {
     this.setState(prev => {
-      prev.showAlert = false;
+      prev[type] = false;
       prev.alertMessage = '';
       prev.alertType = '';
       return prev;
@@ -1054,7 +1057,7 @@ class ProjectReview extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           clarificationUrl: this.props.clarificationUrl,
-          successClarification: this.successClarification
+          successClarification: this.successNotification
         }),
 
         button({
@@ -1063,7 +1066,6 @@ class ProjectReview extends Component {
           onClick: this.enableEdit(),
           isRendered: this.state.readOnly === true
         }, ["Edit Information"]),
-
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
@@ -1077,6 +1079,12 @@ class ProjectReview extends Component {
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
+
+        AlertMessage({
+          msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
+          show: this.state.showSubmissionAlert,
+          type: 'success'
+        }),
 
         Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
           div({ isRendered: this.projectType === "IRB Project" }, [
@@ -1455,7 +1463,7 @@ class ProjectReview extends Component {
         ]),
         AlertMessage({
           msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
-          show: this.state.generalError || this.state.showAlert,
+          show: this.state.generalError || this.state.showAlert || this.state.showSuccessClarification,
           type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
