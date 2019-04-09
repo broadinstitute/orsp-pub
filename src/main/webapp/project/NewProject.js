@@ -457,12 +457,12 @@ class NewProject extends Component {
 
   uploadFiles = async (projectKey) => {
     let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
-    if (this.state.files !== null && this.state.files.length > 0) {     
+    if (this.state.files !== null && this.state.files.length > 0) {
       Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
           // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
         }).catch(error => {
           spinnerService.hideAll();
           this.toggleTrueSubmitError();
@@ -470,7 +470,7 @@ class NewProject extends Component {
           console.error(error);
         });
     } else {
-      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
     }
   }
 
