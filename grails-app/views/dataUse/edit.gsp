@@ -52,6 +52,35 @@
         <div id="create-edit-form" class="form-group well clear-well clearfix">
 
             <div class="container">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <label for="generalUseYes">Data is available for future research with no restrictions
+                        [<abbr title="">NRES</abbr>]
+                        </label>
+
+                        <span class="pull-right">
+                            <label class="radio-inline"><input type="radio"
+                                                               name="noRestriction"
+                                                               id="noRestrictionYes"
+                                                               <g:if test="${restriction.noRestriction && !create}">checked</g:if>
+                                                               value="Yes">Yes</label>
+                            <label class="radio-inline"><input type="radio"
+                                                               name="noRestriction"
+                                                               id="noRestrictionNo"
+                                                               <g:if test="${!restriction.noRestriction && !create}">checked</g:if>
+                                                               value="No">No</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-4 alert alert-info">
+                        Selecting No Restriction <strong>[NRES]</strong>:
+                        <ul>
+                            <li>Disables <strong>[GRU]</strong></li>
+                            <li>Disables <strong>[HMB]</strong></li>
+                            <li>Clears all Disease Restrictions <strong>[DS]</strong></li>
+                            <li>Enables Control Set Usage <strong>[CTRL]</strong></li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-sm-7">
