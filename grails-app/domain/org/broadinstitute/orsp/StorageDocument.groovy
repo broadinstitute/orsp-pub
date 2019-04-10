@@ -2,8 +2,6 @@ package org.broadinstitute.orsp
 
 import gorm.logical.delete.LogicalDelete
 
-import java.text.SimpleDateFormat
-
 class StorageDocument  implements LogicalDelete<StorageDocument> {
 
     String projectKey
@@ -13,7 +11,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
     String mimeType
     String creator
     String username
-    String creationDate
+    Date creationDate
     String status
     Long docVersion
 
@@ -42,7 +40,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
         if (!creationDate) {
             new Date()
         } else {
-            new SimpleDateFormat().parse(creationDate)
+            creationDate
         }
     }
     
