@@ -63,7 +63,7 @@ class StorageProviderServiceSpec extends Specification implements ServiceUnitTes
                 uuid: uuid,
                 creator: "Test User",
                 username: "testUser",
-                creationDate: new SimpleDateFormat().format(new Date()))
+                creationDate: new Date())
 
         when:
         HttpResponse response = service.uploadContent(content, document)
@@ -83,7 +83,7 @@ class StorageProviderServiceSpec extends Specification implements ServiceUnitTes
                 uuid: uuid,
                 creator: "Test User",
                 username: "testUser",
-                creationDate: new SimpleDateFormat().format(new Date()))
+                creationDate: new Date())
 
         when:
         StorageDocument newDoc = service.populateDocumentFileContent(document)

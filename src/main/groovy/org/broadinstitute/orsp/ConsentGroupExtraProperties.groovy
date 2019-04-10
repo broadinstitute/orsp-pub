@@ -19,8 +19,6 @@ class ConsentGroupExtraProperties {
     String pii
     String compliance
     String textCompliance
-    String sensitive
-    String textSensitive
     String accessible
     String textAccessible
 
@@ -51,8 +49,6 @@ class ConsentGroupExtraProperties {
         this.setPii(consentGroup.getPII() ?: "")
         this.setCompliance(consentGroup.getCompliance() ?: "")
         this.setTextCompliance(consentGroup.getTextCompliance() ?: "")
-        this.setSensitive(consentGroup.getSensitive() ?: "")
-        this.setTextSensitive(consentGroup.getTextSensitive() ?: "")
         this.setAccessible(consentGroup.getAccessible() ?: "")
         this.setTextAccessible(consentGroup.getTextAccessible() ?: "")
 
