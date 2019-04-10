@@ -75,6 +75,7 @@ class ProjectDocument extends Component {
       console.error(error);
     });
   };
+  
   handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
@@ -128,7 +129,7 @@ class ProjectDocument extends Component {
           projectKey: this.props.projectKey,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           handleLoadDocuments: this.getAttachedDocuments,
-          removeDocumentUrl: this.props.removeDocumentUrl,
+          removeDocumentUrl: this.props.removeDocumentUrl
         }),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',

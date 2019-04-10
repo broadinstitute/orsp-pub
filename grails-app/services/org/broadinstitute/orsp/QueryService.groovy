@@ -886,7 +886,7 @@ class QueryService implements Status {
                 ' select distinct i.project_key, ccl.sample_collection_id, d.id ' +
                         ' from issue i ' +
                         ' inner join consent_collection_link ccl on ccl.consent_key = i.project_key and ccl.sample_collection_id is not null ' +
-                        ' left outer join storage_document d on d.project_key = i.project_key and d.file_type = :file_type and d.deleted = 0' +
+                        ' left outer join storage_document d on d.project_key = i.project_key and d.file_type = :file_type and d.deleted = 0 ' +
                         ' where i.type = :type '
         // Temporary lookup map for consent to list of samples in the consent
         Map<String, Collection<String>> consentedSamples = new HashMap()
@@ -989,7 +989,7 @@ class QueryService implements Status {
                 ' select distinct d.* ' +
                 ' from storage_document d ' +
                 ' where d.project_key = :projectKey' +
-                ' and d.deleted = 0'
+                ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
