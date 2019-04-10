@@ -1,13 +1,11 @@
-import { Component, React } from 'react';
-import { hh, div, h, button, h1, ul, li, span, p } from 'react-hyperscript-helpers';
-
+import { Component, React, Fragment } from 'react';
+import { hh, div, h, button, h1, ul, li, span, p, small } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-
 import { InputFieldRadio } from '../components/InputFieldRadio';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 
@@ -20,9 +18,9 @@ const fundingTooltip =
     li({}, [span({ className: "bold" }, ["Federal Prime: "]), "Direct federal (ex: NIH) award to Broad."]),
     li({}, [span({ className: "bold" }, ["Federal Sub - Award: "]), "Federal award received by Broad via a subcontract with another institution.For example, MGH is the prime reciepient of a federal award and Broad receives a portion of the award via a subcontract from MGH."]),
     li({}, [span({ className: "bold" }, ["Internal Broad: "]), "Internal Broad Institute funding such as SPARC funding"]),
-    li({}, [span({ className: "bold" }, ["Purchase Order: "]), "Typically used for Fee -for-Service work."]),
-    li({}, [span({ className: "bold" }, ["Corporate Funding: "]), "Industry(ex: Johnson & Johnson) funding"]),
-    li({}, [span({ className: "bold" }, ["Foundation: "]), "Foundation funding(ex: American Cancer Society)"]),
+    li({}, [span({ className: "bold" }, ["Purchase Order: "]), "Typically used for Fee-for-Service work."]),
+    li({}, [span({ className: "bold" }, ["Corporate Funding: "]), "Industry (ex: Johnson & Johnson) funding"]),
+    li({}, [span({ className: "bold" }, ["Foundation: "]), "Foundation funding (ex: American Cancer Society)"]),
     li({}, [span({ className: "bold" }, ["Philanthropy: "]), "Private Donors"]),
     li({}, [span({ className: "bold" }, ["Other: "]), "Anything not covered in one of the other categories"]),
   ]);
@@ -44,7 +42,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        collaborators: []
+        collaborators: [],
+        attestation: false
       },
       formerData: {
         projectManager: '',
@@ -57,14 +56,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        collaborators: []
+        collaborators: [],
+        attestation: false
       },
       errors: {
         studyDescription: false,
         pTitle: false,
         uploadConsentGroup: false,
         subjectProtection: false,
-        fundings: false
+        fundings: false,
+        attestation: false
       }
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -83,7 +84,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     const field = e.target.name;
     const value = e.target.value;
     this.setState(prev => {
-      prev.formerData[field] = prev.formData[field];     
+      prev.formerData[field] = prev.formData[field];
       prev.formData[field] = value;
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
@@ -100,7 +101,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }, () => this.props.updateForm(this.state.formData, field));
     this.props.removeErrorMessage();
   };
-  
+
+
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
       prev.formData.projectManager = data;
@@ -159,6 +161,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }, () => this.props.updateForm(this.state.formData, 'piName'));
   }
 
+  handleAttestationCheck = () => {
+    this.setState(prev => {
+      prev.formData.attestation = !this.state.formData.attestation;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'attestation'));
+    this.props.removeErrorMessage();
+  };
+
   render() {
 
     if (this.state.hasError) {
@@ -169,7 +179,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection,
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection || this.props.errors.attestation,
         errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
@@ -335,6 +345,20 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             readOnly: false,
             edit: false
           })
+        ]),
+
+        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
+          p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
+          p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
+          InputFieldCheckbox({
+            id: "ckb_attestation",
+            name: "attestation",
+            onChange: this.handleAttestationCheck,
+            label: "I confirm",
+            defaultChecked: this.state.formData.attestation,
+            required: true
+          }),
+          small({ isRendered: this.props.errors.attestation, className: "errorMessage" }, 'Required Field')
         ])
       ])
     );
