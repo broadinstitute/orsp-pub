@@ -36,7 +36,6 @@ class UrlMappings {
         '/api/dataUseLetter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
-        '/api/add-attestation-extraprops'(controller: 'project', action: 'addAttestationExtraProps', method: 'POST')
 
 
         // Custom Error handlers.
