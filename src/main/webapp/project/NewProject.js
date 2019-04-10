@@ -155,7 +155,7 @@ class NewProject extends Component {
     project.reporter = this.state.user.userName;
     project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
-    project.attestation = this.getFundings(this.state.generalDataFormData.attestation);
+    project.attestation = this.state.generalDataFormData.attestation;
     let extraProperties = [];
 
     extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
