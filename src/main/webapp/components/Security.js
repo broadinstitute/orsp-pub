@@ -18,19 +18,15 @@ export const Security = hh(class Security extends Component {
       formData: {
         pii: '',
         compliance: '',
-        sensitive: '',
         sharingType: '',
         textSharingType: '',
         textCompliance: '',
-        textSensitive: '',
       },
       errors: {
         pii: true,
         compliance: true,
-        sensitive: true,
         sharingType: true,
         textCompliance: true,
-        textSensitive: true
       },
       openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
       controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
@@ -74,11 +70,9 @@ export const Security = hh(class Security extends Component {
   validate = (field) => {
     let pii = false;
     let compliance = false;
-    let sensitive = false;
     let sharingType = false;
     let isValid = true;
     let textCompliance = false;
-    let textSensitive = false;
 
     if (isEmpty(this.state.formData.pii)) {
       pii = true;
@@ -95,14 +89,6 @@ export const Security = hh(class Security extends Component {
       textCompliance = true;
       isValid = false;
     }
-    if (isEmpty(this.state.formData.sensitive)) {
-      sensitive = true;
-      isValid = false;
-    }
-    if (!isEmpty(this.state.formData.sensitive) && this.state.formData.sensitive === "true" && isEmpty(this.state.formData.textSensitive)) {
-      textSensitive = true;
-      isValid = false;
-    }
     if (isEmpty(this.state.formData.sharingType)) {
       sharingType = true;
       isValid = false;
@@ -111,10 +97,8 @@ export const Security = hh(class Security extends Component {
       this.setState(prev => {
         prev.errors.pii = pii;
         prev.errors.compliance = compliance;
-        prev.errors.sensitive = sensitive;
         prev.errors.sharingType = sharingType;
         prev.errors.textCompliance = textCompliance;
-        prev.errors.textSensitive = textSensitive;
         return prev;
       });
     }
@@ -188,34 +172,6 @@ export const Security = hh(class Security extends Component {
             required: false,
             onChange: this.handleInputChange,
             error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
-            errorMessage: "Required field"
-          }),
-          InputFieldRadio({
-            id: "radioSensitive",
-            name: "sensitive",
-            label: span({}, ["Does this data require additional protections beyond Broad's standard data security measures?*"]),
-            value: this.state.formData.sensitive,
-            optionValues: ["true", "false", "uncertain"],
-            optionLabels: [
-              "Yes",
-              "No",
-              "Uncertain"
-            ],
-            onChange: this.handleRadio2Change,
-            required: true,
-            error: this.state.errors.sensitive && this.props.showErrorInfoSecurity,
-            errorMessage: "Required field"
-          }),
-          InputFieldText({
-            isRendered: this.state.formData.sensitive === "true",
-            id: "inputSensitive",
-            name: "textSensitive",
-            label: "Please explain*",
-            value: this.state.formData.textSensitive,
-            disabled: false,
-            required: false,
-            onChange: this.handleInputChange,
-            error: this.state.errors.textSensitive && this.props.showErrorInfoSecurity,
             errorMessage: "Required field"
           }),
           InputFieldRadio({

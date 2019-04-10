@@ -3,7 +3,6 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-import { NE, NHSR, IRB } from './NewProjectDetermination';
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { DETERMINATION } from "../util/TypeDescription";
 import { Files, Project, User } from '../util/ajax';
@@ -67,11 +66,9 @@ class NewProject extends Component {
       },
       formerProjectType: null,
       infoSecurityErrors: {
-        sensitive: false,
         sharingType: false,
         compliance: false,
         pii: false,
-        textSensitive: false,
         textCompliance: false
       }
     };
@@ -171,8 +168,6 @@ class NewProject extends Component {
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
-    extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
     extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
     extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
 
@@ -456,12 +451,12 @@ class NewProject extends Component {
 
   uploadFiles = async (projectKey) => {
     let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
-    if (this.state.files !== null && this.state.files.length > 0) {     
+    if (this.state.files !== null && this.state.files.length > 0) {
       Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
           // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
         }).catch(error => {
           spinnerService.hideAll();
           this.toggleTrueSubmitError();
@@ -469,7 +464,7 @@ class NewProject extends Component {
           console.error(error);
         });
     } else {
-      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review"].join("/");
+      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
     }
   }
 

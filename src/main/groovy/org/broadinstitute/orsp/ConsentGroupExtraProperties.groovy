@@ -19,8 +19,6 @@ class ConsentGroupExtraProperties {
     String pii
     String compliance
     String textCompliance
-    String sensitive
-    String textSensitive
     String sharingType
     String textSharingType
 
@@ -56,8 +54,6 @@ class ConsentGroupExtraProperties {
         this.setPii(consentGroup.getPII() ?: "")
         this.setCompliance(consentGroup.getCompliance() ?: "")
         this.setTextCompliance(consentGroup.getTextCompliance() ?: "")
-        this.setSensitive(consentGroup.getSensitive() ?: "")
-        this.setTextSensitive(consentGroup.getTextSensitive() ?: "")
         this.setSharingType(consentGroup.getSharingType() ?: "")
         this.setTextSharingType(consentGroup.getTextSharingType() ?: "")
 

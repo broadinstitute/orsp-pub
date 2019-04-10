@@ -22,8 +22,6 @@ class ProjectExtraProperties {
     String pii
     String compliance
     String textCompliance
-    String sensitive
-    String textSensitive
     String sharingType
     String textSharingType
 
@@ -73,8 +71,6 @@ class ProjectExtraProperties {
         this.setPii(project.getPII() ?: "")
         this.setCompliance(project.getCompliance() ?: "")
         this.setTextCompliance(project.getTextCompliance() ?: "")
-        this.setSensitive(project.getSensitive() ?: "")
-        this.setTextSensitive(project.getTextSensitive() ?: "")
         this.setSharingType(project.getSharingType() ?: "")
         this.setTextSharingType(project.getTextSharingType() ?: "")
 
