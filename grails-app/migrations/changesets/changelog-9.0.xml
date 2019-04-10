@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="changelog-9.0-1" author="tadeork">
+        <addColumn tableName="storage_document">
+            <column name="created_date" type="datetime" defaultValue="null" />
+        </addColumn>
+        <sql>update storage_document SET created_date = STR_TO_DATE(creation_date, "%m/%d/%y %h:%i %p");</sql>
+        <dropNotNullConstraint tableName="storage_document" columnName="creation_date" columnDataType="varchar(255)" />
+        <addNotNullConstraint tableName="storage_document" columnName="created_date" columnDataType="datetime" />
+        <dropColumn tableName="storage_document" columnName="creation_date" />
+        <renameColumn tableName="storage_document" oldColumnName="created_date" newColumnName="creation_date" columnDataType="datetime" />
+    </changeSet>
+</databaseChangeLog>
