@@ -150,6 +150,9 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String isConsentUnambiguous() { getExtraProperties().find { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS }?.value }
 
+    // Attestation
+    transient String attestation() { getExtraProperties().find { it.name == IssueExtraProperty.ATTESTATION }?.value }
+
     // Others
     transient String getCollPublication() {
         BooleanOptions.getLabelForKey(getExtraProperties().find {

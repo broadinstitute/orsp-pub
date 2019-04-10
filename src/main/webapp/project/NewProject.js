@@ -58,6 +58,7 @@ class NewProject extends Component {
         uploadConsentGroup: false,
         subjectProtection: false,
         fundings: false,
+        attestation: false,
         fundingAwardNumber: false
       },
       formerProjectType: null,
@@ -150,6 +151,7 @@ class NewProject extends Component {
     project.reporter = this.state.user.userName;
     project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
+    project.attestation = this.state.generalDataFormData.attestation;
     let extraProperties = [];
 
     extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
@@ -159,6 +161,7 @@ class NewProject extends Component {
     extraProperties.push({name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null});
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
+    extraProperties.push({name: 'attestation', value: this.state.generalDataFormData.attestation !== '' ? this.state.generalDataFormData.attestation : null});
     extraProperties.push({name: 'irbReferral', value: isEmpty(this.state.generalDataFormData.irbReferral.value) ? null : JSON.stringify(this.state.generalDataFormData.irbReferral)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
 
@@ -277,6 +280,7 @@ class NewProject extends Component {
     let pTitle = false;
     let uploadConsentGroup = false;
     let subjectProtection = false;
+    let attestation = false;
     let isValid = true;
     let fundings = false;
     let fundingAwardNumber = false;
@@ -291,6 +295,12 @@ class NewProject extends Component {
     }
     if (this.state.generalDataFormData.subjectProtection === undefined || this.state.generalDataFormData.subjectProtection === '') {
       subjectProtection = true;
+      isValid = false;
+    }
+    if (this.state.generalDataFormData.attestation === undefined ||
+      this.state.generalDataFormData.attestation === '' ||
+      this.state.generalDataFormData.attestation === false) {
+      attestation = true;
       isValid = false;
     }
     if (isEmpty(this.state.generalDataFormData.pTitle)) {
@@ -317,6 +327,7 @@ class NewProject extends Component {
         prev.errors.studyDescription = studyDescription;
         prev.errors.uploadConsentGroup = uploadConsentGroup;
         prev.errors.subjectProtection = subjectProtection;
+        prev.errors.attestation = attestation;
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
@@ -324,7 +335,7 @@ class NewProject extends Component {
       });
     }
     else if (field === 'fundings' || field === 'studyDescription' ||
-      field === 'uploadConsentGroup' || field === 'subjectProtection' || field === 'pTitle') {
+      field === 'uploadConsentGroup' || field === 'subjectProtection' || field === 'attestation' || field === 'pTitle') {
 
       this.setState(prev => {
         if (field === 'fundings') {
@@ -339,6 +350,9 @@ class NewProject extends Component {
         }
         else if (field === 'subjectProtection') {
           prev.errors.subjectProtection = subjectProtection;
+        }
+        else if (field === 'attestation') {
+          prev.errors.attestation = attestation;
         }
         else if (field === 'pTitle') {
           prev.errors.pTitle = pTitle;

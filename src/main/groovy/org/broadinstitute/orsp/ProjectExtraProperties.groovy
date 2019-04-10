@@ -43,6 +43,7 @@ class ProjectExtraProperties {
     String areSamplesComingFromEEAA
     String isCollaboratorProvidingGoodService
     String isConsentUnambiguous
+    String attestation
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -86,5 +87,8 @@ class ProjectExtraProperties {
         this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA() ?: null)
         this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService() ?: null)
         this.setIsConsentUnambiguous(project.isConsentUnambiguous() ?: null)
+
+        // Attestation
+        this.setAttestation(project.attestation() ?: null)
     }
 }

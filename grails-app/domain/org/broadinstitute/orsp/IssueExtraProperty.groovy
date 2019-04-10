@@ -79,6 +79,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String IS_LINK_MAINTAINED = "isLinkMaintained"
     public static final String START_DATE = "startDate"
     public static final String END_DATE = "endDate"
+    public static final String ATTESTATION = "attestation"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"
