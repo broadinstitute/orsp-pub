@@ -37,7 +37,7 @@ class FileHelperController extends AuthenticatedController{
                             uuid: UUID.randomUUID().toString(),
                             creator: params.displayName,
                             username: params.userName,
-                            creationDate: new SimpleDateFormat().format(new Date()),
+                            creationDate: new Date(),
                             status: DocumentStatus.PENDING.status
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())

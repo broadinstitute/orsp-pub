@@ -172,7 +172,7 @@ class StorageProviderService implements Status {
                 uuid: UUID.randomUUID().toString(),
                 creator: displayName,
                 username: userName,
-                creationDate: new SimpleDateFormat().format(new Date())
+                creationDate: new Date()
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(
@@ -204,7 +204,7 @@ class StorageProviderService implements Status {
                 uuid: UUID.randomUUID().toString(),
                 creator: displayName,
                 username: userName,
-                creationDate: new SimpleDateFormat().format(new Date())
+                creationDate: new Date()
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(

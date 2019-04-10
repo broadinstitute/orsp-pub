@@ -54,10 +54,8 @@ class NewConsentGroup extends Component {
         institutionalSourcesCountry: false,
         pii: false,
         compliance: false,
-        sensitive: false,
         accessible: false,
         textCompliance: false,
-        textSensitive: false,
         textAccessible: false,
       }
     };
@@ -140,7 +138,7 @@ class NewConsentGroup extends Component {
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
           // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+          window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
           spinnerService.hideAll();
           this.setState(prev => {
             prev.formSubmitted = true;
@@ -153,7 +151,7 @@ class NewConsentGroup extends Component {
           this.toggleSubmitError();
         });
     } else {
-      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
     }
   }
 
@@ -198,8 +196,6 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'sensitive', value: this.state.securityInfoFormData.sensitive });
-    extraProperties.push({ name: 'textSensitive', value: this.state.securityInfoFormData.textSensitive });
     extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
     extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
     // step 5

@@ -68,8 +68,6 @@ class ConsentGroupReview extends Component {
         pii: null,
         compliance: null,
         textCompliance: null,
-        sensitive: null,
-        textSensitive: null,
         accessible: null,
         textAccessible: null,
         sharingPlan: null,
@@ -95,10 +93,8 @@ class ConsentGroupReview extends Component {
         institutionalSourcesCountry: false,
         pii: false,
         compliance: false,
-        sensitive: false,
         accessible: false,
         textCompliance: false,
-        textSensitive: false,
         textAccessible: false,
         sharingPlan: false,
         endDate: false,
@@ -310,10 +306,8 @@ class ConsentGroupReview extends Component {
     let requireMta = false;
     let pii = false;
     let compliance = false;
-    let sensitive = false;
     let accessible = false;
     let textCompliance = false;
-    let textSensitive = false;
     let textAccessible = false;
     let sharingPlan = false;
     let questions = false;
@@ -356,14 +350,6 @@ class ConsentGroupReview extends Component {
 
     if (this.state.formData.consentExtraProps.compliance === "true" && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
       textCompliance = true;
-    }
-
-    if (this.isEmpty(this.state.formData.consentExtraProps.sensitive)) {
-      sensitive = true;
-    }
-
-    if (this.state.formData.consentExtraProps.sensitive === "true" && this.isEmpty(this.state.formData.consentExtraProps.textSensitive)) {
-      textSensitive = true;
     }
 
     if (this.state.formData.consentExtraProps.accessible === "true" && this.isEmpty(this.state.formData.consentExtraProps.textAccessible)) {
@@ -412,11 +398,9 @@ class ConsentGroupReview extends Component {
       !sharingPlan &&
       !questions &&
       !textCompliance &&
-      !textSensitive &&
       !accessible &&
       !textAccessible &&
       !compliance &&
-      !sensitive &&
       !startDate &&
       !consentGroupName &&
       !endDate &&
@@ -432,11 +416,9 @@ class ConsentGroupReview extends Component {
       prev.errors.pii = pii;
       prev.errors.sharingPlan = sharingPlan;
       prev.errors.textCompliance = textCompliance;
-      prev.errors.textSensitive = textSensitive;
       prev.errors.textAccessible = textAccessible;
       prev.errors.endDate = endDate;
       prev.errors.compliance = compliance;
-      prev.errors.sensitive = sensitive;
       prev.errors.accessible = accessible;
       prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
@@ -458,11 +440,9 @@ class ConsentGroupReview extends Component {
       prev.errors.pii = false;
       prev.errors.sharingPlan = false;
       prev.errors.textCompliance = false;
-      prev.errors.textSensitive = false;
       prev.errors.textAccessible = false;
       prev.errors.endDate = false;
       prev.errors.compliance = false;
-      prev.errors.sensitive = false;
       prev.errors.accessible = false;
       prev.errors.startDate = false;
       prev.errors.consentGroupName = false;
@@ -763,7 +743,7 @@ class ConsentGroupReview extends Component {
     }
     const questions = this.parseIntCohorts();
     if (questions !== null && questions.length > 0) {
-      questions.map((q, idx) => {
+      questions.map((q) => {
         if (q.answer !== null) {
           consentGroup[q.key] = q.answer;
         }
@@ -772,18 +752,12 @@ class ConsentGroupReview extends Component {
 
     consentGroup.pii = this.state.formData.consentExtraProps.pii;
     consentGroup.compliance = this.state.formData.consentExtraProps.compliance;
-    consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
     consentGroup.accessible = this.state.formData.consentExtraProps.accessible;
 
     if (consentGroup.accessible === 'true') {
       consentGroup.textAccessible = this.state.formData.consentExtraProps.textAccessible;
     } else {
       consentGroup.textAccessible = "";
-    }
-    if (consentGroup.sensitive === 'true') {
-      consentGroup.textSensitive = this.state.formData.consentExtraProps.textSensitive;
-    } else {
-      consentGroup.textSensitive = "";
     }
     if (consentGroup.compliance === 'true') {
       consentGroup.textCompliance = this.state.formData.consentExtraProps.textCompliance;
@@ -1013,7 +987,6 @@ class ConsentGroupReview extends Component {
       collInst = '',
       collContact = '',
       textCompliance = '',
-      textSensitive = '',
       databaseControlled = '',
       databaseOpen = '',
       onGoingProcess = false,
@@ -1028,6 +1001,7 @@ class ConsentGroupReview extends Component {
     let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
+        h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
@@ -1038,7 +1012,6 @@ class ConsentGroupReview extends Component {
           clarificationUrl: this.props.clarificationUrl,
           successClarification: this.successClarification
         }),
-        h2({ className: "stepTitle" }, ["Consent Group: " + this.props.consentKey]),
         ConfirmationDialog({
           closeModal: this.toggleState('approveDialog'),
           show: this.state.approveDialog,
@@ -1071,13 +1044,13 @@ class ConsentGroupReview extends Component {
           bodyText: 'Are you sure you want to remove this Consent Group?',
           actionLabel: 'Yes'
         }, []),
+
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
           isRendered: this.state.readOnly === true
         }, ["Edit Information"]),
-
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
@@ -1273,7 +1246,7 @@ class ConsentGroupReview extends Component {
             edit: true,
             id: "radioPII",
             name: "pii",
-            label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)? ",
+            label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
             moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
             value: this.state.formData.consentExtraProps.pii,
             currentValue: this.state.current.consentExtraProps.pii,
@@ -1290,7 +1263,7 @@ class ConsentGroupReview extends Component {
           InputFieldRadio({
             id: "radioCompliance",
             name: "compliance",
-            label: span({}, ["Are you bound by any regulatory compliance ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?"]),
+            label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?*"]),
             value: this.state.formData.consentExtraProps.compliance,
             currentValue: this.state.current.consentExtraProps.compliance,
             optionValues: ["true", "false", "uncertain"],
@@ -1309,7 +1282,7 @@ class ConsentGroupReview extends Component {
             isRendered: this.state.formData.consentExtraProps.compliance === "true",
             id: "inputCompliance",
             name: "textCompliance",
-            label: "Add regulatory compliance",
+            label: "Please specify which regulations must be adhered to below:*",
             value: textCompliance,
             currentValue: this.state.current.consentExtraProps.textCompliance,
             onChange: this.handleExtraPropsInputChange,
@@ -1319,39 +1292,9 @@ class ConsentGroupReview extends Component {
           }),
           InputFieldRadio({
             edit: true,
-            id: "radioSensitive",
-            name: "sensitive",
-            label: span({}, ["Is this data ", span({ className: 'italic' }, ["“sensitive” "]), "for any reason?"]),
-            value: this.state.formData.consentExtraProps.sensitive,
-            currentValue: this.state.current.consentExtraProps.sensitive,
-            optionValues: ["true", "false", "uncertain"],
-            optionLabels: [
-              "Yes",
-              "No",
-              "Uncertain"
-            ],
-            readOnly: this.state.readOnly,
-            onChange: this.handleRadio2Change,
-            error: this.state.errors.sensitive,
-            errorMessage: "Required field"
-          }),
-          InputFieldText({
-            isRendered: this.state.formData.consentExtraProps.sensitive === "true",
-            id: "inputSensitive",
-            name: "textSensitive",
-            label: "Please explain",
-            value: textSensitive,
-            currentValue: this.state.current.consentExtraProps.textSensitive,
-            onChange: this.handleExtraPropsInputChange,
-            readOnly: this.state.readOnly,
-            error: this.state.errors.textSensitive,
-            errorMessage: "Required field"
-          }),
-          InputFieldRadio({
-            edit: true,
             id: "radioAccessible",
             name: "accessible",
-            label: span({}, ["Will your data be accessible on the Internet ", span({ className: 'normal' }, ["(even if authenticated)"]), "?"]),
+            label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
             value: this.state.formData.consentExtraProps.accessible,
             currentValue: this.state.current.consentExtraProps.accessible,
             optionValues: ["true", "false", "uncertain"],
@@ -1469,12 +1412,14 @@ class ConsentGroupReview extends Component {
             disabled: this.state.disableApproveButton,
             isRendered: this.state.current.consentExtraProps.projectReviewApproved !== true && this.state.isAdmin && this.state.readOnly === true,
           }, ["Reject"]),
+
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('discardEditsDialog'),
             isRendered: this.state.isAdmin && this.state.reviewSuggestion === true && this.state.readOnly === true
           }, ["Discard Edits"]),
+          
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('requestClarification'),

@@ -113,7 +113,7 @@ class DataUseLetterController extends AuthenticatedController {
                         uuid: dul.getUid(),
                         creator: dulInfo[DataUseLetterFields.PRINTED_NAME.abbreviation],
                         username: dul.getCreator(),
-                        creationDate: new SimpleDateFormat().format(new Date()),
+                        creationDate: new Date(),
                         status: DocumentStatus.PENDING.status
                 )
                 storageProviderService.saveStorageDocument(document, dulDoc)
