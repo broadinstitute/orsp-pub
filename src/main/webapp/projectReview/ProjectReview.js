@@ -200,12 +200,12 @@ class ProjectReview extends Component {
         this.projectType = issue.data.issue.type;
 
         const intCohortsQuestions = [
-          { key: 'individualDataSourced', answer: null },
-          { key: 'isLinkMaintained', answer: null },
-          { key: 'feeForServiceWork', answer: null },
-          { key: 'areSamplesComingFromEEAA', answer: null },
-          { key: 'isCollaboratorProvidingGoodService', answer: null },
-          { key: 'isConsentUnambiguous', answer: null }
+          {key: 'individualDataSourced', answer: null},
+          {key: 'isLinkMaintained', answer: null},
+          {key: 'feeForServiceWork', answer: null},
+          {key: 'areSamplesComingFromEEAA', answer: null},
+          {key: 'isCollaboratorProvidingGoodService', answer: null},
+          {key: 'isConsentUnambiguous', answer: null}
         ];
 
         let intCohortsAnswers = [];

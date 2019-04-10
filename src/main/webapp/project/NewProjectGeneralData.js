@@ -203,30 +203,30 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-          Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
-            MultiSelect({
-              id: "pi_select",
-              label: "Broad PI",
-              isDisabled: false,
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handlePIChange,
-              value: this.state.formData.piName,
-              placeholder: "Start typing the PI Name",
-              isMulti: false,
-              edit: false
-            }),
-            MultiSelect({
-              id: "inputProjectManager",
-              label: "Broad Project Manager",
-              isDisabled: false,
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handleProjectManagerChange,
-              value: this.state.formData.projectManager,
-              placeholder: "Start typing the Project Manager Name",
-              isMulti: false,
-              edit: false
-            }),
-          ]),
+        Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
+          MultiSelect({
+            id: "pi_select",
+            label: "Broad PI",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handlePIChange,
+            value: this.state.formData.piName,
+            placeholder: "Start typing the PI Name",
+            isMulti: false,
+            edit: false
+          }),
+          MultiSelect({
+            id: "inputProjectManager",
+            label: "Broad Project Manager",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleProjectManagerChange,
+            value: this.state.formData.projectManager,
+            placeholder: "Start typing the Project Manager Name",
+            isMulti: false,
+            edit: false
+          }),
+        ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
           Fundings({
