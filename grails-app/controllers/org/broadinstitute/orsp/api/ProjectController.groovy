@@ -6,7 +6,6 @@ import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
@@ -114,8 +113,4 @@ class ProjectController extends AuthenticatedController {
         }
         projectType
     }
-
-    def addAttestationExtraProps() {
-        Integer updatedRecords = issueService.addAttestationToIssueExtraProps()
-        render([result: updatedRecords + ' Issue extra properties updated'] as JSON) }
 }
