@@ -102,6 +102,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.props.removeErrorMessage();
   };
 
+
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
       prev.formData.projectManager = data;
