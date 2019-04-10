@@ -185,7 +185,7 @@ class ConsentGroupController extends AuthenticatedController {
         if (issueIsForbidden(issue)) {
             redirect(controller: 'Index', action: 'index')
         }
-        def attachments = issue.attachments?.sort { a,b -> b.createDate <=> a.createDate }
+        def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
         def restriction = DataUseRestriction.findByConsentGroupKey(issue.projectKey)
         Collection<String> duSummary = consentService.getSummary(restriction)
         def collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)

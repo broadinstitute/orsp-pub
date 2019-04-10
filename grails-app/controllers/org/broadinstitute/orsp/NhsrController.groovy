@@ -38,7 +38,7 @@ class NhsrController extends NeController {
          pis               : getPIsForIssue(issue),
          workspaceTemplate : NON_IRB_STATUS_TEMPLATES.get(issue?.status?.toLowerCase(), ""),
          extraProperties   : issue.getExtraProperties(),
-         attachments       : issue.attachments?.sort { a, b -> b.createDate.toString() <=> a.createDate.toString() },
+         attachments       : issue.attachments?.sort { a, b -> b.createDate <=> a.createDate },
          attachmentTypes   : PROJECT_DOC_TYPES,
          tab               : params.tab,
          storageDocuments  : storageDocuments,
