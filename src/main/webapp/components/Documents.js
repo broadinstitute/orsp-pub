@@ -3,8 +3,9 @@ import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyper
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
-import { KeyDocumentsEnum } from "../util/KeyDocuments";
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { KeyDocumentsEnum } from '../util/KeyDocuments';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { DocumentHandler } from  '../util/ajax';
 
 const headers =
   [
@@ -37,6 +38,7 @@ export const Documents = hh(class Documents extends Component {
       showRemoveDocuments: false,
       documentToRemove: null
     }
+    this.removeDocument = this.removeDocument.bind(this);
   }
 
   addDocuments = () => {
@@ -77,12 +79,12 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-    console.log("rowwwwwwwwww" + this.state.row);
+   DocumentHandler.delete(this.props.removeDocumentUrl, this.state.documentToRemove.id).
+    then(resp => {
+      this.closeRemoveModal();
+      this.props.handleLoadDocuments();
+    });    
   }
-
-  // remove = (row) => (e) => {
-  //   console.log("rowwwwwwwwww" + row);
-  // }
 
   findDul = () => {
     let dulPresent = false;

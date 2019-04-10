@@ -320,6 +320,11 @@ class StorageProviderService implements Status {
 
     }
 
+    def deleteDocument(Long documentId) {
+        StorageDocument document = StorageDocument.findById(documentId)
+        document?.delete(flush: true)
+    }
+
     def updateDocumentVersion(String projectKey, String fileType) {
         StorageDocument document = queryService.getDocument(projectKey, fileType)
         document.setDocVersion(1)

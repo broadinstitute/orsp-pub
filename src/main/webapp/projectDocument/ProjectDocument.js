@@ -67,6 +67,14 @@ class ProjectDocument extends Component {
     });
   };
 
+  removeDocument = (documentId) => {
+    DocumentHandler.delete(this.props.removeDocumentUrl, documentId).then(resp => {
+      this.getAttachedDocuments();
+    }).catch(error => {
+      this.setState({serverError: true});
+      console.error(error);
+    });
+  };
   handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
@@ -119,7 +127,8 @@ class ProjectDocument extends Component {
           options: this.state.documentOptions,
           projectKey: this.props.projectKey,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
-          handleLoadDocuments: this.getAttachedDocuments
+          handleLoadDocuments: this.getAttachedDocuments,
+          removeDocumentUrl: this.props.removeDocumentUrl,
         }),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',
