@@ -111,6 +111,7 @@
         if (url.get('tab') === 'consent-groups' && url.has('new')) {
             $('#alert').fadeIn('slow', function(){
                    $('#alert').delay(8000).fadeOut();
+                   history.pushState({}, null, window.location.href.split('&')[0]);
             });
         }
     });

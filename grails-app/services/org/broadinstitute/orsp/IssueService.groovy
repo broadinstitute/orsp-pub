@@ -62,8 +62,8 @@ class IssueService {
             IssueExtraProperty.DATABASE_CONTROLLED,
             IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.REQUIRE_MTA,
-            IssueExtraProperty.ACCESSIBLE,
-            IssueExtraProperty.TEXT_ACCESSIBLE,
+            IssueExtraProperty.SHARING_TYPE,
+            IssueExtraProperty.TEXT_SHARING_TYPE,
             IssueExtraProperty.TEXT_COMPLIANCE,
             IssueExtraProperty.SHARING_PLAN,
             IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
@@ -240,8 +240,8 @@ class IssueService {
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
         }
-        if (input.get(IssueExtraProperty.TEXT_ACCESSIBLE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_ACCESSIBLE})
+        if (input.get(IssueExtraProperty.TEXT_SHARING_TYPE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SHARING_TYPE})
         }
         if (input.get(IssueExtraProperty.TEXT_COMPLIANCE) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_COMPLIANCE})
