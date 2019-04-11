@@ -72,7 +72,6 @@ class ConsentGroupReview extends Component {
         textCompliance: null,
         sharingType: null,
         textSharingType: null,
-        sharingPlan: null,
         databaseControlled: null,
         databaseOpen: null,
         instSources: []
@@ -97,7 +96,6 @@ class ConsentGroupReview extends Component {
         compliance: false,
         sharingType: false,
         textCompliance: false,
-        sharingPlan: false,
         endDate: false,
         startDate: false,
       },
@@ -311,7 +309,6 @@ class ConsentGroupReview extends Component {
     let compliance = false;
     let sharingType = false;
     let textCompliance = false;
-    let sharingPlan = false;
     let questions = false;
     let endDate = false;
     let startDate = false;
@@ -352,10 +349,6 @@ class ConsentGroupReview extends Component {
 
     if (this.state.formData.consentExtraProps.compliance === "true" && this.isEmpty(this.state.formData.consentExtraProps.textCompliance)) {
       textCompliance = true;
-    }
-
-    if (this.isEmpty(this.state.formData.consentExtraProps.sharingPlan)) {
-      sharingPlan = true;
     }
 
     if (!this.validateQuestionnaire()) {

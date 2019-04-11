@@ -193,7 +193,6 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
     extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
     // step 5
-    extraProperties.push({ name: 'sharingPlan', value: this.state.dataSharingFormData.sharingPlan });
     extraProperties.push({ name: 'databaseControlled', value: this.state.dataSharingFormData.databaseControlled });
     extraProperties.push({ name: 'databaseOpen', value: this.state.dataSharingFormData.databaseOpen });
     consentGroup.extraProperties = extraProperties;
