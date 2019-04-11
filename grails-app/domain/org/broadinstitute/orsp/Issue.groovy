@@ -116,9 +116,9 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getTextCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_COMPLIANCE }?.value }
 
-    transient String getAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.ACCESSIBLE }?.value }
+    transient String getSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.SHARING_TYPE }?.value }
 
-    transient String getTextAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_ACCESSIBLE }?.value }
+    transient String getTextSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_SHARING_TYPE }?.value }
 
     // Sharing data
     transient String getSharingPlan() { getExtraProperties().find { it.name == IssueExtraProperty.SHARING_PLAN }?.value }
@@ -156,6 +156,9 @@ class Issue implements LogicalDelete<Issue> {
     transient String isCollaboratorProvidingGoodService() { getExtraProperties().find { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE}?.value }
 
     transient String isConsentUnambiguous() { getExtraProperties().find { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS }?.value }
+
+    // Attestation
+    transient String attestation() { getExtraProperties().find { it.name == IssueExtraProperty.ATTESTATION }?.value }
 
     // Others
     transient String getCollPublication() {

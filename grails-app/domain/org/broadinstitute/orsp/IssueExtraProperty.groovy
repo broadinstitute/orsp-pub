@@ -64,8 +64,8 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String COMPLIANCE = "compliance"
     public static final String TEXT_COMPLIANCE = "textCompliance"
     public static final String SENSITIVE_INFORMATION_SOURCE = "sensitiveInformationSource"
-    public static final String ACCESSIBLE = "accessible"
-    public static final String TEXT_ACCESSIBLE = "textAccessible"
+    public static final String SHARING_TYPE = "sharingType"
+    public static final String TEXT_SHARING_TYPE = "textSharingType"
     public static final String PROJECT_REVIEW_APPROVED = "projectReviewApproved"
     public static final String APPROVAL = "approvalStatus"
     public static final String PROJECT_AVAILABILITY = "projectAvailability"
@@ -82,6 +82,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String IS_LINK_MAINTAINED = "isLinkMaintained"
     public static final String START_DATE = "startDate"
     public static final String END_DATE = "endDate"
+    public static final String ATTESTATION = "attestation"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

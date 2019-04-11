@@ -4,6 +4,8 @@ import { WizardStep } from "./WizardStep";
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 
+const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 export const SecurityReview = hh(class SecurityReview extends Component {
 
   state = {};
@@ -14,10 +16,11 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       errors: {
         pii: true,
         compliance: true,
-        accessible: true,
+        sharingType: true,
         textCompliance: true,
-        textAccessible: true,
       },
+      openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
+      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
     };
     this.formHasError = this.formHasError.bind(this);
   }
@@ -113,36 +116,43 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       }),
       InputFieldRadio({
         id: "radioAccessible",
-        name: "accessible",
-        label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
-        value: this.props.review === true ? this.props.formData.projectExtraProps.accessible : this.props.currentValue.securityInfoFormData.accessible,
-        currentValue: this.props.review === true ? this.props.current.projectExtraProps.accessible : null,
-        optionValues: ["true", "false", "uncertain"],
+        name: "sharingType",
+        label: span({}, ["Will the individual level data collected or generated as part of this project be shared via: *"]),
+        value: this.props.review === true ? this.props.formData.projectExtraProps.sharingType : this.props.currentValue.securityInfoFormData.sharingType,
+        currentValue: this.props.review === true ? this.props.current.projectExtraProps.sharingType : null,
         optionLabels: [
-          "Yes",
-          "No",
-          "Uncertain"
+          "An open/unrestricted repository (such as GEO)",
+          "A controlled-access repository (such as dbGaP or DUOS)",
+          "Both a controlled-access and an open-access repository",
+          "No data sharing via a repository (data returned to research collaborator only)",
+          "Data sharing plan not yet determined"
+        ],
+        optionValues: [
+          "open",
+          "controlled",
+          "both",
+          "noDataSharing",
+          "undetermined"
         ],
         onChange: this.handleRadio2Change,
         required: true,
-        error: this.props.infoSecurityErrors.accessible && this.props.showErrorInfoSecurity,
+        error: this.props.infoSecurityErrors.sharingType && this.props.showErrorInfoSecurity,
         errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
         review: this.props.review
       }),
       InputFieldText({
-        isRendered: this.props.review === true ?  this.props.formData.projectExtraProps.accessible === 'true' : this.props.currentValue.securityInfoFormData.accessible === 'true',
+        isRendered: this.props.review === true ?  TEXT_SHARING_TYPES.some((type) => type === this.props.formData.projectExtraProps.sharingType) : TEXT_SHARING_TYPES.some((type) => type === this.props.currentValue.securityInfoFormData.sharingType),
         id: "inputAccessible",
-        name: "textAccessible",
-        label: "Please explain*",
-        value: this.props.review === true ? this.props.formData.projectExtraProps.textAccessible : this.props.currentValue.securityInfoFormData.textAccessible,
-        currentValue:  this.props.review === true ? this.props.current.projectExtraProps.textAccessible : undefined,
+        name: "textSharingType",
+        label: "Name of Database(s) ",
+        moreInfo: this.props.formData.projectExtraProps.sharingType === 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
+        value: this.props.review === true ? this.props.formData.projectExtraProps.textSharingType : this.props.currentValue.securityInfoFormData.textSharingType,
+        currentValue:  this.props.review === true ? this.props.current.projectExtraProps.textSharingType : undefined,
         disabled: false,
         required: false,
         onChange: this.handleInputChange,
-        error: this.props.infoSecurityErrors.textAccessible && this.props.showErrorInfoSecurity,
-        errorMessage: "Required field",
         readOnly: this.props.readOnly,
         edit: this.props.edit,
         review: this.props.review
