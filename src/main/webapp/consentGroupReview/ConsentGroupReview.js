@@ -72,8 +72,6 @@ class ConsentGroupReview extends Component {
         textCompliance: null,
         sharingType: null,
         textSharingType: null,
-        databaseControlled: null,
-        databaseOpen: null,
         instSources: []
       },
       errorSubmit: false,
@@ -970,8 +968,6 @@ class ConsentGroupReview extends Component {
       collInst = '',
       collContact = '',
       textCompliance = '',
-      databaseControlled = '',
-      databaseOpen = '',
       onGoingProcess = false,
       describeConsentGroup = '',
       requireMta = '',
