@@ -63,10 +63,9 @@ class NewProject extends Component {
       },
       formerProjectType: null,
       infoSecurityErrors: {
-        accessible: false,
+        sharingType: false,
         compliance: false,
         pii: false,
-        textAccessible: false,
         textCompliance: false
       }
     };
@@ -168,8 +167,8 @@ class NewProject extends Component {
     extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
     extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
     extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'accessible', value: this.state.securityInfoFormData.accessible });
-    extraProperties.push({ name: 'textAccessible', value: this.state.securityInfoFormData.textAccessible });
+    extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
+    extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
 
     let collaborators = this.state.generalDataFormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {

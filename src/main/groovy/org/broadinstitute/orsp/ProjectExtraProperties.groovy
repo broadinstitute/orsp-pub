@@ -22,8 +22,8 @@ class ProjectExtraProperties {
     String pii
     String compliance
     String textCompliance
-    String accessible
-    String textAccessible
+    String sharingType
+    String textSharingType
 
     // Determination questions
     String feeForService
@@ -67,8 +67,8 @@ class ProjectExtraProperties {
         this.setPii(project.getPII() ?: "")
         this.setCompliance(project.getCompliance() ?: "")
         this.setTextCompliance(project.getTextCompliance() ?: "")
-        this.setAccessible(project.getAccessible() ?: "")
-        this.setTextAccessible(project.getTextAccessible() ?: "")
+        this.setSharingType(project.getSharingType() ?: "")
+        this.setTextSharingType(project.getTextSharingType() ?: "")
 
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")

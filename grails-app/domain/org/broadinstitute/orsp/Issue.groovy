@@ -116,9 +116,9 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getTextCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_COMPLIANCE }?.value }
 
-    transient String getAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.ACCESSIBLE }?.value }
+    transient String getSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.SHARING_TYPE }?.value }
 
-    transient String getTextAccessible() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_ACCESSIBLE }?.value }
+    transient String getTextSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_SHARING_TYPE }?.value }
 
     // Determination questions
     transient String getFeeForService() { getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value }
