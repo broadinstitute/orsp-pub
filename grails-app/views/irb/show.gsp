@@ -63,6 +63,7 @@
         <li><a href="#comments">Messages</a></li>
         <li><a href="#history">History</a></li>
         <li><a href="#workspace">Workspace</a></li>
+        <li><a href="#adminOnly">Admin Only</a></li>
     </ul>
 
     <div id="review">
@@ -122,6 +123,10 @@
     <div id="comments"><div class="load-msg">Loading ...</div></div>
 
     <div id="history"><div class="load-msg">Loading ...</div></div>
+
+    <div id="adminOnly">
+        <g:render template="/projectReview/adminOnly" model="[issue: issue]"/>
+    </div>
 
 </div>
 
