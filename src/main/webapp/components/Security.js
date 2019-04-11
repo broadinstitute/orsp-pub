@@ -204,7 +204,7 @@ export const Security = hh(class Security extends Component {
             id: "inputAccessible",
             name: "textSharingType",
             label: "Name of Database(s) ",
-            moreInfo: this.state.formData.sharingType !== 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
+            moreInfo: this.state.formData.sharingType === 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
             value: this.state.formData.textSharingType,
             disabled: false,
             required: false,

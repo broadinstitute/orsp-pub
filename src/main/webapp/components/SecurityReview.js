@@ -147,7 +147,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         id: "inputAccessible",
         name: "textSharingType",
         label: "Name of Database(s) ",
-        moreInfo: this.props.formData.projectExtraProps.sharingType !== 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
+        moreInfo: this.props.formData.projectExtraProps.sharingType === 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
         value: this.props.review === true ? this.props.formData.projectExtraProps.textSharingType : this.props.currentValue.securityInfoFormData.textSharingType,
         currentValue:  this.props.review === true ? this.props.current.projectExtraProps.textSharingType : undefined,
         disabled: false,
