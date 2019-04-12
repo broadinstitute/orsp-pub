@@ -339,7 +339,7 @@ class IssueService implements UserInfo {
     void updateProjectApproval(String projectKey) {
         Issue issue = Issue.findByProjectKey(projectKey)
         Boolean approvedAttachments = issue.attachmentsApproved()
-        if (issue != null && !issue.getApprovalStatus().equals(DocumentStatus.APPROVED.status)  && approvedAttachments) {
+        if (issue != null && !issue.getApprovalStatus().equals(DocumentStatus.APPROVED.status) && issue.getProjectReviewApproved() && approvedAttachments) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)
