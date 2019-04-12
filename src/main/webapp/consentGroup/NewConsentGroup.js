@@ -231,7 +231,7 @@ class NewConsentGroup extends Component {
       isValid = this.validateGeneralData(field);
     } else if (this.state.currentStep === 2) {
       isValid = this.validateInternationalCohorts();
-    } else if (this.state.currentStep === 3) {
+    } else if (this.state.currentStep === LAST_STEP) {
       isValid = this.validateInfoSecurity();
     }
     return isValid;
