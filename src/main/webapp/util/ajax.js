@@ -180,8 +180,8 @@ export const User = {
 
 export const Review = {
 
-  deleteSuggestions(url, projectKey) {
-    return axios.delete(url + '?projectKey=' + projectKey);
+  deleteSuggestions(url, projectKey, type) {
+    return axios.delete(url + '?projectKey=' + projectKey + '&type=' + type);
   },
 
   getSuggestions(serverURL, projectKey) {

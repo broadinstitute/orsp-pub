@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.NotifyArguments
@@ -50,6 +51,7 @@ class ClarificationController extends AuthenticatedController {
                                 comment: comment.description,
                                 user: getUser(),
                                 issue: issue))
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
