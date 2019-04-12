@@ -1274,7 +1274,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly
           }),
           InputFieldSelect({
-            label: "Irb Referral",
+            label: "IRB Referral",
             id: "irbReferral",
             name: "irbReferral",
             options: PREFERRED_IRB,
