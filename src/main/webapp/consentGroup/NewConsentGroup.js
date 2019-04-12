@@ -358,6 +358,7 @@ class NewConsentGroup extends Component {
       prev.determination = determination;
       if (this.state.determination.projectType !== null && this.state.showInternationalCohortsError === true) {
         prev.showInternationalCohortsError = false;
+        prev.generalError = false;
       }
       return prev;
     });
