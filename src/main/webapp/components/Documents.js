@@ -64,7 +64,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   closeModal = () => {
-    this.setState({showDialog: !this.state.showDialog});
+    this.setState({showAddKeyDocuments: !this.state.showAddKeyDocuments});
   };
   closeAdditionalModal = () => {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
