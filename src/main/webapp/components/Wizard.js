@@ -90,7 +90,7 @@ export const Wizard = hh(class Wizard extends Component {
           div({ className: "buttonContainer wizardButtonContainer" }, [
             button({ className: "btn buttonSecondary floatLeft", onClick: this.prevStep, isRendered: (this.state.currentStepIndex > 0)}, ["Previous Step"]),
             button({ className: "btn buttonPrimary floatRight", onClick: this.nextStep, isRendered: !this.state.readyToSubmit }, ["Next Step"]),
-            button({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit, disabled: this.props.disabledSubmit}, ["SUBMIT"]),
+            button({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit, disabled: this.props.disabledSubmit}, ["Submit to ORSP"]),
           ]),
           h(Spinner, {
             name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
