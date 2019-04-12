@@ -619,25 +619,6 @@ class DataUseLetter extends Component {
                   readOnly: this.state.readOnly
                 }),
                 InputFieldCheckbox({
-                  id: "ckb_endocrineDisease",
-                  name: "endocrineDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Endocrine, nutritional and metabolic diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.endocrineDisease === 'true' || this.state.formData.diseaseRestrictedOptions.endocrineDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                //if endocrineDisease is checked (OK)
-                div({ isRendered: this.state.formData.diseaseRestrictedOptions.endocrineDisease === true, className: "subGroup" }, [
-                  InputFieldCheckbox({
-                    id: "ckb_endocrineDiabetes",
-                    name: "endocrineDiabetes",
-                    onChange: this.handleSubOptionsCheck,
-                    label: span({ className: "normal" }, ['Diabetes mellitus']),
-                    checked: this.state.formData.diseaseRestrictedOptions.endocrineDiabetes === 'true' || this.state.formData.diseaseRestrictedOptions.endocrineDiabetes === true,
-                    readOnly: this.state.readOnly
-                  })
-                ]),
-                InputFieldCheckbox({
                   id: "ckb_mentalDisorder",
                   name: "mentalDisorder",
                   onChange: this.handleSubOptionsCheck,
@@ -651,22 +632,6 @@ class DataUseLetter extends Component {
                   onChange: this.handleSubOptionsCheck,
                   label: span({ className: "normal" }, ['Nervous system diseases']),
                   checked: this.state.formData.diseaseRestrictedOptions.nervousDisease === 'true' || this.state.formData.diseaseRestrictedOptions.nervousDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_eyeDisease",
-                  name: "eyeDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Eye diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.eyeDisease === 'true' || this.state.formData.diseaseRestrictedOptions.eyeDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_earDisease",
-                  name: "earDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Ear and mastoid process diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.earDisease === 'true' || this.state.formData.diseaseRestrictedOptions.earDisease === true,
                   readOnly: this.state.readOnly
                 }),
                 InputFieldCheckbox({
@@ -694,65 +659,6 @@ class DataUseLetter extends Component {
                   onChange: this.handleSubOptionsCheck,
                   label: span({ className: "normal" }, ['Digestive system diseases']),
                   checked: this.state.formData.diseaseRestrictedOptions.digestiveDisease === 'true' || this.state.formData.diseaseRestrictedOptions.digestiveDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                //if digestiveDisease is checked (OK)
-                div({ isRendered: this.state.formData.diseaseRestrictedOptions.digestiveDisease === true, className: "subGroup" }, [
-                  InputFieldCheckbox({
-                    id: "ckb_inflammatoryDisease",
-                    name: "inflammatoryDisease",
-                    onChange: this.handleSubOptionsCheck,
-                    label: span({ className: "normal" }, ['Inflammatory bowel disease']),
-                    checked: this.state.formData.diseaseRestrictedOptions.inflammatoryDisease === 'true' || this.state.formData.diseaseRestrictedOptions.inflammatoryDisease === true,
-                    readOnly: this.state.readOnly
-                  })
-                ]),
-                InputFieldCheckbox({
-                  id: "ckb_skinDisease",
-                  name: "skinDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Skin and subcutaneous tissue diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.skinDisease === 'true' || this.state.formData.diseaseRestrictedOptions.skinDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_musculoskeletalDisease",
-                  name: "musculoskeletalDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Musculoskeletal system & connective tissue diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.musculoskeletalDisease === 'true' || this.state.formData.diseaseRestrictedOptions.musculoskeletalDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_genitourinaryDisease",
-                  name: "genitourinaryDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Genitourinary system diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.genitourinaryDisease === 'true' || this.state.formData.diseaseRestrictedOptions.genitourinaryDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_pregnancy",
-                  name: "pregnancy",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Pregnancy, childbirth and the puerperium']),
-                  checked: this.state.formData.diseaseRestrictedOptions.pregnancy === 'true' || this.state.formData.diseaseRestrictedOptions.pregnancy === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_congenitalMalformation",
-                  name: "congenitalMalformation",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Congenital malformations, deformations and chromosomal abnormalities']),
-                  checked: this.state.formData.diseaseRestrictedOptions.congenitalMalformation === 'true' || this.state.formData.diseaseRestrictedOptions.congenitalMalformation === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_bloodDisorder",
-                  name: "bloodDisorder",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Blood and blood-forming organs and certain disorders involving the immune mechanism diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.bloodDisorder === 'true' || this.state.formData.diseaseRestrictedOptions.bloodDisorder === true,
                   readOnly: this.state.readOnly
                 }),
                 InputFieldCheckbox({

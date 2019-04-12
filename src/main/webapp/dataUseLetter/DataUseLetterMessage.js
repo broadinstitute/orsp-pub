@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { AlertMessage } from '../components/Wizard';
 import { div, h2 } from 'react-hyperscript-helpers';
 
 class DataUseLetterMessage extends Component {
