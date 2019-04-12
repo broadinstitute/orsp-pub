@@ -33,7 +33,7 @@ class DataUseLetter extends Component {
         endDate: null,
         onGoingProcess: false,
         repositoryDeposition: '',
-        primaryRestrictions: {},
+        primaryRestrictions: '',
         noRestrictions: false,
         generalUse: false,
         researchRestricted: false,
@@ -166,6 +166,14 @@ class DataUseLetter extends Component {
       return (new Date(date)).toLocaleDateString('en-US');
     }
   }
+
+  handleRadioPrimaryChange = (e, field, value) => {
+    // console.log('E ->',e, '\nfield ->', field, '\nvalue ->', value);
+    this.setState(prev => {
+      prev[field] = value;
+      return prev;
+    })
+  };
 
   handleCheck = (e) => {
     const { name = '', checked = '' } = e.target;
@@ -566,41 +574,25 @@ class DataUseLetter extends Component {
           ]),
 
           Panel({ title: "1. Primary Restrictions*" }, [
-            InputFieldCheckbox({
-              id: "ckb_noRestrictions",
-              name: "noRestrictions",
-              onChange: this.handleCheck,
-              label: "No restrictions",
-              checked: this.state.formData.noRestrictions === 'true' || this.state.formData.noRestrictions === true,
-              readOnly: this.state.readOnly
+            InputFieldRadio({
+              id: "radioPrimaryRestriction",
+              name: "primaryRestrictions",
+              label: "",
+              value: this.state.formData.primaryRestrictions,
+              optionValues: ['noRestrictions', 'generalUse', 'researchRestricted', 'diseaseRestricted'],
+              optionLabels: [
+                span({ className: 'bold' }, ['No restrictions.']),
+                span({ className: 'bold' }, ['General research use ', span({ className: 'normal italic' }, ['(Data can be used for any research purpose but would not be made available for non-research purposes. These data would generally be made available to any qualified investigator, irrespective of the specific research purpose for which the data are requested.)'])]),
+                span({ className: 'bold"'}, ['Future use is ', span({ className: 'bold' }, ['restricted to health/medical/biomedical research (any type)'])]),
+                span({ className: 'bold"'}, ['Future research is ', span({ className: 'bold' }, ['restricted to (a) specific disease(s): ']), span({ className: 'normal italic' }, ['(Please note that checking any of these boxes precludes all future research outside of the indicated disease.)'])]),
+              ],
+              onChange: this.handleRadioPrimaryChange,
+              readOnly: this.state.readOnly,
+              error: this.state.errors.errorRepositoryType,
+              errorMessage: "Required Field"
             }),
-            InputFieldCheckbox({
-              id: "ckb_generalUse",
-              name: "generalUse",
-              onChange: this.handleCheck,
-              label: span({}, ['General research use ', span({ className: 'normal italic' }, ['(Data can be used for any research purpose but would not be made available for non-research purposes. These data would generally be made available to any qualified investigator, irrespective of the specific research purpose for which the data are requested.)'])]),
-              checked: this.state.formData.generalUse === 'true' || this.state.formData.generalUse === true,
-              readOnly: this.state.readOnly
-            }),
-            InputFieldCheckbox({
-              id: "ckb_researchRestricted",
-              name: "researchRestricted",
-              onChange: this.handleCheck,
-              label: span({}, [span({ className: 'normal' }, ['Future use is ']), span({ className: 'bold' }, ['restricted to health/medical/biomedical research (any type)'])]),
-              checked: this.state.formData.researchRestricted === 'true' || this.state.formData.researchRestricted === true,
-              readOnly: this.state.readOnly
-            }),
-            InputFieldCheckbox({
-              id: "ckb_diseaseRestricted",
-              name: "diseaseRestricted",
-              onChange: this.handleCheck,
-              label: span({}, [span({ className: 'normal' }, ['Future research is ']), span({ className: 'bold' }, ['restricted to (a) specific disease(s): ']), span({ className: 'normal italic' }, ['(Please note that checking any of these boxes precludes all future research outside of the indicated disease.)'])]),
-              checked: this.state.formData.diseaseRestricted === 'true' || this.state.formData.diseaseRestricted === true,
-              readOnly: this.state.readOnly
-            }),
-            small({ isRendered: this.state.errors.errorPrimaryRestrictionsChecks, className: "errorMessage" }, ['Required Fields']),
 
-            div({ isRendered: this.state.formData.diseaseRestricted === true, className: "row subGroup" }, [
+            div({ isRendered: this.state.formData.primaryRestrictions === 'diseaseRestricted', className: "row subGroup" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
                 InputFieldCheckbox({
                   id: "ckb_parasiticDisease",
