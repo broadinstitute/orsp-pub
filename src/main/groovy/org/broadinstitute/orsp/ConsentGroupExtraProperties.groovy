@@ -19,13 +19,8 @@ class ConsentGroupExtraProperties {
     String pii
     String compliance
     String textCompliance
-    String accessible
-    String textAccessible
-
-    // Sharing data
-    String sharingPlan
-    String databaseControlled
-    String databaseOpen
+    String sharingType
+    String textSharingType
 
     // InternationalCohorts
     String individualDataSourced
@@ -54,13 +49,8 @@ class ConsentGroupExtraProperties {
         this.setPii(consentGroup.getPII() ?: "")
         this.setCompliance(consentGroup.getCompliance() ?: "")
         this.setTextCompliance(consentGroup.getTextCompliance() ?: "")
-        this.setAccessible(consentGroup.getAccessible() ?: "")
-        this.setTextAccessible(consentGroup.getTextAccessible() ?: "")
-
-        // Sharing data
-        this.setSharingPlan(consentGroup.getSharingPlan() ?: "")
-        this.setDatabaseControlled(consentGroup.getDataBaseControlled() ?: "")
-        this.setDatabaseOpen(consentGroup.getDatabaseOpen() ?: "")
+        this.setSharingType(consentGroup.getSharingType() ?: "")
+        this.setTextSharingType(consentGroup.getTextSharingType() ?: "")
 
         // InternationalCohorts
         this.setIndividualDataSourced(consentGroup.getIndividualDataSourced() ?: null)
