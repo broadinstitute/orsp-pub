@@ -132,10 +132,7 @@ class NewConsentGroupController extends AuthenticatedController {
     def getDataUseRestriction() {
         DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentKey)
         Collection<String> duSummary = consentService.getSummary(restriction)
-        if (restriction == null) {
-            render([restriction: []] as JSON)
-        }
-        render([restriction: duSummary, restrictionId: restriction.id] as JSON)
+        render([restriction: duSummary, restrictionId: restriction?.id] as JSON)
     }
 
     Collection<ConsentCollectionLink> getConsentCollectionLinks() {
