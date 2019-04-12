@@ -132,7 +132,7 @@ export const Security = hh(class Security extends Component {
             id: "radioPII",
             name: "pii",
             label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
-            moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", target: "_blank" }, ["visit this link"]), "."]),
+            moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."]),
             value: this.state.formData.pii,
             optionValues: ["true", "false"],
             optionLabels: [
