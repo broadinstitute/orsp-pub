@@ -513,6 +513,7 @@ class NewConsentGroup extends Component {
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateInfoSecurityFormData,
           showErrorInfoSecurity: this.state.showInfoSecurityError,
+          generalError: this.state.generalError,
           removeErrorMessage: this.removeErrorMessage,
           handleSecurityValidity: this.handleInfoSecurityValidity,
           currentValue: this.state,

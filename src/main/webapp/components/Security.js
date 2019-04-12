@@ -124,7 +124,7 @@ export const Security = hh(class Security extends Component {
     return (
       WizardStep({
         title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        error: this.props.showErrorInfoSecurity && this.formHasError(),
+        error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError,
         errorMessage: 'Please complete all required fields'
       }, [
         div({ className: "questionnaireContainer" }, [
