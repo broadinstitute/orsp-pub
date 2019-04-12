@@ -573,11 +573,14 @@
             }
          });
 
+         // TODO agregar NRES a la validación de al menos seleccionar una primary restriction
+
         $("input[name='noRestriction']").on("click", function() {
             if ($("#noRestrictionYes").prop("checked")) {
                 $("#generalUseYes").prop("checked", false);
-                $("#hmbResearchYes").prop("checked", true);
-                $("#hmbResearchNo").prop("checked", false);
+                $("#generalUseNo").prop("checked", true);
+                $("#hmbResearchYes").prop("checked", false);
+                $("#hmbResearchNo").prop("checked", true);
                 $(".diseaseAutocomplete").each(function( index ) { $(this).val(""); });
                 $("#controlSetOptionNo").prop("checked", true);
             }

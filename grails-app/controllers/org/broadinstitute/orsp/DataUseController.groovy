@@ -109,6 +109,7 @@ class DataUseController extends AuthenticatedController {
         restriction.cloudStorage = params.cloudStorage
         restriction.irb = getBooleanForParam(params.irb)
         restriction.geographicalRestrictions = params.geographicalRestrictions
+        restriction.noRestriction = params.noRestriction
 
         if (params.other) {
             restriction.other = params.other
