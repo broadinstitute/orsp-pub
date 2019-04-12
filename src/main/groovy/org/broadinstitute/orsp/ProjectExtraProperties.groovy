@@ -25,11 +25,6 @@ class ProjectExtraProperties {
     String sharingType
     String textSharingType
 
-    // Sharing data
-    String sharingPlan
-    String databaseControlled
-    String databaseOpen
-
     // Determination questions
     String feeForService
     String broadInvestigator
@@ -74,11 +69,6 @@ class ProjectExtraProperties {
         this.setTextCompliance(project.getTextCompliance() ?: "")
         this.setSharingType(project.getSharingType() ?: "")
         this.setTextSharingType(project.getTextSharingType() ?: "")
-
-        // Sharing data
-        this.setSharingPlan(project.getSharingPlan() ?: "")
-        this.setDatabaseControlled(project.getDataBaseControlled() ?: "")
-        this.setDatabaseOpen(project.getDatabaseOpen() ?: "")
 
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
