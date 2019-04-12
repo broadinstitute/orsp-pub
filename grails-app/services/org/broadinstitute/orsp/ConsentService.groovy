@@ -397,7 +397,7 @@ class ConsentService implements Status {
         List<String> summary = ["Samples are restricted for use under the following conditions:"]
 
         if (dataUseRestriction == null) {
-            return summary
+            return []
         }
         if (dataUseRestriction.generalUse) summary.add(GRU_POS)
         if (dataUseRestriction.hmbResearch) summary.add(HMB_POS)

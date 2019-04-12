@@ -120,13 +120,6 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getTextSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_SHARING_TYPE }?.value }
 
-    // Sharing data
-    transient String getSharingPlan() { getExtraProperties().find { it.name == IssueExtraProperty.SHARING_PLAN }?.value }
-
-    transient String getDataBaseControlled() { getExtraProperties().find { it.name == IssueExtraProperty.DATABASE_CONTROLLED }?.value }
-
-    transient String getDatabaseOpen() { getExtraProperties().find { it.name == IssueExtraProperty.DATABASE_OPEN }?.value }
-
     // Determination questions
     transient String getFeeForService() { getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value }
 
