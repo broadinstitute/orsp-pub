@@ -10,6 +10,8 @@ import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 
+const LAST_STEP = 3;
+
 class NewConsentGroup extends Component {
 
   constructor(props) {
@@ -217,7 +219,7 @@ class NewConsentGroup extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 3) {
+    if (currentStep === LAST_STEP) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -505,7 +507,7 @@ class NewConsentGroup extends Component {
         }),
         Security({
           title: "Security",
-          step: 3,
+          step: LAST_STEP,
           currentStep: currentStep,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,

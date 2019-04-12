@@ -13,6 +13,8 @@ import { InternationalCohorts } from '../components/InternationalCohorts';
 import { Security } from '../components/Security';
 import "regenerator-runtime/runtime";
 
+const LAST_STEP = 4;
+
 class NewProject extends Component {
 
   constructor(props) {
@@ -452,7 +454,7 @@ class NewProject extends Component {
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
-    if (currentStep === 4) {
+    if (currentStep === LAST_STEP) {
       renderSubmit = true;
     }
     return renderSubmit;
@@ -517,7 +519,7 @@ class NewProject extends Component {
           NewProjectDocuments({
             title: "Documents",
             currentStep: currentStep,
-            step: 4,
+            step: LAST_STEP,
             fileHandler: this.fileHandler,
             projectType: projectType,
             files: this.state.files,
