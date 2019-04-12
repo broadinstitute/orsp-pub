@@ -512,18 +512,19 @@ class ConsentGroupReview extends Component {
   discardEdits = () => {
     spinnerService.showAll();
     this.setState({ discardEditsDialog: false });
-    this.removeEdits();
+    this.removeEdits('reject');
   };
 
   approveEdits = () => {
     spinnerService.showAll();
     let consentGroup = this.getConsentGroup();
+    consentGroup.editsApproved = true;
     ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
       this.setState(prev => {
         prev.approveDialog = false;
         return prev;
       });
-      this.removeEdits();
+      this.removeEdits('approve');
     }).catch(error => {
       spinnerService.hideAll();
       console.error(error);
@@ -772,8 +773,8 @@ class ConsentGroupReview extends Component {
 
   };
 
-  removeEdits = () => {
-    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.consentKey).then(
+  removeEdits = (type) => {
+    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.consentKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();

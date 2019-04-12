@@ -66,7 +66,7 @@ class FileHelperController extends AuthenticatedController{
             if (document != null) {
                 document.setStatus(DocumentStatus.REJECTED.status)
                 document.save(flush: true)
-                persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Reject Document", EventType.REJECT_DOCUMENT)
+                persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Rejected", EventType.REJECT_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
                 response.status = 404
@@ -84,10 +84,8 @@ class FileHelperController extends AuthenticatedController{
             if (document != null) {
                 document.setStatus(DocumentStatus.APPROVED.status)
                 document.save(flush: true)
-
-                Issue issue = queryService.findByKey(document.projectKey)
-                issueService.updateProjectApproval(issue)
-                persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Approve Document", EventType.APPROVE_DOCUMENT)
+                issueService.updateProjectApproval(document.projectKey)
+                persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Approved", EventType.APPROVE_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
                 response.status = 404

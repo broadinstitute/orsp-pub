@@ -271,6 +271,9 @@ class IssueService implements UserInfo {
         } else {
             issue.save(flush: true)
         }
+        if(input.get("editsApproved")) {
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
+        }
         issue
     }
 
@@ -310,8 +313,7 @@ class IssueService implements UserInfo {
         }
         issue.extraProperties.addAll(extraPropertiesList)
         if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
-            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
-            updateProjectApproval(issue)
+            updateProjectApproval(projectKey)
         }
         issue
     }
@@ -334,13 +336,18 @@ class IssueService implements UserInfo {
      * Check that an issue has its general data and all of its attachments are in 'Approved' status.
      * If all conditions are met, then we set its general status to 'Approved'
      */
-    void updateProjectApproval(Issue issue) {
+    void updateProjectApproval(String projectKey) {
+        Issue issue = Issue.findByProjectKey(projectKey)
         Boolean approvedAttachments = issue.attachmentsApproved()
-        if (issue != null && issue.getProjectReviewApproved() && approvedAttachments) {
+        if (issue != null && !issue.getApprovalStatus().equals(DocumentStatus.APPROVED.status)  && approvedAttachments) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)
-            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project Approved", EventType.APPROVE_PROJECT)
+            if (issue.type.equals(IssueType.CONSENT_GROUP.name)) {
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Consent Group Approved", EventType.APPROVE_CONSENT_GROUP)
+            } else {
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName,  "Project Approved", EventType.APPROVE_PROJECT)
+            }
         }
     }
 

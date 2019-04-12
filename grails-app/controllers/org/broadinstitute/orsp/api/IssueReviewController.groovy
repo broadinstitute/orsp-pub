@@ -49,7 +49,9 @@ class IssueReviewController extends AuthenticatedController {
 
     def delete() {
         issueReviewService.delete(params.projectKey)
-        persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
+        if (params.type == 'reject') {
+            persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
+        }
         response.status = 200
         response
     }
