@@ -6,6 +6,8 @@ import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { isEmpty } from '../util/Utils'
 
+const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 export const Security = hh(class Security extends Component {
 
   state = {};
@@ -16,17 +18,18 @@ export const Security = hh(class Security extends Component {
       formData: {
         pii: '',
         compliance: '',
-        accessible: '',
+        sharingType: '',
+        textSharingType: '',
         textCompliance: '',
-        textAccessible: '',
       },
       errors: {
         pii: true,
         compliance: true,
-        accessible: true,
+        sharingType: true,
         textCompliance: true,
-        textAccessible: true,
-      }
+      },
+      openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
+      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
     };
   }
 
@@ -67,10 +70,9 @@ export const Security = hh(class Security extends Component {
   validate = (field) => {
     let pii = false;
     let compliance = false;
-    let accessible = false;
+    let sharingType = false;
     let isValid = true;
     let textCompliance = false;
-    let textAccessible = false;
 
     if (isEmpty(this.state.formData.pii)) {
       pii = true;
@@ -87,21 +89,16 @@ export const Security = hh(class Security extends Component {
       textCompliance = true;
       isValid = false;
     }
-    if (isEmpty(this.state.formData.accessible)) {
-      accessible = true;
-      isValid = false;
-    }
-    if (!isEmpty(this.state.formData.accessible) && this.state.formData.accessible === "true" && isEmpty(this.state.formData.textAccessible)) {
-      textAccessible = true;
+    if (isEmpty(this.state.formData.sharingType)) {
+      sharingType = true;
       isValid = false;
     }
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
         prev.errors.compliance = compliance;
-        prev.errors.accessible = accessible;
+        prev.errors.sharingType = sharingType;
         prev.errors.textCompliance = textCompliance;
-        prev.errors.textAccessible = textAccessible;
         return prev;
       });
     }
@@ -179,31 +176,39 @@ export const Security = hh(class Security extends Component {
           }),
           InputFieldRadio({
             id: "radioAccessible",
-            name: "accessible",
-            label: span({}, ["Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment ", span({ className: 'normal' }, ["(e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)"]), "?*"]),
-            value: this.state.formData.accessible,
-            optionValues: ["true", "false", "uncertain"],
+            name: "sharingType",
+            label: span({}, ["Will the individual level data collected or generated as part of this project be shared via: *"]),
+            value: this.state.formData.sharingType,
             optionLabels: [
-              "Yes",
-              "No",
-              "Uncertain"
+              "An open/unrestricted repository (such as GEO)",
+              "A controlled-access repository (such as dbGaP or DUOS)",
+              "Both a controlled-access and an open-access repository",
+              "No data sharing via a repository (data returned to research collaborator only)",
+              "Data sharing plan not yet determined"
+            ],
+            optionValues: [
+              "open",
+              "controlled",
+              "both",
+              "noDataSharing",
+              "undetermined"
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.accessible && this.props.showErrorInfoSecurity,
+            error: this.state.errors.sharingType && this.props.showErrorInfoSecurity,
             errorMessage: "Required field"
           }),
+
           InputFieldText({
-            isRendered: this.state.formData.accessible === "true",
+            isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType),
             id: "inputAccessible",
-            name: "textAccessible",
-            label: "Please explain*",
-            value: this.state.formData.textAccessible,
+            name: "textSharingType",
+            label: "Name of Database(s) ",
+            moreInfo: this.state.formData.sharingType === 'controlled' ? this.state.controlledSharingText : this.state.openSharingText,
+            value: this.state.formData.textSharingType,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
-            error: this.state.errors.textAccessible && this.props.showErrorInfoSecurity,
-            errorMessage: "Required field"
           })
         ])
       ])
