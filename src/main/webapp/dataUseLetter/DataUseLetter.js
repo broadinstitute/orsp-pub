@@ -12,6 +12,8 @@ import { AlertMessage } from '../components/AlertMessage';
 import { ConsentGroup, DUL } from "../util/ajax";
 import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
+import { MultiSelect } from "../components/MultiSelect";
+import { Search } from "../util/ajax";
 
 
 class DataUseLetter extends Component {
@@ -23,6 +25,7 @@ class DataUseLetter extends Component {
       submit: false,
       showSampleCollectionWarning: true,
       formData: {
+        otherDiseasesDOID: {},
         protocolTitle: '',
         protocolNumber: '',
         consentFormTitle: '',
@@ -167,10 +170,26 @@ class DataUseLetter extends Component {
     }
   }
 
+  loadDOIDOptions(query, callback) {
+    if (query.length > 2) {
+      Search.getMatchingUsers(this.props.sourceDiseases, query)
+        .then(response => {
+          let options = response.data.map(function (item) {
+            return {
+              key: item.id,
+              value: item.value,
+              label: item.label
+            };
+          });
+          callback(options);
+        });
+    }
+  };
+
   handleRadioPrimaryChange = (e, field, value) => {
-    // console.log('E ->',e, '\nfield ->', field, '\nvalue ->', value);
+    console.log('E ->',e, '\nfield ->', field, '\nvalue ->', value);
     this.setState(prev => {
-      prev[field] = value;
+      prev.formData.primaryRestrictions = value;
       return prev;
     })
   };
@@ -671,7 +690,18 @@ class DataUseLetter extends Component {
                     value: this.state.formData.otherDiseaseSpecify,
                     onChange: this.handleFormDataTextChange,
                     readOnly: this.state.readOnly
-                  })
+                  }),
+                  MultiSelect({
+                    id: "inputProjectManager",
+                    label: "Broad Project Manager",
+                    isDisabled: false,
+                    loadOptions: this.loadDOIDOptions,
+                    handleChange: this.handleProjectManagerChange,
+                    value: this.state.formData.otherDiseasesDOID,
+                    placeholder: "Start typing the Project Manager Name",
+                    isMulti: true,
+                    edit: false
+                  }),
                 ])
               ]),
               small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
