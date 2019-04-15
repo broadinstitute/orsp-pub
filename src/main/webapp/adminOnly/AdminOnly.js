@@ -51,7 +51,7 @@ class AdminOnly extends Component {
         const investigatorFirstName = '';//issue.data.extraProperties.investigatorFirstName;
         const investigatorLastName = ''; //issue.data.extraProperties.investigatorLastName;
         const degrees = ''; //issue.data.extraProperties.degrees;
-        const preferredIrb = isEmpty(this.state.formData.preferredIrb) ? '' : JSON.parse(this.state.formData.preferredIrb);
+        const preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
         const preferredIrbText = issue.data.extraProperties.preferredIrbText;
         const trackingNumber = issue.data.extraProperties.protocol;
         const projectTitle = issue.data.extraProperties.projectTitle;
@@ -159,7 +159,7 @@ class AdminOnly extends Component {
             name: "preferredIrbText",
             label: "Specify Preferred IRB",
             readOnly: !this.state.isORSP,
-            isRendered: true,//this.state.formData.preferredIrb.value === "other",
+            isRendered: this.state.formData.preferredIrb.value === "other",
             value: this.state.formData.investigatorFirstName,
             onChange: this.textHandler,
           }),
@@ -221,7 +221,6 @@ class AdminOnly extends Component {
                 value: this.state.formData.initialDate !== null ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
                 name: "initialDate",
                 label: "Initial Approval Date",
-                minDate: new Date(),
                 onChange: this.datePickerHandler,
                 placeholder: "Enter Approval Date",
                 readOnly: !this.state.isORSP,
