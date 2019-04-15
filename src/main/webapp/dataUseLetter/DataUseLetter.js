@@ -50,6 +50,7 @@ class DataUseLetter extends Component {
           respiratoryDisease: false,
           digestiveDisease: false,
           otherDisease: false,
+          diseaseDOID: []
         },
         commercialPurposes: false,
         methodsResearch: false,
@@ -210,11 +211,35 @@ class DataUseLetter extends Component {
 
   handleSubOptionsCheck = (e) => {
     const { name = '', checked = '' } = e.target;
+    const diseaseDOID = [];
+    if (name === "parasiticDisease") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_0050117");
+    }
+    if (name === "cancer") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_162");
+    }
+    if (name === "mentalDisorder") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_150");
+    }
+    if (name === "nervousDisease") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_863");
+    }
+    if (name === "cardiovascularDisease") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1287");
+    }
+    if (name === "respiratoryDisease") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1579");
+    }
+    if (name === "digestiveDisease") {
+      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_77");
+    }
+
     this.setState(prev => {
       if (name === 'otherDisease' && checked === false) {
         prev.formData.otherDiseasesDOID.length = 0;
       }
       prev.formData.diseaseRestrictedOptions[name] = checked;
+      prev.formData.diseaseRestrictedOptions.diseaseDOID = diseaseDOID;
       return prev;
     }, () => {
       if (this.state.submit) {
@@ -653,7 +678,6 @@ class DataUseLetter extends Component {
                   readOnly: this.state.readOnly
                 })
               ]),
-
               div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
                 InputFieldCheckbox({
                   id: "ckb_digestiveDisease",
