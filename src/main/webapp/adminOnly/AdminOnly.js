@@ -6,7 +6,10 @@ import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
 import { isEmpty } from "../util/Utils";
+import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
+import { InputFieldSelect } from "../components/InputFieldSelect";
+import { PREFERRED_IRB } from "../util/TypeDescription";
 
 class AdminOnly extends Component {
   constructor(props) {
@@ -15,13 +18,14 @@ class AdminOnly extends Component {
       isORSP: false,
       formData: {
         preferredIrb: '',
+        preferredIrbText: '',
         investigatorFirstName: '',
         investigatorLastName: '',
         degrees: '',
         trackingNumber: '',
         projectKey: '',
         projectTitle: '',
-        initialDate: '',
+        initialDate: null,
         sponsor: '',
         initialReviewType: '',
         bioMedical: '',
@@ -48,9 +52,10 @@ class AdminOnly extends Component {
         const investigatorLastName = ""; //issue.data.extraProperties.investigatorLastName;
         const degrees = ""; //issue.data.extraProperties.degrees;
         const preferredIrb = issue.data.extraProperties.irbReferral;
+        const preferredIrbText = issue.data.extraProperties.preferredIrbText;
         const trackingNumber = issue.data.extraProperties.protocol;
         const projectTitle = issue.data.extraProperties.projectTitle;
-        const initialDate = ""; //issue.data.extraProperties.initialDate;
+        const initialDate = null; //issue.data.extraProperties.initialDate;
         const sponsor = ""; //issue.data.extraProperties.sponsor;
         const initialReviewType = ""; //issue.data.extraProperties.initialReviewType;
         const bioMedical = ""; //issue.data.extraProperties.bioMedical;
@@ -59,6 +64,7 @@ class AdminOnly extends Component {
         this.setState(prev => {
           prev.formData.projectKey = projectKey;
           prev.formData.preferredIrb = preferredIrb;
+          prev.formData.preferredIrbText = preferredIrbText;
           prev.formData.trackingNumber = trackingNumber;
           prev.formData.projectTitle = projectTitle;
           prev.formData.investigatorFirstName = investigatorFirstName;
@@ -134,45 +140,56 @@ class AdminOnly extends Component {
             id: "preferredIrb",
             name: "preferredIrb",
             label: "Preferred IRB",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.preferredIrb,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
+          }),
+
+          // InputFieldSelect({
+          //   label: "Preferred IRB",
+          //   id: "preferredIrb",
+          //   name: "preferredIrb",
+          //   options: PREFERRED_IRB,
+          //   value: this.state.formData.preferredIrb,
+          //   currentValue: this.state.current.projectExtraProps.irbReferral,
+          //   onChange: this.handleSelect("irbReferral"),
+          //   readOnly: !this.state.isORSP,
+          //   placeholder: isEmpty(this.state.formData.projectExtraProps.irbReferral) && this.state.readOnly ? "--" : "Select...",
+          //   edit: true
+          // }),
+
+          InputFieldText({
+            id: "preferredIrbText",
+            name: "preferredIrbText",
+            label: "Specify Preferred IRB",
+            readOnly: !this.state.isORSP,
+            isRendered: true,//this.state.formData.preferredIrb.value === "other",
+            value: this.state.formData.investigatorFirstName,
+            onChange: this.textHandler,
           }),
           InputFieldText({
             id: "investigatorFirstName",
             name: "investigatorFirstName",
             label: "Investigator First Name",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.investigatorFirstName,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           }),
           InputFieldText({
             id: "investigatorLastName",
             name: "investigatorLastName",
             label: "Investigator Last Name",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.investigatorLastName,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           }),
           InputFieldText({
             id: "degrees",
             name: "degrees",
             label: "Investigator degree(s)",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.degrees,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           })
         ]),
         Panel({ title: "Project Details" }, [
@@ -180,12 +197,9 @@ class AdminOnly extends Component {
             id: "trackingNumber",
             name: "trackingNumber",
             label: "Protocol #",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.trackingNumber,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           }),
           InputFieldText({
             id: "projectKey",
@@ -195,38 +209,33 @@ class AdminOnly extends Component {
             readOnly: true,
             value: this.state.formData.projectKey,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           }),
           InputFieldText({
             id: "projectTitle",
             name: "projectTitle",
             label: "Title",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.projectTitle,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           }),
-
-          // InputFieldDatePicker({
-          //   selected: this.state.formData.initialDate,//this.state.formData.startDate,
-          //   name: "initialDate",
-          //   label: "Initial Approval Date",
-          //   onChange: this.datePickerHandler,
-          //   placeholder: "Enter Approval Date",
-          //   maxDate: null//this.state.formData.endDate !== null ? this.state.formData.endDate : null
-          //   disabled: !this.state.isORSP,
-          //   readOnly: !this.state.isORSP,
-          // }),
-
-
+          div({ className: "row positionRelative" }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                selected: this.state.formData.initialDate,
+                value: this.state.formData.initialDate !== null ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
+                name: "initialDate",
+                label: "Initial Approval Date",
+                minDate: new Date(),
+                onChange: this.datePickerHandler,
+                placeholder: "Enter Approval Date",
+                readOnly: !this.state.isORSP,
+              }),
+            ]),
+          ]),
           InputFieldText({
             id: "sponsor",
             name: "sponsor",
             label: "Sponsor or Funding Entity",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.sponsor,
             onChange: this.textHandler,
@@ -237,7 +246,6 @@ class AdminOnly extends Component {
             id: "initialReviewType",
             name: "initialReviewType",
             label: "Type of Initial Review",
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             value: this.state.formData.initialReviewType,
             onChange: this.textHandler,
@@ -256,7 +264,6 @@ class AdminOnly extends Component {
               "Biomedical.",
               "Non-Biomedical."
             ],
-            disabled: !this.state.isORSP,
             readOnly: !this.state.isORSP,
             required: false,
             error: false,
@@ -268,7 +275,6 @@ class AdminOnly extends Component {
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.submit,
-            disabled: !this.state.isORSP,
             isRendered: this.state.isORSP
           }, ["Submit"])
         ])
