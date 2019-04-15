@@ -25,7 +25,7 @@ class DataUseLetter extends Component {
       submit: false,
       showSampleCollectionWarning: true,
       formData: {
-        otherDiseasesDOID: {},
+        otherDiseasesDOID: [],
         protocolTitle: '',
         protocolNumber: '',
         consentFormTitle: '',
@@ -44,26 +44,13 @@ class DataUseLetter extends Component {
         diseaseRestrictedOptions: {
           parasiticDisease: false,
           cancer: false,
-          endocrineDisease: false,
-          endocrineDiabetes: false,
           mentalDisorder: false,
           nervousDisease: false,
-          eyeDisease: false,
-          earDisease: false,
           cardiovascularDisease: false,
           respiratoryDisease: false,
           digestiveDisease: false,
-          inflammatoryDisease: false,
-          skinDisease: false,
-          musculoskeletalDisease: false,
-          genitourinaryDisease: false,
-          pregnancy: false,
-          congenitalMalformation: false,
-          bloodDisorder: false,
           otherDisease: false,
         },
-        otherDiseaseSpecify: '',
-
         commercialPurposes: false,
         methodsResearch: false,
 
@@ -170,14 +157,14 @@ class DataUseLetter extends Component {
     }
   }
 
-  loadDOIDOptions(query, callback) {
+  loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingUsers(this.props.sourceDiseases, query)
+      Search.getMatchingQuery(this.props.sourceDiseases, query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
               key: item.id,
-              value: item.value,
+              value: item.definition[0],
               label: item.label
             };
           });
@@ -186,8 +173,18 @@ class DataUseLetter extends Component {
     }
   };
 
+  handleDiseaseManagerChange = (data, action) => {
+    this.setState(prev => {
+      if (data !== null) {
+        prev.formData.otherDiseasesDOID = data;
+      } else {
+        prev.formData.otherDiseasesDOID = [];
+      }
+      return prev;
+    });
+  };
+
   handleRadioPrimaryChange = (e, field, value) => {
-    console.log('E ->',e, '\nfield ->', field, '\nvalue ->', value);
     this.setState(prev => {
       prev.formData.primaryRestrictions = value;
       return prev;
@@ -214,14 +211,8 @@ class DataUseLetter extends Component {
   handleSubOptionsCheck = (e) => {
     const { name = '', checked = '' } = e.target;
     this.setState(prev => {
-      if (name === 'endocrineDisease' && checked === false) {
-        prev.formData.diseaseRestrictedOptions['endocrineDiabetes'] = false;
-      }
-      if (name === 'digestiveDisease' && checked === false) {
-        prev.formData.diseaseRestrictedOptions['inflammatoryDisease'] = false;
-      }
       if (name === 'otherDisease' && checked === false) {
-        prev.formData['otherDiseaseSpecify'] = '';
+        prev.formData.otherDiseasesDOID.length = 0;
       }
       prev.formData.diseaseRestrictedOptions[name] = checked;
       return prev;
@@ -682,23 +673,15 @@ class DataUseLetter extends Component {
                 }),
                 //if otherDisease is checked (OK)
                 div({ isRendered: this.state.formData.diseaseRestrictedOptions.otherDisease === true, className: "subGroup", style: { 'marginTop': '5px', 'marginBottom': '0' } }, [
-                  InputFieldText({
-                    id: "inputOtherDiseaseSpecify",
-                    name: "otherDiseaseSpecify",
-                    label: "Please describe",
-                    disabled: false,
-                    value: this.state.formData.otherDiseaseSpecify,
-                    onChange: this.handleFormDataTextChange,
-                    readOnly: this.state.readOnly
-                  }),
                   MultiSelect({
-                    id: "inputProjectManager",
-                    label: "Broad Project Manager",
+                    id: "inputOtherDiseaseSpecify",
+                    label: "Please select",
+                    name: "otherDiseaseSpecify",
                     isDisabled: false,
                     loadOptions: this.loadDOIDOptions,
-                    handleChange: this.handleProjectManagerChange,
+                    handleChange: this.handleDiseaseManagerChange,
                     value: this.state.formData.otherDiseasesDOID,
-                    placeholder: "Start typing the Project Manager Name",
+                    placeholder: "Start typing the name of the disease",
                     isMulti: true,
                     edit: false
                   }),

@@ -654,7 +654,7 @@ class ProjectReview extends Component {
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingUsers(this.props.searchUsersURL, query)
+      Search.getMatchingQuery(this.props.searchUsersURL, query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
