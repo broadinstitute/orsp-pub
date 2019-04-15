@@ -22,11 +22,6 @@ class ConsentGroupExtraProperties {
     String sharingType
     String textSharingType
 
-    // Sharing data
-    String sharingPlan
-    String databaseControlled
-    String databaseOpen
-
     // InternationalCohorts
     String individualDataSourced
     String isLinkMaintained
@@ -56,11 +51,6 @@ class ConsentGroupExtraProperties {
         this.setTextCompliance(consentGroup.getTextCompliance() ?: "")
         this.setSharingType(consentGroup.getSharingType() ?: "")
         this.setTextSharingType(consentGroup.getTextSharingType() ?: "")
-
-        // Sharing data
-        this.setSharingPlan(consentGroup.getSharingPlan() ?: "")
-        this.setDatabaseControlled(consentGroup.getDataBaseControlled() ?: "")
-        this.setDatabaseOpen(consentGroup.getDatabaseOpen() ?: "")
 
         // InternationalCohorts
         this.setIndividualDataSourced(consentGroup.getIndividualDataSourced() ?: null)

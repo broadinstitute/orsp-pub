@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DocumentStatus
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
@@ -26,6 +27,7 @@ class DataUseLetterController extends AuthenticatedController {
         DataUseLetter inputDul = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
             DataUseLetter newDul = dataUseLetterService.generateDul(inputDul)
+            persistenceService.saveEvent(inputDul.consentGroupKey, getUser()?.displayName, "DUL copied to clipboard", EventType.COPY_DUL_LINK_TO_CLIPBOARD)
             response.status = 200
             render([dulToken: newDul.getUid()] as JSON)
         } catch(Exception e) {
@@ -39,7 +41,8 @@ class DataUseLetterController extends AuthenticatedController {
     def update () {
         DataUseLetter input = IssueUtils.getJson(DataUseLetter.class, request.JSON)
         try {
-            dataUseLetterService.udpateDataUseLetter(input)
+            DataUseLetter dul = dataUseLetterService.udpateDataUseLetter(input)
+            persistenceService.saveEvent(dul.consentGroupKey, getUser()?.displayName, "DUL Added", EventType.SUBMIT_DUL)
             response.status = 200
             render(response.status)
         } catch(IllegalArgumentException e) {
