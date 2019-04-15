@@ -37,10 +37,6 @@ class DataUseLetter extends Component {
         onGoingProcess: false,
         repositoryDeposition: '',
         primaryRestrictions: '',
-        noRestrictions: false,
-        generalUse: false,
-        researchRestricted: false,
-        diseaseRestricted: false,
         diseaseRestrictedOptions: {
           parasiticDisease: false,
           cancer: false,
