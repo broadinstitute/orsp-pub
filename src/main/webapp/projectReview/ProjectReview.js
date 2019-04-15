@@ -1258,22 +1258,6 @@ class ProjectReview extends Component {
           }),
 
           /*IMPORTANT: These questions will appear on Edit mode, once project has been approved*/
-
-          InputFieldRadio({
-            isRendered: false,
-            id: "radioProjectAvailability",
-            name: "projectAvailability",
-            label: "Project Availability",
-            value: this.state.formData.projectExtraProps.projectAvailability,
-            currentValue: this.state.current.projectExtraProps.projectAvailability,
-            optionValues: ["available", "onHold"],
-            optionLabels: [
-              "Available",
-              "On Hold"
-            ],
-            onChange: this.handleProjectExtraPropsChangeRadio,
-            readOnly: this.state.readOnly
-          }),
           InputFieldSelect({
             label: "IRB Referral",
             id: "irbReferral",

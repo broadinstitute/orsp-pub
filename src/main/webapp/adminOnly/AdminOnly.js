@@ -24,7 +24,8 @@ class AdminOnly extends Component {
         initialDate: '',
         sponsor: '',
         initialReviewType: '',
-        bioMedical: ''
+        bioMedical: '',
+        projectStatus: ''
       }
     }
   }
@@ -53,6 +54,7 @@ class AdminOnly extends Component {
         const sponsor = ""; //issue.data.extraProperties.sponsor;
         const initialReviewType = ""; //issue.data.extraProperties.initialReviewType;
         const bioMedical = ""; //issue.data.extraProperties.bioMedical;
+        const projectStatus = "";
         console.log(issue.data);
         this.setState(prev => {
           prev.formData.projectKey = projectKey;
@@ -66,6 +68,7 @@ class AdminOnly extends Component {
           prev.formData.sponsor = sponsor;
           prev.formData.initialReviewType = initialReviewType;
           prev.formData.bioMedical = bioMedical;
+          prev.formData.projectStatus = projectStatus;
           return prev;
         })
       })
@@ -111,6 +114,22 @@ class AdminOnly extends Component {
       div({},[
         h2({ className: "stepTitle" }, ["Only Admin "]),
         Panel({ title: "Investigator Details" }, [
+          InputFieldRadio({
+            id: "radioProjectStatus",
+            name: "projectStatus",
+            label: "Project Status",
+            value: this.state.formData.projectStatus,
+            optionValues: ['approved', 'disapproved', 'withdrawn', 'closed', 'abandoned'],
+            optionLabels: [
+              "Approved",
+              "Disapproved",
+              "Withdrawn",
+              "Closed",
+              "Abandoned"
+            ],
+            onChange: this.radioBtnHandler,
+            readOnly: false
+          }),
           InputFieldText({
             id: "preferredIrb",
             name: "preferredIrb",
