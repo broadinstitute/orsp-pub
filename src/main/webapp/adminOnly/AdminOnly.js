@@ -48,18 +48,18 @@ class AdminOnly extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         const projectKey = this.props.projectKey;
-        const investigatorFirstName = "";//issue.data.extraProperties.investigatorFirstName;
-        const investigatorLastName = ""; //issue.data.extraProperties.investigatorLastName;
-        const degrees = ""; //issue.data.extraProperties.degrees;
-        const preferredIrb = issue.data.extraProperties.irbReferral;
+        const investigatorFirstName = '';//issue.data.extraProperties.investigatorFirstName;
+        const investigatorLastName = ''; //issue.data.extraProperties.investigatorLastName;
+        const degrees = ''; //issue.data.extraProperties.degrees;
+        const preferredIrb = isEmpty(this.state.formData.preferredIrb) ? '' : JSON.parse(this.state.formData.preferredIrb);
         const preferredIrbText = issue.data.extraProperties.preferredIrbText;
         const trackingNumber = issue.data.extraProperties.protocol;
         const projectTitle = issue.data.extraProperties.projectTitle;
         const initialDate = null; //issue.data.extraProperties.initialDate;
-        const sponsor = ""; //issue.data.extraProperties.sponsor;
-        const initialReviewType = ""; //issue.data.extraProperties.initialReviewType;
-        const bioMedical = ""; //issue.data.extraProperties.bioMedical;
-        const projectStatus = "";
+        const sponsor = ''; //issue.data.extraProperties.sponsor;
+        const initialReviewType = ''; //issue.data.extraProperties.initialReviewType;
+        const bioMedical = ''; //issue.data.extraProperties.bioMedical;
+        const projectStatus = '';
         console.log(issue.data);
         this.setState(prev => {
           prev.formData.projectKey = projectKey;
@@ -111,6 +111,13 @@ class AdminOnly extends Component {
     });
   };
 
+  handleSelect = (field) => () => (selectedOption) => {
+    this.setState(prev => {
+      prev.formData[field] = selectedOption;
+      return prev;
+    })
+  };
+
   submit = () => {
 
   };
@@ -136,28 +143,17 @@ class AdminOnly extends Component {
             onChange: this.radioBtnHandler,
             readOnly: false
           }),
-          InputFieldText({
+          InputFieldSelect({
+            label: "Preferred IRB",
             id: "preferredIrb",
             name: "preferredIrb",
-            label: "Preferred IRB",
-            readOnly: !this.state.isORSP,
+            options: PREFERRED_IRB,
             value: this.state.formData.preferredIrb,
-            onChange: this.textHandler,
+            onChange: this.handleSelect("preferredIrb"),
+            readOnly: !this.state.isORSP,
+            placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
+            edit: false
           }),
-
-          // InputFieldSelect({
-          //   label: "Preferred IRB",
-          //   id: "preferredIrb",
-          //   name: "preferredIrb",
-          //   options: PREFERRED_IRB,
-          //   value: this.state.formData.preferredIrb,
-          //   currentValue: this.state.current.projectExtraProps.irbReferral,
-          //   onChange: this.handleSelect("irbReferral"),
-          //   readOnly: !this.state.isORSP,
-          //   placeholder: isEmpty(this.state.formData.projectExtraProps.irbReferral) && this.state.readOnly ? "--" : "Select...",
-          //   edit: true
-          // }),
-
           InputFieldText({
             id: "preferredIrbText",
             name: "preferredIrbText",
@@ -256,7 +252,6 @@ class AdminOnly extends Component {
             id: "bioMedical",
             name: "bioMedical",
             label: "Biomedical or Non-Biomedical",
-            // moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
             value: this.state.formData.bioMedical,
             onChange: this.radioBtnHandler,
             optionValues: ["biomedical", "nonBiomedical"],
