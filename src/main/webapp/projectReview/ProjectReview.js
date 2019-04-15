@@ -429,7 +429,7 @@ class ProjectReview extends Component {
       let project = this.getProject();
       Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
         resp => {
-          this.removeEdits();
+          this.removeEdits('approve');
         })
         .catch(error => {
           console.error(error);
@@ -456,15 +456,16 @@ class ProjectReview extends Component {
   discardEdits() {
     spinnerService.showAll();
     this.setState({ discardEditsDialog: false });
-    this.removeEdits();
+    this.removeEdits('reject');
   }
 
   approveEdits = () => {
     spinnerService.showAll();
     let project = this.getProject();
+    project.editsApproved = true;
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
-        this.removeEdits();
+        this.removeEdits('approve');
         this.setState((state, props) => {
           return { approveDialog: !state.approveDialog }
         });
@@ -475,8 +476,8 @@ class ProjectReview extends Component {
       });
   };
 
-  removeEdits() {
-    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
+  removeEdits(type) {
+    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();

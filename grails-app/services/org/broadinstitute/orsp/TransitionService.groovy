@@ -104,7 +104,6 @@ class TransitionService {
             saveProp(issue, IssueExtraProperty.ACTOR, it)
         }
         issue.setStatus(status)
-        persistenceService.saveEvent(issue.projectKey, author, "Project Created", EventType.INITIAL_STATE)
         issue.save(flush: true)
         if (issue.hasErrors()) { throw new DomainException(issue.getErrors().allErrors) }
     }
