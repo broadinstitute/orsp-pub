@@ -7,6 +7,9 @@ ReactDOM.render(
   <AdminOnly
     isAdmin = {adminOnlyComponent.isAdmin}
     loadingImage = {adminOnlyComponent.loadingImage}
+    userSessionUrl = {adminOnlyComponent.userSessionUrl}
+    projectKey = {adminOnlyComponent.projectKey}
+    projectUrl = {adminOnlyComponent.projectUrl}
   />,
   document.getElementById('adminOnly')
 );
