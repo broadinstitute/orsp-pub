@@ -125,8 +125,8 @@ class AdminOnly extends Component {
   render() {
     return(
       div({},[
-        h2({ className: "stepTitle" }, ["Only Admin "]),
-        Panel({ title: "Investigator Details" }, [
+        h2({ className: "stepTitle" }, ["Admin Only"]),   
+        Panel({ title: "Project Details" }, [
           InputFieldRadio({
             id: "radioProjectStatus",
             name: "projectStatus",
@@ -144,7 +144,7 @@ class AdminOnly extends Component {
             readOnly: false
           }),
           InputFieldSelect({
-            label: "Preferred IRB",
+            label: "IRB",
             id: "preferredIrb",
             name: "preferredIrb",
             options: PREFERRED_IRB,
@@ -157,7 +157,7 @@ class AdminOnly extends Component {
           InputFieldText({
             id: "preferredIrbText",
             name: "preferredIrbText",
-            label: "Specify Preferred IRB",
+            label: "Please specify IRB",
             readOnly: !this.state.isORSP,
             isRendered: this.state.formData.preferredIrb.value === "other",
             value: this.state.formData.investigatorFirstName,
@@ -166,7 +166,7 @@ class AdminOnly extends Component {
           InputFieldText({
             id: "investigatorFirstName",
             name: "investigatorFirstName",
-            label: "Investigator First Name",
+            label: "First Name of Investigator",
             readOnly: !this.state.isORSP,
             value: this.state.formData.investigatorFirstName,
             onChange: this.textHandler,
@@ -174,7 +174,7 @@ class AdminOnly extends Component {
           InputFieldText({
             id: "investigatorLastName",
             name: "investigatorLastName",
-            label: "Investigator Last Name",
+            label: "Last Name of Investigator",
             readOnly: !this.state.isORSP,
             value: this.state.formData.investigatorLastName,
             onChange: this.textHandler,
@@ -182,17 +182,15 @@ class AdminOnly extends Component {
           InputFieldText({
             id: "degrees",
             name: "degrees",
-            label: "Investigator degree(s)",
+            label: "Degree(s) of Investigator",
             readOnly: !this.state.isORSP,
             value: this.state.formData.degrees,
             onChange: this.textHandler,
-          })
-        ]),
-        Panel({ title: "Project Details" }, [
+          }),
           InputFieldText({
             id: "trackingNumber",
             name: "trackingNumber",
-            label: "Protocol #",
+            label: "Tracking Number",
             readOnly: !this.state.isORSP,
             value: this.state.formData.trackingNumber,
             onChange: this.textHandler,
@@ -201,7 +199,6 @@ class AdminOnly extends Component {
             id: "projectKey",
             name: "projectKey",
             label: "ORSP Number",
-            disabled: true,
             readOnly: true,
             value: this.state.formData.projectKey,
             onChange: this.textHandler,
@@ -214,19 +211,15 @@ class AdminOnly extends Component {
             value: this.state.formData.projectTitle,
             onChange: this.textHandler,
           }),
-          div({ className: "row positionRelative" }, [
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-              InputFieldDatePicker({
-                selected: this.state.formData.initialDate,
-                value: this.state.formData.initialDate !== null ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
-                name: "initialDate",
-                label: "Initial Approval Date",
-                onChange: this.datePickerHandler,
-                placeholder: "Enter Approval Date",
-                readOnly: !this.state.isORSP,
-              }),
-            ]),
-          ]),
+          InputFieldDatePicker({
+            selected: this.state.formData.initialDate,
+            value: this.state.formData.initialDate !== null ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
+            name: "initialDate",
+            label: "Initial Approval Date",
+            onChange: this.datePickerHandler,
+            placeholder: "Enter date...",
+            readOnly: !this.state.isORSP,
+          }),
           InputFieldText({
             id: "sponsor",
             name: "sponsor",
@@ -250,13 +243,13 @@ class AdminOnly extends Component {
           InputFieldRadio({
             id: "bioMedical",
             name: "bioMedical",
-            label: "Biomedical or Non-Biomedical",
+            label: "Biomedical or Non-Biomedical Study",
             value: this.state.formData.bioMedical,
             onChange: this.radioBtnHandler,
             optionValues: ["biomedical", "nonBiomedical"],
             optionLabels: [
-              "Biomedical.",
-              "Non-Biomedical."
+              "Biomedical",
+              "Non-Biomedical"
             ],
             readOnly: !this.state.isORSP,
             required: false,
