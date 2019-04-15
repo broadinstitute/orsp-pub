@@ -344,14 +344,11 @@ class DataUseLetter extends Component {
     }
 
     // Primary Restrictions validations
-    if (this.state.formData.noRestrictions === false
-      && this.state.formData.generalUse === false
-      && this.state.formData.researchRestricted === false
-      && this.state.formData.diseaseRestricted === false) {
+    if (this.state.formData.primaryRestrictions === '') {
       errorForm = true;
       errorPrimaryRestrictionsChecks = true;
     }
-    if (this.state.formData.diseaseRestricted === true
+    if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
       && Object.keys(this.state.formData.diseaseRestrictedOptions).every(key =>
         this.state.formData.diseaseRestrictedOptions[key] === false)) {
       errorForm = true;
