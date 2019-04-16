@@ -23,5 +23,11 @@ export const isEmpty = (value) => {
   } else {
     return value === '' || value === null || value === undefined;
   }
+}
 
+export const parseDate = (date) => {
+  if (date !== undefined) {
+    let d = new Date(date).toISOString();
+    return d.slice(0, d.indexOf("T"));
+  }
 }

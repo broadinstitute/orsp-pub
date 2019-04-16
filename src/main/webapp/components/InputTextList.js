@@ -10,7 +10,7 @@ export const InputTextList = hh(class InputTextList extends Component {
       h(Fragment, {}, [
         div({ className: "row", style: { 'marginTop': '15px' } }, [
           div({ className: "col-lg-5 col-md-6 col-sm-10 col-9" }, [
-            label({ className: "noMargin" }, ["Investigator degree(s)"])
+            label({ className: "noMargin" }, [this.props.label])
           ]),
           div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
             Btn({
@@ -21,23 +21,23 @@ export const InputTextList = hh(class InputTextList extends Component {
           ])
         ]),
 
-        this.props.degrees.map((rd, idx) => {
+        this.props.value.map((rd, idx) => {
           return h(Fragment, { key: idx }, [
             div({ className: "row" }, [
               div({ className: "col-lg-5 col-md-6 col-sm-10 col-9" }, [
                 InputFieldText({
                   key: idx,
-                  id: "degrees",
-                  name: "degrees",
+                  id: this.props.id,
+                  name: this.props.name,
                   label: '',
                   readOnly: this.props.isReadOnly,
-                  value: this.props.degrees[idx],
+                  value: this.props.value[idx],
                   onChange: this.props.textHandler(idx)
                 })
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({
-                  action: { labelClass: "glyphicon glyphicon-remove", handler: () => this.props.removeDegree(idx) },
+                  action: { labelClass: "glyphicon glyphicon-remove", handler: () => this.props.remove(idx) },
                 })
               ])
             ])

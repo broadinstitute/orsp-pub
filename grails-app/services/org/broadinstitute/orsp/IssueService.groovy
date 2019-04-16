@@ -75,7 +75,14 @@ class IssueService implements UserInfo {
             IssueExtraProperty.PII,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
             IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
-            IssueExtraProperty.IRB_REFERRAL
+            IssueExtraProperty.IRB_REFERRAL,
+            IssueExtraProperty.IRB_REFERRAL_TEXT,
+            IssueExtraProperty.INVESTIGATOR_FIRST_NAME,
+            IssueExtraProperty.INVESTIGATOR_LAST_NAME,
+            IssueExtraProperty.INITIAL_DATE,
+            IssueExtraProperty.INITIAL_REVIEW_TYPE,
+            IssueExtraProperty.BIO_MEDICAL,
+            IssueExtraProperty.PROJECT_STATUS
     ]
 
 
@@ -87,7 +94,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.COLLABORATOR,
             IssueExtraProperty.PM,
             IssueExtraProperty.PI,
-            IssueExtraProperty.SAMPLES
+            IssueExtraProperty.SAMPLES,
+            IssueExtraProperty.DEGREE
     ]
 
     /**

@@ -5,7 +5,7 @@ import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty } from "../util/Utils";
+import { isEmpty, parseDate } from "../util/Utils";
 import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -51,20 +51,20 @@ class AdminOnly extends Component {
     this.isCurrentUserAdmin();
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
+        console.log("ISSUE ", issue);
         const projectKey = this.props.projectKey;
-        const investigatorFirstName = '';//issue.data.extraProperties.investigatorFirstName;
-        const investigatorLastName = ''; //issue.data.extraProperties.investigatorLastName;
-        const degrees = ['']; //issue.data.extraProperties.degrees;
+        const investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
+        const investigatorLastName = issue.data.extraProperties.investigatorLastName;
+        const degrees = issue.data.extraProperties.degrees;
         const preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
         const preferredIrbText = issue.data.extraProperties.preferredIrbText;
         const trackingNumber = issue.data.extraProperties.protocol;
         const projectTitle = issue.data.extraProperties.projectTitle;
-        const initialDate = null; //issue.data.extraProperties.initialDate;
+        const initialDate = issue.data.extraProperties.initialDate;
         const sponsor = this.getSponsorArray(issue.data.fundings); //issue.data.extraProperties.sponsor;
-        const initialReviewType = ''; //issue.data.extraProperties.initialReviewType;
-        const bioMedical = ''; //issue.data.extraProperties.bioMedical;
-        const projectStatus = '';
-        console.log(issue.data);
+        const initialReviewType = issue.data.extraProperties.initialReviewType;
+        const bioMedical = issue.data.extraProperties.bioMedical;
+        const projectStatus = issue.data.extraProperties.projectStatus;
         this.setState(prev => {
           prev.formData.projectKey = projectKey;
           prev.formData.preferredIrb = preferredIrb;
@@ -140,10 +140,37 @@ class AdminOnly extends Component {
   };
 
   submit = () => {
-  // si cambió los valores correspondientes a un proyecto, acutalizarlos (esperar respuestas de preguntas en story)
-  // mapear la totalidad como extra property de su issue correspondiente
-
+    // confirmation?
+    console.log("GET PARSED FORM ", this.getParsedForm());
+    Project.updateProject(this.props.updateProjectUrl, this.getParsedForm(), this.props.projectKey).then(
+      response => {
+        console.log(response)
+      // mensaje de todo ok
+    }).catch(
+      error => console.error(error)
+    );
   };
+
+  getParsedForm() {
+    let form = {};
+    form.irbReferral = this.state.formData.preferredIrb;
+    form.irbReferralText = this.state.formData.preferredIrbText;
+    form.investigatorFirstName = this.state.formData.investigatorFirstName;
+    form.investigatorLastName = this.state.formData.investigatorLastName;
+    form.initialDate = parseDate(this.state.formData.initialDate);
+    form.initialReviewType = this.state.formData.initialReviewType;
+    form.bioMedical = this.state.formData.bioMedical;
+    form.projectStatus = this.state.formData.projectStatus;
+
+    let degrees = [];
+    if (this.state.formData.degrees !== null && this.state.formData.degrees.length > 0) {
+      this.state.formData.degrees.map((degree, idx) => {
+        degrees.push({ name: 'degree', value: degree });
+      });
+    }
+    form.degree = degrees;
+    return form
+  }
 
   degreesHandler = (idx) => (e) => {
     e.persist();
@@ -232,17 +259,17 @@ class AdminOnly extends Component {
             id: "degrees",
             name: "degrees",
             label: "Degree(s) of Investigator",
-            degrees: this.state.formData.degrees,
+            value: this.state.formData.degrees,
             textHandler: this.degreesHandler,
             add: this.addNewDegree,
-            removeDegree: this.removeDegree,
+            remove: this.removeDegree,
             isReadOnly: !this.state.isORSP
           }),
           InputFieldText({
             id: "trackingNumber",
             name: "trackingNumber",
             label: "Tracking Number",
-            readOnly: !this.state.isORSP,
+            readOnly: true,
             value: this.state.formData.trackingNumber,
             onChange: this.textHandler,
           }),
