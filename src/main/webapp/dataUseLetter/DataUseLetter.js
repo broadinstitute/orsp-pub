@@ -493,6 +493,9 @@ class DataUseLetter extends Component {
     return value === '' || value === null || value === undefined;
   }
   render() {
+
+    const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.over18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true|| this.state.formData.ethnic === true;
+
     return (
       div({}, [
         h1({ className: "pageTitle" }, [
@@ -654,7 +657,6 @@ class DataUseLetter extends Component {
             }),
 
             div({ isRendered: this.state.formData.primaryRestrictions === 'diseaseRestricted', className: "row subGroup" }, [
-              div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
                 InputFieldCheckbox({
                   id: "ckb_parasiticDisease",
                   name: "parasiticDisease",
@@ -702,9 +704,7 @@ class DataUseLetter extends Component {
                   label: span({ className: "normal" }, ['Respiratory system diseases']),
                   checked: this.state.formData.diseaseRestrictedOptions.respiratoryDisease === 'true' || this.state.formData.diseaseRestrictedOptions.respiratoryDisease === true,
                   readOnly: this.state.readOnly
-                })
-              ]),
-              div({ className: "col-lg-6 col-md-6 col-sm-12 col-12" }, [
+                }),
                 InputFieldCheckbox({
                   id: "ckb_digestiveDisease",
                   name: "digestiveDisease",
@@ -735,8 +735,7 @@ class DataUseLetter extends Component {
                     isMulti: true,
                     edit: false,
                     error: this.state.errors.errorOtherDiseaseSpecify
-                  }),
-                ])
+                  })
               ]),
               small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
             ])
@@ -768,7 +767,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "No population restrictions",
               checked: this.state.formData.noPopulationRestricted === 'true' || this.state.formData.noPopulationRestricted === true,
-              readOnly: this.state.readOnly
+              readOnly: noPopulationRestrictedValidation
             }),
             InputFieldCheckbox({
               id: "ckb_under18",
@@ -776,7 +775,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in children under 18 years of age only",
               checked: this.state.formData.under18 === 'true' || this.state.formData.under18 === true,
-              readOnly: this.state.readOnly
+              readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_over18",
@@ -784,7 +783,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in adults 18 years of age and older only",
               checked: this.state.formData.over18 === 'true' || this.state.formData.over18 === true,
-              readOnly: this.state.readOnly
+              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_onlyMen",
@@ -792,7 +791,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in men only",
               checked: this.state.formData.onlyMen === 'true' || this.state.formData.onlyMen === true,
-              readOnly: this.state.readOnly
+              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_onlyWomen",
@@ -800,7 +799,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in women only",
               checked: this.state.formData.onlyWomen === 'true' || this.state.formData.onlyWomen === true,
-              readOnly: this.state.readOnly
+              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_ethnic",
@@ -808,7 +807,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in the following ethnic or geographic population",
               checked: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true,
-              readOnly: this.state.readOnly
+              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
             }),
             //if ethnic is checked (OK)
             div({ isRendered: this.state.formData.ethnic === true, className: "subGroup", style: { 'marginTop': '5px' } }, [
