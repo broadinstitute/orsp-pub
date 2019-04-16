@@ -12,13 +12,18 @@ import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 import { InputTextList } from "../components/InputTextList";
 import { Fundings } from "../components/Fundings";
+import { Spinner } from "../components/Spinner";
+import { spinnerService } from "../util/spinner-service";
+import { AlertMessage } from "../components/AlertMessage";
 
 class AdminOnly extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      key: 0,
+      showSubmissionAlert: false,
+      alertMessage: '',
       isORSP: false,
+      intial: {},
       formData: {
         preferredIrb: '',
         preferredIrbText: '',
@@ -51,33 +56,25 @@ class AdminOnly extends Component {
     this.isCurrentUserAdmin();
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
-        const projectKey = this.props.projectKey;
-        const investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
-        const investigatorLastName = issue.data.extraProperties.investigatorLastName;
-        const degrees = issue.data.extraProperties.degrees;
-        const preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
-        const preferredIrbText = issue.data.extraProperties.preferredIrbText;
-        const trackingNumber = issue.data.extraProperties.protocol;
-        const projectTitle = issue.data.extraProperties.projectTitle;
-        const initialDate = issue.data.extraProperties.initialDate;
-        const sponsor = this.getSponsorArray(issue.data.fundings);
-        const initialReviewType = issue.data.extraProperties.initialReviewType;
-        const bioMedical = issue.data.extraProperties.bioMedical;
-        const projectStatus = issue.data.extraProperties.projectStatus;
+        let formData = {};
+        let initial = {};
+        formData.projectKey = this.props.projectKey;
+        formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
+        formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
+        formData.degrees = issue.data.extraProperties.degrees;
+        formData.preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
+        formData.preferredIrbText = issue.data.extraProperties.preferredIrbText;
+        formData.trackingNumber = issue.data.extraProperties.protocol;
+        formData.projectTitle = issue.data.extraProperties.projectTitle;
+        formData.initialDate = issue.data.extraProperties.initialDate;
+        formData.sponsor = this.getSponsorArray(issue.data.fundings);
+        formData.initialReviewType = issue.data.extraProperties.initialReviewType;
+        formData.bioMedical = issue.data.extraProperties.bioMedical;
+        formData.projectStatus = issue.data.extraProperties.projectStatus;
+        initial = formData;
         this.setState(prev => {
-          prev.formData.projectKey = projectKey;
-          prev.formData.preferredIrb = preferredIrb;
-          prev.formData.preferredIrbText = preferredIrbText;
-          prev.formData.trackingNumber = trackingNumber;
-          prev.formData.projectTitle = projectTitle;
-          prev.formData.investigatorFirstName = investigatorFirstName;
-          prev.formData.investigatorLastName = investigatorLastName;
-          prev.formData.degrees = degrees;
-          prev.formData.initialDate = initialDate;
-          prev.formData.sponsor = sponsor;
-          prev.formData.initialReviewType = initialReviewType;
-          prev.formData.bioMedical = bioMedical;
-          prev.formData.projectStatus = projectStatus;
+          prev.formData = formData;
+          prev.initial = initial;
           return prev;
         })
       })
@@ -139,11 +136,31 @@ class AdminOnly extends Component {
   };
 
   submit = () => {
+    spinnerService.showAll();
     Project.updateProject(this.props.updateProjectUrl, this.getParsedForm(), this.props.projectKey).then(
       response => {
-    }).catch(
+        spinnerService.hideAll();
+        this.successNotification('showSubmissionAlert', 'Form has been successfully updated.', 8000);
+      }).catch(
       error => console.error(error)
     );
+  };
+
+  successNotification = (type, message, time) => {
+    setTimeout(this.clearAlertMessage(type), time, null);
+    this.setState(prev => {
+      prev[type] = true;
+      prev.alertMessage = message;
+      return prev;
+    });
+  };
+
+  clearAlertMessage = (type) => () => {
+    this.setState(prev => {
+      prev[type] = false;
+      prev.alertMessage = '';
+      return prev;
+    });
   };
 
   getParsedForm() {
@@ -193,6 +210,17 @@ class AdminOnly extends Component {
     }
   };
 
+  compareObj(obj1, obj2) {
+    console.log("compara", !isEmpty(obj1) && !isEmpty(obj2));
+    if (!isEmpty(obj1) && !isEmpty(obj2)) {
+      let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
+      let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
+      return JSON.stringify(form1) === JSON.stringify(form2);
+    } else {
+      return false;
+    }
+  }
+
   render() {
     return(
       div({},[
@@ -231,7 +259,7 @@ class AdminOnly extends Component {
             label: "Please specify IRB",
             readOnly: !this.state.isORSP,
             isRendered: this.state.formData.preferredIrb.value === "other",
-            value: this.state.formData.investigatorFirstName,
+            value: this.state.formData.preferredIrbText,
             onChange: this.textHandler,
           }),
           InputFieldText({
@@ -325,13 +353,22 @@ class AdminOnly extends Component {
             edit: false
           })
         ]),
+        AlertMessage({
+          msg: this.state.alertMessage,
+          show: this.state.showSubmissionAlert,
+          type: 'success'
+        }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
+            disabled: this.compareObj(this.state.formData, this.state.intial),
             className: "btn buttonPrimary floatRight",
             onClick: this.submit,
             isRendered: this.state.isORSP
           }, ["Submit"])
-        ])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+        })
       ])
     )
   }
