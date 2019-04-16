@@ -46,7 +46,7 @@ class DataUseLetter extends Component {
           respiratoryDisease: false,
           digestiveDisease: false,
           otherDisease: false,
-          diseaseDOID: []
+          diseaseDOID: [],
         },
         commercialPurposes: false,
         methodsResearch: false,
@@ -178,14 +178,40 @@ class DataUseLetter extends Component {
         prev.formData.otherDiseasesDOID = [];
       }
       return prev;
+    }, () => {
+      if (this.state.submit) {
+        this.validateForm();
+      }
     });
   };
 
   handleRadioPrimaryChange = (e, field, value) => {
+    if (value !== 'diseaseRestricted') {
+      this.cleanDiseasesSelection();
+    }
     this.setState(prev => {
       prev.formData.primaryRestrictions = value;
       return prev;
+    }, () => {
+      if (this.state.submit) {
+        this.validateForm();
+      }
     })
+  };
+
+  cleanDiseasesSelection = () => {
+    this.setState(prev => {
+      prev.formData.diseaseRestrictedOptions.parasiticDisease = false;
+      prev.formData.diseaseRestrictedOptions.cancer = false;
+      prev.formData.diseaseRestrictedOptions.mentalDisorder = false;
+      prev.formData.diseaseRestrictedOptions.nervousDisease = false;
+      prev.formData.diseaseRestrictedOptions.cardiovascularDisease = false;
+      prev.formData.diseaseRestrictedOptions.respiratoryDisease = false;
+      prev.formData.diseaseRestrictedOptions.digestiveDisease = false;
+      prev.formData.diseaseRestrictedOptions.otherDisease = false;
+      prev.formData.diseaseRestrictedOptions.diseaseDOID = [];
+      return prev;
+    });
   };
 
   handleCheck = (e) => {
@@ -207,27 +233,27 @@ class DataUseLetter extends Component {
 
   handleSubOptionsCheck = (e) => {
     const { name = '', checked = '' } = e.target;
-    const diseaseDOID = [];
+    let diseaseDOID = '';
     if (name === "parasiticDisease") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_0050117");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_0050117";
     }
     if (name === "cancer") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_162");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_162";
     }
     if (name === "mentalDisorder") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_150");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_150";
     }
     if (name === "nervousDisease") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_863");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_863";
     }
     if (name === "cardiovascularDisease") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1287");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_1287";
     }
     if (name === "respiratoryDisease") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1579");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_1579";
     }
     if (name === "digestiveDisease") {
-      diseaseDOID.push("http://purl.obolibrary.org/obo/DOID_77");
+      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_77";
     }
 
     this.setState(prev => {
@@ -235,7 +261,7 @@ class DataUseLetter extends Component {
         prev.formData.otherDiseasesDOID.length = 0;
       }
       prev.formData.diseaseRestrictedOptions[name] = checked;
-      prev.formData.diseaseRestrictedOptions.diseaseDOID = diseaseDOID;
+      prev.formData.diseaseRestrictedOptions.diseaseDOID.push(diseaseDOID);
       return prev;
     }, () => {
       if (this.state.submit) {
@@ -344,16 +370,20 @@ class DataUseLetter extends Component {
     }
 
     // Primary Restrictions validations
-    if (this.state.formData.noRestrictions === false
-      && this.state.formData.generalUse === false
-      && this.state.formData.researchRestricted === false
-      && this.state.formData.diseaseRestricted === false) {
+    if (this.state.formData.primaryRestrictions === '') {
       errorForm = true;
       errorPrimaryRestrictionsChecks = true;
     }
-    if (this.state.formData.diseaseRestricted === true
-      && Object.keys(this.state.formData.diseaseRestrictedOptions).every(key =>
-        this.state.formData.diseaseRestrictedOptions[key] === false)) {
+    if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
+      && this.state.formData.diseaseRestrictedOptions.diseaseDOID.length === 0) {
+      errorForm = true;
+      errorDiseaseRestrictedOptions = true;
+    }
+
+
+    if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
+      && this.state.formData.diseaseRestrictedOptions.otherDisease === true
+      && this.state.formData.otherDiseasesDOID.length === 0) {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
     }
@@ -619,7 +649,7 @@ class DataUseLetter extends Component {
               ],
               onChange: this.handleRadioPrimaryChange,
               readOnly: this.state.readOnly,
-              error: this.state.errors.errorRepositoryType,
+              error: this.state.errors.errorPrimaryRestrictionsChecks,
               errorMessage: "Required Field"
             }),
 
@@ -703,7 +733,8 @@ class DataUseLetter extends Component {
                     value: this.state.formData.otherDiseasesDOID,
                     placeholder: "Start typing the name of the disease",
                     isMulti: true,
-                    edit: false
+                    edit: false,
+                    error: this.state.errors.errorOtherDiseaseSpecify
                   }),
                 ])
               ]),
