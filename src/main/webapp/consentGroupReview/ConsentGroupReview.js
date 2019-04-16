@@ -925,12 +925,14 @@ class ConsentGroupReview extends Component {
 
   consentGroupNameExists() {
     const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
-    let consentGroupNameExists = groupName === this.state.formData.consentForm.summary ? false : this.state.existingGroupNames.indexOf(groupName) > -1;
-    this.setState(prev => {
-      prev.errors.consentGroupName = consentGroupNameExists;
-      return prev;
-    });
-    return consentGroupNameExists;
+    if (this.state.existingGroupNames !== undefined) {
+      let consentGroupNameExists = groupName === this.state.formData.consentForm.summary ? false : this.state.existingGroupNames.indexOf(groupName) > -1;
+      this.setState(prev => {
+        prev.errors.consentGroupName = consentGroupNameExists;
+        return prev;
+      });
+      return consentGroupNameExists;
+    }
   }
 
   areFormsEqual() {
