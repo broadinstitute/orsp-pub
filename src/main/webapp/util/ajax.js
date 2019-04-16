@@ -155,6 +155,10 @@ export const DocumentHandler = {
 
    attachedDocuments(url, issueKey) {
     return axios.get(`${url}?issueKey=${issueKey}`);
+  },
+
+  delete(url, documentId) {
+    return axios.delete(`${url}?documentId=${documentId}`);
   }
 };
 

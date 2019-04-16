@@ -9,7 +9,8 @@
       approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
       downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
       sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
-      loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+      loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+      removeDocumentUrl: "${createLink(uri: '/api/files-helper/delete', 'DELETE')}"
     };
 
 </g:javascript>
