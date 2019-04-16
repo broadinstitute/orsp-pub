@@ -14,6 +14,7 @@ import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
 import { MultiSelect } from "../components/MultiSelect";
 import { Search } from "../util/ajax";
+import _ from 'lodash';
 
 
 class DataUseLetter extends Component {
@@ -249,9 +250,17 @@ class DataUseLetter extends Component {
     }
 
     if (name === "mentalDisorder" && checked) {
-      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_150");
+      formerDiseaseDOID.push({
+        key: "http://purl.obolibrary.org/obo/DOID_150",
+        label: "disease of mental health",
+        value: "A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture."
+      });
     } else if (name === "mentalDisorder" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_150"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {
+        key: "http://purl.obolibrary.org/obo/DOID_150",
+        label: "disease of mental health",
+        value: "A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture."
+      }), 1);
     }
 
     if (name === "nervousDisease" && checked) {
