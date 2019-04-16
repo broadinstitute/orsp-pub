@@ -210,6 +210,7 @@ class DataUseLetter extends Component {
       prev.formData.diseaseRestrictedOptions.digestiveDisease = false;
       prev.formData.diseaseRestrictedOptions.otherDisease = false;
       prev.formData.diseaseRestrictedOptions.diseaseDOID = [];
+      prev.formData.otherDiseasesDOID = [];
       return prev;
     });
   };
