@@ -245,7 +245,9 @@ class NewConsentGroup extends Component {
   }
 
   consentGroupNameExists() {
-    return this.state.existingGroupNames.indexOf(this.state.generalDataFormData.consentGroupName) > -1;
+    if (this.state.existingGroupNames !== undefined) {
+      return this.state.existingGroupNames.indexOf(this.state.generalDataFormData.consentGroupName) > -1;
+    }
   }
 
   validateGeneralData(field) {

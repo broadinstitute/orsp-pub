@@ -17,6 +17,7 @@ import ConsentGroupDocuments from './ConsentGroupDocuments';
     loadingImage = {consentGroupDocumentsComponent.loadingImage}
     useRestrictionUrl = {consentGroupDocumentsComponent.useRestrictionUrl}
     createRestrictionUrl = {consentGroupDocumentsComponent.createRestrictionUrl}
+    removeDocumentUrl = {consentGroupDocumentsComponent.removeDocumentUrl}
   />,
   document.getElementById('consentGroupDocuments')
 );
