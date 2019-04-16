@@ -91,7 +91,6 @@ class ProjectController extends AuthenticatedController {
         Issue issue = Issue.findByProjectKey(params.projectKey)
         try {
             issueService.updateIssue(issue, project)
-            issueService.updateProjectApproval(params.projectKey)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {

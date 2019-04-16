@@ -84,7 +84,6 @@ class FileHelperController extends AuthenticatedController{
             if (document != null) {
                 document.setStatus(DocumentStatus.APPROVED.status)
                 document.save(flush: true)
-                issueService.updateProjectApproval(document.projectKey)
                 persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Approved", EventType.APPROVE_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
