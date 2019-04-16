@@ -262,6 +262,10 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.IRB_REFERRAL)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REFERRAL})
         }
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS)) {
+            issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
+//            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REFERRAL})
+        }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
             it.delete(hard: true)

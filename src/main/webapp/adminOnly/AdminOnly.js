@@ -51,7 +51,6 @@ class AdminOnly extends Component {
     this.isCurrentUserAdmin();
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
-        console.log("ISSUE ", issue);
         const projectKey = this.props.projectKey;
         const investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
         const investigatorLastName = issue.data.extraProperties.investigatorLastName;
@@ -61,7 +60,7 @@ class AdminOnly extends Component {
         const trackingNumber = issue.data.extraProperties.protocol;
         const projectTitle = issue.data.extraProperties.projectTitle;
         const initialDate = issue.data.extraProperties.initialDate;
-        const sponsor = this.getSponsorArray(issue.data.fundings); //issue.data.extraProperties.sponsor;
+        const sponsor = this.getSponsorArray(issue.data.fundings);
         const initialReviewType = issue.data.extraProperties.initialReviewType;
         const bioMedical = issue.data.extraProperties.bioMedical;
         const projectStatus = issue.data.extraProperties.projectStatus;
@@ -140,12 +139,8 @@ class AdminOnly extends Component {
   };
 
   submit = () => {
-    // confirmation?
-    console.log("GET PARSED FORM ", this.getParsedForm());
     Project.updateProject(this.props.updateProjectUrl, this.getParsedForm(), this.props.projectKey).then(
       response => {
-        console.log(response)
-      // mensaje de todo ok
     }).catch(
       error => console.error(error)
     );
@@ -153,7 +148,7 @@ class AdminOnly extends Component {
 
   getParsedForm() {
     let form = {};
-    form.irbReferral = this.state.formData.preferredIrb;
+    form.irbReferral = JSON.stringify(this.state.formData.preferredIrb);
     form.irbReferralText = this.state.formData.preferredIrbText;
     form.investigatorFirstName = this.state.formData.investigatorFirstName;
     form.investigatorLastName = this.state.formData.investigatorLastName;
@@ -165,7 +160,7 @@ class AdminOnly extends Component {
     let degrees = [];
     if (this.state.formData.degrees !== null && this.state.formData.degrees.length > 0) {
       this.state.formData.degrees.map((degree, idx) => {
-        degrees.push({ name: 'degree', value: degree });
+        degrees.push(degree);
       });
     }
     form.degree = degrees;
@@ -208,7 +203,7 @@ class AdminOnly extends Component {
             name: "projectStatus",
             label: "Project Status",
             value: this.state.formData.projectStatus,
-            optionValues: ['approved', 'disapproved', 'withdrawn', 'closed', 'abandoned'],
+            optionValues: ['Approved', 'Disapproved', 'Withdrawn', 'Closed', 'Abandoned'],
             optionLabels: [
               "Approved",
               "Disapproved",
