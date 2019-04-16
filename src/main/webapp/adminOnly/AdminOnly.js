@@ -10,28 +10,32 @@ import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
+import { InputTextList } from "../components/InputTextList";
+import { Fundings } from "../components/Fundings";
 
 class AdminOnly extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      key: 0,
       isORSP: false,
       formData: {
         preferredIrb: '',
         preferredIrbText: '',
         investigatorFirstName: '',
         investigatorLastName: '',
-        degrees: '',
+        degrees: [''],
         trackingNumber: '',
         projectKey: '',
         projectTitle: '',
         initialDate: null,
-        sponsor: '',
+        sponsor: [{ source: '', sponsor: '', identifier: '' }],
         initialReviewType: '',
         bioMedical: '',
         projectStatus: ''
       }
-    }
+    };
+    this.addNewDegree = this.addNewDegree.bind(this)
   }
 
   componentDidCatch(error, info) {
@@ -50,13 +54,13 @@ class AdminOnly extends Component {
         const projectKey = this.props.projectKey;
         const investigatorFirstName = '';//issue.data.extraProperties.investigatorFirstName;
         const investigatorLastName = ''; //issue.data.extraProperties.investigatorLastName;
-        const degrees = ''; //issue.data.extraProperties.degrees;
+        const degrees = ['']; //issue.data.extraProperties.degrees;
         const preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
         const preferredIrbText = issue.data.extraProperties.preferredIrbText;
         const trackingNumber = issue.data.extraProperties.protocol;
         const projectTitle = issue.data.extraProperties.projectTitle;
         const initialDate = null; //issue.data.extraProperties.initialDate;
-        const sponsor = ''; //issue.data.extraProperties.sponsor;
+        const sponsor = this.getSponsorArray(issue.data.fundings); //issue.data.extraProperties.sponsor;
         const initialReviewType = ''; //issue.data.extraProperties.initialReviewType;
         const bioMedical = ''; //issue.data.extraProperties.bioMedical;
         const projectStatus = '';
@@ -86,6 +90,23 @@ class AdminOnly extends Component {
         this.setState({ isORSP: resp.data.isORSP });
       }
     );
+  }
+
+  getSponsorArray(sponsors) {
+    let sponsorArray = [];
+    if (sponsors !== undefined && sponsors !== null && sponsors.length > 0) {
+      sponsors.map(sponsor => {
+        sponsorArray.push({
+          source: {
+            label: sponsor.source,
+            value: sponsor.source.split(" ").join("_").toLowerCase()
+          },
+          sponsor: sponsor.name,
+          identifier: sponsor.awardNumber !== null ? sponsor.awardNumber : ''
+        });
+      });
+    }
+    return sponsorArray;
   }
 
   textHandler = (e) => {
@@ -119,7 +140,35 @@ class AdminOnly extends Component {
   };
 
   submit = () => {
+  // si cambió los valores correspondientes a un proyecto, acutalizarlos (esperar respuestas de preguntas en story)
+  // mapear la totalidad como extra property de su issue correspondiente
 
+  };
+
+  degreesHandler = (idx) => (e) => {
+    e.persist();
+    this.setState(prev => {
+      prev.formData.degrees[idx] = e.target.value;
+      return prev;
+    });
+  };
+
+  addNewDegree = () => {
+    if (!this.state.formData.degrees.some(element => isEmpty(element))) {
+      this.setState(prev => {
+        prev.formData.degrees.push('');
+        return prev;
+      })
+    }
+  };
+
+  removeDegree = (idx) => {
+    if (this.state.formData.degrees.length > 1) {
+      this.setState(prev => {
+        prev.formData.degrees.splice(idx, 1);
+        return prev;
+      });
+    }
   };
 
   render() {
@@ -141,7 +190,7 @@ class AdminOnly extends Component {
               "Abandoned"
             ],
             onChange: this.radioBtnHandler,
-            readOnly: false
+            readOnly: !this.state.isORSP
           }),
           InputFieldSelect({
             label: "IRB",
@@ -179,14 +228,18 @@ class AdminOnly extends Component {
             value: this.state.formData.investigatorLastName,
             onChange: this.textHandler,
           }),
-          InputFieldText({
+          InputTextList({
             id: "degrees",
             name: "degrees",
-            label: "Degree(s) of Investigator",
-            readOnly: !this.state.isORSP,
-            value: this.state.formData.degrees,
-            onChange: this.textHandler,
-          }),
+            label: "Investigator degree(s)",
+            degrees: this.state.formData.degrees,
+            textHandler: this.degreesHandler,
+            add: this.addNewDegree,
+            removeDegree: this.removeDegree,
+            isReadOnly: !this.state.isORSP
+          })
+        ]),
+        Panel({ title: "Project Details" }, [
           InputFieldText({
             id: "trackingNumber",
             name: "trackingNumber",
@@ -220,15 +273,11 @@ class AdminOnly extends Component {
             placeholder: "Enter date...",
             readOnly: !this.state.isORSP,
           }),
-          InputFieldText({
-            id: "sponsor",
-            name: "sponsor",
-            label: "Sponsor or Funding Entity",
-            readOnly: !this.state.isORSP,
-            value: this.state.formData.sponsor,
-            onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
+          Fundings({
+            fundings: this.state.formData.sponsor,
+            current: this.state.formData.sponsor,
+            readOnly: true,
+            edit: false
           }),
           InputFieldText({
             id: "initialReviewType",
@@ -237,8 +286,6 @@ class AdminOnly extends Component {
             readOnly: !this.state.isORSP,
             value: this.state.formData.initialReviewType,
             onChange: this.textHandler,
-            error: false,
-            errorMessage: "Invalid."
           }),
           InputFieldRadio({
             id: "bioMedical",
@@ -253,8 +300,6 @@ class AdminOnly extends Component {
             ],
             readOnly: !this.state.isORSP,
             required: false,
-            error: false,
-            errorMessage: "Required field",
             edit: false
           })
         ]),
