@@ -918,7 +918,7 @@ class DataUseLetter extends Component {
               InputFieldRadio({
                 id: "radioGSRAvailability",
                 name: "GSRAvailability",
-                label: "Are the genomic summary results (GSR) from this study to be made available only through controlled-access?*",
+                label: "Are the genomic summary results (GSR) from this study to be made available only through controlled-access?* ",
                 value: this.state.formData.GSRAvailability,
                 optionValues: ["GSRNotRequired", "GSRRequired"],
                 optionLabels: [
@@ -928,7 +928,9 @@ class DataUseLetter extends Component {
                 onChange: this.handleRadioChange,
                 readOnly: this.state.readOnly,
                 error: this.state.errors.errorGSRAvailability,
-                errorMessage: 'Required Field'
+                errorMessage: 'Required Field',
+                tooltipLabel: "?",
+                tooltipMsg: "NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."
               }),
               div({ isRendered: this.state.formData.GSRAvailability === 'GSRRequired' }, [
                 InputFieldText({
