@@ -185,7 +185,6 @@ class DataUseLetter extends Component {
     });
   };
 
-  // TODO clean  diseaseRestrictedOptions when other primary is selected
   handleRadioPrimaryChange = (e, field, value) => {
     if (value !== 'diseaseRestricted') {
       this.cleanDiseasesSelection();
@@ -202,15 +201,15 @@ class DataUseLetter extends Component {
 
   cleanDiseasesSelection = () => {
     this.setState(prev => {
-      prev.diseaseRestrictedOptions.position = false;
-      prev.diseaseRestrictedOptions.cancer = false;
-      prev.diseaseRestrictedOptions.mentalDisorder = false;
-      prev.diseaseRestrictedOptions.nervousDisease = false;
-      prev.diseaseRestrictedOptions.cardiovascularDisease = false;
-      prev.diseaseRestrictedOptions.respiratoryDisease = false;
-      prev.diseaseRestrictedOptions.digestiveDisease = false;
-      prev.diseaseRestrictedOptions.otherDisease = false;
-      prev.diseaseRestrictedOptions.diseaseDOID = [];
+      prev.formData.diseaseRestrictedOptions.parasiticDisease = false;
+      prev.formData.diseaseRestrictedOptions.cancer = false;
+      prev.formData.diseaseRestrictedOptions.mentalDisorder = false;
+      prev.formData.diseaseRestrictedOptions.nervousDisease = false;
+      prev.formData.diseaseRestrictedOptions.cardiovascularDisease = false;
+      prev.formData.diseaseRestrictedOptions.respiratoryDisease = false;
+      prev.formData.diseaseRestrictedOptions.digestiveDisease = false;
+      prev.formData.diseaseRestrictedOptions.otherDisease = false;
+      prev.formData.diseaseRestrictedOptions.diseaseDOID = [];
       return prev;
     });
   };
