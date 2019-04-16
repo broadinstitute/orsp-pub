@@ -155,6 +155,10 @@ export const DocumentHandler = {
 
    attachedDocuments(url, issueKey) {
     return axios.get(`${url}?issueKey=${issueKey}`);
+  },
+
+  delete(url, documentId) {
+    return axios.delete(`${url}?documentId=${documentId}`);
   }
 };
 
@@ -176,8 +180,8 @@ export const User = {
 
 export const Review = {
 
-  deleteSuggestions(url, projectKey) {
-    return axios.delete(url + '?projectKey=' + projectKey);
+  deleteSuggestions(url, projectKey, type) {
+    return axios.delete(url + '?projectKey=' + projectKey + '&type=' + type);
   },
 
   getSuggestions(serverURL, projectKey) {

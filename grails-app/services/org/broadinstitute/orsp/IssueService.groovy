@@ -12,9 +12,10 @@ import groovy.util.logging.Slf4j
  */
 @SuppressWarnings("GrMethodMayBeStatic")
 @Slf4j
-class IssueService {
+class IssueService implements UserInfo {
 
     QueryService queryService
+    PersistenceService persistenceService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -59,13 +60,11 @@ class IssueService {
             IssueExtraProperty.ON_GOING_PROCESS,
             IssueExtraProperty.COMPLIANCE,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
-            IssueExtraProperty.DATABASE_CONTROLLED,
             IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.REQUIRE_MTA,
-            IssueExtraProperty.ACCESSIBLE,
-            IssueExtraProperty.TEXT_ACCESSIBLE,
+            IssueExtraProperty.SHARING_TYPE,
+            IssueExtraProperty.TEXT_SHARING_TYPE,
             IssueExtraProperty.TEXT_COMPLIANCE,
-            IssueExtraProperty.SHARING_PLAN,
             IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
             IssueExtraProperty.IS_LINK_MAINTAINED,
             IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA,
@@ -240,8 +239,8 @@ class IssueService {
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
         }
-        if (input.get(IssueExtraProperty.TEXT_ACCESSIBLE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_ACCESSIBLE})
+        if (input.get(IssueExtraProperty.TEXT_SHARING_TYPE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SHARING_TYPE})
         }
         if (input.get(IssueExtraProperty.TEXT_COMPLIANCE) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_COMPLIANCE})
@@ -269,6 +268,9 @@ class IssueService {
             throw new DomainException(issue.getErrors())
         } else {
             issue.save(flush: true)
+        }
+        if(input.get("editsApproved")) {
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
     }
@@ -309,7 +311,7 @@ class IssueService {
         }
         issue.extraProperties.addAll(extraPropertiesList)
         if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
-            updateProjectApproval(issue)
+            updateProjectApproval(projectKey)
         }
         issue
     }
@@ -332,12 +334,18 @@ class IssueService {
      * Check that an issue has its general data and all of its attachments are in 'Approved' status.
      * If all conditions are met, then we set its general status to 'Approved'
      */
-    void updateProjectApproval(Issue issue) {
+    void updateProjectApproval(String projectKey) {
+        Issue issue = Issue.findByProjectKey(projectKey)
         Boolean approvedAttachments = issue.attachmentsApproved()
-        if (issue != null && issue.getProjectReviewApproved() && approvedAttachments) {
+        if (issue != null && !issue.getApprovalStatus().equals(DocumentStatus.APPROVED.status) && issue.getProjectReviewApproved() && approvedAttachments) {
             issue.setApprovalStatus(IssueStatus.Approved.getName())
             issue.setUpdateDate(new Date())
             issue.save(flush:true)
+            if (issue.type.equals(IssueType.CONSENT_GROUP.name)) {
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Consent Group Approved", EventType.APPROVE_CONSENT_GROUP)
+            } else {
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName,  "Project Approved", EventType.APPROVE_PROJECT)
+            }
         }
     }
 

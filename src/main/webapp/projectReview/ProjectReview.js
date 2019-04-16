@@ -21,6 +21,8 @@ import { IntCohortsReview } from "../components/IntCohortsReview";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 
+const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 class ProjectReview extends Component {
 
   constructor(props) {
@@ -74,10 +76,10 @@ class ProjectReview extends Component {
           attestation: '',
           describeEditType: null,
           editDescription: null,
-          accessible: false,
+          sharingType: false,
           compliance: false,
           pii: false,
-          textAccessible: '',
+          textSharingType: '',
           textCompliance: '',
           isIdReceive: false,
           projectReviewApproved: false
@@ -127,10 +129,10 @@ class ProjectReview extends Component {
           attestation: '',
           describeEditType: null,
           editDescription: null,
-          accessible: false,
+          sharingType: false,
           compliance: false,
           pii: false,
-          textAccessible: '',
+          textSharingType: '',
           textCompliance: '',
           isIdReceive: false,
           projectReviewApproved: false
@@ -138,10 +140,9 @@ class ProjectReview extends Component {
         showInfoSecurityError: false,
       },
       infoSecurityErrors: {
-        accessible: false,
+        sharingType: false,
         compliance: false,
         pii: false,
-        textAccessible: false,
         textCompliance: false
       },
       determination: {
@@ -172,7 +173,7 @@ class ProjectReview extends Component {
     console.log(error, info);
   }
 
-    componentDidMount() {
+  componentDidMount() {
     this.init();
   }
 
@@ -220,7 +221,10 @@ class ProjectReview extends Component {
 
         Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
           data => {
-            if (new URLSearchParams(window.location.search).has('new')) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('new') && urlParams.get('tab') === 'review') {
+              // next line should be temporary, its function is to remove the 'new' flag from the url
+              history.pushState({}, null, window.location.href.split('&')[0]);
               this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
             }
             if (data.data !== '') {
@@ -238,7 +242,7 @@ class ProjectReview extends Component {
                 return prev;
               });
             } else {
-              formData = JSON.parse(currentStr);
+              formData =  JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -425,7 +429,7 @@ class ProjectReview extends Component {
       let project = this.getProject();
       Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
         resp => {
-          this.removeEdits();
+          this.removeEdits('approve');
         })
         .catch(error => {
           console.error(error);
@@ -452,15 +456,16 @@ class ProjectReview extends Component {
   discardEdits() {
     spinnerService.showAll();
     this.setState({ discardEditsDialog: false });
-    this.removeEdits();
+    this.removeEdits('reject');
   }
 
   approveEdits = () => {
     spinnerService.showAll();
     let project = this.getProject();
+    project.editsApproved = true;
     Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
-        this.removeEdits();
+        this.removeEdits('approve');
         this.setState((state, props) => {
           return { approveDialog: !state.approveDialog }
         });
@@ -471,8 +476,8 @@ class ProjectReview extends Component {
       });
   };
 
-  removeEdits() {
-    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey).then(
+  removeEdits(type) {
+    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();
@@ -500,15 +505,15 @@ class ProjectReview extends Component {
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
     project.editDescription = this.state.formData.projectExtraProps.editDescription;
     project.describeEditType = this.state.formData.projectExtraProps.describeEditType;
-    project.accessible = this.state.formData.projectExtraProps.accessible;
+    project.sharingType = this.state.formData.projectExtraProps.sharingType;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
 
-    if (project.accessible === 'true') {
-      project.textAccessible = this.state.formData.projectExtraProps.textAccessible;
+    if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
+      project.textSharingType= this.state.formData.projectExtraProps.textSharingType;
     } else {
-      project.textAccessible = "";
+      project.textSharingType = "";
     }
     if (project.compliance === 'true') {
       project.textCompliance = this.state.formData.projectExtraProps.textCompliance;
@@ -910,10 +915,9 @@ class ProjectReview extends Component {
   validateInfoSecurity = (field) => {
     let pii = false;
     let compliance = false;
-    let accessible = false;
+    let sharingType = false;
     let isValid = true;
     let textCompliance = false;
-    let textAccessible = false;
 
     if (this.state.current.approvalStatus !== 'Legacy') {
       if (isEmpty(this.state.formData.projectExtraProps.pii)) {
@@ -931,14 +935,8 @@ class ProjectReview extends Component {
         textCompliance = true;
         isValid = false;
       }
-      if (isEmpty(this.state.formData.projectExtraProps.accessible)) {
-        accessible = true;
-        isValid = false;
-      }
-      if (!isEmpty(this.state.formData.projectExtraProps.accessible)
-        && this.state.formData.projectExtraProps.accessible === "true"
-        && isEmpty(this.state.formData.projectExtraProps.textAccessible)) {
-        textAccessible = true;
+      if (isEmpty(this.state.formData.projectExtraProps.sharingType)) {
+        sharingType = true;
         isValid = false;
       }
     }
@@ -946,9 +944,8 @@ class ProjectReview extends Component {
       this.setState(prev => {
         prev.infoSecurityErrors.pii = pii;
         prev.infoSecurityErrors.compliance = compliance;
-        prev.infoSecurityErrors.accessible = accessible;
+        prev.infoSecurityErrors.sharingType = sharingType;
         prev.infoSecurityErrors.textCompliance = textCompliance;
-        prev.infoSecurityErrors.textAccessible = textAccessible;
         return prev;
       });
     }
@@ -1278,7 +1275,7 @@ class ProjectReview extends Component {
             readOnly: this.state.readOnly
           }),
           InputFieldSelect({
-            label: "Irb Referral",
+            label: "IRB Referral",
             id: "irbReferral",
             name: "irbReferral",
             options: PREFERRED_IRB,
