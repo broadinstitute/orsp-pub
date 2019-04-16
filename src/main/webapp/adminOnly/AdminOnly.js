@@ -231,15 +231,13 @@ class AdminOnly extends Component {
           InputTextList({
             id: "degrees",
             name: "degrees",
-            label: "Investigator degree(s)",
+            label: "Degree(s) of Investigator",
             degrees: this.state.formData.degrees,
             textHandler: this.degreesHandler,
             add: this.addNewDegree,
             removeDegree: this.removeDegree,
             isReadOnly: !this.state.isORSP
-          })
-        ]),
-        Panel({ title: "Project Details" }, [
+          }),
           InputFieldText({
             id: "trackingNumber",
             name: "trackingNumber",
@@ -273,12 +271,14 @@ class AdminOnly extends Component {
             placeholder: "Enter date...",
             readOnly: !this.state.isORSP,
           }),
-          Fundings({
-            fundings: this.state.formData.sponsor,
-            current: this.state.formData.sponsor,
-            readOnly: true,
-            edit: false
-          }),
+          div({ style: { 'marginTop': '15px' }}, [
+            Fundings({
+              fundings: this.state.formData.sponsor,
+              current: this.state.formData.sponsor,
+              readOnly: true,
+              edit: false
+            })
+          ]),
           InputFieldText({
             id: "initialReviewType",
             name: "initialReviewType",
