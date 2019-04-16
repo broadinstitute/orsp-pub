@@ -251,7 +251,7 @@ class DataUseLetter extends Component {
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-        DUL.uploadDulPdf({ uid: id }, this.props.serverUrl).then(() => {
+        DUL.createDulPdf({ uid: id }, this.props.serverUrl).then(() => {
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
