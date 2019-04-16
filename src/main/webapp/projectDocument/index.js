@@ -15,6 +15,7 @@ import '../index.css';
         component = {component}
         downloadDocumentUrl = {component.downloadDocumentUrl}
         loadingImage = {component.loadingImage}
+        removeDocumentUrl = {component.removeDocumentUrl}
       />,
     document.getElementById('projectDocument')
 );

@@ -886,7 +886,7 @@ class QueryService implements Status {
                 ' select distinct i.project_key, ccl.sample_collection_id, d.id ' +
                         ' from issue i ' +
                         ' inner join consent_collection_link ccl on ccl.consent_key = i.project_key and ccl.sample_collection_id is not null ' +
-                        ' left outer join storage_document d on d.project_key = i.project_key and d.file_type = :file_type ' +
+                        ' left outer join storage_document d on d.project_key = i.project_key and d.file_type = :file_type and d.deleted = 0 ' +
                         ' where i.type = :type '
         // Temporary lookup map for consent to list of samples in the consent
         Map<String, Collection<String>> consentedSamples = new HashMap()
@@ -950,6 +950,7 @@ class QueryService implements Status {
                 ' from storage_document d ' +
                 ' where d.project_key = :projectKey ' +
                 ' and d.file_type = :fileType ' +
+                ' and d.deleted = 0 '+
                 ' order by d.creation_date desc '
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
@@ -970,7 +971,8 @@ class QueryService implements Status {
                 ' select d.* ' +
                 ' from storage_document d ' +
                 ' where d.id not in (select distinct submission_document_id from submission_document) ' +
-                ' and d.project_key = :projectKey'
+                ' and d.project_key = :projectKey' +
+                ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -986,7 +988,8 @@ class QueryService implements Status {
         final String query =
                 ' select distinct d.* ' +
                 ' from storage_document d ' +
-                ' where d.project_key = :projectKey'
+                ' where d.project_key = :projectKey' +
+                ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1003,7 +1006,8 @@ class QueryService implements Status {
                 ' select d.* ' +
                 ' from storage_document d ' +
                 ' where d.id not in (select distinct submission_document_id from submission_document) ' +
-                ' and d.project_key in :projectKeys '
+                ' and d.project_key in :projectKeys ' +
+                ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1057,7 +1061,8 @@ class QueryService implements Status {
                 ' select COALESCE(MAX(d.doc_version), 0) ' +
                         ' from storage_document d ' +
                         ' where d.project_key = ? ' +
-                        ' and d.file_type = ? '
+                        ' and d.file_type = ? ' +
+                        ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setString(0, projectKey)
         sqlQuery.setString(1, fileType)
@@ -1069,7 +1074,7 @@ class QueryService implements Status {
         List<HashMap<String, String>> storageDocumentList = new ArrayList<>()
         final String singleVersionDocQuery =
                 'select project_key, file_type, count(file_type) as counted ' +
-                        'from storage_document where doc_version = 0 ' +
+                        'from storage_document where doc_version = 0 and deleted = 0 ' +
                         'group by project_key, file_type  ' +
                         'order by project_key, file_type'
 
@@ -1096,6 +1101,7 @@ class QueryService implements Status {
                         ' from storage_document as d ' +
                         ' where d.project_key = ?' +
                         ' and d.file_type = ?' +
+                        ' and d.deleted = 0 '
                         ' order by creation_date'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setString(0, projectKey)
