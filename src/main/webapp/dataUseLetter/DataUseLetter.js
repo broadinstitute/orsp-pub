@@ -234,27 +234,47 @@ class DataUseLetter extends Component {
 
   handleSubOptionsCheck = (e) => {
     const { name = '', checked = '' } = e.target;
-    let diseaseDOID = '';
-    if (name === "parasiticDisease") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_0050117";
+    const formerDiseaseDOID = [...this.state.formData.diseaseRestrictedOptions.diseaseDOID];
+
+    if (name === "parasiticDisease" && checked) {
+      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_0050117");
+    } else if (name === "parasiticDisease" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_0050117"), 1);
     }
-    if (name === "cancer") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_162";
+
+    if (name === "cancer" && checked) {
+      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_162");
+    } else if (name === "cancer" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_162"), 1);
     }
-    if (name === "mentalDisorder") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_150";
+
+    if (name === "mentalDisorder" && checked) {
+      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_150");
+    } else if (name === "mentalDisorder" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_150"), 1);
     }
-    if (name === "nervousDisease") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_863";
+
+    if (name === "nervousDisease" && checked) {
+      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_863");
+    } else if (name === "nervousDisease" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_863"), 1);
     }
-    if (name === "cardiovascularDisease") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_1287";
+
+    if (name === "cardiovascularDisease" && checked) {
+      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1287");
+    } else if (name === "cardiovascularDisease" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_1287"), 1);
     }
-    if (name === "respiratoryDisease") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_1579";
+
+    if (name === "respiratoryDisease" && checked) {
+     formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1579");
+    } else if (name === "respiratoryDisease" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_1579"), 1);
     }
-    if (name === "digestiveDisease") {
-      diseaseDOID = "http://purl.obolibrary.org/obo/DOID_77";
+    if (name === "digestiveDisease" && checked) {
+      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_77");
+    } else if (name === "digestiveDisease" && !checked) {
+      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_77"), 1);
     }
 
     this.setState(prev => {
@@ -262,7 +282,7 @@ class DataUseLetter extends Component {
         prev.formData.otherDiseasesDOID.length = 0;
       }
       prev.formData.diseaseRestrictedOptions[name] = checked;
-      prev.formData.diseaseRestrictedOptions.diseaseDOID.push(diseaseDOID);
+      prev.formData.diseaseRestrictedOptions.diseaseDOID = [...formerDiseaseDOID];
       return prev;
     }, () => {
       if (this.state.submit) {
