@@ -119,6 +119,7 @@ class ConsentGroupDocuments extends Component {
     });
   };
 
+
   handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
@@ -173,7 +174,8 @@ class ConsentGroupDocuments extends Component {
         restrictionId: this.state.restrictionId,
         newRestrictionUrl: this.props.createRestrictionUrl,
         isConsentGroup: true,
-        associatedProjects: this.state.associatedProjects
+        associatedProjects: this.state.associatedProjects,
+        removeDocumentUrl: this.props.removeDocumentUrl
       }),
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
