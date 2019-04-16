@@ -111,6 +111,14 @@ class FileHelperController extends AuthenticatedController{
         render (['message': 'documents versions updated'] as JSON)
     }
 
+
+    def deleteDocument() {
+        storageProviderService.deleteDocument(Long.valueOf(params.documentId))
+        response.status = 200
+        render (['message': 'document deleted'] as JSON)
+    }
+
+
     private void deleteDocuments(Issue issue) {
         Collection<StorageDocument> documents = queryService.getDocumentsForProject(issue.projectKey)
         if (documents != null) {
