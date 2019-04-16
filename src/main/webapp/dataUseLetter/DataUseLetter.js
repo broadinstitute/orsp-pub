@@ -185,7 +185,11 @@ class DataUseLetter extends Component {
     });
   };
 
+  // TODO clean  diseaseRestrictedOptions when other primary is selected
   handleRadioPrimaryChange = (e, field, value) => {
+    if (value !== 'diseaseRestricted') {
+      this.cleanDiseasesSelection();
+    }
     this.setState(prev => {
       prev.formData.primaryRestrictions = value;
       return prev;
@@ -194,6 +198,21 @@ class DataUseLetter extends Component {
         this.validateForm();
       }
     })
+  };
+
+  cleanDiseasesSelection = () => {
+    this.setState(prev => {
+      prev.diseaseRestrictedOptions.position = false;
+      prev.diseaseRestrictedOptions.cancer = false;
+      prev.diseaseRestrictedOptions.mentalDisorder = false;
+      prev.diseaseRestrictedOptions.nervousDisease = false;
+      prev.diseaseRestrictedOptions.cardiovascularDisease = false;
+      prev.diseaseRestrictedOptions.respiratoryDisease = false;
+      prev.diseaseRestrictedOptions.digestiveDisease = false;
+      prev.diseaseRestrictedOptions.otherDisease = false;
+      prev.diseaseRestrictedOptions.diseaseDOID = [];
+      return prev;
+    });
   };
 
   handleCheck = (e) => {
@@ -210,7 +229,7 @@ class DataUseLetter extends Component {
       if (this.state.submit) {
         this.validateForm();
       }
-    });errors
+    });
   };
 
   handleSubOptionsCheck = (e) => {
