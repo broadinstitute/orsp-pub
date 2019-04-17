@@ -333,7 +333,6 @@ class ProjectReview extends Component {
   determinationHandler = (determination) => {
     let newValues = {};
     const answers = [];
-    this.clearAlertMessage('showAlert');
     determination.questions.forEach(question => {
 
       if (question.answer !== null) {
@@ -348,6 +347,7 @@ class ProjectReview extends Component {
       Object.keys(newValues).forEach(key => {
         prev.formData.projectExtraProps[key] = newValues[key];
       });
+      prev.showAlert = false;
       prev.resetIntCohorts = false;
       prev.intCohortsModified = true;
       prev.intCohortsAnswers = [...answers];
