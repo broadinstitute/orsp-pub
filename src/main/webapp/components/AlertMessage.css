@@ -10,6 +10,10 @@
   outline: none;
 }
 
+.alertMessage.alert-dismissable {
+  padding-right: 15px;
+}
+
 .alertMessageContent {
   margin-right: 20px;
 }
