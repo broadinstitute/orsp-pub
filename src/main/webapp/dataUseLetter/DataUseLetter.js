@@ -244,13 +244,17 @@ class DataUseLetter extends Component {
         value: "A disease that is the consequence of the presence of pathogenic microbial agents, including pathogenic viruses, pathogenic bacteria, fungi, protozoa, multicellular parasites, and aberrant proteins known as prions."
       });
     } else if (name === "parasiticDisease" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, "http://purl.obolibrary.org/obo/DOID_0050117"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_0050117"}), 1);
     }
 
     if (name === "cancer" && checked) {
-      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_162");
+      formerDiseaseDOID.push({
+        key: "http://purl.obolibrary.org/obo/DOID_162",
+        label: "cancer",
+        value: "A disease of cellular proliferation that is malignant and primary, characterized by uncontrolled cellular proliferation, local cell invasion and metastasis."
+      });
     } else if (name === "cancer" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_162"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_162"}), 1);
     }
 
     if (name === "mentalDisorder" && checked) {
@@ -260,34 +264,46 @@ class DataUseLetter extends Component {
         value: "A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture."
       });
     } else if (name === "mentalDisorder" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {
-        key: "http://purl.obolibrary.org/obo/DOID_150",
-        label: "disease of mental health",
-        value: "A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture."
-      }), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_150"}), 1);
     }
 
     if (name === "nervousDisease" && checked) {
-      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_863");
+      formerDiseaseDOID.push({
+        key: "http://purl.obolibrary.org/obo/DOID_863",
+        label: "nervous system disease",
+        value: "A disease of anatomical entity that is located_in the central nervous system or located_in the peripheral nervous system."
+      });
     } else if (name === "nervousDisease" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_863"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID,{key: "http://purl.obolibrary.org/obo/DOID_863"}), 1);
     }
 
     if (name === "cardiovascularDisease" && checked) {
-      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1287");
+      formerDiseaseDOID.push({
+        key: "http://purl.obolibrary.org/obo/DOID_1287",
+        label: "cardiovascular system disease",
+        value: "A disease of anatomical entity which occurs in the blood, heart, blood vessels or the lymphatic system that passes nutrients (such as amino acids and electrolytes), gases, hormones, blood cells or lymph to and from cells in the body to help fight diseases and help stabilize body temperature and pH to maintain homeostasis."
+      });
     } else if (name === "cardiovascularDisease" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_1287"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID,{key: "http://purl.obolibrary.org/obo/DOID_1287"}), 1);
     }
 
     if (name === "respiratoryDisease" && checked) {
-     formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_1579");
+     formerDiseaseDOID.push({
+       key: "http://purl.obolibrary.org/obo/DOID_1579",
+       label: "respiratory system disease",
+       value: "A disease of anatomical entity that located_in the respiratory system which extends from the nasal sinuses to the diaphragm."
+     });
     } else if (name === "respiratoryDisease" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_1579"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_1579"}), 1);
     }
     if (name === "digestiveDisease" && checked) {
-      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_77");
+      formerDiseaseDOID.push({
+        key: "http://purl.obolibrary.org/obo/DOID_77",
+        label: "gastrointestinal system disease",
+        value: "A disease of anatomical entity that is located_in the gastrointestinal tract."
+      });
     } else if (name === "digestiveDisease" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_77"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_77"}), 1);
     }
 
     this.setState(prev => {
