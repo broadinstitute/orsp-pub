@@ -238,9 +238,13 @@ class DataUseLetter extends Component {
     const formerDiseaseDOID = [...this.state.formData.diseaseRestrictedOptions.diseaseDOID];
 
     if (name === "parasiticDisease" && checked) {
-      formerDiseaseDOID.push("http://purl.obolibrary.org/obo/DOID_0050117");
+      formerDiseaseDOID.push({
+        key: "http://purl.obolibrary.org/obo/DOID_0050117",
+        label: "disease by infectious agent",
+        value: "A disease that is the consequence of the presence of pathogenic microbial agents, including pathogenic viruses, pathogenic bacteria, fungi, protozoa, multicellular parasites, and aberrant proteins known as prions."
+      });
     } else if (name === "parasiticDisease" && !checked) {
-      formerDiseaseDOID.splice(formerDiseaseDOID.indexOf("http://purl.obolibrary.org/obo/DOID_0050117"), 1);
+      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, "http://purl.obolibrary.org/obo/DOID_0050117"), 1);
     }
 
     if (name === "cancer" && checked) {
