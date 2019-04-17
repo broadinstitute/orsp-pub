@@ -5,7 +5,7 @@ import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty, parseDate } from "../util/Utils";
+import { isEmpty, parseDate, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
 import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -23,7 +23,7 @@ class AdminOnly extends Component {
       showSubmissionAlert: false,
       alertMessage: '',
       isORSP: false,
-      intial: {},
+      initial: {},
       formData: {
         preferredIrb: '',
         preferredIrbText: '',
@@ -71,7 +71,7 @@ class AdminOnly extends Component {
         formData.initialReviewType = issue.data.extraProperties.initialReviewType;
         formData.bioMedical = issue.data.extraProperties.bioMedical;
         formData.projectStatus = issue.data.extraProperties.projectStatus;
-        initial = formData;
+        initial = createObjectCopy(formData);
         this.setState(prev => {
           prev.formData = formData;
           prev.initial = initial;
@@ -209,17 +209,6 @@ class AdminOnly extends Component {
       });
     }
   };
-
-  compareObj(obj1, obj2) {
-    console.log("compara", !isEmpty(obj1) && !isEmpty(obj2));
-    if (!isEmpty(obj1) && !isEmpty(obj2)) {
-      let form1 = JSON.parse(JSON.stringify(this.state[obj1]));
-      let form2 = JSON.parse(JSON.stringify(this.state[obj2]));
-      return JSON.stringify(form1) === JSON.stringify(form2);
-    } else {
-      return false;
-    }
-  }
 
   render() {
     return(
@@ -360,7 +349,7 @@ class AdminOnly extends Component {
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
-            disabled: this.compareObj(this.state.formData, this.state.intial),
+            disabled: compareNotEmptyObjects(this.state.formData, this.state.initial),
             className: "btn buttonPrimary floatRight",
             onClick: this.submit,
             isRendered: this.state.isORSP

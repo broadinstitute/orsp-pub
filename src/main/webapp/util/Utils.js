@@ -31,3 +31,16 @@ export const parseDate = (date) => {
     return d.slice(0, d.indexOf("T"));
   }
 }
+
+export const createObjectCopy = (obj) => {
+  console.log("", obj)
+  let copy = {};
+  if (!isEmpty(obj)) {
+    copy = JSON.parse(JSON.stringify(obj));
+  }
+  return copy;
+}
+
+export const compareNotEmptyObjects = (obj1, obj2) => {
+  return !isEmpty(obj1) && !isEmpty(obj2) ? JSON.stringify(obj1) === JSON.stringify(obj2) : false;
+}
