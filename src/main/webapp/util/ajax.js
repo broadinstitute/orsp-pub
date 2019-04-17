@@ -3,7 +3,7 @@ import "regenerator-runtime/runtime";
 
 export const Search = {
 
-  getMatchingUsers(url, query) {
+  getMatchingQuery(url, query) {
     return axios.get(url + '?term=' + query);
   }
 
