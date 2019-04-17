@@ -351,7 +351,7 @@
             </span>
 
         </div>
-
+<!--
         <div class="restriction form-group well clear-well">
             <div>
                 <label for="dateRestriction">Future use is limited to data generated from samples collected after the following consent form date</label>
@@ -370,9 +370,10 @@
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
             </div>
         </div>
-
+-->
         <h4> Terms of Use </h4>
 
+<!--
         <div class="form-group well clear-well clearfix">
             <label for="recontactingDataSubjectsYes"> Is there a possibility for recontacting data subjects? </label>
             <span class="pull-right">
@@ -396,7 +397,7 @@
                 <input type="text"  id="recontactMustOccur" name="recontactMust" class="form-control" value="${restriction.recontactMust}">
             </div>
         </div>
-
+-->
         <div class="form-group well clear-well clearfix">
             <label for="genomicPhenotypicDataYes"> Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?</label>
             <span class="pull-right">
@@ -420,6 +421,7 @@
 
         <div class="form-group well clear-well clearfix">
             <div id="other-terms">
+<!--
                 <label for="cloudStorageYes">Data storage on the cloud is prohibited?</label>
                 <span class="pull-right">
                     <label class="radio-inline"><input type="radio"
@@ -438,6 +440,7 @@
                                   <g:if test="${restriction.cloudStorage?.equals("Unspecified") && !create}">checked</g:if>
                                   value="Unspecified">Unspecified</label>
                 </span>
+-->
                 <hr/>
                 <label for="irbYes">Ethics committee approval required?</label>
                 <span class="pull-right">

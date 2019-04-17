@@ -87,6 +87,7 @@ class DataUseController extends AuthenticatedController {
             restriction.gender = null
         }
         restriction.controlSetOption = params.controlSetOption
+        // TODO this now is free text, remove this logic
         restriction.populationRestrictions = new ArrayList<>()
         if (params.populationRestrictions) {
             if (params.populationRestrictions instanceof String[]) {
@@ -97,16 +98,16 @@ class DataUseController extends AuthenticatedController {
             }
         }
         restriction.pediatricLimited = getBooleanForParam(params.pediatric)
-        if (params.dateRestriction) {
-            restriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
-        } else {
-            restriction.dateRestriction = null
-        }
-        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
+//        if (params.dateRestriction) {
+//            restriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
+//        } else {
+//            restriction.dateRestriction = null
+//        }
+//        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
         restriction.recontactMay = params.recontactMay
         restriction.recontactMust = params.recontactMust
         restriction.genomicPhenotypicData = params.genomicPhenotypicData
-        restriction.cloudStorage = params.cloudStorage
+//        restriction.cloudStorage = params.cloudStorage
         restriction.irb = getBooleanForParam(params.irb)
         restriction.geographicalRestrictions = params.geographicalRestrictions
         restriction.noRestriction = params.noRestriction
