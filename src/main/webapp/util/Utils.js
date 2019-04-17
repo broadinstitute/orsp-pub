@@ -33,7 +33,6 @@ export const parseDate = (date) => {
 }
 
 export const createObjectCopy = (obj) => {
-  console.log("", obj)
   let copy = {};
   if (!isEmpty(obj)) {
     copy = JSON.parse(JSON.stringify(obj));

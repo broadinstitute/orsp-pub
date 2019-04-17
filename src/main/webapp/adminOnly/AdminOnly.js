@@ -140,6 +140,10 @@ class AdminOnly extends Component {
     Project.updateProject(this.props.updateProjectUrl, this.getParsedForm(), this.props.projectKey).then(
       response => {
         spinnerService.hideAll();
+        this.setState(prev => {
+          prev.initial = createObjectCopy(this.state.formData);
+          return prev;
+        });
         this.successNotification('showSubmissionAlert', 'Form has been successfully updated.', 8000);
       }).catch(
       error => console.error(error)
@@ -205,6 +209,11 @@ class AdminOnly extends Component {
     if (this.state.formData.degrees.length > 1) {
       this.setState(prev => {
         prev.formData.degrees.splice(idx, 1);
+        return prev;
+      });
+    } else if (!isEmpty(this.state.formData.degrees[0])) {
+      this.setState(prev => {
+        prev.formData.degrees[0] = '';
         return prev;
       });
     }

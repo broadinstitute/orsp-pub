@@ -16,7 +16,7 @@ export const InputTextList = hh(class InputTextList extends Component {
             Btn({
               action: { labelClass: "glyphicon glyphicon-plus", handler: this.props.add },
               disabled: false,
-              isRendered: !this.props.readOnly
+              isRendered: !this.props.isReadOnly
             })
           ])
         ]),
@@ -36,8 +36,8 @@ export const InputTextList = hh(class InputTextList extends Component {
                 })
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
-                Btn({
-                  action: { labelClass: "glyphicon glyphicon-remove", handler: () => this.props.remove(idx) },
+                Btn({isRendered: !this.props.isReadOnly,
+                  action: { labelClass: "glyphicon glyphicon-remove", handler: () => this.props.remove(idx)},
                 })
               ])
             ])
