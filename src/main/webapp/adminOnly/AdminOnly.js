@@ -247,7 +247,7 @@ class AdminOnly extends Component {
             options: PREFERRED_IRB,
             value: this.state.formData.preferredIrb,
             onChange: this.handleSelect("preferredIrb"),
-            readOnly: !this.state.isORSP,
+            readOnly: true,
             placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
             edit: false
           }),
@@ -306,7 +306,7 @@ class AdminOnly extends Component {
             id: "projectTitle",
             name: "projectTitle",
             label: "Title",
-            readOnly: !this.state.isORSP,
+            readOnly: true,
             value: this.state.formData.projectTitle,
             onChange: this.textHandler,
           }),
