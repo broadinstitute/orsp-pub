@@ -237,73 +237,80 @@ class DataUseLetter extends Component {
     const { name = '', checked = '' } = e.target;
     const formerDiseaseDOID = [...this.state.formData.diseaseRestrictedOptions.diseaseDOID];
 
-    if (name === "parasiticDisease" && checked) {
-      formerDiseaseDOID.push({
-        key: "http://purl.obolibrary.org/obo/DOID_0050117",
-        label: "disease by infectious agent",
-        value: "A disease that is the consequence of the presence of pathogenic microbial agents, including pathogenic viruses, pathogenic bacteria, fungi, protozoa, multicellular parasites, and aberrant proteins known as prions."
-      });
-    } else if (name === "parasiticDisease" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_0050117"}), 1);
-    }
+    if (name === "parasiticDisease") {
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: "http://purl.obolibrary.org/obo/DOID_0050117",
+          label: "disease by infectious agent",
+          value: "A disease that is the consequence of the presence of pathogenic microbial agents, including pathogenic viruses, pathogenic bacteria, fungi, protozoa, multicellular parasites, and aberrant proteins known as prions."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: "http://purl.obolibrary.org/obo/DOID_0050117" }), 1);
+      }
+    } else if (name === "cancer") {
+      const diseaseKey = "http://purl.obolibrary.org/obo/DOID_162",
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: diseaseKey,
+          label: "cancer",
+          value: "A disease of cellular proliferation that is malignant and primary, characterized by uncontrolled cellular proliferation, local cell invasion and metastasis."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: diseaseKey }), 1);
+      }
+    } else if (name === "mentalDisorder") {
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: "http://purl.obolibrary.org/obo/DOID_150",
+          label: "disease of mental health",
+          value: "A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: "http://purl.obolibrary.org/obo/DOID_150" }), 1);
+      }
+    } else if (name === "nervousDisease") {
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: "http://purl.obolibrary.org/obo/DOID_863",
+          label: "nervous system disease",
+          value: "A disease of anatomical entity that is located_in the central nervous system or located_in the peripheral nervous system."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: "http://purl.obolibrary.org/obo/DOID_863" }), 1);
+      }
+    } else if (name === "cardiovascularDisease") {
 
-    if (name === "cancer" && checked) {
-      formerDiseaseDOID.push({
-        key: "http://purl.obolibrary.org/obo/DOID_162",
-        label: "cancer",
-        value: "A disease of cellular proliferation that is malignant and primary, characterized by uncontrolled cellular proliferation, local cell invasion and metastasis."
-      });
-    } else if (name === "cancer" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_162"}), 1);
-    }
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: "http://purl.obolibrary.org/obo/DOID_1287",
+          label: "cardiovascular system disease",
+          value: "A disease of anatomical entity which occurs in the blood, heart, blood vessels or the lymphatic system that passes nutrients (such as amino acids and electrolytes), gases, hormones, blood cells or lymph to and from cells in the body to help fight diseases and help stabilize body temperature and pH to maintain homeostasis."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: "http://purl.obolibrary.org/obo/DOID_1287" }), 1);
+      }
+    } else if (name === "respiratoryDisease") {
 
-    if (name === "mentalDisorder" && checked) {
-      formerDiseaseDOID.push({
-        key: "http://purl.obolibrary.org/obo/DOID_150",
-        label: "disease of mental health",
-        value: "A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture."
-      });
-    } else if (name === "mentalDisorder" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_150"}), 1);
-    }
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: "http://purl.obolibrary.org/obo/DOID_1579",
+          label: "respiratory system disease",
+          value: "A disease of anatomical entity that located_in the respiratory system which extends from the nasal sinuses to the diaphragm."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: "http://purl.obolibrary.org/obo/DOID_1579" }), 1);
+      }
+    } else if (name === "digestiveDisease") {
 
-    if (name === "nervousDisease" && checked) {
-      formerDiseaseDOID.push({
-        key: "http://purl.obolibrary.org/obo/DOID_863",
-        label: "nervous system disease",
-        value: "A disease of anatomical entity that is located_in the central nervous system or located_in the peripheral nervous system."
-      });
-    } else if (name === "nervousDisease" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID,{key: "http://purl.obolibrary.org/obo/DOID_863"}), 1);
-    }
-
-    if (name === "cardiovascularDisease" && checked) {
-      formerDiseaseDOID.push({
-        key: "http://purl.obolibrary.org/obo/DOID_1287",
-        label: "cardiovascular system disease",
-        value: "A disease of anatomical entity which occurs in the blood, heart, blood vessels or the lymphatic system that passes nutrients (such as amino acids and electrolytes), gases, hormones, blood cells or lymph to and from cells in the body to help fight diseases and help stabilize body temperature and pH to maintain homeostasis."
-      });
-    } else if (name === "cardiovascularDisease" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID,{key: "http://purl.obolibrary.org/obo/DOID_1287"}), 1);
-    }
-
-    if (name === "respiratoryDisease" && checked) {
-     formerDiseaseDOID.push({
-       key: "http://purl.obolibrary.org/obo/DOID_1579",
-       label: "respiratory system disease",
-       value: "A disease of anatomical entity that located_in the respiratory system which extends from the nasal sinuses to the diaphragm."
-     });
-    } else if (name === "respiratoryDisease" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_1579"}), 1);
-    }
-    if (name === "digestiveDisease" && checked) {
-      formerDiseaseDOID.push({
-        key: "http://purl.obolibrary.org/obo/DOID_77",
-        label: "gastrointestinal system disease",
-        value: "A disease of anatomical entity that is located_in the gastrointestinal tract."
-      });
-    } else if (name === "digestiveDisease" && !checked) {
-      formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, {key: "http://purl.obolibrary.org/obo/DOID_77"}), 1);
+      if (checked) {
+        formerDiseaseDOID.push({
+          key: "http://purl.obolibrary.org/obo/DOID_77",
+          label: "gastrointestinal system disease",
+          value: "A disease of anatomical entity that is located_in the gastrointestinal tract."
+        });
+      } else {
+        formerDiseaseDOID.splice(_.findIndex(formerDiseaseDOID, { key: "http://purl.obolibrary.org/obo/DOID_77" }), 1);
+      }
     }
 
     this.setState(prev => {
@@ -544,7 +551,7 @@ class DataUseLetter extends Component {
   }
   render() {
 
-    const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.over18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true|| this.state.formData.ethnic === true;
+    const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.over18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true || this.state.formData.ethnic === true;
 
     return (
       div({}, [
@@ -697,8 +704,8 @@ class DataUseLetter extends Component {
               optionLabels: [
                 span({ className: 'bold' }, ['No restrictions.']),
                 span({ className: 'bold' }, ['General research use ', span({ className: 'normal italic' }, ['(Data can be used for any research purpose but would not be made available for non-research purposes. These data would generally be made available to any qualified investigator, irrespective of the specific research purpose for which the data are requested.)'])]),
-                span({ className: 'bold"'}, ['Future use is ', span({ className: 'bold' }, ['restricted to health/medical/biomedical research (any type)'])]),
-                span({ className: 'bold"'}, ['Future research is ', span({ className: 'bold' }, ['restricted to (a) specific disease(s): ']), span({ className: 'normal italic' }, ['(Please note that checking any of these boxes precludes all future research outside of the indicated disease.)'])]),
+                span({ className: 'bold"' }, ['Future use is ', span({ className: 'bold' }, ['restricted to health/medical/biomedical research (any type)'])]),
+                span({ className: 'bold"' }, ['Future research is ', span({ className: 'bold' }, ['restricted to (a) specific disease(s): ']), span({ className: 'normal italic' }, ['(Please note that checking any of these boxes precludes all future research outside of the indicated disease.)'])]),
               ],
               onChange: this.handleRadioPrimaryChange,
               readOnly: this.state.readOnly,
@@ -707,85 +714,85 @@ class DataUseLetter extends Component {
             }),
 
             div({ isRendered: this.state.formData.primaryRestrictions === 'diseaseRestricted', className: "row subGroup" }, [
-                InputFieldCheckbox({
-                  id: "ckb_parasiticDisease",
-                  name: "parasiticDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Infectious and parasitic diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.parasiticDisease === 'true' || this.state.formData.diseaseRestrictedOptions.parasiticDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_cancer",
-                  name: "cancer",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Cancer']),
-                  checked: this.state.formData.diseaseRestrictedOptions.cancer === 'true' || this.state.formData.diseaseRestrictedOptions.cancer === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_mentalDisorder",
-                  name: "mentalDisorder",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Mental, Behavioral and Neurodevelopmental disorders']),
-                  checked: this.state.formData.diseaseRestrictedOptions.mentalDisorder === 'true' || this.state.formData.diseaseRestrictedOptions.mentalDisorder === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_nervousDisease",
-                  name: "nervousDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Nervous system diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.nervousDisease === 'true' || this.state.formData.diseaseRestrictedOptions.nervousDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_cardiovascularDisease",
-                  name: "cardiovascularDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Circulatory & Cardiovascular system diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.cardiovascularDisease === 'true' || this.state.formData.diseaseRestrictedOptions.cardiovascularDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_respiratoryDisease",
-                  name: "respiratoryDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Respiratory system diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.respiratoryDisease === 'true' || this.state.formData.diseaseRestrictedOptions.respiratoryDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_digestiveDisease",
-                  name: "digestiveDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Digestive system diseases']),
-                  checked: this.state.formData.diseaseRestrictedOptions.digestiveDisease === 'true' || this.state.formData.diseaseRestrictedOptions.digestiveDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                InputFieldCheckbox({
-                  id: "ckb_otherDisease",
-                  name: "otherDisease",
-                  onChange: this.handleSubOptionsCheck,
-                  label: span({ className: "normal" }, ['Other']),
-                  checked: this.state.formData.diseaseRestrictedOptions.otherDisease === 'true' || this.state.formData.diseaseRestrictedOptions.otherDisease === true,
-                  readOnly: this.state.readOnly
-                }),
-                //if otherDisease is checked (OK)
-                div({ isRendered: this.state.formData.diseaseRestrictedOptions.otherDisease === true, className: "subGroup", style: { 'marginTop': '5px', 'marginBottom': '0' } }, [
-                  MultiSelect({
-                    id: "inputOtherDiseaseSpecify",
-                    label: "Please select",
-                    name: "otherDiseaseSpecify",
-                    isDisabled: false,
-                    loadOptions: this.loadDOIDOptions,
-                    handleChange: this.handleDiseaseManagerChange,
-                    value: this.state.formData.otherDiseasesDOID,
-                    placeholder: "Start typing the name of the disease",
-                    isMulti: true,
-                    edit: false,
-                    error: this.state.errors.errorOtherDiseaseSpecify
-                  })
+              InputFieldCheckbox({
+                id: "ckb_parasiticDisease",
+                name: "parasiticDisease",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Infectious and parasitic diseases']),
+                checked: this.state.formData.diseaseRestrictedOptions.parasiticDisease === 'true' || this.state.formData.diseaseRestrictedOptions.parasiticDisease === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_cancer",
+                name: "cancer",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Cancer']),
+                checked: this.state.formData.diseaseRestrictedOptions.cancer === 'true' || this.state.formData.diseaseRestrictedOptions.cancer === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_mentalDisorder",
+                name: "mentalDisorder",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Mental, Behavioral and Neurodevelopmental disorders']),
+                checked: this.state.formData.diseaseRestrictedOptions.mentalDisorder === 'true' || this.state.formData.diseaseRestrictedOptions.mentalDisorder === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_nervousDisease",
+                name: "nervousDisease",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Nervous system diseases']),
+                checked: this.state.formData.diseaseRestrictedOptions.nervousDisease === 'true' || this.state.formData.diseaseRestrictedOptions.nervousDisease === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_cardiovascularDisease",
+                name: "cardiovascularDisease",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Circulatory & Cardiovascular system diseases']),
+                checked: this.state.formData.diseaseRestrictedOptions.cardiovascularDisease === 'true' || this.state.formData.diseaseRestrictedOptions.cardiovascularDisease === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_respiratoryDisease",
+                name: "respiratoryDisease",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Respiratory system diseases']),
+                checked: this.state.formData.diseaseRestrictedOptions.respiratoryDisease === 'true' || this.state.formData.diseaseRestrictedOptions.respiratoryDisease === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_digestiveDisease",
+                name: "digestiveDisease",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Digestive system diseases']),
+                checked: this.state.formData.diseaseRestrictedOptions.digestiveDisease === 'true' || this.state.formData.diseaseRestrictedOptions.digestiveDisease === true,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                id: "ckb_otherDisease",
+                name: "otherDisease",
+                onChange: this.handleSubOptionsCheck,
+                label: span({ className: "normal" }, ['Other']),
+                checked: this.state.formData.diseaseRestrictedOptions.otherDisease === 'true' || this.state.formData.diseaseRestrictedOptions.otherDisease === true,
+                readOnly: this.state.readOnly
+              }),
+              //if otherDisease is checked (OK)
+              div({ isRendered: this.state.formData.diseaseRestrictedOptions.otherDisease === true, className: "subGroup", style: { 'marginTop': '5px', 'marginBottom': '0' } }, [
+                MultiSelect({
+                  id: "inputOtherDiseaseSpecify",
+                  label: "Please select",
+                  name: "otherDiseaseSpecify",
+                  isDisabled: false,
+                  loadOptions: this.loadDOIDOptions,
+                  handleChange: this.handleDiseaseManagerChange,
+                  value: this.state.formData.otherDiseasesDOID,
+                  placeholder: "Start typing the name of the disease",
+                  isMulti: true,
+                  edit: false,
+                  error: this.state.errors.errorOtherDiseaseSpecify
+                })
               ]),
               small({ isRendered: this.state.errors.errorDiseaseRestrictedOptions, className: "errorMessage" }, ['Required Fields']),
             ])
@@ -833,7 +840,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in adults 18 years of age and older only",
               checked: this.state.formData.over18 === 'true' || this.state.formData.over18 === true,
-              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
+              readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_onlyMen",
@@ -841,7 +848,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in men only",
               checked: this.state.formData.onlyMen === 'true' || this.state.formData.onlyMen === true,
-              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
+              readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_onlyWomen",
@@ -849,7 +856,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in women only",
               checked: this.state.formData.onlyWomen === 'true' || this.state.formData.onlyWomen === true,
-              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
+              readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
               id: "ckb_ethnic",
@@ -857,7 +864,7 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in the following ethnic or geographic population",
               checked: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true,
-              readOnly: this.state.readOnly|| this.state.formData.noPopulationRestricted === true
+              readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
             }),
             //if ethnic is checked (OK)
             div({ isRendered: this.state.formData.ethnic === true, className: "subGroup", style: { 'marginTop': '5px' } }, [
