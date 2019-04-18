@@ -5,6 +5,7 @@ module.exports = {
       fs: "empty"
   },
   entry: {
+    adminOnly: './src/main/webapp/adminOnly/index.js',
     collectionLinks: './src/main/webapp/collectionLinks/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
     consentGroupDocuments: './src/main/webapp/consentGroupDocuments/index.js',

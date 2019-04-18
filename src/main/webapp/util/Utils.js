@@ -23,5 +23,16 @@ export const isEmpty = (value) => {
   } else {
     return value === '' || value === null || value === undefined;
   }
+}
 
+export const createObjectCopy = (obj) => {
+  let copy = {};
+  if (!isEmpty(obj)) {
+    copy = JSON.parse(JSON.stringify(obj));
+  }
+  return copy;
+}
+
+export const compareNotEmptyObjects = (obj1, obj2) => {
+  return !isEmpty(obj1) && !isEmpty(obj2) ? JSON.stringify(obj1) === JSON.stringify(obj2) : false;
 }

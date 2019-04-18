@@ -135,6 +135,10 @@ export const Project = {
     return axios.put(url + '?projectKey=' + projectKey, data);
   },
 
+  updateAdminOnlyProps(url, data, projectKey) {
+    return axios.put(url + '?projectKey=' + projectKey, data);
+  },
+
   async getProjectType(url, projectKey) {
     let type = '';
     await axios.get(url + '/api/project/get-type?id=' + projectKey)

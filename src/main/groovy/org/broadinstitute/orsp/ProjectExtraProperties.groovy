@@ -45,6 +45,16 @@ class ProjectExtraProperties {
     String isConsentUnambiguous
     String attestation
 
+    // Admin Only
+    String irbReferralText
+    String investigatorFirstName
+    String investigatorLastName
+    Collection<String> degrees
+    String initialDate
+    String initialReviewType
+    String bioMedical
+    String projectStatus
+
     ProjectExtraProperties(Issue project) {
         // General Data
         this.setSummary(project.getExtraPropertySummary() ?: "")
@@ -90,5 +100,15 @@ class ProjectExtraProperties {
 
         // Attestation
         this.setAttestation(project.attestation() ?: null)
+
+        // Admin Only
+        this.setIrbReferralText(project.getIrbReferralText() ?: "")
+        this.setInvestigatorFirstName(project.getInvestigatorFirstName() ?: "")
+        this.setInvestigatorLastName(project.getInvestigatorLastName() ?: "")
+        this.setDegrees(project.getDegrees() ?: [""])
+        this.setInitialDate(project.getInitialDate() ?: null)
+        this.setInitialReviewType(project.getInitialReviewType() ?: "")
+        this.setBioMedical(project.getBioMedical() ?: "")
+        this.setProjectStatus(project.getProjectStatus() ?: "")
     }
 }

@@ -19,7 +19,10 @@ enum IssueStatus {
 
     // Global Status:
     Closed(10, "Closed"),
-    Abandoned(11, "Abandoned");
+    Abandoned(11, "Abandoned"),
+    ProjectApproved(12, "Approved"),
+    Disapproved(13, "Disapproved"),
+    Withdrawn(14, "Withdrawn")
 
     Integer sequence
     String name

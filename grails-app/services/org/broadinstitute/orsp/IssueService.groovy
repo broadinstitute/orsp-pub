@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import liquibase.util.StringUtils
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -75,7 +76,14 @@ class IssueService implements UserInfo {
             IssueExtraProperty.PII,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
             IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
-            IssueExtraProperty.IRB_REFERRAL
+            IssueExtraProperty.IRB_REFERRAL,
+            IssueExtraProperty.IRB_REFERRAL_TEXT,
+            IssueExtraProperty.INVESTIGATOR_FIRST_NAME,
+            IssueExtraProperty.INVESTIGATOR_LAST_NAME,
+            IssueExtraProperty.INITIAL_DATE,
+            IssueExtraProperty.INITIAL_REVIEW_TYPE,
+            IssueExtraProperty.BIO_MEDICAL,
+            IssueExtraProperty.PROJECT_STATUS
     ]
 
 
@@ -87,7 +95,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.COLLABORATOR,
             IssueExtraProperty.PM,
             IssueExtraProperty.PI,
-            IssueExtraProperty.SAMPLES
+            IssueExtraProperty.SAMPLES,
+            IssueExtraProperty.DEGREE
     ]
 
     /**
@@ -254,6 +263,9 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.IRB_REFERRAL)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REFERRAL})
         }
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
+        }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
             it.delete(hard: true)
@@ -269,10 +281,84 @@ class IssueService implements UserInfo {
         } else {
             issue.save(flush: true)
         }
-        if(input.get("editsApproved")) {
+        if (input.get("editsApproved")) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Issue updateAdminOnlyProperties(Issue issue, Map<String, Object> input) throws DomainException {
+        String previousStatus = issue.getApprovalStatus()
+        Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
+        Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
+        propsToSave.addAll(getMultiValuedPropsForSaving(issue, input))
+        if (!input.containsKey(IssueExtraProperty.DEGREE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE})
+        }
+        if (input.containsKey(IssueExtraProperty.INITIAL_DATE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INITIAL_DATE})
+        }
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS)) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
+        }
+
+        propsToDelete.each {
+            issue.removeFromExtraProperties(it)
+            it.delete(hard: true, flush: true)
+        }
+
+        propsToSave.each {
+            it.save(flush: true)
+        }
+
+        issue.setUpdateDate(new Date())
+        if (issue.hasErrors()) {
+            throw new DomainException(issue.getErrors())
+        } else {
+            issue.save(flush: true)
+        }
+        if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
+        }
+        issue
+    }
+
+    Boolean shouldUpdateStatus(String status, String previousStatus) {
+        Boolean isAValidStatus = Arrays.stream(IssueStatus.values()).anyMatch{t -> t.name().equals(status)}
+        Boolean statusHasChanged = !status.equals(previousStatus)
+        isAValidStatus && statusHasChanged
+    }
+
+    EventType eventTypeMatcher(String status) {
+        EventType type
+
+        switch(status) {
+            case IssueStatus.Closed.getName():
+                type = EventType.CLOSED
+                break
+
+            case IssueStatus.Abandoned.getName():
+                type = EventType.ABANDON_PROJECT
+                break
+
+            case IssueStatus.ProjectApproved.getName():
+                type = EventType.APPROVE_PROJECT
+                break
+
+            case IssueStatus.Disapproved.getName():
+                type = EventType.DISAPPROVE_PROJECT
+                break
+
+            case IssueStatus.Withdrawn.getName():
+                type = EventType.WITHDRAWN_PROJECT
+                break
+
+            default:
+                type = EventType.CHANGE
+                break
+        }
+        type
     }
 
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
@@ -310,9 +396,6 @@ class IssueService implements UserInfo {
             saveExtraProperties(issue, extraPropertiesList)
         }
         issue.extraProperties.addAll(extraPropertiesList)
-        if (extraPropertiesList.find {it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED}) {
-            updateProjectApproval(projectKey)
-        }
         issue
     }
 
@@ -330,25 +413,6 @@ class IssueService implements UserInfo {
         updatedIssue
     }
 
-    /**
-     * Check that an issue has its general data and all of its attachments are in 'Approved' status.
-     * If all conditions are met, then we set its general status to 'Approved'
-     */
-    void updateProjectApproval(String projectKey) {
-        Issue issue = Issue.findByProjectKey(projectKey)
-        Boolean approvedAttachments = issue.attachmentsApproved()
-        if (issue != null && !issue.getApprovalStatus().equals(DocumentStatus.APPROVED.status) && issue.getProjectReviewApproved() && approvedAttachments) {
-            issue.setApprovalStatus(IssueStatus.Approved.getName())
-            issue.setUpdateDate(new Date())
-            issue.save(flush:true)
-            if (issue.type.equals(IssueType.CONSENT_GROUP.name)) {
-                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Consent Group Approved", EventType.APPROVE_CONSENT_GROUP)
-            } else {
-                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName,  "Project Approved", EventType.APPROVE_PROJECT)
-            }
-        }
-    }
-
     void saveFundings(Issue issue, Collection<Funding> fundings) {
         fundings?.each {
             it.setCreated(new Date())
@@ -362,7 +426,7 @@ class IssueService implements UserInfo {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
-        newIssue.setApprovalStatus("Pending")
+        newIssue.setApprovalStatus("Pending ORSP Admin Review")
         newIssue.type = type.name
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null
