@@ -47,7 +47,8 @@ enum DataUseLetterFields {
     SIGNATURE("signature"),
     POSITION("position"),
     INSTITUTION("institution"),
-    SUBMITTED_DATE("date")
+    SUBMITTED_DATE("date"),
+    LABEL("label")
 
     String abbreviation
     private DataUseLetterFields(String abbreviation) {
