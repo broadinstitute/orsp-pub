@@ -131,6 +131,7 @@
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         serverURL: "${webRequest.baseUrl}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
+        sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
       };
     </script>
 

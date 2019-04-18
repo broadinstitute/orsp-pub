@@ -14,6 +14,7 @@ function DUL(props) {
                      consentGroupUrl = {component.consentGroupUrl}
                      projectUrl = {component.projectUrl}
                      loadingImage = {component.loadingImage}
+                     sourceDiseases = {component.sourceDiseases}
   />;
 }
 
