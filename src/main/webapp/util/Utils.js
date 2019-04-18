@@ -25,13 +25,6 @@ export const isEmpty = (value) => {
   }
 }
 
-export const parseDate = (date) => {
-  if (date !== undefined) {
-    let d = new Date(date).toISOString();
-    return d.slice(0, d.indexOf("T"));
-  }
-}
-
 export const createObjectCopy = (obj) => {
   let copy = {};
   if (!isEmpty(obj)) {

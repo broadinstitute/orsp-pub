@@ -5,7 +5,7 @@ import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty, parseDate, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
+import { isEmpty, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
 import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -105,6 +105,13 @@ class AdminOnly extends Component {
     return sponsorArray;
   }
 
+  parseDate = (date) => {
+    if (date !== null) {
+      let d = new Date(date).toISOString();
+      return d.slice(0, d.indexOf("T"));
+    }
+  };
+
   textHandler = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -137,7 +144,8 @@ class AdminOnly extends Component {
 
   submit = () => {
     spinnerService.showAll();
-    Project.updateProject(this.props.updateProjectUrl, this.getParsedForm(), this.props.projectKey).then(
+    const parsedForm = this.getParsedForm();
+    Project.updateProject(this.props.updateProjectUrl, parsedForm , this.props.projectKey).then(
       response => {
         spinnerService.hideAll();
         this.setState(prev => {
@@ -173,7 +181,8 @@ class AdminOnly extends Component {
     form.irbReferralText = this.state.formData.preferredIrbText;
     form.investigatorFirstName = this.state.formData.investigatorFirstName;
     form.investigatorLastName = this.state.formData.investigatorLastName;
-    form.initialDate = parseDate(this.state.formData.initialDate);
+    // COSO AQUI
+    form.initialDate = this.parseDate(this.state.formData.initialDate);
     form.initialReviewType = this.state.formData.initialReviewType;
     form.bioMedical = this.state.formData.bioMedical;
     form.projectStatus = this.state.formData.projectStatus;
@@ -312,7 +321,7 @@ class AdminOnly extends Component {
           }),
           InputFieldDatePicker({
             selected: this.state.formData.initialDate,
-            value: this.state.formData.initialDate !== null ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
+            value: isEmpty(this.state.formData.initialDate) ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
             name: "initialDate",
             label: "Initial Approval Date",
             onChange: this.datePickerHandler,

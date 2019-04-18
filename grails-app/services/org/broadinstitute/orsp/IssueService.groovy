@@ -247,6 +247,9 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
         }
+        if (!input.containsKey(IssueExtraProperty.DEGREE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE})
+        }
         if (input.get(IssueExtraProperty.TEXT_SHARING_TYPE) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SHARING_TYPE})
         }
@@ -264,7 +267,6 @@ class IssueService implements UserInfo {
         }
         if (input.containsKey(IssueExtraProperty.PROJECT_STATUS)) {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
-//            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REFERRAL})
         }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
