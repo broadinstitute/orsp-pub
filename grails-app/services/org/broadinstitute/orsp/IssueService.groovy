@@ -287,18 +287,19 @@ class IssueService implements UserInfo {
         issue
     }
 
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
     Issue updateAdminOnlyProperties(Issue issue, Map<String, Object> input) throws DomainException {
+        String previousStatus = issue.getApprovalStatus()
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
         propsToSave.addAll(getMultiValuedPropsForSaving(issue, input))
-
         if (!input.containsKey(IssueExtraProperty.DEGREE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE})
         }
         if (input.containsKey(IssueExtraProperty.INITIAL_DATE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INITIAL_DATE})
         }
-        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS)) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
 
@@ -317,7 +318,47 @@ class IssueService implements UserInfo {
         } else {
             issue.save(flush: true)
         }
+        if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
+        }
         issue
+    }
+
+    Boolean shouldUpdateStatus(String status, String previousStatus) {
+        Boolean isAValidStatus = Arrays.stream(IssueStatus.values()).anyMatch{t -> t.name().equals(status)}
+        Boolean statusHasChanged = !status.equals(previousStatus)
+        isAValidStatus && statusHasChanged
+    }
+
+    EventType eventTypeMatcher(String status) {
+        EventType type
+
+        switch(status) {
+            case IssueStatus.Closed.getName():
+                type = EventType.CLOSED
+                break
+
+            case IssueStatus.Abandoned.getName():
+                type = EventType.ABANDON_PROJECT
+                break
+
+            case IssueStatus.ProjectApproved.getName():
+                type = EventType.APPROVE_PROJECT
+                break
+
+            case IssueStatus.Disapproved.getName():
+                type = EventType.DISAPPROVE_PROJECT
+                break
+
+            case IssueStatus.Withdrawn.getName():
+                type = EventType.WITHDRAWN_PROJECT
+                break
+
+            default:
+                type = EventType.CHANGE
+                break
+        }
+        type
     }
 
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
