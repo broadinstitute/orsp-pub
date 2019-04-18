@@ -63,7 +63,7 @@ class AdminOnly extends Component {
         formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
         formData.degrees = issue.data.extraProperties.degrees;
         formData.preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
-        formData.preferredIrbText = issue.data.extraProperties.preferredIrbText;
+        formData.preferredIrbText = issue.data.extraProperties.irbReferralText;
         formData.trackingNumber = issue.data.extraProperties.protocol;
         formData.projectTitle = issue.data.extraProperties.projectTitle;
         formData.initialDate = issue.data.extraProperties.initialDate;
@@ -145,7 +145,7 @@ class AdminOnly extends Component {
   submit = () => {
     spinnerService.showAll();
     const parsedForm = this.getParsedForm();
-    Project.updateProject(this.props.updateProjectUrl, parsedForm , this.props.projectKey).then(
+    Project.updateAdminOnlyProps(this.props.updateAdminOnlyPropsUrl, parsedForm , this.props.projectKey).then(
       response => {
         spinnerService.hideAll();
         this.setState(prev => {
@@ -181,7 +181,6 @@ class AdminOnly extends Component {
     form.irbReferralText = this.state.formData.preferredIrbText;
     form.investigatorFirstName = this.state.formData.investigatorFirstName;
     form.investigatorLastName = this.state.formData.investigatorLastName;
-    // COSO AQUI
     form.initialDate = this.parseDate(this.state.formData.initialDate);
     form.initialReviewType = this.state.formData.initialReviewType;
     form.bioMedical = this.state.formData.bioMedical;

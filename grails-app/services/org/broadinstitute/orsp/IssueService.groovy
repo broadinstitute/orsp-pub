@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import liquibase.util.StringUtils
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -247,9 +248,6 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
         }
-        if (!input.containsKey(IssueExtraProperty.DEGREE)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE})
-        }
         if (input.get(IssueExtraProperty.TEXT_SHARING_TYPE) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SHARING_TYPE})
         }
@@ -265,7 +263,7 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.IRB_REFERRAL)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REFERRAL})
         }
-        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS)) {
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
         propsToDelete.each {
@@ -283,8 +281,41 @@ class IssueService implements UserInfo {
         } else {
             issue.save(flush: true)
         }
-        if(input.get("editsApproved")) {
+        if (input.get("editsApproved")) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
+        }
+        issue
+    }
+
+    Issue updateAdminOnlyProperties(Issue issue, Map<String, Object> input) throws DomainException {
+        Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
+        Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
+        propsToSave.addAll(getMultiValuedPropsForSaving(issue, input))
+
+        if (!input.containsKey(IssueExtraProperty.DEGREE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE})
+        }
+        if (input.containsKey(IssueExtraProperty.INITIAL_DATE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INITIAL_DATE})
+        }
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
+        }
+
+        propsToDelete.each {
+            issue.removeFromExtraProperties(it)
+            it.delete(hard: true, flush: true)
+        }
+
+        propsToSave.each {
+            it.save(flush: true)
+        }
+
+        issue.setUpdateDate(new Date())
+        if (issue.hasErrors()) {
+            throw new DomainException(issue.getErrors())
+        } else {
+            issue.save(flush: true)
         }
         issue
     }

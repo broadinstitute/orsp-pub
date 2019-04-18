@@ -10,7 +10,7 @@ ReactDOM.render(
     userSessionUrl = {adminOnlyComponent.userSessionUrl}
     projectKey = {adminOnlyComponent.projectKey}
     projectUrl = {adminOnlyComponent.projectUrl}
-    updateProjectUrl = {adminOnlyComponent.updateProjectUrl}
+    updateAdminOnlyPropsUrl = {adminOnlyComponent.updateAdminOnlyPropsUrl}
   />,
   document.getElementById('adminOnly')
 );
