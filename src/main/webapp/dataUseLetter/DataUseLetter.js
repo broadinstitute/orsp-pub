@@ -434,16 +434,17 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorPrimaryRestrictionsChecks = true;
     }
-    if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
-      && this.state.formData.diseaseRestrictedOptions.diseaseDOID.length === 0) {
-      errorForm = true;
-      errorDiseaseRestrictedOptions = true;
-    }
-
 
     if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
       && this.state.formData.diseaseRestrictedOptions.otherDisease === true
       && this.state.formData.otherDiseasesDOID.length === 0) {
+      errorForm = true;
+      errorDiseaseRestrictedOptions = true;
+    }
+
+    if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
+      && this.state.formData.diseaseRestrictedOptions.otherDisease === false
+      && this.state.formData.diseaseRestrictedOptions.diseaseDOID.length === 0) {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
     }
