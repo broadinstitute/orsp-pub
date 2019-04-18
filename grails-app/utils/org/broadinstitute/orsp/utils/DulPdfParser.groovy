@@ -47,17 +47,8 @@ class DulPdfParser {
                 case DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation].toString())
                     break
-                case DataUseLetterFields.NO_RESTRICTIONS.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.NO_RESTRICTIONS.abbreviation] as String))
-                    break
-                case DataUseLetterFields.GENERAL_USE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.GENERAL_USE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.RESEARCH_RESTRICTED.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.RESEARCH_RESTRICTED.abbreviation] as String))
-                    break
-                case DataUseLetterFields.DISEASE_RESTRICTED.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED.abbreviation] as String))
+                case DataUseLetterFields.PRIMARY_RESTRICTIONS.abbreviation:
+                    field.setValue(dulInfoObj[DataUseLetterFields.PRIMARY_RESTRICTIONS.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.PRIMARY_RESTRICTIONS.abbreviation].toString())
                     break
                 case DataUseLetterFields.PARASITIC_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.PARASITIC_DISEASE.abbreviation] as String))
