@@ -329,6 +329,9 @@
             <span>
                 <label for="populationRestrictions">Future use is limited to research involving a specific population
                 [<abbr title="Use of the data is limited to tudies of particular population.">RS-POP</abbr>]</label>
+                <textarea id="populationRestrictionsFreeText" name="populationRestrictions" class="form-control editor" rows="3">${restriction.populationRestrictions}</textarea>
+                <br />
+                <!--
                 <span class="badge addPopulationRestriction"><span class="glyphicon glyphicon-plus"></span></span>
                 <g:if test="${restriction.populationRestrictions}">
                     <g:each in="${restriction.populationRestrictions}" var="classId">
@@ -349,6 +352,7 @@
                            name="populationRestrictions"/>
                 </g:else>
             </span>
+                -->
 
         </div>
 <!--
@@ -421,26 +425,19 @@
 
         <div class="form-group well clear-well clearfix">
             <div id="other-terms">
-<!--
-                <label for="cloudStorageYes">Data storage on the cloud is prohibited?</label>
+                <label for="cloudStorageYes">Collaboration with the primary study investigators required [COL-XX]</label>
                 <span class="pull-right">
                     <label class="radio-inline"><input type="radio"
-                                  name="cloudStorage"
-                                  id="cloudStorageYes"
-                                  <g:if test="${restriction.cloudStorage?.equals("Yes") && !create}">checked</g:if>
+                                  name="collaborationInvestigators"
+                                  id="collaborationInvestigatorsYes"
+                                  <g:if test="${restriction.collaborationInvestigators?.equals("Yes") && !create}">checked</g:if>
                                   value="Yes">Yes</label>
                     <label class="radio-inline"><input type="radio"
-                                  name="cloudStorage"
-                                  id="cloudStorageNo"
-                                  <g:if test="${restriction.cloudStorage?.equals("No") && !create}">checked</g:if>
+                                  name="collaborationInvestigators"
+                                  id="collaborationInvestigatorsNo"
+                                  <g:if test="${restriction.collaborationInvestigators?.equals("No") && !create}">checked</g:if>
                                   value="No">No</label>
-                    <label class="radio-inline"><input type="radio"
-                                  name="cloudStorage"
-                                  id="cloudStorageUnspecified"
-                                  <g:if test="${restriction.cloudStorage?.equals("Unspecified") && !create}">checked</g:if>
-                                  value="Unspecified">Unspecified</label>
                 </span>
--->
                 <hr/>
                 <label for="irbYes">Ethics committee approval required?</label>
                 <span class="pull-right">
@@ -507,7 +504,9 @@
         $(".alert-danger").remove();
         return validateGruHmbDisease();
     }
-
+    function setPopulationRestriction() {
+        console.log('setPopulationRestriction');
+    }
     function validateGruHmbDisease() {
         let nres = $("#noRestrictionYes").prop("checked");
         let gru = $("#generalUseYes").prop("checked");
@@ -587,6 +586,14 @@
                 $(".diseaseAutocomplete").each(function( index ) { $(this).val(""); });
                 $("#controlSetOptionNo").prop("checked", true);
             }
+        });
+
+        $("#populationRestrictionsFreeText").on("onkeyup onchange", function() {
+            console.log('value changed');
+        });
+
+        $("#populationRestrictionsFreeText").on("change input paste keyup", function() {
+           console.log(jQuery(this).val());
         });
 
         $("input[name='recontactingDataSubjects']").on("click", function() {

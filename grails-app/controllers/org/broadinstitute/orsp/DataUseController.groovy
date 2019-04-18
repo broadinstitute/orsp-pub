@@ -87,16 +87,15 @@ class DataUseController extends AuthenticatedController {
             restriction.gender = null
         }
         restriction.controlSetOption = params.controlSetOption
-        // TODO this now is free text, remove this logic
-        restriction.populationRestrictions = new ArrayList<>()
-        if (params.populationRestrictions) {
-            if (params.populationRestrictions instanceof String[]) {
-                restriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
-            }
-            else if (!params.populationRestrictions.isEmpty()) {
-                restriction.populationRestrictions.add(params.populationRestrictions)
-            }
-        }
+        restriction.populationRestrictions = params.populationRestrictions
+//        if (params.populationRestrictions) {
+//            if (params.populationRestrictions instanceof String[]) {
+//                restriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
+//            }
+//            else if (!params.populationRestrictions.isEmpty()) {
+//                restriction.populationRestrictions.add(params.populationRestrictions)
+//            }
+//        }
         restriction.pediatricLimited = getBooleanForParam(params.pediatric)
 //        if (params.dateRestriction) {
 //            restriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
@@ -111,6 +110,7 @@ class DataUseController extends AuthenticatedController {
         restriction.irb = getBooleanForParam(params.irb)
         restriction.geographicalRestrictions = params.geographicalRestrictions
         restriction.noRestriction = params.noRestriction
+        restriction.collaborationInvestigators = params.collaborationInvestigators
 
         if (params.other) {
             restriction.other = params.other
