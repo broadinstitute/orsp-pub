@@ -454,6 +454,36 @@
                 </span>
 
                 <hr/>
+                <label for="irbYes">Publication of results of studies using the data is required</label>
+                <span class="pull-right">
+                    <label class="radio-inline"><input type="radio"
+                                  name="publicationResults"
+                                  id="publicationResultsYes"
+                                  <g:if test="${restriction.publicationResults && !create}">checked</g:if>
+                                  value="Yes">Yes</label>
+                    <label class="radio-inline"><input type="radio"
+                                  name="publicationResults"
+                                  id="publicationResultsNo"
+                                  <g:if test="${!restriction.publicationResults && !create}">checked</g:if>
+                                  value="No">No</label>
+                </span>
+
+                <hr/>
+                <label for="irbYes">Are the genomic summary results (GSR) from this study to be made available only through controlled-access?</label>
+                <span class="pull-right">
+                    <label class="radio-inline"><input type="radio"
+                                  name="genomicResults"
+                                  id="genomicResultsYes"
+                                  <g:if test="${restriction.genomicResults && !create}">checked</g:if>
+                                  value="Yes">Yes</label>
+                    <label class="radio-inline"><input type="radio"
+                                  name="genomicResults"
+                                  id="genomicResultsNo"
+                                  <g:if test="${!restriction.genomicResults && !create}">checked</g:if>
+                                  value="No">No</label>
+                </span>
+
+                <hr/>
                 <label for="geographicalRestrictions">Geographical restrictions?</label>
                 <input type="text"  id="geographicalRestrictions" name="geographicalRestrictions" class="form-control" value="${restriction.geographicalRestrictions}">
                 <hr/>
