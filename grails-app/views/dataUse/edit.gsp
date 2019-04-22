@@ -331,79 +331,12 @@
                 [<abbr title="Use of the data is limited to tudies of particular population.">RS-POP</abbr>]</label>
                 <textarea id="populationRestrictionsFreeText" name="populationRestrictions" class="form-control editor" rows="3">${restriction.populationRestrictions}</textarea>
                 <br />
-                <!--
-                <span class="badge addPopulationRestriction"><span class="glyphicon glyphicon-plus"></span></span>
-                <g:if test="${restriction.populationRestrictions}">
-                    <g:each in="${restriction.populationRestrictions}" var="classId">
-                        <div class="input-group">
-                            <input type="text"
-                                   class="form-control populationAutocomplete"
-                                   id="populationRestrictions_${classId}"
-                                   name="populationRestrictions"
-                                   value="${classId}"/>
-                            <div class="input-group-addon removeRestriction" title="Remove">Remove</div>
-                        </div>
-                    </g:each>
-                </g:if>
-                <g:else>
-                    <input type="text"
-                           class="form-control populationAutocomplete"
-                           id="populationRestrictions"
-                           name="populationRestrictions"/>
-                </g:else>
-            </span>
-                -->
 
         </div>
-<!--
-        <div class="restriction form-group well clear-well">
-            <div>
-                <label for="dateRestriction">Future use is limited to data generated from samples collected after the following consent form date</label>
-            </div>
-
-            <div class="btn-group pull-left">
-                <button type="button" id="After" class="btn btn-default">After</button>
-            </div>
-
-            <div class="input-group">
-                <input type="text"
-                       class="datepicker form-control"
-                       value="<g:formatDate date="${restriction.dateRestriction}" format="MM/dd/yyyy"/>"
-                       name="dateRestriction"
-                       id="dateRestriction"/>
-                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-            </div>
-        </div>
--->
         <h4> Terms of Use </h4>
 
-<!--
         <div class="form-group well clear-well clearfix">
-            <label for="recontactingDataSubjectsYes"> Is there a possibility for recontacting data subjects? </label>
-            <span class="pull-right">
-                <label class="radio-inline"><input type="radio"
-                              name="recontactingDataSubjects"
-                              id="recontactingDataSubjectsYes"
-                              <g:if test="${restriction.recontactingDataSubjects && !create}">checked</g:if>
-                              value="Yes">Yes</label>
-                <label class="radio-inline"><input type="radio"
-                              name="recontactingDataSubjects"
-                              id="recontactingDataSubjectsNo"
-                              <g:if test="${!restriction.recontactingDataSubjects && !create}">checked</g:if>
-                              value="No">No</label>
-            </span>
-            <div id="recontact-info">
-                <hr/>
-                <label for="recontactMayOccur">Subject re-contact <em> may </em> occur in certain circumstances, as specified </label>
-                <input type="text" id="recontactMayOccur" name="recontactMay" class="form-control" value="${restriction.recontactMay}">
-                <hr/>
-                <label for="recontactMustOccur">Subject re-contact <em> must </em> occur in certain circumstances, as specified </label>
-                <input type="text"  id="recontactMustOccur" name="recontactMust" class="form-control" value="${restriction.recontactMust}">
-            </div>
-        </div>
--->
-        <div class="form-group well clear-well clearfix">
-            <label for="genomicPhenotypicDataYes"> Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?</label>
+            <label for="genomicPhenotypicDataYes">Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?</label>
             <span class="pull-right">
                 <label class="radio-inline"><input type="radio"
                               name="genomicPhenotypicData"
@@ -482,6 +415,9 @@
                                   <g:if test="${!restriction.genomicResults && !create}">checked</g:if>
                                   value="No">No</label>
                 </span>
+                <br>
+                <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">Please explain.</label>
+                <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
 
                 <hr/>
                 <label for="geographicalRestrictions">Geographical restrictions?</label>
@@ -571,6 +507,8 @@
 
     $(document).ready(function() {
 
+        $("#genomicSummaryResultsFreeText").css("display", "none");
+
         $('.datepicker').datepicker();
 
         /*
@@ -588,6 +526,16 @@
                 $("#hmbResearchNo").prop("checked", true);
                 $(".diseaseAutocomplete").each(function( index ) { $(this).val(""); });
                 $("#controlSetOptionNo").prop("checked", true);
+            }
+        });
+
+        $("input[name='genomicResults']").on("click", function() {
+            if ($("#genomicResultsYes").prop("checked")) {
+                $("#genomicSummaryResultsFreeText").show("fast");
+                $("#genomicSummaryResultsLabel").show("fast");
+            } else if ($("#genomicResultsNo").prop("checked")) {
+                $("#genomicSummaryResultsFreeText").hide("fast");
+                $("#genomicSummaryResultsLabel").hide("fast");
             }
         });
 
