@@ -26,7 +26,7 @@ class DataUseLetter extends Component {
       submit: false,
       showSampleCollectionWarning: true,
       formData: {
-        otherDiseasesDOID: [],
+        otherDiseasesID: [],
         protocolTitle: '',
         protocolNumber: '',
         consentFormTitle: '',
@@ -174,9 +174,9 @@ class DataUseLetter extends Component {
   handleDiseaseManagerChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
-        prev.formData.otherDiseasesDOID = data;
+        prev.formData.otherDiseasesID = data;
       } else {
-        prev.formData.otherDiseasesDOID = [];
+        prev.formData.otherDiseasesID = [];
       }
       return prev;
     }, () => {
@@ -211,7 +211,7 @@ class DataUseLetter extends Component {
       prev.formData.diseaseRestrictedOptions.digestiveDisease = false;
       prev.formData.diseaseRestrictedOptions.otherDisease = false;
       prev.formData.diseaseRestrictedOptions.diseaseDOID = [];
-      prev.formData.otherDiseasesDOID = [];
+      prev.formData.otherDiseasesID = [];
       return prev;
     });
   };
@@ -318,7 +318,7 @@ class DataUseLetter extends Component {
 
     this.setState(prev => {
       if (name === 'otherDisease' && checked === false) {
-        prev.formData.otherDiseasesDOID = [];
+        prev.formData.otherDiseasesID = [];
       }
       prev.formData.diseaseRestrictedOptions[name] = checked;
       prev.formData.diseaseRestrictedOptions.diseaseDOID = [...formerDiseaseDOID];
@@ -376,7 +376,7 @@ class DataUseLetter extends Component {
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
-        DUL.uploadDulPdf({ uid: id }, this.props.serverUrl).then(() => {
+        DUL.createDulPdf({ uid: id }, this.props.serverUrl).then(() => {
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
@@ -434,16 +434,17 @@ class DataUseLetter extends Component {
       errorForm = true;
       errorPrimaryRestrictionsChecks = true;
     }
+
     if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
-      && this.state.formData.diseaseRestrictedOptions.diseaseDOID.length === 0) {
+      && this.state.formData.diseaseRestrictedOptions.otherDisease === true
+      && this.state.formData.otherDiseasesID.length === 0) {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
     }
 
-
     if (this.state.formData.primaryRestrictions === 'diseaseRestricted'
-      && this.state.formData.diseaseRestrictedOptions.otherDisease === true
-      && this.state.formData.otherDiseasesDOID.length === 0) {
+      && this.state.formData.diseaseRestrictedOptions.otherDisease === false
+      && this.state.formData.diseaseRestrictedOptions.diseaseDOID.length === 0) {
       errorForm = true;
       errorDiseaseRestrictedOptions = true;
     }
@@ -790,7 +791,7 @@ class DataUseLetter extends Component {
                   isDisabled: false,
                   loadOptions: this.loadDOIDOptions,
                   handleChange: this.handleDiseaseManagerChange,
-                  value: this.state.formData.otherDiseasesDOID,
+                  value: this.state.formData.otherDiseasesID,
                   placeholder: "Start typing the name of the disease",
                   isMulti: true,
                   edit: false,

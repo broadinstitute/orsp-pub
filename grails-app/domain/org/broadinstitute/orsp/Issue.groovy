@@ -153,6 +153,23 @@ class Issue implements LogicalDelete<Issue> {
     // Attestation
     transient String attestation() { getExtraProperties().find { it.name == IssueExtraProperty.ATTESTATION }?.value }
 
+    // Admin Only
+    transient String getIrbReferralText() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_REFERRAL_TEXT }?.value }
+
+    transient String getInvestigatorFirstName() { getExtraProperties().find { it.name == IssueExtraProperty.INVESTIGATOR_FIRST_NAME }?.value }
+
+    transient String getInvestigatorLastName() { getExtraProperties().find { it.name == IssueExtraProperty.INVESTIGATOR_LAST_NAME }?.value }
+
+    transient Collection<String> getDegrees() { getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE }.collect { it.value } }
+
+    transient String getInitialDate() { getExtraProperties().find { it.name == IssueExtraProperty.INITIAL_DATE}?.value }
+
+    transient String getInitialReviewType() { getExtraProperties().find { it.name == IssueExtraProperty.INITIAL_REVIEW_TYPE }?.value }
+
+    transient String getBioMedical() { getExtraProperties().find { it.name == IssueExtraProperty.BIO_MEDICAL }?.value }
+
+    transient String getProjectStatus() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_STATUS }?.value }
+
     // Others
     transient String getCollPublication() {
         BooleanOptions.getLabelForKey(getExtraProperties().find {
