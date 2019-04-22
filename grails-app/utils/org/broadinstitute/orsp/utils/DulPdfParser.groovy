@@ -74,8 +74,8 @@ class DulPdfParser {
                 case DataUseLetterFields.OTHER_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.OTHER_DISEASE.abbreviation] as String))
                     break
-                case DataUseLetterFields.OTHER_DISEASE_DOID.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_DOID.abbreviation][DataUseLetterFields.LABEL.abbreviation].toString().replace('[','').replace(']',''), dul.uid))
+                case DataUseLetterFields.OTHER_DISEASE_ID.abbreviation:
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_ID.abbreviation][DataUseLetterFields.LABEL.abbreviation].toString().replace('[','').replace(']',''), dul.uid))
                     break
                 case DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation] as String))

@@ -26,7 +26,7 @@ enum DataUseLetterFields {
     DIGESTIVE_DISEASE("digestiveDisease"),
     CARDIOVASCULAR_DISEASE("cardiovascularDisease"),
     OTHER_DISEASE("otherDisease"),
-    OTHER_DISEASE_DOID("otherDiseasesDOID"),
+    OTHER_DISEASE_ID("otherDiseasesID"),
     COMMERCIAL_PURPOSES("commercialPurposes"),
     METHODS_RESEARCH("methodsResearch"),
     NO_POPULATION_RESTRICTED("noPopulationRestricted"),
