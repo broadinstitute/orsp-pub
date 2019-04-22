@@ -1079,7 +1079,7 @@ class ProjectReview extends Component {
           InputFieldTextArea({
             id: "inputDescribeEdits",
             name: "editDescription",
-            label: "Please use the space below to describe any additional edits or clarifications to the edits above",
+            label: "You may use this space to add additional information or clarifications related to your edits below",
             currentValue: this.state.current.projectExtraProps.editDescription,
             value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
             readOnly: this.state.readOnly,
@@ -1227,7 +1227,7 @@ class ProjectReview extends Component {
             InputFieldText({
               id: "inputNotCGSpecify",
               name: "notCGSpecify",
-              label: "Please specify",
+              label: "Please describe why a consent form is not being provided",
               value: this.state.formData.projectExtraProps.notCGSpecify,
               currentValue: this.state.current.projectExtraProps.notCGSpecify,
               readOnly: this.state.readOnly,

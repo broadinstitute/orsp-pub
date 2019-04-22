@@ -309,7 +309,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             InputFieldText({
               id: "inputNotCGSpecify",
               name: "notCGSpecify",
-              label: "Please specify",
+              label: "Please describe why a consent form is not being provided",
               value: this.state.formData.notCGSpecify,
               disabled: false,
               required: false,

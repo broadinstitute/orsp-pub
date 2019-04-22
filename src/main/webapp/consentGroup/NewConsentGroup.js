@@ -45,7 +45,6 @@ class NewConsentGroup extends Component {
         institutionProtocolNumber: false,
         consentGroupName: false,
         collaboratingInstitution: false,
-        sampleCollections: false,
         describeConsentGroup: false,
         requireMta: false,
         institutionalSourcesName: false,
@@ -255,7 +254,6 @@ class NewConsentGroup extends Component {
     let institutionProtocolNumber = false;
     let consentGroupName = false;
     let collaboratingInstitution = false;
-    let sampleCollections = false;
     let describeConsentGroup = false;
     let requireMta = false;
     let institutionalSourcesName = false;
@@ -273,10 +271,6 @@ class NewConsentGroup extends Component {
     }
     if (isEmpty(this.state.generalDataFormData.institutionProtocolNumber)) {
       institutionProtocolNumber = true;
-      isValid = false;
-    }
-    if (this.state.generalDataFormData.sampleCollections === undefined || !this.state.generalDataFormData.sampleCollections.length > 0) {
-      sampleCollections = true;
       isValid = false;
     }
     if (this.state.generalDataFormData.requireMta === undefined || this.state.generalDataFormData.requireMta === '') {
@@ -314,7 +308,6 @@ class NewConsentGroup extends Component {
         prev.errors.institutionProtocolNumber = institutionProtocolNumber;
         prev.errors.consentGroupName = consentGroupName;
         prev.errors.collaboratingInstitution = collaboratingInstitution;
-        prev.errors.sampleCollections = sampleCollections;
         prev.errors.describeConsentGroup = describeConsentGroup;
         prev.errors.requireMta = requireMta;
         prev.errors.institutionalSourcesName = institutionalSourcesName;
@@ -325,8 +318,7 @@ class NewConsentGroup extends Component {
     }
 
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
-      field === 'consentGroupName' || field === 'collaboratingInstitution' ||
-      field === 'sampleCollections' || field === 'describeConsentGroup' ||
+      field === 'consentGroupName' || field === 'collaboratingInstitution' || field === 'describeConsentGroup' ||
       field === 'requireMta' || field === 'nameInstitutional' || field === 'countryInstitutional') {
 
       this.setState(prev => {
@@ -338,8 +330,6 @@ class NewConsentGroup extends Component {
           prev.errors.consentGroupName = consentGroupName;
         } else if (field === 'collaboratingInstitution') {
           prev.errors.collaboratingInstitution = collaboratingInstitution;
-        } else if (field === 'sampleCollections') {
-          prev.errors.sampleCollections = sampleCollections;
         } else if (field === 'describeConsentGroup') {
           prev.errors.describeConsentGroup = describeConsentGroup;
         } else if (field === 'requireMta') {
