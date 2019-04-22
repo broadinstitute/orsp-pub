@@ -333,7 +333,6 @@ class ProjectReview extends Component {
   determinationHandler = (determination) => {
     let newValues = {};
     const answers = [];
-    this.clearAlertMessage('showAlert');
     determination.questions.forEach(question => {
 
       if (question.answer !== null) {
@@ -348,6 +347,7 @@ class ProjectReview extends Component {
       Object.keys(newValues).forEach(key => {
         prev.formData.projectExtraProps[key] = newValues[key];
       });
+      prev.showAlert = false;
       prev.resetIntCohorts = false;
       prev.intCohortsModified = true;
       prev.intCohortsAnswers = [...answers];
@@ -1258,22 +1258,6 @@ class ProjectReview extends Component {
           }),
 
           /*IMPORTANT: These questions will appear on Edit mode, once project has been approved*/
-
-          InputFieldRadio({
-            isRendered: false,
-            id: "radioProjectAvailability",
-            name: "projectAvailability",
-            label: "Project Availability",
-            value: this.state.formData.projectExtraProps.projectAvailability,
-            currentValue: this.state.current.projectExtraProps.projectAvailability,
-            optionValues: ["available", "onHold"],
-            optionLabels: [
-              "Available",
-              "On Hold"
-            ],
-            onChange: this.handleProjectExtraPropsChangeRadio,
-            readOnly: this.state.readOnly
-          }),
           InputFieldSelect({
             label: "IRB Referral",
             id: "irbReferral",

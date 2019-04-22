@@ -81,6 +81,16 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String END_DATE = "endDate"
     public static final String ATTESTATION = "attestation"
 
+    // Admin Only
+    public static final String IRB_REFERRAL_TEXT = "irbReferralText"
+    public static final String INVESTIGATOR_FIRST_NAME = "investigatorFirstName"
+    public static final String INVESTIGATOR_LAST_NAME = "investigatorLastName"
+    public static final String DEGREE = "degree"
+    public static final String INITIAL_DATE = "initialDate"
+    public static final String INITIAL_REVIEW_TYPE = "initialReviewType"
+    public static final String BIO_MEDICAL = "bioMedical"
+    public static final String PROJECT_STATUS = "projectStatus"
+
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"
     public static final String APP_MOD_REQUESTED_FLAG = "appModRequested"

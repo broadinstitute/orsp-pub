@@ -91,7 +91,6 @@ class ProjectController extends AuthenticatedController {
         Issue issue = Issue.findByProjectKey(params.projectKey)
         try {
             issueService.updateIssue(issue, project)
-            issueService.updateProjectApproval(params.projectKey)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
@@ -99,6 +98,20 @@ class ProjectController extends AuthenticatedController {
             render([error: e.message] as JSON)
         }
     }
+
+    def updateAdminOnlyProps() {
+        Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
+        Issue issue = Issue.findByProjectKey(params.projectKey)
+        try {
+            issueService.updateAdminOnlyProperties(issue, project)
+            response.status = 200
+            render([message: 'Project was updated'] as JSON)
+        } catch(Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+    }
+
 
     def handleIntake(String key) {
         Issue issue = queryService.findByKey(key)
