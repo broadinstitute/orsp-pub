@@ -47,17 +47,8 @@ class DulPdfParser {
                 case DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.REPOSITORY_DEPOSITION.abbreviation].toString())
                     break
-                case DataUseLetterFields.NO_RESTRICTIONS.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.NO_RESTRICTIONS.abbreviation] as String))
-                    break
-                case DataUseLetterFields.GENERAL_USE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.GENERAL_USE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.RESEARCH_RESTRICTED.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.RESEARCH_RESTRICTED.abbreviation] as String))
-                    break
-                case DataUseLetterFields.DISEASE_RESTRICTED.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED.abbreviation] as String))
+                case DataUseLetterFields.PRIMARY_RESTRICTIONS.abbreviation:
+                    field.setValue(dulInfoObj[DataUseLetterFields.PRIMARY_RESTRICTIONS.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.PRIMARY_RESTRICTIONS.abbreviation].toString())
                     break
                 case DataUseLetterFields.PARASITIC_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.PARASITIC_DISEASE.abbreviation] as String))
@@ -65,23 +56,11 @@ class DulPdfParser {
                 case DataUseLetterFields.CANCER.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.CANCER.abbreviation] as String))
                     break
-                case DataUseLetterFields.ENDOCRINE_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.ENDOCRINE_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.ENDOCRINE_DIABETES.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.ENDOCRINE_DIABETES.abbreviation] as String))
-                    break
                 case DataUseLetterFields.MENTAL_DISORDER.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.MENTAL_DISORDER.abbreviation] as String))
                     break
                 case DataUseLetterFields.NERVOUS_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.NERVOUS_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.EYE_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.EYE_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.EAR_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.EAR_DISEASE.abbreviation] as String))
                     break
                 case DataUseLetterFields.RESPIRATORY_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.RESPIRATORY_DISEASE.abbreviation] as String))
@@ -89,35 +68,14 @@ class DulPdfParser {
                 case DataUseLetterFields.DIGESTIVE_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.DIGESTIVE_DISEASE.abbreviation] as String))
                     break
-                case DataUseLetterFields.INFLAMMATORY_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.INFLAMMATORY_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.SKIN_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.SKIN_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.MUSCULO_SKELETAL_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.MUSCULO_SKELETAL_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.GENITOURINARY_DISEASE.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.GENITOURINARY_DISEASE.abbreviation] as String))
-                    break
                 case DataUseLetterFields.CARDIOVASCULAR_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.CARDIOVASCULAR_DISEASE.abbreviation] as String))
-                    break
-                case DataUseLetterFields.PREGNANCY.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.PREGNANCY.abbreviation] as String))
-                    break
-                case DataUseLetterFields.CONGENITAL_MALFORMATION.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.CONGENITAL_MALFORMATION.abbreviation] as String))
-                    break
-                case DataUseLetterFields.BLOOD_DISORDER.abbreviation:
-                    field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.BLOOD_DISORDER.abbreviation] as String))
                     break
                 case DataUseLetterFields.OTHER_DISEASE.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.DISEASE_RESTRICTED_OPTIONS.abbreviation][DataUseLetterFields.OTHER_DISEASE.abbreviation] as String))
                     break
-                case DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation:
-                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_SPECIFY.abbreviation] as String, dul.uid))
+                case DataUseLetterFields.OTHER_DISEASE_ID.abbreviation:
+                    field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_DISEASE_ID.abbreviation][DataUseLetterFields.LABEL.abbreviation].toString().replace('[','').replace(']',''), dul.uid))
                     break
                 case DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation:
                     field.setValue(parseCheckBoxValue(dulInfoObj[DataUseLetterFields.COMMERCIAL_PURPOSES.abbreviation] as String))

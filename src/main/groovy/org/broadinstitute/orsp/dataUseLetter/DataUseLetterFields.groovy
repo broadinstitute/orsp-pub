@@ -20,24 +20,13 @@ enum DataUseLetterFields {
     DISEASE_RESTRICTED_OPTIONS("diseaseRestrictedOptions"),
     PARASITIC_DISEASE("parasiticDisease"),
     CANCER("cancer"),
-    ENDOCRINE_DISEASE("endocrineDisease"),
-    ENDOCRINE_DIABETES("endocrineDiabetes"),
     MENTAL_DISORDER("mentalDisorder"),
     NERVOUS_DISEASE("nervousDisease"),
-    EYE_DISEASE("eyeDisease"),
-    EAR_DISEASE("earDisease"),
     RESPIRATORY_DISEASE("respiratoryDisease"),
     DIGESTIVE_DISEASE("digestiveDisease"),
-    INFLAMMATORY_DISEASE("inflammatoryDisease"),
-    SKIN_DISEASE("skinDisease"),
-    MUSCULO_SKELETAL_DISEASE("musculoskeletalDisease"),
-    GENITOURINARY_DISEASE("genitourinaryDisease"),
     CARDIOVASCULAR_DISEASE("cardiovascularDisease"),
-    PREGNANCY("pregnancy"),
-    CONGENITAL_MALFORMATION("congenitalMalformation"),
-    BLOOD_DISORDER("bloodDisorder"),
     OTHER_DISEASE("otherDisease"),
-    OTHER_DISEASE_SPECIFY("otherDiseaseSpecify"),
+    OTHER_DISEASE_ID("otherDiseasesID"),
     COMMERCIAL_PURPOSES("commercialPurposes"),
     METHODS_RESEARCH("methodsResearch"),
     NO_POPULATION_RESTRICTED("noPopulationRestricted"),
@@ -58,7 +47,8 @@ enum DataUseLetterFields {
     SIGNATURE("signature"),
     POSITION("position"),
     INSTITUTION("institution"),
-    SUBMITTED_DATE("date")
+    SUBMITTED_DATE("date"),
+    LABEL("label")
 
     String abbreviation
     private DataUseLetterFields(String abbreviation) {
