@@ -102,16 +102,7 @@
                 </tr>
                 <tr>
                     <th>Future use is limited to research involving a specific population</th>
-                    <td>
-                        <g:if test="${restriction.populationRestrictions.size() > 1}">
-                            <ul>
-                                <g:each in="${restriction.populationRestrictions}" var="it">
-                                    <li>${it}</li>
-                                </g:each>
-                            </ul>
-                        </g:if>
-                        <g:elseif test="${restriction.populationRestrictions.size() == 1}">${restriction.populationRestrictions?.get(0)}</g:elseif>
-                    </td>
+                    <td>${restriction.populationRestrictions}</td>
                 </tr>
                 <tr>
                     <th>Future use is limited to data generated from samples collected after the following consent form date</th>

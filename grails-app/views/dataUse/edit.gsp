@@ -419,8 +419,10 @@
                                   value="No">No</label>
                 </span>
                 <br />
-                <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">Please explain.</label>
-                <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
+                <g:if test="${restriction.genomicResults && !create}">
+                    <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">If <i>Yes</i>, please explain.</label>
+                    <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
+                </g:if>
 
                 <hr/>
                 <label for="geographicalRestrictions">Geographical restrictions?</label>
@@ -507,8 +509,11 @@
 
     $(document).ready(function() {
 
-        $("#genomicSummaryResultsFreeText").css("display", "none");
-        $("#genomicSummaryResultsLabel").css("display", "none");
+        /* let genomicSummary = "${restriction.genomicResults}";
+        if (genomicSummary !== "true") {
+            $("#genomicSummaryResultsFreeText").css("display", "none");
+            $("#genomicSummaryResultsLabel").css("display", "none");
+        } */
 
         $('.datepicker').datepicker();
 
@@ -529,7 +534,7 @@
                 $("#controlSetOptionNo").prop("checked", true);
             }
         });
-
+        /*
         $("input[name='genomicResults']").on("click", function() {
             if ($("#genomicResultsYes").prop("checked")) {
                 $("#genomicSummaryResultsFreeText").show("fast");
@@ -539,7 +544,7 @@
                 $("#genomicSummaryResultsLabel").hide("fast");
             }
         });
-
+        */
         $("[name='irb'], [name='dateRestriction'], [name='cloudStorage'], [name='geographicalRestrictions'], [name='aggregateResearchResponse'], [name='populationRestrictions']").on("change", function() {
             setManualReview();
         });

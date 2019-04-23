@@ -102,7 +102,11 @@ class DataUseController extends AuthenticatedController {
         restriction.collaborationInvestigators = getBooleanForParam(params.collaborationInvestigators)
         restriction.publicationResults = getBooleanForParam(params.publicationResults)
         restriction.genomicResults = getBooleanForParam(params.genomicResults)
-        restriction.genomicSummaryResults = params.genomicSummaryResults
+        if (restriction.genomicResults) {
+            restriction.genomicSummaryResults = (String)params.genomicSummaryResults
+        } else {
+            restriction.genomicSummaryResults = null
+        }
 
         if (params.other) {
             restriction.other = params.other
