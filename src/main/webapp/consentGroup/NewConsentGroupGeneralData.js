@@ -208,7 +208,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
 
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey + "*",
+            label: "Link Sample Collection to " + this.props.projectKey,
             isDisabled: false,
             options: this.props.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,

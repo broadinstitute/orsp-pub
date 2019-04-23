@@ -1129,7 +1129,7 @@ class ConsentGroupReview extends Component {
 
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey + "*",
+            label: "Link Sample Collection to " + this.props.projectKey,
             name: 'sampleCollections',
             isDisabled: false,
             options: this.state.sampleCollectionList,
