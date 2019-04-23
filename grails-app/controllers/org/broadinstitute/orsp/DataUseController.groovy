@@ -88,29 +88,21 @@ class DataUseController extends AuthenticatedController {
         }
         restriction.controlSetOption = params.controlSetOption
         restriction.populationRestrictions = params.populationRestrictions
-//        if (params.populationRestrictions) {
-//            if (params.populationRestrictions instanceof String[]) {
-//                restriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
-//            }
-//            else if (!params.populationRestrictions.isEmpty()) {
-//                restriction.populationRestrictions.add(params.populationRestrictions)
-//            }
-//        }
+        if (!restriction.populationRestrictions.isEmpty()) {
+            restriction.manualReview = "true"
+        }
         restriction.pediatricLimited = getBooleanForParam(params.pediatric)
-//        if (params.dateRestriction) {
-//            restriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
-//        } else {
-//            restriction.dateRestriction = null
-//        }
-//        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
+        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
         restriction.recontactMay = params.recontactMay
         restriction.recontactMust = params.recontactMust
         restriction.genomicPhenotypicData = params.genomicPhenotypicData
-//        restriction.cloudStorage = params.cloudStorage
         restriction.irb = getBooleanForParam(params.irb)
         restriction.geographicalRestrictions = params.geographicalRestrictions
-        restriction.noRestriction = params.noRestriction
-        restriction.collaborationInvestigators = params.collaborationInvestigators
+        restriction.noRestriction = getBooleanForParam(params.noRestriction)
+        restriction.collaborationInvestigators = getBooleanForParam(params.collaborationInvestigators)
+        restriction.publicationResults = getBooleanForParam(params.publicationResults)
+        restriction.genomicResults = getBooleanForParam(params.genomicResults)
+        restriction.genomicSummaryResults = params.genomicSummaryResults
 
         if (params.other) {
             restriction.other = params.other

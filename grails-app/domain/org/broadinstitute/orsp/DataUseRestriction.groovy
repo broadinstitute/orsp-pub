@@ -20,7 +20,7 @@ class DataUseRestriction {
     @Deprecated
     Boolean controlSetExcluded
     String controlSetOption // new version of controlSetExcluded that is a string, so can be unspecified
-    List<String> populationRestrictions
+    String populationRestrictions
     Boolean pediatricLimited
     Date dateRestriction
     Boolean recontactingDataSubjects

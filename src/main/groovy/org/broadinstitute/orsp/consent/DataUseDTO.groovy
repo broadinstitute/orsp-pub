@@ -14,7 +14,7 @@ class DataUseDTO {
     String controlSetOption
     String gender
     Boolean pediatric
-    List<String> populationRestrictions
+    String populationRestrictions
     Boolean otherRestrictions
     String dateRestriction
     Boolean recontactingDataSubjects

@@ -280,7 +280,10 @@
                               name="controlSetOption"
                               id="controlSetOptionUnspecified"
                               <g:if test="${restriction.controlSetOption?.equals("Unspecified") && !create}">checked</g:if>
-                              value="Unspecified">Unspecified</label>
+                              value="Unspecified">Unspecified                <tr>
+                    <th>Data is available for future general research use</th>
+                    <td>${restriction.generalUse ? "Yes" : "No"}</td>
+                </tr></label>
             </span>
         </div>
 
@@ -415,7 +418,7 @@
                                   <g:if test="${!restriction.genomicResults && !create}">checked</g:if>
                                   value="No">No</label>
                 </span>
-                <br>
+                <br />
                 <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">Please explain.</label>
                 <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
 
@@ -470,9 +473,6 @@
         $(".alert-danger").remove();
         return validateGruHmbDisease();
     }
-    function setPopulationRestriction() {
-        console.log('setPopulationRestriction');
-    }
     function validateGruHmbDisease() {
         let nres = $("#noRestrictionYes").prop("checked");
         let gru = $("#generalUseYes").prop("checked");
@@ -484,10 +484,10 @@
             .filter((elem) => elem);
         let dis = (diseases !== undefined && diseases.length > 0);
         let checkedVals = [gru, hmb, dis, nres].filter(function(v){return v === true;});
-        if (checkedVals.length === 1) {
+        if (checkedVals.length >= 1) {
             return true;
         } else  {
-            let errorDiv = $('<div class="col-md-12 alert alert-danger alert-dismissable">At least one of GRU, HMB, or a Disease Restriction must be selected.</div>');
+            let errorDiv = $('<div class="col-md-12 alert alert-danger alert-dismissable">At least one of NRES, GRU, HMB, or a Disease Restriction must be selected.</div>');
             $(errorDiv).insertBefore($("#create-edit-form"));
             $('html, body').animate({ scrollTop: 0 }, 500);
             return false;
@@ -508,6 +508,7 @@
     $(document).ready(function() {
 
         $("#genomicSummaryResultsFreeText").css("display", "none");
+        $("#genomicSummaryResultsLabel").css("display", "none");
 
         $('.datepicker').datepicker();
 
@@ -564,14 +565,6 @@
                 $(".diseaseAutocomplete").each(function( index ) { $(this).val(""); });
                 $("#controlSetOptionNo").prop("checked", true);
             }
-        });
-
-        $("#populationRestrictionsFreeText").on("onkeyup onchange", function() {
-            console.log('value changed');
-        });
-
-        $("#populationRestrictionsFreeText").on("change input paste keyup", function() {
-           console.log(jQuery(this).val());
         });
 
         $("input[name='recontactingDataSubjects']").on("click", function() {
