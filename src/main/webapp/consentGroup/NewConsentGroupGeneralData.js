@@ -135,7 +135,6 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.institutionProtocolNumber ||
           this.props.errors.collaboratingInstitution ||
           this.props.errors.primaryContact ||
-          this.props.errors.sampleCollections ||
           this.props.errors.describeConsentGroup ||
           this.props.errors.requireMta ||
           this.props.errors.institutionalSourcesName ||
@@ -209,15 +208,13 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
 
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey + "*",
+            label: "Link Sample Collection to " + this.props.projectKey,
             isDisabled: false,
             options: this.props.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
             value: this.state.formData.sampleCollections,
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
-            error: this.props.errors.sampleCollections,
-            errorMessage: "Required field",
             edit: false
           }),
 

@@ -76,7 +76,6 @@ class ConsentGroupReview extends Component {
       },
       errorSubmit: false,
       errors: {
-        sampleCollections: false,
         instError: false,
         institutionalSourceNameError: false,
         institutionalSourceCountryError: false,
@@ -123,7 +122,6 @@ class ConsentGroupReview extends Component {
       showError: false,
       errorMessage: 'Please complete required fields',
       detailsError: false,
-      sampleCollectionsError: false,
       institutionalSourceError: false,
       internationalCohortsError: false,
       securityError: false,
@@ -300,7 +298,6 @@ class ConsentGroupReview extends Component {
     let consent = false;
     let protocol = false;
     let collInst = false;
-    let sampleCollections = false;
     let describeConsentGroup = false;
     let requireMta = false;
     let pii = false;
@@ -331,10 +328,6 @@ class ConsentGroupReview extends Component {
 
     if (this.isEmpty(this.state.formData.consentExtraProps.requireMta)) {
       requireMta = true;
-    }
-
-    if (this.state.formData.sampleCollections === undefined || this.state.formData.sampleCollections.length === 0) {
-      sampleCollections = true;
     }
 
     if (this.isEmpty(this.state.formData.consentExtraProps.pii)) {
@@ -382,7 +375,6 @@ class ConsentGroupReview extends Component {
       !collInst &&
       !describeConsentGroup &&
       !requireMta &&
-      !sampleCollections &&
       !pii &&
       !questions &&
       !textCompliance &&
@@ -399,7 +391,6 @@ class ConsentGroupReview extends Component {
       prev.errors.collInst = collInst;
       prev.errors.describeConsentGroup = describeConsentGroup;
       prev.errors.requireMta = requireMta;
-      prev.errors.sampleCollections = sampleCollections;
       prev.errors.pii = pii;
       prev.errors.textCompliance = textCompliance;
       prev.errors.endDate = endDate;
@@ -421,7 +412,6 @@ class ConsentGroupReview extends Component {
       prev.errors.collInst = false;
       prev.errors.describeConsentGroup = false;
       prev.errors.requireMta = false;
-      prev.errors.sampleCollections = false;
       prev.errors.pii = false;
       prev.errors.textCompliance = false;
       prev.errors.endDate = false;
@@ -1139,7 +1129,7 @@ class ConsentGroupReview extends Component {
 
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey + "*",
+            label: "Link Sample Collection to " + this.props.projectKey,
             name: 'sampleCollections',
             isDisabled: false,
             options: this.state.sampleCollectionList,
@@ -1148,8 +1138,6 @@ class ConsentGroupReview extends Component {
             currentValue: this.state.current.sampleCollections,
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
-            error: this.state.errors.sampleCollections,
-            errorMessage: "Required field",
             readOnly: this.state.readOnly,
             edit: true
           }),
