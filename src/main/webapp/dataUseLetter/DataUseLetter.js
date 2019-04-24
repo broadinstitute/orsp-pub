@@ -14,6 +14,7 @@ import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
 import { MultiSelect } from "../components/MultiSelect";
 import { Search } from "../util/ajax";
+import { DataUse } from "../util/ajax";
 import _ from 'lodash';
 
 
@@ -101,6 +102,7 @@ class DataUseLetter extends Component {
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.submitDUL = this.submitDUL.bind(this);
+    this.getRestriction = this.getRestriction.bind(this);
   }
 
   componentDidCatch(error, info) {
@@ -121,6 +123,8 @@ class DataUseLetter extends Component {
         prev.formData.date = this.parseDate(new Date());
         prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
         prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
+        prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
+        prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
         return prev;
       });
     });
@@ -376,13 +380,14 @@ class DataUseLetter extends Component {
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form, this.props.serverUrl).then(resp => {
+        this.createRestriction();
         DUL.createDulPdf({ uid: id }, this.props.serverUrl).then(() => {
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
         })
       }).catch(error => {
-        this.showDulError();
+         this.showDulError();
       });
     }
   };
@@ -553,6 +558,72 @@ class DataUseLetter extends Component {
   isEmpty(value) {
     return value === '' || value === null || value === undefined;
   }
+
+  createRestriction() {
+    let restriction = this.getRestriction();
+    DataUse.createRestriction(this.props.serverUrl, restriction);
+  }
+
+  getDiseases(diseases) {
+    let diseasesResult = [];
+    diseases.map(disease => {
+      diseasesResult.push(
+        disease.key
+      );
+     });
+    return diseasesResult
+  }
+
+  getRestriction() {
+    let diseaseRestrictions = [];
+    let hasDiseases = false;
+    if (this.state.formData.diseaseRestrictedOptions.diseaseDOID.length > 0) {
+      diseaseRestrictions = [...this.getDiseases(this.state.formData.diseaseRestrictedOptions.diseaseDOID)];
+      hasDiseases = true;
+    }
+    if (this.state.formData.otherDiseasesID.length > 0) {
+      diseaseRestrictions = [...this.getDiseases(this.state.formData.otherDiseasesID), ...diseaseRestrictions];
+      hasDiseases = true;
+    }
+    let restriction = {
+      consentGroupKey: this.state.formData.consentGroupKey,
+      consentPIName: this.state.formData.principalInvestigator,
+      generalUse: this.state.formData.primaryRestrictions === 'generalUse' ? true : false,
+      hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' || this.state.formData.primaryRestrictions === 'noRestrictions',
+      diseaseRestrictions: diseaseRestrictions,
+      populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases,
+      commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true,
+      methodsResearchExcluded: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true,
+      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions',
+      gender: this.getGender(),
+      populationRestrictions: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true ? this.state.formData.ethnicSpecify : null,
+      pediatricLimited: this.getPediatricLimited(),
+      other: this.state.formData.otherRestrictions,
+      manualReview: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true || this.isEmpty(this.state.formData.otherRestrictions),
+    }
+    return restriction;
+  }
+
+  getGender() {
+    let gender = 'NA';
+    if (this.state.formData.onlyMen === 'true' || this.state.formData.onlyMen === true) {
+      gender = 'Male';
+    } else if (this.state.formData.onlyWomen === 'true' || this.state.formData.onlyMen === true) {
+      gender = 'FeMale';
+    }
+    return gender;
+  }
+
+  getPediatricLimited() {
+    let pediatricLimited = 'NA';
+    if (this.state.formData.under18 === 'true' || this.state.formData.under18 === true) {
+      pediatricLimited = true;
+    } else if (this.state.formData.over18 === 'true' || this.state.formData.over18 === true) {
+      pediatricLimited = false;
+    }
+    return pediatricLimited;
+  }
+
   render() {
 
     const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.over18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true || this.state.formData.ethnic === true;

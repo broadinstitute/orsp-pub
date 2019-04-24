@@ -7,8 +7,10 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
+import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
@@ -127,5 +129,12 @@ class DataUseLetterController extends AuthenticatedController {
             response.status = 500
             render([error: e.message] as JSON)
         }
+    }
+
+    def createSdul(){
+        Object params = request.JSON
+        dataUseLetterService.createSdul(params, getUser()?.displayName)
+        response.status = 200
+        render(response.status)
     }
 }
