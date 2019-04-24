@@ -81,7 +81,7 @@ class DataUseRestriction {
         vaultConsentLocation nullable: true
     }
 
-    static hasMany = [diseaseRestrictions: String, populationRestrictions: String]
+    static hasMany = [diseaseRestrictions: String]
 
     String getConsentUrl(String serviceUrl) {
         serviceUrl + "/" + vaultConsentId

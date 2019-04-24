@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import grails.core.GrailsApplication
 import org.broadinstitute.orsp.consent.ConsentResource
+import grails.converters.JSON
 
 /**
  * Extend Base Controller with actions specific to Data Use Restrictions.
@@ -99,6 +100,11 @@ class DataUseController extends AuthenticatedController {
         restriction.irb = getBooleanForParam(params.irb)
         restriction.geographicalRestrictions = params.geographicalRestrictions
         restriction.noRestriction = getBooleanForParam(params.noRestriction)
+
+        if (restriction.noRestriction) {
+            restriction.generalUse = true
+        }
+
         restriction.collaborationInvestigators = getBooleanForParam(params.collaborationInvestigators)
         restriction.publicationResults = getBooleanForParam(params.publicationResults)
         restriction.genomicResults = getBooleanForParam(params.genomicResults)
@@ -173,4 +179,9 @@ class DataUseController extends AuthenticatedController {
         grailsApplication.config.consent.service.url
     }
 
+    def getAllOntologies() {
+        consentService.populationOntologyToString()
+        response.status = 200
+        render(['population restrictions updated'] as JSON)
+    }
 }

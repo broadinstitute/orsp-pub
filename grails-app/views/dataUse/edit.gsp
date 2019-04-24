@@ -419,10 +419,10 @@
                                   value="No">No</label>
                 </span>
                 <br />
-                <g:if test="${restriction.genomicResults && !create}">
-                    <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">If <i>Yes</i>, please explain.</label>
-                    <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
-                </g:if>
+                <div id="genomicSummaryResultsText">
+                     <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">If <i>Yes</i>, please explain.</label>
+                     <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
+                 </div>
 
                 <hr/>
                 <label for="geographicalRestrictions">Geographical restrictions?</label>
@@ -509,11 +509,14 @@
 
     $(document).ready(function() {
 
-        /* let genomicSummary = "${restriction.genomicResults}";
+        let genomicSummary = "${restriction.genomicResults}";
         if (genomicSummary !== "true") {
-            $("#genomicSummaryResultsFreeText").css("display", "none");
-            $("#genomicSummaryResultsLabel").css("display", "none");
-        } */
+            $("#genomicSummaryResultsText").hide();
+        } else {
+            const summary = "${restriction.genomicSummaryResults}"
+            $("#genomicSummaryResultsText").show();
+            $("#genomicSummaryResultsLabel").show();
+        }
 
         $('.datepicker').datepicker();
 
@@ -534,17 +537,15 @@
                 $("#controlSetOptionNo").prop("checked", true);
             }
         });
-        /*
+
         $("input[name='genomicResults']").on("click", function() {
             if ($("#genomicResultsYes").prop("checked")) {
-                $("#genomicSummaryResultsFreeText").show("fast");
-                $("#genomicSummaryResultsLabel").show("fast");
+                $("#genomicSummaryResultsText").show();
             } else if ($("#genomicResultsNo").prop("checked")) {
-                $("#genomicSummaryResultsFreeText").hide("fast");
-                $("#genomicSummaryResultsLabel").hide("fast");
+                $("#genomicSummaryResultsText").hide("fast");
             }
         });
-        */
+
         $("[name='irb'], [name='dateRestriction'], [name='cloudStorage'], [name='geographicalRestrictions'], [name='aggregateResearchResponse'], [name='populationRestrictions']").on("change", function() {
             setManualReview();
         });
