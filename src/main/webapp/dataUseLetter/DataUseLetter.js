@@ -597,7 +597,7 @@ class DataUseLetter extends Component {
       controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
       gender: this.getGender(),
       populationRestrictions: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true ? this.state.formData.ethnicSpecify : null,
-      pediatricLimited: this.getPediatricLimited(),
+      pediatric: this.getPediatricLimited(),
       other: this.state.formData.otherRestrictions,
       manualReview: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true || !this.isEmpty(this.state.formData.otherRestrictions) ? "Yes" : "No",
     }
@@ -608,7 +608,7 @@ class DataUseLetter extends Component {
     let gender = 'NA';
     if (this.state.formData.onlyMen === 'true' || this.state.formData.onlyMen === true) {
       gender = 'Male';
-    } else if (this.state.formData.onlyWomen === 'true' || this.state.formData.onlyMen === true) {
+    } else if (this.state.formData.onlyWomen === 'true' || this.state.formData.onlyWomen === true) {
       gender = 'Female';
     }
     return gender;
