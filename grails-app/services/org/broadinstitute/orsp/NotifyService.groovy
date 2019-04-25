@@ -15,6 +15,11 @@ import org.springframework.http.MediaType
 class NotifyService implements SendgridSupport, Status {
 
     public static final String ORSP_ADDRESS = "orsp-portal@broadinstitute.org"
+    public static final String YES = "Yes"
+    public static final String UNCERTAIN = "Uncertain"
+    public static final String TEXT_SHARING_BOTH = "both"
+    public static final String TEXT_SHARING_OPEN = "open"
+
     PageRenderer groovyPageRenderer
     LinkGenerator grailsLinkGenerator
     UserService userService
@@ -467,29 +472,42 @@ class NotifyService implements SendgridSupport, Status {
      */
     Map<Boolean, String> sendSecurityInfo(Issue issue, User user, String type) {
         Map<String, String> values = new HashMap<>()
-        values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
-        values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
-        values.put(IssueExtraProperty.SHARING_TYPE, getValue(issue.getSharingType()))
-        if (StringUtils.isNotEmpty(issue.getTextCompliance()))
-            values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
-        if (StringUtils.isNotEmpty(issue.getTextSharingType()))
-            values.put(IssueExtraProperty.TEXT_SHARING_TYPE, issue.getTextSharingType())
+        Map<Boolean, String> result = new HashMap<>()
+
+        if (getValue(issue.getPII()) == YES) {
+            values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
+        }
+        if (getValue(issue.getCompliance()) == YES || getValue(issue.getCompliance()) == UNCERTAIN) {
+            values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
+            if (StringUtils.isNotEmpty(issue.getTextCompliance()))
+                values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
+        }
+        if (getValue(issue.getSharingType()) == YES) {
+            values.put(IssueExtraProperty.SHARING_TYPE, getValue(issue.getSharingType()))
+        }
+        if (issue.getTextCompliance() == TEXT_SHARING_OPEN || issue.getTextCompliance() == TEXT_SHARING_BOTH) {
+            if (StringUtils.isNotEmpty(issue.getTextSharingType()))
+                values.put(IssueExtraProperty.TEXT_SHARING_TYPE, issue.getTextSharingType())
+        }
 
         values.put('type', type)
 
-        NotifyArguments arguments =
-                new NotifyArguments(
-                        toAddresses: Collections.singletonList(getSecurityRecipient()),
-                        fromAddress: getDefaultFromAddress(),
-                        ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                        subject: issue.projectKey + " - Required InfoSec Follow-up",
-                        user: user,
-                        issue: issue,
-                        values: values)
+        if (values.size() >= 2) {
+            NotifyArguments arguments =
+                    new NotifyArguments(
+                            toAddresses: Collections.singletonList(getSecurityRecipient()),
+                            fromAddress: getDefaultFromAddress(),
+                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                            subject: issue.projectKey + " - Required InfoSec Follow-up",
+                            user: user,
+                            issue: issue,
+                            values: values)
 
-        arguments.view = "/notify/generalInfo"
-        Mail mail = populateMailFromArguments(arguments)
-        sendMail(mail, getApiKey(), getSendGridUrl())
+            arguments.view = "/notify/generalInfo"
+            Mail mail = populateMailFromArguments(arguments)
+            result = sendMail(mail, getApiKey(), getSendGridUrl())
+        }
+        result
     }
 
     /**
@@ -519,6 +537,33 @@ class NotifyService implements SendgridSupport, Status {
         }
         else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
             values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
+        }
+
+        values.put('type', type)
+
+        if (values.size() >= 2) {
+            NotifyArguments arguments =
+                    new NotifyArguments(
+                            toAddresses: Collections.singletonList(user.getEmailAddress()),
+                            fromAddress: getDefaultFromAddress(),
+                            ccAddresses: Collections.singletonList(getAgreementsRecipient()),
+                            subject: issue.projectKey + " - Required OSAP Follow-up",
+                            user: user,
+                            issue: issue,
+                            values: values)
+            arguments.view = "/notify/requirements"
+            Mail mail = populateMailFromArguments(arguments)
+            result = sendMail(mail, getApiKey(), getSendGridUrl())
+        }
+        result
+    }
+
+    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user, String type) {
+        Map<String, String> values = new HashMap<>()
+        Map<Boolean, String> result = new HashMap<>()
+
+        if (Boolean.valueOf(issue.getMTA())) {
+            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
         }
 
         values.put('type', type)
@@ -593,7 +638,7 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> consentGroupCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendRequirementsInfo(issue, user, IssueType.CONSENT_GROUP.name)
+        sendRequirementsInfoConsentGroup(issue, user, IssueType.CONSENT_GROUP.name)
         sendSecurityInfo(issue, user, IssueType.CONSENT_GROUP.name)
     }
 }
