@@ -42,8 +42,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        collaborators: [],
-        attestation: false
+        collaborators: []
       },
       formerData: {
         projectManager: '',
@@ -56,16 +55,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        collaborators: [],
-        attestation: false
+        collaborators: []
       },
       errors: {
         studyDescription: false,
         pTitle: false,
         uploadConsentGroup: false,
         subjectProtection: false,
-        fundings: false,
-        attestation: false
+        fundings: false
       }
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -161,14 +158,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }, () => this.props.updateForm(this.state.formData, 'piName'));
   }
 
-  handleAttestationCheck = () => {
-    this.setState(prev => {
-      prev.formData.attestation = !this.state.formData.attestation;
-      return prev;
-    }, () => this.props.updateForm(this.state.formData, 'attestation'));
-    this.props.removeErrorMessage();
-  };
-
   render() {
 
     if (this.state.hasError) {
@@ -179,7 +168,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection || this.props.errors.attestation,
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection,
         errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
@@ -309,7 +298,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             InputFieldText({
               id: "inputNotCGSpecify",
               name: "notCGSpecify",
-              label: "Please specify",
+              label: "Please describe why a consent form is not being provided",
               value: this.state.formData.notCGSpecify,
               disabled: false,
               required: false,
@@ -345,20 +334,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             readOnly: false,
             edit: false
           })
-        ]),
-
-        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
-          p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
-          p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
-          InputFieldCheckbox({
-            id: "ckb_attestation",
-            name: "attestation",
-            onChange: this.handleAttestationCheck,
-            label: "I confirm",
-            defaultChecked: this.state.formData.attestation,
-            required: true
-          }),
-          small({ isRendered: this.props.errors.attestation, className: "errorMessage" }, 'Required Field')
         ])
       ])
     );
