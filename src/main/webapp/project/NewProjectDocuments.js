@@ -130,7 +130,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             }),
             div({ style: styles.addDocumentContainer }, [
               button({
-                className: "btn buttonSecondary",
+                className: "btn buttonPrimary",
                 style: styles.addDocumentBtn,
                 onClick: this.addDocuments
               }, ["Add Document"])
