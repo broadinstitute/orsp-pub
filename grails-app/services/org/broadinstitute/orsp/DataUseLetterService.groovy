@@ -53,9 +53,9 @@ class DataUseLetterService {
         }
         restriction.consentGroupKey = params.consentGroupKey
         restriction.consentPIName = params.consentPIName
-        restriction.generalUse = params.generalUse instanceof String ? getBooleanForParam(params.generalUse) :  params.generalUse
-        restriction.hmbResearch = params.hmbResearch instanceof String ? getBooleanForParam(params.hmbResearch) : params.hmbResearch
-        restriction.manualReview = params.manualReview instanceof String ? getBooleanForParam(params.manualReview) : params.manualReview
+        restriction.generalUse = getBooleanForParam(params.generalUse)
+        restriction.hmbResearch = getBooleanForParam(params.hmbResearch)
+        restriction.manualReview = getBooleanForParam(params.manualReview)
 
         restriction.diseaseRestrictions = new ArrayList<>()
         if (params.diseaseRestrictions) {
@@ -66,10 +66,10 @@ class DataUseLetterService {
                 restriction.setDiseaseRestrictions(Collections.singletonList((String) params.diseaseRestrictions))
             }
         }
-        restriction.populationOriginsAncestry = params.populationOriginsAncestry instanceof String ? getBooleanForParam(params.populationOriginsAncestry) : params.populationOriginsAncestry
-        restriction.commercialUseExcluded =  params.commercialUseExcluded instanceof String ? getBooleanForParam(params.commercialUseExcluded) :  params.commercialUseExcluded
-        restriction.methodsResearchExcluded = params.methodsResearchExcluded instanceof String ? getBooleanForParam(params.methodsResearchExcluded) : params.methodsResearchExcluded
-        restriction.aggregateResearchResponse = params.aggregateResearchResponse instanceof String ? getBooleanForParam(params.aggregateResearchResponse) : params.aggregateResearchResponse
+        restriction.populationOriginsAncestry = getBooleanForParam(params.populationOriginsAncestry)
+        restriction.commercialUseExcluded = getBooleanForParam(params.commercialUseExcluded)
+        restriction.methodsResearchExcluded = getBooleanForParam(params.methodsResearchExcluded)
+        restriction.aggregateResearchResponse = getBooleanForParam(params.aggregateResearchResponse)
         if (params.gender) {
             if (params.gender.equals("NA")) restriction.gender = null
             else restriction.gender = params.gender
@@ -86,18 +86,18 @@ class DataUseLetterService {
                 restriction.populationRestrictions.add(params.populationRestrictions)
             }
         }
-        restriction.pediatricLimited = params.pediatric instanceof String ? getBooleanForParam(params.pediatric) : params.pediatric
+        restriction.pediatricLimited = getBooleanForParam(params.pediatric)
         if (params.dateRestriction) {
             restriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
         } else {
             restriction.dateRestriction = null
         }
-        restriction.recontactingDataSubjects = params.recontactingDataSubjects instanceof String ? getBooleanForParam(params.recontactingDataSubjects) : params.recontactingDataSubjects
+        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
         restriction.recontactMay = params.recontactMay
         restriction.recontactMust = params.recontactMust
         restriction.genomicPhenotypicData = params.genomicPhenotypicData
         restriction.cloudStorage = params.cloudStorage
-        restriction.irb = params.irb instanceof String ? getBooleanForParam(params.irb) : params.irb
+        restriction.irb = getBooleanForParam(params.irb)
         restriction.geographicalRestrictions = params.geographicalRestrictions
 
         if (params.other) {

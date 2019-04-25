@@ -588,18 +588,18 @@ class DataUseLetter extends Component {
     let restriction = {
       consentGroupKey: this.state.formData.consentGroupKey,
       consentPIName: this.state.formData.principalInvestigator,
-      generalUse: this.state.formData.primaryRestrictions === 'generalUse' ? true : false,
-      hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' || this.state.formData.primaryRestrictions === 'noRestrictions',
+      generalUse: this.state.formData.primaryRestrictions === 'generalUse' ? "Yes" : "No",
+      hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
       diseaseRestrictions: diseaseRestrictions,
-      populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases,
-      commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true,
-      methodsResearchExcluded: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true,
-      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions',
+      populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : "No",
+      commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true ? "Yes" : "No",
+      methodsResearchExcluded: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true  ? "Yes" : "No",
+      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
       gender: this.getGender(),
       populationRestrictions: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true ? this.state.formData.ethnicSpecify : null,
       pediatricLimited: this.getPediatricLimited(),
       other: this.state.formData.otherRestrictions,
-      manualReview: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true || this.isEmpty(this.state.formData.otherRestrictions),
+      manualReview: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true || !this.isEmpty(this.state.formData.otherRestrictions) ? "Yes" : "No",
     }
     return restriction;
   }
@@ -609,7 +609,7 @@ class DataUseLetter extends Component {
     if (this.state.formData.onlyMen === 'true' || this.state.formData.onlyMen === true) {
       gender = 'Male';
     } else if (this.state.formData.onlyWomen === 'true' || this.state.formData.onlyMen === true) {
-      gender = 'FeMale';
+      gender = 'Female';
     }
     return gender;
   }
@@ -617,9 +617,9 @@ class DataUseLetter extends Component {
   getPediatricLimited() {
     let pediatricLimited = 'NA';
     if (this.state.formData.under18 === 'true' || this.state.formData.under18 === true) {
-      pediatricLimited = true;
+      pediatricLimited = 'Yes';
     } else if (this.state.formData.over18 === 'true' || this.state.formData.over18 === true) {
-      pediatricLimited = false;
+      pediatricLimited = 'No';
     }
     return pediatricLimited;
   }

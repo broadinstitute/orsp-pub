@@ -124,7 +124,6 @@ class NewConsentGroupController extends AuthenticatedController {
             consent.put("dataManagerName", user.getDisplayName())
             consent.put("dataManagerEmail", user.getEmailAddress())
             consent.put("consentGroupKey", issue.getProjectKey())
-            consent.put("consentPIName", IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PI)?.getValue())
             consent.put(IssueExtraProperty.SUMMARY, issue.getSummary())
             consent.put(IssueExtraProperty.PROTOCOL, IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PROTOCOL).getValue())
         }
