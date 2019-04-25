@@ -51,6 +51,9 @@ class NewProject extends Component {
         endState: false
       },
       generalDataFormData: {},
+      attestationFormData: {
+        attestation: false
+      },
       securityInfoFormData: {},
       currentStep: 0,
       files: [],
@@ -72,6 +75,7 @@ class NewProject extends Component {
       }
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
+    this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.submitNewProject = this.submitNewProject.bind(this);
     this.uploadFiles = this.uploadFiles.bind(this);
@@ -152,7 +156,7 @@ class NewProject extends Component {
     project.reporter = this.state.user.userName;
     project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
-    project.attestation = this.state.generalDataFormData.attestation;
+    project.attestation = this.state.attestationFormData.attestation;
     let extraProperties = [];
 
     extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
@@ -162,7 +166,7 @@ class NewProject extends Component {
     extraProperties.push({name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null});
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
-    extraProperties.push({name: 'attestation', value: this.state.generalDataFormData.attestation !== '' ? this.state.generalDataFormData.attestation : null});
+    extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
     extraProperties.push({name: 'irbReferral', value: isEmpty(this.state.generalDataFormData.irbReferral.value) ? null : JSON.stringify(this.state.generalDataFormData.irbReferral)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
 
@@ -244,6 +248,8 @@ class NewProject extends Component {
       isValid = this.validateInternationalCohorts();
     } else if (this.state.currentStep === 3) {
       isValid = this.validateInfoSecurity();
+    } else if (this.state.currentStep === 4) {
+      isValid = this.validateAttestationForm(field);
     }
     return isValid;
   };
@@ -261,7 +267,8 @@ class NewProject extends Component {
     const isGeneralDataValid = this.validateGeneralData();
     const isInternationalCohortsValid = this.validateInternationalCohorts();
     const isInfoSecurityValid = this.validateInfoSecurity();
-    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid
+    const isAttestationFormValid = this.validateAttestationForm();
+    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isAttestationFormValid
   };
 
   validateDeterminationQuestions() {
@@ -276,12 +283,40 @@ class NewProject extends Component {
     return isValid;
   }
 
+  validateAttestationForm(field) {
+    let attestation = false;
+    let isValid = true;
+
+    if (this.state.attestationFormData.attestation === undefined ||
+      this.state.attestationFormData.attestation === '' ||
+      this.state.attestationFormData.attestation === false) {
+      attestation = true;
+      isValid = false;
+    }
+
+    if (field === undefined || field === null || field === 0) {
+      this.setState(prev => {
+        prev.errors.attestation = attestation;
+        return prev;
+      });
+    }
+    else if (field === 'attestation') {
+
+      this.setState(prev => {
+        if (field === 'attestation') {
+          prev.errors.attestation = attestation;
+        }
+        return prev;
+      });
+    }
+    return isValid;
+  }
+
   validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
     let uploadConsentGroup = false;
     let subjectProtection = false;
-    let attestation = false;
     let isValid = true;
     let fundings = false;
     let fundingAwardNumber = false;
@@ -296,12 +331,6 @@ class NewProject extends Component {
     }
     if (this.state.generalDataFormData.subjectProtection === undefined || this.state.generalDataFormData.subjectProtection === '') {
       subjectProtection = true;
-      isValid = false;
-    }
-    if (this.state.generalDataFormData.attestation === undefined ||
-      this.state.generalDataFormData.attestation === '' ||
-      this.state.generalDataFormData.attestation === false) {
-      attestation = true;
       isValid = false;
     }
     if (isEmpty(this.state.generalDataFormData.pTitle)) {
@@ -328,7 +357,6 @@ class NewProject extends Component {
         prev.errors.studyDescription = studyDescription;
         prev.errors.uploadConsentGroup = uploadConsentGroup;
         prev.errors.subjectProtection = subjectProtection;
-        prev.errors.attestation = attestation;
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
@@ -336,7 +364,7 @@ class NewProject extends Component {
       });
     }
     else if (field === 'fundings' || field === 'studyDescription' ||
-      field === 'uploadConsentGroup' || field === 'subjectProtection' || field === 'attestation' || field === 'pTitle') {
+      field === 'uploadConsentGroup' || field === 'subjectProtection' || field === 'pTitle') {
 
       this.setState(prev => {
         if (field === 'fundings') {
@@ -351,9 +379,6 @@ class NewProject extends Component {
         }
         else if (field === 'subjectProtection') {
           prev.errors.subjectProtection = subjectProtection;
-        }
-        else if (field === 'attestation') {
-          prev.errors.attestation = attestation;
         }
         else if (field === 'pTitle') {
           prev.errors.pTitle = pTitle;
@@ -417,11 +442,21 @@ class NewProject extends Component {
   }
 
   updateGeneralDataFormData = (updatedForm, field) => {
-    if (this.currentStep === 0) {
+    if (this.state.currentStep === 0) {
       this.validateGeneralData(field);
     }
     this.setState(prev => {
       prev.generalDataFormData = updatedForm;
+      return prev;
+    }, () => this.isValid(field));
+  };
+
+  updateAttestationFormData = (updatedForm, field) => {
+    if (this.state.currentStep === 4) {
+      this.validateAttestationForm(field);
+    }
+    this.setState(prev => {
+      prev.attestationFormData = updatedForm;
       return prev;
     }, () => this.isValid(field));
   };
@@ -523,10 +558,13 @@ class NewProject extends Component {
             fileHandler: this.fileHandler,
             projectType: projectType,
             files: this.state.files,
-            errors: this.state.showErrorDocuments,
+            errors: this.state.errors,
             generalError: this.state.generalError,
             submitError: this.state.submitError,
-            options: this.state.documentOptions
+            options: this.state.documentOptions,
+            removeErrorMessage: this.removeErrorMessage,
+            updateForm: this.updateAttestationFormData,
+            formData: this.state.attestationFormData
           })
         ])
     );
