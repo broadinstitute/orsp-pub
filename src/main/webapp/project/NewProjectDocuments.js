@@ -83,7 +83,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   };
 
   handleAttestationCheck = (e) => {
-    let value = e.target.checked;
+    const value = e.target.checked;
 
     this.setState(prev => {
       prev.formData.attestation = value;
