@@ -1,7 +1,8 @@
 import { Component, Fragment } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, span, button, div } from 'react-hyperscript-helpers';
+import { hh, h, h1, span, button, div, p, small } from 'react-hyperscript-helpers';
 import { InputFieldFile } from '../components/InputFieldFile';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 import { IRB, NHSR, NE } from '../util/DocumentType';
@@ -29,6 +30,12 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   constructor(props) {
     super(props);
     this.state = {
+      formData: {
+        attestation: false
+      },
+      errors: {
+        attestation: false
+      },
       documents: [],
       showAddDocuments: false
     };
@@ -75,6 +82,16 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     });
   };
 
+  handleAttestationCheck = (e) => {
+    const value = e.target.checked;
+
+    this.setState(prev => {
+      prev.formData.attestation = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'attestation'));
+    this.props.removeErrorMessage();
+  };
+
   closeModal = () => {
     this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
@@ -89,22 +106,13 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     let documents = this.props.files;
 
     let errors = false;
-    let errorText = '';
-    if (!this.props.generalError) {
-      errorText = 'Please upload all required documents';
-    } else if (this.props.generalError && !this.props.submitError) {
-      errorText = 'Please check previous steps';
-    }
-    if (this.props.submitError) {
-      errorText = 'Something went wrong in the server. Please try again later.';
-    }
 
     return (
 
       WizardStep({
         title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        errorMessage: errorText,
-        error: errors || this.props.generalError
+        errorMessage: !this.props.errors.attestation && this.props.generalError ? 'Please check previous steps' : 'Please complete all required fields',
+        error: this.props.generalError || this.props.errors.attestation
       }, [
           div({ className: "questionnaireContainer" }, [
             AddDocumentDialog({
@@ -122,7 +130,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             }),
             div({ style: styles.addDocumentContainer }, [
               button({
-                className: "btn buttonSecondary",
+                className: "btn buttonPrimary",
                 style: styles.addDocumentBtn,
                 onClick: this.addDocuments
               }, ["Add Document"])
@@ -136,7 +144,22 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
               reviewFlow: false
-            })
+            }),
+            div({ style: { 'marginTop': '25px' }}, [
+              Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
+                p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
+                p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
+                InputFieldCheckbox({
+                  id: "ckb_attestation",
+                  name: "attestation",
+                  onChange: this.handleAttestationCheck,
+                  label: "I confirm",
+                  checked: this.props.formData.attestation,
+                  required: true
+                }),
+                small({ isRendered: this.props.errors.attestation, className: "errorMessage" }, 'Required Field')
+              ])
+            ])
           ])
         ])
     )
