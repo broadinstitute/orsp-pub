@@ -1273,19 +1273,6 @@ class ProjectReview extends Component {
         ]),
         /*UNTIL HERE*/
 
-        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
-          p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
-          p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
-          InputFieldCheckbox({
-            id: "ckb_attestation",
-            name: "attestation",
-            onChange: this.handleAttestationCheck,
-            label: "I confirm",
-            checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
-            readOnly: true,
-          }),
-        ]),
-
         Panel({ title: "Security" }, [
           SecurityReview({
             user: this.state.user,
@@ -1414,6 +1401,18 @@ class ProjectReview extends Component {
             resetIntCohorts: this.state.resetIntCohorts,
             origin: "project"
           })
+        ]),
+        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
+          p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
+          p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
+          InputFieldCheckbox({
+            id: "ckb_attestation",
+            name: "attestation",
+            onChange: this.handleAttestationCheck,
+            label: "I confirm",
+            checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
+            readOnly: true,
+          }),
         ]),
         AlertMessage({
           msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
