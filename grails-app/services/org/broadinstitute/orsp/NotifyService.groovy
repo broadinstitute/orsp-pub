@@ -589,4 +589,11 @@ class NotifyService implements SendgridSupport, Status {
         sendRequirementsInfo(issue, user, type)
         sendSecurityInfo(issue, user, type)
     }
+
+    Map<Boolean, String> consentGroupCreation(Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendRequirementsInfo(issue, user, IssueType.CONSENT_GROUP.name)
+        sendSecurityInfo(issue, user, IssueType.CONSENT_GROUP.name)
+    }
 }
