@@ -594,7 +594,7 @@ class DataUseLetter extends Component {
       populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : "No",
       commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true ? "Yes" : "No",
       methodsResearchExcluded: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true  ? "Yes" : "No",
-      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
+      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "No" : "Yes",
       gender: this.getGender(),
       populationRestrictions: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true ? this.state.formData.ethnicSpecify : null,
       pediatric: this.getPediatricLimited(),
