@@ -154,7 +154,7 @@ class AdminOnly extends Component {
           prev.initial = createObjectCopy(this.state.formData);
           return prev;
         });
-        this.successNotification('showSubmissionAlert', 'Form has been successfully updated.', 8000);
+        this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => console.error(error)
     );
@@ -330,7 +330,7 @@ class AdminOnly extends Component {
             placeholder: "Enter date...",
             readOnly: !this.state.isORSP,
           }),
-          div({ style: { 'marginTop': '15px' }}, [
+          div({ style: { 'marginTop': '20px' }}, [
             Fundings({
               fundings: this.state.formData.sponsor,
               current: this.state.formData.sponsor,

@@ -37,12 +37,6 @@
   padding: 3px 5px 3px 0;
 }
 
-.inputFieldReadOnly .inputFieldLabel,
-.inputFieldReadOnly label {
-  font-weight: 700;
-}
-
-.inputFieldReadOnly .inputFieldLabel,
 .inputFieldReadOnly label {
   font-weight: 700;
 }
@@ -52,8 +46,13 @@
 }
 
 .inputFieldLabel {
-  font-weight: 400;
+  font-weight: 700;
+  font-size: 1rem;
   margin-bottom: 3px;
+}
+
+.inputFieldLabel.noMargin {
+  margin-bottom: 0;
 }
 
 .inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div {
