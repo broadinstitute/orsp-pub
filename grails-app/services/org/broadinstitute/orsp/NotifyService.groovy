@@ -471,7 +471,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, String issueType) {
         Boolean valid = false
         Map<Boolean, String> result = new HashMap<>()
 
@@ -489,14 +489,17 @@ class NotifyService implements SendgridSupport, Status {
         }
 
         if (valid) {
+            Map<String, String> values = new HashMap<>()
+            values.put('type', issueType)
             NotifyArguments arguments =
-                    new NotifyArguments(
-                            toAddresses: Collections.singletonList(getSecurityRecipient()),
-                            fromAddress: getDefaultFromAddress(),
-                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                            subject: issue.projectKey + " - Required InfoSec Follow-up",
-                            user: user,
-                            issue: issue)
+            new NotifyArguments(
+                    toAddresses: Collections.singletonList(getSecurityRecipient()),
+                    fromAddress: getDefaultFromAddress(),
+                    ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                    subject: issue.projectKey + " - Required InfoSec Follow-up",
+                    user: user,
+                    values: values,
+                    issue: issue)
 
             arguments.view = "/notify/generalInfo"
             Mail mail = populateMailFromArguments(arguments)
@@ -560,6 +563,7 @@ class NotifyService implements SendgridSupport, Status {
                             fromAddress: getDefaultFromAddress(),
                             ccAddresses: Collections.singletonList(getAgreementsRecipient()),
                             subject: issue.projectKey + " - Required OSAP Follow-up",
+                            user: user,
                             issue: issue)
             arguments.view = "/notify/requirements"
             Mail mail = populateMailFromArguments(arguments)
