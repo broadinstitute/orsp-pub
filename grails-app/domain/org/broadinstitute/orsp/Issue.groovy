@@ -168,6 +168,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getBioMedical() { getExtraProperties().find { it.name == IssueExtraProperty.BIO_MEDICAL }?.value }
 
+    transient String getIrbExpirationDate() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_EXPIRATION_DATE}?.value }
+
     transient String getProjectStatus() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_STATUS }?.value }
 
     // Others

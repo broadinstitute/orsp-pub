@@ -53,6 +53,7 @@ class ProjectExtraProperties {
     String initialDate
     String initialReviewType
     String bioMedical
+    String irbExpirationDate
     String projectStatus
 
     ProjectExtraProperties(Issue project) {
@@ -109,6 +110,7 @@ class ProjectExtraProperties {
         this.setInitialDate(project.getInitialDate() ?: null)
         this.setInitialReviewType(project.getInitialReviewType() ?: "")
         this.setBioMedical(project.getBioMedical() ?: "")
+        this.setIrbExpirationDate(project.getIrbExpirationDate() ?: null)
         this.setProjectStatus(project.getProjectStatus() ?: "")
     }
 }

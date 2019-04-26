@@ -37,6 +37,7 @@ class AdminOnly extends Component {
         sponsor: [{ source: '', sponsor: '', identifier: '' }],
         initialReviewType: '',
         bioMedical: '',
+        irbExpirationDate: null,
         projectStatus: ''
       }
     };
@@ -70,6 +71,7 @@ class AdminOnly extends Component {
         formData.sponsor = this.getSponsorArray(issue.data.fundings);
         formData.initialReviewType = issue.data.extraProperties.initialReviewType;
         formData.bioMedical = issue.data.extraProperties.bioMedical;
+        formData.irbExpirationDate = issue.data.extraProperties.irbExpirationDate;
         formData.projectStatus = issue.data.extraProperties.projectStatus;
         initial = createObjectCopy(formData);
         this.setState(prev => {
@@ -128,9 +130,9 @@ class AdminOnly extends Component {
     });
   };
 
-  datePickerHandler = (id) => (date) => {
+  datePickerHandler = (name) => (date) => {
     this.setState(prev => {
-      prev.formData[id] = date;
+      prev.formData[name] = date;
       return prev;
     });
   };
@@ -152,7 +154,7 @@ class AdminOnly extends Component {
           prev.initial = createObjectCopy(this.state.formData);
           return prev;
         });
-        this.successNotification('showSubmissionAlert', 'Form has been successfully updated.', 8000);
+        this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => console.error(error)
     );
@@ -184,6 +186,7 @@ class AdminOnly extends Component {
     form.initialDate = this.parseDate(this.state.formData.initialDate);
     form.initialReviewType = this.state.formData.initialReviewType;
     form.bioMedical = this.state.formData.bioMedical;
+    form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
 
     let degrees = [];
@@ -327,7 +330,7 @@ class AdminOnly extends Component {
             placeholder: "Enter date...",
             readOnly: !this.state.isORSP,
           }),
-          div({ style: { 'marginTop': '15px' }}, [
+          div({ style: { 'marginTop': '20px' }}, [
             Fundings({
               fundings: this.state.formData.sponsor,
               current: this.state.formData.sponsor,
@@ -357,6 +360,15 @@ class AdminOnly extends Component {
             readOnly: !this.state.isORSP,
             required: false,
             edit: false
+          }),
+          InputFieldDatePicker({
+            selected: this.state.formData.irbExpirationDate,
+            value: isEmpty(this.state.formData.irbExpirationDate) ? format(new Date(this.state.formData.irbExpirationDate), 'MM/DD/YYYY') : null,
+            name: "irbExpirationDate",
+            label: "Expiration Date",
+            onChange: this.datePickerHandler,
+            placeholder: "Enter date...",
+            readOnly: !this.state.isORSP,
           })
         ]),
         AlertMessage({
