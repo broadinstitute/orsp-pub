@@ -13,6 +13,7 @@ import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.springframework.web.multipart.MultipartFile
 
 import javax.ws.rs.core.Response
 
@@ -40,6 +41,9 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def save() {
+        List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+        String userName = request.parameterMap["userName"]
+        params.dataProject
         Issue issue = IssueUtils.getJson(Issue.class, request.JSON)
         Issue source = queryService.findByKey(issue.getSource())
         if(source != null) {
