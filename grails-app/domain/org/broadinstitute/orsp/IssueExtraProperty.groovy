@@ -89,6 +89,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String INITIAL_DATE = "initialDate"
     public static final String INITIAL_REVIEW_TYPE = "initialReviewType"
     public static final String BIO_MEDICAL = "bioMedical"
+    public static final String IRB_EXPIRATION_DATE = "irbExpirationDate"
     public static final String PROJECT_STATUS = "projectStatus"
 
     // Status Flags
