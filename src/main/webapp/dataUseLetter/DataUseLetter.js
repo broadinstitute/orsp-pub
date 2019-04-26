@@ -55,7 +55,6 @@ class DataUseLetter extends Component {
 
         noPopulationRestricted: false,
         under18: false,
-        over18: false,
         onlyMen: false,
         onlyWomen: false,
         ethnic: false,
@@ -594,7 +593,7 @@ class DataUseLetter extends Component {
       populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : "No",
       commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true ? "Yes" : "No",
       methodsResearchExcluded: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true  ? "Yes" : "No",
-      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "No" : "Yes",
+      controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "No" : "Unspecified",
       gender: this.getGender(),
       populationRestrictions: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true ? this.state.formData.ethnicSpecify : null,
       pediatric: this.getPediatricLimited(),
@@ -615,18 +614,16 @@ class DataUseLetter extends Component {
   }
 
   getPediatricLimited() {
-    let pediatricLimited = 'NA';
+    let pediatricLimited = 'No';
     if (this.state.formData.under18 === 'true' || this.state.formData.under18 === true) {
       pediatricLimited = 'Yes';
-    } else if (this.state.formData.over18 === 'true' || this.state.formData.over18 === true) {
-      pediatricLimited = 'No';
     }
     return pediatricLimited;
   }
 
   render() {
 
-    const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.over18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true || this.state.formData.ethnic === true;
+    const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true || this.state.formData.ethnic === true;
 
     return (
       div({}, [
@@ -907,14 +904,6 @@ class DataUseLetter extends Component {
               onChange: this.handleCheck,
               label: "Research in children under 18 years of age only",
               checked: this.state.formData.under18 === 'true' || this.state.formData.under18 === true,
-              readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
-            }),
-            InputFieldCheckbox({
-              id: "ckb_over18",
-              name: "over18",
-              onChange: this.handleCheck,
-              label: "Research in adults 18 years of age and older only",
-              checked: this.state.formData.over18 === 'true' || this.state.formData.over18 === true,
               readOnly: this.state.readOnly || this.state.formData.noPopulationRestricted === true
             }),
             InputFieldCheckbox({
