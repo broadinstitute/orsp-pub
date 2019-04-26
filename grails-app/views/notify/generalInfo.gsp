@@ -7,6 +7,6 @@
 </p>
 <p>
     Thank you,
-    <br> The BRICC team.
+    <br> The ORSP team.
 </p>
 

@@ -6,7 +6,7 @@ Hello OSAP,
 </p>
 <p>
     Thank you,
-    <br> The BRICC team
+    <br> The ORPS team.
 </p>
 
 
