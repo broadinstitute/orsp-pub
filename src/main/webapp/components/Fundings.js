@@ -175,13 +175,13 @@ export const Fundings = hh(class Fundings extends Component {
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "noMargin" }, ["Funding Source"])
+                label({ className: "inputFieldLabel noMargin" }, ["Funding Source"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "noMargin" }, ["Sponsor Name"])
+                label({ className: "inputFieldLabel noMargin" }, ["Sponsor Name"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "noMargin" }, ["Award Number/Identifier"])
+                label({ className: "inputFieldLabel noMargin" }, ["Award Number/Identifier"])
               ])
             ])
           ]),
