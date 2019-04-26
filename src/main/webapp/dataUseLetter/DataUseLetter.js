@@ -590,7 +590,7 @@ class DataUseLetter extends Component {
       generalUse: this.state.formData.primaryRestrictions === 'generalUse' ? "Yes" : "No",
       hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
       diseaseRestrictions: diseaseRestrictions,
-      populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : "No",
+      populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : null,
       commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true ? "Yes" : "No",
       methodsResearchExcluded: this.state.formData.methodsResearch === 'true' || this.state.formData.methodsResearch === true  ? "Yes" : "No",
       controlSetOption: this.state.formData.primaryRestrictions === 'generalUse' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "No" : null,
