@@ -1,44 +1,9 @@
 <p>
-    Hello,
+    Hello InfoSec,
 </p>
 <p>
-    Below is a summary of information provided for the recently created ${values.get("type")} <a href="${issueLink}">${issue.summary}</a>
-</p>
-
-
-    <div>
-        <ol>
-            <li> As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?
-               <p> <b> ${values.get("pii")} </p>
-            </li>
-            <li> Is this project subject to any regulations with specific data security requirements (FISMA, HIPAA, etc.)? If yes, which one?
-                <p> <b> ${values.get("compliance")} </p>
-
-                <g:if test="${values.get("textCompliance")}">
-                    <p>Regulatory compliance:  ${values.get("textCompliance")}</p>
-                </g:if>
-
-            </li>
-            <li> Does this data require additional protections beyond Broad's standard data security measures? If yes, please explain.
-               <p> <b> ${values.get("sensitive")} </p>
-
-               <g:if test="${values.get("textSensitive")}">
-                  <p>Explanation: ${values.get("textSensitive")} </p>
-               </g:if>
-
-            </li>
-            <li> Will the data collected or generated as part of this project be made available in an unrestricted/open-access environment (e.g. publicly available on the internet, shared via an open access repository such as GEO, etc)? If yes, please explain.
-               <p> <b> ${values.get("accessible")}</p>
-
-               <g:if test="${values.get("textAccessible")}">
-                  <p>Explanation:  ${values.get("textAccessible")} </p>
-               </g:if>
-
-            </li>
-        </ol>
-    </div>
-<p>
-    If you have any questions or concerns, please contact our colleague who created this ${values.get("type")} and is cc’d on this email.
+    ORSP has been alerted that the samples/data described in this project, ${values.get("type")} <a href="${issueLink}">${issue.summary}</a>
+     may require additional data protection services from your group.
 </p>
 <p>
     Thank you,

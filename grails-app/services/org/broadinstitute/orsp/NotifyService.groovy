@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import grails.gsp.PageRenderer
 import grails.util.Environment
 import grails.web.mapping.LinkGenerator
@@ -470,29 +471,24 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, String type) {
-        Map<String, String> values = new HashMap<>()
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user) {
+        Boolean valid = false
         Map<Boolean, String> result = new HashMap<>()
 
         if (getValue(issue.getPII()) == YES) {
-            values.put(IssueExtraProperty.PII, getValue(issue.getPII()))
+            valid = true
         }
         if (getValue(issue.getCompliance()) == YES || getValue(issue.getCompliance()) == UNCERTAIN) {
-            values.put(IssueExtraProperty.COMPLIANCE, getValue(issue.getCompliance()))
-            if (StringUtils.isNotEmpty(issue.getTextCompliance()))
-                values.put(IssueExtraProperty.TEXT_COMPLIANCE, issue.getTextCompliance())
-        }
-        if (getValue(issue.getSharingType()) == YES) {
-            values.put(IssueExtraProperty.SHARING_TYPE, getValue(issue.getSharingType()))
+            valid = true
         }
         if (issue.getTextCompliance() == TEXT_SHARING_OPEN || issue.getTextCompliance() == TEXT_SHARING_BOTH) {
-            if (StringUtils.isNotEmpty(issue.getTextSharingType()))
-                values.put(IssueExtraProperty.TEXT_SHARING_TYPE, issue.getTextSharingType())
+            valid = true
+        }
+        if (getValue(issue.getSharingType()) == YES) {
+            valid = true
         }
 
-        values.put('type', type)
-
-        if (values.size() >= 2) {
+        if (valid) {
             NotifyArguments arguments =
                     new NotifyArguments(
                             toAddresses: Collections.singletonList(getSecurityRecipient()),
@@ -500,8 +496,7 @@ class NotifyService implements SendgridSupport, Status {
                             ccAddresses: Collections.singletonList(user.getEmailAddress()),
                             subject: issue.projectKey + " - Required InfoSec Follow-up",
                             user: user,
-                            issue: issue,
-                            values: values)
+                            issue: issue)
 
             arguments.view = "/notify/generalInfo"
             Mail mail = populateMailFromArguments(arguments)
@@ -520,9 +515,6 @@ class NotifyService implements SendgridSupport, Status {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
-        if (Boolean.valueOf(issue.getMTA())) {
-            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
-        }
         if (type != ProjectCGTypes.PROJECT.name && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
@@ -558,26 +550,17 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
-    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user, String type) {
-        Map<String, String> values = new HashMap<>()
+    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user) {
         Map<Boolean, String> result = new HashMap<>()
 
         if (Boolean.valueOf(issue.getMTA())) {
-            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
-        }
-
-        values.put('type', type)
-
-        if (values.size() >= 2) {
             NotifyArguments arguments =
                     new NotifyArguments(
                             toAddresses: Collections.singletonList(user.getEmailAddress()),
                             fromAddress: getDefaultFromAddress(),
                             ccAddresses: Collections.singletonList(getAgreementsRecipient()),
                             subject: issue.projectKey + " - Required OSAP Follow-up",
-                            user: user,
-                            issue: issue,
-                            values: values)
+                            issue: issue)
             arguments.view = "/notify/requirements"
             Mail mail = populateMailFromArguments(arguments)
             result = sendMail(mail, getApiKey(), getSendGridUrl())
@@ -638,7 +621,7 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> consentGroupCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendRequirementsInfoConsentGroup(issue, user, IssueType.CONSENT_GROUP.name)
+        sendRequirementsInfoConsentGroup(issue, user)
         sendSecurityInfo(issue, user, IssueType.CONSENT_GROUP.name)
     }
 }
