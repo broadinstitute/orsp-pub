@@ -559,9 +559,9 @@ class NotifyService implements SendgridSupport, Status {
         if (Boolean.valueOf(issue.getMTA())) {
             NotifyArguments arguments =
                     new NotifyArguments(
-                            toAddresses: Collections.singletonList(user.getEmailAddress()),
+                            toAddresses: Collections.singletonList(getAgreementsRecipient()),
                             fromAddress: getDefaultFromAddress(),
-                            ccAddresses: Collections.singletonList(getAgreementsRecipient()),
+                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
                             subject: issue.projectKey + " - Required OSAP Follow-up",
                             user: user,
                             issue: issue)
