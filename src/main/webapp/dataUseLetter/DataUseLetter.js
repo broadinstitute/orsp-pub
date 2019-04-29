@@ -587,7 +587,7 @@ class DataUseLetter extends Component {
     let restriction = {
       consentGroupKey: this.state.formData.consentGroupKey,
       consentPIName: this.state.formData.principalInvestigator,
-      generalUse: this.state.formData.primaryRestrictions === 'generalUse' ? "Yes" : "No",
+      generalUse: this.state.formData.primaryRestrictions === 'generalUse' ||  this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
       hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' ? "Yes" : "No",
       diseaseRestrictions: diseaseRestrictions,
       populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : null,
