@@ -588,7 +588,7 @@ class DataUseLetter extends Component {
       consentGroupKey: this.state.formData.consentGroupKey,
       consentPIName: this.state.formData.principalInvestigator,
       generalUse: this.state.formData.primaryRestrictions === 'generalUse' ? "Yes" : "No",
-      hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' || this.state.formData.primaryRestrictions === 'noRestrictions' ? "Yes" : "No",
+      hmbResearch: this.state.formData.primaryRestrictions === 'researchRestricted' ? "Yes" : "No",
       diseaseRestrictions: diseaseRestrictions,
       populationOriginsAncestry: this.state.formData.primaryRestrictions === 'researchRestricted' || hasDiseases ? "Yes" : null,
       commercialUseExcluded: this.state.formData.commercialPurposes === 'true' || this.state.formData.commercialPurposes === true ? "Yes" : "No",
