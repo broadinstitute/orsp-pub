@@ -6,7 +6,7 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpEncoders
-import liquibase.util.StringUtils
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
@@ -16,6 +16,7 @@ import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.jsoup.Jsoup
 import org.jsoup.examples.HtmlToPlainText
 import org.springframework.http.MediaType
+import org.springframework.util.CollectionUtils
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -422,9 +423,8 @@ class ConsentService implements Status {
                 dataUseRestriction.controlSetOption.equalsIgnoreCase("Yes") ? summary.add(NCTRL_POS) : summary.add(NCTRL_NEG)
         if (dataUseRestriction.gender?.equalsIgnoreCase(MALE)) summary.add(RS_M_POS)
         if (dataUseRestriction.gender?.equalsIgnoreCase(FEMALE)) summary.add(RS_FM_POS)
-        if (dataUseRestriction.populationRestrictions) {
-           if(StringUtils.isNotEmpty(dataUseRestriction.other))
-               summary.add(sprintf(RS_POP, dataUseRestriction.other))
+        if (!CollectionUtils.isEmpty(dataUseRestriction.populationRestrictions)) {
+           summary.add(sprintf(RS_POP, dataUseRestriction.populationRestrictions.join(",")))
         }
         if (dataUseRestriction.pediatricLimited) summary.add(RS_PD_POS)
         if (dataUseRestriction.dateRestriction) {
