@@ -10,7 +10,6 @@ import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.consent.DataUseDTO
-import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.jsoup.Jsoup
@@ -57,7 +56,7 @@ class ConsentService implements Status {
     public static final String NCTRL_NA = "Restrictions for use as a control set for diseases other than those defined were not specified."
     public static final String RS_M_POS = "Data use is limited to research on males. [RS-M]"
     public static final String RS_FM_POS = "Data use is limited to research on females. [RS-FM]"
-    public static final String RS_POS = "Data use is limited to research on population. [RS]"
+    public static final String RS_POS = "Data Use is limited to research on the following ethnic or geographic population. [RS]"
     public static final String RS_PD_POS = "Data use is limited to pediatric research. [RS-PD]"
     public static final String DATE_POS = "Data distributor must verify that data from samples collected before %s will not be shared."
     public static final String AGGREGATE_POS = "Aggregate level data for general research use is prohibited."

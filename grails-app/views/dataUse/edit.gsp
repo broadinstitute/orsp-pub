@@ -281,8 +281,6 @@
                               id="controlSetOptionUnspecified"
                               <g:if test="${restriction.controlSetOption?.equals("Unspecified") && !create}">checked</g:if>
                               value="Unspecified">Unspecified                <tr>
-                    <th>Data is available for future general research use</th>
-                    <td>${restriction.generalUse ? "Yes" : "No"}</td>
                 </tr></label>
             </span>
         </div>
@@ -330,8 +328,8 @@
             <hr/>
 
             <span>
-                <label for="populationRestrictions">Future use is limited to research involving a specific population
-                [<abbr title="Use of the data is limited to tudies of particular population.">RS-POP</abbr>]</label>
+                <label for="populationRestrictions">Research in the following ethnic or geographic population:
+                [<abbr title="Use of the data is limited to studies of particular population.">RS</abbr>]</label>
                 <textarea id="populationRestrictionsFreeText" name="populationRestrictions" class="form-control editor" rows="3">${restriction.populationRestrictions}</textarea>
                 <br />
 
