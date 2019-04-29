@@ -43,10 +43,6 @@ class FileHelperController extends AuthenticatedController{
                     persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Document Added", EventType.UPLOAD_DOCUMENT)
                 }
             }
-            if (params.isNewIssue.toBoolean()) {
-                notifyService.projectCGCreation(issue)
-            }
-
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
             response.status = 500

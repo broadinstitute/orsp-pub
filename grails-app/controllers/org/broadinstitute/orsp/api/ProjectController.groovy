@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
@@ -37,6 +38,7 @@ class ProjectController extends AuthenticatedController {
         Issue issue = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
         handleIntake(issue.projectKey)
         persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
+        notifyService.projectCreation(issue)
         issue.status = 201
         render([message: issue] as JSON)
     }
@@ -44,7 +46,6 @@ class ProjectController extends AuthenticatedController {
     def modifyExtraProperties() {
         String projectKey = params.id
         Object input = IssueUtils.getJson(Object.class, request.JSON)
-
         try {
             Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
             render([message: updatedIssue] as JSON)
@@ -52,7 +53,6 @@ class ProjectController extends AuthenticatedController {
             response.status = 500
             render([error: e.message] as JSON)
         }
-
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
@@ -91,6 +91,9 @@ class ProjectController extends AuthenticatedController {
         Issue issue = Issue.findByProjectKey(params.projectKey)
         try {
             issueService.updateIssue(issue, project)
+            if (project.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+                notifyService.sendProjectStatusNotification((String)project.get(IssueExtraProperty.PROJECT_STATUS), issue)
+            }
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {

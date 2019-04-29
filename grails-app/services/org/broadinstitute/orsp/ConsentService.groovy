@@ -49,9 +49,14 @@ class ConsentService implements Status {
     public static final String NMDS_POS = "Data use for methods development research ONLY within the bounds of other data use limitations. [NMDS]"
     public static final String NMDS_NEG = "Data use for methods development research irrespective of the specified data use limitations is not prohibited."
     public static final String NMDS_NA = NMDS_NEG
+
+
     public static final String NCTRL_POS = "Future use as a control set for diseases other than those specified is prohibited. [NCTRL]"
     public static final String NCTRL_NEG = "Future use as a control set for any type of health/medical/biomedical study is not prohibited."
     public static final String NCTRL_NA = "Restrictions for use as a control set for diseases other than those defined were not specified."
+
+
+
     public static final String RS_M_POS = "Data use is limited to research on males. [RS-M]"
     public static final String RS_FM_POS = "Data use is limited to research on females. [RS-FM]"
     public static final String RS_POS = "Data use is limited to research on population ontology ID(s): %s [RS]"
