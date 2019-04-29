@@ -91,12 +91,13 @@ class NewConsentGroup extends Component {
     )
   }
 
-  submitNewConsentGroup = () => {
+  submitNewConsentGroup = async () => {
 
     spinnerService.showAll();
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
+      let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
       this.removeErrorMessage();
 
       this.changeSubmitState();
@@ -132,26 +133,6 @@ class NewConsentGroup extends Component {
       prev.formSubmitted = !prev.formSubmitted;
       return prev;
     });
-  };
-
-  uploadFiles = async (projectKey) => {
-    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
-    if (this.state.files !== null && this.state.files.length > 0) {
-      Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
-        .then(resp => {
-          spinnerService.hideAll();
-          this.setState(prev => {
-            prev.formSubmitted = true;
-            return prev;
-          });
-        }).catch(error => {
-          spinnerService.hideAll();
-          this.changeSubmitState();
-          this.toggleSubmitError();
-        });
-    } else {
-      window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
-    }
   };
 
   toggleSubmitError = () => {
