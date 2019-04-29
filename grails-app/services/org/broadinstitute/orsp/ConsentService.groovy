@@ -6,7 +6,6 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpEncoders
-import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
@@ -16,7 +15,6 @@ import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.jsoup.Jsoup
 import org.jsoup.examples.HtmlToPlainText
 import org.springframework.http.MediaType
-import org.springframework.util.CollectionUtils
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -56,8 +54,7 @@ class ConsentService implements Status {
     public static final String NCTRL_NA = "Restrictions for use as a control set for diseases other than those defined were not specified."
     public static final String RS_M_POS = "Data use is limited to research on males. [RS-M]"
     public static final String RS_FM_POS = "Data use is limited to research on females. [RS-FM]"
-    public static final String RS_POS = "Data use is limited to research on population ontology ID(s): %s [RS]"
-    public static final String RS_POP = "Data Use is limited to research on the following ethnic or geographic population: %s [RS]"
+    public static final String RS_POS = "Data Use is limited to research on the following ethnic or geographic population: %s [RS]"
     public static final String RS_PD_POS = "Data use is limited to pediatric research. [RS-PD]"
     public static final String DATE_POS = "Data distributor must verify that data from samples collected before %s will not be shared."
     public static final String AGGREGATE_POS = "Aggregate level data for general research use is prohibited."
@@ -423,8 +420,8 @@ class ConsentService implements Status {
                 dataUseRestriction.controlSetOption.equalsIgnoreCase("Yes") ? summary.add(NCTRL_POS) : summary.add(NCTRL_NEG)
         if (dataUseRestriction.gender?.equalsIgnoreCase(MALE)) summary.add(RS_M_POS)
         if (dataUseRestriction.gender?.equalsIgnoreCase(FEMALE)) summary.add(RS_FM_POS)
-        if (!CollectionUtils.isEmpty(dataUseRestriction.populationRestrictions)) {
-           summary.add(sprintf(RS_POP, dataUseRestriction.populationRestrictions.join(",")))
+        if (dataUseRestriction.populationRestrictions) {
+           summary.add(sprintf(RS_POS, dataUseRestriction.populationRestrictions.join(",")))
         }
         if (dataUseRestriction.pediatricLimited) summary.add(RS_PD_POS)
         if (dataUseRestriction.dateRestriction) {
