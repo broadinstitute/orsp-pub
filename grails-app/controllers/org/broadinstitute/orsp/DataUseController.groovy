@@ -88,9 +88,14 @@ class DataUseController extends AuthenticatedController {
             restriction.gender = null
         }
         restriction.controlSetOption = params.controlSetOption
-        restriction.populationRestrictions = params.populationRestrictions
-        if (!restriction.populationRestrictions.isEmpty()) {
-            restriction.manualReview = "true"
+        restriction.populationRestrictions = new ArrayList<>()
+        if (params.populationRestrictions) {
+            if (params.populationRestrictions instanceof String[]) {
+                restriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
+            }
+            else if (!params.populationRestrictions.isEmpty()) {
+                restriction.populationRestrictions.add(params.populationRestrictions)
+            }
         }
         restriction.pediatricLimited = getBooleanForParam(params.pediatric)
         restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
@@ -179,9 +184,4 @@ class DataUseController extends AuthenticatedController {
         grailsApplication.config.consent.service.url
     }
 
-    def getAllOntologies() {
-        consentService.populationOntologyToString()
-        response.status = 200
-        render(['population restrictions updated'] as JSON)
-    }
 }

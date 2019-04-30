@@ -56,7 +56,7 @@ class ConsentService implements Status {
     public static final String NCTRL_NA = "Restrictions for use as a control set for diseases other than those defined were not specified."
     public static final String RS_M_POS = "Data use is limited to research on males. [RS-M]"
     public static final String RS_FM_POS = "Data use is limited to research on females. [RS-FM]"
-    public static final String RS_POS = "Data Use is limited to research on the following ethnic or geographic population. [RS]"
+    public static final String RS_POS = "Data use is limited to research on population ontology ID(s): %s [RS]"
     public static final String RS_PD_POS = "Data use is limited to pediatric research. [RS-PD]"
     public static final String DATE_POS = "Data distributor must verify that data from samples collected before %s will not be shared."
     public static final String AGGREGATE_POS = "Aggregate level data for general research use is prohibited."
@@ -423,7 +423,12 @@ class ConsentService implements Status {
                 dataUseRestriction.controlSetOption.equalsIgnoreCase("Yes") ? summary.add(NCTRL_POS) : summary.add(NCTRL_NEG)
         if (dataUseRestriction.gender?.equalsIgnoreCase(MALE)) summary.add(RS_M_POS)
         if (dataUseRestriction.gender?.equalsIgnoreCase(FEMALE)) summary.add(RS_FM_POS)
-        if (dataUseRestriction.populationRestrictions)  summary.add(RS_POS)
+        if (dataUseRestriction.populationRestrictions) {
+            Collection<String> popRestrictions = dataUseRestriction.populationRestrictions.
+                findAll { !it.empty }.
+                collect { getTrimmedIdFromPopulation(ontologyService.getOntologyClass(Ontology.POPULATION, it)?.id) }
+            summary.add(sprintf(RS_POS, popRestrictions.join(", ")))
+        }
         if (dataUseRestriction.pediatricLimited) summary.add(RS_PD_POS)
         if (dataUseRestriction.dateRestriction) {
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy")
@@ -491,15 +496,4 @@ class ConsentService implements Status {
         summary
     }
 
-    def populationOntologyToString() {
-        Collection<DataUseRestriction> dataUseRestrictionCollection = queryService.getAllDataUseRestrictions()
-        dataUseRestrictionCollection.collect {
-            dataUse ->
-                String populationOntology = queryService.getPopulationRestrictionsOntology(dataUse.id)?.join(', ')
-                if (dataUse.populationRestrictions != null) {
-                    dataUse.populationRestrictions = populationOntology
-                    dataUse.save(flush: true)
-                }
-        }
-    }
 }

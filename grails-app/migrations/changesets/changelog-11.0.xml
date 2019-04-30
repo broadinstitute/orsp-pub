@@ -19,9 +19,6 @@
             <column name="genomic_summary_results" type="TEXT" defaultValue="null">
                 <constraints nullable="true" />
             </column>
-            <column name="population_restrictions" type="TEXT" defaultValue="null">
-                <constraints nullable="true" />
-            </column>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

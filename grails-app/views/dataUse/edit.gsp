@@ -328,11 +328,28 @@
             <hr/>
 
             <span>
-                <label for="populationRestrictions">Research in the following ethnic or geographic population:
-                [<abbr title="Use of the data is limited to studies of particular population.">RS</abbr>]</label>
-                <textarea id="populationRestrictionsFreeText" name="populationRestrictions" class="form-control editor" rows="3">${restriction.populationRestrictions}</textarea>
-                <br />
-
+                <label for="populationRestrictions">Future use is limited to research involving a specific population
+                                [<abbr title="Use of the data is limited to tudies of particular population.">RS-POP</abbr>]</label>
+                                <span class="badge addPopulationRestriction"><span class="glyphicon glyphicon-plus"></span></span>
+                                <g:if test="${restriction.populationRestrictions}">
+                                    <g:each in="${restriction.populationRestrictions}" var="classId">
+                                        <div class="input-group">
+                                            <input type="text"
+                                                   class="form-control populationAutocomplete"
+                                                   id="populationRestrictions_${classId}"
+                                                   name="populationRestrictions"
+                                                   value="${classId}"/>
+                                            <div class="input-group-addon removeRestriction" title="Remove">Remove</div>
+                                        </div>
+                                    </g:each>
+                                </g:if>
+                                <g:else>
+                                    <input type="text"
+                                           class="form-control populationAutocomplete"
+                                           id="populationRestrictions"
+                                           name="populationRestrictions"/>
+                                </g:else>
+            </span>
         </div>
         <h4> Terms of Use </h4>
 

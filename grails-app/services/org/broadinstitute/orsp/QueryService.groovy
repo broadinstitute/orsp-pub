@@ -1113,24 +1113,4 @@ class QueryService implements Status {
 
         documents
     }
-
-    Collection<DataUseRestriction> getAllDataUseRestrictions() {
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final String query = 'select * from data_use_restriction'
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final dataUseRestrictionsIds = sqlQuery.with {
-            addEntity(DataUseRestriction)
-            list()
-        }
-        dataUseRestrictionsIds
-    }
-
-    Collection<String> getPopulationRestrictionsOntology(Long dataUseRestrictionId) {
-        final String query =
-                ' select population_restrictions_string ' +
-                        'from data_use_restriction_population_restrictions ' +
-                        'where data_use_restriction_id = :restrictionId'
-        getSqlConnection().rows(query, ["restrictionId": dataUseRestrictionId]).collect { it.get("population_restrictions_string").toString() }
-    }
 }

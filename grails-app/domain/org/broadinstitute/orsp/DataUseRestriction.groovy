@@ -20,7 +20,7 @@ class DataUseRestriction {
     @Deprecated
     Boolean controlSetExcluded
     String controlSetOption // new version of controlSetExcluded that is a string, so can be unspecified
-    String populationRestrictions
+    List<String> populationRestrictions
     Boolean pediatricLimited
     Date dateRestriction
     Boolean recontactingDataSubjects
@@ -81,7 +81,7 @@ class DataUseRestriction {
         vaultConsentLocation nullable: true
     }
 
-    static hasMany = [diseaseRestrictions: String]
+    static hasMany = [diseaseRestrictions: String, populationRestrictions: String]
 
     String getConsentUrl(String serviceUrl) {
         serviceUrl + "/" + vaultConsentId
