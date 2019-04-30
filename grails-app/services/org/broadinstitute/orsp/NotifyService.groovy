@@ -20,6 +20,14 @@ class NotifyService implements SendgridSupport, Status {
     UserService userService
     NotifyConfiguration notifyConfiguration
 
+    private static final String YES = "Yes"
+    private static final String UNCERTAIN = "Uncertain"
+    private static final String TEXT_SHARING_BOTH = "both"
+    private static final String TEXT_SHARING_OPEN = "open"
+    private static final String APPROVED ="Approved"
+    private static final String CLOSED = "Closed"
+    private static final String DISAPPROVED = "Disapproved"
+
     String getDefaultRecipient() {
         notifyConfiguration.defaultRecipient
     }
@@ -467,13 +475,11 @@ class NotifyService implements SendgridSupport, Status {
      */
     Map<Boolean, String> sendSecurityInfo(Issue issue, User user) {
         Map<Boolean, String> result = new HashMap<>()
-        Boolean sendEmail = false;
+        Boolean sendEmail = false
         if (getValue(issue.getPII()) == YES ||
                 getValue(issue.getCompliance()) == YES ||
                 getValue(issue.getCompliance()) == UNCERTAIN ||
-                getValue(issue.getSharingType()) ||
-                ((issue.getTextCompliance() == TEXT_SHARING_OPEN || issue.getTextCompliance() == TEXT_SHARING_BOTH) &&
-                        StringUtils.isNotEmpty(issue.getTextSharingType()))) {
+                issue.getSharingType() == TEXT_SHARING_OPEN || issue.getSharingType() == TEXT_SHARING_BOTH) {
             sendEmail = true
         }
         if (sendEmail) {
@@ -484,8 +490,7 @@ class NotifyService implements SendgridSupport, Status {
                             ccAddresses: Collections.singletonList(user.getEmailAddress()),
                             subject: issue.projectKey + " - Required InfoSec Follow-up",
                             user: user,
-                            issue: issue,
-                            values: values)
+                            issue: issue)
 
             arguments.view = "/notify/generalInfo"
             Mail mail = populateMailFromArguments(arguments)
@@ -569,8 +574,9 @@ class NotifyService implements SendgridSupport, Status {
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: [],
-                subject: issue.projectKey + "- Your ORSP submission has been approved",
-                issue: issue
+                subject: issue.projectKey + " - Your ORSP submission has been approved",
+                issue: issue,
+                user:  userService.findUser(issue.reporter)
         )
         arguments.view = "/notify/approval"
         Mail mail = populateMailFromArguments(arguments)
@@ -584,8 +590,9 @@ class NotifyService implements SendgridSupport, Status {
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: [],
-                subject: issue.projectKey + "- Your ORSP submission has been approved",
-                issue: issue
+                subject: issue.projectKey + " - Your ORSP submission has been disapproved",
+                issue: issue,
+                user:  userService.findUser(issue.reporter)
         )
         arguments.view = "/notify/rejection"
         Mail mail = populateMailFromArguments(arguments)
@@ -600,17 +607,18 @@ class NotifyService implements SendgridSupport, Status {
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: [],
                 subject: "Closed: " + issue.projectKey,
-                issue: issue
+                issue: issue,
+                user:  userService.findUser(issue.reporter)
         )
       sendClosed(arguments)
     }
 
     def sendProjectStatusNotification(String type, Issue issue) {
-        if (type == "Approved") {
+        if (type?.equals(APPROVED)) {
             sendApprovedNotification(issue)
-        } else if ("Disapproved") {
+        } else if (type?.equals(DISAPPROVED)) {
             sendRejectionProjectNotification(issue)
-        } else if ("Closed") {
+        } else if (type?.equals(CLOSED)) {
             sendClosedProjectNotification(issue)
         }
     }
@@ -638,9 +646,9 @@ class NotifyService implements SendgridSupport, Status {
         sendAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(
                 new NotifyArguments(
-                        toAddresses: getOrspSpecialRecipients(),
-                        fromAddress: user?.emailAddress,
-                        ccAddresses: [user?.emailAddress],
+                        toAddresses:  [user?.emailAddress],
+                        fromAddress: getDefaultFromAddress(),
+                        ccAddresses: [],
                         subject: "Project Submission Received by ORSP: " + issue.projectKey,
                         issue: issue,
                         user: user

@@ -78,7 +78,6 @@ class NewProject extends Component {
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
     this.isValid = this.isValid.bind(this);
     this.submitNewProject = this.submitNewProject.bind(this);
-    this.uploadFiles = this.uploadFiles.bind(this);
     this.removeErrorMessage = this.removeErrorMessage.bind(this);
     this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
     this.toggleTrueSubmitError = this.toggleTrueSubmitError.bind(this);
@@ -104,17 +103,25 @@ class NewProject extends Component {
 
   submitNewProject = () => {
     this.toggleFalseSubmitError();
-
     spinnerService.showAll();
     if (this.validateForm()) {
       this.changeStateSubmitButton();
-      Project.createProject(this.props.createProjectURL, this.getProject()).then(resp => {
-        this.uploadFiles(resp.data.message.projectKey);
-      }).catch(error => {
-        this.changeStateSubmitButton();
-        this.toggleTrueSubmitError();
-        spinnerService.hideAll();
-        console.error(error);
+      Project.createProject(
+        this.props.createProjectURL, 
+        this.getProject(),
+        this.state.files,
+        this.state.user.displayName,
+        this.state.user.userName
+        ).then(resp => {
+          Project.getProjectType(this.props.serverURL, resp.data.message.projectKey).
+          then(projectType => {
+            window.location.href = [this.props.serverURL, projectType, "show", resp.data.message.projectKey, "?tab=review&new"].join("/");
+          })
+        }).catch(error => {
+          this.changeStateSubmitButton();
+          this.toggleTrueSubmitError();
+          spinnerService.hideAll();
+          console.error(error);
       });
     } else {
       this.setState(prev => {
@@ -467,25 +474,6 @@ class NewProject extends Component {
       return prev;
     })
   };
-
-  uploadFiles = async (projectKey) => {
-    let projectType = await Project.getProjectType(this.props.serverURL, projectKey);
-    if (this.state.files !== null && this.state.files.length > 0) {
-      Files.upload(this.props.attachDocumentsURL, this.state.files, projectKey, this.state.user.displayName, this.state.user.userName, true)
-        .then(resp => {
-          // TODO: window.location.href is a temporal way to redirect the user to new project's review page tab. We need to change this after
-          // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
-        }).catch(error => {
-          spinnerService.hideAll();
-          this.toggleTrueSubmitError();
-          this.changeStateSubmitButton();
-          console.error(error);
-        });
-    } else {
-      window.location.href = [this.props.serverURL, projectType, "show", projectKey, "?tab=review&new"].join("/");
-    }
-  }
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
