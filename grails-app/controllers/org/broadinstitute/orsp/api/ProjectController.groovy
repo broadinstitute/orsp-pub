@@ -69,6 +69,7 @@ class ProjectController extends AuthenticatedController {
     def modifyExtraProperties() {
         String projectKey = params.id
         Object input = IssueUtils.getJson(Object.class, request.JSON)
+
         try {
             Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
             render([message: updatedIssue] as JSON)
@@ -76,6 +77,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 500
             render([error: e.message] as JSON)
         }
+
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
