@@ -7,14 +7,14 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
-
-import java.text.SimpleDateFormat
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -123,6 +123,19 @@ class DataUseLetterController extends AuthenticatedController {
             } else {
                 throw new MissingResourceException("Unable to upload empty Data Use Letter pdf.")
             }
+        } catch (Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+    }
+
+    def createSdul() {
+        try {
+            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(request.JSON.consentGroupKey)
+            restriction = DataUseRestrictionParser.fromParams(restriction, request.JSON)
+            dataUseLetterService.createSdul(restriction, getUser()?.displayName)
+            response.status = 200
+            render(response.status)
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
