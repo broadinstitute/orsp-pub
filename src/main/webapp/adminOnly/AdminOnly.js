@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
+import { INITIAL_REVIEW } from "../util/TypeDescription";
 import { InputTextList } from "../components/InputTextList";
 import { Fundings } from "../components/Fundings";
 import { Spinner } from "../components/Spinner";
@@ -69,7 +70,7 @@ class AdminOnly extends Component {
         formData.projectTitle = issue.data.extraProperties.projectTitle;
         formData.initialDate = issue.data.extraProperties.initialDate;
         formData.sponsor = this.getSponsorArray(issue.data.fundings);
-        formData.initialReviewType = issue.data.extraProperties.initialReviewType;
+        formData.initialReviewType = isEmpty(issue.data.extraProperties.initialReviewType) ? '' : JSON.parse(issue.data.extraProperties.initialReviewType);
         formData.bioMedical = issue.data.extraProperties.bioMedical;
         formData.irbExpirationDate = issue.data.extraProperties.irbExpirationDate;
         formData.projectStatus = issue.data.extraProperties.projectStatus;
@@ -184,7 +185,7 @@ class AdminOnly extends Component {
     form.investigatorFirstName = this.state.formData.investigatorFirstName;
     form.investigatorLastName = this.state.formData.investigatorLastName;
     form.initialDate = this.parseDate(this.state.formData.initialDate);
-    form.initialReviewType = this.state.formData.initialReviewType;
+    form.initialReviewType = JSON.stringify(this.state.formData.initialReviewType);
     form.bioMedical = this.state.formData.bioMedical;
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
@@ -338,13 +339,15 @@ class AdminOnly extends Component {
               edit: false
             })
           ]),
-          InputFieldText({
+          InputFieldSelect({
             id: "initialReviewType",
             name: "initialReviewType",
             label: "Type of Initial Review",
+            options: INITIAL_REVIEW,
             readOnly: !this.state.isORSP,
             value: this.state.formData.initialReviewType,
-            onChange: this.textHandler,
+            onChange: this.handleSelect("initialReviewType"),          
+            placeholder: "Select..."
           }),
           InputFieldRadio({
             id: "bioMedical",
