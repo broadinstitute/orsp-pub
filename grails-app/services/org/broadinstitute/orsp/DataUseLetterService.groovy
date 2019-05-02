@@ -1,7 +1,6 @@
 package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
-import org.broadinstitute.orsp.consent.DataUseRestrictionDTO
 
 class DataUseLetterService {
     QueryService queryService
@@ -43,42 +42,12 @@ class DataUseLetterService {
         }
     }
 
-    DataUseRestriction createSdul(DataUseRestrictionDTO restrictionDTO, String displayName) {
-        Issue consent = queryService.findByKey(restrictionDTO.consentGroupKey)
-        def updatedOrCreated = "Updated"
-        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(restrictionDTO.consentGroupKey)
-        if (restriction == null) {
-            restriction = new DataUseRestriction()
+    DataUseRestriction createSdul(DataUseRestriction restriction, String displayName) {
+        Issue consent = queryService.findByKey(restriction.consentGroupKey)
+        def updatedOrCreated = "Created"
+        if (restriction.id == null) {
             updatedOrCreated = "Created"
         }
-        restriction.consentGroupKey = restrictionDTO.consentGroupKey
-        restriction.consentPIName = restrictionDTO.consentPIName
-        restriction.generalUse = restrictionDTO.generalUse
-        restriction.hmbResearch = restrictionDTO.hmbResearch
-        restriction.manualReview = restrictionDTO.manualReview
-        restriction.diseaseRestrictions = restrictionDTO.diseaseRestrictions
-        restriction.populationOriginsAncestry = restrictionDTO.populationOriginsAncestry
-        restriction.commercialUseExcluded = restrictionDTO.commercialUseExcluded
-        restriction.methodsResearchExcluded = restrictionDTO.methodsResearchExcluded
-        restriction.aggregateResearchResponse = restrictionDTO.aggregateResearchResponse
-        restriction.gender = restrictionDTO.gender
-        restriction.controlSetOption = restrictionDTO.controlSetOption
-        restriction.populationRestrictions = restrictionDTO.populationRestrictions
-        restriction.pediatricLimited = restrictionDTO.pediatric
-        if (restrictionDTO.dateRestriction) {
-            restriction.dateRestriction = Date.parse('MM/dd/yyyy', restrictionDTO.dateRestriction)
-        } else {
-            restriction.dateRestriction = null
-        }
-        restriction.recontactingDataSubjects = restrictionDTO.recontactingDataSubjects
-        restriction.recontactMay = restrictionDTO.recontactMay
-        restriction.recontactMust = restrictionDTO.recontactMust
-        restriction.genomicPhenotypicData = restrictionDTO.genomicPhenotypicData
-        restriction.cloudStorage = restrictionDTO.cloudStorage
-        restriction.irb = restrictionDTO.irb
-        restriction.geographicalRestrictions = restrictionDTO.geographicalRestrictions
-        restriction.other = restrictionDTO.other
-        restriction.comments = restrictionDTO.comments
         if (restriction.save(flush: true)) {
             persistenceService.saveEvent(consent.projectKey, displayName, "Data Use Restriction " + updatedOrCreated, null)
         } else {

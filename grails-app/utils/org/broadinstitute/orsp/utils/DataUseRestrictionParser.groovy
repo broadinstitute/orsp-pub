@@ -1,38 +1,13 @@
-package org.broadinstitute.orsp.consent
+package org.broadinstitute.orsp.utils
 
-import org.broadinstitute.orsp.utils.IssueUtils
+import liquibase.util.StringUtils
+import org.broadinstitute.orsp.DataUseRestriction
 import org.grails.web.json.JSONArray
 
-class DataUseRestrictionDTO {
+class DataUseRestrictionParser {
 
-    String consentGroupKey
-    String consentPIName
-    Boolean generalUse
-    Boolean hmbResearch
-    Boolean manualReview
-    List<String> diseaseRestrictions
-    Boolean populationOriginsAncestry
-    Boolean commercialUseExcluded
-    Boolean methodsResearchExcluded
-    Boolean aggregateResearchResponse
-    String gender
-    String controlSetOption
-    List<String> populationRestrictions
-    Boolean pediatric
-    String dateRestriction
-    Boolean recontactingDataSubjects
-    String recontactMay
-    String recontactMust
-    String genomicPhenotypicData
-    String cloudStorage
-    Boolean irb
-    String geographicalRestrictions
-    String other
-    String comments
-
-
-    static DataUseRestrictionDTO fromParams(Object params){
-        DataUseRestrictionDTO dataUseRestriction = new DataUseRestrictionDTO()
+    static DataUseRestriction fromParams(DataUseRestriction dataUseRestriction, Object params){
+        dataUseRestriction = dataUseRestriction == null ? new DataUseRestriction() : dataUseRestriction
         dataUseRestriction.consentGroupKey = params.consentGroupKey
         dataUseRestriction.consentPIName = params.consentPIName
         dataUseRestriction.generalUse = IssueUtils.getBooleanForParam(params.generalUse)
@@ -67,8 +42,12 @@ class DataUseRestrictionDTO {
                 dataUseRestriction.populationRestrictions.add(params.populationRestrictions)
             }
         }
-        dataUseRestriction.pediatric = IssueUtils.getBooleanForParam(params.pediatric)
-        dataUseRestriction.dateRestriction = params.dateRestriction
+        dataUseRestriction.pediatricLimited = IssueUtils.getBooleanForParam(params.pediatric)
+        if (StringUtils.isNotEmpty(params.dateRestriction)) {
+            dataUseRestriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
+        } else {
+            dataUseRestriction.dateRestriction = null
+        }
 
         dataUseRestriction.recontactingDataSubjects = IssueUtils.getBooleanForParam(params.recontactingDataSubjects)
         dataUseRestriction.recontactMay = params.recontactMay
@@ -89,6 +68,4 @@ class DataUseRestrictionDTO {
         }
         dataUseRestriction
     }
-
 }
-

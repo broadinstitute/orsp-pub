@@ -2,8 +2,8 @@ package org.broadinstitute.orsp
 
 import grails.core.GrailsApplication
 import org.broadinstitute.orsp.consent.ConsentResource
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 
-import org.broadinstitute.orsp.consent.DataUseRestrictionDTO
 
 /**
  * Extend Base Controller with actions specific to Data Use Restrictions.
@@ -54,8 +54,9 @@ class DataUseController extends AuthenticatedController {
     }
 
     def save() {
-        DataUseRestrictionDTO restrictionDTO = DataUseRestrictionDTO.fromParams(params)
-        DataUseRestriction restriction = dataUseLetterService.createSdul(restrictionDTO, getUser()?.displayName)
+        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
+        restriction = DataUseRestrictionParser.fromParams(restriction, params)
+        restriction = dataUseLetterService.createSdul(restriction, getUser()?.displayName)
         if (params.create) {
             redirect(controller: 'consentGroup', action: "show", params: [id: restriction.consentGroupKey, tab: 'documents'])
         } else {

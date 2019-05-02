@@ -7,12 +7,12 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.StorageDocument
-
-import org.broadinstitute.orsp.consent.DataUseRestrictionDTO
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
 
@@ -131,8 +131,9 @@ class DataUseLetterController extends AuthenticatedController {
 
     def createSdul() {
         try {
-            DataUseRestrictionDTO restrictionDTO = DataUseRestrictionDTO.fromParams(request.JSON)
-            dataUseLetterService.createSdul(restrictionDTO, getUser()?.displayName)
+            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(request.JSON.consentGroupKey)
+            restriction = DataUseRestrictionParser.fromParams(restriction, request.JSON)
+            dataUseLetterService.createSdul(restriction, getUser()?.displayName)
             response.status = 200
             render(response.status)
         } catch (Exception e) {
