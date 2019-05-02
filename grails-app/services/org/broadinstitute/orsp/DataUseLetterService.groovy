@@ -4,6 +4,7 @@ import grails.gorm.transactions.Transactional
 
 class DataUseLetterService {
     QueryService queryService
+    PersistenceService persistenceService
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     DataUseLetter generateDul(DataUseLetter input) {
@@ -40,5 +41,20 @@ class DataUseLetterService {
             throw new IllegalArgumentException()
         }
     }
+
+    DataUseRestriction createSdul(DataUseRestriction restriction, String displayName) {
+        Issue consent = queryService.findByKey(restriction.consentGroupKey)
+        def updatedOrCreated = "Created"
+        if (restriction.id == null) {
+            updatedOrCreated = "Created"
+        }
+        if (restriction.save(flush: true)) {
+            persistenceService.saveEvent(consent.projectKey, displayName, "Data Use Restriction " + updatedOrCreated, null)
+        } else {
+            log.error("Unable to save restriction for some reason")
+        }
+        restriction
+    }
+
 
 }
