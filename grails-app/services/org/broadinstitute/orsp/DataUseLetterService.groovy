@@ -1,7 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
-import org.grails.web.json.JSONArray
+import org.broadinstitute.orsp.consent.DataUseRestrictionDTO
 
 class DataUseLetterService {
     QueryService queryService
@@ -43,74 +43,42 @@ class DataUseLetterService {
         }
     }
 
-    DataUseRestriction createSdul(Object params, String displayName) {
-        Issue consent = queryService.findByKey(params.consentGroupKey)
+    DataUseRestriction createSdul(DataUseRestrictionDTO restrictionDTO, String displayName) {
+        Issue consent = queryService.findByKey(restrictionDTO.consentGroupKey)
         def updatedOrCreated = "Updated"
-        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
+        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(restrictionDTO.consentGroupKey)
         if (restriction == null) {
             restriction = new DataUseRestriction()
             updatedOrCreated = "Created"
         }
-        restriction.consentGroupKey = params.consentGroupKey
-        restriction.consentPIName = params.consentPIName
-        restriction.generalUse = getBooleanForParam(params.generalUse)
-        restriction.hmbResearch = getBooleanForParam(params.hmbResearch)
-        restriction.manualReview = getBooleanForParam(params.manualReview)
-
-        restriction.diseaseRestrictions = new ArrayList<>()
-        if (params.diseaseRestrictions) {
-            if (params.diseaseRestrictions instanceof String[] || params.diseaseRestrictions instanceof JSONArray) {
-                restriction.diseaseRestrictions.addAll(params.diseaseRestrictions.findAll { !it.isEmpty() })
-            }
-            else if (!params.diseaseRestrictions.isEmpty()) {
-                restriction.setDiseaseRestrictions(Collections.singletonList((String) params.diseaseRestrictions))
-            }
-        }
-        restriction.populationOriginsAncestry = getBooleanForParam(params.populationOriginsAncestry)
-        restriction.commercialUseExcluded = getBooleanForParam(params.commercialUseExcluded)
-        restriction.methodsResearchExcluded = getBooleanForParam(params.methodsResearchExcluded)
-        restriction.aggregateResearchResponse = getBooleanForParam(params.aggregateResearchResponse)
-        if (params.gender) {
-            if (params.gender.equals("NA")) restriction.gender = null
-            else restriction.gender = params.gender
-        } else {
-            restriction.gender = null
-        }
-        restriction.controlSetOption = params.controlSetOption
-        restriction.populationRestrictions = new ArrayList<>()
-        if (params.populationRestrictions) {
-            if (params.populationRestrictions instanceof String[]) {
-                restriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
-            }
-            else if (!params.populationRestrictions.isEmpty()) {
-                restriction.populationRestrictions.add(params.populationRestrictions)
-            }
-        }
-        restriction.pediatricLimited = getBooleanForParam(params.pediatric)
-        if (params.dateRestriction) {
-            restriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
+        restriction.consentGroupKey = restrictionDTO.consentGroupKey
+        restriction.consentPIName = restrictionDTO.consentPIName
+        restriction.generalUse = restrictionDTO.generalUse
+        restriction.hmbResearch = restrictionDTO.hmbResearch
+        restriction.manualReview = restrictionDTO.manualReview
+        restriction.diseaseRestrictions = restrictionDTO.diseaseRestrictions
+        restriction.populationOriginsAncestry = restrictionDTO.populationOriginsAncestry
+        restriction.commercialUseExcluded = restrictionDTO.commercialUseExcluded
+        restriction.methodsResearchExcluded = restrictionDTO.methodsResearchExcluded
+        restriction.aggregateResearchResponse = restrictionDTO.aggregateResearchResponse
+        restriction.gender = restrictionDTO.gender
+        restriction.controlSetOption = restrictionDTO.controlSetOption
+        restriction.populationRestrictions = restrictionDTO.populationRestrictions
+        restriction.pediatricLimited = restrictionDTO.pediatric
+        if (restrictionDTO.dateRestriction) {
+            restriction.dateRestriction = Date.parse('MM/dd/yyyy', restrictionDTO.dateRestriction)
         } else {
             restriction.dateRestriction = null
         }
-        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
-        restriction.recontactMay = params.recontactMay
-        restriction.recontactMust = params.recontactMust
-        restriction.genomicPhenotypicData = params.genomicPhenotypicData
-        restriction.cloudStorage = params.cloudStorage
-        restriction.irb = getBooleanForParam(params.irb)
-        restriction.geographicalRestrictions = params.geographicalRestrictions
-
-        if (params.other) {
-            restriction.other = params.other
-        } else {
-            restriction.other = null
-        }
-        if (params.comments) {
-            restriction.comments = params.comments
-        } else {
-            restriction.comments = null
-        }
-
+        restriction.recontactingDataSubjects = restrictionDTO.recontactingDataSubjects
+        restriction.recontactMay = restrictionDTO.recontactMay
+        restriction.recontactMust = restrictionDTO.recontactMust
+        restriction.genomicPhenotypicData = restrictionDTO.genomicPhenotypicData
+        restriction.cloudStorage = restrictionDTO.cloudStorage
+        restriction.irb = restrictionDTO.irb
+        restriction.geographicalRestrictions = restrictionDTO.geographicalRestrictions
+        restriction.other = restrictionDTO.other
+        restriction.comments = restrictionDTO.comments
         if (restriction.save(flush: true)) {
             persistenceService.saveEvent(consent.projectKey, displayName, "Data Use Restriction " + updatedOrCreated, null)
         } else {
@@ -119,10 +87,5 @@ class DataUseLetterService {
         restriction
     }
 
-    private Boolean getBooleanForParam(String param) {
-        if ("Yes".equalsIgnoreCase(param) || "true".equalsIgnoreCase(param)) return true
-        if ("No".equalsIgnoreCase(param) || "false".equalsIgnoreCase(param)) return false
-        null
-    }
 
 }

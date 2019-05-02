@@ -564,23 +564,24 @@ class DataUseLetter extends Component {
   }
 
   getDiseases(diseases) {
-    let diseasesResult = [];
-    diseases.map(disease => {
+    return diseases.map(disease => {
       diseasesResult.push(
         disease.key
       );
      });
-    return diseasesResult
   }
 
   getRestriction() {
     let diseaseRestrictions = [];
     let hasDiseases = false;
-    if (this.state.formData.diseaseRestrictedOptions.diseaseDOID.length > 0) {
+    if (this.state.formData.diseaseRestrictedOptions !== null &&
+        this.state.formData.diseaseRestrictedOptions.diseaseDOID !== null &&
+        this.state.formData.diseaseRestrictedOptions.diseaseDOID.length > 0) {
       diseaseRestrictions = [...this.getDiseases(this.state.formData.diseaseRestrictedOptions.diseaseDOID)];
       hasDiseases = true;
     }
-    if (this.state.formData.otherDiseasesID.length > 0) {
+    if (this.state.formData.otherDiseasesID !== null &&
+        this.state.formData.otherDiseasesID.length > 0) {
       diseaseRestrictions = [...this.getDiseases(this.state.formData.otherDiseasesID), ...diseaseRestrictions];
       hasDiseases = true;
     }
@@ -599,6 +600,7 @@ class DataUseLetter extends Component {
       pediatric: this.getPediatricLimited(),
       other: this.state.formData.otherRestrictions,
       manualReview: this.state.formData.ethnic === 'true' || this.state.formData.ethnic === true || !this.isEmpty(this.state.formData.otherRestrictions) ? "Yes" : "No",
+      externalForm: true
     }
     return restriction;
   }

@@ -7,16 +7,14 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
-import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
-import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.StorageDocument
+
+import org.broadinstitute.orsp.consent.DataUseRestrictionDTO
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
-
-import java.text.SimpleDateFormat
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -131,10 +129,15 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
-    def createSdul(){
-        Object params = request.JSON
-        dataUseLetterService.createSdul(params, getUser()?.displayName)
-        response.status = 200
-        render(response.status)
+    def createSdul() {
+        try {
+            DataUseRestrictionDTO restrictionDTO = DataUseRestrictionDTO.fromParams(request.JSON)
+            dataUseLetterService.createSdul(restrictionDTO, getUser()?.displayName)
+            response.status = 200
+            render(response.status)
+        } catch (Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
     }
 }
