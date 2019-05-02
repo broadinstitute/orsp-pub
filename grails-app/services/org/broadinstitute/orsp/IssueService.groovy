@@ -3,7 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import liquibase.util.StringUtils
+import org.apache.commons.lang.StringUtils
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -17,6 +17,7 @@ class IssueService implements UserInfo {
 
     QueryService queryService
     PersistenceService persistenceService
+    NotifyService notifyService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -288,7 +289,9 @@ class IssueService implements UserInfo {
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Issue updateAdminOnlyProperties(Issue issue, Map<String, Object> input) throws DomainException {
+    @Transactional
+    Issue updateAdminOnlyProperties(Map<String, Object> input) throws DomainException {
+        Issue issue = Issue.findByProjectKey(params.projectKey)
         String previousStatus = issue.getApprovalStatus()
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -320,6 +323,10 @@ class IssueService implements UserInfo {
         }
         if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
+        }
+        if (StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS)) &&
+                !previousStatus?.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue)
         }
         issue
     }

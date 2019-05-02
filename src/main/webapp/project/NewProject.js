@@ -136,7 +136,6 @@ class NewProject extends Component {
   toggleTrueSubmitError = () => {
     this.setState(prev => {
       prev.submitError = true;
-      prev.generalError = true;
       return prev;
     });
   };

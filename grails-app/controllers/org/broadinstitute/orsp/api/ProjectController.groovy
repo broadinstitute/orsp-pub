@@ -126,14 +126,8 @@ class ProjectController extends AuthenticatedController {
 
     def updateAdminOnlyProps() {
         Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
-        Issue issue = Issue.findByProjectKey(params.projectKey)
-        String projectStatus = issue.approvalStatus
         try {
-            issueService.updateAdminOnlyProperties(issue, project)
-            if (StringUtils.isNotEmpty(project.get(IssueExtraProperty.PROJECT_STATUS)) &&
-                !projectStatus?.equals(project.get(IssueExtraProperty.PROJECT_STATUS))) {
-                notifyService.sendProjectStatusNotification((String)project.get(IssueExtraProperty.PROJECT_STATUS), issue)
-            }
+            issueService.updateAdminOnlyProperties(project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
