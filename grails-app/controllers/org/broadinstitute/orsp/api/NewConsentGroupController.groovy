@@ -1,5 +1,8 @@
 package org.broadinstitute.orsp.api
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
@@ -13,6 +16,7 @@ import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.springframework.web.multipart.MultipartFile
 
 import javax.ws.rs.core.Response
 
@@ -40,7 +44,13 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def save() {
-        Issue issue = IssueUtils.getJson(Issue.class, request.JSON)
+        List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+        String userName = request.parameterMap["userName"][0].toString()
+        String dataProject = request.parameterMap["dataProject"].toString()
+        String displayName = request.parameterMap["displayName"][0].toString()
+        JsonParser parser = new JsonParser()
+        JsonArray dataProjectJson = parser.parse(dataProject)
+        Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
         Issue source = queryService.findByKey(issue.getSource())
         if(source != null) {
             issue.setRequestDate(new Date())
@@ -70,6 +80,14 @@ class NewConsentGroupController extends AuthenticatedController {
             } catch (Exception e) {
                 flash.error = e.getMessage()
             }
+
+            if (!files.empty) {
+                files.forEach {
+                    storageProviderService.saveMultipartFile(displayName, userName, consent.getProjectKey().toString(), it.contentType, it)
+                }
+            }
+
+            notifyService.consentGroupCreation(issue)
             consent.status = 201
             render([message: consent] as JSON)
         } else {
