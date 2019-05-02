@@ -471,26 +471,16 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, String issueType) {
-        Boolean valid = false
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user) {
         Map<Boolean, String> result = new HashMap<>()
-
-        if (getValue(issue.getPII()) == YES) {
-            valid = true
+        Boolean sendEmail = false
+        if (getValue(issue.getPII()) == YES ||
+                getValue(issue.getCompliance()) == YES ||
+                getValue(issue.getCompliance()) == UNCERTAIN ||
+                issue.getSharingType() == TEXT_SHARING_OPEN || issue.getSharingType() == TEXT_SHARING_BOTH) {
+            sendEmail = true
         }
-        if (getValue(issue.getCompliance()) == YES || getValue(issue.getCompliance()) == UNCERTAIN) {
-            valid = true
-        }
-        if (issue.getTextCompliance() == TEXT_SHARING_OPEN || issue.getTextCompliance() == TEXT_SHARING_BOTH) {
-            valid = true
-        }
-        if (getValue(issue.getSharingType()) == YES) {
-            valid = true
-        }
-
-        if (valid) {
-            Map<String, String> values = new HashMap<>()
-            values.put('type', issueType)
+        if (sendEmail) {
             NotifyArguments arguments =
             new NotifyArguments(
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
@@ -498,7 +488,6 @@ class NotifyService implements SendgridSupport, Status {
                     ccAddresses: Collections.singletonList(user.getEmailAddress()),
                     subject: issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
-                    values: values,
                     issue: issue)
 
             arguments.view = "/notify/generalInfo"
@@ -609,23 +598,11 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> projectCGCreation(Issue issue) {
-        String type = ''
-        User user = userService.findUser(issue.reporter)
-        if (issue.getType() == IssueType.CONSENT_GROUP.name) {
-            type = IssueType.CONSENT_GROUP.name
-        } else {
-            type = ProjectCGTypes.PROJECT.name
-        }
-        sendAdminNotification(type, issue)
-        sendRequirementsInfo(issue, user, type)
-        sendSecurityInfo(issue, user, type)
-    }
 
     Map<Boolean, String> consentGroupCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
         sendRequirementsInfoConsentGroup(issue, user)
-        sendSecurityInfo(issue, user, IssueType.CONSENT_GROUP.name)
+        sendSecurityInfo(issue, user)
     }
 }

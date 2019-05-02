@@ -138,7 +138,6 @@ class NewConsentGroup extends Component {
   toggleSubmitError = () => {
     this.setState(prev => {
       prev.submitError = true;
-      prev.generalError = true;
       return prev;
     });
   };
@@ -492,6 +491,7 @@ class NewConsentGroup extends Component {
           updateForm: this.updateInfoSecurityFormData,
           showErrorInfoSecurity: this.state.showInfoSecurityError,
           generalError: this.state.generalError,
+          submitError: this.state.submitError,
           removeErrorMessage: this.removeErrorMessage,
           handleSecurityValidity: this.handleInfoSecurityValidity,
           currentValue: this.state,

@@ -123,8 +123,9 @@ export const Security = hh(class Security extends Component {
     return (
       WizardStep({
         title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError,
-        errorMessage: !this.props.showErrorInfoSecurity && this.props.generalError ? 'Please check previous steps' : 'Please complete all required fields'
+        error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError || this.props.submitError,
+        errorMessage: !this.props.showErrorInfoSecurity && this.props.generalError ? 
+        'Please check previous steps' : !this.props.submitError ? 'Please complete all required fields' : 'Something went wrong. Please try again.',
       }, [
         div({ className: "questionnaireContainer" }, [
           InputFieldRadio({
