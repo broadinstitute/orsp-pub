@@ -44,7 +44,7 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def save() {
-        Issue source;
+        Issue consent;
         try{
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             String userName = request.parameterMap["userName"][0].toString()
@@ -53,10 +53,10 @@ class NewConsentGroupController extends AuthenticatedController {
             JsonParser parser = new JsonParser()
             JsonArray dataProjectJson = parser.parse(dataProject)
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
-            source = queryService.findByKey(issue.getSource())
+            Issue source = queryService.findByKey(issue.getSource())
             if(source != null) {
                 issue.setRequestDate(new Date())
-                Issue consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
+                consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
                 try {
                     // If any sample collections were linked, we need to add them to the consent group.
@@ -98,8 +98,8 @@ class NewConsentGroupController extends AuthenticatedController {
                 render([message: response] as JSON)
             }
         } catch (Exception e) {
-            if(source != null) {
-                issueService.deleteIssue(source.projectKey)
+            if(consent != null) {
+                issueService.deleteIssue(consent.projectKey)
             }
             response.status = 500
             render([error: e.message] as JSON)
