@@ -567,7 +567,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def sendApprovedNotification(Issue issue) {
+    Map<Boolean, String> sendApprovedNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
         Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
@@ -641,7 +641,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
 
-    def Map<Boolean, String> projectCreation(Issue issue) {
+    Map<Boolean, String> projectCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(

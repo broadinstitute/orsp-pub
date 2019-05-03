@@ -38,21 +38,20 @@ class ProjectController extends AuthenticatedController {
 
     def save() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
-        String userName = request.parameterMap["userName"][0].toString()
+        User user = getUser()
         String dataProject = request.parameterMap["dataProject"].toString()
-        String displayName = request.parameterMap["displayName"][0].toString()
         JsonParser parser = new JsonParser()
         JsonArray dataProjectJson = parser.parse(dataProject)
         String projectKey
         try {
-            Issue project = IssueUtils.getJson(Issue.class, dataProjectJson[0])
-            Issue issue = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
+            Issue parsedIssue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
+            Issue issue = issueService.createIssue(IssueType.valueOfPrefix(parsedIssue.type), parsedIssue)
             handleIntake(issue.projectKey)
-            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
+            persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
             projectKey = issue.projectKey
             if (!files?.isEmpty()) {
                 files.forEach {
-                    storageProviderService.saveMultipartFile(displayName, userName, issue.getProjectKey(), it.contentType, it)
+                    storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.contentType, it)
                 }
             }
             notifyService.projectCreation(issue)

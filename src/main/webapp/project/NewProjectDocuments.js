@@ -105,15 +105,19 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
     let documents = this.props.files;
     let errors = false;
-    
+    let errorMessage = ''
+    if(!this.props.errors.attestation && this.props.generalError) {
+      errorMessage = 'Please check previous steps';
+    } else if (this.props.submitError) {
+      errorMessage =  'Something went wrong. Please try again.';
+    } else {
+      errorMessage = 'Please complete all required fields';
+    }
     return (
 
       WizardStep({
         title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        errorMessage: !this.props.errors.attestation && this.props.generalError ? 
-        'Please check previous steps' : !this.props.submitError ? 
-        'Please complete all required fields' : 
-        'Something went wrong. Please try again.',
+        errorMessage: errorMessage,
         error: this.props.generalError || this.props.errors.attestation || this.props.submitError
       }, [
           div({ className: "questionnaireContainer" }, [
