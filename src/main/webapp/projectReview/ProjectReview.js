@@ -510,7 +510,9 @@ class ProjectReview extends Component {
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
-
+    if(this.state.reviewSuggestion) {
+      project.editsApproved = true;
+    }    
     if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
       project.textSharingType= this.state.formData.projectExtraProps.textSharingType;
     } else {
@@ -634,6 +636,7 @@ class ProjectReview extends Component {
           Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
             this.getReviewSuggestions()
           ).catch(error => {
+            this.getReviewSuggestions()
             this.setState(prev => {
               prev.errorSubmit = true;
               prev.alertMessage = "Something went wrong. Please try again later."
@@ -644,6 +647,7 @@ class ProjectReview extends Component {
           Review.submitReview(this.props.serverURL, data).then(() =>
             this.getReviewSuggestions()
           ).catch(error => {
+            this.getReviewSuggestions()
             this.setState(prev => {
               prev.errorSubmit = true;
               prev.alertMessage = "Something went wrong. Please try again later."

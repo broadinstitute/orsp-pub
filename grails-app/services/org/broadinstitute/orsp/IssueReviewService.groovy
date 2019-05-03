@@ -14,12 +14,14 @@ class IssueReviewService {
     }
 
     @Transactional
-    void delete(String projectKey) throws DomainException {
+    void delete(String projectKey, String type) throws DomainException {
         IssueReview ir = findByProjectKey(projectKey)
         if (ir != null) {
             ir.delete(flush: true)
         }
-        notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey))
+        if (type == 'reject') {
+            notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey))
+        }
     }
 
     IssueReview findByProjectKey(String projectKey) {

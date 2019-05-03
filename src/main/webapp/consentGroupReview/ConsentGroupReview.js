@@ -727,7 +727,9 @@ class ConsentGroupReview extends Component {
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
     consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
     consentGroup.requireMta = this.state.formData.consentExtraProps.requireMta;
-
+    if(this.state.reviewSuggestion) {
+      consentGroup.editsApproved = true;
+    }    
     if (this.state.formData.consentExtraProps.endDate !== null) {
       consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
     }

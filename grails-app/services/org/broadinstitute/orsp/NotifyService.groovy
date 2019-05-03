@@ -570,7 +570,7 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
-    def sendEditsSubmissionNotification(Issue issue) {
+    Map<Boolean, String> sendEditsSubmissionNotification(Issue issue) {
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
@@ -584,7 +584,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def sendEditsApprovedNotification(Issue issue) {
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -599,7 +599,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def sendEditsDisapprovedNotification(Issue issue) {
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         NotifyArguments arguments =
                 new NotifyArguments(
