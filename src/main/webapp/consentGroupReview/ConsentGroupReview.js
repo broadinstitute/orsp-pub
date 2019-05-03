@@ -602,11 +602,27 @@ class ConsentGroupReview extends Component {
           if (this.state.reviewSuggestion) {
             Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
               this.getReviewSuggestions()
-            );
+            ).catch(error => {
+              this.getReviewSuggestions()
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
+            });
           } else {
             Review.submitReview(this.props.serverURL, data).then(() =>
               this.getReviewSuggestions()
-            );
+            ).catch(error => {
+              this.getReviewSuggestions()
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
+            });
           }
         });
       } else {

@@ -31,6 +31,7 @@ class ProjectReview extends Component {
     this.state = {
       isInfoSecurityValid: false,
       generalError: false,
+      errorSubmit: false,
       uploadConsentGroupError: false,
       subjectProtectionError: false,
       descriptionError: false,
@@ -632,11 +633,23 @@ class ProjectReview extends Component {
         if (this.state.reviewSuggestion) {
           Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
             this.getReviewSuggestions()
-          );
+          ).catch(error => {
+            this.setState(prev => {
+              prev.errorSubmit = true;
+              prev.alertMessage = "Something went wrong. Please try again later."
+              return prev;
+            })
+          });
         } else {
           Review.submitReview(this.props.serverURL, data).then(() =>
             this.getReviewSuggestions()
-          );
+          ).catch(error => {
+            this.setState(prev => {
+              prev.errorSubmit = true;
+              prev.alertMessage = "Something went wrong. Please try again later."
+              return prev;
+            })
+          });
         }
       } else {
         this.setState({
@@ -1416,7 +1429,7 @@ class ProjectReview extends Component {
         ]),
         AlertMessage({
           msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',
-          show: this.state.generalError || this.state.showAlert || this.state.showSuccessClarification,
+          show: this.state.generalError || this.state.showAlert || this.state.showSuccessClarification || this.state.errorSubmit,
           type: this.state.alertType !== '' ? this.state.alertType : 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [

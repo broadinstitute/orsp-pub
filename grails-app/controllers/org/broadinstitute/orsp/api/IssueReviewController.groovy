@@ -42,7 +42,7 @@ class IssueReviewController extends AuthenticatedController {
         }
         IssueReview ir = parseIssueReview(gson.toJson(request.JSON))
         issueReviewFormer.suggestions = ir.suggestions
-        issueReviewFormer.save(flush: true)
+        issueReviewService.create(issueReviewFormer)
         response.status = 200
         render([issueReviewFormer] as JSON)
     }
