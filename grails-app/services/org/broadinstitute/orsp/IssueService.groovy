@@ -82,6 +82,7 @@ class IssueService implements UserInfo {
             IssueExtraProperty.INVESTIGATOR_LAST_NAME,
             IssueExtraProperty.INITIAL_DATE,
             IssueExtraProperty.INITIAL_REVIEW_TYPE,
+            IssueExtraProperty.IRB_EXPIRATION_DATE,
             IssueExtraProperty.BIO_MEDICAL,
             IssueExtraProperty.PROJECT_STATUS
     ]
@@ -296,8 +297,11 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.DEGREE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.DEGREE})
         }
-        if (input.containsKey(IssueExtraProperty.INITIAL_DATE)) {
+        if (!input.containsKey(IssueExtraProperty.INITIAL_DATE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INITIAL_DATE})
+        }
+        if (!input.containsKey(IssueExtraProperty.IRB_EXPIRATION_DATE)) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_EXPIRATION_DATE})
         }
         if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS)) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))

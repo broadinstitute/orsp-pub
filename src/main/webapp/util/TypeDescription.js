@@ -25,3 +25,11 @@ export const PREFERRED_IRB = [
   { label: 'Spaulding Rehabilitation Hospital', value: 'spauldingRehabilitationHosp' },
   { label: 'Other', value: 'other' }
 ];
+
+export const INITIAL_REVIEW = [
+  { label: 'Expedited', value: 'Expedited'},
+  { label: 'Exempt', value: 'Exempt'},
+  { label: 'Full Board', value: 'Full Board'},
+  { label: 'Not Human Subjects Research', value: 'Not Human Subjects Research'},
+  { label: 'Not Engaged', value: 'Not Engaged'}
+];

@@ -127,10 +127,10 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row" }, [
               div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                label({ className: "noMargin" }, ["Name"])
+                label({ className: "inputFieldLabel noMargin" }, ["Name"])
               ]),
               div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                label({ className: "noMargin" }, ["Country"])
+                label({ className: "inputFieldLabel noMargin" }, ["Country"])
               ])
             ])
           ]),

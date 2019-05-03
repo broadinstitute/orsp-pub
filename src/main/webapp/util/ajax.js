@@ -215,3 +215,9 @@ export const DUL = {
     return axios.post(serverURL + '/api/dataUseLetter/pdf', uid)
   }
 };
+
+export const DataUse = {
+  createRestriction(serverURL, restriction) {
+    return axios.post(serverURL + '/api/dataUseLetter/restriction', restriction);
+  }  
+} 
