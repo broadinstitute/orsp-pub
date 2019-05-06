@@ -36,6 +36,7 @@ class ProjectDocument extends Component {
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
+      console.log(resp.data);
       this.setState({user: resp.data});
     });
   }

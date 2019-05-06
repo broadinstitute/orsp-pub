@@ -75,7 +75,6 @@ export const Documents = hh(class Documents extends Component {
       showRemoveDocuments: !this.state.showRemoveDocuments,
       documentToRemove: row
     });
-    console.log("veronica")
   };
 
   removeDocument() {
@@ -127,7 +126,8 @@ export const Documents = hh(class Documents extends Component {
         button({
           className: "btn buttonSecondary",
           style: addDocumentBtn,
-          onClick: this.addDocuments
+          onClick: this.addDocuments,
+          isRendered: false
         }, ["Add Document"]),
         Table({
           headers: headers,
@@ -137,6 +137,7 @@ export const Documents = hh(class Documents extends Component {
           handleDialogConfirm: this.props.handleDialogConfirm,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
           isAdmin: this.props.user.isAdmin,
+          isViewer: this.props.user.isViewer,
           reviewFlow: true,
           remove: this.remove
         })
@@ -195,7 +196,8 @@ export const Documents = hh(class Documents extends Component {
               paginationSize: 10,
               unlinkProject: this.props.handleUnlinkProject,
               handleRedirectToProject: this.props.handleRedirectToProject,
-              isAdmin: this.props.user.isAdmin
+              isAdmin: this.props.user.isAdmin,
+              isViewer: this.props.user.isViewer
             })
           ])
         ])

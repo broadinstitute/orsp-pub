@@ -190,7 +190,7 @@ class ProjectReview extends Component {
         current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
-        current.piList = this.getUsersArray(issue.data.pis);
+          current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
@@ -201,12 +201,12 @@ class ProjectReview extends Component {
         this.projectType = issue.data.issue.type;
 
         const intCohortsQuestions = [
-          {key: 'individualDataSourced', answer: null},
-          {key: 'isLinkMaintained', answer: null},
-          {key: 'feeForServiceWork', answer: null},
-          {key: 'areSamplesComingFromEEAA', answer: null},
-          {key: 'isCollaboratorProvidingGoodService', answer: null},
-          {key: 'isConsentUnambiguous', answer: null}
+          { key: 'individualDataSourced', answer: null },
+          { key: 'isLinkMaintained', answer: null },
+          { key: 'feeForServiceWork', answer: null },
+          { key: 'areSamplesComingFromEEAA', answer: null },
+          { key: 'isCollaboratorProvidingGoodService', answer: null },
+          { key: 'isConsentUnambiguous', answer: null }
         ];
 
         let intCohortsAnswers = [];
@@ -242,7 +242,7 @@ class ProjectReview extends Component {
                 return prev;
               });
             } else {
-              formData =  JSON.parse(currentStr);
+              formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -278,8 +278,12 @@ class ProjectReview extends Component {
       });
   }
 
-  isAdmin() {
+  isAdmin = () => {
     return this.props.isAdmin === "true";
+  }
+
+  isViewer = () => {
+    return this.props.isViewer === "true";
   }
 
   parseIntCohorts = () => {
@@ -511,7 +515,7 @@ class ProjectReview extends Component {
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
 
     if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
-      project.textSharingType= this.state.formData.projectExtraProps.textSharingType;
+      project.textSharingType = this.state.formData.projectExtraProps.textSharingType;
     } else {
       project.textSharingType = "";
     }
@@ -982,6 +986,36 @@ class ProjectReview extends Component {
     });
   };
 
+  shouldShowThis = (label) => {
+
+    let resp = false;
+    switch (label) {
+
+      case 'editInformation':
+        resp = this.state.readOnly === true && !this.isViewer();
+        break;
+
+      case 'addNewSampleDC':
+        resp = this.state.readOnly === true && !this.isViewer();
+        break;
+
+      case 'cancel':
+        resp = this.state.readOnly === false;
+        break;
+
+
+
+      case 'submitEdits':
+        /*visible for every user in edit mode and disabled until some edit has been made*/
+        resp = !this.isViewer() && this.state.readOnly === false;
+        break;
+
+      default:
+        resp = false;
+    }
+    return resp;
+  }
+
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
@@ -1034,20 +1068,20 @@ class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true
+          isRendered: this.shouldShowThis('editInformation')
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToNewConsentGroup,
-          isRendered: this.state.readOnly === true,
-        }, ["Add New Consent Group"]),
+          isRendered: this.shouldShowThis('addNewSampleDC')
+        }, ["Add New Sample/Data Cohort"]),
 
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.cancelEdit(),
-          isRendered: this.state.readOnly === false
+          isRendered: this.shouldShowThis('cancel')
         }, ["Cancel"]),
 
         AlertMessage({
@@ -1423,7 +1457,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true
+            isRendered: this.shouldShowThis('editInformation')
           }, ["Edit Information"]),
 
           button({
@@ -1439,7 +1473,7 @@ class ProjectReview extends Component {
             disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
-            isRendered: this.state.readOnly === false
+            isRendered: this.shouldShowThis('submitEdits')
           }, ["Submit Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/

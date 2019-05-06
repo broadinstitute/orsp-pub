@@ -9,6 +9,7 @@
 
 <div class="container col-md-11 row">
 
+<auth:isNotViewer>
     <div class="well">
         <g:form controller="authenticated" action="addComment" role="form">
             <g:hiddenField name="id" value="${issue.projectKey}"/>
@@ -21,6 +22,7 @@
             </div>
         </g:form>
     </div>
+</auth:isNotViewer>
 
     <div>
         <table id="comments-table" class="table table-bordered table-striped table-condensed table-hover">

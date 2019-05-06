@@ -61,6 +61,25 @@ class AuthTagLib {
         }
     }
 
+    /**
+     * Renders the tag body when the user does not have ro_admin role
+     */
+    def isViewer = { attrs, body ->
+        if (SupplementalRole.isViewer(session["roles"] as Collection<String>)) {
+            out << body()
+        }
+    }
+
+    /**
+     * Renders the tag body when the user have ro_admin role
+     */
+    def isNotViewer = { attrs, body ->
+        if (!SupplementalRole.isViewer(session["roles"] as Collection<String>)) {
+            out << body()
+        }
+    }
+
+
     def broadSession = { attributes, body ->
         if (session["user"] && session["isBroad"]) {
             out << body()
