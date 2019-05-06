@@ -561,7 +561,7 @@
             }
         });
 
-        $("[name='irb'], [name='dateRestriction'], [name='cloudStorage'], [name='geographicalRestrictions'], [name='aggregateResearchResponse'], [name='populationRestrictions']").on("change", function() {
+        $("[name='irb'], [name='cloudStorage'], [name='geographicalRestrictions'], [name='aggregateResearchResponse'], [name='populationRestrictions']").on("change", function() {
             setManualReview();
         });
 
@@ -575,7 +575,6 @@
             }
          });
 
-         // TODO agregar NRES a la validación de al menos seleccionar una primary restriction
 
         $("input[name='noRestriction']").on("click", function() {
             if ($("#noRestrictionYes").prop("checked")) {
@@ -715,13 +714,11 @@
     }
 
     function setManualReview(initiate = null) {
-        const dateValue = $("#dateRestriction").prop("value");
         const geographicalResValue = $("#geographicalRestrictions").prop("value");
         const populationRestrictions = $("#populationRestrictions").prop("value");
         const manualReview = "$(restriction.manualReview)";
 
         if (isNotEmpty(populationRestrictions) ||
-            isNotEmpty(dateValue) ||
             $("#cloudStorageYes").prop("checked") ||
             $("#irbYes").prop("checked") ||
             isNotEmpty(geographicalResValue) ||
