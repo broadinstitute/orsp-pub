@@ -54,7 +54,7 @@ class NewConsentGroupController extends AuthenticatedController {
             JsonArray dataProjectJson = parser.parse(dataProject)
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
             Issue source = queryService.findByKey(issue.getSource())
-            if(source != null) {
+            if (source != null) {
                 issue.setRequestDate(new Date())
                 consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
@@ -98,7 +98,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 render([message: response] as JSON)
             }
         } catch (Exception e) {
-            if(consent != null) {
+            if (consent != null) {
                 issueService.deleteIssue(consent.projectKey)
             }
             log.error("There was an error trying to create consent group: " + e.message)

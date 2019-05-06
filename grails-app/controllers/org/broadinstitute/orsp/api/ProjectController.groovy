@@ -77,7 +77,6 @@ class ProjectController extends AuthenticatedController {
             response.status = 500
             render([error: e.message] as JSON)
         }
-        
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
