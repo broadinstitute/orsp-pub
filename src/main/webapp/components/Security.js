@@ -120,12 +120,19 @@ export const Security = hh(class Security extends Component {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
     }
+    let errorMessage = ''
+    if(!this.props.showErrorInfoSecurity && this.props.generalError) {
+      errorMessage = 'Please check previous steps';
+    } else if (this.props.submitError) {
+      errorMessage =  'Something went wrong. Please try again.';
+    } else {
+      errorMessage = 'Please complete all required fields';
+    }
     return (
       WizardStep({
         title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
         error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError || this.props.submitError,
-        errorMessage: !this.props.showErrorInfoSecurity && this.props.generalError ? 
-        'Please check previous steps' : !this.props.submitError ? 'Please complete all required fields' : 'Something went wrong. Please try again.',
+        errorMessage: errorMessage,
       }, [
         div({ className: "questionnaireContainer" }, [
           InputFieldRadio({

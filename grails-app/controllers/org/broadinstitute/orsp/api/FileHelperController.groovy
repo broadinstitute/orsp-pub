@@ -7,13 +7,9 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
-import org.broadinstitute.orsp.StorageProviderService
-import org.broadinstitute.orsp.User
 import org.springframework.web.multipart.MultipartFile
 
-import java.text.SimpleDateFormat
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
@@ -43,7 +39,6 @@ class FileHelperController extends AuthenticatedController{
                     persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Document Added", EventType.UPLOAD_DOCUMENT)
                 }
             }
-
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
             response.status = 500

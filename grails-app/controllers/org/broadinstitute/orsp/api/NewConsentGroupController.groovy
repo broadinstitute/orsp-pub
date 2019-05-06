@@ -1,10 +1,10 @@
 package org.broadinstitute.orsp.api
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
+import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentService
@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile
 
 import javax.ws.rs.core.Response
 
+@Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class NewConsentGroupController extends AuthenticatedController {
 
@@ -47,9 +48,8 @@ class NewConsentGroupController extends AuthenticatedController {
         Issue consent;
         try{
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
-            String userName = request.parameterMap["userName"][0].toString()
+            User user = getUser()
             String dataProject = request.parameterMap["dataProject"].toString()
-            String displayName = request.parameterMap["displayName"][0].toString()
             JsonParser parser = new JsonParser()
             JsonArray dataProjectJson = parser.parse(dataProject)
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
@@ -57,7 +57,7 @@ class NewConsentGroupController extends AuthenticatedController {
             if(source != null) {
                 issue.setRequestDate(new Date())
                 consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
-                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
+                persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
                 try {
                     // If any sample collections were linked, we need to add them to the consent group.
                     def sampleCollectionIds = []
@@ -85,7 +85,7 @@ class NewConsentGroupController extends AuthenticatedController {
 
                 if (!files?.isEmpty()) {
                     files.forEach {
-                        storageProviderService.saveMultipartFile(displayName, userName, consent.getProjectKey().toString(), it.contentType, it)
+                        storageProviderService.saveMultipartFile(user.displayName, user.userName, consent.getProjectKey().toString(), it.contentType, it)
                     }
                 }
 
@@ -101,6 +101,7 @@ class NewConsentGroupController extends AuthenticatedController {
             if(consent != null) {
                 issueService.deleteIssue(consent.projectKey)
             }
+            log.error("There was an error trying to create consent group: " + e.message)
             response.status = 500
             render([error: e.message] as JSON)
         }
