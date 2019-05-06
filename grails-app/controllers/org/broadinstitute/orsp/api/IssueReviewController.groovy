@@ -42,13 +42,13 @@ class IssueReviewController extends AuthenticatedController {
         }
         IssueReview ir = parseIssueReview(gson.toJson(request.JSON))
         issueReviewFormer.suggestions = ir.suggestions
-        issueReviewFormer.save(flush: true)
+        issueReviewService.create(issueReviewFormer)
         response.status = 200
         render([issueReviewFormer] as JSON)
     }
 
     def delete() {
-        issueReviewService.delete(params.projectKey)
+        issueReviewService.delete(params.projectKey, params.type)
         if (params.type == 'reject') {
             persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         }
