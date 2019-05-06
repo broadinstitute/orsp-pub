@@ -5,7 +5,6 @@ import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
-import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
@@ -15,18 +14,18 @@ import org.springframework.http.MediaType
 class NotifyService implements SendgridSupport, Status {
 
     public static final String ORSP_ADDRESS = "orsp-portal@broadinstitute.org"
+    public static final String YES = "Yes"
+    public static final String UNCERTAIN = "Uncertain"
+    public static final String TEXT_SHARING_BOTH = "both"
+    public static final String TEXT_SHARING_OPEN = "open"
+    private static final String APPROVED ="Approved"
+    private static final String CLOSED = "Closed"
+    private static final String DISAPPROVED = "Disapproved"
+
     PageRenderer groovyPageRenderer
     LinkGenerator grailsLinkGenerator
     UserService userService
     NotifyConfiguration notifyConfiguration
-
-    private static final String YES = "Yes"
-    private static final String UNCERTAIN = "Uncertain"
-    private static final String TEXT_SHARING_BOTH = "both"
-    private static final String TEXT_SHARING_OPEN = "open"
-    private static final String APPROVED ="Approved"
-    private static final String CLOSED = "Closed"
-    private static final String DISAPPROVED = "Disapproved"
 
     String getDefaultRecipient() {
         notifyConfiguration.defaultRecipient
@@ -483,15 +482,13 @@ class NotifyService implements SendgridSupport, Status {
             sendEmail = true
         }
         if (sendEmail) {
-            NotifyArguments arguments =
-                    new NotifyArguments(
-                            toAddresses: Collections.singletonList(getSecurityRecipient()),
-                            fromAddress: getDefaultFromAddress(),
-                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                            subject: issue.projectKey + " - Required InfoSec Follow-up",
-                            user: user,
-                            issue: issue)
-
+            NotifyArguments arguments = new NotifyArguments(
+                    toAddresses: Collections.singletonList(getSecurityRecipient()),
+                    fromAddress: getDefaultFromAddress(),
+                    ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                    subject: issue.projectKey + " - Required InfoSec Follow-up",
+                    user: user,
+                    issue: issue)
             arguments.view = "/notify/generalInfo"
             Mail mail = populateMailFromArguments(arguments)
             result = sendMail(mail, getApiKey(), getSendGridUrl())
@@ -509,9 +506,6 @@ class NotifyService implements SendgridSupport, Status {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
-        if (Boolean.valueOf(issue.getMTA())) {
-            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
-        }
         if (type != ProjectCGTypes.PROJECT.name && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
@@ -540,6 +534,25 @@ class NotifyService implements SendgridSupport, Status {
                             user: user,
                             issue: issue,
                             values: values)
+            arguments.view = "/notify/requirements"
+            Mail mail = populateMailFromArguments(arguments)
+            result = sendMail(mail, getApiKey(), getSendGridUrl())
+        }
+        result
+    }
+
+    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user) {
+        Map<Boolean, String> result = new HashMap<>()
+
+        if (Boolean.valueOf(issue.getMTA())) {
+            NotifyArguments arguments =
+                    new NotifyArguments(
+                            toAddresses: Collections.singletonList(getAgreementsRecipient()),
+                            fromAddress: getDefaultFromAddress(),
+                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                            subject: issue.projectKey + " - Required OSAP Follow-up",
+                            user: user,
+                            issue: issue)
             arguments.view = "/notify/requirements"
             Mail mail = populateMailFromArguments(arguments)
             result = sendMail(mail, getApiKey(), getSendGridUrl())
@@ -633,6 +646,51 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
+    Map<Boolean, String> sendEditsSubmissionNotification(Issue issue) {
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        user: userService.findUser(issue.reporter),
+                        issue: issue)
+
+        arguments.view = "/notify/edits"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
+        String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
+                        user: user,
+                        issue: issue)
+
+        arguments.view = "/notify/editsApproved"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
+        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
+                        user: user,
+                        issue: issue)
+
+        arguments.view = "/notify/editsDisapproved"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
 
     Map<Boolean, String> sendDulFormLinkNotification(NotifyArguments arguments) {
         arguments.view = "/notify/dulFormLink"
@@ -640,6 +698,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
+
+    Map<Boolean, String> consentGroupCreation(Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendRequirementsInfoConsentGroup(issue, user)
+        sendSecurityInfo(issue, user)
+    }
 
     Map<Boolean, String> projectCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
