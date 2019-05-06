@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import grails.gsp.PageRenderer
 import grails.util.Environment
 import grails.web.mapping.LinkGenerator
@@ -15,18 +16,18 @@ import org.springframework.http.MediaType
 class NotifyService implements SendgridSupport, Status {
 
     public static final String ORSP_ADDRESS = "orsp-portal@broadinstitute.org"
+    public static final String YES = "Yes"
+    public static final String UNCERTAIN = "Uncertain"
+    public static final String TEXT_SHARING_BOTH = "both"
+    public static final String TEXT_SHARING_OPEN = "open"
+    private static final String APPROVED ="Approved"
+    private static final String CLOSED = "Closed"
+    private static final String DISAPPROVED = "Disapproved"
+
     PageRenderer groovyPageRenderer
     LinkGenerator grailsLinkGenerator
     UserService userService
     NotifyConfiguration notifyConfiguration
-
-    private static final String YES = "Yes"
-    private static final String UNCERTAIN = "Uncertain"
-    private static final String TEXT_SHARING_BOTH = "both"
-    private static final String TEXT_SHARING_OPEN = "open"
-    private static final String APPROVED ="Approved"
-    private static final String CLOSED = "Closed"
-    private static final String DISAPPROVED = "Disapproved"
 
     String getDefaultRecipient() {
         notifyConfiguration.defaultRecipient
@@ -483,15 +484,13 @@ class NotifyService implements SendgridSupport, Status {
             sendEmail = true
         }
         if (sendEmail) {
-            NotifyArguments arguments =
-                    new NotifyArguments(
-                            toAddresses: Collections.singletonList(getSecurityRecipient()),
-                            fromAddress: getDefaultFromAddress(),
-                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                            subject: issue.projectKey + " - Required InfoSec Follow-up",
-                            user: user,
-                            issue: issue)
-
+            NotifyArguments arguments = new NotifyArguments(
+                    toAddresses: Collections.singletonList(getSecurityRecipient()),
+                    fromAddress: getDefaultFromAddress(),
+                    ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                    subject: issue.projectKey + " - Required InfoSec Follow-up",
+                    user: user,
+                    issue: issue)
             arguments.view = "/notify/generalInfo"
             Mail mail = populateMailFromArguments(arguments)
             result = sendMail(mail, getApiKey(), getSendGridUrl())
@@ -509,9 +508,6 @@ class NotifyService implements SendgridSupport, Status {
         Map<String, String> values = new HashMap<>()
         Map<Boolean, String> result = new HashMap<>()
 
-        if (Boolean.valueOf(issue.getMTA())) {
-            values.put(IssueExtraProperty.REQUIRE_MTA, "true")
-        }
         if (type != ProjectCGTypes.PROJECT.name && issue.getFeeForService() != null && Boolean.valueOf(issue.getFeeForService())) {
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
@@ -540,6 +536,25 @@ class NotifyService implements SendgridSupport, Status {
                             user: user,
                             issue: issue,
                             values: values)
+            arguments.view = "/notify/requirements"
+            Mail mail = populateMailFromArguments(arguments)
+            result = sendMail(mail, getApiKey(), getSendGridUrl())
+        }
+        result
+    }
+
+    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user) {
+        Map<Boolean, String> result = new HashMap<>()
+
+        if (Boolean.valueOf(issue.getMTA())) {
+            NotifyArguments arguments =
+                    new NotifyArguments(
+                            toAddresses: Collections.singletonList(getAgreementsRecipient()),
+                            fromAddress: getDefaultFromAddress(),
+                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
+                            subject: issue.projectKey + " - Required OSAP Follow-up",
+                            user: user,
+                            issue: issue)
             arguments.view = "/notify/requirements"
             Mail mail = populateMailFromArguments(arguments)
             result = sendMail(mail, getApiKey(), getSendGridUrl())
@@ -640,6 +655,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
+
+    Map<Boolean, String> consentGroupCreation(Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendRequirementsInfoConsentGroup(issue, user)
+        sendSecurityInfo(issue, user)
+    }
 
     Map<Boolean, String> projectCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
