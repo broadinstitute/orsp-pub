@@ -10,7 +10,6 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
@@ -78,7 +77,6 @@ class ProjectController extends AuthenticatedController {
             response.status = 500
             render([error: e.message] as JSON)
         }
-
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
