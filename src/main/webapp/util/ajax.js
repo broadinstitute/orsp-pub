@@ -112,9 +112,18 @@ export const Files = {
 
 export const Project = {
 
-  createProject(url, data) {
+  createProject(url, dataProject, files, displayName, userName) {
+    let data = new FormData();
+    files.forEach(file => {
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
+    });
+    data.append('displayName', displayName);
+    data.append('userName', userName);
+    data.append('dataProject', JSON.stringify(dataProject));
     const config = {
-      headers: { 'content-type': 'application/json' }
+      headers: { 'content-type': 'multipart/form-data' }
     };
     return axios.post(url, data, config);
   },
