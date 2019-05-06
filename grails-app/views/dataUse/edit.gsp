@@ -381,12 +381,12 @@
                     <label class="radio-inline"><input type="radio"
                                   name="collaborationInvestigators"
                                   id="collaborationInvestigatorsYes"
-                                  <g:if test="${restriction.collaborationInvestigators?.equals("Yes") && !create}">checked</g:if>
+                                  <g:if test="${restriction.collaborationInvestigators && !create}">checked</g:if>
                                   value="Yes">Yes</label>
                     <label class="radio-inline"><input type="radio"
                                   name="collaborationInvestigators"
                                   id="collaborationInvestigatorsNo"
-                                  <g:if test="${restriction.collaborationInvestigators?.equals("No") && !create}">checked</g:if>
+                                  <g:if test="${!restriction.collaborationInvestigators && !create}">checked</g:if>
                                   value="No">No</label>
                 </span>
                 <hr/>
