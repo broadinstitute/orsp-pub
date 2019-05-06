@@ -13,7 +13,7 @@ import { InternationalCohorts } from '../components/InternationalCohorts';
 import { Security } from '../components/Security';
 import "regenerator-runtime/runtime";
 
-const LAST_STEP = 4;
+const LAST_STEP = 2;
 
 class NewProject extends Component {
 
@@ -26,7 +26,6 @@ class NewProject extends Component {
         emailAddress: ''
       },
       showErrorDeterminationQuestions: false,
-      showErrorIntCohorts: false,
       showErrorInfoSecurity: false,
       isInfoSecurityValid: false,
       showErrorDocuments: false,
@@ -42,14 +41,14 @@ class NewProject extends Component {
         nextQuestionIndex: 1,
         endState: false
       },
-      intCohortsDetermination: {
-        projectType: null,
-        questions: [],
-        requiredError: false,
-        currentQuestionIndex: 0,
-        nextQuestionIndex: 1,
-        endState: false
-      },
+      // intCohortsDetermination: {
+      //   projectType: null,
+      //   questions: [],
+      //   requiredError: false,
+      //   currentQuestionIndex: 0,
+      //   nextQuestionIndex: 1,
+      //   endState: false
+      // },
       generalDataFormData: {},
       attestationFormData: {
         attestation: false
@@ -60,7 +59,6 @@ class NewProject extends Component {
       errors: {
         studyDescription: false,
         pTitle: false,
-        uploadConsentGroup: false,
         subjectProtection: false,
         fundings: false,
         attestation: false,
@@ -169,7 +167,6 @@ class NewProject extends Component {
     extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
     extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
     extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
-    extraProperties.push({name: 'uploadConsentGroup', value: this.state.generalDataFormData.uploadConsentGroup !== '' ? this.state.generalDataFormData.uploadConsentGroup : null});
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'subjectProtection', value: this.state.generalDataFormData.subjectProtection !== '' ? this.state.generalDataFormData.subjectProtection : null});
     extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
@@ -197,14 +194,14 @@ class NewProject extends Component {
       });
     }
 
-    let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
-    if (internationalCohortsQuestions.length > 1) {
-      internationalCohortsQuestions.map((q, idx) => {
-        if (q.answer !== null) {
-          extraProperties.push({ name: q.key, value: q.answer });
-        }
-      });
-    }
+    // let internationalCohortsQuestions = this.state.intCohortsDetermination.questions;
+    // if (internationalCohortsQuestions.length > 1) {
+    //   internationalCohortsQuestions.map((q, idx) => {
+    //     if (q.answer !== null) {
+    //       extraProperties.push({ name: q.key, value: q.answer });
+    //     }
+    //   });
+    // }
 
     project.extraProperties = extraProperties;
     return project;
@@ -251,10 +248,6 @@ class NewProject extends Component {
     } else if (this.state.currentStep === 1) {
       isValid = this.validateDeterminationQuestions();
     } else if (this.state.currentStep === 2) {
-      isValid = this.validateInternationalCohorts();
-    } else if (this.state.currentStep === 3) {
-      isValid = this.validateInfoSecurity();
-    } else if (this.state.currentStep === 4) {
       isValid = this.validateAttestationForm(field);
     }
     return isValid;
@@ -271,10 +264,9 @@ class NewProject extends Component {
   validateForm = () => {
     const isDeterminationQuestionsValid = this.validateDeterminationQuestions();
     const isGeneralDataValid = this.validateGeneralData();
-    const isInternationalCohortsValid = this.validateInternationalCohorts();
     const isInfoSecurityValid = this.validateInfoSecurity();
     const isAttestationFormValid = this.validateAttestationForm();
-    return isDeterminationQuestionsValid && isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isAttestationFormValid
+    return isDeterminationQuestionsValid && isGeneralDataValid && isInfoSecurityValid && isAttestationFormValid
   };
 
   validateDeterminationQuestions() {
@@ -321,7 +313,6 @@ class NewProject extends Component {
   validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
-    let uploadConsentGroup = false;
     let subjectProtection = false;
     let isValid = true;
     let fundings = false;
@@ -329,10 +320,6 @@ class NewProject extends Component {
 
     if (isEmpty(this.state.generalDataFormData.studyDescription)) {
       studyDescription = true;
-      isValid = false;
-    }
-    if (this.state.generalDataFormData.uploadConsentGroup === undefined || this.state.generalDataFormData.uploadConsentGroup === '') {
-      uploadConsentGroup = true;
       isValid = false;
     }
     if (this.state.generalDataFormData.subjectProtection === undefined || this.state.generalDataFormData.subjectProtection === '') {
@@ -361,7 +348,6 @@ class NewProject extends Component {
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.studyDescription = studyDescription;
-        prev.errors.uploadConsentGroup = uploadConsentGroup;
         prev.errors.subjectProtection = subjectProtection;
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
@@ -370,7 +356,7 @@ class NewProject extends Component {
       });
     }
     else if (field === 'fundings' || field === 'studyDescription' ||
-      field === 'uploadConsentGroup' || field === 'subjectProtection' || field === 'pTitle') {
+       field === 'subjectProtection' || field === 'pTitle') {
 
       this.setState(prev => {
         if (field === 'fundings') {
@@ -379,9 +365,6 @@ class NewProject extends Component {
         }
         else if (field === 'studyDescription') {
           prev.errors.studyDescription = studyDescription;
-        }
-        else if (field === 'uploadConsentGroup') {
-          prev.errors.uploadConsentGroup = uploadConsentGroup;
         }
         else if (field === 'subjectProtection') {
           prev.errors.subjectProtection = subjectProtection;
@@ -392,18 +375,6 @@ class NewProject extends Component {
         return prev;
       });
     }
-    return isValid;
-  }
-
-  validateInternationalCohorts() {
-    let isValid = true;
-    if (this.state.intCohortsDetermination.requiredError || this.state.intCohortsDetermination.endState === false) {
-      isValid = false;
-    }
-    this.setState(prev => {
-      prev.showErrorIntCohorts = !isValid;
-      return prev;
-    });
     return isValid;
   }
 
@@ -421,15 +392,15 @@ class NewProject extends Component {
     });
   };
 
-  intCohortsDeterminationHandler = (determination) => {
-    this.setState(prev => {
-      prev.intCohortsDetermination = determination;
-      if (this.state.intCohortsDetermination.projectType !== null && this.state.showErrorIntCohorts === true) {
-        prev.showErrorIntCohorts = false;
-      }
-      return prev;
-    });
-  };
+  // intCohortsDeterminationHandler = (determination) => {
+  //   this.setState(prev => {
+  //     prev.intCohortsDetermination = determination;
+  //     if (this.state.intCohortsDetermination.projectType !== null && this.state.showErrorIntCohorts === true) {
+  //       prev.showErrorIntCohorts = false;
+  //     }
+  //     return prev;
+  //   });
+  // };
 
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------')
@@ -519,25 +490,25 @@ class NewProject extends Component {
             handler: this.determinationHandler,
             errors: this.state.showErrorDeterminationQuestions
           }),
-          InternationalCohorts({
-            title: "International Cohorts",
-            currentStep: currentStep,
-            handler: this.intCohortsDeterminationHandler,
-            determination: this.state.intCohortsDetermination,
-            showErrorIntCohorts: this.state.showErrorIntCohorts,
-            origin: 'newProject'
-          }),
-          Security({
-            title: "Security",
-            step: 3,
-            currentStep: currentStep,
-            user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
-            updateForm: this.updateInfoSecurity,
-            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-            removeErrorMessage: this.removeErrorMessage,
-            handleSecurityValidity: this.handleInfoSecurityValidity
-          }),
+          // InternationalCohorts({
+          //   title: "International Cohorts",
+          //   currentStep: currentStep,
+          //   handler: this.intCohortsDeterminationHandler,
+          //   determination: this.state.intCohortsDetermination,
+          //   showErrorIntCohorts: this.state.showErrorIntCohorts,
+          //   origin: 'newProject'
+          // }),
+          // Security({
+          //   title: "Security",
+          //   step: 3,
+          //   currentStep: currentStep,
+          //   user: this.state.user,
+          //   searchUsersURL: this.props.searchUsersURL,
+          //   updateForm: this.updateInfoSecurity,
+          //   showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+          //   removeErrorMessage: this.removeErrorMessage,
+          //   handleSecurityValidity: this.handleInfoSecurityValidity
+          // }),
           NewProjectDocuments({
             title: "Documents",
             currentStep: currentStep,
