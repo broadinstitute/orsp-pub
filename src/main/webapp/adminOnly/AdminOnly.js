@@ -153,11 +153,20 @@ class AdminOnly extends Component {
         spinnerService.hideAll();
         this.setState(prev => {
           prev.initial = createObjectCopy(this.state.formData);
+          prev.showSubmissionError = false;
           return prev;
         });
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
-      error => console.error(error)
+      error => {
+        spinnerService.hideAll();
+        this.init();
+        this.setState(prev => {
+          prev.showSubmissionError = true;
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          return prev;
+        });      
+      }
     );
   };
 
@@ -378,6 +387,11 @@ class AdminOnly extends Component {
           msg: this.state.alertMessage,
           show: this.state.showSubmissionAlert,
           type: 'success'
+        }),
+        AlertMessage({
+          msg: this.state.alertMessage,
+          show: this.state.showSubmissionError,
+          type: 'danger'
         }),
         div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
           button({
