@@ -3,6 +3,8 @@ package org.broadinstitute.orsp
 import grails.core.GrailsApplication
 import org.broadinstitute.orsp.consent.ConsentResource
 import grails.converters.JSON
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
+
 
 /**
  * Extend Base Controller with actions specific to Data Use Restrictions.
@@ -12,6 +14,7 @@ class DataUseController extends AuthenticatedController {
     ConsentService consentService
     ConsentExportService consentExportService
     GrailsApplication grailsApplication
+    DataUseLetterService dataUseLetterService
 
     @Override
     show() {
@@ -51,103 +54,15 @@ class DataUseController extends AuthenticatedController {
          create     : params.create]
     }
 
-    // TODO: Move db logic to service
     def save() {
-        Issue consent = queryService.findByKey(params.consentGroupKey)
-        DataUseRestriction restriction = new DataUseRestriction()
-
-        if (!params.create) {
-            restriction = DataUseRestriction.findById(params.id)
-        }
-
-        restriction.consentGroupKey = params.consentGroupKey
-        restriction.consentPIName = params.consentPIName
-        restriction.generalUse = getBooleanForParam(params.generalUse)
-        restriction.hmbResearch = getBooleanForParam(params.hmbResearch)
-        restriction.manualReview = getBooleanForParam(params.manualReview)
-
-        restriction.diseaseRestrictions = new ArrayList<>()
-        if (params.diseaseRestrictions) {
-            if (params.diseaseRestrictions instanceof String[]) {
-                restriction.diseaseRestrictions.addAll(params.diseaseRestrictions.findAll { !it.isEmpty() })
-            }
-            else if (!params.diseaseRestrictions.isEmpty()) {
-                restriction.setDiseaseRestrictions(Collections.singletonList((String) params.diseaseRestrictions))
-            }
-        }
-
-        restriction.populationOriginsAncestry = getBooleanForParam(params.populationOriginsAncestry)
-
-        restriction.commercialUseExcluded = getBooleanForParam(params.commercialUseExcluded)
-        restriction.methodsResearchExcluded = getBooleanForParam(params.methodsResearchExcluded)
-        restriction.aggregateResearchResponse = params.aggregateResearchResponse
-        if (params.gender) {
-            if (params.gender.equals("NA")) restriction.gender = null
-            else restriction.gender = params.gender
-        } else {
-            restriction.gender = null
-        }
-        restriction.controlSetOption = params.controlSetOption
-        restriction.populationRestrictions = new ArrayList<>()
-        if (params.populationRestrictions) {
-            if (params.populationRestrictions instanceof String[]) {
-                restriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
-            }
-            else if (!params.populationRestrictions.isEmpty()) {
-                restriction.populationRestrictions.add(params.populationRestrictions)
-            }
-        }
-        restriction.pediatricLimited = getBooleanForParam(params.pediatric)
-        restriction.recontactingDataSubjects = getBooleanForParam(params.recontactingDataSubjects)
-        restriction.recontactMay = params.recontactMay
-        restriction.recontactMust = params.recontactMust
-        restriction.genomicPhenotypicData = params.genomicPhenotypicData
-        restriction.irb = getBooleanForParam(params.irb)
-        restriction.geographicalRestrictions = params.geographicalRestrictions
-        restriction.noRestriction = getBooleanForParam(params.noRestriction)
-
-        if (restriction.noRestriction) {
-            restriction.generalUse = true
-        }
-
-        restriction.collaborationInvestigators = getBooleanForParam(params.collaborationInvestigators)
-        restriction.publicationResults = getBooleanForParam(params.publicationResults)
-        restriction.genomicResults = getBooleanForParam(params.genomicResults)
-        if (restriction.genomicResults) {
-            restriction.genomicSummaryResults = (String)params.genomicSummaryResults
-        } else {
-            restriction.genomicSummaryResults = null
-        }
-
-        if (params.other) {
-            restriction.other = params.other
-        } else {
-            restriction.other = null
-        }
-        if (params.comments) {
-            restriction.comments = params.comments
-        } else {
-            restriction.comments = null
-        }
-
-        if (restriction.save(flush: true)) {
-            def updatedOrCreated = params.create ? "Created" : "Updated"
-            persistenceService.saveEvent(consent.projectKey, getUser()?.displayName, "Data Use Restriction " + updatedOrCreated, null)
-        } else {
-            log.error("Unable to save restriction for some reason")
-        }
-
+        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
+        restriction = DataUseRestrictionParser.fromParams(restriction, params)
+        restriction = dataUseLetterService.createSdul(restriction, getUser()?.displayName)
         if (params.create) {
-            redirect(controller: 'consentGroup', action: "show", params: [id: consent.projectKey, tab: 'documents'])
+            redirect(controller: 'consentGroup', action: "show", params: [id: restriction.consentGroupKey, tab: 'documents'])
         } else {
             redirect(controller: 'dataUse', action: "show", params: [id: restriction.id])
         }
-    }
-
-    private static Boolean getBooleanForParam(String param) {
-        if ("Yes".equalsIgnoreCase(param)) return true
-        if ("No".equalsIgnoreCase(param)) return false
-        null
     }
 
     def list() {

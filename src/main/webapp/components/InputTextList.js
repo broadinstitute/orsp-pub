@@ -10,7 +10,7 @@ export const InputTextList = hh(class InputTextList extends Component {
       h(Fragment, {}, [
         div({ className: "row", style: { 'marginTop': '15px' } }, [
           div({ className: "col-lg-5 col-md-6 col-sm-10 col-9" }, [
-            label({ className: "noMargin" }, [this.props.label])
+            label({ className: "inputFieldLabel noMargin" }, [this.props.label])
           ]),
           div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
             Btn({
