@@ -553,7 +553,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    def sendAdminNotification(String type, Issue issue) {
+    Map<Boolean, String> sendAdminNotification(String type, Issue issue) {
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
@@ -583,7 +583,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def sendRejectionProjectNotification(Issue issue) {
+    Map<Boolean, String> sendRejectionProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
         Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
@@ -599,7 +599,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    def sendClosedProjectNotification(Issue issue) {
+    Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
         Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
@@ -634,7 +634,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
 
-    def sendDulFormLinkNotification(NotifyArguments arguments) {
+    Map<Boolean, String> sendDulFormLinkNotification(NotifyArguments arguments) {
         arguments.view = "/notify/dulFormLink"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())

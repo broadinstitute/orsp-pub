@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
+import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
@@ -17,7 +18,7 @@ import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
-
+@Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ProjectController extends AuthenticatedController {
 
@@ -59,6 +60,7 @@ class ProjectController extends AuthenticatedController {
             render([message: issue] as JSON)
         } catch (Exception e) {
             issueService.deleteIssue(projectKey)
+            log.error("There was an error trying to create a project: " + e.message)
             response.status = 500
             render([error: e.message] as JSON)
         }

@@ -328,8 +328,9 @@ class IssueService implements UserInfo {
         if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
         }
-        if (StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS)) &&
-                !previousStatus?.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+        String newStatus = Optional.ofNullable(input.get(IssueExtraProperty.PROJECT_STATUS)).getOrElse("")
+
+        if (!previousStatus?.equals(newStatus)) {
             notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue)
         }
         issue
