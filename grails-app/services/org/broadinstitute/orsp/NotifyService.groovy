@@ -1,12 +1,10 @@
 package org.broadinstitute.orsp
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import grails.gsp.PageRenderer
 import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
-import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
