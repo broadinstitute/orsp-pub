@@ -172,7 +172,8 @@ class StorageProviderService implements Status {
                 uuid: UUID.randomUUID().toString(),
                 creator: displayName,
                 username: userName,
-                creationDate: new Date()
+                creationDate: new Date(),
+                status: DocumentStatus.PENDING.status
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(
