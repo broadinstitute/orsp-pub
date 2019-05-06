@@ -662,12 +662,13 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        toAddresses: Collections.singletonList(user.emailAddress),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
-                        user: userService.findUser(issue.reporter),
+                        user: user,
                         issue: issue)
 
         arguments.view = "/notify/editsApproved"
@@ -677,12 +678,13 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        toAddresses: Collections.singletonList(user.emailAddress),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
-                        user: userService.findUser(issue.reporter),
+                        user: user,
                         issue: issue)
 
         arguments.view = "/notify/editsDisapproved"
