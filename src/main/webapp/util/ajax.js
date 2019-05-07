@@ -129,6 +129,7 @@ export const Project = {
     let data = new FormData();
     files.forEach(file => {
       if (file.file != null) {
+        console.log(file);
         data.append(file.fileKey, file.file, file.file.name);
       }
     });

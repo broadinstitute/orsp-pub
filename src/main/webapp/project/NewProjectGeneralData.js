@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { hh, div, h1, ul, li, span} from 'react-hyperscript-helpers';
+import { hh, h1, ul, li, span} from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -7,7 +7,6 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
-
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
@@ -149,7 +148,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.piName = data;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'piName'));
-  }
+  };
 
   render() {
 
@@ -270,35 +269,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange,
             edit: false
           }),
-          // InputFieldRadio({
-          //   id: "radioUploadConsentGroup",
-          //   name: "uploadConsentGroup",
-          //   label: "Will you be uploading a Consent Group?",
-          //   value: this.state.formData.uploadConsentGroup,
-          //   optionValues: ["uploadNow", "uploadLater", "notUpload"],
-          //   optionLabels: [
-          //     span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["now"]) ]),
-          //     span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["later"]) ]),
-          //     "No, I will not upload a Consent Group"
-          //   ],
-          //   onChange: this.handleRadioChange,
-          //   required: true,
-          //   error: this.props.errors.uploadConsentGroup,
-          //   errorMessage: "Required field",
-          //   edit: false
-          // }),
-          // div({ isRendered: this.state.formData.uploadConsentGroup === "notUpload" }, [
-          //   InputFieldText({
-          //     id: "inputNotCGSpecify",
-          //     name: "notCGSpecify",
-          //     label: "Please describe why a consent form is not being provided",
-          //     value: this.state.formData.notCGSpecify,
-          //     disabled: false,
-          //     required: false,
-          //     onChange: this.handleInputChange,
-          //     edit: false
-          //   })
-          // ]),
           InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",

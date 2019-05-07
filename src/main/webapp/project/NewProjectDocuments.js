@@ -53,6 +53,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
 
   setFilesToUpload(doc) {
     this.setState(prev => {
+      console.log(doc.fileKey);
       let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
       let documents = prev.documents;
       documents.push(document);
