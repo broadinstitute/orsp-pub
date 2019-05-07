@@ -565,9 +565,7 @@ class DataUseLetter extends Component {
 
   getDiseases(diseases) {
     return diseases.map(disease => {
-      diseasesResult.push(
         disease.key
-      );
      });
   }
 
