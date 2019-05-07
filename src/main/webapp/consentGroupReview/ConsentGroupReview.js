@@ -602,11 +602,27 @@ class ConsentGroupReview extends Component {
           if (this.state.reviewSuggestion) {
             Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
               this.getReviewSuggestions()
-            );
+            ).catch(error => {
+              this.getReviewSuggestions()
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
+            });
           } else {
             Review.submitReview(this.props.serverURL, data).then(() =>
               this.getReviewSuggestions()
-            );
+            ).catch(error => {
+              this.getReviewSuggestions()
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
+            });
           }
         });
       } else {
@@ -711,7 +727,10 @@ class ConsentGroupReview extends Component {
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
     consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
     consentGroup.requireMta = this.state.formData.consentExtraProps.requireMta;
-
+    
+    if (this.state.reviewSuggestion) {
+      consentGroup.editsApproved = true;
+    }    
     if (this.state.formData.consentExtraProps.endDate !== null) {
       consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
     }
