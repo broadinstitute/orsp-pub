@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
-import { NewConsentGroupDocuments } from './NewConsentGroupDocuments';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { InternationalCohorts } from '../components/InternationalCohorts';
 import { span, a } from 'react-hyperscript-helpers';
@@ -9,8 +8,9 @@ import { spinnerService } from '../util/spinner-service';
 import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { NewDataCohort } from './NewDataCohort';
 
-const LAST_STEP = 3;
+const LAST_STEP = 1;
 
 class NewConsentGroup extends Component {
 
@@ -38,6 +38,7 @@ class NewConsentGroup extends Component {
       },
       generalDataFormData: {},
       securityInfoFormData: {},
+      dataCohortFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -158,7 +159,7 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.institutionProtocolNumber });
     extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.generalDataFormData.institutionalSources) });
     extraProperties.push({ name: 'describeConsentGroup', value: this.state.generalDataFormData.describeConsentGroup });
-    extraProperties.push({ name: 'requireMta', value: this.state.generalDataFormData.requireMta });
+    extraProperties.push({ name: 'requireMta', value: this.state.dataCohortFormData.requireMta });
     if (this.state.generalDataFormData.endDate !== null) {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.generalDataFormData.endDate) });
     }
@@ -212,10 +213,10 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateGeneralData(field);
-    } else if (this.state.currentStep === 2) {
-      isValid = this.validateInternationalCohorts();
-    } else if (this.state.currentStep === LAST_STEP) {
-      isValid = this.validateInfoSecurity();
+    // } else if (this.state.currentStep === 2) {
+    //   isValid = this.validateInternationalCohorts();
+    // } else if (this.state.currentStep === LAST_STEP) {
+    //   isValid = this.validateInfoSecurity();
     }
     return isValid;
   };
@@ -239,7 +240,7 @@ class NewConsentGroup extends Component {
     let consentGroupName = false;
     let collaboratingInstitution = false;
     let describeConsentGroup = false;
-    let requireMta = false;
+   // let requireMta = false;
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
 
@@ -257,10 +258,10 @@ class NewConsentGroup extends Component {
       institutionProtocolNumber = true;
       isValid = false;
     }
-    if (this.state.generalDataFormData.requireMta === undefined || this.state.generalDataFormData.requireMta === '') {
-      requireMta = true;
-      isValid = false;
-    }
+    // if (this.state.generalDataFormData.requireMta === undefined || this.state.generalDataFormData.requireMta === '') {
+    //   requireMta = true;
+    //   isValid = false;
+    // }
     if (isEmpty(this.state.generalDataFormData.collaboratingInstitution)) {
       collaboratingInstitution = true;
       isValid = false;
@@ -293,7 +294,7 @@ class NewConsentGroup extends Component {
         prev.errors.consentGroupName = consentGroupName;
         prev.errors.collaboratingInstitution = collaboratingInstitution;
         prev.errors.describeConsentGroup = describeConsentGroup;
-        prev.errors.requireMta = requireMta;
+      //  prev.errors.requireMta = requireMta;
         prev.errors.institutionalSourcesName = institutionalSourcesName;
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.isValid = isValid;
@@ -316,9 +317,11 @@ class NewConsentGroup extends Component {
           prev.errors.collaboratingInstitution = collaboratingInstitution;
         } else if (field === 'describeConsentGroup') {
           prev.errors.describeConsentGroup = describeConsentGroup;
-        } else if (field === 'requireMta') {
-          prev.errors.requireMta = requireMta;
-        } else if (field === 'nameInstitutional') {
+        }
+        // else if (field === 'requireMta') {
+        //  prev.errors.requireMta = requireMta;
+        //} 
+        else if (field === 'nameInstitutional') {
           prev.errors.institutionalSourcesName = institutionalSourcesName;
         } else if (field === 'countryInstitutional') {
           prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
@@ -444,7 +447,7 @@ class NewConsentGroup extends Component {
 
     return (
       Wizard({
-        title: "New Consent Group",
+        title: "New Sample/Data Cohort",
         note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
         stepChanged: this.stepChanged,
         isValid: this.isValid,
@@ -462,30 +465,23 @@ class NewConsentGroup extends Component {
           errors: this.state.errors,
           removeErrorMessage: this.removeErrorMessage,
           projectKey: this.props.projectKey,
-          sampleCollectionList: this.state.sampleCollectionList
-        }),
-        NewConsentGroupDocuments({
-          title: "Documents",
-          currentStep: currentStep,
+          sampleCollectionList: this.state.sampleCollectionList,
           fileHandler: this.fileHandler,
           projectType: projectType,
           options: this.state.documentOptions,
           fillablePdfURL: this.props.fillablePdfURL,
-          fileHandler: this.fileHandler,
           files: this.state.files
         }),
-        InternationalCohorts({
-          title: "International Cohorts",
+        NewDataCohort({
+          title: "New DC",
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,
           showErrorIntCohorts: this.state.showInternationalCohortsError,
-          origin: 'consentGroup'
-        }),
-        Security({
-          title: "Security",
+          origin: 'consentGroup',
+          requireMta: this.state.dataCohortFormData.requireMta,
+          errors: this.state.errors,
           step: LAST_STEP,
-          currentStep: currentStep,
           user: this.state.user,
           searchUsersURL: this.props.searchUsersURL,
           updateForm: this.updateInfoSecurityFormData,

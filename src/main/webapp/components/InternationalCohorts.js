@@ -102,12 +102,13 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     }
 
     return (
-      WizardStep({
-        title: this.props.title, step: 2, currentStep: this.props.currentStep,
-        questionnaireStep: true, error: this.props.showErrorIntCohorts, errorMessage: ' Please answer all questions to continue'
-      }, [
+      // WizardStep({
+      //  title: this.props.title, step: 2, currentStep: this.props.currentStep,
+       // questionnaireStep: true, error: this.props.showErrorIntCohorts, errorMessage: ' Please answer all questions to continue'
+     // }, 
+      //[
          QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination })
-        ])
+        //])
     )
   }
 });

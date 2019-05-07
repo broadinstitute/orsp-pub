@@ -129,11 +129,11 @@ export const Security = hh(class Security extends Component {
       errorMessage = 'Please complete all required fields';
     }
     return (
-      WizardStep({
-        title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError || this.props.submitError,
-        errorMessage: errorMessage,
-      }, [
+      // WizardStep({
+      //   title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
+      //   error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError || this.props.submitError,
+      //   errorMessage: errorMessage,
+      // }, [
         div({ className: "questionnaireContainer" }, [
           InputFieldRadio({
             id: "radioPII",
@@ -217,7 +217,7 @@ export const Security = hh(class Security extends Component {
             onChange: this.handleInputChange,
           })
         ])
-      ])
+    //  ])
     )
   }
 });

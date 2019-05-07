@@ -9,7 +9,7 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-
+import { NewConsentGroupDocuments } from './NewConsentGroupDocuments'
 
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
 
@@ -285,25 +285,15 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             edit: false
           })
         ]),
-
-        InputFieldRadio({
-          id: "radioRequireMta",
-          name: "requireMta",
-          label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
-          moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
-          value: this.state.formData.requireMta,
-          onChange: this.handleRadio2Change,
-          optionValues: ["true", "false", "uncertain"],
-          optionLabels: [
-            "Yes, the provider does require an MTA/DTA.",
-            "No, the provider does not require an MTA/DTA.",
-            "Not sure"
-          ],
-          required: true,
-          error: this.props.errors.requireMta,
-          errorMessage: "Required field",
-          edit: false
-        })
+        Panel({ title: "Documents" }, [
+          NewConsentGroupDocuments({
+            fileHandler: this.props.fileHandler,
+            projectType: this.props.projectType,
+            options: this.props.documentOptions,
+            fillablePdfURL: this.props.fillablePdfURL,
+            files: this.props.files
+          })
+        ])
       ])
     )
   }
