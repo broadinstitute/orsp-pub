@@ -564,9 +564,9 @@ class DataUseLetter extends Component {
   }
 
   getDiseases(diseases) {
-    return diseases.map(disease => {
+    return diseases.map(disease =>
         disease.key
-     });
+    );
   }
 
   getRestriction() {
