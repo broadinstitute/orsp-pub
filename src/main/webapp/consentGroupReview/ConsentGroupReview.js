@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { h,div, h2, span, a, button } from 'react-hyperscript-helpers';
-
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -40,14 +39,6 @@ class ConsentGroupReview extends Component {
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
-      },
-      determination: {
-        projectType: null,
-        questions: [],
-        requiredError: false,
-        currentQuestionIndex: 0,
-        nextQuestionIndex: 1,
-        endState: false
       },
       consentExtraProps: {
         consent: '',
@@ -304,7 +295,6 @@ class ConsentGroupReview extends Component {
     let compliance = false;
     let sharingType = false;
     let textCompliance = false;
-    let questions = false;
     let endDate = false;
     let startDate = false;
     let consentGroupName = false;
@@ -342,10 +332,6 @@ class ConsentGroupReview extends Component {
       textCompliance = true;
     }
 
-    if (!this.validateQuestionnaire()) {
-      questions = true;
-    }
-
     if (!this.state.formData.consentExtraProps.onGoingProcess
       && this.isEmpty(this.state.formData.consentExtraProps.endDate)
       && !this.isEmpty(this.state.formData.consentExtraProps.startDate)
@@ -376,7 +362,6 @@ class ConsentGroupReview extends Component {
       !describeConsentGroup &&
       !requireMta &&
       !pii &&
-      !questions &&
       !textCompliance &&
       !sharingType &&
       !compliance &&
@@ -425,18 +410,6 @@ class ConsentGroupReview extends Component {
       prev.internationalCohortsError = false;
       return prev;
     });
-  };
-
-  validateQuestionnaire = () => {
-    let isValid = false;
-    const determination = this.state.determination;
-    if (determination.questions.length === 0 || determination.endState === true) {
-      isValid = true;
-    }
-    if (this.state.intCohortsAnswers.length === 0) {
-      isValid = false;
-    }
-    return isValid;
   };
 
   approveConsentGroup = () => {
@@ -533,25 +506,6 @@ class ConsentGroupReview extends Component {
     }
   };
 
-  resetHandler () {
-    this.setState(prev => {
-      prev.resetIntCohorts = false;
-      prev.determination = this.resetIntCohortsDetermination();
-      return prev;
-    })
-  }
-
-  resetIntCohortsDetermination() {
-    return {
-      projectType: null,
-        questions: [],
-        requiredError: false,
-        currentQuestionIndex: 0,
-        nextQuestionIndex: 1,
-        endState: false
-    }
-  }
-
   enableEdit = (e) => () => {
     this.getReviewSuggestions();
     this.setState(prev => {
@@ -582,66 +536,56 @@ class ConsentGroupReview extends Component {
 
   submitEdit = (e) => () => {
     let data = {};
-    if (this.validateQuestionnaire()) {
-      if (this.isValid()) {
-        this.setState(prev => {
-          prev.readOnly = true;
-          prev.errorSubmit = false;
-          prev.resetIntCohorts = false;
-          prev.intCohortsAnswers.forEach(question => {
-            prev.formData.consentExtraProps[question.key] = question.answer;
-          });
-          return prev;
-        }, () => {
-          let institutionalSourceArray = this.state.formData.instSources;
-          let newFormData = Object.assign({}, this.state.formData);
-          newFormData.instSources = institutionalSourceArray;
-          data.projectKey = this.props.consentKey;
-          data.suggestions = JSON.stringify(newFormData);
+    if (this.isValid()) {
+      this.setState(prev => {
+        prev.readOnly = true;
+        prev.errorSubmit = false;
+        prev.resetIntCohorts = false;
+        prev.intCohortsAnswers.forEach(question => {
+          prev.formData.consentExtraProps[question.key] = question.answer;
+        });
+        return prev;
+      }, () => {
+        let institutionalSourceArray = this.state.formData.instSources;
+        let newFormData = Object.assign({}, this.state.formData);
+        newFormData.instSources = institutionalSourceArray;
+        data.projectKey = this.props.consentKey;
+        data.suggestions = JSON.stringify(newFormData);
 
-          if (this.state.reviewSuggestion) {
-            Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
-              this.getReviewSuggestions()
-            ).catch(error => {
-              this.getReviewSuggestions()
-              this.setState(prev => {
-                prev.submitted = true;
-                prev.errorSubmit = true;
-                prev.errorMessage = 'Something went wrong. Please try again later.';
-                return prev;
-              });
+        if (this.state.reviewSuggestion) {
+          Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
+            this.getReviewSuggestions()
+          ).catch(error => {
+            this.getReviewSuggestions()
+            this.setState(prev => {
+              prev.submitted = true;
+              prev.errorSubmit = true;
+              prev.errorMessage = 'Something went wrong. Please try again later.';
+              return prev;
             });
-          } else {
-            Review.submitReview(this.props.serverURL, data).then(() =>
-              this.getReviewSuggestions()
-            ).catch(error => {
-              this.getReviewSuggestions()
-              this.setState(prev => {
-                prev.submitted = true;
-                prev.errorSubmit = true;
-                prev.errorMessage = 'Something went wrong. Please try again later.';
-                return prev;
-              });
+          });
+        } else {
+          Review.submitReview(this.props.serverURL, data).then(() =>
+            this.getReviewSuggestions()
+          ).catch(error => {
+            this.getReviewSuggestions()
+            this.setState(prev => {
+              prev.submitted = true;
+              prev.errorSubmit = true;
+              prev.errorMessage = 'Something went wrong. Please try again later.';
+              return prev;
             });
-          }
-        });
-      } else {
-        this.setState(prev => {
-          prev.submitted = true;
-          prev.errorSubmit = true;
-          prev.errorMessage = 'Please complete required fields.';
-          return prev;
-        });
-      }
+          });
+        }
+      });
     } else {
       this.setState(prev => {
         prev.submitted = true;
         prev.errorSubmit = true;
-        prev.errorMessage = 'Please complete International Cohorts';
+        prev.errorMessage = 'Please complete required fields.';
         return prev;
       });
     }
-
   };
 
   institutionalSrcHasErrors = () => {
@@ -873,34 +817,6 @@ class ConsentGroupReview extends Component {
       return [this.props.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
     }
   }
-
-  determinationHandler = (determination) => {
-    let newValues = {};
-    const answers = [];
-    determination.questions.forEach(question => {
-
-      if (question.answer !== null) {
-        let singleAnswer = {};
-        singleAnswer.key = question.key;
-        singleAnswer.answer = question.answer;
-        answers.push(singleAnswer);
-      }
-      newValues[question.key] = question.answer;
-    });
-    this.setState(prev => {
-      Object.keys(newValues).forEach(key => {
-        prev.formData.consentExtraProps[key] = newValues[key];
-      });
-      prev.resetIntCohorts = false;
-      prev.isEdited = true;
-      prev.intCohortsAnswers = [...answers];
-      prev.determination = determination;
-      prev.submitError = false;
-      prev.errorSubmit = false;
-      prev.internationalCohortsError = false;
-      return prev;
-    });
-  };
 
   cleanAnswersIntCohorts = (questionIndex, where) => {
     this.setState(prev => {
