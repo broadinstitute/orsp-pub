@@ -290,7 +290,7 @@ class ConsentServiceUnitSpec extends BaseSpec implements ServiceUnitTest<Consent
 
         then:
         def e = thrown(ConsentException)
-        e.message == "Unable to parse DUOS response: Error getting consent for url: ${url}: Bad Request"
+        e.message == "Exception: Unable to parse DUOS response: Failure: Error getting consent for url: ${url}: Bad Request"
     }
 
     void "Fail to parse successfully retrieved Consent from DUOS"() {
