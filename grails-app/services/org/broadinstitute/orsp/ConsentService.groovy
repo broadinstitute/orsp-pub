@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
@@ -99,19 +100,27 @@ class ConsentService implements Status {
         ConsentResource consentResource = null
         HttpBuilder http = getBuilder(url)
         Map responseMap = (Map) http.get() {
+            String req = new JsonBuilder(request).toString()
+            log.info("Get Consent Request: $req")
             response.failure { FromServer fs ->
-                log.info("Failure getting consent from url: $url")
-                throwConsentException("Error getting consent for url: $url: ${fs.getMessage()}")
+                log.error("Get Consent Response message: ${fs.message}")
+                log.error("Get Consent Response status: ${fs.statusCode}")
+                log.error("Get Consent Response uri: ${fs.uri}")
+                log.error("Failure getting consent from url: $url")
+                throwConsentException("Failure: Error getting consent for url: $url: ${fs.getMessage()}")
             }
             response.exception { t ->
-                log.info("Exception getting consent from url: $url")
-                throwConsentException("Unable to parse DUOS response: ${t.message}")
+                String exc = new JsonBuilder(t).toString()
+                log.error("Exception: $exc")
+                log.error("Exception getting consent from url: $url")
+                throwConsentException("Exception: Unable to parse DUOS response: ${t.message}")
             }
         }
         if (responseMap) {
             try {
                 consentResource = ConsentResource.fromMap(responseMap)
             } catch (IllegalArgumentException e) {
+                log.error("Error: Unable to parse DUOS response: ${e.message}")
                 throwConsentException("Unable to parse DUOS response: ${e.message}")
             }
         } else {
