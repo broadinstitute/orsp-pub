@@ -97,7 +97,6 @@ class NewProject extends Component {
         this.state.user.displayName,
         this.state.user.userName
         ).then(resp => {
-        console.log(this.state.files);
           Project.getProjectType(this.props.serverURL, resp.data.message.projectKey).
           then(projectType => {
             window.location.href = [this.props.serverURL, projectType, "show", resp.data.message.projectKey, "?tab=review&new"].join("/");
