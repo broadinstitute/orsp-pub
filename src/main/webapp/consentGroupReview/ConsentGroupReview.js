@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, hh, p, div, h2, h3, input, label, span, a, button } from 'react-hyperscript-helpers';
+import { h,div, h2, span, a, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
