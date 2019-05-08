@@ -5,6 +5,7 @@ import { WizardStep } from './WizardStep';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { isEmpty } from '../util/Utils'
+import './QuestionnaireWorkflow.css';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -129,12 +130,7 @@ export const Security = hh(class Security extends Component {
       errorMessage = 'Please complete all required fields';
     }
     return (
-      // WizardStep({
-      //   title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-      //   error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError || this.props.submitError,
-      //   errorMessage: errorMessage,
-      // }, [
-        div({ className: "questionnaireContainer" }, [
+        div({ className: "questionnaireContainerLight" }, [
           InputFieldRadio({
             id: "radioPII",
             name: "pii",

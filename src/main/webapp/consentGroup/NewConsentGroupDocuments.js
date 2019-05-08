@@ -100,7 +100,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     let documents = this.props.files;
     let errors = false;
     return (
-          div({ className: "questionnaireContainer" }, [
+          div({ className: "questionnaireContainerLight" }, [
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,

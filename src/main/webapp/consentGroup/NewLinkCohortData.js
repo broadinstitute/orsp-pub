@@ -32,7 +32,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
 
     return (
       WizardStep({
-        title: "Data/Sample Cohort Info", step: 1, currentStep: this.props.currentStep,
+        title: "Security, International Cohort and MTA", step: 1, currentStep: this.props.currentStep,
         error: false, errorMessage: 'Please answer the next question(s) above before moving to the next step'
       }, [
           Panel({ title: "International Cohorts" }, [
