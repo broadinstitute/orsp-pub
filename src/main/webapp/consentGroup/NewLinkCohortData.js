@@ -5,8 +5,9 @@ import { Security } from '../components/Security';
 import { Panel } from '../components/Panel';
 import { WizardStep } from '../components/WizardStep';
 import { InputFieldRadio } from '../components/InputFieldRadio';
+import { AlertMessage } from '../components/AlertMessage';
 
-export const NewDataCohort = hh(class NewDataCohort extends Component {
+export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
 
   constructor(props) {
     super(props);
@@ -23,7 +24,7 @@ export const NewDataCohort = hh(class NewDataCohort extends Component {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, field));
+    }, () => this.props.updateMTA(this.state.formData, field));
     this.props.removeErrorMessage();
   };
 
@@ -34,6 +35,19 @@ export const NewDataCohort = hh(class NewDataCohort extends Component {
         title: "Data/Sample Cohort Info", step: 1, currentStep: this.props.currentStep,
         error: false, errorMessage: 'Please answer the next question(s) above before moving to the next step'
       }, [
+          Panel({ title: "International Cohorts" }, [
+            InternationalCohorts({
+              title: "International Cohorts",
+              currentStep: this.props.currentStep,
+              handler: this.props.handler,
+              determination: this.props.determination,
+              origin: 'consentGroup'
+            }),
+            AlertMessage({
+              msg: ' Please answer all questions to continue',
+              show: this.props.showErrorIntCohorts
+            })
+          ]),
           Panel({ title: "Security" }, [
             Security({
               title: "Security",
@@ -52,16 +66,6 @@ export const NewDataCohort = hh(class NewDataCohort extends Component {
               review: false,
               readOnly: false
             })
-          ]),
-          Panel({ title: "International Cohorts" }, [
-            InternationalCohorts({
-              title: "International Cohorts",
-              currentStep: this.props.currentStep,
-              handler: this.props.handler,
-              determination: this.props.determination,
-              showErrorIntCohorts: this.props.showInternationalCohortsError,
-              origin: 'consentGroup'
-            }),
           ]),
           Panel({ title: "MTA" }, [
             InputFieldRadio({

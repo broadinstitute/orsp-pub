@@ -8,7 +8,7 @@ import { spinnerService } from '../util/spinner-service';
 import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
-import { NewDataCohort } from './NewDataCohort';
+import { NewLinkCohortData } from './NewLinkCohortData';
 
 const LAST_STEP = 1;
 
@@ -38,7 +38,7 @@ class NewConsentGroup extends Component {
       },
       generalDataFormData: {},
       securityInfoFormData: {},
-      dataCohortFormData: {},
+      linkFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -114,11 +114,11 @@ class NewConsentGroup extends Component {
           window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
           spinnerService.hideAll();
         }).catch(error => {
-        console.error(error);
-        spinnerService.hideAll();
-        this.toggleSubmitError();
-        this.changeSubmitState();
-      });
+          console.error(error);
+          spinnerService.hideAll();
+          this.toggleSubmitError();
+          this.changeSubmitState();
+        });
     } else {
       this.setState(prev => {
         prev.generalError = true;
@@ -159,7 +159,7 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.institutionProtocolNumber });
     extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.generalDataFormData.institutionalSources) });
     extraProperties.push({ name: 'describeConsentGroup', value: this.state.generalDataFormData.describeConsentGroup });
-    extraProperties.push({ name: 'requireMta', value: this.state.dataCohortFormData.requireMta });
+    extraProperties.push({ name: 'requireMta', value: this.state.linkFormData.requireMta });
     if (this.state.generalDataFormData.endDate !== null) {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.generalDataFormData.endDate) });
     }
@@ -213,10 +213,12 @@ class NewConsentGroup extends Component {
     let isValid = true;
     if (this.state.currentStep === 0) {
       isValid = this.validateGeneralData(field);
-    // } else if (this.state.currentStep === 2) {
-    //   isValid = this.validateInternationalCohorts();
-    // } else if (this.state.currentStep === LAST_STEP) {
-    //   isValid = this.validateInfoSecurity();
+    } else if (this.state.currentStep === 1) {
+      isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
+      if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
+        requireMta = true;
+        isValid = false;
+      }
     }
     return isValid;
   };
@@ -240,7 +242,6 @@ class NewConsentGroup extends Component {
     let consentGroupName = false;
     let collaboratingInstitution = false;
     let describeConsentGroup = false;
-   // let requireMta = false;
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
 
@@ -249,7 +250,6 @@ class NewConsentGroup extends Component {
       consentGroupName = true;
       isValid = false;
     }
-
     if (isEmpty(this.state.generalDataFormData.investigatorLastName)) {
       investigatorLastName = true;
       isValid = false;
@@ -258,10 +258,6 @@ class NewConsentGroup extends Component {
       institutionProtocolNumber = true;
       isValid = false;
     }
-    // if (this.state.generalDataFormData.requireMta === undefined || this.state.generalDataFormData.requireMta === '') {
-    //   requireMta = true;
-    //   isValid = false;
-    // }
     if (isEmpty(this.state.generalDataFormData.collaboratingInstitution)) {
       collaboratingInstitution = true;
       isValid = false;
@@ -294,7 +290,6 @@ class NewConsentGroup extends Component {
         prev.errors.consentGroupName = consentGroupName;
         prev.errors.collaboratingInstitution = collaboratingInstitution;
         prev.errors.describeConsentGroup = describeConsentGroup;
-      //  prev.errors.requireMta = requireMta;
         prev.errors.institutionalSourcesName = institutionalSourcesName;
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.isValid = isValid;
@@ -318,9 +313,6 @@ class NewConsentGroup extends Component {
         } else if (field === 'describeConsentGroup') {
           prev.errors.describeConsentGroup = describeConsentGroup;
         }
-        // else if (field === 'requireMta') {
-        //  prev.errors.requireMta = requireMta;
-        //} 
         else if (field === 'nameInstitutional') {
           prev.errors.institutionalSourcesName = institutionalSourcesName;
         } else if (field === 'countryInstitutional') {
@@ -395,6 +387,15 @@ class NewConsentGroup extends Component {
     })
   };
 
+  updateMTA = (updatedForm, field) => {
+    this.setState(prev => {
+      prev.linkFormData = updatedForm;
+      return prev;
+    }, () => {
+      this.isValid(field);
+    })
+  };
+
   updateInfoSecurityFormData = (updatedForm) => {
     this.setState(prev => {
       prev.securityInfoFormData = updatedForm;
@@ -448,7 +449,7 @@ class NewConsentGroup extends Component {
     return (
       Wizard({
         title: "New Sample/Data Cohort",
-        note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
+        note: "Please use this section to provide information about the data and/or samples you will receive.  Also upload any consent forms or associated documents.  If no consent form is available, please explain why this is the case.",
         stepChanged: this.stepChanged,
         isValid: this.isValid,
         showSubmit: this.showSubmit,
@@ -456,46 +457,46 @@ class NewConsentGroup extends Component {
         disabledSubmit: this.state.formSubmitted,
         loadingImage: this.props.loadingImage
       }, [
-        NewConsentGroupGeneralData({
-          title: "General Data",
-          currentStep: currentStep,
-          user: this.state.user,
-          sampleSearchUrl: this.props.sampleSearchUrl,
-          updateForm: this.updateGeneralDataFormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage,
-          projectKey: this.props.projectKey,
-          sampleCollectionList: this.state.sampleCollectionList,
-          fileHandler: this.fileHandler,
-          projectType: projectType,
-          options: this.state.documentOptions,
-          fillablePdfURL: this.props.fillablePdfURL,
-          files: this.state.files
-        }),
-        NewDataCohort({
-          title: "New DC",
-          currentStep: currentStep,
-          handler: this.determinationHandler,
-          determination: this.state.determination,
-          showErrorIntCohorts: this.state.showInternationalCohortsError,
-          origin: 'consentGroup',
-          requireMta: this.state.dataCohortFormData.requireMta,
-          errors: this.state.errors,
-          step: LAST_STEP,
-          user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
-          updateForm: this.updateInfoSecurityFormData,
-          showErrorInfoSecurity: this.state.showInfoSecurityError,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          removeErrorMessage: this.removeErrorMessage,
-          handleSecurityValidity: this.handleInfoSecurityValidity,
-          currentValue: this.state,
-          edit: false,
-          review: false,
-          readOnly: false
-        })
-      ])
+          NewConsentGroupGeneralData({
+            title: "Data/Sample Cohort Info",
+            currentStep: currentStep,
+            user: this.state.user,
+            sampleSearchUrl: this.props.sampleSearchUrl,
+            updateForm: this.updateGeneralDataFormData,
+            errors: this.state.errors,
+            removeErrorMessage: this.removeErrorMessage,
+            projectKey: this.props.projectKey,
+            sampleCollectionList: this.state.sampleCollectionList,
+            fileHandler: this.fileHandler,
+            projectType: projectType,
+            options: this.state.documentOptions,
+            fillablePdfURL: this.props.fillablePdfURL,
+            files: this.state.files
+          }),
+          NewLinkCohortData({
+            title: "Security, International Cohort and MTA",
+            currentStep: currentStep,
+            handler: this.determinationHandler,
+            determination: this.state.determination,
+            showErrorIntCohorts: this.state.showInternationalCohortsError,
+            origin: 'consentGroup',
+            requireMta: this.state.linkFormData.requireMta,
+            errors: this.state.errors,
+            step: LAST_STEP,
+            user: this.state.user,
+            searchUsersURL: this.props.searchUsersURL,
+            updateInfoSecurityFormData: this.updateInfoSecurityFormData,
+            showErrorInfoSecurity: this.state.showInfoSecurityError,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            removeErrorMessage: this.removeErrorMessage,
+            handleInfoSecurityValidity: this.handleInfoSecurityValidity,
+            currentValue: this.state,
+            edit: false,
+            review: false,
+            readOnly: false
+          })
+        ])
     );
   }
 }
