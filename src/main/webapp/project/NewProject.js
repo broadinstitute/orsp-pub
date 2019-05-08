@@ -60,7 +60,6 @@ class NewProject extends Component {
     this.changeStateSubmitButton = this.changeStateSubmitButton.bind(this);
     this.toggleTrueSubmitError = this.toggleTrueSubmitError.bind(this);
     this.toggleFalseSubmitError = this.toggleFalseSubmitError.bind(this);
-    this.updateInfoSecurity = this.updateInfoSecurity.bind(this);
   }
 
   componentDidMount() {
