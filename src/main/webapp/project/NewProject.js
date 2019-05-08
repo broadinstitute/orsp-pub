@@ -40,7 +40,6 @@ class NewProject extends Component {
       attestationFormData: {
         attestation: false
       },
-      securityInfoFormData: {},
       currentStep: 0,
       files: [],
       errors: {
@@ -52,12 +51,6 @@ class NewProject extends Component {
         fundingAwardNumber: false
       },
       formerProjectType: null,
-      infoSecurityErrors: {
-        sharingType: false,
-        compliance: false,
-        pii: false,
-        textCompliance: false
-      }
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
@@ -158,12 +151,6 @@ class NewProject extends Component {
     extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
     extraProperties.push({name: 'irbReferral', value: isEmpty(this.state.generalDataFormData.irbReferral.value) ? null : JSON.stringify(this.state.generalDataFormData.irbReferral)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
-
-    extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
-    extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
-    extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
-    extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
 
     let collaborators = this.state.generalDataFormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
@@ -390,13 +377,6 @@ class NewProject extends Component {
       prev.attestationFormData = updatedForm;
       return prev;
     }, () => this.isValid(field));
-  };
-
-  updateInfoSecurity = (updatedForm, field) => {
-    this.setState(prev => {
-      prev.securityInfoFormData = updatedForm;
-      return prev;
-    })
   };
 
   showSubmit = (currentStep) => {
