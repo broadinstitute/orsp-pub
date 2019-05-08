@@ -6,7 +6,7 @@ class ConsentCollectionData implements LogicalDelete<ConsentCollectionData> {
 
     String projectKey
     String consentKey
-    Boolean pii
+    String pii
     String requireMta
     String compliance
     String sharingType

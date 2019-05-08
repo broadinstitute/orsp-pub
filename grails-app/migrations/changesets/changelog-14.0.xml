@@ -11,10 +11,10 @@
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="projectKey" type="VARCHAR(255)">
+            <column name="project_key" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="consentKey" type="VARCHAR(255)">
+            <column name="consent_key" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="require_mta" type="VARCHAR(255)">
@@ -32,6 +32,9 @@
             <column name="text_sharing_type" type="LONGTEXT"/>
             <column name="text_compliance" type="LONGTEXT"/>
             <column name="international_cohorts" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
         </createTable>

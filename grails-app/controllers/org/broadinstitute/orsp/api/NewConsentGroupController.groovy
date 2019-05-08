@@ -92,11 +92,11 @@ class NewConsentGroupController extends AuthenticatedController {
 
                 if (!files?.isEmpty()) {
                     files.forEach {
-                        storageProviderService.saveMultipartFile(user.displayName, user.userName, consent.getProjectKey().toString(), it.contentType, it)
+                        storageProviderService.saveMultipartFile(user?.displayName, user?.userName, consent.getProjectKey().toString(), it.contentType, it)
                     }
                 }
 
-                notifyService.consentGroupCreation(issue)
+                notifyService.consentGroupCreation(issue, consentCollectionData)
                 consent.status = 201
                 render([message: consent] as JSON)
             } else {

@@ -474,13 +474,13 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionData consentCollectionData) {
         Map<Boolean, String> result = new HashMap<>()
         Boolean sendEmail = false
-        if (getValue(issue.getPII()) == YES ||
-                getValue(issue.getCompliance()) == YES ||
-                getValue(issue.getCompliance()) == UNCERTAIN ||
-                issue.getSharingType() == TEXT_SHARING_OPEN || issue.getSharingType() == TEXT_SHARING_BOTH) {
+        if (consentCollectionData.getPII() ||
+                getValue(consentCollectionData.getCompliance()) == YES ||
+                getValue(consentCollectionData.getCompliance()) == UNCERTAIN ||
+                consentCollectionData.getSharingType() == TEXT_SHARING_OPEN || consentCollectionData.getSharingType() == TEXT_SHARING_BOTH) {
             sendEmail = true
         }
         if (sendEmail) {
@@ -543,10 +543,10 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
-    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user) {
+    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user, ConsentCollectionData consentCollectionData) {
         Map<Boolean, String> result = new HashMap<>()
 
-        if (Boolean.valueOf(issue.getMTA())) {
+        if (Boolean.valueOf(consentCollectionData.requireMta)) {
             NotifyArguments arguments =
                     new NotifyArguments(
                             toAddresses: Collections.singletonList(getAgreementsRecipient()),
@@ -656,11 +656,11 @@ class NotifyService implements SendgridSupport, Status {
     }
 
 
-    Map<Boolean, String> consentGroupCreation(Issue issue) {
+    Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionData consentCollectionData) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendRequirementsInfoConsentGroup(issue, user)
-        sendSecurityInfo(issue, user)
+        sendRequirementsInfoConsentGroup(issue, user, consentCollectionData)
+        sendSecurityInfo(issue, user, consentCollectionData)
     }
 
     Map<Boolean, String> projectCreation(Issue issue) {
@@ -676,6 +676,5 @@ class NotifyService implements SendgridSupport, Status {
                         user: user
                 )
         )
-        sendSecurityInfo(issue, user)
     }
 }
