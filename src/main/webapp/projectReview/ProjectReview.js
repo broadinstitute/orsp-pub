@@ -813,7 +813,7 @@ class ProjectReview extends Component {
           style: { 'marginTop': '15px' },
           onClick: this.redirectToNewConsentGroup,
           isRendered: this.state.readOnly === true,
-        }, ["Add New Consent Group"]),
+        }, ["Add New Sample/Data Cohort"]),
 
         button({
           className: "btn buttonSecondary floatRight",
