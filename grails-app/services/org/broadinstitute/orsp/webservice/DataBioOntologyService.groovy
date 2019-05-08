@@ -105,7 +105,7 @@ class DataBioOntologyService implements Status {
                     include_links: false,
                     include_context: false,
                     q: term,
-                    pagesize: 5000,
+                    pagesize: 1000,
                     page: String.valueOf(page)
             ]
             response.parser(MediaType.APPLICATION_JSON_VALUE) { ChainedHttpConfig cfg, FromServer fs ->
