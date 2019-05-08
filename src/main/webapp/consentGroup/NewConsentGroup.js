@@ -56,7 +56,6 @@ class NewConsentGroup extends Component {
         textCompliance: false,
       }
     };
-
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateInfoSecurityFormData = this.updateInfoSecurityFormData.bind(this);
     this.isValid = this.isValid.bind(this);
@@ -64,6 +63,7 @@ class NewConsentGroup extends Component {
     this.downloadFillablePDF = this.downloadFillablePDF.bind(this);
     this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
     this.handleInfoSecurityValidity = this.handleInfoSecurityValidity.bind(this);
+    this.updateMTA = this.updateMTA.bind(this);
   }
 
   componentDidMount() {
@@ -105,6 +105,7 @@ class NewConsentGroup extends Component {
       ConsentGroup.create(
         this.props.createConsentGroupURL,
         this.getConsentGroup(),
+        this.getConsentCollectionData(),
         this.state.files,
         this.state.user.displayName,
         this.state.user.userName)
@@ -143,6 +144,32 @@ class NewConsentGroup extends Component {
     });
   };
 
+  getConsentCollectionData() {
+    let consentCollectionData = {};
+    // consent collection link info
+    consentCollectionData.projectKey = this.props.projectKey;
+    consentCollectionData.consentKey = 
+    consentCollectionData.requireMta = this.state.linkFormData.requireMta;
+    // security
+    consentCollectionData.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
+    consentCollectionData.compliance = this.state.securityInfoFormData.compliance;
+    consentCollectionData.textCompliance = this.state.securityInfoFormData.textCompliance;
+    consentCollectionData.sharingType = this.state.securityInfoFormData.sharingType;
+    consentCollectionData.textSharingType = this.state.securityInfoFormData.textSharingType;
+    // cohorts
+    let questions = this.state.determination.questions;
+    if (questions !== null && questions.length > 1) {
+      let cohortsForm = [];
+      questions.map((q, idx) => {
+        if (q.answer !== null) {
+          cohortsForm.push({ name: q.key, value: q.answer });
+        }
+      });
+      consentCollectionData.internationalCohorts = JSON.stringify(cohortsForm);
+    }
+    return consentCollectionData;
+  }
+
   getConsentGroup() {
     // step 1
     let consentGroup = {};
@@ -159,26 +186,9 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.institutionProtocolNumber });
     extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.generalDataFormData.institutionalSources) });
     extraProperties.push({ name: 'describeConsentGroup', value: this.state.generalDataFormData.describeConsentGroup });
-    extraProperties.push({ name: 'requireMta', value: this.state.linkFormData.requireMta });
     if (this.state.generalDataFormData.endDate !== null) {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.generalDataFormData.endDate) });
     }
-    // step 3
-    let questions = this.state.determination.questions;
-    if (questions !== null && questions.length > 1) {
-      questions.map((q, idx) => {
-        if (q.answer !== null) {
-          extraProperties.push({ name: q.key, value: q.answer });
-        }
-      });
-    }
-    // step 4
-    extraProperties.push({ name: 'pii', value: this.state.securityInfoFormData.pii });
-    extraProperties.push({ name: 'compliance', value: this.state.securityInfoFormData.compliance });
-    extraProperties.push({ name: 'textCompliance', value: this.state.securityInfoFormData.textCompliance });
-    extraProperties.push({ name: 'sharingType', value: this.state.securityInfoFormData.sharingType });
-    extraProperties.push({ name: 'textSharingType', value: this.state.securityInfoFormData.textSharingType });
-
     consentGroup.extraProperties = extraProperties;
     return consentGroup;
 
@@ -482,7 +492,7 @@ class NewConsentGroup extends Component {
             origin: 'consentGroup',
             requireMta: this.state.linkFormData.requireMta,
             errors: this.state.errors,
-            step: LAST_STEP,
+            //         step: LAST_STEP,
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,
             updateInfoSecurityFormData: this.updateInfoSecurityFormData,
@@ -491,10 +501,8 @@ class NewConsentGroup extends Component {
             submitError: this.state.submitError,
             removeErrorMessage: this.removeErrorMessage,
             handleInfoSecurityValidity: this.handleInfoSecurityValidity,
-            currentValue: this.state,
-            edit: false,
-            review: false,
-            readOnly: false
+            securityInfoData: this.state.securityInfoFormData,
+            updateMTA: this.updateMTA
           })
         ])
     );

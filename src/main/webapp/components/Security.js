@@ -140,7 +140,7 @@ export const Security = hh(class Security extends Component {
             name: "pii",
             label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
             moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."]),
-            value: this.state.formData.pii,
+            value: this.props.securityInfoData.pii,
             optionValues: ["true", "false"],
             optionLabels: [
               "Yes",
@@ -156,7 +156,7 @@ export const Security = hh(class Security extends Component {
             id: "radioCompliance",
             name: "compliance",
             label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?*"]),
-            value: this.state.formData.compliance,
+            value: this.props.securityInfoData.compliance,
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
               "Yes",
@@ -170,22 +170,22 @@ export const Security = hh(class Security extends Component {
             edit: false
           }),
           InputFieldText({
-            isRendered: this.state.formData.compliance === "true",
+            isRendered: this.props.securityInfoData.compliance === "true",
             id: "inputCompliance",
             name: "textCompliance",
             label: "Please specify which regulations must be adhered to below:*",
-            value: this.state.formData.textCompliance,
+            value: this.props.securityInfoData.textCompliance,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
-            error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
+            error: this.props.securityInfoData.textCompliance && this.props.showErrorInfoSecurity,
             errorMessage: "Required field"
           }),
           InputFieldRadio({
             id: "radioAccessible",
             name: "sharingType",
             label: span({}, ["Will the individual level data collected or generated as part of this project be shared via: *"]),
-            value: this.state.formData.sharingType,
+            value: this.props.securityInfoData.sharingType,
             optionLabels: [
               "An open/unrestricted repository (such as GEO)",
               "A controlled-access repository (such as dbGaP or DUOS)",
@@ -211,7 +211,7 @@ export const Security = hh(class Security extends Component {
             id: "inputAccessible",
             name: "textSharingType",
             label: "Name of Database(s):",
-            value: this.state.formData.textSharingType,
+            value: this.props.securityInfoData.textSharingType,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,

@@ -61,7 +61,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
               submitError: this.props.submitError,
               removeErrorMessage: this.props.removeErrorMessage,
               handleSecurityValidity: this.props.handleInfoSecurityValidity,
-              currentValue: this.props.state,
+              securityInfoData: this.props.securityInfoData,
               edit: false,
               review: false,
               readOnly: false

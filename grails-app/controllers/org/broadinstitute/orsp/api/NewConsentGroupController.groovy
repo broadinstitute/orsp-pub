@@ -6,6 +6,8 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionData
+import org.broadinstitute.orsp.ConsentCollectionDataService
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
@@ -25,6 +27,7 @@ import javax.ws.rs.core.Response
 class NewConsentGroupController extends AuthenticatedController {
 
     ConsentService consentService
+    ConsentCollectionDataService consentCollectionDataService
 
     def show() {
         render(view: "/newConsentGroup/index")
@@ -45,18 +48,22 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def save() {
-        Issue consent;
+        Issue consent
+        ConsentCollectionData consentCollectionData
         try{
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             User user = getUser()
-            String dataProject = request.parameterMap["dataProject"].toString()
             JsonParser parser = new JsonParser()
-            JsonArray dataProjectJson = parser.parse(dataProject)
+            JsonArray dataProjectJson = parser.parse(request.parameterMap["dataProject"].toString())
+            JsonArray dataConsentCollectionJson = parser.parse(request.parameterMap["dataConsentCollection"].toString())
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
+            consentCollectionData = IssueUtils.getJson(ConsentCollectionData.class, dataConsentCollectionJson[0])
             Issue source = queryService.findByKey(issue.getSource())
             if (source != null) {
                 issue.setRequestDate(new Date())
                 consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
+                consentCollectionData.consentKey = consent.projectKey
+                consentCollectionData = consentCollectionDataService.create(consentCollectionData)
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
                 try {
                     // If any sample collections were linked, we need to add them to the consent group.
@@ -101,6 +108,7 @@ class NewConsentGroupController extends AuthenticatedController {
             if (consent != null) {
                 issueService.deleteIssue(consent.projectKey)
             }
+            consentCollectionData?.delete(flush: true)
             log.error("There was an error trying to create consent group: " + e.message)
             response.status = 500
             render([error: e.message] as JSON)
