@@ -682,7 +682,7 @@
         $(".populationAutocomplete").autocomplete({
             appendTo: "#populationRestrictionsContainer",
             source: "${createLink(controller: 'search', action: 'getMatchingPopulationOntologies')}",
-            minLength: 2,
+            minLength: 3,
             change: function (event, ui) {
                 // This implements a "must-match" constraint
                 if (!ui.item) {
