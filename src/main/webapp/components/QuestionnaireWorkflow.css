@@ -1,4 +1,5 @@
-.questionnaireContainer .buttonContainer {
+.questionnaireContainer .buttonContainer,
+.questionnaireContainerLight .buttonContainer {
   margin: 25px 0 0 0;
 }
 
@@ -13,14 +14,27 @@
   padding: 0;
 }
 
+.questionnaireContainerLight .questionnaireProgressBar {
+  top: -55px;
+}
+
+.questionnaireContainerLight .radioContainer {
+  margin-top: 0;
+}
+
 .questionnaireProgressBar p {
   text-align: right;
 }
 
+.questionnaireContainerLight .questionnaireProgressBar p {
+  margin-bottom: 0;
+}
+
 .questionnaireProgressBar .progress {
-  height: 12px;
+  height: 10px;
   margin-bottom: 0 !important;
   border-radius: 2px;
+  background-color: #cccccc;
 }
 
 .questionnaireProgressBar .progress-bar {
