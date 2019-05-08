@@ -15,7 +15,6 @@ import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { format } from 'date-fns';
-import { IntCohortsReview } from "../components/IntCohortsReview";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -818,17 +817,6 @@ class ConsentGroupReview extends Component {
     }
   }
 
-  cleanAnswersIntCohorts = (questionIndex, where) => {
-    this.setState(prev => {
-      this.state.intCohortsQuestions.forEach((q, index) => {
-        if (index > questionIndex.currentQuestionIndex) {
-          prev.formData.consentExtraProps[q.key] = null;
-        }
-      });
-      return prev;
-    })
-  };
-
   areObjectsEqual(formData, current) {
     let newValues = JSON.parse(JSON.stringify(this.state[formData]));
     let currentValues = JSON.parse(JSON.stringify(this.state[current]));
@@ -1131,18 +1119,6 @@ class ConsentGroupReview extends Component {
             institutionalNameErrorIndex: this.state.errors.institutionalNameErrorIndex,
             institutionalCountryErrorIndex: this.state.errors.institutionalCountryErrorIndex,
             error: this.state.errors.instError
-          })
-        ]),
-        Panel({ title: "International Cohorts"}, [
-          IntCohortsReview({
-            future: get(this.state.formData, 'consentExtraProps', ''),
-            current: this.state.current.consentExtraProps,
-            readOnly: this.state.readOnly,
-            resetHandler: this.resetHandler,
-            determination: this.state.determination,
-            handler: this.determinationHandler,
-            cleanQuestionsUnanswered: this.cleanAnswersIntCohorts,
-            resetIntCohorts: this.state.resetIntCohorts
           })
         ]),
         Panel({ title: "Security" }, [
