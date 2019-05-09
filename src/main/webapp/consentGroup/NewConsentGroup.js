@@ -120,11 +120,11 @@ class NewConsentGroup extends Component {
           window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups&new"].join("/");
           spinnerService.hideAll();
         }).catch(error => {
-          console.error(error);
-          spinnerService.hideAll();
-          this.toggleSubmitError();
-          this.changeSubmitState();
-        });
+        console.error(error);
+        spinnerService.hideAll();
+        this.toggleSubmitError();
+        this.changeSubmitState();
+      });
     } else {
       this.setState(prev => {
         prev.generalError = true;

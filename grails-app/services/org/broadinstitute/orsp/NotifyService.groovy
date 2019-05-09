@@ -1,12 +1,10 @@
 package org.broadinstitute.orsp
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import grails.gsp.PageRenderer
 import grails.util.Environment
 import grails.web.mapping.LinkGenerator
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HttpBuilder
-import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.NotifyConfiguration
 import org.broadinstitute.orsp.sendgrid.Mail
 import org.broadinstitute.orsp.sendgrid.SendgridSupport
@@ -560,6 +558,52 @@ class NotifyService implements SendgridSupport, Status {
             result = sendMail(mail, getApiKey(), getSendGridUrl())
         }
         result
+    }
+
+    Map<Boolean, String> sendEditsSubmissionNotification(Issue issue) {
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        user: userService.findUser(issue.reporter),
+                        issue: issue)
+
+        arguments.view = "/notify/edits"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
+        String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
+                        user: user,
+                        issue: issue)
+
+        arguments.view = "/notify/editsApproved"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
+        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
+                        user: user,
+                        issue: issue)
+
+        arguments.view = "/notify/editsDisapproved"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
     /**
