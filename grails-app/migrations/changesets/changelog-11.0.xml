@@ -20,7 +20,7 @@
             <column name="require_mta" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="pii" type="boolean">
+            <column name="pii" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="compliance" type="VARCHAR(255)">

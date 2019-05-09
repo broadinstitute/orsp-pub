@@ -477,7 +477,7 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionData consentCollectionData) {
         Map<Boolean, String> result = new HashMap<>()
         Boolean sendEmail = false
-        if (consentCollectionData.getPII() ||
+        if (consentCollectionData.getPii() ||
                 getValue(consentCollectionData.getCompliance()) == YES ||
                 getValue(consentCollectionData.getCompliance()) == UNCERTAIN ||
                 consentCollectionData.getSharingType() == TEXT_SHARING_OPEN || consentCollectionData.getSharingType() == TEXT_SHARING_BOTH) {

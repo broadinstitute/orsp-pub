@@ -29,7 +29,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         institutionalSources: [{ name: '', country: '' }],
         startDate: null,
         endDate: null,
-        onGoingProcess: false
+        onGoingProcess: false,
+        noConsentFormReason: ''
       }
     };
   }
@@ -141,7 +142,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.institutionalSourcesCountry ||
           this.props.errors.startDate ||
           this.props.errors.endDate ||
-          this.props.errors.onGoingProcess,
+          this.props.errors.onGoingProcess ||
+          this.props.errors.noConsentFormReason,
         errorMessage: 'Please complete all required fields'
       }, [
 
@@ -292,7 +294,19 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             options: this.props.documentOptions,
             fillablePdfURL: this.props.fillablePdfURL,
             files: this.props.files
-          })
+          }),
+          InputFieldText({
+            isRendered: !this.props.isConsentFormPresent,
+            id: "inputNoConsentFormReason",
+            name: "noConsentFormReason",
+            label: "Please explain why there is no Consent Form available:",
+            value: this.state.formData.noConsentFormReason,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            error: this.props.errors.noConsentFormReason,
+            errorMessage: "Required field"
+          }),
         ])
       ])
     )

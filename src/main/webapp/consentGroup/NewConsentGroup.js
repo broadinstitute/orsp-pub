@@ -36,11 +36,14 @@ class NewConsentGroup extends Component {
         nextQuestionIndex: 1,
         endState: false
       },
-      generalDataFormData: {},
+      generalDataFormData: {
+        noConsentFormReason: ''
+      },
       securityInfoFormData: {},
       linkFormData: {},
       currentStep: 0,
       files: [],
+      isConsentFormPresent: false,
       errors: {
         investigatorLastName: false,
         institutionProtocolNumber: false,
@@ -54,6 +57,7 @@ class NewConsentGroup extends Component {
         compliance: false,
         sharingType: false,
         textCompliance: false,
+        noConsentFormReason: false
       }
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
@@ -64,6 +68,7 @@ class NewConsentGroup extends Component {
     this.submitNewConsentGroup = this.submitNewConsentGroup.bind(this);
     this.handleInfoSecurityValidity = this.handleInfoSecurityValidity.bind(this);
     this.updateMTA = this.updateMTA.bind(this);
+    this.isConsentFormUploaded = this.isConsentFormUploaded.bind(this);
   }
 
   componentDidMount() {
@@ -186,6 +191,7 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.institutionProtocolNumber });
     extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.generalDataFormData.institutionalSources) });
     extraProperties.push({ name: 'describeConsentGroup', value: this.state.generalDataFormData.describeConsentGroup });
+    extraProperties.push({ name: 'noConsentFormReason', value: this.state.generalDataFormData.noConsentFormReason });
     if (this.state.generalDataFormData.endDate !== null) {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.generalDataFormData.endDate) });
     }
@@ -246,6 +252,22 @@ class NewConsentGroup extends Component {
     }
   }
 
+  isConsentFormUploaded() {
+    let isConsentFormUploaded = false;
+    if (this.state.files !== null && this.state.files.length > 0 && 
+      this.state.files.filter(file => file.fileKey === 'Consent Document').length > 0) {
+        isConsentFormUploaded = true;
+    }
+    this.setState(prev => {
+      prev.isConsentFormPresent = isConsentFormUploaded;
+      if (isConsentFormUploaded) {
+        prev.generalDataFormData.noConsentFormReason = '';
+      }
+      return prev;
+    });
+    return isConsentFormUploaded;
+  }
+
   validateGeneralData(field) {
     let investigatorLastName = false;
     let institutionProtocolNumber = false;
@@ -254,8 +276,13 @@ class NewConsentGroup extends Component {
     let describeConsentGroup = false;
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
-
+    let noConsentFormReason = false;
     let isValid = true;
+    
+    if (field === 'noConsentFormReason' && !this.state.isConsentFormPresent) {
+      noConsentFormReason = true;
+      isValid = false;
+    }
     if (field === "consentGroupName" && this.consentGroupNameExists()) {
       consentGroupName = true;
       isValid = false;
@@ -302,6 +329,7 @@ class NewConsentGroup extends Component {
         prev.errors.describeConsentGroup = describeConsentGroup;
         prev.errors.institutionalSourcesName = institutionalSourcesName;
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
+        prev.errors.noConsentFormReason = noConsentFormReason;
         prev.errors.isValid = isValid;
         return prev;
       });
@@ -322,11 +350,12 @@ class NewConsentGroup extends Component {
           prev.errors.collaboratingInstitution = collaboratingInstitution;
         } else if (field === 'describeConsentGroup') {
           prev.errors.describeConsentGroup = describeConsentGroup;
-        }
-        else if (field === 'nameInstitutional') {
+        } else if (field === 'nameInstitutional') {
           prev.errors.institutionalSourcesName = institutionalSourcesName;
         } else if (field === 'countryInstitutional') {
           prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
+        } else if (field === 'noConsentFormReason') {
+          prev.errors.noConsentFormReason = noConsentFormReason;
         }
         return prev;
       });
@@ -357,7 +386,7 @@ class NewConsentGroup extends Component {
   fileHandler = (file) => {
     this.setState({
       files: file
-    });
+    },() => this.isConsentFormUploaded());
   };
 
   validateInternationalCohorts() {
@@ -481,7 +510,8 @@ class NewConsentGroup extends Component {
             projectType: projectType,
             options: this.state.documentOptions,
             fillablePdfURL: this.props.fillablePdfURL,
-            files: this.state.files
+            files: this.state.files,
+            isConsentFormPresent: this.state.isConsentFormPresent
           }),
           NewLinkCohortData({
             title: "Security, International Cohort and MTA",
