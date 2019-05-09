@@ -92,7 +92,7 @@ class NewConsentGroupController extends AuthenticatedController {
 
                 if (!files?.isEmpty()) {
                     files.forEach {
-                        storageProviderService.saveMultipartFile(user?.displayName, user?.userName, consent.getProjectKey().toString(), it.contentType, it)
+                        storageProviderService.saveMultipartFile(user?.displayName, user?.userName, consent.getProjectKey().toString(), it.name, it)
                     }
                 }
 
