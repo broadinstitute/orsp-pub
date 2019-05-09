@@ -1,13 +1,10 @@
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, span, button, div, p, small } from 'react-hyperscript-helpers';
-import { InputFieldFile } from '../components/InputFieldFile';
+import { hh, h1, button, div, p, small } from 'react-hyperscript-helpers';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
-import { IRB, NHSR, NE } from '../util/DocumentType';
 import { AddDocumentDialog } from '../components/AddDocumentDialog'
-import { domainToASCII } from 'url';
 
 
 const styles = {
@@ -68,13 +65,12 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   };
 
   removeFile = (row) => (e) => {
-    let docs = this.state.documents;
-    var documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
+    const documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
     this.setState(prev => {
       prev.documents = documentsToUpdate;
       return prev;
     }, () => this.props.fileHandler(this.state.documents));
-  }
+  };
 
   addDocuments = () => {
     this.setState({
@@ -104,8 +100,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     }
 
     let documents = this.props.files;
-    let errors = false;
-    let errorMessage = ''
+    let errorMessage = '';
     if(!this.props.errors.attestation && this.props.generalError) {
       errorMessage = 'Please check previous steps';
     } else if (this.props.submitError) {
