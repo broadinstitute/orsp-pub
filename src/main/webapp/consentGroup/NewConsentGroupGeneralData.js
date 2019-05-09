@@ -176,13 +176,13 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputConsentGroupName",
             name: "consentGroupName",
-            label: "Consent Group Name",
+            label: "Sample/Data Cohort Name",
             value: this.state.formData.investigatorLastName + " / " + this.state.formData.institutionProtocolNumber,
             disabled: true,
             required: false,
             onChange: null,
             error: this.props.errors.consentGroupName,
-            errorMessage: "There is already a Consent Group with this protocol number. Please choose a different one."
+            errorMessage: "There is already a Sample/Data Cohort with this protocol number. Please choose a different one."
           }),
 
           InputFieldText({
@@ -223,7 +223,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldRadio({
             id: "radioDescribeConsentGroup",
             name: "describeConsentGroup",
-            label: "Please choose one of the following to describe this proposed Consent Group:* ",
+            label: "Please choose one of the following to describe this proposed Sample/Data Cohort:* ",
             moreInfo: "",
             value: this.state.formData.describeConsentGroup,
             optionValues: ["01", "02"],
