@@ -121,14 +121,6 @@ export const Security = hh(class Security extends Component {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
     }
-    let errorMessage = ''
-    if(!this.props.showErrorInfoSecurity && this.props.generalError) {
-      errorMessage = 'Please check previous steps';
-    } else if (this.props.submitError) {
-      errorMessage =  'Something went wrong. Please try again.';
-    } else {
-      errorMessage = 'Please complete all required fields';
-    }
     return (
         div({ className: "questionnaireContainerLight" }, [
           InputFieldRadio({
@@ -174,7 +166,7 @@ export const Security = hh(class Security extends Component {
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
-            error: this.props.securityInfoData.textCompliance && this.props.showErrorInfoSecurity,
+            error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
             errorMessage: "Required field"
           }),
           InputFieldRadio({
@@ -213,7 +205,6 @@ export const Security = hh(class Security extends Component {
             onChange: this.handleInputChange,
           })
         ])
-    //  ])
     )
   }
 });

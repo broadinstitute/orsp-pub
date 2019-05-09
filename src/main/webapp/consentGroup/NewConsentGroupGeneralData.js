@@ -302,7 +302,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             label: "Please explain why there is no Consent Form available:",
             value: this.state.formData.noConsentFormReason,
             disabled: false,
-            required: false,
+            required: true,
             onChange: this.handleInputChange,
             error: this.props.errors.noConsentFormReason,
             errorMessage: "Required field"

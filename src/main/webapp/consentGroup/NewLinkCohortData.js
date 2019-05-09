@@ -29,11 +29,19 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
   };
 
   render() {
-
+    let errorMessage = '';
+    if(!this.props.showErrorInfoSecurity && !this.props.showErrorIntCohorts && !this.props.errors.requireMta && this.props.generalError) {
+      errorMessage = 'Please check previous steps';
+    } else if (this.props.submitError) {
+      errorMessage =  'Something went wrong. Please try again.';
+    } else {
+      errorMessage = 'Please complete all required fields';
+    }
     return (
       WizardStep({
         title: "Security, International Cohort and MTA", step: 1, currentStep: this.props.currentStep,
-        error: false, errorMessage: 'Please answer the next question(s) above before moving to the next step'
+        error: this.props.showErrorIntCohorts || this.props.showErrorInfoSecurity || this.props.generalError || this.props.submitError || this.props.errors.requireMta, 
+        errorMessage: errorMessage
       }, [
           Panel({ title: "International Cohorts" }, [
             InternationalCohorts({
@@ -88,41 +96,5 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
             })
           ])
         ]))
-    // WizardStep({
-    //   title: "Test",
-    //   error: false,
-    //   errorMessage: 'Please complete all required fields',
-    //   step: 2
-    // }, [
-    // Panel({ title: "International Cohorts" }, [
-    //   InternationalCohorts({
-    //     title: "International Cohorts",
-    //     currentStep: this.props.currentStep,
-    //     handler: this.props.determinationHandler,
-    //     determination: this.props.determination,
-    //     showErrorIntCohorts: this.props.showInternationalCohortsError,
-    //     origin: 'consentGroup'
-    //   }),
-    // ]),
-    //  Panel({ title: "Securityddddd" }, [
-    // Security({
-    //   title: "Security",
-    //   step: 1,
-    //   currentStep: this.props.currentStep,
-    //   user: this.props.user,
-    //   searchUsersURL: this.props.searchUsersURL,
-    //   updateForm: this.props.updateInfoSecurityFormData,
-    //   showErrorInfoSecurity: this.props.howInfoSecurityError,
-    //   generalError: this.props.generalError,
-    //   submitError: this.props.submitError,
-    //   removeErrorMessage: this.props.removeErrorMessage,
-    //   handleSecurityValidity: this.props.handleInfoSecurityValidity,
-    //   currentValue: this.props.state,
-    //   edit: false,
-    //   review: false,
-    //   readOnly: false
-    // })
-    //   ]))
-    //    ]))
   }
 });

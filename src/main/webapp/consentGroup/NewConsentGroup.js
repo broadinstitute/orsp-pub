@@ -23,7 +23,7 @@ class NewConsentGroup extends Component {
       },
       documentOptions: [],
       showInternationalCohortsError: false,
-      showInfoSecurityError: false,
+      showErrorInfoSecurity: false,
       isInfoSecurityValid: false,
       generalError: false,
       formSubmitted: false,
@@ -158,9 +158,9 @@ class NewConsentGroup extends Component {
     // security
     consentCollectionData.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
     consentCollectionData.compliance = this.state.securityInfoFormData.compliance;
-    consentCollectionData.textCompliance = this.state.securityInfoFormData.textCompliance;
+    consentCollectionData.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
     consentCollectionData.sharingType = this.state.securityInfoFormData.sharingType;
-    consentCollectionData.textSharingType = this.state.securityInfoFormData.textSharingType;
+    consentCollectionData.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
@@ -231,19 +231,31 @@ class NewConsentGroup extends Component {
       isValid = this.validateGeneralData(field);
     } else if (this.state.currentStep === 1) {
       isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
-      if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
-        requireMta = true;
+      if (this.validateMTA()) {
         isValid = false;
       }
     }
     return isValid;
   };
 
+  validateMTA() {
+    let isValid = true;
+    if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.errors.requireMta = !isValid;
+      return prev;
+    });
+    return isValid
+  }
+
   validateForm() {
     let isGeneralDataValid = this.validateGeneralData();
     let isInternationalCohortsValid = this.validateInternationalCohorts();
     let isInfoSecurityValid = this.validateInfoSecurity();
-    return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid;
+    let isMTAValid = this.validateMTA();
+    return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isMTAValid;
   }
 
   consentGroupNameExists() {
@@ -279,7 +291,7 @@ class NewConsentGroup extends Component {
     let noConsentFormReason = false;
     let isValid = true;
     
-    if (field === 'noConsentFormReason' && !this.state.isConsentFormPresent) {
+    if (!this.state.isConsentFormPresent && isEmpty(this.state.generalDataFormData.noConsentFormReason)) {
       noConsentFormReason = true;
       isValid = false;
     }
@@ -337,7 +349,7 @@ class NewConsentGroup extends Component {
 
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' || field === 'describeConsentGroup' ||
-      field === 'requireMta' || field === 'nameInstitutional' || field === 'countryInstitutional') {
+      field === 'nameInstitutional' || field === 'countryInstitutional' || field === 'noConsentFormReason') {
 
       this.setState(prev => {
         if (field === 'investigatorLastName') {
@@ -375,7 +387,11 @@ class NewConsentGroup extends Component {
   };
 
   handleInfoSecurityValidity(isValid) {
-    this.setState({ isInfoSecurityValid: isValid })
+    this.setState(prev => { 
+      prev.isInfoSecurityValid = isValid;
+      prev.showErrorInfoSecurity = !isValid;
+      return prev; 
+    })
   }
 
   componentDidCatch(error, info) {
@@ -403,7 +419,7 @@ class NewConsentGroup extends Component {
 
   validateInfoSecurity() {
     this.setState(prev => {
-      prev.showInfoSecurityError = !this.state.isInfoSecurityValid;
+      prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
       return prev;
     });
     return this.state.isInfoSecurityValid;
@@ -497,7 +513,7 @@ class NewConsentGroup extends Component {
         loadingImage: this.props.loadingImage
       }, [
           NewConsentGroupGeneralData({
-            title: "Sample/Data Cohort Info",
+            title: "Data/Sample Cohort Info",
             currentStep: currentStep,
             user: this.state.user,
             sampleSearchUrl: this.props.sampleSearchUrl,
@@ -522,11 +538,10 @@ class NewConsentGroup extends Component {
             origin: 'consentGroup',
             requireMta: this.state.linkFormData.requireMta,
             errors: this.state.errors,
-            //         step: LAST_STEP,
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,
             updateInfoSecurityFormData: this.updateInfoSecurityFormData,
-            showErrorInfoSecurity: this.state.showInfoSecurityError,
+            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
             generalError: this.state.generalError,
             submitError: this.state.submitError,
             removeErrorMessage: this.removeErrorMessage,
