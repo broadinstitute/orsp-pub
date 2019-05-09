@@ -512,15 +512,6 @@ class NotifyService implements SendgridSupport, Status {
         else if (issue.getFeeForServiceWork() != null && Boolean.valueOf(issue.getFeeForServiceWork())){
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
-        else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
-            values.put(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, "true")
-        }
-        else if (issue.isCollaboratorProvidingGoodService() != null && Boolean.valueOf(issue.isCollaboratorProvidingGoodService())) {
-            values.put(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, "true")
-        }
-        else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
-            values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
-        }
 
         values.put('type', type)
 
@@ -702,8 +693,8 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> consentGroupCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendRequirementsInfoConsentGroup(issue, user)
-        sendSecurityInfo(issue, user)
+//        sendRequirementsInfoConsentGroup(issue, user)
+//        sendSecurityInfo(issue, user)
     }
 
     Map<Boolean, String> projectCreation(Issue issue) {
@@ -719,6 +710,6 @@ class NotifyService implements SendgridSupport, Status {
                         user: user
                 )
         )
-        sendSecurityInfo(issue, user)
+//        sendSecurityInfo(issue, user)
     }
 }
