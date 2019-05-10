@@ -25,7 +25,6 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
       prev.formData[field] = value;
       return prev;
     }, () => this.props.updateMTA(this.state.formData, field));
-    this.props.removeErrorMessage();
   };
 
   render() {
@@ -40,7 +39,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
     return (
       WizardStep({
         title: "Security, International Cohort and MTA", step: 1, currentStep: this.props.currentStep,
-        error: this.props.showErrorIntCohorts || this.props.showErrorInfoSecurity || this.props.generalError || this.props.submitError || this.props.errors.requireMta, 
+        error: this.props.generalError || this.props.submitError, 
         errorMessage: errorMessage
       }, [
           Panel({ title: "International Cohorts" }, [
@@ -53,7 +52,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
             }),
             AlertMessage({
               msg: ' Please answer all questions to continue',
-              show: this.props.showErrorIntCohorts
+              show: this.props.showErrorIntCohorts && this.props.generalError
             })
           ]),
           Panel({ title: "Security" }, [
@@ -64,10 +63,8 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
               user: this.props.user,
               searchUsersURL: this.props.searchUsersURL,
               updateForm: this.props.updateInfoSecurityFormData,
-              showErrorInfoSecurity: this.props.showErrorInfoSecurity,
               generalError: this.props.generalError,
               submitError: this.props.submitError,
-              removeErrorMessage: this.props.removeErrorMessage,
               handleSecurityValidity: this.props.handleInfoSecurityValidity,
               securityInfoData: this.props.securityInfoData,
               edit: false,
@@ -90,7 +87,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
                 "Not sure"
               ],
               required: true,
-              error: this.props.errors.requireMta,
+              error: this.props.errors.requireMta && this.props.generalError,
               errorMessage: "Required field",
               edit: false
             })

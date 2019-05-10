@@ -49,9 +49,8 @@ export const Security = hh(class Security extends Component {
       prev.formData[field] = value;
       return prev;
     }, () => {
-      this.props.updateForm(this.state.formData, field);
       this.props.handleSecurityValidity(this.validate());
-      this.props.removeErrorMessage();
+      this.props.updateForm(this.state.formData, field);     
     });
   };
 
@@ -64,7 +63,6 @@ export const Security = hh(class Security extends Component {
     }, () => {
       this.props.handleSecurityValidity(this.validate());
       this.props.updateForm(this.state.formData, field);
-      this.props.removeErrorMessage();
     })
   };
 
@@ -136,7 +134,7 @@ export const Security = hh(class Security extends Component {
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.pii && this.props.showErrorInfoSecurity,
+            error: this.state.errors.pii && this.props.generalError,
             errorMessage: "Required field",
             edit: false
           }),
@@ -153,7 +151,7 @@ export const Security = hh(class Security extends Component {
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.compliance && this.props.showErrorInfoSecurity,
+            error: this.state.errors.compliance && this.props.generalError,
             errorMessage: "Required field",
             edit: false
           }),
@@ -166,7 +164,7 @@ export const Security = hh(class Security extends Component {
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
-            error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
+            error: this.state.errors.textCompliance && this.props.generalError,
             errorMessage: "Required field"
           }),
           InputFieldRadio({
@@ -190,7 +188,7 @@ export const Security = hh(class Security extends Component {
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.sharingType && this.props.showErrorInfoSecurity,
+            error: this.state.errors.sharingType && this.props.generalError,
             errorMessage: "Required field"
           }),
 

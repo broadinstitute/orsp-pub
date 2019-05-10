@@ -231,9 +231,12 @@ class NewConsentGroup extends Component {
       isValid = this.validateGeneralData(field);
     } else if (this.state.currentStep === 1) {
       isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
-      if (this.validateMTA()) {
+      if (!this.validateMTA()) {
         isValid = false;
       }
+    }
+    if (this.state.generalError && isValid) {
+      this.removeErrorMessage();
     }
     return isValid;
   };
@@ -343,6 +346,9 @@ class NewConsentGroup extends Component {
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.noConsentFormReason = noConsentFormReason;
         prev.errors.isValid = isValid;
+        if (isValid) {
+          prev.generalError = false;
+        }
         return prev;
       });
     }
@@ -380,10 +386,11 @@ class NewConsentGroup extends Component {
       prev.determination = determination;
       if (this.state.determination.projectType !== null && this.state.showInternationalCohortsError === true) {
         prev.showInternationalCohortsError = false;
-        prev.generalError = false;
       }
       return prev;
-    });
+    }, () => {
+      this.isValid(null);
+    })
   };
 
   handleInfoSecurityValidity(isValid) {
@@ -420,6 +427,7 @@ class NewConsentGroup extends Component {
   validateInfoSecurity() {
     this.setState(prev => {
       prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
+      
       return prev;
     });
     return this.state.isInfoSecurityValid;
@@ -455,6 +463,8 @@ class NewConsentGroup extends Component {
     this.setState(prev => {
       prev.securityInfoFormData = updatedForm;
       return prev;
+    }, () => {
+      this.isValid(null);
     })
   };
 
@@ -544,7 +554,6 @@ class NewConsentGroup extends Component {
             showErrorInfoSecurity: this.state.showErrorInfoSecurity,
             generalError: this.state.generalError,
             submitError: this.state.submitError,
-            removeErrorMessage: this.removeErrorMessage,
             handleInfoSecurityValidity: this.handleInfoSecurityValidity,
             securityInfoData: this.state.securityInfoFormData,
             updateMTA: this.updateMTA
