@@ -157,18 +157,20 @@ export const Security = hh(class Security extends Component {
             errorMessage: "Required field",
             edit: false
           }),
-          InputFieldText({
-            isRendered: this.props.securityInfoData.compliance === "true",
-            id: "inputCompliance",
-            name: "textCompliance",
-            label: "Please specify which regulations must be adhered to below:*",
-            value: this.props.securityInfoData.textCompliance,
-            disabled: false,
-            required: false,
-            onChange: this.handleInputChange,
-            error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
-            errorMessage: "Required field"
-          }),
+          div({ style: {'marginBottom': '20px'}}, [
+            InputFieldText({
+              isRendered: this.props.securityInfoData.compliance === "true",
+              id: "inputCompliance",
+              name: "textCompliance",
+              label: "Please specify which regulations must be adhered to below:*",
+              value: this.props.securityInfoData.textCompliance,
+              disabled: false,
+              required: false,
+              onChange: this.handleInputChange,
+              error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
+              errorMessage: "Required field"
+            })
+          ]),
           InputFieldRadio({
             id: "radioAccessible",
             name: "sharingType",
