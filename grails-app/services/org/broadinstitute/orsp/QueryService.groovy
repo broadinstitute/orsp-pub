@@ -931,7 +931,7 @@ class QueryService implements Status {
         final String query =
                 ' select d.* ' +
                 ' from storage_document d ' +
-                ' where d.id not in (select distinct submission_document_id from submission_document) ' +
+                ' where d.id not in (select distinct storage_document_id from submission_document) ' +
                 ' and d.project_key = :projectKey'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
