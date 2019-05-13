@@ -185,6 +185,10 @@
   right: 35px !important;
 }
 
+.inputField .react-datepicker-popper {
+  z-index: 6;
+}
+
 /*Comparison Mode*/
 
 .inputFieldUpdated .inputFieldText,
