@@ -284,6 +284,7 @@ class IssueService implements UserInfo {
             issue.save(flush: true)
         }
         if (input.get("editsApproved")) {
+            notifyService.sendEditsApprovedNotification(issue)
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
@@ -328,7 +329,7 @@ class IssueService implements UserInfo {
         if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
         }
-        String newStatus = Optional.ofNullable(input.get(IssueExtraProperty.PROJECT_STATUS)).getOrElse("")
+        String newStatus = Optional.ofNullable(input.get(IssueExtraProperty.PROJECT_STATUS)).orElse("")
 
         if (!previousStatus?.equals(newStatus)) {
             notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue)

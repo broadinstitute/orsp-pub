@@ -1,14 +1,12 @@
-import { Component, React, Fragment } from 'react';
-import { hh, div, h, button, h1, ul, li, span, p, small } from 'react-hyperscript-helpers';
+import { Component, React } from 'react';
+import { hh, h1, ul, li, span} from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
-import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
-
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
@@ -37,7 +35,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        uploadConsentGroup: '',
         notCGSpecify: '',
         subjectProtection: '',
         irbReferral: '',
@@ -50,7 +47,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        uploadConsentGroup: '',
         notCGSpecify: '',
         subjectProtection: '',
         irbReferral: '',
@@ -60,7 +56,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       errors: {
         studyDescription: false,
         pTitle: false,
-        uploadConsentGroup: false,
         subjectProtection: false,
         fundings: false
       }
@@ -91,9 +86,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   handleRadioChange = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
-      if (field === 'uploadConsentGroup' && value !== 'notCGSpecify') {
-        prev.formData.notCGSpecify = '';
-      }
       return prev;
     }, () => this.props.updateForm(this.state.formData, field));
     this.props.removeErrorMessage();
@@ -156,7 +148,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.piName = data;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'piName'));
-  }
+  };
 
   render() {
 
@@ -168,7 +160,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.uploadConsentGroup || this.props.errors.subjectProtection,
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.subjectProtection,
         errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
@@ -277,35 +269,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange,
             edit: false
           }),
-          InputFieldRadio({
-            id: "radioUploadConsentGroup",
-            name: "uploadConsentGroup",
-            label: "Will you be uploading a Consent Group?",
-            value: this.state.formData.uploadConsentGroup,
-            optionValues: ["uploadNow", "uploadLater", "notUpload"],
-            optionLabels: [
-              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["now"]) ]),
-              span({},["Yes, I will upload a Consent Group ", span({ className: "bold"}, ["later"]) ]),
-              "No, I will not upload a Consent Group"
-            ],
-            onChange: this.handleRadioChange,
-            required: true,
-            error: this.props.errors.uploadConsentGroup,
-            errorMessage: "Required field",
-            edit: false
-          }),
-          div({ isRendered: this.state.formData.uploadConsentGroup === "notUpload" }, [
-            InputFieldText({
-              id: "inputNotCGSpecify",
-              name: "notCGSpecify",
-              label: "Please describe why a consent form is not being provided",
-              value: this.state.formData.notCGSpecify,
-              disabled: false,
-              required: false,
-              onChange: this.handleInputChange,
-              edit: false
-            })
-          ]),
           InputFieldRadio({
             id: "radioSubjectProtection",
             name: "subjectProtection",
