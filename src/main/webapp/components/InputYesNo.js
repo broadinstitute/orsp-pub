@@ -31,7 +31,7 @@ export const InputYesNo = (props) => {
   return (
 
     div({ className: "radioContainer" }, [
-      p({ className: "bold" }, [
+      p({ className: "inputFieldLabel" }, [
         props.label,
         span({ isRendered: props.moreInfo !== undefined, className: "normal" }, [props.moreInfo])
       ]),

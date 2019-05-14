@@ -25,7 +25,9 @@ h3 {
 }
 
 hr {
+  position: relative;
   margin: 5px 0;
+  z-index: 5;
 }
 
 .errorMessage {
