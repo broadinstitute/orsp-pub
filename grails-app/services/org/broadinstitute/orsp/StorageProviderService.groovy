@@ -149,7 +149,7 @@ class StorageProviderService implements Status {
     def saveMultipartFiles(String displayName, String userName, String issueKey, String type, Collection<MultipartFile> files) {
         files.each {
             MultipartFile file ->
-                saveMultipartFile(displayName, userName, issueKey, type, file)
+                saveMultipartFile(displayName, userName, issueKey, type, file, null)
         }
     }
 
@@ -163,9 +163,9 @@ class StorageProviderService implements Status {
      * @param files The multipart files
      * @return
      */
-    StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file) {
+    StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file, Long consentCollectionLinkId) {
         StorageDocument document = new StorageDocument(
-                projectKey: issueKey,
+                projectKey: consentCollectionLinkId == null ? issueKey : null,
                 fileName: file.originalFilename,
                 fileType: type,
                 mimeType: file.contentType,
@@ -173,11 +173,12 @@ class StorageProviderService implements Status {
                 creator: displayName,
                 username: userName,
                 creationDate: new Date(),
-                status: DocumentStatus.PENDING.status
+                status: DocumentStatus.PENDING.status,
+                consentCollectionLinkId: consentCollectionLinkId
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(
-                    document.projectKey,
+                    issueKey,
                     document.creator,
                     "Adding document " + document.fileName + " to project",
                     null
@@ -238,8 +239,8 @@ class StorageProviderService implements Status {
         if (!document.mimeType) {
             throw new IllegalArgumentException("Mime Type is required")
         }
-        if (!document.projectKey) {
-            throw new IllegalArgumentException("Project Key is required")
+        if (!document.projectKey && !document.consentCollectionLinkId) {
+            throw new IllegalArgumentException("Project Key or consentCollectionLink must be specified")
         }
         if (!document.creator) {
             throw new IllegalArgumentException("Creator is required")

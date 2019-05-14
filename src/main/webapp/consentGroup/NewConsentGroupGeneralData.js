@@ -96,8 +96,9 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
   }
 
   handleSampleCollectionChange = () => (data) => {
+    let sampleCollections = [data];
     this.setState(prev => {
-      prev.formData.sampleCollections = data;
+      prev.formData.sampleCollections = sampleCollections;
       return prev;
     }, () => this.props.updateForm(this.state.formData, "sampleCollections"));
     this.props.removeErrorMessage();
@@ -216,7 +217,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleSampleCollectionChange,
             value: this.state.formData.sampleCollections,
             placeholder: "Start typing a Sample Collection",
-            isMulti: true,
+            isMulti: false,
+            isClearable: true,
             edit: false
           }),
 

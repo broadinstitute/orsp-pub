@@ -105,12 +105,12 @@ class NewConsentGroup extends Component {
     if (this.validateForm()) {
       let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
       this.removeErrorMessage();
-
       this.changeSubmitState();
+      let consentGroup = this.getConsentGroup();
       ConsentGroup.create(
         this.props.createConsentGroupURL,
-        this.getConsentGroup(),
-        this.getConsentCollectionData(),
+        consentGroup,
+        this.getConsentCollectionData(consentGroup.samples),
         this.state.files,
         this.state.user.displayName,
         this.state.user.userName)
@@ -149,18 +149,23 @@ class NewConsentGroup extends Component {
     });
   };
 
-  getConsentCollectionData() {
-    let consentCollectionData = {};
+  getConsentCollectionData(samples) {
+    let sampleCollectionId = null;
+    if (samples !== null && samples.length > 0) {
+      // samples will be only one
+      sampleCollectionId = samples[0];
+    }
+    let consentCollectionLink = {};
     // consent collection link info
-    consentCollectionData.projectKey = this.props.projectKey;
-    consentCollectionData.consentKey = 
-    consentCollectionData.requireMta = this.state.linkFormData.requireMta;
+    consentCollectionLink.sampleCollectionId = sampleCollectionId;
+    consentCollectionLink.projectKey = this.props.projectKey;
+    consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
-    consentCollectionData.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
-    consentCollectionData.compliance = this.state.securityInfoFormData.compliance;
-    consentCollectionData.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
-    consentCollectionData.sharingType = this.state.securityInfoFormData.sharingType;
-    consentCollectionData.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
+    consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
+    consentCollectionLink.compliance = this.state.securityInfoFormData.compliance;
+    consentCollectionLink.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
+    consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
+    consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
@@ -170,9 +175,9 @@ class NewConsentGroup extends Component {
           cohortsForm.push({ name: q.key, value: q.answer });
         }
       });
-      consentCollectionData.internationalCohorts = JSON.stringify(cohortsForm);
+      consentCollectionLink.internationalCohorts = JSON.stringify(cohortsForm);
     }
-    return consentCollectionData;
+    return consentCollectionLink;
   }
 
   getConsentGroup() {
