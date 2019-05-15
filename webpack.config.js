@@ -15,7 +15,8 @@ module.exports = {
     project: './src/main/webapp/project/index.js',
     projectDocument: './src/main/webapp/projectDocument/index.js',
     projectReview: './src/main/webapp/projectReview/index.js',
-    search: './src/main/webapp/search/index.js'
+    search: './src/main/webapp/search/index.js',
+    sampleConsentLinkWizard: './src/main/webapp/sampleConsentLinkWizard/index.js'
   },
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts/build'),
