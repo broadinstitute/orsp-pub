@@ -2,12 +2,13 @@ import { Component } from 'react';
 import { h1, hh, p } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
+import { SampleConsentLinkQuestons } from "./SampleConsentLinkQuestions";
 import { User, ConsentGroup, SampleCollections } from "../util/ajax";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 
 const LAST_STEP = 1;
 
-class SampleConsentLinkWizard extends Component {
+export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends Component {
   state = {};
 
   constructor(props) {
@@ -30,6 +31,11 @@ class SampleConsentLinkWizard extends Component {
     }
   }
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
+  }
+
   stepChanged = (newStep) => {
     this.setState({
       currentStep: newStep
@@ -37,8 +43,8 @@ class SampleConsentLinkWizard extends Component {
   };
 
   componentDidMount() {
-    this.initDocuments();
-    this.getUserSession();
+    // this.initDocuments();
+    // this.getUserSession();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
 
@@ -105,7 +111,7 @@ class SampleConsentLinkWizard extends Component {
   };
 
   isValid = () => {
-
+    return true;
   };
 
   render() {
@@ -135,10 +141,20 @@ class SampleConsentLinkWizard extends Component {
           fileHandler: this.fileHandler,
           files: this.state.files,
           currentStep: currentStep,
+        }),
+        SampleConsentLinkQuestons({
+          consentNamesSearchURL: this.props.consentNamesSearchURL,
+          sampleSearchUrl: this.props.sampleSearchUrl,
+          removeErrorMessage: this.removeErrorMessage,
+          sampleCollectionList: this.state.sampleCollectionList,
+          sampleCollections: this.state.sampleCollections,
+          errors: this.state.errors,
+          fileHandler: this.fileHandler,
+          files: this.state.files,
+          currentStep: currentStep,
         })
       ])
     );
   }
-}
+});
 
-export default SampleConsentLinkWizard;

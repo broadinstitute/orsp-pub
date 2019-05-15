@@ -30,6 +30,11 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     this.props.removeErrorMessage();
   };
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true }
+  }
+
   componentDidCatch(error, info) {
     console.log('----------------------- error ----------------------');
     console.log(error, info);
