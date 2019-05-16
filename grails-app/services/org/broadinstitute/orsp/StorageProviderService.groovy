@@ -209,12 +209,12 @@ class StorageProviderService implements Status {
                 creationDate: new Date()
         )
         if (saveStorageDocument(document, file.getInputStream())) {
-            if (issueKey != null) {
+            if (document.projectKey != null) {
                 persistenceService.saveEvent(
                         document.projectKey,
                         document.creator,
                         "Adding document " + document.fileName + " to project",
-                        null
+                        EventType.UPLOAD_DOCUMENT
                 )
             }
         }
