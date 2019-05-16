@@ -17,6 +17,7 @@ h1 {
 
 h2 {
   font-size: 1.8rem;
+  line-height: 2.4rem;
 }
 
 h3 {
@@ -241,6 +242,20 @@ input[type=checkbox] {
 
 .answerUpdated:after {
   background: url('components/new-tag.svg') no-repeat;
+}
+
+.breadcrumbLink {
+  display: block;
+  cursor: pointer;
+  color: mediumblue;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 10px 0 -15px 0;
+}
+
+.breadcrumbLink span{
+  font-size: 0.9rem;
+  padding-right: 5px;
 }
 
 .col, [class*="col-"] {
