@@ -432,7 +432,6 @@ class NewConsentGroup extends Component {
   validateInfoSecurity() {
     this.setState(prev => {
       prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
-      
       return prev;
     });
     return this.state.isInfoSecurityValid;

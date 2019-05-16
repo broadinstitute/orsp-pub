@@ -70,7 +70,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 }
                 if (!files?.isEmpty()) {
                     files.forEach {
-                        storageProviderService.saveMultipartFile(user?.displayName, user?.userName, issue.projectKey, it.name, it, consentCollectionLink.id)
+                        storageProviderService.saveMultipartFile(user.displayName, user.userName, issue.projectKey, it.name, it, consentCollectionLink.id)
                     }
                 }
                 notifyService.consentGroupCreation(issue, consentCollectionLink)
