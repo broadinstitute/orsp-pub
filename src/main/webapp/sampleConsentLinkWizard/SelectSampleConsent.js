@@ -33,13 +33,10 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       documentOptions: [],
       documents: [],
       sampleCollectionList: {},
+      sampleCollections: {},
       consentGroupsList: {},
-      sampleCollections : {},
-      selectedConsentGroup: {
-        id: '',
-        label: '',
-        value: ''
-      }
+      collectionSample: {},
+      consentGroup: {}
     };
   }
 
@@ -54,20 +51,18 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   handleSampleCollectionChange = () => (data) => {
-    console.log(data);
     this.setState(prev => {
       prev.sampleCollections = data;
       return prev;
-    }, () => this.props.updateForm(this.state.collectionSample, "sampleCollections"));
+    }, () => this.props.updateForm(this.state.sampleCollections, "sampleCollections"));
     this.props.removeErrorMessage();
   };
 
   handleConsentGroupChange = () => (data) => {
-    console.log('handleConsentGroupChange', data);
     this.setState(prev => {
-      prev.selectedConsentGroup = data;
+      prev.consentGroup = data;
       return prev;
-    }, () => this.props.updateForm(this.state.selectedConsentGroup, "selectedConsentGroup"));
+    }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
     this.props.removeErrorMessage();
   };
 
@@ -140,8 +135,10 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isDisabled: false,
             options: this.props.existingConsentGroups,
             onChange: this.handleConsentGroupChange,
-            value: this.state.selectedConsentGroup,
+            value: this.state.consentGroup,
             placeholder: "Start typing a Data Cohorts",
+            error: this.props.errors.consentGroup,
+            errorMessage: "Please select a Data Cohorts",
             isMulti: false,
             edit: false
           }),
@@ -151,7 +148,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         }, [
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.selectedConsentGroup.label,
+            label: "Link Sample Collection",
             isDisabled: false,
             options: this.props.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
@@ -159,8 +156,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             placeholder: "Start typing a Sample Collection",
             isMulti: false,
             edit: false,
-            error: this.props.errors.consentGroup,
-            errorMessage: "Please select a Data Cohorts"
+            error: this.props.errors.sampleCollection,
+            errorMessage: "Please select a Sample Collection"
           }),
         ]),
         Panel({
@@ -179,8 +176,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
-              error: this.props.errors.collectionSample,
-              errorMessage: "Please select a Sample Collection"
             }),
             div({ style: styles.addDocumentContainer }, [
               button({

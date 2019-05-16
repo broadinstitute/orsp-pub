@@ -5,6 +5,7 @@ import { SelectSampleConsent } from "./SelectSampleConsent";
 import { SampleConsentLinkQuestions } from "./SampleConsentLinkQuestions";
 import { User, ConsentGroup, SampleCollections } from "../util/ajax";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { isEmpty } from "../util/Utils";
 
 const LAST_STEP = 1;
 
@@ -14,7 +15,6 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
   constructor(props) {
     super(props);
     this.state = {
-
       files: [],
       user: {
         displayName: '',
@@ -22,23 +22,23 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
         emailAddress: ''
       },
       errors: {
-        collectionSample: false,
+        sampleCollection: false,
         consentGroup: false,
         internationalCohortsError: {
-
         },
         security: {
-
         },
         requireMta: false
       },
       generalError: false,
       formSubmitted: false,
       currentStep: 0,
-      selectedConsentGroup: {},
+      consentGroup: {},
+      sampleCollections: {},
       internationalCohorts: {},
       security: {},
       requireMta: false,
+      isValid: true,
     }
   }
 
@@ -129,16 +129,39 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     console.log('sumit new link');
   };
 
-  isValid = () => {
-    return true;
+  isValid = (field) => {
+    return this.validateStep1(field)
+  };
+
+  validateStep1 = (field) => {
+    let sampleCollection = false;
+    let consentGroup = false;
+
+    let isValid = true;
+
+    if (isEmpty(this.state.consentGroup)) {
+      consentGroup = true;
+      isValid = false;
+    }
+
+    if (isEmpty(this.state.sampleCollections)) {
+      sampleCollection = true;
+      isValid = false;
+    }
+
+    this.setState(prev => {
+      prev.errors.sampleCollection = sampleCollection;
+      prev.errors.consentGroup = consentGroup;
+      return prev;
+    });
+    return isValid;
   };
 
   updateGeneralForm = (updatedForm, field) => {
-    console.log('updateGeneralForm', updatedForm, field);
-    // this.setState(prev => {
-    //   prev.generalDataFormData = updatedForm;
-    //   return prev;
-    // }, () => this.isValid(field));
+    this.setState(prev => {
+      prev[field] = updatedForm;
+      return prev;
+    }, () => this.isValid(field));
   };
 
   render() {
@@ -170,7 +193,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
           files: this.state.files,
           currentStep: currentStep,
           existingConsentGroups: this.state.existingConsentGroups,
-          selectedConsentGroup: this.state.selectedConsentGroup,
+          consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
           options: this.state.documentOptions,
         }),

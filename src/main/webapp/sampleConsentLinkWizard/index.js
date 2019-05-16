@@ -11,6 +11,7 @@ ReactDOM.render(
     getConsentGroups = {component.getConsentGroups}
     serverUrl = {component.serverUrl}
     getUserUrl = {component.getUserUrl}
+    projectKey = {component.projectKey}
   />,
   document.getElementById('sampleConsentLinkWizard')
 );
