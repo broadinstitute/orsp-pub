@@ -48,6 +48,7 @@
                             <th>File Name</th>
                             <th>Author</th>
                             <th>Created</th>
+                            <th>Info Link</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -71,6 +72,9 @@
                                 </td>
                                 <td>${document.creator}</td>
                                 <td>${document.creationDate}</td>
+                                <td>
+                                    <a href="${createLink(controller: 'infoLink', action: 'showInfoLink', params: [id: consent.projectKey, projectKey: issue.projectKey])}">Info Link</a>
+                                </td>
                             </tr>
                         </g:each>
 
@@ -78,7 +82,7 @@
 
                         <tfoot>
                         <tr class="text-right">
-                            <td colspan="5">
+                            <td colspan="6">
                                 <g:if test="${!issue.isLocked() || session?.isOrsp}">
                                     <button class="btn btn-default btn-sm modal-add-button"
                                             data-toggle="modal"

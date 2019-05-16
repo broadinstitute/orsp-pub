@@ -12,6 +12,7 @@ module.exports = {
     consentGroupReview: './src/main/webapp/consentGroupReview/index.js',
     dataUseLetter: './src/main/webapp/dataUseLetter/index.js',
     footer: './src/main/webapp/components/footer.js',
+    infoLink: './src/main/webapp/infoLink/index.js',
     project: './src/main/webapp/project/index.js',
     projectDocument: './src/main/webapp/projectDocument/index.js',
     projectReview: './src/main/webapp/projectReview/index.js',
