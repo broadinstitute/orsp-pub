@@ -301,7 +301,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             isRendered: !this.props.isConsentFormPresent,
             id: "inputNoConsentFormReason",
             name: "noConsentFormReason",
-            label: "If there is no Consent Form available, please explain why",
+            label: "If a Consent Form is not available, please describe the reason below",
             value: this.state.formData.noConsentFormReason,
             disabled: false,
             required: true,
