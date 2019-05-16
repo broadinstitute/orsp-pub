@@ -165,7 +165,7 @@ class StorageProviderService implements Status {
      */
     StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file, Long consentCollectionLinkId) {
         StorageDocument document = new StorageDocument(
-                projectKey: consentCollectionLinkId == null ? issueKey : null,
+                projectKey: issueKey,
                 fileName: file.originalFilename,
                 fileType: type,
                 mimeType: file.contentType,
@@ -209,12 +209,14 @@ class StorageProviderService implements Status {
                 creationDate: new Date()
         )
         if (saveStorageDocument(document, file.getInputStream())) {
-            persistenceService.saveEvent(
-                    document.projectKey,
-                    document.creator,
-                    "Adding document " + document.fileName + " to project",
-                    null
-            )
+            if (issueKey != null) {
+                persistenceService.saveEvent(
+                        document.projectKey,
+                        document.creator,
+                        "Adding document " + document.fileName + " to project",
+                        null
+                )
+            }
         }
         document
     }
@@ -238,9 +240,6 @@ class StorageProviderService implements Status {
         }
         if (!document.mimeType) {
             throw new IllegalArgumentException("Mime Type is required")
-        }
-        if (!document.projectKey && !document.consentCollectionLinkId) {
-            throw new IllegalArgumentException("Project Key or consentCollectionLink must be specified")
         }
         if (!document.creator) {
             throw new IllegalArgumentException("Creator is required")

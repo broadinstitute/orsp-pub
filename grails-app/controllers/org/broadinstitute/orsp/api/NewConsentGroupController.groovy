@@ -8,6 +8,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.ConsentCollectionLinkService
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction
@@ -26,6 +27,7 @@ import javax.ws.rs.core.Response
 class NewConsentGroupController extends AuthenticatedController {
 
     ConsentService consentService
+    ConsentCollectionLinkService consentCollectionLinkService
 
     def show() {
         render(view: "/newConsentGroup/index")
@@ -64,13 +66,13 @@ class NewConsentGroupController extends AuthenticatedController {
                 consentCollectionLink.creationDate = new Date()
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
                 try {
-                    consentCollectionLink.save(flush: true)
+                    consentCollectionLinkService.save(consentCollectionLink)
                 } catch (Exception e) {
                     flash.error = e.getMessage()
                 }
                 if (!files?.isEmpty()) {
                     files.forEach {
-                        storageProviderService.saveMultipartFile(user.displayName, user.userName, issue.projectKey, it.name, it, consentCollectionLink.id)
+                        storageProviderService.saveMultipartFile(user.displayName, user.userName, null, it.name, it, consentCollectionLink.id)
                     }
                 }
                 notifyService.consentGroupCreation(issue, consentCollectionLink)
@@ -85,7 +87,9 @@ class NewConsentGroupController extends AuthenticatedController {
             if (consent != null) {
                 issueService.deleteIssue(consent.projectKey)
             }
-            consentCollectionLink?.delete(flush: true)
+            if (consentCollectionLink != null) {
+                consentCollectionLinkService.delete(consentCollectionLink)
+            }
             log.error("There was an error trying to create consent group: " + e.message)
             response.status = 500
             render([error: e.message] as JSON)
