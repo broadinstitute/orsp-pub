@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { h1, hh, p } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
-import { SampleConsentLinkQuestons } from "./SampleConsentLinkQuestions";
+import { SampleConsentLinkQuestions } from "./SampleConsentLinkQuestions";
 import { User, ConsentGroup, SampleCollections } from "../util/ajax";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 
@@ -24,10 +24,21 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       errors: {
         collectionSample: false,
         consentGroup: false,
+        internationalCohortsError: {
+
+        },
+        security: {
+
+        },
+        requireMta: false
       },
       generalError: false,
       formSubmitted: false,
       currentStep: 0,
+      selectedConsentGroup: {},
+      internationalCohorts: {},
+      security: {},
+      requireMta: false,
     }
   }
 
@@ -43,22 +54,30 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
   };
 
   componentDidMount() {
-    // this.initDocuments();
+    this.initDocuments();
     // this.getUserSession();
-    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
-      resp => this.setState({ existingGroupNames: resp.data }));
+    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
+      resp => {
+        const existingConsentGroups = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.label,
+            label: item.label
+          }
+        });
+        this.setState({ existingConsentGroups: existingConsentGroups });
+      });
 
     SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
       resp => {
-        console.log(resp);
-        const sampleCollections = resp.data.map(item => {
+        const sampleCollectionsList = resp.data.map(item => {
           return {
             key: item.id,
             value: item.collectionId,
             label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
           };
         });
-        this.setState({ sampleCollectionList: sampleCollections })
+        this.setState({ sampleCollectionList: sampleCollectionsList })
       }
     );
   }
@@ -91,12 +110,12 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     });
   };
 
-  removeErrorMessage() {
+  removeErrorMessage = () => {
     this.setState(prev => {
       prev.generalError = false;
       return prev;
     });
-  }
+  };
 
   showSubmit = (currentStep) => {
     let renderSubmit = false;
@@ -112,6 +131,14 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
 
   isValid = () => {
     return true;
+  };
+
+  updateGeneralForm = (updatedForm, field) => {
+    console.log('updateGeneralForm', updatedForm, field);
+    // this.setState(prev => {
+    //   prev.generalDataFormData = updatedForm;
+    //   return prev;
+    // }, () => this.isValid(field));
   };
 
   render() {
@@ -132,6 +159,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
         loadingImage: this.props.loadingImage,
       }, [
         SelectSampleConsent({
+          title: "Link Samples / Data Cohorts",
           consentNamesSearchURL: this.props.consentNamesSearchURL,
           sampleSearchUrl: this.props.sampleSearchUrl,
           removeErrorMessage: this.removeErrorMessage,
@@ -141,16 +169,13 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
           fileHandler: this.fileHandler,
           files: this.state.files,
           currentStep: currentStep,
+          existingConsentGroups: this.state.existingConsentGroups,
+          selectedConsentGroup: this.state.selectedConsentGroup,
+          updateForm: this.updateGeneralForm,
+          options: this.state.documentOptions,
         }),
-        SampleConsentLinkQuestons({
-          consentNamesSearchURL: this.props.consentNamesSearchURL,
-          sampleSearchUrl: this.props.sampleSearchUrl,
-          removeErrorMessage: this.removeErrorMessage,
-          sampleCollectionList: this.state.sampleCollectionList,
-          sampleCollections: this.state.sampleCollections,
-          errors: this.state.errors,
-          fileHandler: this.fileHandler,
-          files: this.state.files,
+        SampleConsentLinkQuestions({
+          title: "Link Questions",
           currentStep: currentStep,
         })
       ])
