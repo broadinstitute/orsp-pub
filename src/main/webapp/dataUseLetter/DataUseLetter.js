@@ -2,8 +2,6 @@ import { Component } from 'react';
 import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
-import './components/Wizard.css';
-
 import _ from 'lodash';
 
 
@@ -82,7 +80,6 @@ class DataUseLetter extends Component {
         
         //replace with actual Sample Collection name
         Panel({ title: "SC-1042: MAYO ( Altshuler-Breast)" }, [
-          div({ className: "row" }, [
             // div({ className: "tabContainer" }, [
             //   this.props.children.map((child, idx) => {
             //     return h(Fragment, { key: idx }, [
@@ -90,13 +87,17 @@ class DataUseLetter extends Component {
             //     ])
             //   })
             // ])
-            div({ className: "tabContainer" }, [
-              div({ className: "tabStep active", onClick: this.goStep(0)}, ["International Cohorts"]),
-              div({ className: "tabStep ", onClick: this.goStep(1)}, ["Security"]),
-              div({ className: "tabStep ", onClick: this.goStep(2)}, ["MTA"]),
-              div({ className: "tabStep ", onClick: this.goStep(3)}, ["Documents"])
+            div({ className: "linkTab" }, [
+              div({ className: "linkTabHeader" }, [
+                div({ className: "tab active", onClick: this.goStep(0)}, ["International Cohorts"]),
+                div({ className: "tab ", onClick: this.goStep(1)}, ["Security"]),
+                div({ className: "tab ", onClick: this.goStep(2)}, ["MTA"]),
+                div({ className: "tab ", onClick: this.goStep(3)}, ["Documents"])
+              ]),
+              div({ className: "linkTabContent" }, [
+
+              ])
             ])
-          ])
         ])
       ])
     )

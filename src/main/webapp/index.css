@@ -244,6 +244,41 @@ input[type=checkbox] {
   background: url('components/new-tag.svg') no-repeat;
 }
 
+.linkTab {
+  display: block;
+  border: 1px solid #dddddd;
+  margin-top: 5px;
+}
+
+.linkTabHeader {
+  min-height: 64px;
+  padding: 23px 0;
+  border-bottom: 1px solid #dddddd;
+}
+
+.linkTabHeader .tab {
+  margin: 0 20px;
+  display: inline;
+  cursor: pointer;
+  font-size: 1.071rem;
+  color: black;
+}
+
+.linkTabHeader .tab.active,
+.linkTabHeader .tab:hover {
+  font-weight: 700;
+  margin-left: 19px;
+  padding-bottom: 2px;
+}
+
+.linkTabHeader .tab.active {
+  border-bottom: 1px dashed black;
+}
+
+.linkTabContent {}
+
+
+
 .breadcrumbLink {
   display: block;
   cursor: pointer;
