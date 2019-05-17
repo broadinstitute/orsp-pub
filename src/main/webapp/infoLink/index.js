@@ -6,6 +6,7 @@ import '../index.css';
 ReactDOM.render(
   <InfoLink
     projectKey = {component.projectKey}
+    consentKey = {component.consentKey}
     loadingImage = {component.loadingImage}
   />,
   document.getElementById('infoLink')

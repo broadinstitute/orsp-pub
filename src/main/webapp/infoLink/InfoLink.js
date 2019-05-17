@@ -46,7 +46,7 @@ class InfoLink extends Component {
         h2({ className: "pageTitle" }, [
           div({}, ["Sample Collections associated to"]),
           //replace with actual Project name
-          div({ className: "italic normal" }, ["DEV-IRB-4354: IRB 04"])
+          div({ className: "italic normal" }, [this.props.projectKey])
         ]),
 
         //replace with actual Sample Collection name
