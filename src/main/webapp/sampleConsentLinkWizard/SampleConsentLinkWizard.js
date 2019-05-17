@@ -39,6 +39,19 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       security: {},
       requireMta: false,
       isValid: true,
+      determination: {
+        projectType: null,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
+      },
+      linkFormData: {},
+      showInternationalCohortsError: false,
+      showErrorInfoSecurity: false,
+      isInfoSecurityValid: false,
+      securityInfoFormData: {},
     }
   }
 
@@ -55,19 +68,12 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
 
   componentDidMount() {
     this.initDocuments();
-    // this.getUserSession();
-    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
-      resp => {
-        const existingConsentGroups = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.label,
-            label: item.label
-          }
-        });
-        this.setState({ existingConsentGroups: existingConsentGroups });
-      });
+    this.getUserSession();
+    this.getConsentGroups();
+    this.getSampleCollections();
+  }
 
+  getSampleCollections = () => {
     SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
       resp => {
         const sampleCollectionsList = resp.data.map(item => {
@@ -80,7 +86,21 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
         this.setState({ sampleCollectionList: sampleCollectionsList })
       }
     );
-  }
+  };
+
+  getConsentGroups = () => {
+    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
+      resp => {
+        const existingConsentGroups = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.label,
+            label: item.label
+          }
+        });
+        this.setState({ existingConsentGroups: existingConsentGroups });
+      });
+  };
 
   getUserSession() {
     User.getUserSession(this.props.getUserUrl).then(
@@ -98,6 +118,56 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       documentOptions: documents
     });
   }
+
+  determinationHandler = (determination) => {
+    this.setState(prev => {
+      prev.determination = determination;
+      if (this.state.determination.projectType !== null && this.state.showInternationalCohortsError === true) {
+        prev.showInternationalCohortsError = false;
+      }
+      return prev;
+    }, () => {
+      this.isValid(null);
+    })
+  };
+
+  updateInfoSecurityFormData = (updatedForm) => {
+    this.setState(prev => {
+      prev.securityInfoFormData = updatedForm;
+      return prev;
+    }, () => {
+      this.isValid(null);
+    })
+  };
+
+  handleInfoSecurityValidity = (isValid) => {
+    this.setState(prev => {
+      prev.isInfoSecurityValid = isValid;
+      prev.showErrorInfoSecurity = !isValid;
+      return prev;
+    })
+  };
+
+  validateMTA() {
+    let isValid = true;
+    if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.errors.requireMta = !isValid;
+      return prev;
+    });
+    return isValid
+  }
+
+  updateMTA = (updatedForm, field) => {
+    this.setState(prev => {
+      prev.linkFormData = updatedForm;
+      return prev;
+    }, () => {
+      this.isValid(field);
+    })
+  };
 
   componentDidCatch(error, info) {
     console.log('----------------------- new consent group error ----------------------');
@@ -207,8 +277,24 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
           options: this.state.documentOptions,
         }),
         SampleConsentLinkQuestions({
-          title: "Link Questions",
+          title: "Security, International Cohort and MTA",
           currentStep: currentStep,
+          handler: this.determinationHandler,
+          determination: this.state.determination,
+          showErrorIntCohorts: this.state.showInternationalCohortsError,
+          origin: 'consentGroup',
+          requireMta: this.state.linkFormData.requireMta,
+          errors: this.state.errors,
+          user: this.state.user,
+          searchUsersURL: this.props.searchUsersURL,
+          updateInfoSecurityFormData: this.updateInfoSecurityFormData,
+          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError,
+          handleInfoSecurityValidity: this.handleInfoSecurityValidity,
+          securityInfoData: this.state.securityInfoFormData,
+          updateMTA: this.updateMTA,
+          removeErrorMessage: this.removeErrorMessage,
         })
       ])
     );
