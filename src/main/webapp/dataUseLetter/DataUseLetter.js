@@ -564,9 +564,9 @@ class DataUseLetter extends Component {
   }
 
   getDiseases(diseases) {
-    return diseases.map(disease => {
+    return diseases.map(disease =>
         disease.key
-     });
+    );
   }
 
   getRestriction() {
@@ -1032,9 +1032,6 @@ class DataUseLetter extends Component {
                   })
                 ])
               ]),
-              div({ className: "boxWrapper" }, [
-                p({}, ["NIH provides genomic summary results (GSR) from most studies submitted to NIH-designated data repositories through unrestricted access. However, data from data sets considered to have particular ‘sensitivities’ related to individual privacy or potential for group harm (e.g., those with populations from isolated geographic regions, or with rare or potentially stigmatizing traits) may be designated as “sensitive” by. In such cases, “controlled-access” should be checked below and a brief explanation for the sensitive designation should be provided. GSR from any such data sets will only be available through controlled-access."]),
-              ]),
               InputFieldRadio({
                 id: "radioGSRAvailability",
                 name: "GSRAvailability",
@@ -1056,7 +1053,7 @@ class DataUseLetter extends Component {
                 InputFieldText({
                   id: "inputGSRAvailabilitySpecify",
                   name: "GSRAvailabilitySpecify",
-                  label: "Please specify",
+                  label: "Please explain why the GSR should be designated as sensitive",
                   disabled: false,
                   value: this.state.formData.GSRAvailabilitySpecify,
                   onChange: this.handleFormDataTextChange,
