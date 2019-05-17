@@ -18,13 +18,6 @@ class ProjectExtraProperties {
     String notCGSpecify
     String irbReferral
 
-    // Info Security
-    String pii
-    String compliance
-    String textCompliance
-    String sharingType
-    String textSharingType
-
     // Determination questions
     String feeForService
     String broadInvestigator
@@ -35,14 +28,7 @@ class ProjectExtraProperties {
     String isCoPublishing
     String federalFunding
 
-
-    // InternationalCohorts
-    String individualDataSourced
-    String isLinkMaintained
-    String feeForServiceWork
-    String areSamplesComingFromEEAA
-    String isCollaboratorProvidingGoodService
-    String isConsentUnambiguous
+    // Attestation
     String attestation
 
     // Admin Only
@@ -74,13 +60,6 @@ class ProjectExtraProperties {
         this.setNotCGSpecify(project.getNotCGSpecify() ?: "")
         this.setIrbReferral(project.getIrbReferral() ?: null)
 
-        // Info Security
-        this.setPii(project.getPII() ?: "")
-        this.setCompliance(project.getCompliance() ?: "")
-        this.setTextCompliance(project.getTextCompliance() ?: "")
-        this.setSharingType(project.getSharingType() ?: "")
-        this.setTextSharingType(project.getTextSharingType() ?: "")
-
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
         this.setBroadInvestigator(project.getBroadInvestigator() ?: "")
@@ -90,14 +69,6 @@ class ProjectExtraProperties {
         this.setIsIdReceive(project.getIsIdReceive() ?: "")
         this.setIsCoPublishing(project.getIsCoPublishing() ?: "")
         this.setFederalFunding(project.getFederalFunding() ?: "")
-
-        // InternationalCohorts
-        this.setIndividualDataSourced(project.getIndividualDataSourced() ?: null)
-        this.setIsLinkMaintained(project.getIsLinkMaintained() ?: null)
-        this.setFeeForServiceWork(project.getFeeForServiceWork() ?: null)
-        this.setAreSamplesComingFromEEAA(project.areSamplesComingFromEEA() ?: null)
-        this.setIsCollaboratorProvidingGoodService(project.isCollaboratorProvidingGoodService() ?: null)
-        this.setIsConsentUnambiguous(project.isConsentUnambiguous() ?: null)
 
         // Attestation
         this.setAttestation(project.attestation() ?: null)

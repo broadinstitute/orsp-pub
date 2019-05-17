@@ -38,8 +38,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         projectType: null
       });
     } else if (this.props.determination.questions.length > 0 ) {
-     this.setState({
-       // This state set is to maintain project or consent group creation questionnaires state
+      this.setState({
+        // This state set is to maintain project or consent group creation questionnaires state
         endState: this.props.determination.endState,
         requiredError: this.props.determination.requiredError,
         currentQuestionIndex: this.props.determination.currentQuestionIndex,
@@ -196,10 +196,10 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     const { currentQuestionIndex } = this.state;
 
     return (
-      div({ className: "questionnaireContainer" }, [
+      div({ className: this.props.questionnaireUnwrapped === true ? 'questionnaireContainerLight' : 'questionnaireContainer' }, [
         div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [
-          p({}, [(this.state.endState === true ? "100%" : this.state.questions[currentQuestionIndex].progress + "%")]),
-          QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
+            p({}, [(this.state.endState === true ? "100%" : this.state.questions[currentQuestionIndex].progress + "%")]),
+            QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
         ]),
 
         InputYesNo({

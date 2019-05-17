@@ -101,24 +101,11 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getDescribeConsentGroup() { getExtraProperties().find { it.name == IssueExtraProperty.DESCRIBE_CONSENT }?.value }
 
-    transient String getMTA() { getExtraProperties().find { it.name == IssueExtraProperty.REQUIRE_MTA }?.value }
-
     transient String getUploadConsent() { getExtraProperties().find { it.name == IssueExtraProperty.UPLOAD_CONSENT_GROUP }?.value }
 
     transient String getIrbReferral() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_REFERRAL }?.value }
 
     transient String getNotCGSpecify() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY }?.value }
-
-    // Info Security
-    transient String getPII() { getExtraProperties().find { it.name == IssueExtraProperty.PII }?.value }
-
-    transient String getCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.COMPLIANCE }?.value }
-
-    transient String getTextCompliance() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_COMPLIANCE }?.value }
-
-    transient String getSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.SHARING_TYPE }?.value }
-
-    transient String getTextSharingType() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_SHARING_TYPE }?.value }
 
     // Determination questions
     transient String getFeeForService() { getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE }?.value }
@@ -136,19 +123,6 @@ class Issue implements LogicalDelete<Issue> {
     transient String getIsCoPublishing() { getExtraProperties().find { it.name == IssueExtraProperty.IS_CO_PUBLISHING }?.value }
 
     transient String getFederalFunding() { getExtraProperties().find { it.name == IssueExtraProperty.FEDERAL_FUNDING }?.value }
-
-    // InternationalCohorts
-    transient String getIndividualDataSourced() { getExtraProperties().find { it.name == IssueExtraProperty.INDIVIDUAL_DATA_SOURCED }?.value }
-
-    transient String getIsLinkMaintained() { getExtraProperties().find { it.name == IssueExtraProperty.IS_LINK_MAINTAINED }?.value }
-
-    transient String getFeeForServiceWork() { getExtraProperties().find { it.name == IssueExtraProperty.FEE_FOR_SERVICE_WORK }?.value }
-
-    transient String areSamplesComingFromEEA() { getExtraProperties().find { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA }?.value }
-
-    transient String isCollaboratorProvidingGoodService() { getExtraProperties().find { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE}?.value }
-
-    transient String isConsentUnambiguous() { getExtraProperties().find { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS }?.value }
 
     // Attestation
     transient String attestation() { getExtraProperties().find { it.name == IssueExtraProperty.ATTESTATION }?.value }
@@ -235,6 +209,8 @@ class Issue implements LogicalDelete<Issue> {
     // We need to pull those out for text-based searches.
 
     transient Collection<String> getAllIRBValues() { PreferredIrb.values().findAll { getIrb()?.contains(it.key) }.label }
+
+    transient String getNoConsentFormReason() { getExtraProperties().find { it.name == IssueExtraProperty.NO_CONSENT_FORM_REASON }?.value }
 
     transient Collection<String> getAllExtraPropertyValues() {
         getAllIRBValues() +

@@ -11,6 +11,13 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     String consentKey
     String sampleCollectionId
     Date creationDate
+    String pii
+    String requireMta
+    String compliance
+    String sharingType
+    String textSharingType
+    String textCompliance
+    String internationalCohorts
 
     Issue linkedProject
     SampleCollection sampleCollection
@@ -21,6 +28,13 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         consentKey nullable: false
         sampleCollectionId nullable: true
         creationDate nullable: false
+        pii nullable: true
+        requireMta nullable: true
+        compliance nullable: true
+        sharingType nullable: true
+        textSharingType nullable: true
+        textCompliance nullable: true
+        internationalCohorts nullable: true
     }
 
     static transients = ['linkedProject', 'sampleCollection', 'restriction']

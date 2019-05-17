@@ -51,7 +51,7 @@ class ProjectController extends AuthenticatedController {
             projectKey = issue.projectKey
             if (!files?.isEmpty()) {
                 files.forEach {
-                    storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.name , it)
+                    storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.name , it, null)
                 }
             }
             notifyService.projectCreation(issue)
