@@ -14,6 +14,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
     Date creationDate
     String status
     Long docVersion
+    Long consentCollectionLinkId
 
     InputStream inputStream
     Integer statusCode
@@ -23,7 +24,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
 
     static constraints = {
         uuid nullable: false, unique: true
-        projectKey nullable: false
+        projectKey nullable: true
         fileName nullable: false
         fileType nullable: false
         mimeType nullable: false
@@ -32,6 +33,7 @@ class StorageDocument  implements LogicalDelete<StorageDocument> {
         creationDate nullable: true
         status nullable: false
         docVersion nullable: false
+        consentCollectionLinkId nullable: true
     }
 
     static transients = ['inputStream', 'statusCode', 'statusMessage', 'createDate', 'documentType']
