@@ -242,4 +242,11 @@ export const DataUse = {
   createRestriction(serverURL, restriction) {
     return axios.post(serverURL + '/api/dataUseLetter/restriction', restriction);
   }  
-} 
+};
+
+export const ProjectInfoLink = {
+  getProjectSampleCollections(projectKey, consentkey, serverURL) {
+    return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentkey);
+    // /api/infoLink
+  }
+};

@@ -5,6 +5,7 @@ import '../index.css';
 
 ReactDOM.render(
   <InfoLink
+    serverURL = {component.serverURL}
     projectKey = {component.projectKey}
     consentKey = {component.consentKey}
     loadingImage = {component.loadingImage}

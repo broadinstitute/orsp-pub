@@ -1,7 +1,8 @@
-import { Component } from 'react';
+import { Component, Fragment} from 'react';
 import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
+import { ProjectInfoLink } from "../util/ajax";
 
 class InfoLink extends Component {
 
@@ -9,7 +10,7 @@ class InfoLink extends Component {
     super(props);
     this.state = {
       currentStepIndex: 0,
-
+      sampleCollections: ["ALGO"],
       readOnly: false,
       submit: false,
       formData: {
@@ -20,7 +21,19 @@ class InfoLink extends Component {
   }
 
   componentDidMount() {
+    this.initData();
   }
+
+  initData = () => {
+    let sampleCollectionsIds = [];
+    ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.serverURL).then( data => {
+      data.data.sampleCollections.map(val => sampleCollectionsIds.push(val.sampleCollectionId));
+      this.setState(prev => {
+        prev.sampleCollections = sampleCollectionsIds;
+        return prev;
+      })
+    });
+  };
 
   goStep = (n) => (e) => {
     e.preventDefault();
@@ -34,8 +47,7 @@ class InfoLink extends Component {
 
   render() {
 
-    const { currentStepIndex } = this.state;
-
+    const { currentStepIndex, sampleCollections } = this.state;
     return (
       div({}, [
         a({ className: "breadcrumbLink" }, [
@@ -48,28 +60,30 @@ class InfoLink extends Component {
           //replace with actual Project name
           div({ className: "italic normal" }, [this.props.projectKey])
         ]),
-
         //replace with actual Sample Collection name
-        Panel({ title: "SC-1042: MAYO ( Altshuler-Breast)" }, [
-          // div({ className: "tabContainer" }, [
-          //   this.props.children.map((child, idx) => {
-          //     return h(Fragment, { key: idx }, [
-          //       div({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: this.goStep(idx)}, [child.props.title])
-          //     ])
-          //   })
-          // ])
-          div({ className: "linkTab" }, [
-            div({ className: "linkTabHeader" }, [
-              div({ className: "tab active", onClick: this.goStep(0)}, ["International Cohorts"]),
-              div({ className: "tab ", onClick: this.goStep(1)}, ["Security"]),
-              div({ className: "tab ", onClick: this.goStep(2)}, ["MTA"]),
-              div({ className: "tab ", onClick: this.goStep(3)}, ["Documents"])
-            ]),
-            div({ className: "linkTabContent" }, [
-
+        div({ className: "tabContainer" }, [
+          sampleCollections.map((child, idx) => {
+            return h(Fragment, { key: idx }, [
+              Panel({ title: child }, [
+                div({
+                  className: "tabStep " + (idx === currentStepIndex ? "active" : ""),
+                  // onClick: this.goStep(idx)
+                }, [
+                  div({ className: "linkTab" }, [
+                    div({ className: "linkTabHeader" }, [
+                      div({ className: "tab active", onClick: this.goStep(0)}, ["International Cohorts"]),
+                      div({ className: "tab ", onClick: this.goStep(1)}, ["Security"]),
+                      div({ className: "tab ", onClick: this.goStep(2)}, ["MTA"]),
+                      div({ className: "tab ", onClick: this.goStep(3)}, ["Documents"])
+                    ]),
+                    div({ className: "linkTabContent" }, [
+                    ])
+                  ])
+                ])
+              ]),
             ])
-          ])
-        ])
+          })
+        ]),
       ])
     )
   }

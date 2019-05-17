@@ -262,6 +262,7 @@ class QueryService implements Status {
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksByConsentKey(String consentKey) {
+//        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByConsentKey(consentKey).unique{it.projectKey}
         Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByConsentKey(consentKey)
         Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
         Collection<String> projectKeys = links.collect { it.projectKey }
@@ -323,6 +324,23 @@ class QueryService implements Status {
             setString('projectKey', projectKey)
             setString('consentKey', consentKey)
             setString('sampleCollectionId', sampleCollectionId)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
+    Collection<ConsentCollectionLink> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from consent_collection_link c ' +
+                        ' where c.project_key = :projectKey ' +
+                        ' and c.consent_key = :consentKey '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('projectKey', projectKey)
+            setString('consentKey', consentKey)
             list()
         }
         results as Collection<ConsentCollectionLink>
