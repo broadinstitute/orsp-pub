@@ -210,6 +210,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Collection<String> getAllIRBValues() { PreferredIrb.values().findAll { getIrb()?.contains(it.key) }.label }
 
+    transient String getNoConsentFormReason() { getExtraProperties().find { it.name == IssueExtraProperty.NO_CONSENT_FORM_REASON }?.value }
+
     transient Collection<String> getAllExtraPropertyValues() {
         getAllIRBValues() +
                 getExtraProperties()*.value

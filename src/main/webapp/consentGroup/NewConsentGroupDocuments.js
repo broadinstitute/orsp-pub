@@ -100,17 +100,11 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     let documents = this.props.files;
     let errors = false;
     return (
-
-      WizardStep({
-        title: this.props.title, step: 1, currentStep: this.props.currentStep,
-        errorMessage: 'Please upload all required documents',
-        error: errors || this.props.generalError
-      }, [
-          div({ className: "questionnaireContainer" }, [
+          div({ className: "questionnaireContainerLight" }, [
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
-              options: this.props.options,
+              options: this.state.documentOptions,
               attachDocumentsUrl: this.props.attachDocumentsUrl,
               projectKey: this.props.projectKey,
               user: this.props.user,
@@ -138,7 +132,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               reviewFlow: false
             })
           ])
-        ])
     )
   }
 });
