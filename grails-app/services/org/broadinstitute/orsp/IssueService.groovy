@@ -60,21 +60,10 @@ class IssueService implements UserInfo {
             IssueExtraProperty.EDIT_DESCRIPTION,
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.ON_GOING_PROCESS,
-            IssueExtraProperty.COMPLIANCE,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
             IssueExtraProperty.DESCRIBE_CONSENT,
-            IssueExtraProperty.REQUIRE_MTA,
-            IssueExtraProperty.SHARING_TYPE,
-            IssueExtraProperty.TEXT_SHARING_TYPE,
-            IssueExtraProperty.TEXT_COMPLIANCE,
-            IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
-            IssueExtraProperty.IS_LINK_MAINTAINED,
-            IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA,
-            IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE,
-            IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS,
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
-            IssueExtraProperty.PII,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
             IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
             IssueExtraProperty.IRB_REFERRAL,
@@ -211,26 +200,11 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.NOT_HSR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_HSR })
         }
-        if (!input.containsKey(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INDIVIDUAL_DATA_SOURCED })
-        }
-        if (!input.containsKey(IssueExtraProperty.IS_LINK_MAINTAINED)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_LINK_MAINTAINED})
-        }
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE})
         }
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE_WORK)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE_WORK})
-        }
-        if (!input.containsKey(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA})
-        }
-        if (!input.containsKey(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE})
-        }
-        if (!input.containsKey(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS})
         }
         if (!input.containsKey(IssueExtraProperty.END_DATE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
@@ -249,12 +223,6 @@ class IssueService implements UserInfo {
         }
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
-        }
-        if (input.get(IssueExtraProperty.TEXT_SHARING_TYPE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SHARING_TYPE})
-        }
-        if (input.get(IssueExtraProperty.TEXT_COMPLIANCE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_COMPLIANCE})
         }
         if (input.get(IssueExtraProperty.COLL_CONTACT) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLL_CONTACT })
