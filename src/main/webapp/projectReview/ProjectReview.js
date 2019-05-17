@@ -735,8 +735,10 @@ class ProjectReview extends Component {
       return prev;
     });
   };
-  redirectToNewConsentGroup = () => {
-    window.location.href = this.props.serverURL + '/api/consent-group?projectKey=' + this.props.projectKey;
+
+  redirectToConsentGroupTab = async () => {
+    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
+    window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -811,9 +813,9 @@ class ProjectReview extends Component {
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
-          onClick: this.redirectToNewConsentGroup,
+          onClick: this.redirectToConsentGroupTab,
           isRendered: this.state.readOnly === true,
-        }, ["Add New Sample/Data Cohort"]),
+        }, ["Add Sample/Data Cohort"]),
 
         button({
           className: "btn buttonSecondary floatRight",
