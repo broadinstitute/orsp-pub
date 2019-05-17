@@ -27,8 +27,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
         consentGroup: false,
         internationalCohortsError: {
         },
-        security: {
-        },
+        security: {},
         requireMta: false
       },
       generalError: false,
@@ -37,7 +36,6 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       consentGroup: {},
       sampleCollections: {},
       internationalCohorts: {},
-      security: {},
       requireMta: false,
       isValid: true,
       determination: {
@@ -225,6 +223,12 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     if (this.validateForm()) {
       this.removeErrorMessage();
       this.changeSubmitState();
+      const consentGroup = this.state.consentGroup;
+      const sampleCollections = this.state.sampleCollections;
+      const documents = this.state.files;
+      const user = this.state.user;
+      const security = this.state.securityInfoFormData;
+      const internationalCohorts = this.state;
       // TODO send link info to end-point
     }
 
