@@ -6,8 +6,8 @@
 </head>
 <body>
 
-<div id="sampleConsentLinkWizard"></div>
-<asset:javascript src="build/sampleConsentLinkWizard.js"/>
+<div id="linkWizard"></div>
+<asset:javascript src="build/linkWizard.js"/>
 
 </body>
 </html>

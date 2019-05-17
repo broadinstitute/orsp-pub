@@ -6,10 +6,12 @@ import { SampleConsentLinkQuestions } from "./SampleConsentLinkQuestions";
 import { User, ConsentGroup, SampleCollections } from "../util/ajax";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { isEmpty } from "../util/Utils";
+import { spinnerService } from '../util/spinner-service';
+import '../index.css';
 
 const LAST_STEP = 1;
 
-export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends Component {
+export const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
 
   constructor(props) {
@@ -340,7 +342,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     }
     return (
       Wizard({
-        title: "Sample Collection Link to Data Cohort",
+        title: "Add Existing Sample/Data Cohort",
         note: "",
         stepChanged: this.stepChanged,
         isValid: this.isValid,
@@ -350,7 +352,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
         loadingImage: this.props.loadingImage,
       }, [
         SelectSampleConsent({
-          title: "Link Samples / Data Cohorts",
+          title: "Sample/Data Cohort Info",
           consentNamesSearchURL: this.props.consentNamesSearchURL,
           sampleSearchUrl: this.props.sampleSearchUrl,
           removeErrorMessage: this.removeErrorMessage,
@@ -366,7 +368,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
           options: this.state.documentOptions,
         }),
         SampleConsentLinkQuestions({
-          title: "Security, International Cohort and MTA",
+          title: "Security/MTA/International Info",
           currentStep: currentStep,
           handler: this.determinationHandler,
           determination: this.state.determination,

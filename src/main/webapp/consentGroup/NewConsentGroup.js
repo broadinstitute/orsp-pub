@@ -1,11 +1,8 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { InternationalCohorts } from '../components/InternationalCohorts';
-import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
-import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
@@ -527,7 +524,7 @@ class NewConsentGroup extends Component {
         loadingImage: this.props.loadingImage
       }, [
           NewConsentGroupGeneralData({
-            title: "Data/Sample Cohort Info",
+            title: "Sample/Data Cohort Info",
             currentStep: currentStep,
             user: this.state.user,
             sampleSearchUrl: this.props.sampleSearchUrl,
@@ -544,7 +541,7 @@ class NewConsentGroup extends Component {
             isConsentFormPresent: this.state.isConsentFormPresent
           }),
           NewLinkCohortData({
-            title: "Security, International Cohort and MTA",
+            title: "Security/MTA/International Info",
             currentStep: currentStep,
             handler: this.determinationHandler,
             determination: this.state.determination,

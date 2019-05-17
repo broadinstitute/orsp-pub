@@ -42,7 +42,9 @@ export const SampleConsentLinkQuestions = hh(class SampleConsentLinkQuestions ex
     }
     return (
       WizardStep({
-        title: "Security, International Cohort and MTA", step: 1, currentStep: this.props.currentStep,
+        title: "Security/MTA/International Info",
+        step: 1,
+        currentStep: this.props.currentStep,
         error: this.props.generalError || this.props.submitError,
         errorMessage: errorMessage
       }, [

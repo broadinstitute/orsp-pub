@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import  { SampleConsentLinkWizard } from './SampleConsentLinkWizard';
+import  { LinkWizard } from './LinkWizard';
 
 
 ReactDOM.render(
-  <SampleConsentLinkWizard
+  <LinkWizard
     loadingImage = {component.loadingImage}
     consentNamesSearchURL = {component.consentNamesSearchURL}
     sampleSearchUrl = {component.sampleSearchUrl}
@@ -13,5 +13,5 @@ ReactDOM.render(
     getUserUrl = {component.getUserUrl}
     projectKey = {component.projectKey}
   />,
-  document.getElementById('sampleConsentLinkWizard')
+  document.getElementById('linkWizard')
 );
