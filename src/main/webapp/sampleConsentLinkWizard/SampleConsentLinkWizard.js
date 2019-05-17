@@ -69,10 +69,10 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     this.initDocuments();
     this.getUserSession();
     this.getConsentGroups();
-    this.getSampleCollections();
+    this.getAllSampleCollections();
   }
 
-  getSampleCollections = () => {
+  getAllSampleCollections = () => {
     SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
       resp => {
         const sampleCollectionsList = resp.data.map(item => {
@@ -216,19 +216,45 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     return isValidStep1 && isInfoSecurityValid && isInfoSecurityValid && isInternationalCohortsValid && isMTAValid;
   };
 
+  getConsentCollectionData = () => {
+    let consentCollectionLink = {};
+    // consent group info
+    consentCollectionLink.consentGroup = this.state.consentGroup.key;
+    // consent collection link info
+    consentCollectionLink.sampleCollectionId = this.state.sampleCollections.value;
+    consentCollectionLink.projectKey = this.props.projectKey;
+    consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
+    // security
+    consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
+    consentCollectionLink.compliance = this.state.securityInfoFormData.compliance;
+    consentCollectionLink.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
+    consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
+    consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
+    // cohorts
+    let questions = this.state.determination.questions;
+    if (questions !== null && questions.length > 1) {
+      let cohortsForm = [];
+      questions.map((q, idx) => {
+        if (q.answer !== null) {
+          cohortsForm.push({ name: q.key, value: q.answer });
+        }
+      });
+      consentCollectionLink.internationalCohorts = JSON.stringify(cohortsForm);
+    }
+
+    return consentCollectionLink;
+  };
+
   submitLink = () => {
-    console.log('sumit new link');
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
       this.removeErrorMessage();
       this.changeSubmitState();
-      const consentGroup = this.state.consentGroup;
-      const sampleCollections = this.state.sampleCollections;
       const documents = this.state.files;
       const user = this.state.user;
-      const security = this.state.securityInfoFormData;
-      const internationalCohorts = this.state;
+      const internationalCohorts = this.getConsentCollectionData();
+      console.log(internationalCohorts);
       // TODO send link info to end-point
     }
 

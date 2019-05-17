@@ -25,7 +25,6 @@ export const SampleConsentLinkQuestions = hh(class SampleConsentLinkQuestions ex
   }
 
   handleRadioChange = (e, field, value) => {
-    console.log(field, value);
     this.setState(prev => {
       prev[field] = value;
       return prev;
