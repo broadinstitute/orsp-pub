@@ -12,23 +12,7 @@ class ConsentGroupExtraProperties {
     String protocol
     String institutionalSources
     String describeConsentGroup
-    String requireMta
     Boolean projectReviewApproved
-
-    // Info Security
-    String pii
-    String compliance
-    String textCompliance
-    String sharingType
-    String textSharingType
-
-    // InternationalCohorts
-    String individualDataSourced
-    String isLinkMaintained
-    String feeForService
-    String areSamplesComingFromEEAA
-    String isCollaboratorProvidingGoodService
-    String isConsentUnambiguous
 
     ConsentGroupExtraProperties(Issue consentGroup) {
         // General Data
@@ -42,22 +26,6 @@ class ConsentGroupExtraProperties {
         this.setProtocol(consentGroup.getProtocol() ?: "")
         this.setInstitutionalSources(consentGroup.getInstitutionalSources() ?: null)
         this.setDescribeConsentGroup(consentGroup.getDescribeConsentGroup() ?: "")
-        this.setRequireMta(consentGroup.getMTA() ?: "")
         this.setProjectReviewApproved(consentGroup.getProjectReviewApproved() ?: false)
-
-        // Info Security
-        this.setPii(consentGroup.getPII() ?: "")
-        this.setCompliance(consentGroup.getCompliance() ?: "")
-        this.setTextCompliance(consentGroup.getTextCompliance() ?: "")
-        this.setSharingType(consentGroup.getSharingType() ?: "")
-        this.setTextSharingType(consentGroup.getTextSharingType() ?: "")
-
-        // InternationalCohorts
-        this.setIndividualDataSourced(consentGroup.getIndividualDataSourced() ?: null)
-        this.setIsLinkMaintained(consentGroup.getIsLinkMaintained() ?: null)
-        this.setFeeForService(consentGroup.getFeeForService() ?: null)
-        this.setAreSamplesComingFromEEAA(consentGroup.areSamplesComingFromEEA() ?: null)
-        this.setIsCollaboratorProvidingGoodService(consentGroup.isCollaboratorProvidingGoodService() ?: null)
-        this.setIsConsentUnambiguous(consentGroup.isConsentUnambiguous() ?: null)
     }
 }
