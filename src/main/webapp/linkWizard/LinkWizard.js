@@ -8,6 +8,7 @@ import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
 import '../index.css';
+import { ConsentCollectionLink } from "../util/ajax";
 
 const LAST_STEP = 1;
 
@@ -68,6 +69,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props);
     this.initDocuments();
     this.getUserSession();
     this.getConsentGroups();
@@ -221,7 +223,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   getConsentCollectionData = () => {
     let consentCollectionLink = {};
     // consent group info
-    consentCollectionLink.consentGroup = this.state.consentGroup.key;
+    consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
     consentCollectionLink.sampleCollectionId = this.state.sampleCollections.value;
     consentCollectionLink.projectKey = this.props.projectKey;
@@ -254,10 +256,16 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       this.removeErrorMessage();
       this.changeSubmitState();
       const documents = this.state.files;
-      const user = this.state.user;
-      const internationalCohorts = this.getConsentCollectionData();
-      console.log(internationalCohorts);
-      // TODO send link info to end-point
+      const consentCollectionData = this.getConsentCollectionData();
+      console.log(consentCollectionData);
+      ConsentCollectionLink.create(this.props.serverUrl, consentCollectionData, documents).then(resp => {
+        console.log(resp.data);
+      }).catch(error => {
+        console.error(error);
+        spinnerService.hideAll();
+        this.toggleSubmitError();
+        this.changeSubmitState();
+      });
     }
 
   };

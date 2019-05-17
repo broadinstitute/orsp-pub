@@ -245,7 +245,7 @@ export const DataUse = {
 }
 
 export const ConsentCollectionLink = {
-  create(url, dataConsentCollection, files) {
+  create(serverUrl, dataConsentCollection, files) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -257,6 +257,6 @@ export const ConsentCollectionLink = {
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };
-    return axios.post(url, data, config);
+    return axios.post(serverUrl + '/api/sample-consent-link', data, config);
   }
-}
+};
