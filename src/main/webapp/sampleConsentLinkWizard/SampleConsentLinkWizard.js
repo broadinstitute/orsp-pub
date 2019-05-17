@@ -282,13 +282,13 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       isValid = false;
     }
 
-    // if (field === )
-    console.log(field);
-    this.setState(prev => {
-      prev.errors.sampleCollection = sampleCollection;
-      prev.errors.consentGroup = consentGroup;
-      return prev;
-    });
+    if (field === "consentGroup" || field === "sampleCollections") {
+      this.setState(prev => {
+        prev.errors.sampleCollection = sampleCollection;
+        prev.errors.consentGroup = consentGroup;
+        return prev;
+      });
+    }
     return isValid;
   };
 
