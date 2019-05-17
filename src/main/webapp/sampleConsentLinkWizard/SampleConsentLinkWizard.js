@@ -130,7 +130,11 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
   };
 
   isValid = (field) => {
-    return this.validateStep1(field)
+    let valid = true;
+    if (this.state.currentStep === 0) {
+      valid = this.validateStep1(field)
+    }
+    return valid;
   };
 
   validateStep1 = (field) => {
@@ -149,6 +153,8 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       isValid = false;
     }
 
+    // if (field === )
+    console.log(field);
     this.setState(prev => {
       prev.errors.sampleCollection = sampleCollection;
       prev.errors.consentGroup = consentGroup;
@@ -158,6 +164,9 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
   };
 
   updateGeneralForm = (updatedForm, field) => {
+    if (this.state.currentStep === 0) {
+      this.validateStep1(field);
+    }
     this.setState(prev => {
       prev[field] = updatedForm;
       return prev;
