@@ -45,4 +45,12 @@ class PersistenceService {
         ).save(flush: true)
     }
 
+    ConsentCollectionLink saveConsentCollectionLink(ConsentCollectionLink consentCollectionLink) {
+        consentCollectionLink.save(flush: true)
+    }
+
+    void deleteCollectionLink(ConsentCollectionLink consentCollectionLink) {
+        consentCollectionLink?.delete(flush: true)
+    }
+
 }
