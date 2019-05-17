@@ -21,6 +21,7 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
         userName: '',
         emailAddress: ''
       },
+      submitError: false,
       errors: {
         sampleCollection: false,
         consentGroup: false,
@@ -119,6 +120,20 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     });
   }
 
+  changeSubmitState = () => {
+    this.setState(prev => {
+      prev.formSubmitted = !prev.formSubmitted;
+      return prev;
+    });
+  };
+
+  toggleSubmitError = () => {
+    this.setState(prev => {
+      prev.submitError = true;
+      return prev;
+    });
+  };
+
   determinationHandler = (determination) => {
     this.setState(prev => {
       prev.determination = determination;
@@ -195,17 +210,61 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
     return renderSubmit;
   };
 
+  validateForm = () => {
+    const isValidStep1 = this.validateStep1();
+    const isInternationalCohortsValid = this.validateInternationalCohorts();
+    const isInfoSecurityValid = this.validateInfoSecurity();
+    const isMTAValid = this.validateMTA();
+    return isValidStep1 && isInfoSecurityValid && isInfoSecurityValid && isInternationalCohortsValid && isMTAValid;
+  };
+
   submitLink = () => {
     console.log('sumit new link');
+    this.setState({ submitError: false });
+
+    if (this.validateForm()) {
+      this.removeErrorMessage();
+      this.changeSubmitState();
+      // TODO send link info to end-point
+    }
+
   };
 
   isValid = (field) => {
-    let valid = true;
+    let isValid = true;
     if (this.state.currentStep === 0) {
-      valid = this.validateStep1(field)
+      isValid = this.validateStep1(field)
+    } else if (this.state.currentStep === 1) {
+      isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
+      if (!this.validateMTA()) {
+        isValid = false;
+      }
     }
-    return valid;
+    if (this.state.generalError && isValid) {
+      this.removeErrorMessage();
+    }
+    return isValid;
   };
+
+  validateInfoSecurity() {
+    this.setState(prev => {
+      prev.showErrorInfoSecurity = !this.state.isInfoSecurityValid;
+      return prev;
+    });
+    return this.state.isInfoSecurityValid;
+  }
+
+  validateInternationalCohorts() {
+    let isValid = true;
+    if (this.state.determination.requiredError || this.state.determination.endState === false) {
+      isValid = false;
+    }
+    this.setState(prev => {
+      prev.showInternationalCohortsError = !isValid;
+      return prev;
+    });
+    return isValid;
+  }
 
   validateStep1 = (field) => {
     let sampleCollection = false;
@@ -223,13 +282,13 @@ export const SampleConsentLinkWizard = hh( class SampleConsentLinkWizard extends
       isValid = false;
     }
 
-    // if (field === )
-    console.log(field);
-    this.setState(prev => {
-      prev.errors.sampleCollection = sampleCollection;
-      prev.errors.consentGroup = consentGroup;
-      return prev;
-    });
+    if (field === "consentGroup" || field === "sampleCollections") {
+      this.setState(prev => {
+        prev.errors.sampleCollection = sampleCollection;
+        prev.errors.consentGroup = consentGroup;
+        return prev;
+      });
+    }
     return isValid;
   };
 
