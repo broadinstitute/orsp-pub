@@ -242,4 +242,21 @@ export const DataUse = {
   createRestriction(serverURL, restriction) {
     return axios.post(serverURL + '/api/dataUseLetter/restriction', restriction);
   }  
-} 
+}
+
+export const ConsentCollectionLink = {
+  create(url, dataConsentCollection, files) {
+    let data = new FormData();
+
+    files.forEach(file => {
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
+    });
+    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection))
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+    return axios.post(url, data, config);
+  }
+}
