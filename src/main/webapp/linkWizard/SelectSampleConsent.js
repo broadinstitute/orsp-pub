@@ -33,7 +33,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       documentOptions: [],
       documents: [],
       sampleCollectionList: {},
-      sampleCollections: {},
+      sampleCollection: {},
       consentGroupsList: {},
       collectionSample: {},
       consentGroup: {}
@@ -52,9 +52,9 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   handleSampleCollectionChange = () => (data) => {
     this.setState(prev => {
-      prev.sampleCollections = data;
+      prev.sampleCollection = data;
       return prev;
-    }, () => this.props.updateForm(this.state.sampleCollections, "sampleCollections"));
+    }, () => this.props.updateForm(this.state.sampleCollection, "sampleCollection"));
     this.props.removeErrorMessage();
   };
 
@@ -152,7 +152,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isDisabled: false,
             options: this.props.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
-            value: this.state.sampleCollections,
+            value: this.state.sampleCollection,
             placeholder: "Select...",
             isMulti: false,
             edit: false,

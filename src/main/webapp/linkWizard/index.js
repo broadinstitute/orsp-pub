@@ -9,7 +9,7 @@ ReactDOM.render(
     consentNamesSearchURL = {component.consentNamesSearchURL}
     sampleSearchUrl = {component.sampleSearchUrl}
     getConsentGroups = {component.getConsentGroups}
-    serverUrl = {component.serverURL}
+    serverURL = {component.serverURL}
     getUserUrl = {component.getUserUrl}
     projectKey = {component.projectKey}
   />,

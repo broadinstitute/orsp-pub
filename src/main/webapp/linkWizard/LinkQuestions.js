@@ -8,7 +8,7 @@ import { Security } from "../components/Security";
 import { InputFieldRadio } from "../components/InputFieldRadio";
 
 
-export const SampleConsentLinkQuestions = hh(class SampleConsentLinkQuestions extends Component {
+export const LinkQuestions = hh(class LinkQuestions extends Component {
   state = {};
 
   constructor(props) {

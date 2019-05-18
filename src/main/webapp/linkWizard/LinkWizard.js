@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { h1, hh, p } from 'react-hyperscript-helpers';
+import { h1, hh } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
-import { SampleConsentLinkQuestions } from "./SampleConsentLinkQuestions";
+import { LinkQuestions } from "./LinkQuestions";
 import { User, ConsentGroup, SampleCollections } from "../util/ajax";
 import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
 import '../index.css';
-import { ConsentCollectionLink } from "../util/ajax";
+import { ConsentCollectionLink, Project } from "../util/ajax";
 
 const LAST_STEP = 1;
 
@@ -28,6 +28,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       errors: {
         sampleCollection: false,
         consentGroup: false,
+        isValid: true,
         internationalCohortsError: {
         },
         security: {},
@@ -37,7 +38,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       formSubmitted: false,
       currentStep: 0,
       consentGroup: {},
-      sampleCollections: {},
+      sampleCollection: {},
       internationalCohorts: {},
       requireMta: false,
       isValid: true,
@@ -69,7 +70,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props);
     this.initDocuments();
     this.getUserSession();
     this.getConsentGroups();
@@ -213,7 +213,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   validateForm = () => {
-    const isValidStep1 = this.validateStep1();
+    const isValidStep1 = this.validateLinkStep();
     const isInternationalCohortsValid = this.validateInternationalCohorts();
     const isInfoSecurityValid = this.validateInfoSecurity();
     const isMTAValid = this.validateMTA();
@@ -225,7 +225,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     // consent group info
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
-    consentCollectionLink.sampleCollectionId = this.state.sampleCollections.value;
+    consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
     consentCollectionLink.projectKey = this.props.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
@@ -249,31 +249,80 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     return consentCollectionLink;
   };
 
-  submitLink = () => {
+  submitLink = async () => {
     this.setState({ submitError: false });
+    spinnerService.showAll();
 
     if (this.validateForm()) {
+      let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
+
       this.removeErrorMessage();
       this.changeSubmitState();
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
-      console.log(consentCollectionData);
-      ConsentCollectionLink.create(this.props.serverUrl, consentCollectionData, documents).then(resp => {
-        console.log(resp.data);
+      ConsentCollectionLink.create(this.props.serverURL, consentCollectionData, documents).then(resp => {
+        window.location.href  = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+        spinnerService.hideAll();
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
         this.toggleSubmitError();
         this.changeSubmitState();
       });
+    } else {
+      this.setState(prev => {
+        prev.generalError = true;
+        return prev;
+      }, () => {
+        spinnerService.hideAll();
+      });
     }
 
+  };
+
+  validateLinkStep = (field) => {
+    let consentGroup = false;
+    let sampleCollection = false;
+    let isValid = true;
+
+    if (isEmpty(this.state.consentGroup)) {
+      consentGroup = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.sampleCollection)) {
+      sampleCollection = true;
+      isValid = false;
+    }
+
+    if (field === undefined || field === null || field === 0) {
+      this.setState(prev => {
+        prev.errors.consentGroup = consentGroup;
+        prev.errors.sampleCollection = sampleCollection;
+        prev.errors.isValid = isValid;
+        if (isValid) {
+          prev.generalError = false;
+        }
+        return prev;
+      });
+    }
+
+    else if (field === 'consentGroup' || field === 'sampleCollection') {
+      this.setState(prev => {
+        if (field === 'consentGroup') {
+          prev.errors.consentGroup = consentGroup;
+        } else if (field === 'sampleCollection') {
+          prev.errors.sampleCollection = sampleCollection;
+        }
+        return prev;
+      });
+    }
+    return isValid;
   };
 
   isValid = (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateStep1(field)
+      isValid = this.validateLinkStep(field)
     } else if (this.state.currentStep === 1) {
       isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
       if (!this.validateMTA()) {
@@ -306,35 +355,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     return isValid;
   }
 
-  validateStep1 = (field) => {
-    let sampleCollection = false;
-    let consentGroup = false;
-
-    let isValid = true;
-
-    if (isEmpty(this.state.consentGroup)) {
-      consentGroup = true;
-      isValid = false;
-    }
-
-    if (isEmpty(this.state.sampleCollections)) {
-      sampleCollection = true;
-      isValid = false;
-    }
-
-    if (field === "consentGroup" || field === "sampleCollections") {
-      this.setState(prev => {
-        prev.errors.sampleCollection = sampleCollection;
-        prev.errors.consentGroup = consentGroup;
-        return prev;
-      });
-    }
-    return isValid;
-  };
-
   updateGeneralForm = (updatedForm, field) => {
     if (this.state.currentStep === 0) {
-      this.validateStep1(field);
+      this.validateLinkStep(field);
     }
     this.setState(prev => {
       prev[field] = updatedForm;
@@ -365,7 +388,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           sampleSearchUrl: this.props.sampleSearchUrl,
           removeErrorMessage: this.removeErrorMessage,
           sampleCollectionList: this.state.sampleCollectionList,
-          sampleCollections: this.state.sampleCollections,
+          sampleCollection: this.state.sampleCollection,
           errors: this.state.errors,
           fileHandler: this.fileHandler,
           files: this.state.files,
@@ -375,7 +398,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           updateForm: this.updateGeneralForm,
           options: this.state.documentOptions,
         }),
-        SampleConsentLinkQuestions({
+        LinkQuestions({
           title: "Security/MTA/International Info",
           currentStep: currentStep,
           handler: this.determinationHandler,
