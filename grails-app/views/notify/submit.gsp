@@ -17,3 +17,8 @@
     </p>
 </g:if>
 
+<p>
+    Thank you,
+    <br>The ORSP team.
+</p>
+

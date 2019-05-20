@@ -61,7 +61,7 @@ export const InputFieldRadio = hh(class InputFieldRadio extends Component {
     return (
 
       div({ className: "radioContainer" }, [
-        p({ className: "bold" }, [
+        p({ className: "inputFieldLabel" }, [
           this.props.label,
           span({ isRendered: this.props.moreInfo !== undefined, className: "normal" }, [this.props.moreInfo]),
           Btn({ isRendered: this.props.tooltipLabel !== undefined, action: { label: this.props.tooltipLabel, handler: this.tooltipBtnHandler } }),

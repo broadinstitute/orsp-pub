@@ -3,7 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import liquibase.util.StringUtils
+import org.apache.commons.lang.StringUtils
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -17,6 +17,7 @@ class IssueService implements UserInfo {
 
     QueryService queryService
     PersistenceService persistenceService
+    NotifyService notifyService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -59,21 +60,10 @@ class IssueService implements UserInfo {
             IssueExtraProperty.EDIT_DESCRIPTION,
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.ON_GOING_PROCESS,
-            IssueExtraProperty.COMPLIANCE,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
             IssueExtraProperty.DESCRIBE_CONSENT,
-            IssueExtraProperty.REQUIRE_MTA,
-            IssueExtraProperty.SHARING_TYPE,
-            IssueExtraProperty.TEXT_SHARING_TYPE,
-            IssueExtraProperty.TEXT_COMPLIANCE,
-            IssueExtraProperty.INDIVIDUAL_DATA_SOURCED,
-            IssueExtraProperty.IS_LINK_MAINTAINED,
-            IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA,
-            IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE,
-            IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS,
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
-            IssueExtraProperty.PII,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
             IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
             IssueExtraProperty.IRB_REFERRAL,
@@ -210,26 +200,11 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.NOT_HSR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_HSR })
         }
-        if (!input.containsKey(IssueExtraProperty.INDIVIDUAL_DATA_SOURCED)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INDIVIDUAL_DATA_SOURCED })
-        }
-        if (!input.containsKey(IssueExtraProperty.IS_LINK_MAINTAINED)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_LINK_MAINTAINED})
-        }
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE})
         }
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE_WORK)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE_WORK})
-        }
-        if (!input.containsKey(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA})
-        }
-        if (!input.containsKey(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE})
-        }
-        if (!input.containsKey(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS})
         }
         if (!input.containsKey(IssueExtraProperty.END_DATE)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
@@ -248,12 +223,6 @@ class IssueService implements UserInfo {
         }
         if (!input.containsKey(IssueExtraProperty.COLLABORATOR)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLLABORATOR})
-        }
-        if (input.get(IssueExtraProperty.TEXT_SHARING_TYPE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_SHARING_TYPE})
-        }
-        if (input.get(IssueExtraProperty.TEXT_COMPLIANCE) == "") {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.TEXT_COMPLIANCE})
         }
         if (input.get(IssueExtraProperty.COLL_CONTACT) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.COLL_CONTACT })
@@ -283,13 +252,16 @@ class IssueService implements UserInfo {
             issue.save(flush: true)
         }
         if (input.get("editsApproved")) {
+            notifyService.sendEditsApprovedNotification(issue)
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Issue updateAdminOnlyProperties(Issue issue, Map<String, Object> input) throws DomainException {
+    @Transactional
+    Issue updateAdminOnlyProperties(Map<String, Object> input) throws DomainException {
+        Issue issue = Issue.findByProjectKey(params.projectKey)
         String previousStatus = issue.getApprovalStatus()
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -324,6 +296,11 @@ class IssueService implements UserInfo {
         }
         if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
+        }
+        String newStatus = Optional.ofNullable(input.get(IssueExtraProperty.PROJECT_STATUS)).orElse("")
+
+        if (!previousStatus?.equals(newStatus)) {
+            notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue)
         }
         issue
     }

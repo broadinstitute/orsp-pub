@@ -1,9 +1,14 @@
 package org.broadinstitute.orsp.api
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
+import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+
 import org.broadinstitute.orsp.ConsentCollectionLink
+
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction
@@ -13,9 +18,11 @@ import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.springframework.web.multipart.MultipartFile
 
 import javax.ws.rs.core.Response
 
+@Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class NewConsentGroupController extends AuthenticatedController {
 
@@ -40,43 +47,53 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def save() {
-        Issue issue = IssueUtils.getJson(Issue.class, request.JSON)
-        Issue source = queryService.findByKey(issue.getSource())
-        if(source != null) {
-            issue.setRequestDate(new Date())
-            Issue consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
-            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
-            try {
-                // If any sample collections were linked, we need to add them to the consent group.
-                def sampleCollectionIds = []
-                if (issue.getSamples()) { sampleCollectionIds.addAll(issue.getSamples()) }
-                if (sampleCollectionIds.isEmpty()) {
-                    new ConsentCollectionLink(
-                            projectKey: source.projectKey,
-                            consentKey: consent.projectKey,
-                            sampleCollectionId: null,
-                            creationDate: new Date()
-                    ).save(flush: true)
-                } else {
-                    sampleCollectionIds.each {
-                        new ConsentCollectionLink(
-                                projectKey: source.projectKey,
-                                consentKey: consent.projectKey,
-                                sampleCollectionId: it,
-                                creationDate: new Date()
-                        ).save(flush: true)
+        Issue consent
+        ConsentCollectionLink consentCollectionLink
+        try{
+            List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+            User user = getUser()
+            JsonParser parser = new JsonParser()
+            JsonArray dataProjectJson = parser.parse(request.parameterMap["dataProject"].toString())
+            JsonArray dataConsentCollectionJson = parser.parse(request.parameterMap["dataConsentCollection"].toString())
+            Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
+            consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, dataConsentCollectionJson[0])
+            Issue source = queryService.findByKey(issue.getSource())
+            if (source != null) {
+                issue.setRequestDate(new Date())
+                consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
+                consentCollectionLink.consentKey = consent.projectKey
+                consentCollectionLink.creationDate = new Date()
+                persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
+                try {
+                    persistenceService.saveConsentCollectionLink(consentCollectionLink)
+                } catch (Exception e) {
+                    flash.error = e.getMessage()
+                }
+                if (!files?.isEmpty()) {
+                    files.forEach {
+                        storageProviderService.saveMultipartFile(user.displayName, user.userName, null, it.name, it, consentCollectionLink)
                     }
                 }
-            } catch (Exception e) {
-                flash.error = e.getMessage()
+                notifyService.consentGroupCreation(issue, consentCollectionLink)
+                consent.status = 201
+                render([message: consent] as JSON)
+            } else {
+                Response response = Response.status(400)
+                response.entity("Invalid project key")
+                render([message: response] as JSON)
             }
-            consent.status = 201
-            render([message: consent] as JSON)
-        } else {
-            Response response = Response.status(400)
-            response.entity("Invalid project key")
-            render([message: response] as JSON)
+        } catch (Exception e) {
+            if (consent != null) {
+                issueService.deleteIssue(consent.projectKey)
+            }
+            if (consentCollectionLink != null) {
+                persistenceService.deleteCollectionLink(consentCollectionLink)
+            }
+            log.error("There was an error trying to create consent group: " + e.message)
+            response.status = 500
+            render([error: e.message] as JSON)
         }
+
     }
 
     def approveConsentGroup() {

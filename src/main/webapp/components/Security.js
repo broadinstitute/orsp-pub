@@ -5,6 +5,7 @@ import { WizardStep } from './WizardStep';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { isEmpty } from '../util/Utils'
+import './QuestionnaireWorkflow.css';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -48,9 +49,8 @@ export const Security = hh(class Security extends Component {
       prev.formData[field] = value;
       return prev;
     }, () => {
-      this.props.updateForm(this.state.formData, field);
       this.props.handleSecurityValidity(this.validate());
-      this.props.removeErrorMessage();
+      this.props.updateForm(this.state.formData, field);     
     });
   };
 
@@ -63,7 +63,6 @@ export const Security = hh(class Security extends Component {
     }, () => {
       this.props.handleSecurityValidity(this.validate());
       this.props.updateForm(this.state.formData, field);
-      this.props.removeErrorMessage();
     })
   };
 
@@ -121,18 +120,13 @@ export const Security = hh(class Security extends Component {
       return h1({}, ["Something went wrong."]);
     }
     return (
-      WizardStep({
-        title: this.props.title, step: this.props.step, currentStep: this.props.currentStep,
-        error: this.props.showErrorInfoSecurity && this.formHasError() || this.props.generalError,
-        errorMessage: !this.props.showErrorInfoSecurity && this.props.generalError ? 'Please check previous steps' : 'Please complete all required fields'
-      }, [
-        div({ className: "questionnaireContainer" }, [
+        div({ className: "questionnaireContainerLight" }, [
           InputFieldRadio({
             id: "radioPII",
             name: "pii",
             label: "As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
             moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."]),
-            value: this.state.formData.pii,
+            value: this.props.securityInfoData.pii,
             optionValues: ["true", "false"],
             optionLabels: [
               "Yes",
@@ -140,7 +134,7 @@ export const Security = hh(class Security extends Component {
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.pii && this.props.showErrorInfoSecurity,
+            error: this.state.errors.pii && this.props.generalError,
             errorMessage: "Required field",
             edit: false
           }),
@@ -148,7 +142,7 @@ export const Security = hh(class Security extends Component {
             id: "radioCompliance",
             name: "compliance",
             label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?*"]),
-            value: this.state.formData.compliance,
+            value: this.props.securityInfoData.compliance,
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
               "Yes",
@@ -157,27 +151,29 @@ export const Security = hh(class Security extends Component {
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.compliance && this.props.showErrorInfoSecurity,
+            error: this.state.errors.compliance && this.props.generalError,
             errorMessage: "Required field",
             edit: false
           }),
-          InputFieldText({
-            isRendered: this.state.formData.compliance === "true",
-            id: "inputCompliance",
-            name: "textCompliance",
-            label: "Please specify which regulations must be adhered to below:*",
-            value: this.state.formData.textCompliance,
-            disabled: false,
-            required: false,
-            onChange: this.handleInputChange,
-            error: this.state.errors.textCompliance && this.props.showErrorInfoSecurity,
-            errorMessage: "Required field"
-          }),
+          div({ style: {'marginBottom': '20px'}}, [
+            InputFieldText({
+              isRendered: this.props.securityInfoData.compliance === "true",
+              id: "inputCompliance",
+              name: "textCompliance",
+              label: "Please specify which regulations must be adhered to below:*",
+              value: this.props.securityInfoData.textCompliance,
+              disabled: false,
+              required: false,
+              onChange: this.handleInputChange,
+              error: this.state.errors.textCompliance && this.props.generalError,
+              errorMessage: "Required field"
+            })
+          ]),
           InputFieldRadio({
             id: "radioAccessible",
             name: "sharingType",
             label: span({}, ["Will the individual level data collected or generated as part of this project be shared via: *"]),
-            value: this.state.formData.sharingType,
+            value: this.props.securityInfoData.sharingType,
             optionLabels: [
               "An open/unrestricted repository (such as GEO)",
               "A controlled-access repository (such as dbGaP or DUOS)",
@@ -194,7 +190,7 @@ export const Security = hh(class Security extends Component {
             ],
             onChange: this.handleRadio2Change,
             required: true,
-            error: this.state.errors.sharingType && this.props.showErrorInfoSecurity,
+            error: this.state.errors.sharingType && this.props.generalError,
             errorMessage: "Required field"
           }),
 
@@ -203,13 +199,12 @@ export const Security = hh(class Security extends Component {
             id: "inputAccessible",
             name: "textSharingType",
             label: "Name of Database(s):",
-            value: this.state.formData.textSharingType,
+            value: this.props.securityInfoData.textSharingType,
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
           })
         ])
-      ])
     )
   }
 });

@@ -1,7 +1,10 @@
 package org.broadinstitute.orsp.api
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
+import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
@@ -12,8 +15,9 @@ import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.springframework.web.multipart.MultipartFile
 
-
+@Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ProjectController extends AuthenticatedController {
 
@@ -33,12 +37,33 @@ class ProjectController extends AuthenticatedController {
     }
 
     def save() {
-        Issue project = IssueUtils.getJson(Issue.class, request.JSON)
-        Issue issue = issueService.createIssue(IssueType.valueOfPrefix(project.type), project)
-        handleIntake(issue.projectKey)
-        persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
-        issue.status = 201
-        render([message: issue] as JSON)
+        List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+        User user = getUser()
+        String dataProject = request.parameterMap["dataProject"].toString()
+        JsonParser parser = new JsonParser()
+        JsonArray dataProjectJson = parser.parse(dataProject)
+        String projectKey
+        try {
+            Issue parsedIssue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
+            Issue issue = issueService.createIssue(IssueType.valueOfPrefix(parsedIssue.type), parsedIssue)
+            handleIntake(issue.projectKey)
+            persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
+            projectKey = issue.projectKey
+            if (!files?.isEmpty()) {
+                files.forEach {
+                    storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.name , it, null)
+                }
+            }
+            notifyService.projectCreation(issue)
+            issue.status = 201
+            render([message: issue] as JSON)
+        } catch (Exception e) {
+            issueService.deleteIssue(projectKey)
+            log.error("There was an error trying to create a project: " + e.message)
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+
     }
 
     def modifyExtraProperties() {
@@ -52,7 +77,6 @@ class ProjectController extends AuthenticatedController {
             response.status = 500
             render([error: e.message] as JSON)
         }
-
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
@@ -101,9 +125,8 @@ class ProjectController extends AuthenticatedController {
 
     def updateAdminOnlyProps() {
         Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
-        Issue issue = Issue.findByProjectKey(params.projectKey)
         try {
-            issueService.updateAdminOnlyProperties(issue, project)
+            issueService.updateAdminOnlyProperties(project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
