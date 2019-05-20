@@ -58,7 +58,7 @@
         <li><a href="#details">Broad Project Info</a></li>
         <li><b><a href="#documentsNew" style="color: blue">Documents New</a></b></li>
         <li><a href="#documents">Documents</a></li>
-        <li><a href="#consent-groups">Consent Groups</a></li>
+        <li><a href="#consent-groups">Sample/Data Cohort</a></li>
         <li><a href="#submissions">Submissions</a></li>
         <li><a href="#comments">Messages</a></li>
         <li><a href="#history">History</a></li>
