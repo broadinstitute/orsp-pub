@@ -3,6 +3,7 @@ import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button
 
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
+import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
 
 class InfoLink extends Component {
 
@@ -10,13 +11,16 @@ class InfoLink extends Component {
     super(props);
     this.state = {
       currentStepIndex: 0,
-      sampleCollections: ["ALGO"],
-      readOnly: false,
-      submit: false,
-      formData: {
+      sampleCollections: [],
+      currentStep: 0,
+      determination: {
+        projectType: null,
+        questions: [],
+        requiredError: false,
+        currentQuestionIndex: 0,
+        nextQuestionIndex: 1,
+        endState: false
       },
-      errors: {
-      }
     };
   }
 
@@ -27,7 +31,7 @@ class InfoLink extends Component {
   initData = () => {
     let sampleCollectionsIds = [];
     ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.serverURL).then( data => {
-      data.data.sampleCollections.map(val => sampleCollectionsIds.push(val.sampleCollectionId));
+      data.data.sampleCollections.map(sampleCollection => sampleCollectionsIds.push(sampleCollection));
       this.setState(prev => {
         prev.sampleCollections = sampleCollectionsIds;
         return prev;
@@ -35,19 +39,9 @@ class InfoLink extends Component {
     });
   };
 
-  goStep = (n) => (e) => {
-    e.preventDefault();
-    this.setState(prev => {
-      prev.currentStepIndex = n;
-      return prev;
-    }, () => {
-      this.props.stepChanged(this.state.currentStepIndex);
-    })
-  };
-
   render() {
 
-    const { currentStepIndex, sampleCollections } = this.state;
+    const { sampleCollections } = this.state;
     return (
       div({}, [
         a({ className: "breadcrumbLink" }, [
@@ -64,26 +58,14 @@ class InfoLink extends Component {
         div({ className: "tabContainer" }, [
           sampleCollections.map((child, idx) => {
             return h(Fragment, { key: idx }, [
-              Panel({ title: child }, [
-                div({
-                  className: "tabStep " + (idx === currentStepIndex ? "active" : ""),
-                  // onClick: this.goStep(idx)
-                }, [
-                  div({ className: "linkTab" }, [
-                    div({ className: "linkTabHeader" }, [
-                      div({ className: "tab active", onClick: this.goStep(0)}, ["International Cohorts"]),
-                      div({ className: "tab ", onClick: this.goStep(1)}, ["Security"]),
-                      div({ className: "tab ", onClick: this.goStep(2)}, ["MTA"]),
-                      div({ className: "tab ", onClick: this.goStep(3)}, ["Documents"])
-                    ]),
-                    div({ className: "linkTabContent" }, [
-                    ])
-                  ])
-                ])
-              ]),
+              Panel({ title: child.sampleCollectionId }, [ //complete name, first need to bring all its values
+                SampleCollectionWizard({
+                  sample: child,
+                })
+              ])
             ])
           })
-        ]),
+        ])
       ])
     )
   }

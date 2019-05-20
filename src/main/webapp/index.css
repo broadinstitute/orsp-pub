@@ -288,9 +288,9 @@ input[type=checkbox] {
   border-bottom: 1px dashed black;
 }
 
-.linkTabContent {}
-
-
+.linkTabContent {
+  padding: 20px;
+}
 
 .breadcrumbLink {
   display: block;

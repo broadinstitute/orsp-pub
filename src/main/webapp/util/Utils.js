@@ -36,3 +36,8 @@ export const createObjectCopy = (obj) => {
 export const compareNotEmptyObjects = (obj1, obj2) => {
   return !isEmpty(obj1) && !isEmpty(obj2) ? JSON.stringify(obj1) === JSON.stringify(obj2) : false;
 }
+
+export const capitalize = (string) => {
+  if (typeof string !== 'string') return '';
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}

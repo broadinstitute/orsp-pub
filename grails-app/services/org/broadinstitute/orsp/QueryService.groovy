@@ -334,6 +334,7 @@ class QueryService implements Status {
         final String query =
                 ' select * ' +
                         ' from consent_collection_link c ' +
+//                        ' inner join issue is on is.project_key = c.project_key' +
                         ' where c.project_key = :projectKey ' +
                         ' and c.consent_key = :consentKey '
         final sqlQuery = session.createSQLQuery(query)
@@ -345,6 +346,30 @@ class QueryService implements Status {
         }
         results as Collection<ConsentCollectionLink>
     }
+
+
+//    Collection<ConsentCollectionLink> COSO(String projectKey, String consentKey) {
+//        Issue project = findByKey(projectKey)
+//        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByProjectKey(projectKey)
+//        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
+//        Collection<DataUseRestriction> durs = new ArrayList<>()
+//        if (!links.collect { it.consentKey }.isEmpty()) {
+//            durs.addAll(DataUseRestriction.findAllByConsentGroupKeyInList(links.collect { it.consentKey }))
+//        }
+//
+//        links.each { link ->
+//            if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
+//                link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
+//            }
+//            link.setLinkedProject(project)
+//            link.setRestriction(durs.find { it.consentGroupKey == link.consentKey })
+//        }
+//        links
+//    }
+
+
+
+
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
         final session = sessionFactory.currentSession
