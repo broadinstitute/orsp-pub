@@ -25,13 +25,17 @@
                 (session.isOrsp && !issue.isFlagSet('supportAccepted'))}">
             <div></div>
         </g:if>
-        <g:render template="/base/actionConfirm"
+
+        <auth:isNotViewer>
+          <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'appSubmit'),
                           label: 'Submit Application to ORSP',
                           message: "Please ensure that all relevant documents have been uploaded " +
                                   "under the \"Documents\" tab. Press \"Submit to ORSP\" " +
                                   "if ready for review, or \"Cancel\" to return to your application.",
                           active: !issue.isFlagSet('appSubmitted')]}"/>
+        </auth:isNotViewer>
+
         <auth:isOrsp>
             <g:render template="/base/actionConfirm"
                       model="${[url: createLink(controller: 'irb', action: 'appModify'),

@@ -178,7 +178,9 @@
     </div>
 
     <div class="panel-footer">
+      <auth:isNotViewer>
         <a href="${createLink(controller: "dataUse", action: "edit", params: [id: restriction.id])}" class="btn btn-default">Edit</a>
+      </auth:isNotViewer>
     </div>
 
 </div>
