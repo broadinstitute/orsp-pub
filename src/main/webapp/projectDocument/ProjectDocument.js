@@ -129,7 +129,8 @@ class ProjectDocument extends Component {
           projectKey: this.props.projectKey,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           handleLoadDocuments: this.getAttachedDocuments,
-          removeDocumentUrl: this.props.removeDocumentUrl
+          removeDocumentUrl: this.props.removeDocumentUrl,
+          docsClarification: "Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such a consent forms or attestations, should be uploaded in the Sample/Data Cohort Info tab."
         }),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',

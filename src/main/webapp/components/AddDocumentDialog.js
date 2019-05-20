@@ -280,11 +280,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
           ]),
           h(ModalBody, { className: "dialogBody" }, [
-            p({
-              isRendered: this.props.instructionalText !== undefined,
-            }, [
-              this.props.instructionalText
-            ]),
             InputFieldSelect({
               label: "Type",
               id: "documentType",

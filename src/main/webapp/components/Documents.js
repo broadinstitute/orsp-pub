@@ -124,6 +124,7 @@ export const Documents = hh(class Documents extends Component {
         actionLabel: 'Yes'
       }, []),
       Panel({title: "Documents"}, [
+        p({ isRendered: this.props.docsClarification },[this.props.docsClarification]),
         button({
           className: "btn buttonSecondary",
           style: addDocumentBtn,
