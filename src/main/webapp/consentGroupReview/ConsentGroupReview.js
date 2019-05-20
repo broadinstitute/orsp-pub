@@ -844,7 +844,7 @@ class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.shouldShowThis('editInformation'), // this.state.readOnly === true //TODO
+          isRendered: this.shouldShowThis('editInformation'),
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -957,7 +957,7 @@ class ConsentGroupReview extends Component {
                 name: "startDate",
                 label: "Start Date",
                 onChange: this.handleChange,
-                readOnly: this.state.readOnly, 
+                readOnly: this.state.readOnly,
                 maxDate: this.state.formData.consentExtraProps.endDate !== null ? new Date(this.state.formData.consentExtraProps.endDate) : null,
                 error: this.state.errors.startDate,
                 errorMessage: "Required field",
@@ -995,7 +995,7 @@ class ConsentGroupReview extends Component {
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: instSources,
             readOnly: this.state.readOnly,
-            edit: true, //TODO
+            edit: true, 
             errorHandler: this.setInstitutionalError,
             institutionalNameErrorIndex: this.state.errors.institutionalNameErrorIndex,
             institutionalCountryErrorIndex: this.state.errors.institutionalCountryErrorIndex,
@@ -1012,7 +1012,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.shouldShowThis('editInformation'), // this.state.readOnly === true //TODO
+            isRendered: this.shouldShowThis('editInformation'),
           }, ["Edit Information"]),
 
           button({
