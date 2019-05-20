@@ -69,8 +69,11 @@
 
 .inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect div { 
   border-radius: 0;
-  color: black;
   font-size: 1.071rem;
+}
+
+.inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldSelect svg { 
+  color:black;
 }
 
 .inputField .inputFieldText:disabled, .inputField .inputFieldFile:disabled, .inputField .inputFieldTextarea:disabled, .inputField .inputFieldSelect:disabled .select__input {
