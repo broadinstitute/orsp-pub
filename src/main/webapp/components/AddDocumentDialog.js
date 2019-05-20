@@ -280,10 +280,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
           ]),
           h(ModalBody, { className: "dialogBody" }, [
-            p({}, [
-              "Please upload any documents related to your overall project, for example: IRB application form, protocol, " +
-              "Continuing Review form, etc. Documents related to a specific cohort, such a consent forms or attestations, " +
-              "should be uploaded in the Sample/Data Cohort Info tab."
+            p({
+              isRendered: this.props.instructionalText !== undefined,
+            }, [
+              this.props.instructionalText
             ]),
             InputFieldSelect({
               label: "Type",

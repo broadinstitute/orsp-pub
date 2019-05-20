@@ -22,6 +22,10 @@ const headers =
     { name: '', value: 'remove' }
   ];
 
+const instructionalText = "Please upload any documents related to your overall project, for example: " +
+  "IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, " +
+  "such a consent forms or attestations, should be uploaded in the Sample/Data Cohort Info tab.";
+
 export const NewProjectDocuments = hh(class NewProjectDocuments extends Component {
 
   constructor(props) {
@@ -127,7 +131,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               serverURL: this.props.serverURL,
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
-              documentHandler: this.setFilesToUpload
+              documentHandler: this.setFilesToUpload,
+              instructionalText: instructionalText,
             }),
             div({ style: styles.addDocumentContainer }, [
               button({
