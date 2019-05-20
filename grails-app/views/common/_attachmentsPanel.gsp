@@ -104,6 +104,7 @@ This template requires the following arguments:
                 <tfoot>
 
                 <tr class="text-right">
+                  <auth:isNotViewer>
                     <td colspan="5">
                         <g:if test="${!issue.isLocked() || session?.isOrsp}">
                             <button class="btn btn-default btn-sm" data-toggle="modal"
@@ -113,6 +114,7 @@ This template requires the following arguments:
                             <button disabled="disabled" class="btn btn-default btn-sm">Add Attachment</button>
                         </g:else>
                     </td>
+                  </auth:isNotViewer>
                 </tr>
                 </tfoot>
             </g:if>
