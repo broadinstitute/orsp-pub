@@ -21,21 +21,20 @@ class SampleConsentLinkController extends AuthenticatedController {
     def save() {
         JsonParser parser = new JsonParser()
         User user = getUser()
-        List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
         ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["dataConsentCollection"].toString())[0])
-
-        consentCollectionLink.creationDate = new Date()
         try {
+            consentCollectionLink.creationDate = new Date()
+            List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
             if (!files?.isEmpty()) {
                 files.forEach {
                     storageProviderService.saveMultipartFile(user.displayName, user.userName, null, it.name, it, consentCollectionLink)
                 }
             }
-
             response.status = 201
             render([message: consentCollectionLink] as JSON)
         } catch (Exception e) {
+            persistenceService.deleteCollectionLink(consentCollectionLink)
             flash.error = e.getMessage()
             response.status = 500
             render([error: e.getMessage()] as JSON)
