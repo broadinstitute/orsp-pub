@@ -127,7 +127,7 @@ export const Documents = hh(class Documents extends Component {
           className: "btn buttonSecondary",
           style: addDocumentBtn,
           onClick: this.addDocuments,
-          isRendered: false
+          isRendered: !this.props.user.isViewer,
         }, ["Add Document"]),
         Table({
           headers: headers,
