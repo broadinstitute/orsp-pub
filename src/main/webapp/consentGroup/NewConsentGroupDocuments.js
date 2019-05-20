@@ -1,10 +1,7 @@
 import { Component, Fragment } from 'react';
-import { WizardStep } from '../components/WizardStep';
 import { hh, h, h1, a, div, button } from 'react-hyperscript-helpers';
-import { InputFieldFile } from '../components/InputFieldFile';
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 
 const styles = {
@@ -84,7 +81,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
   loadOptions() {
     let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
+    CONSENT_DOCUMENTS.forEach(type => {
       documentOptions.push({ value: type, label: type });
     });
     this.setState({ documentOptions: documentOptions });

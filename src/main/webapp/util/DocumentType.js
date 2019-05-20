@@ -32,7 +32,7 @@ export const DOCUMENT_TYPE =[
   'Supplemental Document' 
 ];
 
-export const PROJECT_DOCUMENT = [
+export const PROJECT_DOCUMENTS = [
   'Amendment Form',
   'Appendix',
   'Application',
@@ -43,5 +43,18 @@ export const PROJECT_DOCUMENT = [
   'Protocol',
   'Response to Conditions',
   'Summary of Changes',
+  'Supplemental Document'
+];
+
+export const CONSENT_DOCUMENTS = [
+  'Approval Memo',
+  'Consent Document',
+  'Assent',
+  'Attestation',
+  'Waiver of Consent',
+  'Data Use Letter',
+  'IC pre-2015',
+  'IC post-2015',
+  'Other',
   'Supplemental Document'
 ];

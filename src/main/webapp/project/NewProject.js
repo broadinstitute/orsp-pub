@@ -3,7 +3,7 @@ import { Wizard } from '../components/Wizard';
 import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
-import { PROJECT_DOCUMENT } from '../util/DocumentType';
+import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from "../util/TypeDescription";
 import { Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
@@ -71,7 +71,7 @@ class NewProject extends Component {
 
   loadOptions() {
     let documentOptions = [];
-    PROJECT_DOCUMENT.forEach(type => {
+    PROJECT_DOCUMENTS.forEach(type => {
       documentOptions.push({ value: type, label: type });
     });
     this.setState({ documentOptions: documentOptions });
