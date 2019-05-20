@@ -2,12 +2,14 @@
 <g:set var="baseId" value="${new Random().nextInt(100)}"/>
 <div>
     <div class="pull-left btn-group-vertical">
+        <auth:isNotViewer>
         <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'supportSubmit'),
                           label: 'Submit Supporting Docs to ORSP',
                           message: 'If you have not already uploaded associated documents, please click \"Cancel\" below. ' +
                                   'You must upload documents under the \"Documents\" tab before submitting to ORSP for review.',
                           active: !issue.isFlagSet('supportSubmitted')]}"/>
+        </auth:isNotViewer>
         <auth:isOrsp>
             <g:render template="/base/actionConfirm"
                       model="${[url: createLink(controller: 'irb', action: 'supportModify'),
@@ -48,6 +50,7 @@
                               label: 'ORSP considers Application ready for submission',
                               active: issue.isFlagSet('appSubmitted') && !issue.isFlagSet(IssueExtraProperty.APP_ACCEPTED_FLAG)]}"/>
         </auth:isOrsp>
+        
         <g:if test="${!issue.isFlagSet('appSubmitted') ||
                 (session.isOrsp && !issue.isFlagSet(IssueExtraProperty.APP_ACCEPTED_FLAG))}">
             <div></div>
