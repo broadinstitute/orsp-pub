@@ -3,7 +3,7 @@ import { Documents } from '../components/Documents'
 import { DocumentHandler } from "../util/ajax";
 import { User } from "../util/ajax";
 import { ProjectKeyDocuments } from '../util/KeyDocuments';
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { PROJECT_DOCUMENT } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
@@ -102,7 +102,7 @@ class ProjectDocument extends Component {
 
   loadOptions () {
     let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
+    PROJECT_DOCUMENT.forEach(type => {
       documentOptions.push({value: type, label: type});
     });
     this.setState({documentOptions: documentOptions});

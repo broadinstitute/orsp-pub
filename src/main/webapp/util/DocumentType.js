@@ -31,3 +31,17 @@ export const DOCUMENT_TYPE =[
   'Summary of Changes',
   'Supplemental Document' 
 ];
+
+export const PROJECT_DOCUMENT = [
+  'Amendment Form',
+  'Appendix',
+  'Application',
+  'Approval Memo',
+  'Continuing Review',
+  'Other',
+  'Other Event',
+  'Protocol',
+  'Response to Conditions',
+  'Summary of Changes',
+  'Supplemental Document'
+];
