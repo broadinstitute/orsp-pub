@@ -127,11 +127,11 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         errorMessage: 'Please complete all required fields'
       }, [
         Panel({
-          title: "Select Sample/Data Cohort",
+          title: "Sample/Data Cohort",
         }, [
           InputFieldSelect({
             id: "consentGroup_select",
-            label: "Sample/Data Cohort",
+            label: "Select Sample/Data Cohort",
             isDisabled: false,
             options: this.props.existingConsentGroups,
             onChange: this.handleConsentGroupChange,
@@ -144,11 +144,11 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           }),
         ]),
         Panel({
-          title: "Select Sample Collection",
+          title: "Sample Collection",
         }, [
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Sample Collection",
+            label: "Link Sample Collection to " + this.props.projectKey,
             isDisabled: false,
             options: this.props.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,

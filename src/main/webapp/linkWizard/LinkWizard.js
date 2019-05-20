@@ -390,6 +390,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
           options: this.state.documentOptions,
+          projectKey: this.props.projectKey,
         }),
         LinkQuestions({
           title: "Security/MTA/International Info",
