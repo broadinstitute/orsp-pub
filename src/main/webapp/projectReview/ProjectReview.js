@@ -760,36 +760,6 @@ class ProjectReview extends Component {
     });
   };
 
-  shouldShowThis = (label) => {
-
-    let resp = false;
-    switch (label) {
-
-      case 'editInformation':
-        resp = this.state.readOnly === true && !this.isViewer();
-        break;
-
-      case 'addNewSampleDC':
-        resp = this.state.readOnly === true && !this.isViewer();
-        break;
-
-      case 'cancel':
-        resp = this.state.readOnly === false;
-        break;
-
-
-
-      case 'submitEdits':
-        /*visible for every user in edit mode and disabled until some edit has been made*/
-        resp = !this.isViewer() && this.state.readOnly === false;
-        break;
-
-      default:
-        resp = false;
-    }
-    return resp;
-  }
-
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
@@ -842,20 +812,20 @@ class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.shouldShowThis('editInformation')
+          isRendered: this.state.readOnly === true && !this.isViewer()
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToNewConsentGroup,
-          isRendered: this.shouldShowThis('addNewSampleDC')
+          isRendered: this.state.readOnly === true && !this.isViewer()
         }, ["Add Sample/Data Cohort"]),
 
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.cancelEdit(),
-          isRendered: this.shouldShowThis('cancel')
+          isRendered: this.state.readOnly === false
         }, ["Cancel"]),
 
         AlertMessage({
@@ -1170,7 +1140,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.shouldShowThis('editInformation')
+            isRendered: this.state.readOnly === true && !this.isViewer()
           }, ["Edit Information"]),
 
           button({
@@ -1186,7 +1156,7 @@ class ProjectReview extends Component {
             disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
-            isRendered: this.shouldShowThis('submitEdits')
+            isRendered: this.state.readOnly === false && !this.isViewer()
           }, ["Submit Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
