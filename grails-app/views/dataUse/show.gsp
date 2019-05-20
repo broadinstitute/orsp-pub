@@ -206,18 +206,17 @@
             </g:each>
         </ul>
 
+        <auth:isNotViewer>
         <div class="well">
-
             <g:set var="exported" value="${restriction.vaultConsentId != null}"/>
             <g:set var="exportOrUpdate" value="${exported ? 'Update' : 'Export'}"/>
-            <auth:isNotViewer>
+
               <p>
                 Export (or update) this consent to DUOS.
               </p>
               <a href="${createLink(controller: "dataUse", action: "exportConsent", params: [id: restriction.id])}" class="btn btn-default link-btn">${exportOrUpdate} Consent</a>
-            </auth:isNotViewer>
         </div>
-
+        </auth:isNotViewer>
     </div>
 
 </div>
