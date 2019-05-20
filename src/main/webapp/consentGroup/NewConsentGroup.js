@@ -282,6 +282,7 @@ class NewConsentGroup extends Component {
       prev.isConsentFormPresent = isConsentFormUploaded;
       if (isConsentFormUploaded) {
         prev.generalDataFormData.noConsentFormReason = '';
+        prev.errors.noConsentFormReason = false;
       }
       return prev;
     });

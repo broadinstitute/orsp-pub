@@ -206,7 +206,8 @@ class StorageProviderService implements Status {
                 uuid: UUID.randomUUID().toString(),
                 creator: displayName,
                 username: userName,
-                creationDate: new Date()
+                creationDate: new Date(),
+                status: DocumentStatus.PENDING
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             if (document.projectKey != null) {
