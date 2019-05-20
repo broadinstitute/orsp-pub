@@ -26,7 +26,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       },
       submitError: false,
       errors: {
-        sampleCollection: false,
         consentGroup: false,
         isValid: true,
         internationalCohortsError: {
@@ -225,7 +224,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     // consent group info
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
-    consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
+    if (this.state.sampleCollection !== undefined) {
+      consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
+    }
     consentCollectionLink.projectKey = this.props.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
@@ -282,22 +283,16 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   validateLinkStep = (field) => {
     let consentGroup = false;
-    let sampleCollection = false;
     let isValid = true;
 
     if (isEmpty(this.state.consentGroup)) {
       consentGroup = true;
       isValid = false;
     }
-    if (isEmpty(this.state.sampleCollection)) {
-      sampleCollection = true;
-      isValid = false;
-    }
 
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.consentGroup = consentGroup;
-        prev.errors.sampleCollection = sampleCollection;
         prev.errors.isValid = isValid;
         if (isValid) {
           prev.generalError = false;
@@ -306,12 +301,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       });
     }
 
-    else if (field === 'consentGroup' || field === 'sampleCollection') {
+    else if (field === 'consentGroup') {
       this.setState(prev => {
         if (field === 'consentGroup') {
           prev.errors.consentGroup = consentGroup;
-        } else if (field === 'sampleCollection') {
-          prev.errors.sampleCollection = sampleCollection;
         }
         return prev;
       });
