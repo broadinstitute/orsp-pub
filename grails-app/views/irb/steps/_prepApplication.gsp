@@ -48,9 +48,12 @@
                 (session.isOrsp && !issue.isFlagSet(IssueExtraProperty.APP_ACCEPTED_FLAG))}">
             <div></div>
         </g:if>
+             
+        <auth:isNotViewer>
         <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'abandon', params: [id: issue.projectKey]),
                           label: 'Withdraw Project', active: true]}"/>
+        </auth:isNotViewer>
     </div>
 
     <g:render template="/irb/steps/checkboxes"/>
