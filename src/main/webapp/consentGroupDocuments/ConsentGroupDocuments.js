@@ -1,8 +1,7 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
 import { DocumentHandler, User, ConsentGroup } from "../util/ajax";
-import { ConsentGroupKeyDocuments } from "../util/KeyDocuments";
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import '../index.css';
@@ -39,7 +38,7 @@ class ConsentGroupDocuments extends Component {
 
   loadOptions () {
     let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
+    CONSENT_DOCUMENTS.forEach(type => {
       documentOptions.push({value: type, label: type});
     });
     this.setState({documentOptions: documentOptions});
