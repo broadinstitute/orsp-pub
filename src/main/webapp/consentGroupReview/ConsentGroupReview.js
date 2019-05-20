@@ -751,35 +751,6 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  shouldShowThis = (label) => {
-
-    let resp = false;
-    switch (label) {
-
-      case 'editInformation':
-        resp = this.state.readOnly === true && !this.isViewer();
-        break;
-
-      case 'addNewSampleDC':
-        resp = this.state.readOnly === true && !this.isViewer();
-        break;
-
-      case 'cancel':
-        resp = this.state.readOnly === false;
-        break;
-
-      case 'submitEdits':
-        /*visible for every user in edit mode and disabled until some edit has been made*/
-        resp = !this.isViewer() && this.state.readOnly === false;
-        break;
-
-      default:
-        resp = false;
-    }
-    return resp;
-  }
-
-
   render() {
     const {
       consent = '',
@@ -844,7 +815,7 @@ class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.shouldShowThis('editInformation'),
+          isRendered: this.state.readOnly === true && !this.isViewer(),
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -1012,7 +983,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.shouldShowThis('editInformation'),
+            isRendered: this.state.readOnly === true && !this.isViewer(),
           }, ["Edit Information"]),
 
           button({
