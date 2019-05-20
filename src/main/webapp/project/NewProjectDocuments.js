@@ -117,7 +117,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         error: this.props.generalError || this.props.errors.attestation || this.props.submitError
       }, [
           div({ className: "questionnaireContainerLight" }, [
-            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such a consent forms or attestations, should be uploaded in the Sample/Data Cohort Info tab."]),
+            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."]),
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
