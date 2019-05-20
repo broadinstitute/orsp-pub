@@ -148,7 +148,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         }, [
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey,
+            label: "Link Sample Collection to " + this.props.projectKeyLabel,
             isDisabled: false,
             options: this.props.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,

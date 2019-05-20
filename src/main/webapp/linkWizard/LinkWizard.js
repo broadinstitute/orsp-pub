@@ -224,9 +224,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     // consent group info
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
-    if (this.state.sampleCollection !== undefined) {
-      consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
-    }
+    consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
     consentCollectionLink.projectKey = this.props.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
@@ -390,7 +388,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
           options: this.state.documentOptions,
-          projectKey: this.props.projectKey,
+          projectKeyLabel: this.props.projectKey,
         }),
         LinkQuestions({
           title: "Security/MTA/International Info",
