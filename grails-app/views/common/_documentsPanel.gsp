@@ -65,6 +65,7 @@ This template requires the following arguments:
         </div>
 
         <div class="pull-right" style="padding-bottom: 1em;">
+            <auth:isNotViewer>
             <g:if test="${!issue.isLocked() || session?.isOrsp}">
                 <button class="btn btn-default btn-sm" data-toggle="modal"
                         data-target="#upload-attachment">Add Document</button>
@@ -72,6 +73,7 @@ This template requires the following arguments:
             <g:else>
                 <button disabled="disabled" class="btn btn-default btn-sm">Add Document</button>
             </g:else>
+            </auth:isNotViewer>
         </div>
 
         <table class="table table-striped table-bordered" id="all-docs">
@@ -89,12 +91,14 @@ This template requires the following arguments:
             <g:each in="${storageDocuments}" var="doc">
                 <tr>
                     <td>
+                    <auth:isNotViewer>
                         <a
                             <auth:isNotOrsp>disabled="disabled"</auth:isNotOrsp>
                             class="btn btn-danger btn-sm link-btn"
                             onclick='document.location="${createLink(controller: controller, action: 'rmAttachment', params: [id: issue.projectKey, arg: doc.id, uuid: doc.uuid])}"'>
                             Delete
                         </a>
+                    </auth:isNotViewer>
                     </td>
                     <td>${doc.fileType}</td>
                     <td>

@@ -1,13 +1,10 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { InternationalCohorts } from '../components/InternationalCohorts';
-import { span, a } from 'react-hyperscript-helpers';
 import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
-import { Security } from '../components/Security';
 import { isEmpty } from "../util/Utils";
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 
 const LAST_STEP = 1;
@@ -282,6 +279,7 @@ class NewConsentGroup extends Component {
       prev.isConsentFormPresent = isConsentFormUploaded;
       if (isConsentFormUploaded) {
         prev.generalDataFormData.noConsentFormReason = '';
+        prev.errors.noConsentFormReason = false;
       }
       return prev;
     });
@@ -474,7 +472,7 @@ class NewConsentGroup extends Component {
 
   initDocuments() {
     let documents = [];
-    DOCUMENT_TYPE.forEach(type => {
+    CONSENT_DOCUMENTS.forEach(type => {
       documents.push({ value: type, label: type });
     });
     this.setState({

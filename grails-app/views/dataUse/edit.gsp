@@ -1,7 +1,11 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <title><g:if test="${create}">Create</g:if><g:else>Edit</g:else> Data Use Restrictions for ${consent.projectKey}: ${consent.summary}</title>
+    <title>
+      <auth:isNotViewer>
+        <g:if test="${create}">Create</g:if><g:else>Edit</g:else> Data Use Restrictions for ${consent.projectKey}: ${consent.summary}
+      </auth:isNotViewer>
+    </title>
     <style type="text/css">
     .clear-well {
         background-color: transparent;
@@ -13,7 +17,11 @@
     </style>
 </head>
 <body>
-    <h3><g:if test="${create}">Create</g:if><g:else>Edit</g:else> Data Use Restrictions for ${consent.projectKey}: ${consent.summary}</h3>
+    <h3>
+      <auth:isNotViewer>
+        <g:if test="${create}">Create</g:if><g:else>Edit</g:else> Data Use Restrictions for ${consent.projectKey}: ${consent.summary}
+      </auth:isNotViewer>
+    </h3>
 
     <g:form controller="dataUse" action="save" method="POST" role="form">
         <g:hiddenField name="create" value="${create}"/>
