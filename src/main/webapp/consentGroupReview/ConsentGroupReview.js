@@ -913,7 +913,7 @@ class ConsentGroupReview extends Component {
             currentValue: this.state.current.sampleCollections,
             placeholder: "Start typing a Sample Collection",
             isMulti: true,
-            readOnly: this.state.readOnly,
+            readOnly: true,
             edit: true
           }),
         ]),
