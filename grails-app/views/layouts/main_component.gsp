@@ -114,6 +114,7 @@
         attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
         consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
         consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
+        getConsentGroups: "${createLink(controller: 'consentGroup', action: 'getConsentGroups')}",
         createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consent-group', method: 'POST')}",
         createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
         error: "${error}",

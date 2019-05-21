@@ -13,10 +13,11 @@ module.exports = {
     dataUseLetter: './src/main/webapp/dataUseLetter/index.js',
     footer: './src/main/webapp/components/footer.js',
     infoLink: './src/main/webapp/infoLink/index.js',
+    linkWizard: './src/main/webapp/linkWizard/index.js',
     project: './src/main/webapp/project/index.js',
     projectDocument: './src/main/webapp/projectDocument/index.js',
     projectReview: './src/main/webapp/projectReview/index.js',
-    search: './src/main/webapp/search/index.js'
+    search: './src/main/webapp/search/index.js',
   },
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts/build'),

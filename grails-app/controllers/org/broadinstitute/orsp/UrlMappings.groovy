@@ -39,6 +39,7 @@ class UrlMappings {
         '/api/dataUseLetter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
+        '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
 
 
         // Custom Error handlers.

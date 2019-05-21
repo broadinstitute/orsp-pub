@@ -247,6 +247,22 @@ export const DataUse = {
 export const ProjectInfoLink = {
   getProjectSampleCollections(projectKey, consentkey, serverURL) {
     return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentkey);
-    // /api/infoLink
+  }
+};
+
+export const ConsentCollectionLink = {
+  create(serverUrl, dataConsentCollection, files) {
+    let data = new FormData();
+
+    files.forEach(file => {
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
+    });
+    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection))
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+    return axios.post(serverUrl + '/api/sample-consent-link', data, config);
   }
 };
