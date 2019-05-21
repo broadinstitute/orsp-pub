@@ -472,13 +472,13 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink) {
         Map<Boolean, String> result = new HashMap<>()
         Boolean sendEmail = false
-        if (getValue(issue.getPII()) == YES ||
-                getValue(issue.getCompliance()) == YES ||
-                getValue(issue.getCompliance()) == UNCERTAIN ||
-                issue.getSharingType() == TEXT_SHARING_OPEN || issue.getSharingType() == TEXT_SHARING_BOTH) {
+        if (getValue(consentCollectionLink.getPii()) == YES ||
+                getValue(consentCollectionLink.getCompliance()) == YES ||
+                getValue(consentCollectionLink.getCompliance()) == UNCERTAIN ||
+                consentCollectionLink.getSharingType() == TEXT_SHARING_OPEN || consentCollectionLink.getSharingType() == TEXT_SHARING_BOTH) {
             sendEmail = true
         }
         if (sendEmail) {
@@ -512,15 +512,6 @@ class NotifyService implements SendgridSupport, Status {
         else if (issue.getFeeForServiceWork() != null && Boolean.valueOf(issue.getFeeForServiceWork())){
             values.put(IssueExtraProperty.FEE_FOR_SERVICE, "true")
         }
-        else if (issue.areSamplesComingFromEEA() != null && !Boolean.valueOf(issue.areSamplesComingFromEEA())) {
-            values.put(IssueExtraProperty.ARE_SAMPLES_COMING_FROM_EEAA, "true")
-        }
-        else if (issue.isCollaboratorProvidingGoodService() != null && Boolean.valueOf(issue.isCollaboratorProvidingGoodService())) {
-            values.put(IssueExtraProperty.IS_COLLABORATOR_PROVIDING_GOOD_SERVICE, "true")
-        }
-        else if (issue.isConsentUnambiguous() != null && !Boolean.valueOf(issue.isConsentUnambiguous())) {
-            values.put(IssueExtraProperty.IS_CONSENT_UNAMBIGUOUS, "true")
-        }
 
         values.put('type', type)
 
@@ -541,10 +532,10 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
-    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user) {
+    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user, ConsentCollectionLink consentCollectionLink) {
         Map<Boolean, String> result = new HashMap<>()
 
-        if (Boolean.valueOf(issue.getMTA())) {
+        if (Boolean.valueOf(consentCollectionLink.requireMta)) {
             NotifyArguments arguments =
                     new NotifyArguments(
                             toAddresses: Collections.singletonList(getAgreementsRecipient()),
@@ -623,7 +614,7 @@ class NotifyService implements SendgridSupport, Status {
                 issue: issue,
                 user:  userService.findUser(issue.reporter)
         )
-      sendClosed(arguments)
+        sendClosed(arguments)
     }
 
     def sendProjectStatusNotification(String type, Issue issue) {
@@ -699,11 +690,11 @@ class NotifyService implements SendgridSupport, Status {
     }
 
 
-    Map<Boolean, String> consentGroupCreation(Issue issue) {
+    Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendRequirementsInfoConsentGroup(issue, user)
-        sendSecurityInfo(issue, user)
+        sendRequirementsInfoConsentGroup(issue, user, consentCollectionLink)
+        sendSecurityInfo(issue, user, consentCollectionLink)
     }
 
     Map<Boolean, String> projectCreation(Issue issue) {
@@ -719,6 +710,5 @@ class NotifyService implements SendgridSupport, Status {
                         user: user
                 )
         )
-        sendSecurityInfo(issue, user)
     }
 }

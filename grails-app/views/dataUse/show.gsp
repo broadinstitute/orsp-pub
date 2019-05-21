@@ -198,7 +198,9 @@
     </div>
 
     <div class="panel-footer">
+      <auth:isNotViewer>
         <a href="${createLink(controller: "dataUse", action: "edit", params: [id: restriction.id])}" class="btn btn-default">Edit</a>
+      </auth:isNotViewer>
     </div>
 
 </div>
@@ -224,15 +226,17 @@
             </g:each>
         </ul>
 
+        <auth:isNotViewer>
         <div class="well">
             <g:set var="exported" value="${restriction.vaultConsentId != null}"/>
             <g:set var="exportOrUpdate" value="${exported ? 'Update' : 'Export'}"/>
-            <p>
-                Export (or update) this consent to DUOS.
-            </p>
-            <a href="${createLink(controller: "dataUse", action: "exportConsent", params: [id: restriction.id])}" class="btn btn-default link-btn">${exportOrUpdate} Consent</a>
-        </div>
 
+              <p>
+                Export (or update) this consent to DUOS.
+              </p>
+              <a href="${createLink(controller: "dataUse", action: "exportConsent", params: [id: restriction.id])}" class="btn btn-default link-btn">${exportOrUpdate} Consent</a>
+        </div>
+        </auth:isNotViewer>
     </div>
 
 </div>

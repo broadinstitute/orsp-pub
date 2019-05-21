@@ -1,15 +1,12 @@
-import { Component, Fragment } from 'react';
-import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, a, div, button } from 'react-hyperscript-helpers';
-import { InputFieldFile } from '../components/InputFieldFile';
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { Component } from 'react';
+import { CONSENT_DOCUMENTS } from '../util/DocumentType';
+import { hh, h1, div, button, p } from 'react-hyperscript-helpers';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', marginTop: '15px'
+    display: 'block', height: '40px', margin: '5px 0 15px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -84,7 +81,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
 
   loadOptions() {
     let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
+    CONSENT_DOCUMENTS.forEach(type => {
       documentOptions.push({ value: type, label: type });
     });
     this.setState({ documentOptions: documentOptions });
@@ -100,17 +97,12 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     let documents = this.props.files;
     let errors = false;
     return (
-
-      WizardStep({
-        title: this.props.title, step: 1, currentStep: this.props.currentStep,
-        errorMessage: 'Please upload all required documents',
-        error: errors || this.props.generalError
-      }, [
-          div({ className: "questionnaireContainer" }, [
+          div({ className: "questionnaireContainerLight" }, [
+            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
-              options: this.props.options,
+              options: this.state.documentOptions,
               attachDocumentsUrl: this.props.attachDocumentsUrl,
               projectKey: this.props.projectKey,
               user: this.props.user,
@@ -138,7 +130,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               reviewFlow: false
             })
           ])
-        ])
     )
   }
 });

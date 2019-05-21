@@ -167,7 +167,7 @@ class ProjectReview extends Component {
         current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
-        current.piList = this.getUsersArray(issue.data.pis);
+          current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
@@ -198,7 +198,7 @@ class ProjectReview extends Component {
                 return prev;
               });
             } else {
-              formData =  JSON.parse(currentStr);
+              formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -232,8 +232,12 @@ class ProjectReview extends Component {
       });
   }
 
-  isAdmin() {
+  isAdmin = () => {
     return this.props.isAdmin === "true";
+  }
+  
+  isViewer = () => {
+    return this.props.isViewer === "true";
   }
 
   getUsersArray(array) {
@@ -380,7 +384,7 @@ class ProjectReview extends Component {
       project.editsApproved = true;
     }    
     if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
-      project.textSharingType= this.state.formData.projectExtraProps.textSharingType;
+      project.textSharingType = this.state.formData.projectExtraProps.textSharingType;
     } else {
       project.textSharingType = "";
     }
@@ -735,8 +739,10 @@ class ProjectReview extends Component {
       return prev;
     });
   };
-  redirectToNewConsentGroup = () => {
-    window.location.href = this.props.serverURL + '/api/consent-group?projectKey=' + this.props.projectKey;
+
+  redirectToConsentGroupTab = async () => {
+    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
+    window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -806,14 +812,14 @@ class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true
+          isRendered: this.state.readOnly === true && !this.isViewer()
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToNewConsentGroup,
-          isRendered: this.state.readOnly === true,
-        }, ["Add New Sample/Data Cohort"]),
+          isRendered: this.state.readOnly === true && !this.isViewer()
+        }, ["Add Sample/Data Cohort"]),
 
         button({
           className: "btn buttonSecondary floatRight",
@@ -1134,7 +1140,7 @@ class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true
+            isRendered: this.state.readOnly === true && !this.isViewer()
           }, ["Edit Information"]),
 
           button({
@@ -1150,7 +1156,7 @@ class ProjectReview extends Component {
             disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
-            isRendered: this.state.readOnly === false
+            isRendered: this.state.readOnly === false && !this.isViewer()
           }, ["Submit Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/

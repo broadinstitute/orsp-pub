@@ -2,23 +2,43 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet id="changelog-11.0-1" author="tadeork">
-        <addColumn tableName="data_use_restriction">
-            <column name="no_restriction" type="bit" defaultValue="null">
-                <constraints nullable="true" />
-            </column>
-            <column name="collaboration_investigators" type="bit" defaultValue="null">
-                <constraints nullable="true" />
-            </column>
-            <column name="publication_results" type="bit" defaultValue="null">
-                <constraints nullable="true" />
-            </column>
-            <column name="genomic_results" type="bit" defaultValue="null">
-                <constraints nullable="true" />
-            </column>
-            <column name="genomic_summary_results" type="TEXT" defaultValue="null">
-                <constraints nullable="true" />
-            </column>
+    <changeSet author="vvicario" id="changelog-11.0-1">
+        <addColumn tableName="consent_collection_link">
+            <column name="pii" type="VARCHAR(255)"/>
         </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="compliance" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="sharing_type" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="text_sharing_type" type="LONGTEXT"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="text_compliance" type="LONGTEXT"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="international_cohorts" type="LONGTEXT"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="require_mta" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="vvicario" id="changelog-11.0-2">
+        <addColumn tableName="storage_document">
+            <column name="consent_collection_link_id" type="BIGINT"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="consent_collection_link_id" baseTableName="storage_document"
+                                 constraintName="storagedocument_consent_collection_link_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="consent_collection_link"/>
+    </changeSet>
+
+    <changeSet author="vvicario" id="changelog-11.0-3">
+        <dropNotNullConstraint columnName="project_key"
+                               columnDataType="VARCHAR(255)"
+                               tableName="storage_document"/>
     </changeSet>
 </databaseChangeLog>

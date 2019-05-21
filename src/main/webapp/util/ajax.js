@@ -21,7 +21,7 @@ export const ConsentGroup = {
     return axios.get(url);
   },
 
-  create(url, dataProject, files, displayName, userName) {
+  create(url, dataProject, dataConsentCollection, files, displayName, userName) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -33,7 +33,7 @@ export const ConsentGroup = {
     data.append('displayName', displayName);
     data.append('userName', userName);
     data.append('dataProject', JSON.stringify(dataProject));
-
+    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection))
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };

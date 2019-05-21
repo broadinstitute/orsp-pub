@@ -2,8 +2,7 @@ import { Component, Fragment } from 'react';
 import { Documents } from '../components/Documents'
 import { DocumentHandler } from "../util/ajax";
 import { User } from "../util/ajax";
-import { ProjectKeyDocuments } from '../util/KeyDocuments';
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
@@ -102,7 +101,7 @@ class ProjectDocument extends Component {
 
   loadOptions () {
     let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
+    PROJECT_DOCUMENTS.forEach(type => {
       documentOptions.push({value: type, label: type});
     });
     this.setState({documentOptions: documentOptions});
@@ -129,7 +128,8 @@ class ProjectDocument extends Component {
           projectKey: this.props.projectKey,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           handleLoadDocuments: this.getAttachedDocuments,
-          removeDocumentUrl: this.props.removeDocumentUrl
+          removeDocumentUrl: this.props.removeDocumentUrl,
+          docsClarification: "Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."
         }),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',

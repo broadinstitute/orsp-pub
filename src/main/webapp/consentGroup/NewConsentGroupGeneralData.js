@@ -9,7 +9,7 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-
+import { NewConsentGroupDocuments } from './NewConsentGroupDocuments'
 
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
 
@@ -29,7 +29,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         institutionalSources: [{ name: '', country: '' }],
         startDate: null,
         endDate: null,
-        onGoingProcess: false
+        onGoingProcess: false,
+        noConsentFormReason: ''
       }
     };
   }
@@ -95,8 +96,9 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
   }
 
   handleSampleCollectionChange = () => (data) => {
+    let sampleCollections = [data];
     this.setState(prev => {
-      prev.formData.sampleCollections = data;
+      prev.formData.sampleCollections = sampleCollections;
       return prev;
     }, () => this.props.updateForm(this.state.formData, "sampleCollections"));
     this.props.removeErrorMessage();
@@ -141,7 +143,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.institutionalSourcesCountry ||
           this.props.errors.startDate ||
           this.props.errors.endDate ||
-          this.props.errors.onGoingProcess,
+          this.props.errors.onGoingProcess ||
+          this.props.errors.noConsentFormReason,
         errorMessage: 'Please complete all required fields'
       }, [
 
@@ -174,13 +177,13 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputConsentGroupName",
             name: "consentGroupName",
-            label: "Consent Group Name",
+            label: "Sample/Data Cohort Name",
             value: this.state.formData.investigatorLastName + " / " + this.state.formData.institutionProtocolNumber,
             disabled: true,
             required: false,
             onChange: null,
             error: this.props.errors.consentGroupName,
-            errorMessage: "There is already a Consent Group with this protocol number. Please choose a different one."
+            errorMessage: "There is already a Sample/Data Cohort with this protocol number. Please choose a different one."
           }),
 
           InputFieldText({
@@ -214,14 +217,15 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleSampleCollectionChange,
             value: this.state.formData.sampleCollections,
             placeholder: "Start typing a Sample Collection",
-            isMulti: true,
+            isMulti: false,
+            isClearable: true,
             edit: false
           }),
 
           InputFieldRadio({
             id: "radioDescribeConsentGroup",
             name: "describeConsentGroup",
-            label: "Please choose one of the following to describe this proposed Consent Group:* ",
+            label: "Please choose one of the following to describe this proposed Sample/Data Cohort:* ",
             moreInfo: "",
             value: this.state.formData.describeConsentGroup,
             optionValues: ["01", "02"],
@@ -285,25 +289,27 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             edit: false
           })
         ]),
-
-        InputFieldRadio({
-          id: "radioRequireMta",
-          name: "requireMta",
-          label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
-          moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
-          value: this.state.formData.requireMta,
-          onChange: this.handleRadio2Change,
-          optionValues: ["true", "false", "uncertain"],
-          optionLabels: [
-            "Yes, the provider does require an MTA/DTA.",
-            "No, the provider does not require an MTA/DTA.",
-            "Not sure"
-          ],
-          required: true,
-          error: this.props.errors.requireMta,
-          errorMessage: "Required field",
-          edit: false
-        })
+        Panel({ title: "Documents" }, [
+          NewConsentGroupDocuments({
+            fileHandler: this.props.fileHandler,
+            projectType: this.props.projectType,
+            options: this.props.documentOptions,
+            fillablePdfURL: this.props.fillablePdfURL,
+            files: this.props.files
+          }),
+          InputFieldText({
+            isRendered: !this.props.isConsentFormPresent,
+            id: "inputNoConsentFormReason",
+            name: "noConsentFormReason",
+            label: "If a Consent Form is not available, please describe the reason below",
+            value: this.state.formData.noConsentFormReason,
+            disabled: false,
+            required: true,
+            onChange: this.handleInputChange,
+            error: this.props.errors.noConsentFormReason,
+            errorMessage: "Required field"
+          }),
+        ])
       ])
     )
   }
