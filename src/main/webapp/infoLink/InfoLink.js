@@ -68,16 +68,16 @@ class InfoLink extends Component {
             onClick: () => window.open(this.redirectToProject(),"_self"),
             target: '_blank'}, [
           span({ className: "glyphicon glyphicon-chevron-left" }, []),
-          this.props.consentKey + " (" +this.state.consentName + ")"
+          this.props.consentKey + " : " +this.state.consentName
         ]),
         h2({ className: "pageTitle" }, [
           div({}, ["Sample Collections associated to"]),
-          div({ className: "italic normal" }, [this.props.projectKey + " (" +this.state.projectName + ")"])
+          div({ className: "italic normal" }, [this.props.projectKey + " : " +this.state.projectName])
         ]),
         div({ className: "tabContainer" }, [
           sampleCollections.map((child, idx) => {
             return h(Fragment, { key: idx }, [
-              Panel({ title: isEmpty(child.sampleCollectionId) ? "N/A" : child.sampleCollectionId + " (" + child.collectionName + ")" }, [
+              Panel({ title: isEmpty(child.sampleCollectionId) ? "N/A" : child.sampleCollectionId + " : " + child.collectionName }, [
                 SampleCollectionWizard({
                   sample: child,
                   documents: this.state.documents
