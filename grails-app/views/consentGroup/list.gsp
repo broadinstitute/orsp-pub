@@ -8,13 +8,18 @@
 
 <button class="btn btn-default" data-toggle="modal" data-target=".add-new-consent-modal">Add Consent Group</button>
 <a type="button" class="btn btn-default" style="color: blue" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
-<a type="button" class="btn btn-default" style="color: blue"
-    href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
-    Use existing Sample/Data Cohort</a>
 <button class="btn btn-default" data-toggle="modal" data-target=".use-existing-consent-modal">Use Existing Consent Group</button>
+ <auth:isNotViewer>
+   <button class="btn btn-default" data-toggle="modal" data-target=".add-new-consent-modal">Add Sample/Data Cohort</button>
+   <a type="button" class="btn btn-default" style="color: blue" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
+    <a type="button" class="btn btn-default" style="color: blue"
+        href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
+        Use existing Sample/Data Cohort</a>
+   <button class="btn btn-default" data-toggle="modal" data-target=".use-existing-consent-modal">Use Existing Consent Group</button>
+ </auth:isNotViewer>
 
 <g:if test="${consentGroups}">
-    <h3>Consent Groups</h3>
+    <h3>Sample/Data Cohort</h3>
 
     <div id="alert" class="alert alert-success" style="display:none;" >
         <p>Your Consent Group was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.</p>
@@ -29,12 +34,15 @@
                         <span class="consent-accordion-toggle btn btn-default"><i class="glyphicon glyphicon-chevron-down"></i></span>
                     </a>
                     <h3 class="panel-title">
-                        <a class="btn btn-default btn-sm" style="margin-right: 15px;"
-                           href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
-                            Unlink
-                        </a>
 
-                        Consent Group
+                        <auth:isNotViewer>
+                            <a class="btn btn-default btn-sm" style="margin-right: 15px;"
+                               href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
+                                Unlink
+                            </a>
+                        </auth:isNotViewer>
+
+                        Sample/Data Cohort
                         <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
                             ${consent.projectKey}: ${consent.summary}
                         </a>
@@ -81,6 +89,7 @@
 
                         <tfoot>
                         <tr class="text-right">
+                          <auth:isNotViewer>
                             <td colspan="5">
                                 <g:if test="${!issue.isLocked() || session?.isOrsp}">
                                     <button class="btn btn-default btn-sm modal-add-button"
@@ -93,6 +102,7 @@
                                     <button disabled="disabled" class="btn btn-default btn-sm">Add Attachment</button>
                                 </g:else>
                             </td>
+                          </auth:isNotViewer>
                         </tr>
                         </tfoot>
                     </table>

@@ -30,6 +30,7 @@ class ConsentGroupReview extends Component {
       requestClarification: false,
       readOnly: true,
       isAdmin: false,
+      isViewer: false,
       disableApproveButton: false,
       reviewSuggestion: false,
       submitted: false,
@@ -194,6 +195,10 @@ class ConsentGroupReview extends Component {
       }
     );
   };
+
+  isViewer = () => {
+    return this.props.isViewer === "true";
+  }
 
   parseInstSources(instSources) {
     let instSourcesArray = [];
@@ -810,7 +815,7 @@ class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true
+          isRendered: this.state.readOnly === true && !this.isViewer(),
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -938,8 +943,8 @@ class ConsentGroupReview extends Component {
                 name: "endDate",
                 label: "End Date",
                 onChange: this.handleChange,
-                disabled: onGoingProcess === true || onGoingProcess === "true",
-                readOnly: this.state.readOnly,
+                disabled: onGoingProcess === true || onGoingProcess === "true", 
+                readOnly: this.state.readOnly, 
                 error: this.state.errors.endDate,
                 errorMessage: "Required field",
               })
@@ -961,7 +966,7 @@ class ConsentGroupReview extends Component {
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: instSources,
             readOnly: this.state.readOnly,
-            edit: true,
+            edit: true, 
             errorHandler: this.setInstitutionalError,
             institutionalNameErrorIndex: this.state.errors.institutionalNameErrorIndex,
             institutionalCountryErrorIndex: this.state.errors.institutionalCountryErrorIndex,
@@ -978,7 +983,7 @@ class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true
+            isRendered: this.state.readOnly === true && !this.isViewer(),
           }, ["Edit Information"]),
 
           button({

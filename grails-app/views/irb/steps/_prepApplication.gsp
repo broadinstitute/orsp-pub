@@ -2,12 +2,14 @@
 <g:set var="baseId" value="${new Random().nextInt(100)}"/>
 <div>
     <div class="pull-left btn-group-vertical">
+        <auth:isNotViewer>
         <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'supportSubmit'),
                           label: 'Submit Supporting Docs to ORSP',
                           message: 'If you have not already uploaded associated documents, please click \"Cancel\" below. ' +
                                   'You must upload documents under the \"Documents\" tab before submitting to ORSP for review.',
                           active: !issue.isFlagSet('supportSubmitted')]}"/>
+        </auth:isNotViewer>
         <auth:isOrsp>
             <g:render template="/base/actionConfirm"
                       model="${[url: createLink(controller: 'irb', action: 'supportModify'),
@@ -25,13 +27,17 @@
                 (session.isOrsp && !issue.isFlagSet('supportAccepted'))}">
             <div></div>
         </g:if>
-        <g:render template="/base/actionConfirm"
+
+        <auth:isNotViewer>
+          <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'appSubmit'),
                           label: 'Submit Application to ORSP',
                           message: "Please ensure that all relevant documents have been uploaded " +
                                   "under the \"Documents\" tab. Press \"Submit to ORSP\" " +
                                   "if ready for review, or \"Cancel\" to return to your application.",
                           active: !issue.isFlagSet('appSubmitted')]}"/>
+        </auth:isNotViewer>
+
         <auth:isOrsp>
             <g:render template="/base/actionConfirm"
                       model="${[url: createLink(controller: 'irb', action: 'appModify'),
@@ -44,13 +50,17 @@
                               label: 'ORSP considers Application ready for submission',
                               active: issue.isFlagSet('appSubmitted') && !issue.isFlagSet(IssueExtraProperty.APP_ACCEPTED_FLAG)]}"/>
         </auth:isOrsp>
+        
         <g:if test="${!issue.isFlagSet('appSubmitted') ||
                 (session.isOrsp && !issue.isFlagSet(IssueExtraProperty.APP_ACCEPTED_FLAG))}">
             <div></div>
         </g:if>
+             
+        <auth:isNotViewer>
         <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'abandon', params: [id: issue.projectKey]),
                           label: 'Withdraw Project', active: true]}"/>
+        </auth:isNotViewer>
     </div>
 
     <g:render template="/irb/steps/checkboxes"/>

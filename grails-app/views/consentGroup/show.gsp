@@ -225,10 +225,11 @@
 
         </div>
 
+      <auth:isNotViewer>
         <a href="${createLink(action: 'edit', id: issue.projectKey, tab: 'details')}">
             <button class="btn btn-default link-btn" type="button">Edit</button>
         </a>
-
+      </auth:isNotViewer>
         %{--<a href="${createLink(action: 'print', id: issue.projectKey)}" target='_blank'>--}%
             %{--<button class="btn btn-default link-btn" type="button">Print</button>--}%
         %{--</a>--}%
