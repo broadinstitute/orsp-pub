@@ -4,7 +4,7 @@ import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
-import _ from 'lodash';
+import { isEmpty } from "../util/Utils";
 
 class InfoLink extends Component {
 
@@ -15,6 +15,8 @@ class InfoLink extends Component {
       documents: [],
       sampleCollections: [],
       currentStep: 0,
+      consentName: "",
+      projectName: "",
       determination: {
         projectType: null,
         questions: [],
@@ -40,31 +42,42 @@ class InfoLink extends Component {
         this.setState(prev => {
           prev.documents = JSON.parse(data.data.documents);
           prev.sampleCollections = sampleCollectionsIds;
+          prev.consentName = sampleCollectionsIds[0].consentName;
+          prev.projectName = sampleCollectionsIds[0].projectName;
           return prev;
         });
     });
   };
 
-  render() {
+  redirectToProject = () => {
+    let key = this.props.projectKey.split("-");
+    let projectType = '';
+    if (key.length === 3) {
+      projectType = key[1].toLowerCase();
+    } else {
+      projectType = key[0].toLowerCase();
+    }
+    return [this.props.serverURL, "/consentGroup/show", this.props.consentKey,"?projectKey=" + this.props.projectKey].join("/");
+  };
 
+  render() {
     const { sampleCollections } = this.state;
     return (
       div({}, [
-        a({ className: "breadcrumbLink" }, [
+        a({ className: "breadcrumbLink",
+            onClick: () => window.open(this.redirectToProject(),"_self"),
+            target: '_blank'}, [
           span({ className: "glyphicon glyphicon-chevron-left" }, []),
-          //replace with actual Sample/Data Cohort name
-          "DEV-CG-4355: Walter / Test"
+          this.props.consentKey + " (" +this.state.consentName + ")"
         ]),
         h2({ className: "pageTitle" }, [
           div({}, ["Sample Collections associated to"]),
-          //replace with actual Project name
-          div({ className: "italic normal" }, [this.props.projectKey])
+          div({ className: "italic normal" }, [this.props.projectKey + " (" +this.state.projectName + ")"])
         ]),
-        //replace with actual Sample Collection name
         div({ className: "tabContainer" }, [
           sampleCollections.map((child, idx) => {
             return h(Fragment, { key: idx }, [
-              Panel({ title: child.sampleCollectionId }, [ //complete name, first need to bring all its values
+              Panel({ title: isEmpty(child.sampleCollectionId) ? "N/A" : child.sampleCollectionId + " (" + child.collectionName + ")" }, [
                 SampleCollectionWizard({
                   sample: child,
                   documents: this.state.documents
