@@ -38,7 +38,7 @@ class InfoLink extends Component {
           sampleCollectionsIds.push(sampleCollection);
         });
         this.setState(prev => {
-          prev.documents = data.data.documents;
+          prev.documents = JSON.parse(data.data.documents);
           prev.sampleCollections = sampleCollectionsIds;
           return prev;
         });
