@@ -1,5 +1,5 @@
 import { Component, Fragment} from 'react';
-import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
+import { h, div, h2, label, span, a } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";

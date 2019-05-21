@@ -263,7 +263,6 @@ class QueryService implements Status {
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksByConsentKey(String consentKey) {
-//        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByConsentKey(consentKey).unique{it.projectKey}
         Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByConsentKey(consentKey)
         Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
         Collection<String> projectKeys = links.collect { it.projectKey }
@@ -342,11 +341,12 @@ class QueryService implements Status {
                         ' inner join issue ic on ic.project_key = c.consent_key ' +
                         ' inner join issue ip on ip.project_key = c.project_key ' +
                         ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                        ' where c.project_key = ' + '\'' + projectKey  + '\'' +
-                        ' and c.consent_key = '  + '\'' + consentKey + '\''
-
+                        ' where c.project_key = :projectKey' +
+                        ' and c.consent_key = :consentKey'
         List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
+                .setString('projectKey', projectKey)
+                .setString('consentKey', consentKey)
                 .list()
         results.collect {
             sampleInfo.put(it, StorageDocument.findAllByConsentCollectionLinkId(it.id))

@@ -245,8 +245,8 @@ export const DataUse = {
 };
 
 export const ProjectInfoLink = {
-  getProjectSampleCollections(projectKey, consentkey, serverURL) {
-    return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentkey);
+  getProjectSampleCollections(projectKey, consentKey, serverURL) {
+    return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentKey);
   }
 };
 

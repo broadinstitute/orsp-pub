@@ -1,8 +1,7 @@
 import { Component } from 'react';
-import { div, hh, h3, h, button, h1, p } from 'react-hyperscript-helpers';
+import { div, hh, label, span } from 'react-hyperscript-helpers';
 import { SecurityReview } from "./SecurityReview";
 import { IntCohortsReview } from "./IntCohortsReview";
-import { Mta } from "./Mta";
 import { isEmpty } from "../util/Utils";
 import { Documents } from "./Documents";
 import { Table } from "./Table";
@@ -27,7 +26,6 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
   }
 
   goStep = (n) => (e) => {
-    e.preventDefault();
     this.setState(prev => {
       prev.currentStepIndex = n;
       return prev;
@@ -44,6 +42,20 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     return parsedIntCohorts
   };
 
+  mtaStringAnswer = (current) => {
+    let answer = '';
+    if (current === 'true' || current === true) {
+      answer = "Yes, the provider does require an MTA/DTA.";
+    } else if (current === 'false' || current === false) {
+      answer = "No, the provider does not require an MTA/DTA.";
+    } else if (current === 'uncertain') {
+      answer = "Not sure.";
+    } else if (current === 'null' || current === null || isEmpty(current)) {
+      answer = '--';
+    }
+    return answer
+  };
+
   // Look for documents belonging to each corresponding sample
   parseDocuments = (documents) => {
     let parsedDocuments = [];
@@ -57,26 +69,38 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     return parsedDocuments
   };
 
-  documents(currentStepIndex, headers) {
+  buildMta = (currentStepIndex) => {
+    if (currentStepIndex === 2) {
+      return(
+        div({ className: "answerWrapper" }, [
+          label({}, [
+            span({}, ["Has the ",
+              span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
+            span({ className: "italic normal" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"])
+          ]),
+          div({}, [this.mtaStringAnswer(this.props.sample.requireMta)]),
+        ])
+      )
+    } else {
+      return ('')
+    }
+  };
+
+  buildDocumentsTable = (currentStepIndex, headers) => {
     if (currentStepIndex === 3) {
       return Table({
         headers: headers,
         data: this.parseDocuments(this.props.documents),
         sizePerPage: 10,
-        paginationSize: 10,
-        handleDialogConfirm: () => {},
-        downloadDocumentUrl: () => {},
-        remove: () => {},
-        reviewFlow: false
+        paginationSize: 10
       })
     } else {
       return "";
     }
-  }
+  };
 
   render() {
     const { currentStepIndex } = this.state;
-
     return (
       div({}, [
         div({ className: "linkTab" }, [
@@ -91,7 +115,6 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
               future: this.parseIntCohorts(this.props.sample.internationalCohorts),
               currentStep: currentStepIndex,
               determination: this.state.determination,
-              handler: () => {},
               step: 0,
               sample : this.props.sample
             }),
@@ -100,12 +123,8 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
               step: 1,
               sample : this.props.sample
             }),
-            Mta({
-              currentStep: currentStepIndex,
-              step: 2,
-              sample: this.props.sample
-            }),
-            this.documents(currentStepIndex, headers)
+            this.buildMta(currentStepIndex),
+            this.buildDocumentsTable(currentStepIndex, headers)
           ])
         ])
       ])
