@@ -363,13 +363,13 @@ class AuthenticatedController implements Interceptor, UserInfo {
             'userName': user.userName,
             'isAdmin': isAdmin(),
             'isORSP': isORSP(),
+            "isViewer": isViewer(),
             'isComplianceOffice': isComplianceOffice(),
-            'isReadOnlyAdmin': isReadOnlyAdmin(),
         ] as JSON)
     }
 
     def issueIsForbidden(issue) {
-        return permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isReadOnlyAdmin())
+        return permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isViewer())
     }
 
 }

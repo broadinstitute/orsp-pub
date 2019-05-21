@@ -5,6 +5,7 @@
         roles: '${session.roles}'.replace(/\s+/g, '').replace("[", "").replace("]", "").split(","),
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         isAdmin: "${session.isAdmin}",
+        isViewer: "${session.isViewer}",
         rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
         updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
         serverURL: "${webRequest.baseUrl}",

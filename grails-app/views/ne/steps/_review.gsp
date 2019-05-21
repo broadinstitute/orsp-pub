@@ -14,9 +14,13 @@
                               label: 'Accept and send to Compliance Officer',
                               active: true]}"/>
         </auth:isOrsp>
+
+        <auth:isNotViewer>
         <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: issue.controller, action: 'abandon'),
                           label: 'Withdraw Project', active: true]}"/>
+        </auth:isNotViewer>
+
     </div>
     <div class="clearfix"></div>
 </div>

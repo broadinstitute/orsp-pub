@@ -41,7 +41,7 @@ class AuthService implements UserInfo {
             session["isOrsp"] = SupplementalRole.isOrsp(roles)
             session["isComplianceOffice"] = SupplementalRole.isComplianceOffice(roles)
             session["isAdmin"] = SupplementalRole.isAdmin(roles)
-            session["isReadOnlyAdmin"] = SupplementalRole.isReadOnlyAdmin(roles)
+            session["isViewer"] = SupplementalRole.isViewer(roles)
             session["isBroad"] = true
         } else {
             // We don't have a valid Broad user in this case. Construct a non-Broad
@@ -57,8 +57,8 @@ class AuthService implements UserInfo {
             session["isOrsp"] = false
             session["isComplianceOffice"] = false
             session["isAdmin"] = false
+            session["isViewer"] = false
             session["isBroad"] = false
-            session["isReadOnlyAdmin"] = false
         }
         user
     }

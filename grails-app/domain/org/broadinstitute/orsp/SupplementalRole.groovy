@@ -34,8 +34,9 @@ class SupplementalRole {
         roles?.intersect(ADMIN_ROLES)?.size() > 0
     }
 
-    static boolean isReadOnlyAdmin(Collection<String> roles) {
+    static boolean isViewer(Collection<String> roles) {
         roles?.contains(READ_ONLY_ADMIN)
     }
+
 }
 

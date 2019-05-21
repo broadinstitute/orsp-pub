@@ -7,9 +7,12 @@
                               label: 'Application Signed',
                               active: true]}"/>
         </auth:isOrsp>
+        
+        <auth:isNotViewer>
         <g:render template="/base/actionConfirm"
                   model="${[url: createLink(controller: 'irb', action: 'abandon', params: [id: issue.projectKey]),
                           label: 'Withdraw Project', active: true]}"/>
+        </auth:isNotViewer>
     </div>
     <g:render template="/irb/steps/applicationCheckboxes"/>
     <div class="clearfix"></div>
