@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { hh, h1, span, a } from 'react-hyperscript-helpers';
-import { WizardStep } from './WizardStep';
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 import { DETERMINATION } from "../util/TypeDescription";
 
