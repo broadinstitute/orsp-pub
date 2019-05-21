@@ -25,14 +25,14 @@ class PermissionService implements UserInfo {
     }
 
     // verifies if logged user belongs to some user list ....
-    def issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isReadOnlyAdmin) {
+    def issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
 
         boolean userHasAccess = (issue.reporter == userName
                 || getIssueCollaborators(issue).indexOf(userName) >= 0
                 || getIssuePMs(issue).indexOf(userName) >= 0
                 || getIssuePIs(issue).indexOf(userName) >= 0
                 || isAdmin
-                || isReadOnlyAdmin)
+                || isViewer)
 
       !userHasAccess
     }

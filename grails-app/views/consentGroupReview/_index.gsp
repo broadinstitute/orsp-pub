@@ -3,6 +3,7 @@
       consentKey:'${issue.projectKey}',
       consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
       isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",
+      isViewer: "${session.isViewer}",
       sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
       rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
       projectKey: "${params.projectKey}",

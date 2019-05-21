@@ -67,20 +67,26 @@ export const Table = hh(class Table extends Component {
   };
 
   formatRemoveBtn = (cell, row) => {
-    return Btn({
+    let btn = this.props.isViewer ? null : 
+     Btn({
       action: {
         labelClass: "glyphicon glyphicon-remove",
         handler: this.props.remove(row)
       },
-    })
+    });
+
+    return btn;
   };
 
   unlinkProject = (row) => {
-    return button({
+    let btn = this.props.isViewer ? null : 
+    button({
       className: "btn btn-xs",
       onClick: this.props.unlinkProject(row),
       disabled: !this.props.isAdmin
-    }, ["Unlink"])
+    }, ["Unlink"]);
+
+    return btn;
   };
 
   redirectToProject = (cell, row) => {
