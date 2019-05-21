@@ -14,6 +14,7 @@ import org.hibernate.Criteria
 import org.hibernate.FetchMode
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
+import org.hibernate.transform.Transformers
 
 import javax.sql.DataSource
 import java.sql.SQLException
@@ -330,23 +331,23 @@ class QueryService implements Status {
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Map<ConsentCollectionLink, List<StorageDocument>> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
+    Map<ConsentCollectionLinkDTO, List<StorageDocument>> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
         Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
         final String query =
-                ' select * ' +
+                ' select c.id id, c.consent_key consentKey, c.project_key projectKey, c.pii pii, c.compliance compliance, c.text_sharing_type textSharingType,  ' +
+                        ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                        ' sc.name collectionName, ic.summary consentName, ip.summary projectName ' +
                         ' from consent_collection_link c ' +
-//                        ' inner join issue is on is.project_key = c.project_key' +
-                        ' where c.project_key = :projectKey ' +
-                        ' and c.consent_key = :consentKey '
-        final sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(ConsentCollectionLink)
-            setString('projectKey', projectKey)
-            setString('consentKey', consentKey)
-            list()
-        }
-        results as Collection<ConsentCollectionLink>
+                        ' inner join issue ic on ic.project_key = c.consent_key ' +
+                        ' inner join issue ip on ip.project_key = c.project_key ' +
+                        ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
+                        ' where c.project_key = ' + '\'' + projectKey  + '\'' +
+                        ' and c.consent_key = '  + '\'' + consentKey + '\''
+
+        List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
+                .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
+                .list()
         results.collect {
             sampleInfo.put(it, StorageDocument.findAllByConsentCollectionLinkId(it.id))
         }
@@ -1102,7 +1103,7 @@ class QueryService implements Status {
                         'from storage_document where doc_version = 0 and deleted = 0 ' +
                         'group by project_key, file_type  ' +
                         'order by project_key, file_type'
-
+// TODO
         getSqlConnection().rows(singleVersionDocQuery).each {
             HashMap<String, String> documentMap = new HashMap<>()
             documentMap.put('projectKey', it.get("project_key").toString())

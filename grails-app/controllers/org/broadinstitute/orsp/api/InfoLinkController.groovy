@@ -20,6 +20,7 @@ class InfoLinkController extends AuthenticatedController {
         try {
             Gson gson = new Gson()
             def result = queryService.findCollectionLinksByConsentKeyAndProjectKey(consentKey, projectKey)
+
             render ([ sampleCollections : gson.toJson(result.keySet()),
                       documents: gson.toJson(result.values())
             ] as JSON)
