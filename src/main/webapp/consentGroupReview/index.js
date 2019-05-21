@@ -9,6 +9,7 @@ ReactDOM.render(
         consentGroupUrl = {consentGroupReviewComponent.consentGroupUrl}
         approveConsentGroupUrl = {consentGroupReviewComponent.approveConsentGroupUrl}
         isAdminUrl = {consentGroupReviewComponent.isAdminUrl}
+        isViewer = {consentGroupReviewComponent.isViewer}
         sampleSearchUrl = {consentGroupReviewComponent.sampleSearchUrl}
         rejectConsentUrl = {consentGroupReviewComponent.rejectConsentUrl}
         updateConsentUrl = {consentGroupReviewComponent.updateConsentUrl}

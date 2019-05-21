@@ -131,7 +131,7 @@ class SearchController implements UserInfo {
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
         def rows = []
         def isAdmin = isAdmin()
-        def isReadOnlyAdmin = isReadOnlyAdmin()
+        def isViewer = isViewer()
         // Only query if we really have values to query for.
         if (options.projectKey ||
                 options.issueTypeNames ||
@@ -147,7 +147,7 @@ class SearchController implements UserInfo {
                         key: it.projectKey,
                         reporter: it.reporter,
                         extraProperties: it.extraProperties,
-                        linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isReadOnlyAdmin),
+                        linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
                         title: it.summary,
                         type: it.type,
                         status: it.status,

@@ -24,7 +24,7 @@ class IssueListController extends AuthenticatedController {
             users.add(SupplementalRole.COMPLIANCE_OFFICE)
         }
 
-        if (isReadOnlyAdmin()) {
+        if (isViewer()) {
             users.add(SupplementalRole.READ_ONLY_ADMIN)
         }
 

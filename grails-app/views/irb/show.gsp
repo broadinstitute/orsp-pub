@@ -114,9 +114,11 @@
                                                   extraProperties: extraProperties]"/>
 
         <g:form>
+          <auth:isNotViewer>
             <a href="${createLink(action: 'edit', id: issue.projectKey)}">
-                <button class="btn btn-default link-btn" type="button">Edit</button>
+              <button class="btn btn-default link-btn" type="button">Edit</button>
             </a>
+          </auth:isNotViewer>
         </g:form>
     </div>
 

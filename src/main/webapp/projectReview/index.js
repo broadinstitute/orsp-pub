@@ -11,6 +11,7 @@ ReactDOM.render(
     projectUrl = {projectReviewValues.projectUrl}
     addExtraPropUrl = {urls.saveExtraPropUrl}
     isAdmin = {projectReviewValues.isAdmin}
+    isViewer = {projectReviewValues.isViewer}
     serverURL = {projectReviewValues.serverURL}
     rejectProjectUrl = {projectReviewValues.rejectProjectUrl}
     updateProjectUrl = {projectReviewValues.updateProjectUrl}

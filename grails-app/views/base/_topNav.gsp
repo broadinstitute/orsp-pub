@@ -20,6 +20,8 @@
                     <li>
                         <a href="${createLink(controller: 'search', action: 'index')}">Search</a>
                     </li>
+
+                    <auth:isNotViewer>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -30,6 +32,8 @@
                             <li><a href="${createLink(controller: 'consentGroup', action: 'create')}">Consent Group</a></li>
                         </ul>
                     </li>
+                    </auth:isNotViewer>
+                    
                     <auth:isOrsp>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
