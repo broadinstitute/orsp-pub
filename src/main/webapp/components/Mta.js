@@ -7,11 +7,11 @@ export const Mta = hh(class Mta extends Component {
   stringAnswer = (current) => {
     let answer = '';
     if (current === 'true' || current === true) {
-      answer = 'Yes';
+      answer = "Yes, the provider does require an MTA/DTA.";
     } else if (current === 'false' || current === false) {
-      answer = 'No';
+      answer = "No, the provider does not require an MTA/DTA.";
     } else if (current === 'uncertain') {
-      answer = 'Uncertain';
+      answer = "Not sure.";
     } else if (current === 'null' || current === null || isEmpty(current)) {
       answer = '--';
     }

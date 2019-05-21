@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1, span, div, label, h3, button } from 'react-hyperscript-helpers';
+import { hh, h1, span, div, label, h3, button, a } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
 import get from 'lodash/get';
 
@@ -38,7 +38,8 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
       return(
         div({}, [
           div({ className: "answerWrapper" }, [
-            label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area?"]),
+            label({}, ["Are samples or individual-level data sourced from a country in the European Economic Area? ",
+              a({ href:"https://www.imf.org/external/pubs/ft/fandd/2014/03/europeaneconomicarea.htm", target: "_blank", className: "normal" }, "(List of member states of European Economic Area)")]),
             div({
             }, [this.stringAnswer(futureIndividualDataSourced)]),
           ]),
