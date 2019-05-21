@@ -129,7 +129,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               serverURL: this.props.serverURL,
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
-              documentHandler: this.setFilesToUpload,
+              documentHandler: this.setFilesToUpload
             }),
             div({ style: styles.addDocumentContainer }, [
               button({
