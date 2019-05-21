@@ -24,10 +24,10 @@ class InfoLinkController extends AuthenticatedController {
             render ([ sampleCollections : gson.toJson(result.keySet()),
                       documents: gson.toJson(result.values())
             ] as JSON)
-        } catch (Exception e){
-            render([]) // handle error here
+        }  catch (Exception e) {
+            log.error("There was an error trying to get consent collection info: " + e.message)
+            response.status = 500
+            render([error: e.message] as JSON)
         }
-
     }
-
 }
