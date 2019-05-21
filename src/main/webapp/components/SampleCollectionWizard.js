@@ -5,7 +5,15 @@ import { IntCohortsReview } from "./IntCohortsReview";
 import { Mta } from "./Mta";
 import { isEmpty } from "../util/Utils";
 import { Documents } from "./Documents";
+import _ from 'lodash';
+import { KeyDocumentsEnum } from "../util/KeyDocuments";
+import { Table } from "./Table";
 
+const headers =
+  [
+    { name: 'Document Type', value: 'fileKey' },
+    { name: 'File Name', value: 'fileName' }
+  ];
 
 export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Component {
   constructor(props) {
@@ -13,6 +21,13 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     this.state = {
       currentStepIndex: 0,
     };
+    this.findDocuments = this.findDocuments.bind(this);
+  }
+
+  componentDidMount() {
+    if (isEmpty(this.props.sample.id)) {
+      this.findDocuments(this.props.sample.id, this.props.documents)
+    }
   }
 
   componentDidCatch(error, info) {
@@ -27,6 +42,11 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
       return prev;
     })
   };
+  findDocuments(id, documents) {
+
+      this.setState({documents: _.find(documents, document => document.consentCollectionLinkId === id)})
+
+  }
 
   parseIntCohorts = (intCohorts) => {
     let parsedIntCohorts = {};
@@ -36,6 +56,16 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
       });
     }
     return parsedIntCohorts
+  };
+
+  parseDocuments = (documents) => {
+    let parsedDocuments = {};
+    if (!isEmpty(documents)) {
+      JSON.parse(documents).map(element => {
+        parsedDocuments[element.name] = element.value
+      });
+    }
+    return parsedDocuments
   };
 
   render() {
@@ -68,8 +98,18 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
               currentStep: currentStepIndex,
               step: 2,
               sample: this.props.sample
-            })
-          ]),
+            }),
+            // Table({
+            //   headers: headers,
+            //   data: this.parseDocuments(this.props.documents),
+            //   sizePerPage: 10,
+            //   paginationSize: 10,
+            //   handleDialogConfirm: () => {},
+            //   downloadDocumentUrl: () => {},
+            //   remove: () => {},
+            //   reviewFlow: false
+            // })
+          ])
         ])
       ])
     )

@@ -4,6 +4,7 @@ import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
+import _ from 'lodash';
 
 class InfoLink extends Component {
 
@@ -11,6 +12,7 @@ class InfoLink extends Component {
     super(props);
     this.state = {
       currentStepIndex: 0,
+      documents: [],
       sampleCollections: [],
       currentStep: 0,
       determination: {
@@ -30,12 +32,16 @@ class InfoLink extends Component {
 
   initData = () => {
     let sampleCollectionsIds = [];
-    ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.serverURL).then( data => {
-      data.data.sampleCollections.map(sampleCollection => sampleCollectionsIds.push(sampleCollection));
-      this.setState(prev => {
-        prev.sampleCollections = sampleCollectionsIds;
-        return prev;
-      })
+    ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.serverURL).then(
+      data => {
+        JSON.parse(data.data.sampleCollections).map(sampleCollection => {
+          sampleCollectionsIds.push(sampleCollection);
+        });
+        this.setState(prev => {
+          prev.documents = data.data.documents;
+          prev.sampleCollections = sampleCollectionsIds;
+          return prev;
+        });
     });
   };
 
@@ -61,6 +67,7 @@ class InfoLink extends Component {
               Panel({ title: child.sampleCollectionId }, [ //complete name, first need to bring all its values
                 SampleCollectionWizard({
                   sample: child,
+                  documents: this.state.documents
                 })
               ])
             ])

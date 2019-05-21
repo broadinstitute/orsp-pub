@@ -329,7 +329,9 @@ class QueryService implements Status {
         results as Collection<ConsentCollectionLink>
     }
 
-    Collection<ConsentCollectionLink> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Map<ConsentCollectionLink, List<StorageDocument>> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
+        Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
         final String query =
                 ' select * ' +
@@ -345,31 +347,11 @@ class QueryService implements Status {
             list()
         }
         results as Collection<ConsentCollectionLink>
+        results.collect {
+            sampleInfo.put(it, StorageDocument.findAllByConsentCollectionLinkId(it.id))
+        }
+        sampleInfo
     }
-
-
-//    Collection<ConsentCollectionLink> COSO(String projectKey, String consentKey) {
-//        Issue project = findByKey(projectKey)
-//        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllByProjectKey(projectKey)
-//        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
-//        Collection<DataUseRestriction> durs = new ArrayList<>()
-//        if (!links.collect { it.consentKey }.isEmpty()) {
-//            durs.addAll(DataUseRestriction.findAllByConsentGroupKeyInList(links.collect { it.consentKey }))
-//        }
-//
-//        links.each { link ->
-//            if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
-//                link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
-//            }
-//            link.setLinkedProject(project)
-//            link.setRestriction(durs.find { it.consentGroupKey == link.consentKey })
-//        }
-//        links
-//    }
-
-
-
-
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
         final session = sessionFactory.currentSession

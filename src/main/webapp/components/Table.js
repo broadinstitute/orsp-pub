@@ -101,7 +101,7 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
-
+    // console.log("PROPS DATA -> ", this.props.data);
     return (
       <BootstrapTable data={this.props.data}
         striped
