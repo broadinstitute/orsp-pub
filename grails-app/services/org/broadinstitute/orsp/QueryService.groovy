@@ -1103,7 +1103,6 @@ class QueryService implements Status {
                         'from storage_document where doc_version = 0 and deleted = 0 ' +
                         'group by project_key, file_type  ' +
                         'order by project_key, file_type'
-// TODO
         getSqlConnection().rows(singleVersionDocQuery).each {
             HashMap<String, String> documentMap = new HashMap<>()
             documentMap.put('projectKey', it.get("project_key").toString())
