@@ -54,6 +54,8 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       showErrorInfoSecurity: false,
       isInfoSecurityValid: false,
       securityInfoFormData: {},
+      consentGroupIsLoading: false,
+      sampleCollectionIsLoading: false,
     }
   }
 
@@ -76,6 +78,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   getAllSampleCollections = () => {
+    this.setState({ sampleCollectionIsLoading: true });
     SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
       resp => {
         const sampleCollectionsList = resp.data.map(item => {
@@ -85,12 +88,16 @@ export const LinkWizard = hh( class LinkWizard extends Component {
             label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
           };
         });
-        this.setState({ sampleCollectionList: sampleCollectionsList })
+        this.setState({
+          sampleCollectionList: sampleCollectionsList,
+          sampleCollectionIsLoading: false
+        })
       }
     );
   };
 
   getConsentGroups = () => {
+    this.setState({ consentGroupIsLoading: true });
     ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
       resp => {
         const existingConsentGroups = resp.data.map(item => {
@@ -100,7 +107,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
             label: item.label
           }
         });
-        this.setState({ existingConsentGroups: existingConsentGroups });
+        this.setState({
+          existingConsentGroups: existingConsentGroups,
+          consentGroupIsLoading: false
+        });
       });
   };
 
@@ -388,6 +398,8 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           updateForm: this.updateGeneralForm,
           options: this.state.documentOptions,
           projectKeyLabel: this.props.projectKey,
+          consentGroupIsLoading: this.state.consentGroupIsLoading,
+          sampleCollectionIsLoading: this.state.sampleCollectionIsLoading,
         }),
         LinkQuestions({
           title: "Security/MTA/International Info",

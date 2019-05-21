@@ -140,7 +140,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             error: this.props.errors.consentGroup,
             errorMessage: "Please select a Sample/Data Cohort",
             isMulti: false,
-            edit: false
+            edit: false,
+            isLoading: this.props.consentGroupIsLoading,
           }),
         ]),
         Panel({
@@ -156,6 +157,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             placeholder: "Select...",
             isMulti: false,
             edit: false,
+            isLoading: this.props.sampleCollectionIsLoading,
           }),
         ]),
         Panel({
