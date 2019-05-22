@@ -817,7 +817,7 @@ class ProjectReview extends Component {
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
-          onClick: this.redirectToNewConsentGroup,
+          onClick: this.redirectToConsentGroupTab,
           isRendered: this.state.readOnly === true && !this.isViewer()
         }, ["Add Sample/Data Cohort"]),
 

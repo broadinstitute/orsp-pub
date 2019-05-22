@@ -525,7 +525,7 @@ class NewConsentGroup extends Component {
         loadingImage: this.props.loadingImage
       }, [
           NewConsentGroupGeneralData({
-            title: "Data/Sample Cohort Info",
+            title: "Sample/Data Cohort Info",
             currentStep: currentStep,
             user: this.state.user,
             sampleSearchUrl: this.props.sampleSearchUrl,
@@ -542,7 +542,7 @@ class NewConsentGroup extends Component {
             isConsentFormPresent: this.state.isConsentFormPresent
           }),
           NewLinkCohortData({
-            title: "Security, International Cohort and MTA",
+            title: "Security/MTA/International Info",
             currentStep: currentStep,
             handler: this.determinationHandler,
             determination: this.state.determination,
