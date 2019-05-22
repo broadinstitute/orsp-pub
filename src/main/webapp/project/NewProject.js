@@ -65,7 +65,9 @@ class NewProject extends Component {
   componentDidMount() {
     User.getUserSession(this.props.getUserUrl).then(resp =>
       this.setState({ user: resp.data })
-    );
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
     this.loadOptions();
   }
 
@@ -94,10 +96,7 @@ class NewProject extends Component {
             window.location.href = [this.props.serverURL, projectType, "show", resp.data.message.projectKey, "?tab=review&new"].join("/");
           })
         }).catch(error => {
-          this.changeStateSubmitButton();
-          this.toggleTrueSubmitError();
-          spinnerService.hideAll();
-          console.error(error);
+          this.setState(() => { throw error; });
       });
     } else {
       this.setState(prev => {
@@ -341,11 +340,6 @@ class NewProject extends Component {
       return prev;
     });
   };
-
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
 
   fileHandler = (docs) => {
     this.setState({

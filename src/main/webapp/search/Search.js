@@ -156,6 +156,8 @@ class Search extends React.Component {
         loaded: true
       }));
       this.saveStateToLocalStorage();
+    }).catch(error => {
+      this.setState(() => { throw error; });
     });
   }
 
