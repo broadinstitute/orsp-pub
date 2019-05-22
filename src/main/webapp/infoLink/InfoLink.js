@@ -50,13 +50,6 @@ class InfoLink extends Component {
   };
 
   redirectToProject = () => {
-    let key = this.props.projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
     return [this.props.serverURL, "/consentGroup/show", this.props.consentKey,"?projectKey=" + this.props.projectKey].join("/");
   };
 

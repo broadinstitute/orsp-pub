@@ -5,6 +5,8 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionLinkDTO
+import org.broadinstitute.orsp.StorageDocument
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -19,8 +21,7 @@ class InfoLinkController extends AuthenticatedController {
         String projectKey = params.projectKey
         try {
             Gson gson = new Gson()
-            def result = queryService.findCollectionLinksByConsentKeyAndProjectKey(consentKey, projectKey)
-
+            Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findCollectionLinksByConsentKeyAndProjectKey(consentKey, projectKey)
             render ([ sampleCollections : gson.toJson(result.keySet()),
                       documents: gson.toJson(result.values())
             ] as JSON)

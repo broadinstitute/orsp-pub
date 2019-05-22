@@ -333,6 +333,8 @@ class QueryService implements Status {
     Map<ConsentCollectionLinkDTO, List<StorageDocument>> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
         Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
+        List <ConsentCollectionLink> consentCollectionLinkList = new ArrayList<>()
+        List <BigInteger> consentCollectionIds = new ArrayList<>()
         final String query =
                 ' select c.id id, c.consent_key consentKey, c.project_key projectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
                         ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
@@ -349,9 +351,33 @@ class QueryService implements Status {
                 .setString('consentKey', consentKey)
                 .list()
         results.collect {
-            sampleInfo.put(it, StorageDocument.findAllByConsentCollectionLinkId(it.id))
+            consentCollectionIds.add(it.id)
+            consentCollectionLinkList.add(it)
+        }
+        List <StorageDocument> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
+        consentCollectionLinkList.collect {
+            sampleInfo.put(it,
+                    storageDocuments.findAll{
+                    doc -> doc.consentCollectionLinkId == it.id
+                }
+            )
         }
         sampleInfo
+    }
+
+    List <StorageDocument> findAllDocumentsBySampleCollectionId(List <Integer> consentCollectionIds) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                ' from storage_document ' +
+                ' where consent_collection_link_id in :consentCollectionIds '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameterList('consentCollectionIds', consentCollectionIds)
+            list()
+        }
+        results
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {

@@ -1,4 +1,5 @@
 package org.broadinstitute.orsp
+import org.broadinstitute.orsp.IssueType
 
 class ConsentCollectionLinkDTO {
 
