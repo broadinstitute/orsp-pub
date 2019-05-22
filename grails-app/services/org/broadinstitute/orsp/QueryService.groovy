@@ -354,18 +354,15 @@ class QueryService implements Status {
             consentCollectionIds.add(it.id)
             consentCollectionLinkList.add(it)
         }
-        List <StorageDocument> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
-        consentCollectionLinkList.collect {
-            sampleInfo.put(it,
-                    storageDocuments.findAll{
-                    doc -> doc.consentCollectionLinkId == it.id
-                }
-            )
+        Map<BigInteger, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
+        consentCollectionLinkList.each {
+            sampleInfo.put(it, storageDocuments.get(it.id))
         }
         sampleInfo
     }
 
-    List <StorageDocument> findAllDocumentsBySampleCollectionId(List <Integer> consentCollectionIds) {
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Map<BigInteger, List <StorageDocument>> findAllDocumentsBySampleCollectionId(List <Integer> consentCollectionIds) {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * ' +
@@ -377,7 +374,7 @@ class QueryService implements Status {
             setParameterList('consentCollectionIds', consentCollectionIds)
             list()
         }
-        results
+        results.groupBy { it.consentCollectionLinkId as BigInteger }
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
