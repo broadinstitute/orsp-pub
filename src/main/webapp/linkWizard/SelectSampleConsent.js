@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, button, div } from 'react-hyperscript-helpers';
+import { hh, button, div, p } from 'react-hyperscript-helpers';
 import { WizardStep } from "../components/WizardStep";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { Panel } from '../components/Panel';
@@ -164,6 +164,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           title: "Documents"
         }, [
           div({ className: "questionnaireContainer" }, [
+            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
