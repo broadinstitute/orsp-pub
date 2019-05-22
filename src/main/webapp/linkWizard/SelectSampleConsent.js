@@ -9,7 +9,7 @@ import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', marginTop: '15px'
+    display: 'block', height: '40px', margin: '5px 0 15px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -163,7 +163,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         Panel({
           title: "Documents"
         }, [
-          div({ className: "questionnaireContainer" }, [
+          div({ className: "questionnaireContainerLight" }, [
             p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             AddDocumentDialog({
               closeModal: this.closeModal,
@@ -180,7 +180,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             }),
             div({ style: styles.addDocumentContainer }, [
               button({
-                className: "btn buttonPrimary",
+                className: "btn buttonSecondary",
                 style: styles.addDocumentBtn,
                 onClick: this.addDocuments
               }, ["Add Document"])
