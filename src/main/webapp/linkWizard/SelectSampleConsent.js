@@ -1,11 +1,11 @@
 import { Component } from 'react';
-import { hh, h1, p, button, div } from 'react-hyperscript-helpers';
+import { hh, button, div } from 'react-hyperscript-helpers';
 import { WizardStep } from "../components/WizardStep";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 
 const styles = {
   addDocumentContainer: {
@@ -109,7 +109,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   loadOptions() {
     let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
+    CONSENT_DOCUMENTS.forEach(type => {
       documentOptions.push({ value: type, label: type });
     });
     this.setState({ documentOptions: documentOptions });
@@ -167,7 +167,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
-              options: this.props.options,
+              options: this.state.documentOptions,
               attachDocumentsUrl: this.props.attachDocumentsUrl,
               projectKey: this.props.projectKey,
               user: this.props.user,
