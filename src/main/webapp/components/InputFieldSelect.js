@@ -58,6 +58,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   };
 
   render() {
+    const { isLoading = false, placeholder = '' } = this.props;
     let edited = false;
     let currentValueStr;
     let currentValue;
@@ -118,7 +119,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isDisabled: this.props.readOnly,
               isMulti: this.props.isMulti,
               isClearable: this.props.isClearable,
-              isLoading: this.props.isLoading,
+              isLoading: isLoading,
             })
           ])
         ])
