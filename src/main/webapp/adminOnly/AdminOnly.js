@@ -75,7 +75,9 @@ class AdminOnly extends Component {
           prev.initial = initial;
           return prev;
         })
-      })
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
   };
 
   isCurrentUserAdmin() {
