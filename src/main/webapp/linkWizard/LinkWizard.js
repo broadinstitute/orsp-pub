@@ -4,7 +4,6 @@ import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
 import { LinkQuestions } from "./LinkQuestions";
 import { User, ConsentGroup, SampleCollections } from "../util/ajax";
-import { DOCUMENT_TYPE } from '../util/DocumentType';
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
 import '../index.css';
@@ -71,7 +70,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   componentDidMount() {
-    this.initDocuments();
     this.getUserSession();
     this.getConsentGroups();
   }
@@ -143,17 +141,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     User.getUserSession(this.props.getUserUrl).then(
       resp => this.setState({ user: resp.data })
     )
-  }
-
-  initDocuments() {
-    let documents = [];
-    DOCUMENT_TYPE.forEach(type => {
-      documents.push({ value: type, label: type });
-    });
-
-    this.setState({
-      documentOptions: documents
-    });
   }
 
   changeSubmitState = () => {
@@ -424,7 +411,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           existingConsentGroups: this.state.existingConsentGroups,
           consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
-          options: this.state.documentOptions,
           projectKeyLabel: this.props.projectKey,
           consentGroupIsLoading: this.state.consentGroupIsLoading,
           sampleCollectionIsLoading: this.state.sampleCollectionIsLoading,
