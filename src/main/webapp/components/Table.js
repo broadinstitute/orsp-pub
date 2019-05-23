@@ -97,9 +97,16 @@ export const Table = hh(class Table extends Component {
     }, [row.projectKey + ": " + row.summary])
   };
 
+  redirectToInfoLink = (cell, row) => {
+    const url = this.props.handleRedirectToInfoLink(row.projectKey);
+    return a({
+      href: url,
+      target: '_blank'
+    }, ["Info Link"])
+  };
+
   render() {
     let isKey = false;
-
     return (
       <BootstrapTable data={this.props.data}
         striped
@@ -136,6 +143,12 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.redirectToProject}
+                dataSort={ true }>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'infoLink') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataFormat={this.redirectToInfoLink}
                 dataSort={ true }>{header.name}</TableHeaderColumn>
             } else if (header.value === 'creationDate') {
               return <TableHeaderColumn isKey={isKey}
