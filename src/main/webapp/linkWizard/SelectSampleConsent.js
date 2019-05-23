@@ -158,7 +158,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isMulti: false,
             edit: false,
             isLoading: this.props.sampleCollectionIsLoading,
-            styles: this.stylesSelect,
           }),
         ]),
         Panel({
