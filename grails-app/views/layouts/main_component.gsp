@@ -133,6 +133,8 @@
         serverURL: "${webRequest.baseUrl}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
+        unConsentedSampleCollections: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+        getConsentGroupSampleCollections: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
       };
     </script>
 

@@ -74,20 +74,43 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     this.initDocuments();
     this.getUserSession();
     this.getConsentGroups();
-    this.getAllSampleCollections();
   }
 
-  getAllSampleCollections = () => {
+  getAllSampleCollections = (consentKey) => {
     this.setState({ sampleCollectionIsLoading: true });
-    SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
+
+    SampleCollections.getCollectionsCGLinked(this.props.getConsentGroupSampleCollections, consentKey).then(
       resp => {
-        const sampleCollectionsList = resp.data.map(item => {
+        const sampleCollectionsList = [];
+        sampleCollectionsList.push({label: "Sample Collections Linked to " + consentKey, options: []});
+
+        sampleCollectionsList[0].options = resp.data.map(item => {
           return {
             key: item.id,
             value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
           };
         });
+
+        this.setState({
+          sampleCollectionList: sampleCollectionsList,
+          sampleCollectionIsLoading: false
+        })
+      }
+    );
+
+    SampleCollections.getSampleCollections(this.props.unConsentedSampleCollections, consentKey).then(
+      resp => {
+        const sampleCollectionsList = this.state.sampleCollectionList.splice(0);
+        sampleCollectionsList.push({label: "Link New Sample Collections to Sample Data/Cohort: " + consentKey, options: []});
+        sampleCollectionsList[1].options = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.collectionId,
+            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
+          };
+        });
+
         this.setState({
           sampleCollectionList: sampleCollectionsList,
           sampleCollectionIsLoading: false
@@ -107,11 +130,13 @@ export const LinkWizard = hh( class LinkWizard extends Component {
             label: item.label
           }
         });
+
         this.setState({
           existingConsentGroups: existingConsentGroups,
           consentGroupIsLoading: false
         });
-      });
+      }
+    );
   };
 
   getUserSession() {
@@ -356,6 +381,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   updateGeneralForm = (updatedForm, field) => {
+    if (field === "consentGroup") {
+      this.getAllSampleCollections(updatedForm.key);
+    }
     if (this.state.currentStep === 0) {
       this.validateLinkStep(field);
     }

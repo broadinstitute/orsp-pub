@@ -12,6 +12,8 @@ ReactDOM.render(
     serverURL = {component.serverURL}
     getUserUrl = {component.getUserUrl}
     projectKey = {component.projectKey}
+    unConsentedSampleCollections = {component.unConsentedSampleCollections}
+    getConsentGroupSampleCollections = {component.getConsentGroupSampleCollections}
   />,
   document.getElementById('linkWizard')
 );
