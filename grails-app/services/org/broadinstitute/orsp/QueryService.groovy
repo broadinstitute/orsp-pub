@@ -8,12 +8,12 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
-import org.broadinstitute.orsp.ConsentGroupExtraProperties
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
+import org.hibernate.transform.Transformers
 
 import javax.sql.DataSource
 import java.sql.SQLException
@@ -326,6 +326,54 @@ class QueryService implements Status {
             list()
         }
         results as Collection<ConsentCollectionLink>
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Map<ConsentCollectionLinkDTO, List<StorageDocument>> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
+        Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
+        final session = sessionFactory.currentSession
+        List <ConsentCollectionLink> consentCollectionLinkList = new ArrayList<>()
+        List <Long> consentCollectionIds = new ArrayList<>()
+        final String query =
+                ' select c.id id, c.consent_key consentKey, c.project_key projectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
+                        ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                        ' sc.name collectionName, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts ' +
+                        ' from consent_collection_link c ' +
+                        ' inner join issue ic on ic.project_key = c.consent_key ' +
+                        ' inner join issue ip on ip.project_key = c.project_key ' +
+                        ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
+                        ' where c.project_key = :projectKey' +
+                        ' and c.consent_key = :consentKey'
+        List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
+                .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
+                .setString('projectKey', projectKey)
+                .setString('consentKey', consentKey)
+                .list()
+        results.collect {
+            consentCollectionIds.add(it.id)
+            consentCollectionLinkList.add(it)
+        }
+        Map<Long, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
+        consentCollectionLinkList.each {
+            sampleInfo.put(it, storageDocuments.getOrDefault(it.id, []))
+        }
+        sampleInfo
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Map<Long, List <StorageDocument>> findAllDocumentsBySampleCollectionId(List <Long> consentCollectionIds) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                ' from storage_document ' +
+                ' where consent_collection_link_id in :consentCollectionIds '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameterList('consentCollectionIds', consentCollectionIds)
+            list()
+        }
+        results.groupBy { it.consentCollectionLinkId }
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
@@ -1077,7 +1125,6 @@ class QueryService implements Status {
                         'from storage_document where doc_version = 0 and deleted = 0 ' +
                         'group by project_key, file_type  ' +
                         'order by project_key, file_type'
-
         getSqlConnection().rows(singleVersionDocQuery).each {
             HashMap<String, String> documentMap = new HashMap<>()
             documentMap.put('projectKey', it.get("project_key").toString())
