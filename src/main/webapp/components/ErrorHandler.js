@@ -10,11 +10,12 @@ export default class ErrorHandler extends Component {
   }
  
   componentDidCatch(error, info) {
+    console.error(error);
     this.setState({ 
       hasError: true
     })
   }
-  
+
   render() {
     return this.state.hasError ?  h1({}, ['Something went wrong. Please try again.']) : this.props.children
   }

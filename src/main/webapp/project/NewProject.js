@@ -96,11 +96,10 @@ class NewProject extends Component {
             window.location.href = [this.props.serverURL, projectType, "show", resp.data.message.projectKey, "?tab=review&new"].join("/");
           })
         }).catch(error => {
-          // this.changeStateSubmitButton();
-          // this.toggleTrueSubmitError();
-          // spinnerService.hideAll();
-          // console.error(error);
-          this.setState(() => { throw error; });
+          this.changeStateSubmitButton();
+          this.toggleTrueSubmitError();
+          spinnerService.hideAll();
+          console.error(error);
       });
     } else {
       this.setState(prev => {
