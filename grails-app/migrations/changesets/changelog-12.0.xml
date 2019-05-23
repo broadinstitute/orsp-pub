@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet id="changelog-11.0-1" author="tadeork">
+    <changeSet id="changelog-12.0-1" author="tadeork">
         <addColumn tableName="data_use_restriction">
             <column name="no_restriction" type="bit" defaultValue="null">
                 <constraints nullable="true" />

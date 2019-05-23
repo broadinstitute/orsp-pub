@@ -413,7 +413,7 @@
                 </span>
 
                 <hr/>
-                <label for="irbYes">Publication of results of studies using the data is required</label>
+                <label for="irbYes">Publication of results of studies using the data is required [PUB]</label>
                 <span class="pull-right">
                     <label class="radio-inline"><input type="radio"
                                   name="publicationResults"
