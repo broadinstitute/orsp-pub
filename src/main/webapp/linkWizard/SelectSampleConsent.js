@@ -108,9 +108,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   loadOptions() {
-    let documentOptions = [];
-    CONSENT_DOCUMENTS.forEach(type => {
-      documentOptions.push({ value: type, label: type });
+    const documentOptions = CONSENT_DOCUMENTS.map(type => {
+      return { value: type, label: type };
     });
     this.setState({ documentOptions: documentOptions });
   };
