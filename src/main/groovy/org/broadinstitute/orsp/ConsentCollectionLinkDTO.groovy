@@ -1,9 +1,8 @@
 package org.broadinstitute.orsp
-import org.broadinstitute.orsp.IssueType
 
 class ConsentCollectionLinkDTO {
 
-    BigInteger id
+    Long id
     String projectKey
     String consentKey
     String sampleCollectionId
@@ -18,4 +17,7 @@ class ConsentCollectionLinkDTO {
     String projectName
     String collectionName
 
+    void setId(Number id) {
+        this.id = id
+    }
 }

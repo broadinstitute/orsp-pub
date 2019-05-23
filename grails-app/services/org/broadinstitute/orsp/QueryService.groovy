@@ -8,7 +8,6 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
-import org.broadinstitute.orsp.ConsentGroupExtraProperties
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
@@ -334,7 +333,7 @@ class QueryService implements Status {
         Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
         List <ConsentCollectionLink> consentCollectionLinkList = new ArrayList<>()
-        List <BigInteger> consentCollectionIds = new ArrayList<>()
+        List <Long> consentCollectionIds = new ArrayList<>()
         final String query =
                 ' select c.id id, c.consent_key consentKey, c.project_key projectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
                         ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
@@ -354,7 +353,7 @@ class QueryService implements Status {
             consentCollectionIds.add(it.id)
             consentCollectionLinkList.add(it)
         }
-        Map<BigInteger, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
+        Map<Long, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
         consentCollectionLinkList.each {
             sampleInfo.put(it, storageDocuments.get(it.id))
         }
@@ -362,7 +361,7 @@ class QueryService implements Status {
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Map<BigInteger, List <StorageDocument>> findAllDocumentsBySampleCollectionId(List <Integer> consentCollectionIds) {
+    Map<Long, List <StorageDocument>> findAllDocumentsBySampleCollectionId(List <Long> consentCollectionIds) {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * ' +
@@ -374,7 +373,7 @@ class QueryService implements Status {
             setParameterList('consentCollectionIds', consentCollectionIds)
             list()
         }
-        results.groupBy { it.consentCollectionLinkId as BigInteger }
+        results.groupBy { it.consentCollectionLinkId }
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
