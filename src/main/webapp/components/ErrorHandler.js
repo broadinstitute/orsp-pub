@@ -1,7 +1,7 @@
 import { Component, React } from 'react';
 import { h1 } from 'react-hyperscript-helpers';
 
-export default class r extends Component {
+export default class ErrorHandler extends Component {
   constructor(props) {
     super(props)
     this.state = { hasError: false }

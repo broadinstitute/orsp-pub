@@ -8,7 +8,7 @@ import ErrorHandler from '../components/ErrorHandler';
 function DUL(props) {
   const error = component.error;
   if (error !== undefined && error !== '') {
-    return <DataUseLetterMessage error={component.error} />;
+    return <DataUseLetterMessage error = {component.error}/>;
   }
   return
   <ErrorHandler>
@@ -23,6 +23,6 @@ function DUL(props) {
 }
 
 ReactDOM.render(
-  <DUL isMessage={component.error} />,
+  <DUL isMessage={component.error}/>,
   document.getElementById('dataUseLetter')
 );

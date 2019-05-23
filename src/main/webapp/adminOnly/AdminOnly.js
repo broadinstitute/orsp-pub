@@ -145,7 +145,7 @@ class AdminOnly extends Component {
   submit = () => {
     spinnerService.showAll();
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(this.props.updateAdminOnlyPropsUrl, parsedForm, this.props.projectKey).then(
+    Project.updateAdminOnlyProps(this.props.updateAdminOnlyPropsUrl, parsedForm , this.props.projectKey).then(
       response => {
         spinnerService.hideAll();
         this.setState(prev => {
@@ -155,16 +155,16 @@ class AdminOnly extends Component {
         });
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
-        error => {
-          spinnerService.hideAll();
-          this.init();
-          this.setState(prev => {
-            prev.showSubmissionError = true;
-            prev.alertMessage = 'Something went wrong. Please try again.';
-            return prev;
-          });
-        }
-      );
+      error => {
+        spinnerService.hideAll();
+        this.init();
+        this.setState(prev => {
+          prev.showSubmissionError = true;
+          prev.alertMessage = 'Something went wrong. Please try again.';
+          return prev;
+        });      
+      }
+    );
   };
 
   successNotification = (type, message, time) => {
@@ -238,9 +238,9 @@ class AdminOnly extends Component {
   };
 
   render() {
-    return (
-      div({}, [
-        h2({ className: "stepTitle" }, ["Admin Only"]),
+    return(
+      div({},[
+        h2({ className: "stepTitle" }, ["Admin Only"]),  
         Panel({ title: "Project Details" }, [
           InputFieldRadio({
             id: "radioProjectStatus",
@@ -337,7 +337,7 @@ class AdminOnly extends Component {
             placeholder: "Enter date...",
             readOnly: !this.state.isORSP,
           }),
-          div({ style: { 'marginTop': '20px' } }, [
+          div({ style: { 'marginTop': '20px' }}, [
             Fundings({
               fundings: this.state.formData.sponsor,
               current: this.state.formData.sponsor,
@@ -352,7 +352,7 @@ class AdminOnly extends Component {
             options: INITIAL_REVIEW,
             readOnly: !this.state.isORSP,
             value: this.state.formData.initialReviewType,
-            onChange: this.handleSelect("initialReviewType"),
+            onChange: this.handleSelect("initialReviewType"),          
             placeholder: "Select..."
           }),
           InputFieldRadio({
