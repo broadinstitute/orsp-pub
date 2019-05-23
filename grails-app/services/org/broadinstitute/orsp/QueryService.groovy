@@ -355,7 +355,7 @@ class QueryService implements Status {
         }
         Map<Long, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
         consentCollectionLinkList.each {
-            sampleInfo.put(it, storageDocuments.get(it.id))
+            sampleInfo.put(it, storageDocuments.getOrDefault(it.id, []))
         }
         sampleInfo
     }
