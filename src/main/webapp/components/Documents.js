@@ -21,7 +21,8 @@ const headers =
 const associatedProjectsHeaders = [
   { name: '', value: 'projectKey' },
   { name: 'Type', value: 'type' },
-  { name: 'Summary', value: 'summary' }
+  { name: 'Summary', value: 'summary' },
+  { name: 'Info Link', value: 'infoLink' }
 ];
 
 const addDocumentBtn = {
@@ -199,6 +200,7 @@ export const Documents = hh(class Documents extends Component {
               paginationSize: 10,
               unlinkProject: this.props.handleUnlinkProject,
               handleRedirectToProject: this.props.handleRedirectToProject,
+              handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
               isAdmin: this.props.user.isAdmin,
               isViewer: this.props.user.isViewer
             })
