@@ -32,7 +32,7 @@ export default class ErrorHandler extends Component {
       h1({ style: styles.errorTitle }, ['Something went wrong. Please try again.']),
       h3({ style: styles.errorText }, [
         'If problem persists, please contact support: ',
-        a({ href: "orsp@broadinstitute.org", className: "link" }, 'orsp@broadinstitute.org')
+        a({ href: "orsp-portal@broadinstitute.org", className: "link" }, 'orsp-portal@broadinstitute.org')
       ])
     ]) : this.props.children
   }
