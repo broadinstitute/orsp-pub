@@ -3,7 +3,7 @@ import { h1, hh } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
 import { LinkQuestions } from "./LinkQuestions";
-import { User, ConsentGroup, SampleCollections } from "../util/ajax";
+import { User } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
 import '../index.css';
@@ -53,8 +53,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       showErrorInfoSecurity: false,
       isInfoSecurityValid: false,
       securityInfoFormData: {},
-      consentGroupIsLoading: false,
-      sampleCollectionIsLoading: false,
     }
   }
 
@@ -71,71 +69,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   componentDidMount() {
     this.getUserSession();
-    this.getConsentGroups();
   }
-
-  getAllSampleCollections = (consentKey) => {
-    this.setState({ sampleCollectionIsLoading: true });
-
-    SampleCollections.getCollectionsCGLinked(this.props.getConsentGroupSampleCollections, consentKey).then(
-      resp => {
-        const sampleCollectionsList = [];
-        sampleCollectionsList.push({label: "Sample Collections Linked to " + consentKey, options: []});
-
-        sampleCollectionsList[0].options = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
-          };
-        });
-
-        this.setState({
-          sampleCollectionList: sampleCollectionsList,
-          sampleCollectionIsLoading: false
-        })
-      }
-    );
-
-    SampleCollections.getSampleCollections(this.props.unConsentedSampleCollections, consentKey).then(
-      resp => {
-        const sampleCollectionsList = this.state.sampleCollectionList.splice(0);
-        sampleCollectionsList.push({label: "Link New Sample Collections to Sample Data/Cohort: " + consentKey, options: []});
-        sampleCollectionsList[1].options = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
-          };
-        });
-
-        this.setState({
-          sampleCollectionList: sampleCollectionsList,
-          sampleCollectionIsLoading: false
-        })
-      }
-    );
-  };
-
-  getConsentGroups = () => {
-    this.setState({ consentGroupIsLoading: true });
-    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
-      resp => {
-        const existingConsentGroups = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.label,
-            label: item.label
-          }
-        });
-
-        this.setState({
-          existingConsentGroups: existingConsentGroups,
-          consentGroupIsLoading: false
-        });
-      }
-    );
-  };
 
   getUserSession() {
     User.getUserSession(this.props.getUserUrl).then(
@@ -368,9 +302,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   updateGeneralForm = (updatedForm, field) => {
-    if (field === "consentGroup") {
-      this.getAllSampleCollections(updatedForm.key);
-    }
+    // if (field === "consentGroup") {
+    //   this.getAllSampleCollections(updatedForm.key);
+    // }
     if (this.state.currentStep === 0) {
       this.validateLinkStep(field);
     }
@@ -408,12 +342,13 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           fileHandler: this.fileHandler,
           files: this.state.files,
           currentStep: currentStep,
-          existingConsentGroups: this.state.existingConsentGroups,
           consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
           projectKeyLabel: this.props.projectKey,
           consentGroupIsLoading: this.state.consentGroupIsLoading,
-          sampleCollectionIsLoading: this.state.sampleCollectionIsLoading,
+          getConsentGroupSampleCollections: this.props.getConsentGroupSampleCollections,
+          getConsentGroups: this.props.getConsentGroups,
+          unConsentedSampleCollections: this.props.unConsentedSampleCollections,
         }),
         LinkQuestions({
           title: "Security/MTA/International Info",

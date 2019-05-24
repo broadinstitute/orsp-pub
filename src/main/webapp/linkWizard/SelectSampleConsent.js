@@ -6,6 +6,7 @@ import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
+import { ConsentGroup, SampleCollections } from "../util/ajax";
 
 const styles = {
   addDocumentContainer: {
@@ -32,16 +33,19 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       showAddDocuments: false,
       documentOptions: [],
       documents: [],
-      sampleCollectionList: {},
-      sampleCollection: {},
+      sampleCollectionList: [],
+      sampleCollection: null,
       consentGroupsList: {},
       collectionSample: {},
-      consentGroup: {}
+      consentGroup: {},
+      sampleCollectionIsLoading: false,
+      consentGroupIsLoading: false,
     };
   }
 
   componentDidMount() {
     this.loadOptions();
+    this.getConsentGroups();
   }
 
   fileHandler = (docs) => {
@@ -59,6 +63,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   handleConsentGroupChange = () => (data) => {
+    this.getAllSampleCollections(data.key);
     this.setState(prev => {
       prev.consentGroup = data;
       return prev;
@@ -114,6 +119,71 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     this.setState({ documentOptions: documentOptions });
   };
 
+  getConsentGroups = () => {
+    this.setState({ consentGroupIsLoading: true });
+    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
+      resp => {
+        const existingConsentGroups = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.label,
+            label: item.label
+          }
+        });
+
+        this.setState({
+          existingConsentGroups: existingConsentGroups,
+          consentGroupIsLoading: false,
+          consentGroup: existingConsentGroups[0]
+        });
+        this.getAllSampleCollections(existingConsentGroups[0].key);
+      }
+    );
+  };
+
+  getAllSampleCollections = (consentKey) => {
+    this.setState({ sampleCollectionIsLoading: true });
+
+    SampleCollections.getCollectionsCGLinked(this.props.getConsentGroupSampleCollections, consentKey).then(
+      resp => {
+        const sampleCollectionList = [];
+        sampleCollectionList.push({label: "Sample Collections Linked to " + consentKey, options: []});
+
+        sampleCollectionList[0].options = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.collectionId,
+            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
+          };
+        });
+
+        this.setState({
+          sampleCollectionList: sampleCollectionList,
+          sampleCollectionIsLoading: false
+        })
+      }
+    );
+
+    SampleCollections.getSampleCollections(this.props.unConsentedSampleCollections, consentKey).then(
+      resp => {
+        const sampleCollectionList = this.state.sampleCollectionList.splice(0);
+        sampleCollectionList.push({label: "Link New Sample Collections to Sample Data/Cohort: " + consentKey, options: []});
+        sampleCollectionList[1].options = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.collectionId,
+            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
+          };
+        });
+
+        this.setState({
+          sampleCollectionList: sampleCollectionList,
+          sampleCollectionIsLoading: false
+        })
+      }
+    );
+  };
+
   render() {
     let documents = this.props.files;
 
@@ -132,7 +202,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             id: "consentGroup_select",
             label: "Select Sample/Data Cohort",
             isDisabled: false,
-            options: this.props.existingConsentGroups,
+            options: this.state.existingConsentGroups,
             onChange: this.handleConsentGroupChange,
             value: this.state.consentGroup,
             placeholder: "Select...",
@@ -140,7 +210,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             errorMessage: "Please select a Sample/Data Cohort",
             isMulti: false,
             edit: false,
-            isLoading: this.props.consentGroupIsLoading,
+            isLoading: this.state.consentGroupIsLoading,
           }),
         ]),
         Panel({
@@ -150,13 +220,13 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             id: "sampleCollection_select",
             label: "Link Sample Collection to " + this.props.projectKeyLabel,
             isDisabled: false,
-            options: this.props.sampleCollectionList,
+            options: this.state.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
             value: this.state.sampleCollection,
-            placeholder: "Select...",
+            placeholder: "Choose a Sample Collection ...",
             isMulti: false,
             edit: false,
-            isLoading: this.props.sampleCollectionIsLoading,
+            isLoading: this.state.sampleCollectionIsLoading,
           }),
         ]),
         Panel({
