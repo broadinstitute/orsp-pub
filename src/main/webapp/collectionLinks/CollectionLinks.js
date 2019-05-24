@@ -45,6 +45,8 @@ export default class CollectionLinks extends React.Component {
           loading: false,
           loaded: true
         }));
+      }).catch(error => {
+        this.setState(() => { throw error; });
       });
   }
 

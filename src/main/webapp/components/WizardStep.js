@@ -9,11 +9,6 @@ export const WizardStep = hh(class WizardStep extends Component {
     tooltipShown: this.props.error
   };
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   tooltipBtnHandler = (e) => {
     this.setState(prev => {
       prev.tooltipShown = !prev.tooltipShown;

@@ -75,11 +75,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     return { hasError: true }
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
-    console.log(error, info);
-  }
-
   setFilesToUpload = (doc) => {
     let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
     this.setState(prev => {

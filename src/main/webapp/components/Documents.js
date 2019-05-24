@@ -83,7 +83,9 @@ export const Documents = hh(class Documents extends Component {
     then(resp => {
       this.closeRemoveModal();
       this.props.handleLoadDocuments();
-    });    
+    }).catch(error => {
+      this.setState(() => { throw error; });
+    });   
   }
 
   findDul = () => {
