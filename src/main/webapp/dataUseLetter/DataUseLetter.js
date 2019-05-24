@@ -104,11 +104,6 @@ class DataUseLetter extends Component {
     this.getRestriction = this.getRestriction.bind(this);
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   componentDidMount() {
     this.initFormData();
   }
@@ -126,6 +121,8 @@ class DataUseLetter extends Component {
         prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
         return prev;
       });
+    }).catch(error => {
+      this.setState(() => { throw error; });
     });
   };
 
@@ -170,6 +167,8 @@ class DataUseLetter extends Component {
             };
           });
           callback(options);
+        }).catch(error => {
+          this.setState(() => { throw error; });
         });
     }
   };
