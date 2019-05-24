@@ -38,6 +38,7 @@ export const Wizard = hh(class Wizard extends Component {
   };
 
   nextStep = (e) => {
+    window.scroll(0, 0);
     e.preventDefault();
     if (this.props.isValid(this.state.currentStepIndex, null)) {
       this.setState(prev => {
