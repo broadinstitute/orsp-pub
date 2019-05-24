@@ -921,7 +921,7 @@ class ProjectReview extends Component {
             currentValue: this.state.current.projectExtraProps.affiliations,
             onChange: this.handleSelect("affiliations"),
             readOnly: this.state.readOnly,
-            placeholder: isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Select...",
+            placeholder: isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
             edit: true
           }),
 

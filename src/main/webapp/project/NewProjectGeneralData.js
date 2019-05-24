@@ -207,6 +207,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             options: PI_AFFILIATION,
             value: this.state.formData.affiliations,
             onChange: this.handleSelectChange("affiliations"),
+            placeholder: "Choose an affiliation...",
             readOnly: false,
             edit: false
           }),
