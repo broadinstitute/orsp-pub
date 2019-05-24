@@ -16,11 +16,6 @@ export const Wizard = hh(class Wizard extends Component {
     this.submitHandler = this.submitHandler.bind(this);
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }

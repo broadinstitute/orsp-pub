@@ -35,7 +35,9 @@ class SearchResults extends Component {
   componentDidMount() {
     User.getUserSession(this.props.getUserUrl).then(resp =>
       this.setState({ user: resp.data })
-    );
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
   }
 
   linkFormatter = (cell, row) => {
