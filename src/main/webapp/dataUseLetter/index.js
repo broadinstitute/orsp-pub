@@ -13,11 +13,11 @@ function DUL(props) {
   return
   <ErrorHandler>
     <DataUseLetter
-      serverUrl={component.serverURL}
-      consentGroupUrl={component.consentGroupUrl}
-      projectUrl={component.projectUrl}
-      loadingImage={component.loadingImage}
-      sourceDiseases={component.sourceDiseases}
+      serverUrl = {component.serverURL}
+      consentGroupUrl = {component.consentGroupUrl}
+      projectUrl = {component.projectUrl}
+      loadingImage = {component.loadingImage}
+      sourceDiseases = {component.sourceDiseases}
     />
   </ErrorHandler>;
 }

@@ -7,11 +7,11 @@ import ErrorHandler from '../components/ErrorHandler';
 ReactDOM.render(
   <ErrorHandler>
     <CollectionLinks
-      cclPostUrl={component.cclPostUrl}
-      cclSummariesUrl={component.cclSummariesUrl}
-      consentKeySearchUrl={component.consentKeySearchUrl}
-      projectKeySearchUrl={component.projectKeySearchUrl}
-      sampleSearchUrl={component.sampleSearchUrl}
+      cclPostUrl = {component.cclPostUrl}
+      cclSummariesUrl = {component.cclSummariesUrl}
+      consentKeySearchUrl = {component.consentKeySearchUrl}
+      projectKeySearchUrl = {component.projectKeySearchUrl}
+      sampleSearchUrl = {component.sampleSearchUrl}
     />,
   </ErrorHandler>,
   document.getElementById('app')

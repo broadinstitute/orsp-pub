@@ -7,12 +7,12 @@ import ErrorHandler from '../components/ErrorHandler';
 ReactDOM.render(
   <ErrorHandler>
     <AdminOnly
-      isAdmin={adminOnlyComponent.isAdmin}
-      loadingImage={adminOnlyComponent.loadingImage}
-      userSessionUrl={adminOnlyComponent.userSessionUrl}
-      projectKey={adminOnlyComponent.projectKey}
-      projectUrl={adminOnlyComponent.projectUrl}
-      updateAdminOnlyPropsUrl={adminOnlyComponent.updateAdminOnlyPropsUrl}
+      isAdmin = {adminOnlyComponent.isAdmin}
+      loadingImage = {adminOnlyComponent.loadingImage}
+      userSessionUrl = {adminOnlyComponent.userSessionUrl}
+      projectKey = {adminOnlyComponent.projectKey}
+      projectUrl = {adminOnlyComponent.projectUrl}
+      updateAdminOnlyPropsUrl = {adminOnlyComponent.updateAdminOnlyPropsUrl}
     />
   </ErrorHandler>,
   document.getElementById('adminOnly')

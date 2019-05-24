@@ -242,7 +242,7 @@ class AdminOnly extends Component {
   render() {
     return(
       div({},[
-        h2({ className: "stepTitle" }, ["Admin Only"]),  
+        h2({ className: "stepTitle" }, ["Admin Only"]),   
         Panel({ title: "Project Details" }, [
           InputFieldRadio({
             id: "radioProjectStatus",
