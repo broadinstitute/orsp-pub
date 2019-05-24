@@ -150,11 +150,6 @@ class ProjectReview extends Component {
     this.discardEdits = this.discardEdits.bind(this);
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
-    console.log(error, info);
-  }
-
   componentDidMount() {
     this.init();
   }
@@ -216,6 +211,8 @@ class ProjectReview extends Component {
               });
             }
           });
+      }).catch(error => {
+        this.setState(() => { throw error; });
       });
   }
 
@@ -236,6 +233,8 @@ class ProjectReview extends Component {
             return prev;
           });
         }
+      }).catch(error => {
+        this.setState(() => { throw error; });
       });
   }
 
@@ -303,7 +302,9 @@ class ProjectReview extends Component {
           return prev;
         });
       }
-    );
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
     if (this.state.reviewSuggestion) {
       let project = this.getProject();
       Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
@@ -311,7 +312,7 @@ class ProjectReview extends Component {
           this.removeEdits('approve');
         })
         .catch(error => {
-          console.error(error);
+          this.setState(() => { throw error; });
         });
     }
   };
@@ -325,11 +326,10 @@ class ProjectReview extends Component {
       });
       window.location.href = [this.props.serverURL, "index"].join("/");
       spinnerService.hideAll();
-    })
-      .catch(error => {
-        spinnerService.hideAll();
-        console.error(error);
-      });
+    }).catch(error => {
+      spinnerService.hideAll();
+      this.setState(() => { throw error; });
+    });
   }
 
   discardEdits() {
@@ -348,10 +348,9 @@ class ProjectReview extends Component {
         this.setState((state, props) => {
           return { approveDialog: !state.approveDialog }
         });
-      })
-      .catch(error => {
+      }).catch(error => {
         spinnerService.hideAll();
-        console.error(error);
+        this.setState(() => { throw error; });
       });
   };
 
@@ -363,7 +362,7 @@ class ProjectReview extends Component {
       })
       .catch(error => {
         spinnerService.hideAll();
-        console.error(error);
+        this.setState(() => { throw error; });
       });
   }
 
@@ -538,6 +537,8 @@ class ProjectReview extends Component {
             };
           });
           callback(options);
+        }).catch(error => {
+          this.setState(() => { throw error; });
         });
     }
   };
@@ -921,7 +922,7 @@ class ProjectReview extends Component {
             currentValue: this.state.current.projectExtraProps.affiliations,
             onChange: this.handleSelect("affiliations"),
             readOnly: this.state.readOnly,
-            placeholder: isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Select...",
+            placeholder: isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
             edit: true
           }),
 
