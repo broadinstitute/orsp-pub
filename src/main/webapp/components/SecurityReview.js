@@ -19,11 +19,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     };
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
-    console.log(error, info);
-  }
-
   stringAnswer = (current) => {
     let answer = '';
     if (current === 'true' || current === true) {
