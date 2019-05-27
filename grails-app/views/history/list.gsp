@@ -3,7 +3,8 @@
     <meta name="layout" content="minimal">
     <title>History</title>
 </head>
-
+<div id="footer"></div>
+<asset:javascript src="build/footer.js"/>
 <body>
 
 <div class="container col-md-11">

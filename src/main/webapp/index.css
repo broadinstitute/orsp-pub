@@ -306,6 +306,16 @@ input[type=checkbox] {
   padding-right: 5px;
 }
 
+.headerBox {
+  border: 1px solid black;
+  padding: 20px;
+}
+
+.headerBoxStatus {
+  font-weight: bold;
+  color: blue;
+}
+
 .col, [class*="col-"] {
   padding-right: 5px;
   padding-left: 5px;
