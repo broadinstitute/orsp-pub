@@ -120,6 +120,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isMulti: this.props.isMulti,
               isClearable: this.props.isClearable,
               isLoading: isLoading,
+              defaultMenuIsOpen: true,
             })
           ])
         ])
