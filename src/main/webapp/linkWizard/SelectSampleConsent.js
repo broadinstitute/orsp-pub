@@ -1,15 +1,15 @@
 import { Component } from 'react';
-import { hh, h1, p, button, div } from 'react-hyperscript-helpers';
+import { hh, button, div, p } from 'react-hyperscript-helpers';
 import { WizardStep } from "../components/WizardStep";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
-import { DOCUMENT_TYPE } from '../util/DocumentType';
+import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', marginTop: '15px'
+    display: 'block', height: '40px', margin: '5px 0 15px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -75,11 +75,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     return { hasError: true }
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
-    console.log(error, info);
-  }
-
   setFilesToUpload = (doc) => {
     let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
     this.setState(prev => {
@@ -108,9 +103,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   loadOptions() {
-    let documentOptions = [];
-    DOCUMENT_TYPE.forEach(type => {
-      documentOptions.push({ value: type, label: type });
+    const documentOptions = CONSENT_DOCUMENTS.map(type => {
+      return { value: type, label: type };
     });
     this.setState({ documentOptions: documentOptions });
   };
@@ -163,11 +157,12 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         Panel({
           title: "Documents"
         }, [
-          div({ className: "questionnaireContainer" }, [
+          div({ className: "questionnaireContainerLight" }, [
+            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             AddDocumentDialog({
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
-              options: this.props.options,
+              options: this.state.documentOptions,
               attachDocumentsUrl: this.props.attachDocumentsUrl,
               projectKey: this.props.projectKey,
               user: this.props.user,
@@ -179,7 +174,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             }),
             div({ style: styles.addDocumentContainer }, [
               button({
-                className: "btn buttonPrimary",
+                className: "btn buttonSecondary",
                 style: styles.addDocumentBtn,
                 onClick: this.addDocuments
               }, ["Add Document"])
