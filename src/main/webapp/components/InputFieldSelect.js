@@ -5,6 +5,20 @@ import { InputField } from './InputField';
 import './InputField.css';
 import get from 'lodash/get';
 
+const selectWithLabels = {
+  selectWithLabels: {
+    color:'#66666',
+    cursor:'default',
+    display: 'block',
+    fontWeight: '500',
+    marginBottom: '7px',
+    padding: '19px 12px 7px 12px',
+    textTransform: 'uppercase',
+    fontSize: '14px !important',
+    borderBottom: '1px solid #DDDDDD',
+  }
+}
+
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
   static getDerivedStateFromError(error) {
