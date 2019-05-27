@@ -26,11 +26,6 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     return { hasError: true }
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   sortByKey = (array, key) => {
     if (Array.isArray(array)) {
       return array.sort(function (a, b) {

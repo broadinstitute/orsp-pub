@@ -65,7 +65,9 @@ class NewProject extends Component {
   componentDidMount() {
     User.getUserSession(this.props.getUserUrl).then(resp =>
       this.setState({ user: resp.data })
-    );
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
     this.loadOptions();
   }
 
@@ -341,11 +343,6 @@ class NewProject extends Component {
       return prev;
     });
   };
-
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
 
   fileHandler = (docs) => {
     this.setState({

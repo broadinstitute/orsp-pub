@@ -74,7 +74,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   getUserSession() {
     User.getUserSession(this.props.getUserUrl).then(
       resp => this.setState({ user: resp.data })
-    )
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
   }
 
   changeSubmitState = () => {
@@ -140,11 +142,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       this.isValid(field);
     })
   };
-
-  componentDidCatch(error, info) {
-    console.log('----------------------- new consent group error ----------------------');
-    console.log(error, info);
-  }
 
   fileHandler = (file) => {
     this.setState({

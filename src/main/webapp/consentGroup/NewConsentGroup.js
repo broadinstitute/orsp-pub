@@ -404,11 +404,6 @@ class NewConsentGroup extends Component {
     })
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- new consent group error ----------------------')
-    console.log(error, info);
-  }
-
   fileHandler = (file) => {
     this.setState({
       files: file

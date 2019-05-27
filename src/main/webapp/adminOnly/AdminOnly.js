@@ -45,11 +45,6 @@ class AdminOnly extends Component {
     this.addNewDegree = this.addNewDegree.bind(this)
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------');
-    console.log(error, info);
-  }
-
   componentDidMount() {
     this.init()
   }
@@ -80,7 +75,9 @@ class AdminOnly extends Component {
           prev.initial = initial;
           return prev;
         })
-      })
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
   };
 
   isCurrentUserAdmin() {
@@ -88,7 +85,9 @@ class AdminOnly extends Component {
       resp => {
         this.setState({ isORSP: resp.data.isORSP });
       }
-    );
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
   }
 
   getSponsorArray(sponsors) {
