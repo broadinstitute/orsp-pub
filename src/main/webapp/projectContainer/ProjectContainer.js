@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { div, hh, label, span, className, h1, p } from 'react-hyperscript-helpers';
 import axios from 'axios';
 import '../components/Wizard.css';
+import './index.css';
 
 
 
@@ -52,19 +53,27 @@ class ProjectContainer extends Component {
     
     return (
 
-      div({}, [
+      div({className: "headerBoxContainer"}, [
         div({ className: "headerBox"}, [
-          p({ className: "headerBoxStatus" }, ["Project Type"]),
-          h1({}, [
-            span({ className: "bold" }, ["ProjectKey: "]), 
+          p({ className: "headerBoxStatus top" }, ["Project Type"]),
+          h1({className: "projectTitle"}, [
+            span({ className: "projectKey" }, ["ProjectKey: "]), 
             span({ className: "italic" }, ["ProjectTitle"])
           ]),
-          p({}, [
+
+
+          p({className: "headerLabel"}, [
             "Status: ",
-            span({},  ["ActualStatus"]), 
-            "; Awaiting action from: ",
-            span({ className: "italic" },  ["ActualPerson"])
+            span({className:"block"},  ["ActualStatus"])
           ]),
+
+          p({className: "headerLabel"}, [
+            "Awaiting action from: ",
+            span({ className: "block" },  ["ActualPerson"])
+          ]),
+
+
+
           p({ className: "headerBoxStatus" }, [
             span({ className: "bold" }, ["New Status: "]), 
             span({ className: "italic" }, ["SomeStatus"])
