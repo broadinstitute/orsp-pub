@@ -21,17 +21,15 @@ class ProjectContainer extends Component {
     this.setState(prev => {
       prev.currentStepIndex = n;
       return prev;
-    })
-    if (n == 7) {
+    });
+    if (n == 3) {
+      this.buildSubmissions();
+    }
+    if (n == 4) {
+      this.buildComments();
+    }
+    if (n == 5) {
       this.buildHistory();
-      // const url = "https://localhost:8443/dev/api/history";
-      // return a({
-      //   href: url,
-      //   target: '_blank'
-      // }, [link])
-      //   window.location.href = "https://localhost:8443/dev/api/history";
-      // return axios.get("https://localhost:8443/dev/api/history?id=ORSP-641");
-
     }
   };
 
@@ -41,10 +39,29 @@ class ProjectContainer extends Component {
         prev.content = resp.data;
         return prev;
       })
-      console.log(resp.data);
       return resp.data;
     });
-  }
+  };
+
+  buildComments = () => {
+    axios.get("https://localhost:8443/dev/api/comments?id=ORSP-641").then(resp => {
+      this.setState(prev => {
+        prev.content = resp.data;
+        return prev;
+      })
+      return resp.data;
+    });
+  };
+
+  buildSubmissions = () => {
+    axios.get("https://localhost:8443/dev/api/submissions?id=ORSP-641").then(resp => {
+      this.setState(prev => {
+        prev.content = resp.data;
+        return prev;
+      })
+      return resp.data;
+    });
+  };
 
   render() {
 
@@ -91,13 +108,11 @@ class ProjectContainer extends Component {
 
 
             div({ className: "tabStep " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0) }, ["Project Details"]),
-            div({ className: "tabStep " + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1) }, ["Broad Project Info"]),
-            div({ className: "tabStep " + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2) }, ["Documents New"]),
-            div({ className: "tabStep " + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3) }, ["Documents"]),
-            div({ className: "tabStep " + (currentStepIndex === 4 ? "active" : ""), onClick: this.goStep(4) }, ["Sample/Data Cohort"]),
-            div({ className: "tabStep " + (currentStepIndex === 5 ? "active" : ""), onClick: this.goStep(5) }, ["Submissions"]),
-            div({ className: "tabStep " + (currentStepIndex === 6 ? "active" : ""), onClick: this.goStep(6) }, ["Messages"]),
-            div({ className: "tabStep " + (currentStepIndex === 7 ? "active" : ""), onClick: this.goStep(7) }, ["History"]),
+            div({ className: "tabStep " + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1) }, ["Documents New"]),
+            div({ className: "tabStep " + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2) }, ["Sample/Data Cohort"]),
+            div({ className: "tabStep " + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3) }, ["Submissions"]),
+            div({ className: "tabStep " + (currentStepIndex === 4 ? "active" : ""), onClick: this.goStep(4) }, ["Messages"]),
+            div({ className: "tabStep " + (currentStepIndex === 5 ? "active" : ""), onClick: this.goStep(5) }, ["History"]),
           ]),
           div({ className: "tabContent", dangerouslySetInnerHTML: { __html: this.state.content }  }, [
             

@@ -8,6 +8,7 @@ This template requires the following arguments:
 
 --}%
 
+
 <div id="submission-tabs">
     %{-- Using status for anchor links since types could be problematic --}%
     <g:set var="keySet" value="${groupedSubmissions.keySet()}"/>
@@ -77,11 +78,25 @@ This template requires the following arguments:
             </table>
         </div>
     </g:each>
-
 </div>
-
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript">
+  </script>
 <asset:script type="text/javascript">
     $(document).ready(function() {
+        $.fn.dataTable.moment( 'M/D/YYYY' );
+        $(".submissionTable").DataTable({
+            dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+            buttons: [],
+            language: { search: 'Filter:' },
+            pagingType: "full_numbers",
+            pageLength: 50,
+            columnDefs: [ { targets: [1, 2], orderable: false} ],
+            order: [0, "desc"]
+        });
+        $("#submission-tabs").tabs();
+    });
+
+       $( window ).on( "load", function() {
         $.fn.dataTable.moment( 'M/D/YYYY' );
         $(".submissionTable").DataTable({
             dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',

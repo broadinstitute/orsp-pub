@@ -43,6 +43,9 @@ class UrlMappings {
 
 
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
+        '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
+        '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")

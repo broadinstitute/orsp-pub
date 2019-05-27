@@ -214,6 +214,19 @@
     $(".chosen-select").chosen({width: "100%"});
     initializeEditor();
     $('[data-toggle="tooltip"]').tooltip();
+        $("#history").load(
+      "https://localhost:8443/dev/api/history?id=ORSP-641",
+      function() {
+        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
+        $("#history-table").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          order: [1, "desc"]
+        });
+      }
+    );
   });
 
   function initializeEditor() {
@@ -245,6 +258,7 @@
   }
 
   function loadHistory(url) {
+    console.log("load history vero");
     $("#history").load(
       url,
       function() {
