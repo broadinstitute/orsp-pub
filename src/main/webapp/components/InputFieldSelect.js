@@ -6,8 +6,8 @@ import './InputField.css';
 import get from 'lodash/get';
 
 const selectWithLabels = {
-  selectWithLabels: {
-    color:'#66666',
+  groupHeading: (provided, state) => ({
+    color:'#666666',
     cursor:'default',
     display: 'block',
     fontWeight: '500',
@@ -16,8 +16,8 @@ const selectWithLabels = {
     textTransform: 'uppercase',
     fontSize: '14px !important',
     borderBottom: '1px solid #DDDDDD',
-  }
-}
+  }),
+};
 
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
@@ -134,6 +134,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isMulti: this.props.isMulti,
               isClearable: this.props.isClearable,
               isLoading: isLoading,
+              styles: selectWithLabels,
               defaultMenuIsOpen: true,
             })
           ])
