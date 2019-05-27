@@ -135,7 +135,6 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isClearable: this.props.isClearable,
               isLoading: isLoading,
               styles: selectWithLabels,
-              defaultMenuIsOpen: true,
             })
           ])
         ])
