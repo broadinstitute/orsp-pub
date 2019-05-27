@@ -63,10 +63,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   handleConsentGroupChange = (values) => (data) => {
-    console.log(data);
     this.getAllSampleCollections(data.key);
     this.setState(prev => {
-      console.log('DATA', data);
       prev.consentGroup = data;
       return prev;
     }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
@@ -137,8 +135,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           existingConsentGroups: existingConsentGroups,
           consentGroupIsLoading: false,
           consentGroup: existingConsentGroups[0]
-        });
-        this.handleConsentGroupChange(existingConsentGroups[0].key);
+        }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
         this.getAllSampleCollections(existingConsentGroups[0].key);
       }
     );

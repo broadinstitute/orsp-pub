@@ -302,10 +302,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   updateGeneralForm = (updatedForm, field) => {
-    // if (field === "consentGroup") {
-    //   this.getAllSampleCollections(updatedForm.key);
-    // }
-    console.log('updatedForm', updatedForm, 'field', field);
     if (this.state.currentStep === 0) {
       this.validateLinkStep(field);
     }
