@@ -46,6 +46,8 @@ class InfoLink extends Component {
           prev.projectName = sampleCollectionsIds[0].projectName;
           return prev;
         });
+    }).catch(error => {
+      this.setState(() => { throw error; });
     });
   };
 

@@ -124,7 +124,9 @@ class ConsentGroupReview extends Component {
     this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data })
-    );
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
     this.init();
   }
 
