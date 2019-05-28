@@ -26,6 +26,16 @@ export const PREFERRED_IRB = [
   { label: 'Other', value: 'other' }
 ];
 
+export const PI_AFFILIATION = [
+  { label: 'Broad', value: 'broad' },
+  { label: 'Partners', value: 'partners' },
+  { label: 'DFCI', value: 'dfci' },
+  { label: 'MIT', value: 'mit' },
+  { label: 'Children\'s Hospital', value: 'childrenHosp' },
+  { label: 'Harvard', value: 'harvard' },
+  { label: 'Other (specify below)', value: 'other' }
+];
+
 export const INITIAL_REVIEW = [
   { label: 'Expedited', value: 'Expedited'},
   { label: 'Exempt', value: 'Exempt'},
