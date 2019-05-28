@@ -34,7 +34,7 @@ class InfoLink extends Component {
 
   initData = () => {
     let sampleCollectionsIds = [];
-    ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.serverURL).then(
+    ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.sampleCollectionId, this.props.serverURL).then(
       data => {
         JSON.parse(data.data.sampleCollections).map(sampleCollection => {
           sampleCollectionsIds.push(sampleCollection);

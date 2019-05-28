@@ -126,6 +126,7 @@
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${params.projectKey}",
         consentKey: "${params.consentKey}",
+        sampleCollectionId: "${params.scId}",
         projectType: '${params.type}',
         projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
         sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",

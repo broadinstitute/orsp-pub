@@ -80,6 +80,11 @@ export const ConsentGroup = {
   unlinkProject(url, consentKey, projectKey) {
     const data = { projectKey: projectKey };
     return axios.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
+  },
+
+  unlinkSampleCollection(url, projectKey, consentKey, sampleCollectionId) {
+    const data = { projectKey, consentKey, sampleCollectionId };
+    return axios.put(url + '/api/consent-group/unlinkAssociatedSampleCollection', data);
   }
 };
 
@@ -245,8 +250,8 @@ export const DataUse = {
 };
 
 export const ProjectInfoLink = {
-  getProjectSampleCollections(projectKey, consentKey, serverURL) {
-    return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentKey);
+  getProjectSampleCollections(projectKey, consentKey, sampleCollectionId, serverURL) {
+    return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentKey + '&scId=' + sampleCollectionId);
   }
 };
 

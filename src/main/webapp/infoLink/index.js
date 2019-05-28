@@ -8,6 +8,7 @@ ReactDOM.render(
     serverURL = {component.serverURL}
     projectKey = {component.projectKey}
     consentKey = {component.consentKey}
+    sampleCollectionId = {component.sampleCollectionId}
     loadingImage = {component.loadingImage}
   />,
   document.getElementById('infoLink')

@@ -329,51 +329,62 @@ class QueryService implements Status {
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Map<ConsentCollectionLinkDTO, List<StorageDocument>> findCollectionLinksByConsentKeyAndProjectKey(String consentKey, String projectKey) {
+    Map<ConsentCollectionLinkDTO, List<StorageDocument>> findSpecificCollectionLink(String consentKey, String projectKey, String sampleCollectionId) {
         Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
-        List <ConsentCollectionLink> consentCollectionLinkList = new ArrayList<>()
-        List <Long> consentCollectionIds = new ArrayList<>()
         final String query =
-                ' select c.id id, c.consent_key consentKey, c.project_key projectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
-                        ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
-                        ' sc.name collectionName, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts ' +
-                        ' from consent_collection_link c ' +
-                        ' inner join issue ic on ic.project_key = c.consent_key ' +
-                        ' inner join issue ip on ip.project_key = c.project_key ' +
-                        ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                        ' where c.project_key = :projectKey' +
-                        ' and c.consent_key = :consentKey'
-        List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
+            ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
+                    ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                    ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
+                    ' ip.type projectType from consent_collection_link c ' +
+                    ' inner join issue ic on ic.project_key = c.consent_key ' +
+                    ' inner join issue ip on ip.project_key = c.project_key ' +
+                    ' left join sample_collection sc on sc.collection_id = :sampleCollectionId' +
+                    ' where c.consent_key = :consentKey and c.project_key = :projectKey and c.sample_collection_id = :sampleCollectionId'
+        List<ConsentCollectionLinkDTO> result = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('projectKey', projectKey)
                 .setString('consentKey', consentKey)
+                .setString('sampleCollectionId', sampleCollectionId)
                 .list()
-        results.collect {
-            consentCollectionIds.add(it.id)
-            consentCollectionLinkList.add(it)
-        }
-        Map<Long, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(consentCollectionIds)
-        consentCollectionLinkList.each {
-            sampleInfo.put(it, storageDocuments.getOrDefault(it.id, []))
-        }
+
+        Map<Long, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(result.first().id)
+        sampleInfo.put(result.first(), storageDocuments.getOrDefault(result.first().id, []))
         sampleInfo
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Map<Long, List <StorageDocument>> findAllDocumentsBySampleCollectionId(List <Long> consentCollectionIds) {
+    Map<Long, List <StorageDocument>> findAllDocumentsBySampleCollectionId(Long consentCollectionId) {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * ' +
                 ' from storage_document ' +
-                ' where consent_collection_link_id in :consentCollectionIds '
+                ' where consent_collection_link_id = :consentCollectionIds '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
-            setParameterList('consentCollectionIds', consentCollectionIds)
+            setLong('consentCollectionIds', consentCollectionId)
             list()
         }
-        results.groupBy { it.consentCollectionLinkId }
+        results.groupBy { it?.consentCollectionLinkId }
+    }
+
+    List<ConsentCollectionLinkDTO> getCollectionLinksDtoByConsentKey(String consentKey) {
+        final session = sessionFactory.currentSession
+        final String query =
+        ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
+                ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, ip.type projectType, c.international_cohorts internationalCohorts ' +
+                ' from consent_collection_link c ' +
+                ' inner join issue ic on ic.project_key = c.consent_key ' +
+                ' inner join issue ip on ip.project_key = c.project_key ' +
+                ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
+                ' where c.consent_key = :consentKey and c.deleted = 0'
+        List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
+                .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
+                .setString('consentKey', consentKey)
+                .list()
+        results
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
@@ -970,7 +981,7 @@ class QueryService implements Status {
 
     LinkedHashMap getConsentGroupByKey(String projectKey) {
         Issue issue = findByKey(projectKey)
-        Collection<ConsentCollectionLink> collectionLinks = findCollectionLinksByConsentKey(projectKey)
+        List<ConsentCollectionLinkDTO> collectionLinks = getCollectionLinksDtoByConsentKey(projectKey)
         Collection<String> collectionIds = findAllSampleCollectionIdsForConsent(projectKey)
         Collection<SampleCollection> sampleCollections
         if (!collectionIds.isEmpty()) {

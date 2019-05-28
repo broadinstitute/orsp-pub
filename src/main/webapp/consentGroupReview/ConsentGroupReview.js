@@ -3,7 +3,6 @@ import { h,div, h2, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
-import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
@@ -15,7 +14,19 @@ import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { format } from 'date-fns';
+import { Table } from "../components/Table";
+import { isEmpty } from "../util/Utils";
 
+const headers =
+  [
+    { name: 'ID', value: 'sampleCollectionId' },
+    { name: 'Name', value: 'collectionName' },
+    { name: 'Category', value: 'collectionCategory' },
+    { name: 'Group', value: 'collectionGroup' },
+    { name: 'Linked Project', value: 'linkedProjectKey' },
+    { name: 'Info Link', value: 'infoLink' },
+    { name: 'Remove', value: 'unlinkSampleCollection' }
+  ];
 
 class ConsentGroupReview extends Component {
 
@@ -232,10 +243,6 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  isEmpty(value) {
-    return value === '' || value === null || value === undefined;
-  }
-
   isValid = () => {
     let consent = false;
     let protocol = false;
@@ -245,30 +252,30 @@ class ConsentGroupReview extends Component {
     let startDate = false;
     let consentGroupName = false;
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.consent)) {
+    if (isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.protocol)) {
+    if (isEmpty(this.state.formData.consentExtraProps.protocol)) {
       protocol = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.collInst)) {
+    if (isEmpty(this.state.formData.consentExtraProps.collInst)) {
       collInst = true;
     }
 
-    if (this.isEmpty(this.state.formData.consentExtraProps.describeConsentGroup)) {
+    if (isEmpty(this.state.formData.consentExtraProps.describeConsentGroup)) {
       describeConsentGroup = true;
     }
 
     if (!this.state.formData.consentExtraProps.onGoingProcess
-      && this.isEmpty(this.state.formData.consentExtraProps.endDate)
-      && !this.isEmpty(this.state.formData.consentExtraProps.startDate)
+      && isEmpty(this.state.formData.consentExtraProps.endDate)
+      && !isEmpty(this.state.formData.consentExtraProps.startDate)
     ) {
       endDate = true;
     }
 
-    if (!this.isEmpty(this.state.formData.consentExtraProps.endDate) && this.isEmpty(this.state.formData.consentExtraProps.startDate)) {
+    if (!isEmpty(this.state.formData.consentExtraProps.endDate) && isEmpty(this.state.formData.consentExtraProps.startDate)) {
       startDate = true;
     }
 
@@ -493,21 +500,21 @@ class ConsentGroupReview extends Component {
     let institutionalError = instSources.filter((obj, idx) => {
       let response = false;
       // Error if Name is missing
-      if (this.isEmpty(obj.current.name) && this.isEmpty(obj.future.name)
-        || this.isEmpty(obj.future.name) && !this.isEmpty(obj.future.country)
+      if (isEmpty(obj.current.name) && isEmpty(obj.future.name)
+        || isEmpty(obj.future.name) && !isEmpty(obj.future.country)
       ) {
         institutionalNameErrorIndex.push(idx);
         response = true;
       }
       // Error if Country is missing
-      if (this.isEmpty(obj.future.country) && this.isEmpty(obj.current.country)
-        || this.isEmpty(obj.future.country) && !this.isEmpty(obj.future.name)
+      if (isEmpty(obj.future.country) && isEmpty(obj.current.country)
+        || isEmpty(obj.future.country) && !isEmpty(obj.future.name)
       ) {
         institutionalCountryErrorIndex.push(idx);
         response = true;
       }
       // Error if all elements are empty
-      if (!instSources.filter(element => !this.isEmpty(element.future.name) && !this.isEmpty(element.future.country)).length > 0) {
+      if (!instSources.filter(element => !isEmpty(element.future.name) && !isEmpty(element.future.country)).length > 0) {
         institutionalNameErrorIndex.push(0);
         institutionalCountryErrorIndex.push(0);
         response = true;
@@ -546,7 +553,7 @@ class ConsentGroupReview extends Component {
     let institutionalSourcesList = [];
     if (institutionalSources !== null && institutionalSources.length > 0) {
       institutionalSources.map((f) => {
-        if (!this.isEmpty(f.future.name) && !this.isEmpty(f.future.country)) {
+        if (!isEmpty(f.future.name) && !isEmpty(f.future.country)) {
           institutionalSourcesList.push({ name: f.future.name, country: f.future.country });
         }
       });
@@ -591,18 +598,6 @@ class ConsentGroupReview extends Component {
         spinnerService.hideAll();
         console.error(error);
       });
-  };
-
-  handleSampleCollectionChange = () => (data) => {
-    this.setState(prev => {
-      prev.formData.sampleCollections = data;
-      prev.isEdited = !this.areObjectsEqual("formData", "current");
-      return prev;
-    }, () => {
-      if (this.state.errorSubmit === true) {
-        this.isValid();
-      }
-    });
   };
 
   handleCheck = (e) => {
@@ -751,6 +746,23 @@ class ConsentGroupReview extends Component {
     });
   };
 
+  unlinkSampleCollection = (sampleCollection) => () => {
+    ConsentGroup.unlinkSampleCollection(this.props.serverURL, sampleCollection.linkedProjectKey, sampleCollection.consentKey, sampleCollection.sampleCollectionId).then(
+      () => {
+        this.init()
+      }).catch(error => {
+        this.setState({}, () => { throw error })
+      })
+  };
+
+  handleRedirectToInfoLink = (projectKey, scId) => {
+     return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + this.props.projectKey + "&consentKey=" + this.props.consentKey +  "&scId=" + scId].join("/");
+  };
+
+  handleRedirectToProject = (projectKey, projectType) => {
+    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
+  };
+
   render() {
     const {
       consent = '',
@@ -762,7 +774,7 @@ class ConsentGroupReview extends Component {
       startDate = null,
       endDate = null
     } = get(this.state.formData, 'consentExtraProps', '');
-    const instSources = this.state.formData.instSources == undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
+    const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
 
     let currentEndDate = this.state.current.consentExtraProps.endDate !== null ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
     let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
@@ -880,7 +892,7 @@ class ConsentGroupReview extends Component {
             currentValue: this.state.current.consentExtraProps.collContact,
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
-            valueEdited: !this.isEmpty(collContact) === this.isEmpty(this.state.current.consentExtraProps.collContact)
+            valueEdited: !isEmpty(collContact) === isEmpty(this.state.current.consentExtraProps.collContact)
           }),
           InputFieldRadio({
             edit: true,
@@ -902,20 +914,16 @@ class ConsentGroupReview extends Component {
         ]),
 
         Panel({ title: "Sample Collections" }, [
-          InputFieldSelect({
-            id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey,
-            name: 'sampleCollections',
-            isDisabled: false,
-            options: this.state.sampleCollectionList,
-            onChange: this.handleSampleCollectionChange,
-            value: this.state.formData.sampleCollections,
-            currentValue: this.state.current.sampleCollections,
-            placeholder: "Start typing a Sample Collection",
-            isMulti: true,
-            readOnly: true,
-            edit: true
-          }),
+          Table({
+            headers: headers,
+            isAdmin: this.state.isAdmin,
+            data: this.state.current.sampleCollectionLinks,
+            handleRedirectToInfoLink: this.handleRedirectToInfoLink,
+            handleRedirectToProject: this.handleRedirectToProject,
+            unlinkSampleCollection : this.unlinkSampleCollection,
+            sizePerPage: 10,
+            paginationSize: 10
+          })
         ]),
 
         Panel({ title: "Sample Collection Date Range" }, [

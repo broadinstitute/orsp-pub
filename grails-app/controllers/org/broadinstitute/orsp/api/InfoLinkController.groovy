@@ -19,9 +19,10 @@ class InfoLinkController extends AuthenticatedController {
     def getProjectSampleCollections() {
         String consentKey = params.consentKey
         String projectKey = params.projectKey
+        String sampleCollectionId = params.scId
         try {
             Gson gson = new Gson()
-            Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findCollectionLinksByConsentKeyAndProjectKey(consentKey, projectKey)
+            Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findSpecificCollectionLink(consentKey, projectKey, sampleCollectionId)
             render ([ sampleCollections : gson.toJson(result.keySet()),
                       documents: gson.toJson(result.values())
             ] as JSON)
