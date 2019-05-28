@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { hh, h1, ul, li, span} from 'react-hyperscript-helpers';
+import { hh, h1, ul, li, span, div} from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -10,6 +10,7 @@ import { MultiSelect } from '../components/MultiSelect';
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
+import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const fundingTooltip =
   ul({}, [
@@ -32,10 +33,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       formData: {
         projectManager: '',
         piName: '',
+        affiliations: '',
+        affiliationOther: '',
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        notCGSpecify: '',
         subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
@@ -44,10 +46,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       formerData: {
         projectManager: '',
         piName: '',
+        affiliations: '',
+        affiliationOther: '',
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        notCGSpecify: '',
         subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
@@ -111,10 +114,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     )
   };
 
-  componentDidCatch(error, info) {
-    console.log(error, info);
-  }
-
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
@@ -132,6 +131,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             };
           });
           callback(options);
+        }).catch(error => {
+          this.setState(() => { throw error; });
         });
     }
   };
@@ -195,6 +196,28 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.state.formData.piName,
             placeholder: "Start typing the PI Name",
             isMulti: false,
+            edit: false
+          }),
+          InputFieldSelect({
+            label: "Primary Investigator Affiliation ",
+            id: "affiliations",
+            name: "affiliations",
+            options: PI_AFFILIATION,
+            value: this.state.formData.affiliations,
+            onChange: this.handleSelectChange("affiliations"),
+            placeholder: "Choose an affiliation...",
+            readOnly: false,
+            edit: false
+          }),
+          InputFieldText({
+            isRendered: this.state.formData.affiliations.value === "other",
+            id: "affiliationOther",
+            name: "affiliationOther",
+            label: "Primary Investigator Other Affiliation ",
+            value: this.state.formData.affiliationOther,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
             edit: false
           }),
           MultiSelect({

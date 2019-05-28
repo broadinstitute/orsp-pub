@@ -2,6 +2,7 @@ import { Component, Fragment } from 'react';
 import { div, hh, h3, h, button, h1, p } from 'react-hyperscript-helpers';
 import './Wizard.css';
 import { Spinner } from './Spinner';
+import { scrollToTop } from "../util/Utils";
 
 export const Wizard = hh(class Wizard extends Component {
 
@@ -16,11 +17,6 @@ export const Wizard = hh(class Wizard extends Component {
     this.submitHandler = this.submitHandler.bind(this);
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
@@ -33,6 +29,7 @@ export const Wizard = hh(class Wizard extends Component {
       prev.readyToSubmit = false;
       return prev;
     }, () => {
+      scrollToTop();
       this.props.stepChanged(this.state.currentStepIndex);
     })
   };
@@ -46,6 +43,7 @@ export const Wizard = hh(class Wizard extends Component {
         prev.readyToSubmit = this.props.showSubmit(prev.currentStepIndex);
         return prev;
       }, () => {
+        scrollToTop();
         this.props.stepChanged(this.state.currentStepIndex);
       })
     }
@@ -58,6 +56,7 @@ export const Wizard = hh(class Wizard extends Component {
       prev.readyToSubmit = this.props.showSubmit(n);
       return prev;
     }, () => {
+      scrollToTop();
       this.props.stepChanged(this.state.currentStepIndex);
     })
   };
