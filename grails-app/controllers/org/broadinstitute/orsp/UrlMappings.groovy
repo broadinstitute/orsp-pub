@@ -45,6 +45,7 @@ class UrlMappings {
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+        '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
 
 
         // Custom Error handlers.

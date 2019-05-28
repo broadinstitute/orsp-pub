@@ -7,7 +7,6 @@
 <body>
 <script type="text/javascript">
   $(document).ready(function () {
-    console.log("load list en page history vero");
     $("#history").load(
       "https://localhost:8443/dev/api/history?id=ORSP-641",
       function() {
@@ -29,7 +28,7 @@
         <thead>
             <tr>
                 <th>Authorss</th>
-                <th>Datejjj</th>
+                <th>Date</th>
                 <th>Summary</th>
             </tr>
         </thead>

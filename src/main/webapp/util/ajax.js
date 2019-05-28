@@ -266,3 +266,22 @@ export const ConsentCollectionLink = {
     return axios.post(serverUrl + '/api/sample-consent-link', data, config);
   }
 };
+
+export const ProjectMigration = {
+
+  getConsentGroups(url, id) {
+    return axios.get("https://localhost:8443/dev/api/consent-groups?id=DEV-NE-5418");
+  },
+
+  getHistory(url, id) {
+    return axios.get("https://localhost:8443/dev/api/history?id=ORSP-641");
+  },
+
+  getComments(url, id) {
+    return axios.get("https://localhost:8443/dev/api/comments?id=ORSP-641");
+  },
+
+  getSubmissions(url, id) {
+    return axios.get("https://localhost:8443/dev/api/submissions?id=ORSP-641");
+  }  
+};

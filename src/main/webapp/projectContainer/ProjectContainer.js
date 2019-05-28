@@ -1,11 +1,10 @@
 
 import { Component } from 'react';
-import { div, hh, label, span, className, h1, p } from 'react-hyperscript-helpers';
-import axios from 'axios';
+import { div, span, className, h1, p } from 'react-hyperscript-helpers';
+import { loadConsentGroups, loadHistory, loadSubmissions, loadComments } from '../util/renderUtils';
+import { ProjectMigration } from '../util/ajax';
 import '../components/Wizard.css';
 import './index.css';
-
-
 
 class ProjectContainer extends Component {
 
@@ -23,6 +22,9 @@ class ProjectContainer extends Component {
       prev.currentStepIndex = n;
       return prev;
     });
+    if (n == 2) {
+      this.buildConsentGroups();
+    }
     if (n == 3) {
       this.buildSubmissions();
     }
@@ -34,86 +36,47 @@ class ProjectContainer extends Component {
     }
   };
 
-  buildHistory = () => {
-    tinymce.remove();
-    axios.get("https://localhost:8443/dev/api/history?id=ORSP-641").then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      });
-      $.fn.dataTable.moment('M/D/YYYY');
-      $(".submissionTable").DataTable({
-        dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-        buttons: [],
-        language: { search: 'Filter:' },
-        pagingType: "full_numbers",
-        pageLength: 50,
-        columnDefs: [{ targets: [1, 2], orderable: false }],
-        order: [0, "desc"]
-      });
-    });
-  };
-
-  buildComments = () => {
-    axios.get("https://localhost:8443/dev/api/comments?id=ORSP-641").then(resp => {
+  buildConsentGroups = () => {
+    ProjectMigration.getConsentGroups(component.serverUrl, "DEV-NE-5418").then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
       }, () => {
-        this.loadComments();
+        loadConsentGroups();
       });
     });
   };
 
-  loadComments(url) {
-    // $("#comments").load(
-    //   url,
-    //  function () {
-      tinymce.remove();
-        $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
-        $("#comments-table").DataTable({
-          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-          buttons: ['excelHtml5', 'csvHtml5', 'print'],
-          language: { search: 'Filter:' },
-          pagingType: "full_numbers",
-          order: [1, "desc"]
-        });
-        
-        this.initializeEditor();
-   //   }
-   // );
-  }
-  initializeEditor() {
-   // tinymce.remove();
-    tinymce.init({
-      selector: 'textarea.editor',
-      width: '100%',
-      menubar: false,
-      statusbar: false,
-      plugins: "paste",
-      paste_data_images: false
-    });
-
-  }
-
-  buildSubmissions = () => {
-    axios.get("https://localhost:8443/dev/api/submissions?id=ORSP-641").then(resp => {
+  buildHistory = () => {
+    ProjectMigration.getHistory(component.serverUrl, "DEV-NE-5418").then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
-      }, function () {
-        $(".submissionTable").DataTable({
-          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-          buttons: [],
-          language: { search: 'Filter:' },
-          pagingType: "full_numbers",
-          pageLength: 50,
-          columnDefs: [{ targets: [1, 2], orderable: false }],
-          order: [0, "desc"]
-        });
-        $("#submission-tabs").tabs();
+      }, () => {
+        loadHistory();
+      });
+    })
+  };
+
+  buildComments = () => {
+    ProjectMigration.getComments(component.serverUrl, "DEV-NE-5418").then(resp => {
+      this.setState(prev => {
+        prev.content = resp.data;
+        return prev;
+      }, () => {
+        loadComments();
+      });
+    });
+  };
+
+  buildSubmissions = () => {
+    ProjectMigration.getSubmissions(component.serverUrl, "DEV-NE-5418").then(resp => {
+      this.setState(prev => {
+        prev.content = resp.data;
+        return prev;
+      }, () => {
+        loadSubmissions();
       })
-      return resp.data;
     });
   };
 
@@ -122,7 +85,7 @@ class ProjectContainer extends Component {
     const { currentStepIndex } = this.state;
 
     return (
-
+      // will be moved to a new component 
       div({ className: "headerBoxContainer" }, [
         div({ className: "headerBox" }, [
           p({ className: "headerBoxStatus top" }, ["Project Type"]),
@@ -141,9 +104,6 @@ class ProjectContainer extends Component {
             "Awaiting action from: ",
             span({ className: "block" }, ["ActualPerson"])
           ]),
-
-
-
           p({ className: "headerBoxStatus" }, [
             span({ className: "bold" }, ["New Status: "]),
             span({ className: "italic" }, ["SomeStatus"])
@@ -157,7 +117,7 @@ class ProjectContainer extends Component {
             span({ className: "italic" }, ["SomeStatus"])
           ])
         ]),
-
+      
         div({ className: "containerBox" }, [
           div({ className: "tabContainer" }, [
 
