@@ -9,11 +9,6 @@ export const InputField = hh(class InputField extends Component {
     return { hasError: true }
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   render() {
     const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 

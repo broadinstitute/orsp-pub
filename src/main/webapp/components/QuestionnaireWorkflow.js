@@ -159,11 +159,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     });
   };
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }

@@ -41,11 +41,6 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     this.removeFile = this.removeFile.bind(this);
   }
 
-  componentDidCatch(error, info) {
-    console.log('----------------------- error ----------------------')
-    console.log(error, info);
-  }
-
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
