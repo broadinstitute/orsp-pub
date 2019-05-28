@@ -141,16 +141,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
     SampleCollections.getCollectionsCGLinked(component.linkedSampleCollectionsUrl, consentKey).then(
       resp => {
-        const sampleCollectionList = [];
-        sampleCollectionList.push({label: "Sample Collections Linked to " + consentKey, options: []});
-
-        sampleCollectionList[0].options = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
-          };
-        });
+        const label = "Sample Collections Linked to ";
+        const sampleCollectionList = this.setOptionsValues(resp.data, consentKey, label);
 
         this.setState({
           sampleCollectionList: sampleCollectionList,
@@ -161,15 +153,9 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
     SampleCollections.getSampleCollections(component.unlinkedSampleCollectionsUrl, consentKey).then(
       resp => {
-        const sampleCollectionList = this.state.sampleCollectionList.splice(0);
-        sampleCollectionList.push({label: "Link New Sample Collections to Sample Data/Cohort: " + consentKey, options: []});
-        sampleCollectionList[1].options = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
-          };
-        });
+
+        const label = "Link New Sample Collections to Sample Data/Cohort: ";
+        const sampleCollectionList = this.setOptionsValues(resp.data, consentKey, label);
 
         this.setState({
           sampleCollectionList: sampleCollectionList,
@@ -177,6 +163,28 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         })
       }
     );
+  };
+
+  setOptionsValues = (items, consentKey, label) => {
+    let sampleCollectionList = [];
+    let index = 0;
+
+    if (this.state.sampleCollectionList.length === 1) {
+      index = 1;
+      sampleCollectionList = this.state.sampleCollectionList.splice(0);
+    }
+
+    sampleCollectionList.push({label: label + consentKey, options: []});
+
+    sampleCollectionList[index].options = items.map(item => {
+      return {
+        key: item.id,
+        value: item.collectionId,
+        label: item.collectionId + ": " + item.name + " ( " + item.category + " )",
+      };
+    });
+
+    return sampleCollectionList;
   };
 
   render() {
