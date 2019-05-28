@@ -114,7 +114,7 @@
         attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
         consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
         consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
-        getConsentGroups: "${createLink(controller: 'consentGroup', action: 'getConsentGroups')}",
+        consentGroupsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroups')}",
         createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consent-group', method: 'POST')}",
         createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
         error: "${error}",
@@ -134,8 +134,8 @@
         serverURL: "${webRequest.baseUrl}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
-        unConsentedSampleCollections: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
-        getConsentGroupSampleCollections: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
+        unlinkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
+        linkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
       };
     </script>
 

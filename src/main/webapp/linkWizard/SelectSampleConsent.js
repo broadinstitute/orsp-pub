@@ -116,7 +116,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   getConsentGroups = () => {
     this.setState({ consentGroupIsLoading: true });
-    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
+    ConsentGroup.getConsentGroupNames(component.consentGroupsUrl).then(
       resp => {
         const existingConsentGroups = resp.data.map(item => {
           return {
@@ -139,7 +139,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   getAllSampleCollections = (consentKey) => {
     this.setState({ sampleCollectionIsLoading: true });
 
-    SampleCollections.getCollectionsCGLinked(this.props.getConsentGroupSampleCollections, consentKey).then(
+    SampleCollections.getCollectionsCGLinked(component.linkedSampleCollectionsUrl, consentKey).then(
       resp => {
         const sampleCollectionList = [];
         sampleCollectionList.push({label: "Sample Collections Linked to " + consentKey, options: []});
@@ -159,7 +159,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       }
     );
 
-    SampleCollections.getSampleCollections(this.props.unConsentedSampleCollections, consentKey).then(
+    SampleCollections.getSampleCollections(component.unlinkedSampleCollectionsUrl, consentKey).then(
       resp => {
         const sampleCollectionList = this.state.sampleCollectionList.splice(0);
         sampleCollectionList.push({label: "Link New Sample Collections to Sample Data/Cohort: " + consentKey, options: []});
@@ -213,7 +213,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         }, [
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKeyLabel,
+            label: "Link Sample Collection to " + component.projectKey,
             isDisabled: false,
             options: this.state.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
