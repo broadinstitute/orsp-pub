@@ -35,12 +35,22 @@ class ProjectContainer extends Component {
   };
 
   buildHistory = () => {
+    tinymce.remove();
     axios.get("https://localhost:8443/dev/api/history?id=ORSP-641").then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
-      })
-      return resp.data;
+      });
+      $.fn.dataTable.moment('M/D/YYYY');
+      $(".submissionTable").DataTable({
+        dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+        buttons: [],
+        language: { search: 'Filter:' },
+        pagingType: "full_numbers",
+        pageLength: 50,
+        columnDefs: [{ targets: [1, 2], orderable: false }],
+        order: [0, "desc"]
+      });
     });
   };
 
@@ -49,16 +59,59 @@ class ProjectContainer extends Component {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
-      })
-      return resp.data;
+      }, () => {
+        this.loadComments();
+      });
     });
   };
+
+  loadComments(url) {
+    // $("#comments").load(
+    //   url,
+    //  function () {
+      tinymce.remove();
+        $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
+        $("#comments-table").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: ['excelHtml5', 'csvHtml5', 'print'],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          order: [1, "desc"]
+        });
+        
+        this.initializeEditor();
+   //   }
+   // );
+  }
+  initializeEditor() {
+   // tinymce.remove();
+    tinymce.init({
+      selector: 'textarea.editor',
+      width: '100%',
+      menubar: false,
+      statusbar: false,
+      plugins: "paste",
+      paste_data_images: false
+    });
+
+  }
 
   buildSubmissions = () => {
     axios.get("https://localhost:8443/dev/api/submissions?id=ORSP-641").then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
+      }, function () {
+        $(".submissionTable").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: [],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          pageLength: 50,
+          columnDefs: [{ targets: [1, 2], orderable: false }],
+          order: [0, "desc"]
+        });
+        $("#submission-tabs").tabs();
       })
       return resp.data;
     });
@@ -67,46 +120,46 @@ class ProjectContainer extends Component {
   render() {
 
     const { currentStepIndex } = this.state;
-    
+
     return (
 
-      div({className: "headerBoxContainer"}, [
-        div({ className: "headerBox"}, [
+      div({ className: "headerBoxContainer" }, [
+        div({ className: "headerBox" }, [
           p({ className: "headerBoxStatus top" }, ["Project Type"]),
-          h1({className: "projectTitle"}, [
-            span({ className: "projectKey" }, ["ProjectKey: "]), 
+          h1({ className: "projectTitle" }, [
+            span({ className: "projectKey" }, ["ProjectKey: "]),
             span({ className: "italic" }, ["ProjectTitle"])
           ]),
 
 
-          p({className: "headerLabel"}, [
+          p({ className: "headerLabel" }, [
             "Status: ",
-            span({className:"block"},  ["ActualStatus"])
+            span({ className: "block" }, ["ActualStatus"])
           ]),
 
-          p({className: "headerLabel"}, [
+          p({ className: "headerLabel" }, [
             "Awaiting action from: ",
-            span({ className: "block" },  ["ActualPerson"])
+            span({ className: "block" }, ["ActualPerson"])
           ]),
 
 
 
           p({ className: "headerBoxStatus" }, [
-            span({ className: "bold" }, ["New Status: "]), 
+            span({ className: "bold" }, ["New Status: "]),
             span({ className: "italic" }, ["SomeStatus"])
           ]),
           p({ className: "headerBoxStatus" }, [
-            span({ className: "bold" }, ["Information Sub-Status: "]), 
+            span({ className: "bold" }, ["Information Sub-Status: "]),
             span({ className: "italic" }, ["SomeStatus"])
           ]),
           p({ className: "headerBoxStatus" }, [
-            span({ className: "bold" }, ["Documents Sub-Status: "]), 
+            span({ className: "bold" }, ["Documents Sub-Status: "]),
             span({ className: "italic" }, ["SomeStatus"])
           ])
         ]),
 
-        div({ className: "containerBox"}, [
-          div({ className: "tabContainer"}, [
+        div({ className: "containerBox" }, [
+          div({ className: "tabContainer" }, [
 
 
             //   this.props.children.map((child, idx) => {
@@ -123,8 +176,8 @@ class ProjectContainer extends Component {
             div({ className: "tabStep " + (currentStepIndex === 4 ? "active" : ""), onClick: this.goStep(4) }, ["Messages"]),
             div({ className: "tabStep " + (currentStepIndex === 5 ? "active" : ""), onClick: this.goStep(5) }, ["History"]),
           ]),
-          div({ className: "tabContent", dangerouslySetInnerHTML: { __html: this.state.content }  }, [
-            
+          div({ className: "tabContent", dangerouslySetInnerHTML: { __html: this.state.content } }, [
+
           ])
         ])
       ])
