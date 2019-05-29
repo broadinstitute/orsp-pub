@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, p, div, h2, button } from 'react-hyperscript-helpers';
+import { h, hh, p, div, h2, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -22,7 +22,7 @@ import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
-class ProjectReview extends Component {
+export const ProjectReview = hh(class ProjectReview extends Component {
 
   constructor(props) {
     super(props);
@@ -163,6 +163,7 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
+        this.props.statusBoxHandler(issue.data);
         current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.affiliationOther = issue.data.issue.affiliationOther;
@@ -294,13 +295,14 @@ class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
+    Project.addExtraProperties(this.props.serverURL, this.props.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
           prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
-        });
+        }, () => Project.getProject(this.props.projectUrl, this.props.projectKey).then(
+          issue => {this.props.statusBoxHandler(issue.data)}));
       }
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -342,7 +344,8 @@ class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+    // COSOBUGUBUGU
+    Project.updateProject(this.props.serverURL, project, this.props.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
@@ -699,6 +702,22 @@ class ProjectReview extends Component {
       generalError = true;
     }
 
+
+    /*
+          issue : component.issue,
+      searchUsersURL : component.searchUsersURL,
+      projectKey : component.projectKey,
+      projectUrl : component.projectUrl,
+      addExtraPropUrl : component.saveExtraPropUrl,
+      isAdmin : component.isAdmin,
+      isViewer : component.isViewer,
+      serverURL : component.serverURL,
+      rejectProjectUrl : component.rejectProjectUrl,
+      updateProjectUrl : component.updateProjectUrl,
+      discardReviewUrl : component.discardReviewUrl,
+      clarificationUrl : component.clarificationUrl,
+      loadingImage : component.loadingImage
+    * */
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -1232,6 +1251,4 @@ class ProjectReview extends Component {
       ])
     )
   }
-}
-
-export default ProjectReview;
+});

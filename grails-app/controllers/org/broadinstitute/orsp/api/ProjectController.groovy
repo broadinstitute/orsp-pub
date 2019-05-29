@@ -26,7 +26,7 @@ class ProjectController extends AuthenticatedController {
     }
 
     def container() {
-        render(view: "/projectContainer/index")
+        render(view: "/mainContainer/index")
     }
 
     def dul() {

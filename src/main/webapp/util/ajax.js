@@ -142,11 +142,12 @@ export const Project = {
   },
 
   getProject(url, projectkey) {
+    //QUE LLEGA?
     return axios.get(url + '?id=' + projectkey);
   },
 
   addExtraProperties(url, projectKey, data) {
-    return axios.post(url + '?id=' + projectKey, data);
+    return axios.post(url + '/project/modifyExtraProperties?id=' + projectKey, data);
   },
 
   rejectProject(url, projectKey) {
@@ -154,7 +155,7 @@ export const Project = {
   },
 
   updateProject(url, data, projectKey) {
-    return axios.put(url + '?projectKey=' + projectKey, data);
+    return axios.put(url + '/project/update?projectKey=' + projectKey, data);
   },
 
   updateAdminOnlyProps(url, data, projectKey) {

@@ -1,8 +1,4 @@
 <g:javascript>
-    const projectReviewValues = {
-     
-    };
-
     const urls = {
         saveExtraPropUrl: "${createLink(controller: 'project', action: 'modifyExtraProperties')}"
     };
@@ -55,11 +51,11 @@
 <asset:javascript src="jquery.file.upload-9.9.2/js/jquery.fileupload.js"/>
 
 
-  <title>Project Container</title>
+  <!--<title>Project Container</title>-->
 </head>
 
 <body>
-  <div id="projectContainer"></div>
-  <asset:javascript src="build/projectContainer.js"/>
+  <div id="main"></div>
+  <asset:javascript src="build/mainIndex.js"/>
 </body>
 </html>
