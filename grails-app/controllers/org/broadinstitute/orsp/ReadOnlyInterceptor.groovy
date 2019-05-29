@@ -2,6 +2,11 @@ package org.broadinstitute.orsp
 
 import grails.converters.JSON
 
+/**
+ * Interceptor specific to API access related to the Read Only admin role
+ *
+ * Requires not to be ro_admin role to proceed
+ */
 class ReadOnlyInterceptor implements UserInfo {
 
     ReadOnlyInterceptor() {
