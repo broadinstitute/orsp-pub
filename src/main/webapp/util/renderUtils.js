@@ -22,42 +22,6 @@ export const loadSubmissions = () => {
   $("#submission-tabs").tabs();
 }
 
-export const loadConsentGroups = () => {
-  $('.consent-group-panel-body').hide();
-  $('.consent-accordion-toggle').on('click', function () {
-    var icon = $(this).children().first();
-    var body = $(this).parent().parent().next();
-    if (icon.hasClass("glyphicon-chevron-up")) {
-      icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-      body.slideUp();
-    } else {
-      icon.removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-      body.show("slow");
-    }
-  });
-  $(".modal-add-button").on('click', function () {
-    $("#add-consent-document-modal").load(
-      "${createLink(controller: 'consentGroup', action: 'loadModalWindow')}",
-      {
-        issueKey: $(this).data("issue"),
-        consentKey: $(this).data("consent"),
-        controller: "${issue.controller}"
-      },
-      function () {
-        $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-        $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
-      }
-    ).dialog({
-      modal: true,
-      minWidth: 1000,
-      minHeight: 500,
-      closeOnEscape: true,
-      hide: { effect: "fadeOut", duration: 300 },
-      show: { effect: "fadeIn", duration: 300 }
-    }).parent().removeClass("ui-widget-content");
-  });
-}
-
 export const loadComments = () => {
   tinymce.remove();
   $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
