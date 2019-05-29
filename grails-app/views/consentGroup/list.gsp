@@ -106,6 +106,8 @@
 
         </g:each>
     </div>
+    %{-- Modal container to upload a consent group attachment type from within a project --}%
+    <div class="modal" id="add-consent-document-modal" tabindex="-1" role="dialog" aria-labelledby="addConsentDocumentModalDialog" aria-hidden="true"></div>
 </g:if>
 
 </body>
