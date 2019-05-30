@@ -8,6 +8,7 @@ import { ConsentGroups } from "./ConsentGroups"
 import '../components/Wizard.css';
 import './index.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
+import { AdminOnly } from "../adminOnly/AdminOnly";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -46,6 +47,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
             div({ className: "tabStep " + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3) }, ["Submissions"]),
             div({ className: "tabStep " + (currentStepIndex === 4 ? "active" : ""), onClick: this.goStep(4) }, ["Messages"]),
             div({ className: "tabStep " + (currentStepIndex === 5 ? "active" : ""), onClick: this.goStep(5) }, ["History"]),
+            div({ className: "tabStep " + (currentStepIndex === 6 ? "active" : ""), onClick: this.goStep(6) }, ["Admin Only"])
           ]),
           div({ className: "tabContent" }, [
             div({}, [
@@ -80,7 +82,17 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               ConsentGroups({ isRendered: this.state.currentStepIndex === 2 }),
               Submissions({ isRendered: this.state.currentStepIndex === 3 }),
               Comments({ isRendered: this.state.currentStepIndex === 4 }),
-              History({ isRendered: this.state.currentStepIndex === 5 })
+              History({ isRendered: this.state.currentStepIndex === 5 }),
+              AdminOnly({
+                isRendered: this.state.currentStepIndex === 6,
+                isAdmin : this.props.isAdmin,
+                loadingImage : this.props.loadingImage,
+                userSessionUrl : this.props.userSessionUrl,
+                projectKey : this.props.projectKey,
+                projectUrl : this.props.projectUrl,
+                updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
+                statusBoxHandler: this.props.statusBoxHandler
+              })
             ]
             )
           ])
