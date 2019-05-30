@@ -163,9 +163,9 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
-        this.props.statusBoxHandler(issue.data);
+        this.props.initStatusBoxInfo(issue.data);
         current.approvalStatus = issue.data.issue.approvalStatus;
-        current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
+        current.description = isEmpty(issue.data.issue.description) ? '' : issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
@@ -242,7 +242,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   isAdmin = () => {
     return this.props.isAdmin === "true";
   }
-  
+
   isViewer = () => {
     return this.props.isViewer === "true";
   }
@@ -301,8 +301,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(prev => {
           prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
-        }, () => Project.getProject(this.props.projectUrl, this.props.projectKey).then(
-          issue => {this.props.statusBoxHandler(issue.data)}));
+        }, () => this.props.statusBoxHandler(this.getProject()))
       }
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -344,7 +343,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    // COSOBUGUBUGU
     Project.updateProject(this.props.serverURL, project, this.props.projectKey).then(
       resp => {
         this.removeEdits('approve');
@@ -390,10 +388,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
-    
+
     if (this.state.reviewSuggestion) {
       project.editsApproved = true;
-    }    
+    }
     if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
       project.textSharingType = this.state.formData.projectExtraProps.textSharingType;
     } else {
@@ -701,23 +699,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       attestationError = true;
       generalError = true;
     }
-
-
-    /*
-          issue : component.issue,
-      searchUsersURL : component.searchUsersURL,
-      projectKey : component.projectKey,
-      projectUrl : component.projectUrl,
-      addExtraPropUrl : component.saveExtraPropUrl,
-      isAdmin : component.isAdmin,
-      isViewer : component.isViewer,
-      serverURL : component.serverURL,
-      rejectProjectUrl : component.rejectProjectUrl,
-      updateProjectUrl : component.updateProjectUrl,
-      discardReviewUrl : component.discardReviewUrl,
-      clarificationUrl : component.clarificationUrl,
-      loadingImage : component.loadingImage
-    * */
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;

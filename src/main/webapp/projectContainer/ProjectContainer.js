@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { div, span, className, h1, p, hh } from 'react-hyperscript-helpers';
-import { ProjectMigration } from '../util/ajax';
 import { ProjectReview } from "../projectReview/ProjectReview";
 import { History } from "./History";
 import { Comments } from "./Comments";
@@ -8,6 +7,7 @@ import { Submissions } from "./Submissions";
 import { ConsentGroups } from "./ConsentGroups"
 import '../components/Wizard.css';
 import './index.css';
+import { ProjectDocument } from "../projectDocument/ProjectDocument";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -31,7 +31,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   render() {
     const { currentStepIndex } = this.state;
     return (
-      // will be moved to a new component 
+      // will be moved to a new component
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
           div({ className: "tabContainer" }, [
@@ -52,6 +52,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               ProjectReview({
                 isRendered: this.state.currentStepIndex === 0,
                 statusBoxHandler: this.props.statusBoxHandler,
+                initStatusBoxInfo: this.props.initStatusBoxInfo,
                 searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
                 projectKey: this.props.projectKey,
                 projectUrl: this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
@@ -63,6 +64,18 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 discardReviewUrl: this.props.discardReviewUrl,
                 clarificationUrl: this.props.clarificationUrl,
                 loadingImage: this.props.loadingImage
+              }),
+              ProjectDocument({
+                isRendered: this.state.currentStepIndex === 1,
+                projectKey: this.props.projectKey,
+                attachedDocumentsUrl: this.props.attachedDocumentsUrl,
+                attachDocumentsUrl: this.props.attachDocumentsUrl,
+                rejectDocumentUrl:this.props.rejectDocumentUrl,
+                approveDocumentUrl:this.props.approveDocumentUrl,
+                downloadDocumentUrl: this.props.downloadDocumentUrl,
+                sessionUserUrl: this.props.sessionUserUrl,
+                loadingImage: this.props.loadingImage,
+                removeDocumentUrl: this.props.removeDocumentUrl
               }),
               ConsentGroups({ isRendered: this.state.currentStepIndex === 2 }),
               Submissions({ isRendered: this.state.currentStepIndex === 3 }),

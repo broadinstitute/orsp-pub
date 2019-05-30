@@ -1,7 +1,7 @@
 import { Component, React } from 'react';
 import { hh, h1, span, div, p} from 'react-hyperscript-helpers';
 import './QuestionnaireWorkflow.css';
-import get from 'lodash/get';
+import { isEmpty } from "../util/Utils";
 
 export const StatusBox = hh(class StatusBox extends Component {
 
@@ -11,21 +11,19 @@ export const StatusBox = hh(class StatusBox extends Component {
       summary = '',
       approvalStatus = '',
       status= ''
-    } = get(this.props.status,'issue', '');
+    } = this.props.info;
 
     const { actor= '',
       projectReviewApproved= ''
-    } = get(this.props.status,'extraProperties', '');
-
+    } = isEmpty(this.props.status) ? this.props.info : this.props.status;
 
     return(
       div({className: "headerBox"}, [
         p({className: "issue-type"}, [type]),
         h1({className: "projectTitle"}, [
-          span({className: "projectKey"}, ["ProjectKey: " ]),
-          span({className: "italic"}, [projectKey])
+          span({className: "projectKey"}, [projectKey+": " ]),
+          span({className: "italic"}, [summary])
         ]),
-        // class="issue-type"/
         p({className: "headerLabel"}, [
           "Status: ",
           span({className: "block"}, [status])
