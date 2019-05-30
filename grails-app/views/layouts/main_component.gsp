@@ -268,7 +268,6 @@
   }
 
   function loadHistory(url) {
-    console.log("load history vero");
     $("#history").load(
       url,
       function() {

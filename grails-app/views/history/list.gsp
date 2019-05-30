@@ -27,7 +27,7 @@
     <table id="history-table" class="table table-bordered table-striped table-condensed table-hover">
         <thead>
             <tr>
-                <th>Authorss</th>
+                <th>Author</th>
                 <th>Date</th>
                 <th>Summary</th>
             </tr>

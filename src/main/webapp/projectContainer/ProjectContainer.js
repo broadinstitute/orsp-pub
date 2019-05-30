@@ -1,13 +1,15 @@
 import { Component } from 'react';
 import { div, span, className, h1, p, hh } from 'react-hyperscript-helpers';
-import { loadConsentGroups, loadHistory, loadSubmissions, loadComments } from '../util/renderUtils';
 import { ProjectMigration } from '../util/ajax';
+import { ProjectReview } from "../projectReview/ProjectReview";
+import { History } from "./History";
+import { Comments } from "./Comments";
+import { Submissions } from "./Submissions";
+import { ConsentGroups } from "./ConsentGroups"
 import '../components/Wizard.css';
 import './index.css';
-import { ProjectReview } from "../projectReview/ProjectReview";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
-
 
   constructor(props) {
     super(props);
@@ -17,7 +19,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       content: '',
       dialogContent: ''
     };
-    this.buildConsentGroups = this.buildConsentGroups.bind(this);
   }
 
   goStep = (n) => (e) => {
@@ -25,107 +26,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       prev.currentStepIndex = n;
       return prev;
     });
-    if (n === 2) {
-      this.buildConsentGroups();
-    }
-    if (n === 3) {
-      this.buildSubmissions();
-    }
-    if (n === 4) {
-      this.buildComments();
-    }
-    if (n === 5) {
-      this.buildHistory();
-    }
-  };
-
-  buildConsentGroups = () => {
-    ProjectMigration.getConsentGroups(component.serverUrl, "DEV-NE-5418").then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        this.loadConsentGroups();
-      });
-    });
-
-  };
-
-
-  loadConsentGroups = () => {
-    $('.consent-group-panel-body').hide();
-    $('.consent-accordion-toggle').on('click', function () {
-      var icon = $(this).children().first();
-      var body = $(this).parent().parent().next();
-      if (icon.hasClass("glyphicon-chevron-up")) {
-        icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-        body.slideUp();
-      } else {
-        icon.removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-        body.show("slow");
-      }
-    });
-    $(".modal-add-button").on('click', function () {
-      $("#add-consent-document-modal").load(
-        "https://localhost:8443/dev/api/consent-group/upload-modal?"
-        + $.param({
-          issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent")
-        }),
-        function () {
-          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-          $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
-        }
-      ).dialog({
-        modal: true,
-        minWidth: 1000,
-        minHeight: 500,
-        closeOnEscape: true,
-        hide: { effect: "fadeOut", duration: 300 },
-        show: { effect: "fadeIn", duration: 300 },
-        dialogClass: "no-titlebar" 
-      }).parent().removeClass("ui-widget-content");
-      $(".ui-dialog-titlebar").hide();
-    } );
-  }
-
-  buildHistory = () => {
-    ProjectMigration.getHistory(component.serverUrl, "DEV-NE-5418").then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        loadHistory();
-      });
-    })
-  };
-
-  buildComments = () => {
-    ProjectMigration.getComments(component.serverUrl, "DEV-NE-5418").then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        loadComments();
-      });
-    });
-  };
-
-  buildSubmissions = () => {
-    ProjectMigration.getSubmissions(component.serverUrl, "DEV-NE-5418").then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        loadSubmissions();
-      })
-    });
   };
 
   render() {
-
     const { currentStepIndex } = this.state;
-
     return (
       // will be moved to a new component 
       div({ className: "headerBoxContainer" }, [
@@ -144,24 +48,29 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
             div({ className: "tabStep " + (currentStepIndex === 5 ? "active" : ""), onClick: this.goStep(5) }, ["History"]),
           ]),
           div({ className: "tabContent" }, [
-            div({dangerouslySetInnerHTML: { __html: this.state.content } },[]),
-            div({},[
+            div({}, [
               ProjectReview({
+                isRendered: this.state.currentStepIndex === 0,
                 statusBoxHandler: this.props.statusBoxHandler,
-                searchUsersURL : this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
-                projectKey : this.props.projectKey,
-                projectUrl : this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-                isAdmin : this.props.isAdmin,
-                isViewer : this.props.isViewer,
-                serverURL : this.props.serverURL,
-                rejectProjectUrl : this.props.rejectProjectUrl,
-                updateProjectUrl : this.props.updateProjectUrl,
-                discardReviewUrl : this.props.discardReviewUrl,
-                clarificationUrl : this.props.clarificationUrl,
-                loadingImage : this.props.loadingImage
-              })
-            ])
-          ]),
+                searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
+                projectKey: this.props.projectKey,
+                projectUrl: this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+                isAdmin: this.props.isAdmin,
+                isViewer: this.props.isViewer,
+                serverURL: this.props.serverURL,
+                rejectProjectUrl: this.props.rejectProjectUrl,
+                updateProjectUrl: this.props.updateProjectUrl,
+                discardReviewUrl: this.props.discardReviewUrl,
+                clarificationUrl: this.props.clarificationUrl,
+                loadingImage: this.props.loadingImage
+              }),
+              ConsentGroups({ isRendered: this.state.currentStepIndex === 2 }),
+              Submissions({ isRendered: this.state.currentStepIndex === 3 }),
+              Comments({ isRendered: this.state.currentStepIndex === 4 }),
+              History({ isRendered: this.state.currentStepIndex === 5 })
+            ]
+            )
+          ])
         ])
       ])
     );
