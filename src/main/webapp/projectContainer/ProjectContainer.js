@@ -13,8 +13,13 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   constructor(props) {
     super(props);
+    let tab = '';
+    if(component.tab !== "" && component.tab !== undefined) {
+      tab = component.tab
+    }
     this.state = {
       loading: false,
+      tab: tab,   
       currentStepIndex: 0,
       content: '',
       dialogContent: ''
@@ -64,10 +69,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 clarificationUrl: this.props.clarificationUrl,
                 loadingImage: this.props.loadingImage
               }),
-              ConsentGroups({ isRendered: this.state.currentStepIndex === 2 }),
-              Submissions({ isRendered: this.state.currentStepIndex === 3 }),
-              Comments({ isRendered: this.state.currentStepIndex === 4 }),
-              History({ isRendered: this.state.currentStepIndex === 5 })
+              ConsentGroups({ isRendered: this.state.currentStepIndex === 2 || this.state.tab === 'consentGroups'}),
+              Submissions({ isRendered: this.state.currentStepIndex === 3 || this.state.tab === 'submissions' }),
+              Comments({ isRendered: this.state.currentStepIndex === 4 || this.state.tab === 'comments'}),
+              History({ isRendered: this.state.currentStepIndex === 5 || this.state.tab === 'history' })
             ]
             )
           ])

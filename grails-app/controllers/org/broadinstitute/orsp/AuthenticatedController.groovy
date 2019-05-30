@@ -150,14 +150,16 @@ class AuthenticatedController implements Interceptor, UserInfo {
             if (comment == null) {
                 flash.error = "Error saving comment"
                 log.error("Error saving comment for issue '" + params.id + "': null")
-                redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+               // redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+                redirect([action: "main", controller: "project", params: [projectKey: params.id, tab: "comments"]])
             }
             if (comment.hasErrors()) {
                 flash.error = "Error saving comment"
                 comment.errors.getAllErrors().each {
                     log.error("Error saving comment for issue '" + params.id + "': " + it)
                 }
-                redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+               // redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+                redirect([action: "main", controller: "project", params: [projectKey: params.id, tab: "comments"]])
             }
 
             // By default, comments should go to ORSP
@@ -187,7 +189,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
                             user: getUser(),
                             issue: issue))
         }
-        redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+        redirect([action: "main", controller: "project", params: [projectKey: params.id, tab: "comments"]])
     }
 
     /**

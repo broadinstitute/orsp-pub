@@ -16,7 +16,9 @@ class UrlMappings {
         '/api/swagger/**'(controller: 'api', action: 'swagger')
 
         '/api/project'(resource: 'project')
-        group "/api/project/$projectKey", {'/'(controller: 'project', action: 'container', method: 'GET')}
+        //group "/api/project/$projectKey", {'/'(controller: 'project', action: 'container', method: 'GET')}
+
+
         '/api/project/get-type'(controller: 'project', action: 'getProjectType', method: 'GET')
         '/api/project/delete'(controller: 'project', action: 'delete', method: 'DELETE')
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
@@ -49,6 +51,9 @@ class UrlMappings {
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
+        //"/api/project/$projectKey", {'/'(controller: 'project', action: 'container', method: 'GET')}
+
+
 
 
         // Custom Error handlers.
