@@ -15,7 +15,7 @@ export const History = hh(class History extends Component {
     this.getHistory();
   }
 
-  getHistory = () => {
+  getHistory() {
     ProjectMigration.getHistory(component.serverUrl, "DEV-NE-5418").then(resp => {
       this.setState(prev => {
         prev.content = resp.data;

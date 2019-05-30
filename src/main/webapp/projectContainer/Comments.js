@@ -15,7 +15,7 @@ export const Comments = hh(class Comments extends Component {
     this.getComments();
   }
 
-  getComments = () => {
+  getComments() {
     ProjectMigration.getComments(component.serverUrl, "DEV-NE-5418").then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
