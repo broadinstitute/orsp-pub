@@ -14,7 +14,6 @@ class UrlMappings {
         "/api/report/funding"(controller: 'report', action: "funding")
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
-
         '/api/project'(resource: 'project')
         //group "/api/project/$projectKey", {'/'(controller: 'project', action: 'container', method: 'GET')}
 

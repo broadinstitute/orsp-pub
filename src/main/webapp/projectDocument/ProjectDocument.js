@@ -4,12 +4,11 @@ import { DocumentHandler } from "../util/ajax";
 import { User } from "../util/ajax";
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { h } from 'react-hyperscript-helpers';
+import { h, hh } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from '../components/Spinner';
 
-
-class ProjectDocument extends Component {
+export const ProjectDocument = hh(class ProjectDocument extends Component {
 
   constructor(props) {
     super(props);
@@ -68,15 +67,6 @@ class ProjectDocument extends Component {
     });
   };
 
-  removeDocument = (documentId) => {
-    DocumentHandler.delete(this.props.removeDocumentUrl, documentId).then(resp => {
-      this.getAttachedDocuments();
-    }).catch(error => {
-      this.setState({serverError: true});
-      console.error(error);
-    });
-  };
-  
   handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
@@ -143,5 +133,4 @@ class ProjectDocument extends Component {
       ])
     )}
 
-}
-export default ProjectDocument
+});
