@@ -87,7 +87,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       }).parent().removeClass("ui-widget-content");
       $(".ui-dialog-titlebar").hide();
     } );
-  }
+  };
 
   buildHistory = () => {
     ProjectMigration.getHistory(component.serverUrl, "DEV-NE-5418").then(resp => {
