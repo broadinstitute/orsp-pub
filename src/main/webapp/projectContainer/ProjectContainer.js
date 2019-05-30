@@ -14,8 +14,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.state = {
       loading: false,
       currentStepIndex: 0,
-      content: ''
+      content: '',
+      dialogContent: ''
     };
+    this.buildConsentGroups = this.buildConsentGroups.bind(this);
   }
 
   goStep = (n) => (e) => {
@@ -43,10 +45,49 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
         prev.content = resp.data;
         return prev;
       }, () => {
-        loadConsentGroups();
+        this.loadConsentGroups();
       });
     });
+
   };
+
+
+  loadConsentGroups = () => {
+    $('.consent-group-panel-body').hide();
+    $('.consent-accordion-toggle').on('click', function () {
+      var icon = $(this).children().first();
+      var body = $(this).parent().parent().next();
+      if (icon.hasClass("glyphicon-chevron-up")) {
+        icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+        body.slideUp();
+      } else {
+        icon.removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+        body.show("slow");
+      }
+    });
+    $(".modal-add-button").on('click', function () {
+      $("#add-consent-document-modal").load(
+        "https://localhost:8443/dev/api/consent-group/upload-modal?"
+        + $.param({
+          issueKey: $(this).data("issue"),
+          consentKey: $(this).data("consent")
+        }),
+        function () {
+          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+          $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
+        }
+      ).dialog({
+        modal: true,
+        minWidth: 1000,
+        minHeight: 500,
+        closeOnEscape: true,
+        hide: { effect: "fadeOut", duration: 300 },
+        show: { effect: "fadeIn", duration: 300 },
+        dialogClass: "no-titlebar" 
+      }).parent().removeClass("ui-widget-content");
+      $(".ui-dialog-titlebar").hide();
+    } );
+  }
 
   buildHistory = () => {
     ProjectMigration.getHistory(component.serverUrl, "DEV-NE-5418").then(resp => {

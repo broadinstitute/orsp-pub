@@ -284,5 +284,9 @@ export const ProjectMigration = {
 
   getSubmissions(url, id) {
     return axios.get("https://localhost:8443/dev/api/submissions?id=ORSP-641");
+  },
+
+  getConsentGroupUploadModal(url, issueKey, consentKey) {
+    return axios.get("https://localhost:8443/dev/api/consent-group/upload-modal?issueKey=" + issueKey + "&consentKey=" + consentKey);
   }  
 };
