@@ -142,7 +142,7 @@
         clarificationUrl: "${createLink(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')}",
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-        saveExtraPropUrl: "${createLink(controller: 'project', action: 'modifyExtraProperties')}"
+        saveExtraPropUrl: "${createLink(controller: 'project', action: 'modifyExtraProperties')}",
         unlinkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
         linkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
       };

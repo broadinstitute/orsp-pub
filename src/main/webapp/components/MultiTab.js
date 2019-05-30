@@ -11,15 +11,16 @@ export const MultiTab = hh(class MultiTab extends Component {
   render() {
     return (
 
-      // will be moved to a new component
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
           div({ className: "tabContainer" }, [
-              this.props.children.map((child, idx) => {
-                return h(Fragment, { key: idx }, [
-                  div({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: this.goStep(idx)}, [child.props.title])
-                ])
-              }])
+            this.props.children.map((child, idx) => {
+              return h(Fragment, { key: idx }, [
+                div({ className: "tabStep " + (idx === currentStepIndex ? "active" : ""), onClick: this.goStep(idx)}, [child.props.title])
+              ])
+            })
+
+          ])
         ])
       ])
     )
