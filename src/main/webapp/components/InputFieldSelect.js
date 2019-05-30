@@ -5,6 +5,20 @@ import { InputField } from './InputField';
 import './InputField.css';
 import get from 'lodash/get';
 
+const selectWithLabels = {
+  groupHeading: (provided, state) => ({
+    color:'#666666',
+    cursor:'default',
+    display: 'block',
+    fontWeight: '500',
+    marginBottom: '7px',
+    padding: '19px 12px 7px 12px',
+    textTransform: 'uppercase',
+    fontSize: '14px !important',
+    borderBottom: '1px solid #DDDDDD',
+  }),
+};
+
 export const InputFieldSelect = hh(class InputFieldSelect extends Component {
 
   static getDerivedStateFromError(error) {
@@ -53,6 +67,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   };
 
   render() {
+    const { isLoading = false, placeholder = '' } = this.props;
     let edited = false;
     let currentValueStr;
     let currentValue;
@@ -113,7 +128,8 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isDisabled: this.props.readOnly,
               isMulti: this.props.isMulti,
               isClearable: this.props.isClearable,
-              isLoading: this.props.isLoading,
+              isLoading: isLoading,
+              styles: selectWithLabels,
             })
           ])
         ])
