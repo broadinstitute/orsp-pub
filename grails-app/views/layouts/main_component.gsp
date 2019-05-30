@@ -124,7 +124,8 @@
         issueStatuses: issueStatuses,
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-        projectKey: "${params.projectKey}",
+        projectKey: "${projectKey}",
+        tab: "${tab}",
         consentKey: "${params.consentKey}",
         projectType: '${params.type}',
         projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
@@ -145,14 +146,13 @@
         saveExtraPropUrl: "${createLink(controller: 'project', action: 'modifyExtraProperties')}",
         unlinkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
         linkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
-
         attachedDocumentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
-
         rejectDocumentUrl: "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
         approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
         sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
-        removeDocumentUrl: "${createLink(uri: '/api/files-helper/delete', 'DELETE')}"
+        removeDocumentUrl: "${createLink(uri: '/api/files-helper/delete', 'DELETE')}",
+        updateAdminOnlyPropsUrl: "${createLink(controller: 'project', action: 'updateAdminOnlyProps')}"
       };
     </script>
 

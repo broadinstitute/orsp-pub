@@ -8,16 +8,6 @@ import { h, hh } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from '../components/Spinner';
 
-// projectKey:'${issue.projectKey}',
-//   attachedDocumentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
-//   attachDocumentsUrl: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-//   rejectDocumentUrl: "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
-//   approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
-//   downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
-//   sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
-//   loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-//   removeDocumentUrl: "${createLink(uri: '/api/files-helper/delete', 'DELETE')}"
-
 export const ProjectDocument = hh(class ProjectDocument extends Component {
 
   constructor(props) {
@@ -77,15 +67,6 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
     });
   };
 
-  removeDocument = (documentId) => {
-    DocumentHandler.delete(this.props.removeDocumentUrl, documentId).then(resp => {
-      this.getAttachedDocuments();
-    }).catch(error => {
-      this.setState({serverError: true});
-      console.error(error);
-    });
-  };
-  
   handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
