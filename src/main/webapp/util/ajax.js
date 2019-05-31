@@ -146,7 +146,6 @@ export const Project = {
   },
 
   getProject(url, projectkey) {
-    //QUE LLEGA?
     return axios.get(url + '?id=' + projectkey);
   },
 
@@ -181,7 +180,7 @@ export const DocumentHandler = {
   },
 
    rejectDocument(url, uuid) {
-    return axios.put(`${url}+ /api/files-helper/reject-document?uuid=${uuid}`);
+    return axios.put(`${url}/api/files-helper/reject-document?uuid=${uuid}`);
   },
 
    attachedDocuments(url, issueKey) {

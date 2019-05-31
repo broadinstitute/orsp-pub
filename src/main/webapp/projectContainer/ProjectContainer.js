@@ -42,7 +42,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Review",
               },[
                 h(ProjectReview, {
-                  statusBoxHandler: this.props.statusBoxHandler,
+                  updateDetailsStatus: this.props.updateDetailsStatus,
                   initStatusBoxInfo: this.props.initStatusBoxInfo,
                   searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
                   projectKey: this.props.projectKey,
@@ -63,6 +63,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               },[
                 h(ProjectDocument, {
                   statusBoxHandler: this.props.statusBoxHandler,
+                  updateDocumentsStatus : this.props.updateDocumentsStatus,
                   projectKey: this.props.projectKey,
                   attachedDocumentsUrl: this.props.attachedDocumentsUrl,
                   serverURL: this.props.serverURL,
@@ -124,10 +125,11 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   projectKey : this.props.projectKey,
                   projectUrl : this.props.projectUrl,
                   updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
-                  statusBoxHandler: this.props.statusBoxHandler
+                  statusBoxHandler: this.props.statusBoxHandler,
+                  updateAdminOnlyStatus : this.props.updateAdminOnlyStatus
                 })
               ])
-            ]),
+            ])
         ])
       ])
     );

@@ -155,7 +155,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           prev.showSubmissionError = false;
           return prev;
         });
-        this.props.statusBoxHandler({ status : this.state.initial.projectStatus });
+        this.props.updateAdminOnlyStatus({ projectStatus : this.state.initial.projectStatus });
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => {

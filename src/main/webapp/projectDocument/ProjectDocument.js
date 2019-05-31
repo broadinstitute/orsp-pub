@@ -43,7 +43,8 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachedDocumentsUrl, this.props.projectKey).then(resp => {
       this.setState({documents: JSON.parse(resp.data.documents)},
-        () => {this.props.statusBoxHandler(JSON.parse(resp.data.documents))}
+        () => {
+          this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
       );
     }).catch(error => {
       this.setState({serverError: true});
