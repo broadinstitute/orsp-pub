@@ -64,7 +64,7 @@
   border-top: 1px solid #aaaaaa;
   min-height: 43px;
   height: 43px;
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
 }
