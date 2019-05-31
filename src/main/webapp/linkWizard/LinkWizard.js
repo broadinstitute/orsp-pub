@@ -3,7 +3,7 @@ import { h1, hh } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
 import { LinkQuestions } from "./LinkQuestions";
-import { User, ConsentGroup, SampleCollections } from "../util/ajax";
+import { User } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
 import '../index.css';
@@ -53,8 +53,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       showErrorInfoSecurity: false,
       isInfoSecurityValid: false,
       securityInfoFormData: {},
-      consentGroupIsLoading: false,
-      sampleCollectionIsLoading: false,
     }
   }
 
@@ -71,53 +69,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   componentDidMount() {
     this.getUserSession();
-    this.getConsentGroups();
-    this.getAllSampleCollections();
   }
 
-  getAllSampleCollections = () => {
-    this.setState({ sampleCollectionIsLoading: true });
-    SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
-      resp => {
-        const sampleCollectionsList = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-          };
-        });
-        this.setState({
-          sampleCollectionList: sampleCollectionsList,
-          sampleCollectionIsLoading: false
-        })
-      }
-    ).catch(error => {
-      this.setState(() => { throw error; });
-    });
-  };
-
-  getConsentGroups = () => {
-    this.setState({ consentGroupIsLoading: true });
-    ConsentGroup.getConsentGroupNames(this.props.getConsentGroups).then(
-      resp => {
-        const existingConsentGroups = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.label,
-            label: item.label
-          }
-        });
-        this.setState({
-          existingConsentGroups: existingConsentGroups,
-          consentGroupIsLoading: false
-        });
-      }).catch(error => {
-        this.setState(() => { throw error; });
-      });
-  };
-
   getUserSession() {
-    User.getUserSession(this.props.getUserUrl).then(
+    User.getUserSession(component.getUserUrl).then(
       resp => this.setState({ user: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -223,7 +178,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
     consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
-    consentCollectionLink.projectKey = this.props.projectKey;
+    consentCollectionLink.projectKey = component.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
     consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
@@ -251,14 +206,14 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     spinnerService.showAll();
 
     if (this.validateForm()) {
-      let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
+      let projectType = await Project.getProjectType(component.serverURL, component.projectKey);
 
       this.removeErrorMessage();
       this.changeSubmitState();
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
-      ConsentCollectionLink.create(this.props.serverURL, consentCollectionData, documents).then(resp => {
-        window.location.href  = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+      ConsentCollectionLink.create(component.serverURL, consentCollectionData, documents).then(resp => {
+        window.location.href  = [component.serverURL, projectType, "show", component.projectKey, "?tab=consent-groups"].join("/");
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
@@ -368,12 +323,11 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         submitHandler: this.submitLink,
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage,
+        loadingImage: component.loadingImage,
       }, [
         SelectSampleConsent({
           title: "Sample/Data Cohort Info",
-          consentNamesSearchURL: this.props.consentNamesSearchURL,
-          sampleSearchUrl: this.props.sampleSearchUrl,
+          consentNamesSearchURL: component.consentNamesSearchURL,
           removeErrorMessage: this.removeErrorMessage,
           sampleCollectionList: this.state.sampleCollectionList,
           sampleCollection: this.state.sampleCollection,
@@ -381,12 +335,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           fileHandler: this.fileHandler,
           files: this.state.files,
           currentStep: currentStep,
-          existingConsentGroups: this.state.existingConsentGroups,
           consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
-          projectKeyLabel: this.props.projectKey,
           consentGroupIsLoading: this.state.consentGroupIsLoading,
-          sampleCollectionIsLoading: this.state.sampleCollectionIsLoading,
         }),
         LinkQuestions({
           title: "Security/MTA/International Info",
@@ -398,7 +349,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           requireMta: this.state.linkFormData.requireMta,
           errors: this.state.errors,
           user: this.state.user,
-          searchUsersURL: this.props.searchUsersURL,
           updateInfoSecurityFormData: this.updateInfoSecurityFormData,
           showErrorInfoSecurity: this.state.showErrorInfoSecurity,
           generalError: this.state.generalError,
