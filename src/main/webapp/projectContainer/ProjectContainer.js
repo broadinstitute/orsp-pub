@@ -29,12 +29,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   render() {
     return (
-      // will be moved to a new component
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          // div({ className: "tabContainer" }, [
-          // ]),
-          // div({ className: "tabContent" }, [ ]),
           MultiTab({defaultActive: "projectReview"},
             [
               div({
@@ -44,9 +40,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 h(ProjectReview, {
                   updateDetailsStatus: this.props.updateDetailsStatus,
                   initStatusBoxInfo: this.props.initStatusBoxInfo,
-                  searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
+                  searchUsersURL: this.props.searchUsersURL, 
                   projectKey: this.props.projectKey,
-                  projectUrl: this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+                  projectUrl: this.props.projectUrl,
                   isAdmin: this.props.isAdmin,
                   isViewer: this.props.isViewer,
                   serverURL: this.props.serverURL,

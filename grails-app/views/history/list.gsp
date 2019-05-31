@@ -5,24 +5,6 @@
 </head>
 
 <body>
-<script type="text/javascript">
-  $(document).ready(function () {
-    $("#history").load(
-      "https://localhost:8443/dev/api/history?id=ORSP-641",
-      function() {
-        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
-        $("#history-table").DataTable({
-          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
-          language: { search: 'Filter:' },
-          pagingType: "full_numbers",
-          order: [1, "desc"]
-        });
-      }
-    );
-  });
-
-</script>
 <div class="container col-md-11">
     <table id="history-table" class="table table-bordered table-striped table-condensed table-hover">
         <thead>
