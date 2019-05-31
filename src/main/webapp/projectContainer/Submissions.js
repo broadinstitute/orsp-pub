@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, p, span, small } from 'react-hyperscript-helpers';
+import { div, hh } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
 
 export const Submissions = hh(class Submissions extends Component {
@@ -16,7 +16,7 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   getSubmissions() {
-    ProjectMigration.getSubmissions(component.serverUrl, "DEV-NE-5418").then(resp => {
+    ProjectMigration.getSubmissions(this.props.serverURL, this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;

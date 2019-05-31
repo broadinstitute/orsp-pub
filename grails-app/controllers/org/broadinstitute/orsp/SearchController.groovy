@@ -48,7 +48,9 @@ class SearchController implements UserInfo {
     def getMatchingIssues() {
         def response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
-            def link = applicationTagLib.createLink([controller: it.controller, action: 'show', params: [id: it.projectKey], absolute: true])
+            def link = it.type == IssueType.CONSENT_GROUP.name ?
+                    applicationTagLib.createLink([controller: it.controller, action: 'show', params: [id: it.projectKey], absolute: true]) :
+                    applicationTagLib.createLink([controller: "project", action: 'main', params: [projectKey: it.projectKey]])
             response << [
                     id: it.id,
                     label: it.projectKey + " (" + it.summary + ")",
@@ -102,6 +104,7 @@ class SearchController implements UserInfo {
         columns << ["sTitle": "Updated"]
         def data = []
         queryService.findByQueryOptions(options).each {
+
             def link = applicationTagLib.createLink([controller: it.controller, action: 'show'])
             data << [
                     '<a href="' + link + "/" + it.projectKey + '">' + it.projectKey + '</a>',
@@ -141,7 +144,9 @@ class SearchController implements UserInfo {
                 options.fundingInstitute ||
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
-                def link = applicationTagLib.createLink([controller: it.controller, action: 'show', params: [id: it.projectKey], absolute: true])
+                def link = it.type == IssueType.CONSENT_GROUP.name ?
+                        applicationTagLib.createLink([controller: it.controller, action: 'show', params: [id: it.projectKey], absolute: true]) :
+                        applicationTagLib.createLink([controller:"project", action: 'main', params: [projectKey: it.projectKey], absolute: true])
                 [
                         link: link,
                         key: it.projectKey,

@@ -52,7 +52,7 @@ export const MultiTab = hh(class MultiTab extends Component {
     return (
       h(
         Tabs,{
-          className: "tabContent",
+          // className: "tabContent",
           activeKey: this.state.key,
           id: "noanim-tab-example",
           animation: false,
@@ -61,7 +61,7 @@ export const MultiTab = hh(class MultiTab extends Component {
           this.props.children.map((child, idx) => {
             return h(
               Tab,
-              { className: "noName", key: idx, eventKey: child.key, title: child.props.title },
+              { className: "tabContent", key: idx, eventKey: child.key, title: child.props.title },
               [child.props.children]
             )
           }),

@@ -4,6 +4,7 @@ import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { isEmpty } from "../util/Utils";
 import get from 'lodash/get';
+import './Main.css';
 
 class Main extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class Main extends Component {
 
   statusBoxHandler = (issue) => {
     let status = {};
-    // TODO improve this method to dinamically set each status value. This isn't working with adminOnly tab
+    // TODO improve this method to dynamically set each status value. This isn't working with adminOnly tab
     if (!isEmpty(issue.summary) && !isEmpty(issue.projectReviewApproved)) {
       status.summary= get(issue, 'summary', '');
       status.projectReviewApproved = get(issue, 'projectReviewApproved', '');
@@ -52,10 +53,8 @@ class Main extends Component {
   };
 
   render () {
-    console.log("project key:--", component.projectKey);
-    console.log("pk****:--", component.pk);
     return (
-      div({},[
+      div({className: "headerBoxContainer"},[
         StatusBox({
           info: this.state.info,
           status: this.state.status
@@ -79,7 +78,6 @@ class Main extends Component {
           updateAdminOnlyPropsUrl: component.updateAdminOnlyPropsUrl,
           attachedDocumentsUrl: component.attachedDocumentsUrl, //"${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
           attachDocumentsUrl: component.attachDocumentsUrl,//"${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-          rejectDocumentUrl:component.rejectDocumentUrl,// "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
           approveDocumentUrl:component.approveDocumentUrl,// "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
           downloadDocumentUrl: component.downloadDocumentUrl,//"${createLink(controller: 'authenticated', action: 'downloadDocument')}",
           sessionUserUrl: component.sessionUserUrl,//"${createLink(controller: 'authenticated', action: 'getSessionUser')}",

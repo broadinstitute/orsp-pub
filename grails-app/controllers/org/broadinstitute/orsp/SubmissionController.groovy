@@ -101,7 +101,7 @@ class SubmissionController extends AuthenticatedController {
             }
             flash.message = message
         }
-        redirect(controller: 'irb', action: 'show', params: [id: params.projectKey, tab: "submissions"])
+        redirect(controller: 'project', action: 'main', params: [projectKey: params.projectKey, tab: "submissions"])
     }
 
     def addFile() {

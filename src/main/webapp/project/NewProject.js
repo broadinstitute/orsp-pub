@@ -91,10 +91,7 @@ class NewProject extends Component {
         this.state.user.displayName,
         this.state.user.userName
         ).then(resp => {
-          Project.getProjectType(this.props.serverURL, resp.data.message.projectKey).
-          then(projectType => {
-            window.location.href = [this.props.serverURL, projectType, "show", resp.data.message.projectKey, "?tab=review&new"].join("/");
-          })
+           window.location.href = [this.props.serverURL, "project", "main","?projectKey=" + resp.data.message.projectKey + "&tab=review&new"].join("/");
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
