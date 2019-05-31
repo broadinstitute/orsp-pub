@@ -51,7 +51,9 @@ class IssueListController extends AuthenticatedController {
         if (session.user) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
             def items = issues.collect {
-                String url = createLink(controller: it.controller, id: it.projectKey, action: "show")
+                String url = it.type == IssueType.CONSENT_GROUP.name ?
+                        createLink(controller: it.controller, id: it.projectKey, action: "show") :
+                        createLink(controller: "project", params: [projectKey: it.projectKey], action: "main")
                 [
                         url: url,
                         key: it.projectKey,

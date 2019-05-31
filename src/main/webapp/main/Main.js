@@ -52,8 +52,6 @@ class Main extends Component {
   };
 
   render () {
-    console.log("project key:--", component.projectKey);
-    console.log("pk****:--", component.pk);
     return (
       div({},[
         StatusBox({
