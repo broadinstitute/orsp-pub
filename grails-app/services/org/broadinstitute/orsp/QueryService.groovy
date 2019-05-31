@@ -208,7 +208,9 @@ class QueryService implements Status {
 
         // Order is important, see `fundingReport.gsp` for how the UI will represent this data.
         def data = fundings.collect { funding ->
-            String url = applicationTagLib.createLink([controller: funding.issue.controller, action: 'show', absolute: true]) + "/" + funding.issue.projectKey
+            String url = funding.issue.controller == IssueType.CONSENT_GROUP.name ?
+                    applicationTagLib.createLink([controller: funding.issue.controller, action: 'show', absolute: true]) + "/" + funding.issue.projectKey :
+                    applicationTagLib.createLink([controller: "project", action: 'main', absolute: true]) + "?projectKey=" + funding.issue.projectKey
             [funding.issue.type,
              "<a href=\"" + url + "\">" + funding.issue.projectKey + "</a>",
              funding.issue.summary,

@@ -206,14 +206,12 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     spinnerService.showAll();
 
     if (this.validateForm()) {
-      let projectType = await Project.getProjectType(component.serverURL, component.projectKey);
-
       this.removeErrorMessage();
       this.changeSubmitState();
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
       ConsentCollectionLink.create(component.serverURL, consentCollectionData, documents).then(resp => {
-        window.location.href  = [component.serverURL, projectType, "show", component.projectKey, "?tab=consent-groups"].join("/");
+        window.location.href  = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
