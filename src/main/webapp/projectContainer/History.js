@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, p, span, small } from 'react-hyperscript-helpers';
+import { div, hh } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
 
 export const History = hh(class History extends Component {
@@ -16,7 +16,7 @@ export const History = hh(class History extends Component {
   }
 
   getHistory() {
-    ProjectMigration.getHistory(component.serverUrl, "DEV-NE-5418").then(resp => {
+    ProjectMigration.getHistory(this.props.serverURL, this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;

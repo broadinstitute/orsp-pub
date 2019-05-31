@@ -118,7 +118,7 @@ export const Files = {
       headers: { 'content-type': 'multipart/form-data' }
     };
 
-    return axios.post(url, data, config);
+    return axios.post(url +'/api/files-helper/attach-document', data, config);
   },
 
   downloadFillable(pdfUrl) {
@@ -181,7 +181,7 @@ export const DocumentHandler = {
   },
 
    rejectDocument(url, uuid) {
-    return axios.put(`${url}?uuid=${uuid}`);
+    return axios.put(`${url}+ /api/files-helper/reject-document?uuid=${uuid}`);
   },
 
    attachedDocuments(url, issueKey) {
@@ -275,19 +275,19 @@ export const ConsentCollectionLink = {
 export const ProjectMigration = {
 
   getConsentGroups(url, id) {
-    return axios.get("https://localhost:8443/dev/api/consent-groups?id=DEV-NE-5418");
+    return axios.get(url + "/api/consent-groups?id=" + id);
   },
 
   getHistory(url, id) {
-    return axios.get("https://localhost:8443/dev/api/history?id=ORSP-641");
+    return axios.get(url + "/api/history?id=" + id);
   },
 
   getComments(url, id) {
-    return axios.get("https://localhost:8443/dev/api/comments?id=ORSP-641");
+    return axios.get(url + "/api/comments?id=" + id);
   },
 
   getSubmissions(url, id) {
-    return axios.get("https://localhost:8443/dev/api/submissions?id=ORSP-641");
+    return axios.get(url + "/api/submissions?id=" + id);
   },
 
   getConsentGroupUploadModal(url, issueKey, consentKey) {

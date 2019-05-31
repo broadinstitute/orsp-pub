@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, span, className, h1, p, hh } from 'react-hyperscript-helpers';
+import { div, hh } from 'react-hyperscript-helpers';
 import { ProjectReview } from "../projectReview/ProjectReview";
 import { History } from "./History";
 import { Comments } from "./Comments";
@@ -19,7 +19,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     }
     this.state = {
       loading: false,
-      tab: tab,   
+      tab: tab,
       currentStepIndex: 0,
       content: '',
       dialogContent: ''
@@ -54,48 +54,64 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
             div({ className: "tabStep " + (currentStepIndex === 6 ? "active" : ""), onClick: this.goStep(6) }, ["Admin Only"])
           ]),
           div({ className: "tabContent" }, [
-              ProjectReview({
-                isRendered: this.state.currentStepIndex === 0,
-                statusBoxHandler: this.props.statusBoxHandler,
-                initStatusBoxInfo: this.props.initStatusBoxInfo,
-                searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
-                projectKey: this.props.projectKey,
-                projectUrl: this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-                isAdmin: this.props.isAdmin,
-                isViewer: this.props.isViewer,
-                serverURL: this.props.serverURL,
-                rejectProjectUrl: this.props.rejectProjectUrl,
-                updateProjectUrl: this.props.updateProjectUrl,
-                discardReviewUrl: this.props.discardReviewUrl,
-                clarificationUrl: this.props.clarificationUrl,
-                loadingImage: this.props.loadingImage
-              }),
-              ProjectDocument({
-                isRendered: this.state.currentStepIndex === 1,
-                projectKey: this.props.projectKey,
-                attachedDocumentsUrl: this.props.attachedDocumentsUrl,
-                attachDocumentsUrl: this.props.attachDocumentsUrl,
-                rejectDocumentUrl:this.props.rejectDocumentUrl,
-                approveDocumentUrl:this.props.approveDocumentUrl,
-                downloadDocumentUrl: this.props.downloadDocumentUrl,
-                sessionUserUrl: this.props.sessionUserUrl,
-                loadingImage: this.props.loadingImage,
-                removeDocumentUrl: this.props.removeDocumentUrl
-              }),
-              ConsentGroups({ isRendered: this.state.currentStepIndex === 2 }),
-              Submissions({ isRendered: this.state.currentStepIndex === 3 }),
-              Comments({ isRendered: this.state.currentStepIndex === 4 }),
-              History({ isRendered: this.state.currentStepIndex === 5 }),
-              AdminOnly({
-                isRendered: this.state.currentStepIndex === 6,
-                isAdmin : this.props.isAdmin,
-                loadingImage : this.props.loadingImage,
-                userSessionUrl : this.props.userSessionUrl,
-                projectKey : this.props.projectKey,
-                projectUrl : this.props.projectUrl,
-                updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
-                statusBoxHandler: this.props.statusBoxHandler
-              })
+            ProjectReview({
+              isRendered: this.state.currentStepIndex === 0,
+              statusBoxHandler: this.props.statusBoxHandler,
+              initStatusBoxInfo: this.props.initStatusBoxInfo,
+              searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
+              projectKey: this.props.projectKey,
+              projectUrl: this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+              isAdmin: this.props.isAdmin,
+              isViewer: this.props.isViewer,
+              serverURL: this.props.serverURL,
+              rejectProjectUrl: this.props.rejectProjectUrl,
+              updateProjectUrl: this.props.updateProjectUrl,
+              discardReviewUrl: this.props.discardReviewUrl,
+              clarificationUrl: this.props.clarificationUrl,
+              loadingImage: this.props.loadingImage
+            }),
+            ProjectDocument({
+              statusBoxHandler: this.props.statusBoxHandler,
+              isRendered: this.state.currentStepIndex === 1,
+              projectKey: this.props.projectKey,
+              attachedDocumentsUrl: this.props.attachedDocumentsUrl,
+              serverURL: this.props.serverURL,
+              approveDocumentUrl:this.props.approveDocumentUrl,
+              downloadDocumentUrl: this.props.downloadDocumentUrl,
+              sessionUserUrl: this.props.sessionUserUrl,
+              loadingImage: this.props.loadingImage,
+              removeDocumentUrl: this.props.removeDocumentUrl
+            }),
+            ConsentGroups({
+              isRendered: this.state.currentStepIndex === 2,
+              projectKey: this.props.projectKey,
+              serverURL: this.props.serverURL
+            }),
+            Submissions({
+              isRendered: this.state.currentStepIndex === 3,
+              projectKey: this.props.projectKey,
+              serverURL: this.props.serverURL
+            }),
+            Comments({
+              isRendered: this.state.currentStepIndex === 4,
+              projectKey: this.props.projectKey,
+              serverURL: this.props.serverURL
+            }),
+            History({
+              isRendered: this.state.currentStepIndex === 5,
+              projectKey: this.props.projectKey,
+              serverURL: this.props.serverURL
+            }),
+            AdminOnly({
+              isRendered: this.state.currentStepIndex === 6,
+              isAdmin : this.props.isAdmin,
+              loadingImage : this.props.loadingImage,
+              userSessionUrl : this.props.userSessionUrl,
+              projectKey : this.props.projectKey,
+              projectUrl : this.props.projectUrl,
+              updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
+              statusBoxHandler: this.props.statusBoxHandler
+            })
           ])
         ])
       ])
