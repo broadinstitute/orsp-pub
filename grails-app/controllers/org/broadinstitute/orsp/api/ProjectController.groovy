@@ -96,7 +96,8 @@ class ProjectController extends AuthenticatedController {
                 pis               : getPIsForIssue(issue),
                 fundings          : fundingList,
                 extraProperties   : projectExtraProperties,
-                collaborators     : colls
+                collaborators     : colls,
+                attachmentsApproved: issue.attachmentsApproved()
         ] as JSON)
     }
 
