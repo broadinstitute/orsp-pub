@@ -13,6 +13,10 @@ export const SampleCollections = {
 
   getSampleCollections(url, query) {
     return axios.get(url + '?term=' + query);
+  },
+
+  getCollectionsCGLinked(url, consentKey) {
+    return axios.get(url + '?consentKey=' + consentKey);
   }
 };
 

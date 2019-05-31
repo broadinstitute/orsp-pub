@@ -18,6 +18,7 @@ import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
+import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -61,6 +62,8 @@ class ProjectReview extends Component {
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbReferral: '',
+          affiliations: '',
+          affiliationOther: '',
           accurate: '',
           feeForServiceWork: '',
           projectTitle: '',
@@ -111,6 +114,8 @@ class ProjectReview extends Component {
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irbReferral: '',
+          affiliations: '',
+          affiliationOther: '',
           accurate: '',
           feeForServiceWork: '',
           irbProtocolId: '',
@@ -160,9 +165,11 @@ class ProjectReview extends Component {
         // store current issue info here ....
         current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
+        current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
-          current.piList = this.getUsersArray(issue.data.pis);
+        current.projectExtraProps.affiliations = isEmpty(current.projectExtraProps.affiliations) ? '' : JSON.parse(current.projectExtraProps.affiliations),
+        current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
@@ -377,6 +384,8 @@ class ProjectReview extends Component {
     project.sharingType = this.state.formData.projectExtraProps.sharingType;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
+    project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
+    project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
     
     if (this.state.reviewSuggestion) {
@@ -904,6 +913,32 @@ class ProjectReview extends Component {
             isMulti: false
           }),
 
+          InputFieldSelect({
+            label: "Primary Investigator Affiliation",
+            id: "affiliations",
+            name: "affiliations",
+            options: PI_AFFILIATION,
+            value: this.state.formData.projectExtraProps.affiliations,
+            currentValue: this.state.current.projectExtraProps.affiliations,
+            onChange: this.handleSelect("affiliations"),
+            readOnly: this.state.readOnly,
+            placeholder: isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
+            edit: true
+          }),
+
+          InputFieldText({
+            isRendered: this.state.formData.projectExtraProps.affiliations.value === "other",
+            id: "affiliationOther",
+            name: "affiliationOther",
+            label: "Primary Investigator Other Affiliation",
+            value: this.state.formData.projectExtraProps.affiliationOther,
+            currentValue: this.state.current.projectExtraProps.affiliationOther,
+            readOnly: this.state.readOnly,
+            required: false,
+            onChange: this.handleProjectExtraPropsChange,
+            edit: true
+          }),
+
           MultiSelect({
             id: "inputProjectManager",
             label: "Broad Project Manager",
@@ -1003,10 +1038,8 @@ class ProjectReview extends Component {
             error: this.state.subjectProtectionError,
             errorMessage: "Required field"
           }),
-
-          /*IMPORTANT: These questions will appear on Edit mode, once project has been approved*/
           InputFieldSelect({
-            label: "IRB Referral",
+            label: "IRB-of-record",
             id: "irbReferral",
             name: "irbReferral",
             options: PREFERRED_IRB,
@@ -1018,7 +1051,6 @@ class ProjectReview extends Component {
             edit: true
           })
         ]),
-        /*UNTIL HERE*/
 
         Panel({ title: "Determination Questions" }, [
           div({ isRendered: this.state.readOnly === false }, [
