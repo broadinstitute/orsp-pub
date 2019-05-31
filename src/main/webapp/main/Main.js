@@ -88,7 +88,8 @@ class Main extends Component {
           approveDocumentUrl:component.approveDocumentUrl,
           downloadDocumentUrl: component.downloadDocumentUrl,
           sessionUserUrl: component.sessionUserUrl,
-          removeDocumentUrl: component.removeDocumentUrl
+          removeDocumentUrl: component.removeDocumentUrl,
+          tab: component.tab
         })
       ])
     );

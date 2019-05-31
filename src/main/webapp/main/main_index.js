@@ -5,7 +5,9 @@ import ErrorHandler from '../components/ErrorHandler';
 import Main from "./Main";
 
 ReactDOM.render(
-    <Main/>,
+  <ErrorHandler>
+    <Main/>
+  </ErrorHandler>,
 
   document.getElementById('main')
 );

@@ -15,8 +15,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     let tab = '';
-    if(component.tab !== "" && component.tab !== undefined) {
-      tab = component.tab
+    if (this.props.tab !== "" && this.props.tab !== undefined) {
+      tab = this.props.tab
     }
     this.state = {
       loading: false,
