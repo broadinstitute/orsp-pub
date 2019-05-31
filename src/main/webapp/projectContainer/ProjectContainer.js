@@ -6,7 +6,6 @@ import { Comments } from "./Comments";
 import { Submissions } from "./Submissions";
 import { ConsentGroups } from "./ConsentGroups"
 import '../components/Wizard.css';
-import './index.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 
@@ -55,7 +54,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
             div({ className: "tabStep " + (currentStepIndex === 6 ? "active" : ""), onClick: this.goStep(6) }, ["Admin Only"])
           ]),
           div({ className: "tabContent" }, [
-            div({}, [
               ProjectReview({
                 isRendered: this.state.currentStepIndex === 0,
                 statusBoxHandler: this.props.statusBoxHandler,
@@ -98,8 +96,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
                 statusBoxHandler: this.props.statusBoxHandler
               })
-            ]
-            )
           ])
         ])
       ])

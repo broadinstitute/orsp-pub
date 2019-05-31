@@ -4,6 +4,7 @@ import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { isEmpty } from "../util/Utils";
 import get from 'lodash/get';
+import './Main.css';
 
 class Main extends Component {
   constructor(props) {
@@ -53,7 +54,7 @@ class Main extends Component {
 
   render () {
     return (
-      div({},[
+      div({className: "headerBoxContainer"},[
         StatusBox({
           info: this.state.info,
           status: this.state.status
