@@ -52,6 +52,7 @@ export const MultiTab = hh(class MultiTab extends Component {
     return (
       h(
         Tabs,{
+          className: "tabContent",
           activeKey: this.state.key,
           id: "noanim-tab-example",
           animation: false,
