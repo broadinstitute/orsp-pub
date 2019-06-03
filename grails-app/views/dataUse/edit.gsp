@@ -660,6 +660,8 @@
                 $(this).val(ui.item.id);
                 // This affects other form controls based on a positive disease selection
                 if ($(this).val().length > 0) {
+                    $("#noRestrictionYes").prop("checked", false);
+                    $("#noRestrictionNo").prop("checked", true);
                     $("#generalUseYes").prop("checked", false);
                     $("#generalUseNo").prop("checked", true);
                     $("#hmbResearchYes").prop("checked", false);
