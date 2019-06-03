@@ -51,26 +51,25 @@
 }
 
 /* Tab Headers */
-.nav-tabs {
+.containerBox .nav-tabs {
+  display: flex;
   margin: 20px 0 0 0;
   border: 1px solid #AAAAAA;
   border-bottom: 0;
   height: 44px;
-  overflow-x: auto;
-  overflow-y: hidden;
   white-space: nowrap;
+  overflow: hidden;
+  overflow-x: auto;
 }
 
-/*
-.nav-tabs li {
-  display: inline-block;
+.containerBox .nav-tabs li {
+  margin: 0;
 }
-*/
 
-.nav-tabs li a,
-.nav-tabs li.active a, 
-.nav-tabs li.active a:focus, 
-.nav-tabs li.active a:hover {
+.containerBox .nav-tabs li a,
+.containerBox .nav-tabs li.active a, 
+.containerBox .nav-tabs li.active a:focus, 
+.containerBox .nav-tabs li.active a:hover {
   color: #000000;
   font-size: 16px;
   border:0;
@@ -78,11 +77,11 @@
   background-color: #FFFFFF;
 }
 
-.nav-tabs li a:hover {
+.containerBox .nav-tabs li a:hover {
   color: #000000;
 }
 
-.nav-tabs li a {
+.containerBox .nav-tabs li a {
   color:#999999;
   background-color: #F1F1F1;
 }
