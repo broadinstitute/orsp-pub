@@ -15,8 +15,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     let tab = '';
-    if(component.tab !== "" && component.tab !== undefined) {
-      tab = component.tab
+    if (this.props.tab !== "" && this.props.tab !== undefined) {
+      tab = this.props.tab
     }
     this.state = {
       loading: false,
@@ -29,12 +29,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   render() {
     return (
-      // will be moved to a new component
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          // div({ className: "tabContainer" }, [
-          // ]),
-          // div({ className: "tabContent" }, [ ]),
           MultiTab({defaultActive: "projectReview"},
             [
               div({
@@ -42,11 +38,11 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Review",
               },[
                 h(ProjectReview, {
-                  statusBoxHandler: this.props.statusBoxHandler,
+                  updateDetailsStatus: this.props.updateDetailsStatus,
                   initStatusBoxInfo: this.props.initStatusBoxInfo,
-                  searchUsersURL: this.props.searchUsersURL, // searchUsersURL = "/dev/search/getMatchingUsers"
+                  searchUsersURL: this.props.searchUsersURL, 
                   projectKey: this.props.projectKey,
-                  projectUrl: this.props.projectUrl, //         projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
+                  projectUrl: this.props.projectUrl,
                   isAdmin: this.props.isAdmin,
                   isViewer: this.props.isViewer,
                   serverURL: this.props.serverURL,
@@ -63,6 +59,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               },[
                 h(ProjectDocument, {
                   statusBoxHandler: this.props.statusBoxHandler,
+                  updateDocumentsStatus : this.props.updateDocumentsStatus,
                   projectKey: this.props.projectKey,
                   attachedDocumentsUrl: this.props.attachedDocumentsUrl,
                   serverURL: this.props.serverURL,
@@ -124,10 +121,11 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   projectKey : this.props.projectKey,
                   projectUrl : this.props.projectUrl,
                   updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
-                  statusBoxHandler: this.props.statusBoxHandler
+                  statusBoxHandler: this.props.statusBoxHandler,
+                  updateAdminOnlyStatus : this.props.updateAdminOnlyStatus
                 })
               ])
-            ]),
+            ])
         ])
       ])
     );

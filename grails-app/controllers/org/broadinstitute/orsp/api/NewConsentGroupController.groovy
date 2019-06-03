@@ -29,7 +29,7 @@ class NewConsentGroupController extends AuthenticatedController {
     ConsentService consentService
 
     def show() {
-        render(view: "/newConsentGroup/index")
+        render(view: "/newConsentGroup/index", model: [projectKey: params.projectKey])
     }
 
     def downloadFillablePDF () {

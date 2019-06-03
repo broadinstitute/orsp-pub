@@ -24,7 +24,7 @@
         <tbody>
         <g:each in="${issues}" var="issue" status="index">
             <tr>
-                <td><a href="${createLink(controller: "irb", action: "show", params: [id: issue.projectKey])}">${issue.projectKey}</a></td>
+                <td><a href="${createLink(controller: "project", action: "main", params: [projectKey: issue.projectKey])}">${issue.projectKey}</a></td>
                 <td>${issue.summary}</td>
                 <td>${issue.status}</td>
                 <td>

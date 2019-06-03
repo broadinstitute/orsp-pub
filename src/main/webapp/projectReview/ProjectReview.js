@@ -301,7 +301,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(prev => {
           prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
-        }, () => this.props.statusBoxHandler(this.getProject()))
+        }, () => this.props.updateDetailsStatus(this.getProject()))
       }
     ).catch(error => {
       this.setState(() => { throw error; });

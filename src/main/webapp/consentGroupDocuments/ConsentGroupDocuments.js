@@ -92,14 +92,7 @@ class ConsentGroupDocuments extends Component {
   };
 
   redirectToProject = (projectKey) => {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
+    return [this.props.serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
   };
 
   redirectToInfoLink = (projectKey) => {
