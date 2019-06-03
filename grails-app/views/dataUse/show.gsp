@@ -102,7 +102,7 @@
                 </tr>
                 <tr>
                     <th>Future use is limited to research involving a specific population</th>
-                      <td>
+                     <td>
                         <g:if test="${restriction.populationRestrictions.size() > 1}">
                             <ul>
                                 <g:each in="${restriction.populationRestrictions}" var="it">
