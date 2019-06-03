@@ -927,7 +927,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }),
 
           InputFieldText({
-            isRendered: this.state.formData.projectExtraProps.affiliations.value === "other",
+            isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other" ,
             id: "affiliationOther",
             name: "affiliationOther",
             label: "Primary Investigator Other Affiliation",
