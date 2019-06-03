@@ -303,9 +303,10 @@ class QueryService implements Status {
 
     Collection<Object> getCCLSummaries() {
         final String query =
-                " select distinct ccl.consent_key, ccl.project_key, concat(ccl.sample_collection_id, ' - ', s.name) as 'sample_collection_id' " +
+                " select distinct ccl.consent_key, ccl.project_key, ccl.deleted, concat(ccl.sample_collection_id, ' - ', s.name) as 'sample_collection_id' " +
                         " from consent_collection_link ccl " +
-                        " left outer join sample_collection s on s.collection_id = ccl.sample_collection_id "
+                        " left outer join sample_collection s on s.collection_id = ccl.sample_collection_id " +
+                        " where ccl.sample_collection_id is not null and ccl.deleted = 0"
         getSqlConnection().rows(query).collect()
     }
 
