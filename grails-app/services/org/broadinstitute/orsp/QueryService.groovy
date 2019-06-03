@@ -340,16 +340,18 @@ class QueryService implements Status {
                     ' inner join issue ic on ic.project_key = c.consent_key ' +
                     ' inner join issue ip on ip.project_key = c.project_key ' +
                     ' left join sample_collection sc on sc.collection_id = :sampleCollectionId' +
-                    ' where c.consent_key = :consentKey and c.project_key = :projectKey and c.sample_collection_id = :sampleCollectionId'
+                    ' where c.consent_key = :consentKey and c.project_key = :projectKey ' +
+                    ' and c.sample_collection_id = :sampleCollectionId and c.deleted = 0'
         List<ConsentCollectionLinkDTO> result = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('projectKey', projectKey)
                 .setString('consentKey', consentKey)
                 .setString('sampleCollectionId', sampleCollectionId)
                 .list()
-
-        Map<Long, List <StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(result.first().id)
-        sampleInfo.put(result.first(), storageDocuments.getOrDefault(result.first().id, []))
+        if (result.id) {
+            Map<Long, List<StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(result.first().id)
+            sampleInfo.put(result.first(), storageDocuments.getOrDefault(result.first().id, []))
+        }
         sampleInfo
     }
 
