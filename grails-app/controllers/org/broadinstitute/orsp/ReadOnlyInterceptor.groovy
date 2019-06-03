@@ -30,7 +30,7 @@ class ReadOnlyInterceptor implements UserInfo {
 
     boolean before() {
         if (isViewer()) {
-            log.info 'Access denied. User admin has only read role.'
+            log.info 'Access denied. User has Read Only role.'
             forbidden()
             return false
         }
