@@ -5,7 +5,7 @@ module.exports = {
       fs: "empty"
   },
   entry: {
-    adminOnly: './src/main/webapp/adminOnly/index.js',
+    adminOnly: './src/main/webapp/adminOnly/AdminOnly.js',
     collectionLinks: './src/main/webapp/collectionLinks/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
     consentGroupDocuments: './src/main/webapp/consentGroupDocuments/index.js',
@@ -16,7 +16,7 @@ module.exports = {
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js',
     project: './src/main/webapp/project/index.js',
-    projectDocument: './src/main/webapp/projectDocument/index.js',
+    projectDocument: './src/main/webapp/projectDocument/ProjectDocument.js',
     projectReview: './src/main/webapp/projectReview/index.js',
     search: './src/main/webapp/search/index.js',
   },
