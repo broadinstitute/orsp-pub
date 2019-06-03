@@ -425,8 +425,8 @@ class ConsentService implements Status {
         if (dataUseRestriction.gender?.equalsIgnoreCase(FEMALE)) summary.add(RS_FM_POS)
         if (dataUseRestriction.populationRestrictions) {
             Collection<String> popRestrictions = dataUseRestriction.populationRestrictions.
-                findAll { !it.empty }.
-                collect { getTrimmedIdFromPopulation(ontologyService.getOntologyClass(Ontology.POPULATION, it)?.id) }
+                    findAll { !it.empty }.
+                    collect { getTrimmedIdFromPopulation(ontologyService.getOntologyClass(Ontology.POPULATION, it)?.id) }
             summary.add(sprintf(RS_POS, popRestrictions.join(", ")))
         }
         if (dataUseRestriction.pediatricLimited) summary.add(RS_PD_POS)
