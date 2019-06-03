@@ -14,16 +14,12 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   constructor(props) {
     super(props);
-    let tab = '';
-    if (this.props.tab !== "" && this.props.tab !== undefined) {
-      tab = this.props.tab
-    }
     this.state = {
       loading: false,
-      tab: tab,
       currentStepIndex: 0,
       content: '',
-      dialogContent: ''
+      dialogContent: '',
+      defaultActive: 'review'
     };
   }
 
@@ -31,10 +27,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({defaultActive: "projectReview"},
+          MultiTab({defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab},
             [
               div({
-                key: "projectReview",
+                key: "review",
                 title: "Project Review",
               },[
                 h(ProjectReview, {
@@ -54,7 +50,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 })
               ]),
               div({
-                  key: "projectDocument",
+                  key: "documents",
                   title: "Project Document",
               },[
                 h(ProjectDocument, {
@@ -71,7 +67,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 })
               ]),
               div({
-                key: "consentGroups",
+                key: "consent-groups",
                 title: "Sample/Data Cohorts",
               }, [
                 h(Fragment, {}, [ConsentGroups( {

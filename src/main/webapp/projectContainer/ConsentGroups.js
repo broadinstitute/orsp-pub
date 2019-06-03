@@ -61,7 +61,16 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       }).parent().removeClass("ui-widget-content");
       $(".ui-dialog-titlebar").hide();
     });
+    // Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
+    var url = new URLSearchParams(window.location.search);
+    if (url.get('tab') === 'consent-groups' && url.has('new')) {
+      $('#alert').fadeIn('slow', function () {
+        $('#alert').delay(8000).fadeOut();
+        history.pushState({}, null, window.location.href.split('&')[0]);
+      });
+    }
   }
+
   render() {
     return (
       div({ dangerouslySetInnerHTML: { __html: this.state.content } }, [])
