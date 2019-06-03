@@ -52,9 +52,10 @@
 
 /* Tab Headers */
 .containerBox .nav-tabs {
+  border-radius: 4px 4px 0 0;
   display: flex;
   margin: 20px 0 0 0;
-  border: 1px solid #AAAAAA;
+  border: 1px solid #e3e3e3;
   border-bottom: 0;
   height: 44px;
   white-space: nowrap;
@@ -71,7 +72,7 @@
 .containerBox .nav-tabs li.active a:focus, 
 .containerBox .nav-tabs li.active a:hover {
   color: #000000;
-  font-size: 16px;
+  font-size: 1.2rem;
   border:0;
   border-radius:0;
   background-color: #FFFFFF;
@@ -82,13 +83,14 @@
 }
 
 .containerBox .nav-tabs li a {
-  color:#999999;
-  background-color: #F1F1F1;
+  color:#555555;
+  background-color: #e6e6e6;
+  outline: none;
 }
 
 /* Tab Container */
 .containerBox .tabContent {
-  border: 1px solid #aaaaaa;
+  border: 1px solid #e3e3e3;
   padding: 50px 15px 10px 15px;
   border-top: 0;
   margin: 0;

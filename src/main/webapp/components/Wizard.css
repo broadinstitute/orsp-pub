@@ -24,34 +24,35 @@
 .tabContainer {
   display: block;
   width: 100%;
-  min-height: 40px;
-  margin: 12px 3px;
+  min-height: auto;
+  margin: 0 0 12px 0;
 }
 
 .tabStep {
-  margin: 2px 1px 10px 1px;
+  margin: 0 1px 0 0;
   padding: .5em 1em;
-  display: inline;
+  display: block;
+  float: left;
   cursor: pointer;
   font-size: 1.2rem;
-  border: 1px solid #d3d3d3;
+  border: 0;
   color: #555555;
   background: #e6e6e6;
 }
 
 .tabStep:first-child {
-  border-radius: 3px 0 0 0;
+  border-radius: 0;
 }
 
 .tabStep:last-child {
-  border-radius: 0 3px 0 0;
+  border-radius: 0;
 }
 
 .tabStep.active {
-  border: 1px solid #aaaaaa;
+  border: 0;
   border-bottom: none;
-  color: #212121;
-  background: white;
+  color: #000000;
+  background: #FFFFFF;
 }
 
 .wizardStepContainer {
