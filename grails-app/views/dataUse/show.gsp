@@ -153,7 +153,7 @@
                 </tr>
                 <tr>
                     <th>Genomic summary </th>
-                    <td>${restriction.genomicResults? restriction.genomicSummaryResults : "--"} </td>
+                    <td>${restriction.genomicResults? raw(restriction.genomicSummaryResults) : "--"} </td>
                 </tr>
                 <tr>
                     <th> Geographical restrictions</th>
