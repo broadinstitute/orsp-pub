@@ -3,7 +3,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { a, div } from 'react-hyperscript-helpers';
 
 function projectLinkFormatter(cell, row) {
-  return a({href: '../authenticated/show/' + row.project_key}, [row.project_key]);
+  return a({href: '../project/main?projectKey=' + row.project_key}, [row.project_key]);
 }
 
 function consentLinkFormatter(cell, row) {
