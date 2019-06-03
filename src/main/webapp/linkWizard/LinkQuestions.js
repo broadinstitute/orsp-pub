@@ -66,7 +66,7 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
             step: 1,
             currentStep: this.props.currentStep,
             user: this.props.user,
-            searchUsersURL: this.props.searchUsersURL,
+            searchUsersURL: component.searchUsersURL,
             updateForm: this.props.updateInfoSecurityFormData,
             generalError: this.props.generalError,
             submitError: this.props.submitError,

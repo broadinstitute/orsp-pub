@@ -2,6 +2,7 @@ import { Component, Fragment } from 'react';
 import { div, hh, h3, h, button, h1, p } from 'react-hyperscript-helpers';
 import './Wizard.css';
 import { Spinner } from './Spinner';
+import { scrollToTop } from "../util/Utils";
 
 export const Wizard = hh(class Wizard extends Component {
 
@@ -28,6 +29,7 @@ export const Wizard = hh(class Wizard extends Component {
       prev.readyToSubmit = false;
       return prev;
     }, () => {
+      scrollToTop();
       this.props.stepChanged(this.state.currentStepIndex);
     })
   };
@@ -41,6 +43,7 @@ export const Wizard = hh(class Wizard extends Component {
         prev.readyToSubmit = this.props.showSubmit(prev.currentStepIndex);
         return prev;
       }, () => {
+        scrollToTop();
         this.props.stepChanged(this.state.currentStepIndex);
       })
     }
@@ -53,6 +56,7 @@ export const Wizard = hh(class Wizard extends Component {
       prev.readyToSubmit = this.props.showSubmit(n);
       return prev;
     }, () => {
+      scrollToTop();
       this.props.stepChanged(this.state.currentStepIndex);
     })
   };
