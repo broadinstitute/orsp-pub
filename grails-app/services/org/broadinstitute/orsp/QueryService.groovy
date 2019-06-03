@@ -1160,4 +1160,5 @@ class QueryService implements Status {
 
         documents
     }
+
 }
