@@ -102,10 +102,6 @@ class ConsentGroupDocuments extends Component {
     return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
   };
 
-  redirectToInfoLink = (projectKey) => {
-    return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + this.props.projectKey].join("/");
-  };
-
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.getAttachedDocuments();
@@ -171,7 +167,6 @@ class ConsentGroupDocuments extends Component {
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
         handleRedirectToProject: this.redirectToProject,
-        handleRedirectToInfoLink: this.redirectToInfoLink,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName,

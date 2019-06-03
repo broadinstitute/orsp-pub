@@ -19,10 +19,8 @@ const headers =
   ];
 
 const associatedProjectsHeaders = [
-  { name: '', value: 'projectKey' },
   { name: 'Type', value: 'type' },
-  { name: 'Summary', value: 'summary' },
-  { name: 'Info Link', value: 'infoLink' }
+  { name: 'Summary', value: 'summary' }
 ];
 
 const addDocumentBtn = {

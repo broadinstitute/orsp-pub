@@ -144,7 +144,6 @@ class ConsentGroupReview extends Component {
         let sampleCollections = [];
         SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
           resp => {
-
             sampleCollections = resp.data.map(item => {
               return {
                 key: item.id,
@@ -758,7 +757,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleRedirectToInfoLink = (projectKey, scId) => {
-     return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + this.props.projectKey + "&consentKey=" + this.props.consentKey +  "&scId=" + scId].join("/");
+     return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + this.props.consentKey +  "&scId=" + scId].join("/");
   };
 
   handleRedirectToProject = (projectKey, projectType) => {

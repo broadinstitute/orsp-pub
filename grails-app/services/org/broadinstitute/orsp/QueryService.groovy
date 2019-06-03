@@ -379,7 +379,7 @@ class QueryService implements Status {
                 ' inner join issue ic on ic.project_key = c.consent_key ' +
                 ' inner join issue ip on ip.project_key = c.project_key ' +
                 ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                ' where c.consent_key = :consentKey and c.deleted = 0'
+                ' where c.consent_key = :consentKey and c.deleted = 0 and c.sample_collection_id is not null'
         List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('consentKey', consentKey)

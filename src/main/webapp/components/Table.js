@@ -98,7 +98,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToInfoLink = (cell, row) => {
-    const url = this.props.handleRedirectToInfoLink(row.projectKey, row.sampleCollectionId);
+    const url = this.props.handleRedirectToInfoLink(row.linkedProjectKey, row.sampleCollectionId);
     return a({
       href: url,
       target: '_blank'
