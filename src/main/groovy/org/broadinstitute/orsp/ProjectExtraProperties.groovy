@@ -17,6 +17,8 @@ class ProjectExtraProperties {
     String uploadConsentGroup
     String notCGSpecify
     String irbReferral
+    String affiliations
+    String affiliationOther
 
     // Determination questions
     String feeForService
@@ -59,6 +61,8 @@ class ProjectExtraProperties {
         this.setUploadConsentGroup(project.getUploadConsent() ?: "")
         this.setNotCGSpecify(project.getNotCGSpecify() ?: "")
         this.setIrbReferral(project.getIrbReferral() ?: null)
+        this.setAffiliations(project.getAffiliations() ?: null)
+        this.setAffiliationOther(project.getAffiliationOther() ?: "")
 
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
