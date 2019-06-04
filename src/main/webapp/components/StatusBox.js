@@ -24,11 +24,11 @@ export const StatusBox = hh(class StatusBox extends Component {
         ]),
         p({className: "headerLabel"}, [
           "Status: ",
-          span({className: "block"}, [status])
+          span({}, [status])
         ]),
         p({className: "headerLabel"}, [
           "Awaiting action from: ",
-          span({className: "block"}, [actor[0]])
+          span({}, [actor[0]])
         ]),
         p({className: "headerBoxStatus"}, [
           span({className: "bold"}, ["Information Sub-Status: "]),
