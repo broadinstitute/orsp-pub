@@ -37,6 +37,11 @@ class DataUseRestriction {
     Date vaultExportDate
     String vaultConsentId
     String vaultConsentLocation
+    Boolean noRestriction
+    Boolean collaborationInvestigators
+    Boolean publicationResults
+    Boolean genomicResults
+    String genomicSummaryResults
 
     static constraints = {
         consentGroupKey nullable: false, unique: true
@@ -65,6 +70,11 @@ class DataUseRestriction {
         other nullable: true
         manualReview nullable: true
         comments nullable: true
+        noRestriction nullable: true
+        collaborationInvestigators nullable: true
+        publicationResults nullable: true
+        genomicResults nullable: true
+        genomicSummaryResults nullable: true
 
         vaultExportDate nullable: true
         vaultConsentId nullable: true

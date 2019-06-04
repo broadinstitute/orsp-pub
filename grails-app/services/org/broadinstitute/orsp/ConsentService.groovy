@@ -29,6 +29,7 @@ class ConsentService implements Status {
 
     ConsentConfiguration consentConfiguration
     OntologyService ontologyService
+    QueryService queryService
 
     private static final String YES = "Yes"
     private static final String FEMALE = "Female"
@@ -39,6 +40,7 @@ class ConsentService implements Status {
      * positively answered, negatively answered, or not answered at all.
      * See https://broadinstitute.atlassian.net/browse/GAWB-1634 for more details
      */
+    public static final String NRES_POS = "Data is available for future research with no restrictions. [NRES]"
     public static final String GRU_POS = "Data is available for general research use. [GRU]"
     public static final String HMB_POS = "Data is limited for health/medical/biomedical research. [HMB]"
     public static final String DS_POS = "Data use is limited for studying: %s [DS]"
@@ -399,6 +401,7 @@ class ConsentService implements Status {
         if (dataUseRestriction == null) {
             return []
         }
+        if (dataUseRestriction.noRestriction) summary.add(NRES_POS)
         if (dataUseRestriction.generalUse) summary.add(GRU_POS)
         if (dataUseRestriction.hmbResearch) summary.add(HMB_POS)
         if (dataUseRestriction.diseaseRestrictions) {
