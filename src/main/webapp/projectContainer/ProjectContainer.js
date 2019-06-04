@@ -49,22 +49,24 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
         prev.historyContent = resp.data;
         return prev;
       }, () => {
-        if(initializeHistory) { 
-          this.initializeHistory();
-        }
+
+        this.initializeHistory();
+        //  }
       });
     })
   };
 
   initializeHistory() {
     $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
-    $("#history-table").DataTable({
-      dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-      buttons: ['excelHtml5', 'csvHtml5', 'print'],
-      language: { search: 'Filter:' },
-      pagingType: "full_numbers",
-      order: [1, "desc"]
-    });
+    if (!$.fn.dataTable.isDataTable("#history-table")) {
+      $("#history-table").DataTable({
+        dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+        buttons: ['excelHtml5', 'csvHtml5', 'print'],
+        language: { search: 'Filter:' },
+        pagingType: "full_numbers",
+        order: [1, "desc"]
+      });
+    }
   }
 
   render() {
