@@ -19,13 +19,15 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       loading: false,
       currentStepIndex: 0,
       historyContent: '',
+      commentsContent: '',
       dialogContent: '',
       defaultActive: 'review'
     };
   }
 
   componentDidMount() {
-    this.getHistory(true);
+    this.getHistory();
+    this.getComments();
   }
 
   updateDetailsStatus = (status) => {
@@ -43,7 +45,51 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.props.updateAdminOnlyStatus(status);
   };
 
-  getHistory(initializeHistory) {
+  updateComments = () => {
+    this.getComments();
+    this.getHistory();
+  };
+ 
+  // comments
+  getComments() {
+    ProjectMigration.getComments(this.props.serverURL, this.props.projectKey).then(resp => {
+      this.setState(prev => {
+        prev.commentsContent = resp.data;
+        return prev;
+      }, () => {
+        this.initializeComments();
+      });
+    })
+  };
+
+  initializeComments() {
+    tinymce.remove();
+    $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
+    $("#comments-table").DataTable({
+      dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+      buttons: ['excelHtml5', 'csvHtml5', 'print'],
+      language: { search: 'Filter:' },
+      pagingType: "full_numbers",
+      order: [1, "desc"]
+    });
+  
+    this.initializeEditor();
+  }
+  
+  initializeEditor() {
+    tinymce.init({
+      selector: 'textarea.editor',
+      width: '100%',
+      menubar: false,
+      statusbar: false,
+      plugins: "paste",
+      paste_data_images: false
+    });
+  }
+
+  // history
+
+  getHistory() {
     ProjectMigration.getHistory(this.props.serverURL, this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.historyContent = resp.data;
@@ -90,7 +136,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     updateProjectUrl: this.props.updateProjectUrl,
                     discardReviewUrl: this.props.discardReviewUrl,
                     clarificationUrl: this.props.clarificationUrl,
-                    loadingImage: this.props.loadingImage
+                    loadingImage: this.props.loadingImage,
+                    updateComments: this.updateComments,
                   })
                 ]),
               div({
@@ -136,7 +183,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(Fragment, {}, [Comments({
                     projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL
+                    serverURL: this.props.serverURL,
+                    commentsContent: this.state.commentsContent
                   }
                   )]),
                 ]),
