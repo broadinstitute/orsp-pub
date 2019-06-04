@@ -4,12 +4,7 @@ import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
 import { isEmpty } from "../util/Utils";
-/*      serverURL = {component.serverURL}
-      projectKey = {component.projectKey}
-      consentKey = {component.consentKey}
-      sampleCollectionId = {component.sampleCollectionId}
-      loadingImage = {component.loadingImage}
-      cclId = {component.cclId}*/
+
 class InfoLink extends Component {
 
   constructor(props) {
