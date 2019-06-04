@@ -185,7 +185,6 @@ class NewConsentGroupController extends AuthenticatedController {
     def unlinkAssociatedSampleCollection () {
         String consentCollectionId = request.JSON["consentCollectionId"]
         try {
-
             ConsentCollectionLink collectionLink = queryService.findCollectionLinkById(consentCollectionId).first()
             persistenceService.deleteCollectionLink(collectionLink)
             response.status = 200

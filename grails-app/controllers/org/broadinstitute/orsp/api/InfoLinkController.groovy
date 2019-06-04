@@ -20,9 +20,9 @@ class InfoLinkController extends AuthenticatedController {
         String consentCollectionId = params.cclId
         try {
             Gson gson = new Gson()
-             Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findSpecificCollectionLink(consentCollectionId)
+            Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findSpecificCollectionLink(consentCollectionId)
             if (result.isEmpty()) {
-                log.error("There was an error trying to get consent collection info associated to projectKey:${projectKey} in consentKey:${consentKey} for sampleCollectionId:${sampleCollectionId}")
+                log.error("There was an error trying to get consent collection link info Id : ${consentCollectionId}")
                 response.status = 404
                 render([message: "There is no association for the given set of ids."] as JSON)
             } else {

@@ -6,6 +6,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
+import { handleRedirectToProject } from "../util/Utils";
 
 export const Table = hh(class Table extends Component {
 
@@ -90,7 +91,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToProject = (cell, row) => {
-    const url = this.props.handleRedirectToProject(row.projectKey);
+    const url = handleRedirectToProject(this.props.serverURL, row.projectKey, row.type);
     return a({
       href: url,
       target: '_blank'
@@ -106,7 +107,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
-    const url = this.props.handleRedirectToProject(row.linkedProjectKey, row.projectType);
+    const url = handleRedirectToProject(this.props.serverURL, row.linkedProjectKey, row.projectType);
     return a({
       href: url,
       target: '_blank'

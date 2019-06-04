@@ -192,12 +192,12 @@ export const Documents = hh(class Documents extends Component {
         div({isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0}, [
           Panel({title: "Associated Projects"}, [
             Table({
+              serverURL: this.props.serverURL,
               headers: associatedProjectsHeaders,
               data: this.props.associatedProjects,
               sizePerPage: 10,
               paginationSize: 10,
               unlinkProject: this.props.handleUnlinkProject,
-              handleRedirectToProject: this.props.handleRedirectToProject,
               handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
               isAdmin: this.props.user.isAdmin,
               isViewer: this.props.user.isViewer

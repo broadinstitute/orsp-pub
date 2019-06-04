@@ -760,10 +760,6 @@ class ConsentGroupReview extends Component {
     return [this.props.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
 
-  handleRedirectToProject = (projectKey, projectType) => {
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
-  };
-
   render() {
     const {
       consent = '',
@@ -920,7 +916,7 @@ class ConsentGroupReview extends Component {
             isAdmin: this.state.isAdmin,
             data: this.state.current.sampleCollectionLinks,
             handleRedirectToInfoLink: this.handleRedirectToInfoLink,
-            handleRedirectToProject: this.handleRedirectToProject,
+            serverURL: this.props.serverURL,
             unlinkSampleCollection : this.unlinkSampleCollection,
             sizePerPage: 10,
             paginationSize: 10
