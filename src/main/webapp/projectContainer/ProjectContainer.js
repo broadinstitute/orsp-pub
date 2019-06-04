@@ -9,6 +9,7 @@ import '../components/Wizard.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 import { MultiTab } from "../components/MultiTab";
+import { ProjectMigration } from '../util/ajax';
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -17,110 +18,154 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.state = {
       loading: false,
       currentStepIndex: 0,
-      content: '',
+      historyContent: '',
       dialogContent: '',
       defaultActive: 'review'
     };
+  }
+
+  componentDidMount() {
+    this.getHistory(true);
+  }
+
+  updateDetailsStatus = (status) => {
+    this.getHistory();
+    this.props.updateDetailsStatus(status);
+  };
+
+  updateDocumentsStatus = (status) => {
+    this.getHistory();
+    this.props.updateDocumentsStatus(status);
+  };
+
+  updateAdminOnlyStatus = (status) => {
+    this.getHistory();
+    this.props.updateAdminOnlyStatus(status);
+  };
+
+  getHistory(initializeHistory) {
+    ProjectMigration.getHistory(this.props.serverURL, this.props.projectKey).then(resp => {
+      this.setState(prev => {
+        prev.historyContent = resp.data;
+        return prev;
+      }, () => {
+        if(initializeHistory) { 
+          this.initializeHistory();
+        }
+      });
+    })
+  };
+
+  initializeHistory() {
+    $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
+    $("#history-table").DataTable({
+      dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+      buttons: ['excelHtml5', 'csvHtml5', 'print'],
+      language: { search: 'Filter:' },
+      pagingType: "full_numbers",
+      order: [1, "desc"]
+    });
   }
 
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab},
+          MultiTab({ defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab },
             [
               div({
                 key: "review",
                 title: "Project Review",
-              },[
-                h(ProjectReview, {
-                  updateDetailsStatus: this.props.updateDetailsStatus,
-                  initStatusBoxInfo: this.props.initStatusBoxInfo,
-                  searchUsersURL: this.props.searchUsersURL, 
-                  projectKey: this.props.projectKey,
-                  projectUrl: this.props.projectUrl,
-                  isAdmin: this.props.isAdmin,
-                  isViewer: this.props.isViewer,
-                  serverURL: this.props.serverURL,
-                  rejectProjectUrl: this.props.rejectProjectUrl,
-                  updateProjectUrl: this.props.updateProjectUrl,
-                  discardReviewUrl: this.props.discardReviewUrl,
-                  clarificationUrl: this.props.clarificationUrl,
-                  loadingImage: this.props.loadingImage
-                })
-              ]),
+              }, [
+                  h(ProjectReview, {
+                    updateDetailsStatus: this.updateDetailsStatus,
+                    initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    searchUsersURL: this.props.searchUsersURL,
+                    projectKey: this.props.projectKey,
+                    projectUrl: this.props.projectUrl,
+                    isAdmin: this.props.isAdmin,
+                    isViewer: this.props.isViewer,
+                    serverURL: this.props.serverURL,
+                    rejectProjectUrl: this.props.rejectProjectUrl,
+                    updateProjectUrl: this.props.updateProjectUrl,
+                    discardReviewUrl: this.props.discardReviewUrl,
+                    clarificationUrl: this.props.clarificationUrl,
+                    loadingImage: this.props.loadingImage
+                  })
+                ]),
               div({
-                  key: "documents",
-                  title: "Project Document",
-              },[
-                h(ProjectDocument, {
-                  statusBoxHandler: this.props.statusBoxHandler,
-                  updateDocumentsStatus : this.props.updateDocumentsStatus,
-                  projectKey: this.props.projectKey,
-                  attachedDocumentsUrl: this.props.attachedDocumentsUrl,
-                  serverURL: this.props.serverURL,
-                  approveDocumentUrl:this.props.approveDocumentUrl,
-                  downloadDocumentUrl: this.props.downloadDocumentUrl,
-                  sessionUserUrl: this.props.sessionUserUrl,
-                  loadingImage: this.props.loadingImage,
-                  removeDocumentUrl: this.props.removeDocumentUrl
-                })
-              ]),
+                key: "documents",
+                title: "Project Documents",
+              }, [
+                  h(ProjectDocument, {
+                    statusBoxHandler: this.props.statusBoxHandler,
+                    updateDocumentsStatus: this.updateDocumentsStatus,
+                    projectKey: this.props.projectKey,
+                    attachedDocumentsUrl: this.props.attachedDocumentsUrl,
+                    serverURL: this.props.serverURL,
+                    approveDocumentUrl: this.props.approveDocumentUrl,
+                    downloadDocumentUrl: this.props.downloadDocumentUrl,
+                    sessionUserUrl: this.props.sessionUserUrl,
+                    loadingImage: this.props.loadingImage,
+                    removeDocumentUrl: this.props.removeDocumentUrl
+                  })
+                ]),
               div({
                 key: "consent-groups",
                 title: "Sample/Data Cohorts",
               }, [
-                h(Fragment, {}, [ConsentGroups( {
+                  h(Fragment, {}, [ConsentGroups({
                     projectKey: this.props.projectKey,
                     serverURL: this.props.serverURL
                   }
-                )]),
-              ]),
+                  )]),
+                ]),
               div({
                 key: "submissions",
                 title: "Submissions",
               }, [
-                h(Fragment, {}, [Submissions({
+                  h(Fragment, {}, [Submissions({
                     projectKey: this.props.projectKey,
                     serverURL: this.props.serverURL
                   }
-                )]),
-              ]),
+                  )]),
+                ]),
               div({
                 key: "comments",
                 title: "Comments",
               }, [
-                h(Fragment, {}, [Comments({
+                  h(Fragment, {}, [Comments({
                     projectKey: this.props.projectKey,
                     serverURL: this.props.serverURL
                   }
-                )]),
-              ]),
+                  )]),
+                ]),
               div({
                 key: "history",
                 title: "History",
               }, [
-                h(Fragment, {}, [History({
+                  h(Fragment, {}, [History({
                     projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL
+                    serverURL: this.props.serverURL,
+                    historyContent: this.state.historyContent
                   }
-                )]),
-              ]),
+                  )]),
+                ]),
               div({
                 key: "adminOnly",
                 title: "Admin Only",
-              },[
-                h( AdminOnly, {
-                  isAdmin : this.props.isAdmin,
-                  loadingImage : this.props.loadingImage,
-                  userSessionUrl : this.props.userSessionUrl,
-                  projectKey : this.props.projectKey,
-                  projectUrl : this.props.projectUrl,
-                  updateAdminOnlyPropsUrl : this.props.updateAdminOnlyPropsUrl,
-                  statusBoxHandler: this.props.statusBoxHandler,
-                  updateAdminOnlyStatus : this.props.updateAdminOnlyStatus
-                })
-              ])
+              }, [
+                  h(AdminOnly, {
+                    isAdmin: this.props.isAdmin,
+                    loadingImage: this.props.loadingImage,
+                    userSessionUrl: this.props.userSessionUrl,
+                    projectKey: this.props.projectKey,
+                    projectUrl: this.props.projectUrl,
+                    updateAdminOnlyPropsUrl: this.props.updateAdminOnlyPropsUrl,
+                    statusBoxHandler: this.props.statusBoxHandler,
+                    updateAdminOnlyStatus: this.updateAdminOnlyStatus
+                  })
+                ])
             ])
         ])
       ])

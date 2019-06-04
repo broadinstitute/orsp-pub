@@ -40,7 +40,6 @@
     <ul>
         <li><b><a href="#consentGroupReview" style="color: blue">Review</a></b></li>
         <li><b><a href="#consentGroupDocuments" style="color: blue">Documents New</a></b></li>
-        <li><a href="#documents">Documents</a></li>
         <li><a href="#comments">Messages</a></li>
         <li><a href="#history">History</a></li>
         %{--<auth:isOrsp>--}%
