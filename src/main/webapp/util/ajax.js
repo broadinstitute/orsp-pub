@@ -158,7 +158,7 @@ export const Project = {
   },
 
   updateProject(url, data, projectKey) {
-    return axios.put(url + '/project/update?projectKey=' + projectKey, data);
+    return axios.put(url + '?projectKey=' + projectKey, data);
   },
 
   updateAdminOnlyProps(url, data, projectKey) {
