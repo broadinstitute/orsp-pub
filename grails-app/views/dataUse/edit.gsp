@@ -60,6 +60,35 @@
         <div id="create-edit-form" class="form-group well clear-well clearfix">
 
             <div class="container">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <label for="generalUseYes">Data is available for future research with no restrictions
+                        [<abbr title="">NRES</abbr>]
+                        </label>
+
+                        <span class="pull-right">
+                            <label class="radio-inline"><input type="radio"
+                                                               name="noRestriction"
+                                                               id="noRestrictionYes"
+                                                               <g:if test="${restriction.noRestriction && !create}">checked</g:if>
+                                                               value="Yes">Yes</label>
+                            <label class="radio-inline"><input type="radio"
+                                                               name="noRestriction"
+                                                               id="noRestrictionNo"
+                                                               <g:if test="${!restriction.noRestriction && !create}">checked</g:if>
+                                                               value="No">No</label>
+                        </span>
+                    </div>
+                    <div class="col-sm-4 alert alert-info">
+                        Selecting No Restriction <strong>[NRES]</strong>:
+                        <ul>
+                            <li>Disables <strong>[GRU]</strong></li>
+                            <li>Disables <strong>[HMB]</strong></li>
+                            <li>Clears all Disease Restrictions <strong>[DS]</strong></li>
+                            <li>Enables Control Set Usage <strong>[CTRL]</strong></li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-sm-7">
@@ -259,7 +288,8 @@
                               name="controlSetOption"
                               id="controlSetOptionUnspecified"
                               <g:if test="${restriction.controlSetOption?.equals("Unspecified") && !create}">checked</g:if>
-                              value="Unspecified">Unspecified</label>
+                              value="Unspecified">Unspecified
+                </label>
             </span>
         </div>
 
@@ -307,7 +337,7 @@
 
             <span>
                 <label for="populationRestrictions">Future use is limited to research involving a specific population
-                [<abbr title="Use of the data is limited to tudies of particular population.">RS-POP</abbr>]</label>
+                [<abbr title="Use of the data is limited to studies of particular population.">RS-POP</abbr>]</label>
                 <span class="badge addPopulationRestriction"><span class="glyphicon glyphicon-plus"></span></span>
                 <g:if test="${restriction.populationRestrictions}">
                     <g:each in="${restriction.populationRestrictions}" var="classId">
@@ -328,56 +358,11 @@
                            name="populationRestrictions"/>
                 </g:else>
             </span>
-
         </div>
-
-        <div class="restriction form-group well clear-well">
-            <div>
-                <label for="dateRestriction">Future use is limited to data generated from samples collected after the following consent form date</label>
-            </div>
-
-            <div class="btn-group pull-left">
-                <button type="button" id="After" class="btn btn-default">After</button>
-            </div>
-
-            <div class="input-group">
-                <input type="text"
-                       class="datepicker form-control"
-                       value="<g:formatDate date="${restriction.dateRestriction}" format="MM/dd/yyyy"/>"
-                       name="dateRestriction"
-                       id="dateRestriction"/>
-                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-            </div>
-        </div>
-
         <h4> Terms of Use </h4>
 
         <div class="form-group well clear-well clearfix">
-            <label for="recontactingDataSubjectsYes"> Is there a possibility for recontacting data subjects? </label>
-            <span class="pull-right">
-                <label class="radio-inline"><input type="radio"
-                              name="recontactingDataSubjects"
-                              id="recontactingDataSubjectsYes"
-                              <g:if test="${restriction.recontactingDataSubjects && !create}">checked</g:if>
-                              value="Yes">Yes</label>
-                <label class="radio-inline"><input type="radio"
-                              name="recontactingDataSubjects"
-                              id="recontactingDataSubjectsNo"
-                              <g:if test="${!restriction.recontactingDataSubjects && !create}">checked</g:if>
-                              value="No">No</label>
-            </span>
-            <div id="recontact-info">
-                <hr/>
-                <label for="recontactMayOccur">Subject re-contact <em> may </em> occur in certain circumstances, as specified </label>
-                <input type="text" id="recontactMayOccur" name="recontactMay" class="form-control" value="${restriction.recontactMay}">
-                <hr/>
-                <label for="recontactMustOccur">Subject re-contact <em> must </em> occur in certain circumstances, as specified </label>
-                <input type="text"  id="recontactMustOccur" name="recontactMust" class="form-control" value="${restriction.recontactMust}">
-            </div>
-        </div>
-
-        <div class="form-group well clear-well clearfix">
-            <label for="genomicPhenotypicDataYes"> Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?</label>
+            <label for="genomicPhenotypicDataYes">Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?</label>
             <span class="pull-right">
                 <label class="radio-inline"><input type="radio"
                               name="genomicPhenotypicData"
@@ -399,23 +384,18 @@
 
         <div class="form-group well clear-well clearfix">
             <div id="other-terms">
-                <label for="cloudStorageYes">Data storage on the cloud is prohibited?</label>
+                <label for="cloudStorageYes">Collaboration with the primary study investigators required [COL-XX]</label>
                 <span class="pull-right">
                     <label class="radio-inline"><input type="radio"
-                                  name="cloudStorage"
-                                  id="cloudStorageYes"
-                                  <g:if test="${restriction.cloudStorage?.equals("Yes") && !create}">checked</g:if>
+                                  name="collaborationInvestigators"
+                                  id="collaborationInvestigatorsYes"
+                                  <g:if test="${restriction.collaborationInvestigators && !create}">checked</g:if>
                                   value="Yes">Yes</label>
                     <label class="radio-inline"><input type="radio"
-                                  name="cloudStorage"
-                                  id="cloudStorageNo"
-                                  <g:if test="${restriction.cloudStorage?.equals("No") && !create}">checked</g:if>
+                                  name="collaborationInvestigators"
+                                  id="collaborationInvestigatorsNo"
+                                  <g:if test="${!restriction.collaborationInvestigators && !create}">checked</g:if>
                                   value="No">No</label>
-                    <label class="radio-inline"><input type="radio"
-                                  name="cloudStorage"
-                                  id="cloudStorageUnspecified"
-                                  <g:if test="${restriction.cloudStorage?.equals("Unspecified") && !create}">checked</g:if>
-                                  value="Unspecified">Unspecified</label>
                 </span>
                 <hr/>
                 <label for="irbYes">Ethics committee approval required?</label>
@@ -431,6 +411,41 @@
                                   <g:if test="${!restriction.irb && !create}">checked</g:if>
                                   value="No">No</label>
                 </span>
+
+                <hr/>
+                <label for="irbYes">Publication of results of studies using the data is required [PUB]</label>
+                <span class="pull-right">
+                    <label class="radio-inline"><input type="radio"
+                                  name="publicationResults"
+                                  id="publicationResultsYes"
+                                  <g:if test="${restriction.publicationResults && !create}">checked</g:if>
+                                  value="Yes">Yes</label>
+                    <label class="radio-inline"><input type="radio"
+                                  name="publicationResults"
+                                  id="publicationResultsNo"
+                                  <g:if test="${!restriction.publicationResults && !create}">checked</g:if>
+                                  value="No">No</label>
+                </span>
+
+                <hr/>
+                <label for="irbYes">Are the genomic summary results (GSR) from this study to be made available only through controlled-access?</label>
+                <span class="pull-right">
+                    <label class="radio-inline"><input type="radio"
+                                  name="genomicResults"
+                                  id="genomicResultsYes"
+                                  <g:if test="${restriction.genomicResults && !create}">checked</g:if>
+                                  value="Yes">Yes</label>
+                    <label class="radio-inline"><input type="radio"
+                                  name="genomicResults"
+                                  id="genomicResultsNo"
+                                  <g:if test="${!restriction.genomicResults && !create}">checked</g:if>
+                                  value="No">No</label>
+                </span>
+                <br />
+                <div id="genomicSummaryResultsText">
+                     <label id="genomicSummaryResultsLabel" for="genomicSummaryResultsFreeText">If <i>Yes</i>, please explain.</label>
+                     <textarea id="genomicSummaryResultsFreeText" name="genomicSummaryResults" class="form-control editor" rows="3">${restriction.genomicSummaryResults}</textarea>
+                 </div>
 
                 <hr/>
                 <label for="geographicalRestrictions">Geographical restrictions?</label>
@@ -483,8 +498,8 @@
         $(".alert-danger").remove();
         return validateGruHmbDisease();
     }
-
     function validateGruHmbDisease() {
+        let nres = $("#noRestrictionYes").prop("checked");
         let gru = $("#generalUseYes").prop("checked");
         let hmb = $("#hmbResearchYes").prop("checked");
         let diseases = $(".diseaseAutocomplete")
@@ -493,11 +508,11 @@
             .get()
             .filter((elem) => elem);
         let dis = (diseases !== undefined && diseases.length > 0);
-        let checkedVals = [gru, hmb, dis].filter(function(v){return v === true;});
-        if (checkedVals.length === 1) {
+        let checkedVals = [gru, hmb, dis, nres].filter(function(v){return v === true;});
+        if (checkedVals.length >= 1) {
             return true;
         } else  {
-            let errorDiv = $('<div class="col-md-12 alert alert-danger alert-dismissable">At least one of GRU, HMB, or a Disease Restriction must be selected.</div>');
+            let errorDiv = $('<div class="col-md-12 alert alert-danger alert-dismissable">At least one of NRES, GRU, HMB, or a Disease Restriction must be selected.</div>');
             $(errorDiv).insertBefore($("#create-edit-form"));
             $('html, body').animate({ scrollTop: 0 }, 500);
             return false;
@@ -516,6 +531,15 @@
     }
 
     $(document).ready(function() {
+
+        let genomicSummary = "${restriction.genomicResults}";
+        if (genomicSummary !== "true") {
+            $("#genomicSummaryResultsText").hide();
+        } else {
+            const summary = "${restriction.genomicSummaryResults}"
+            $("#genomicSummaryResultsText").show();
+            $("#genomicSummaryResultsLabel").show();
+        }
 
         $('.datepicker').datepicker();
 
@@ -537,7 +561,15 @@
             }
         });
 
-        $("[name='irb'], [name='dateRestriction'], [name='cloudStorage'], [name='geographicalRestrictions'], [name='aggregateResearchResponse'], [name='populationRestrictions']").on("change", function() {
+        $("input[name='genomicResults']").on("click", function() {
+            if ($("#genomicResultsYes").prop("checked")) {
+                $("#genomicSummaryResultsText").show();
+            } else if ($("#genomicResultsNo").prop("checked")) {
+                $("#genomicSummaryResultsText").hide("fast");
+            }
+        });
+
+        $("[name='irb'], [name='cloudStorage'], [name='geographicalRestrictions'], [name='aggregateResearchResponse'], [name='populationRestrictions']").on("change", function() {
             setManualReview();
         });
 
@@ -550,6 +582,18 @@
                 $("#populationOriginsAncestryNo").prop("checked", false);
             }
          });
+
+
+        $("input[name='noRestriction']").on("click", function() {
+            if ($("#noRestrictionYes").prop("checked")) {
+                $("#generalUseYes").prop("checked", false);
+                $("#generalUseNo").prop("checked", true);
+                $("#hmbResearchYes").prop("checked", false);
+                $("#hmbResearchNo").prop("checked", true);
+                $(".diseaseAutocomplete").each(function( index ) { $(this).val(""); });
+                $("#controlSetOptionNo").prop("checked", true);
+            }
+        });
 
         $("input[name='recontactingDataSubjects']").on("click", function() {
             if ($("#recontactingDataSubjectsYes").prop("checked")) {
@@ -616,6 +660,8 @@
                 $(this).val(ui.item.id);
                 // This affects other form controls based on a positive disease selection
                 if ($(this).val().length > 0) {
+                    $("#noRestrictionYes").prop("checked", false);
+                    $("#noRestrictionNo").prop("checked", true);
                     $("#generalUseYes").prop("checked", false);
                     $("#generalUseNo").prop("checked", true);
                     $("#hmbResearchYes").prop("checked", false);
@@ -646,7 +692,7 @@
         $(".populationAutocomplete").autocomplete({
             appendTo: "#populationRestrictionsContainer",
             source: "${createLink(controller: 'search', action: 'getMatchingPopulationOntologies')}",
-            minLength: 2,
+            minLength: 3,
             change: function (event, ui) {
                 // This implements a "must-match" constraint
                 if (!ui.item) {
@@ -678,13 +724,11 @@
     }
 
     function setManualReview(initiate = null) {
-        const dateValue = $("#dateRestriction").prop("value");
         const geographicalResValue = $("#geographicalRestrictions").prop("value");
         const populationRestrictions = $("#populationRestrictions").prop("value");
         const manualReview = "$(restriction.manualReview)";
 
         if (isNotEmpty(populationRestrictions) ||
-            isNotEmpty(dateValue) ||
             $("#cloudStorageYes").prop("checked") ||
             $("#irbYes").prop("checked") ||
             isNotEmpty(geographicalResValue) ||

@@ -45,6 +45,10 @@
                     <td>${restriction.consentPIName}</td>
                 </tr>
                 <tr>
+                    <th>Data is available for future research with no restrictions</th>
+                    <td>${restriction.noRestriction? "Yes" : "No"}</td>
+                </tr>
+                <tr>
                     <th>Data is available for future general research use</th>
                     <td>${restriction.generalUse ? "Yes" : "No"}</td>
                 </tr>
@@ -128,12 +132,28 @@
                     <td>${restriction.genomicPhenotypicData} </td>
                 </tr>
                 <tr>
+                    <th>Collaboration with the primary study investigators required </th>
+                    <td>${restriction.collaborationInvestigators? "Yes" : "No"} </td>
+                </tr>
+                <tr>
                     <th>Data storage on the cloud is prohibited </th>
                     <td>${restriction.cloudStorage} </td>
                 </tr>
                 <tr>
                     <th>Ethics committee approval is required </th>
                     <td>${restriction.irb ? "Yes" : "No"} </td>
+                </tr>
+                <tr>
+                    <th>Publication of results of studies using the data is required </th>
+                    <td>${restriction.publicationResults? "Yes" : "No"} </td>
+                </tr>
+                <tr>
+                    <th>Genomic summary results from this study are available only through controlled-access</th>
+                    <td>${restriction.genomicResults? "Yes" : "No"} </td>
+                </tr>
+                <tr>
+                    <th>Genomic summary </th>
+                    <td>${restriction.genomicResults? raw(restriction.genomicSummaryResults) : "--"} </td>
                 </tr>
                 <tr>
                     <th> Geographical restrictions</th>
@@ -149,7 +169,7 @@
                 </tr>
                 <tr>
                     <th>ORSP Comments</th>
-                    <td>${restriction.comments}</td>
+                    <td>${raw(restriction.comments)}</td>
                 </tr>
                 <tr>
                     <th>DUOS Export</th>
