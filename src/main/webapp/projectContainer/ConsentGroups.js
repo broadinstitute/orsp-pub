@@ -69,10 +69,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         history.pushState({}, null, window.location.href.split('&')[0]);
       });
     }
-    $('.panel-heading a').click(function(event) {
-      // Prevents scroll to top when each accordion menu is displayed
-      event.preventDefault();
-    });
   }
 
   render() {

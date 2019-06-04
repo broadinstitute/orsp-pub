@@ -24,8 +24,7 @@
         <g:each in="${consentGroups}" var="consent" status="panelIndex">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="heading${panelIndex}">
-                    <a class="pull-right"
-                       href="#">
+                    <a class="pull-right">
                         <span class="consent-accordion-toggle btn btn-default"><i class="glyphicon glyphicon-chevron-down"></i></span>
                     </a>
                     <h3 class="panel-title">
