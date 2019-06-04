@@ -77,7 +77,9 @@ This template requires the following arguments:
             </table>
         </div>
     </g:each>
+
 </div>
+
 <asset:script type="text/javascript">
     $(document).ready(function() {
         $.fn.dataTable.moment( 'M/D/YYYY' );

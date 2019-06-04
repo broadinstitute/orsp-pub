@@ -5,6 +5,7 @@
 </head>
 
 <body>
+
 <div class="container col-md-11">
     <table id="history-table" class="table table-bordered table-striped table-condensed table-hover">
         <thead>

@@ -287,9 +287,5 @@ export const ProjectMigration = {
 
   getSubmissions(url, id) {
     return axios.get(url + "/api/submissions?id=" + id);
-  },
-
-  getConsentGroupUploadModal(url, issueKey, consentKey) {
-    return axios.get("https://localhost:8443/dev/api/consent-group/upload-modal?issueKey=" + issueKey + "&consentKey=" + consentKey);
-  }  
+  }
 };

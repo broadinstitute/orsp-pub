@@ -88,7 +88,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   }
 
   // history
-
   getHistory() {
     ProjectMigration.getHistory(this.props.serverURL, this.props.projectKey).then(resp => {
       this.setState(prev => {
