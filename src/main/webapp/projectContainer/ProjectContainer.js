@@ -49,9 +49,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
         prev.historyContent = resp.data;
         return prev;
       }, () => {
-
         this.initializeHistory();
-        //  }
       });
     })
   };
