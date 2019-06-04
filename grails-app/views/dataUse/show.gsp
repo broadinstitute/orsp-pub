@@ -169,7 +169,7 @@
                 </tr>
                 <tr>
                     <th>ORSP Comments</th>
-                    <td>${restriction.comments}</td>
+                    <td>${raw(restriction.comments)}</td>
                 </tr>
                 <tr>
                     <th>DUOS Export</th>

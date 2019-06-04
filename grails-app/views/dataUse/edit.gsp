@@ -288,8 +288,8 @@
                               name="controlSetOption"
                               id="controlSetOptionUnspecified"
                               <g:if test="${restriction.controlSetOption?.equals("Unspecified") && !create}">checked</g:if>
-                              value="Unspecified">Unspecified                <tr>
-                </tr></label>
+                              value="Unspecified">Unspecified
+                </label>
             </span>
         </div>
 
