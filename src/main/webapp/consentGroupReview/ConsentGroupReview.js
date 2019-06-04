@@ -748,7 +748,7 @@ class ConsentGroupReview extends Component {
   };
 
   unlinkSampleCollection = (sampleCollection) => () => {
-    ConsentGroup.unlinkSampleCollection(this.props.serverURL, sampleCollection.linkedProjectKey, sampleCollection.consentKey, sampleCollection.sampleCollectionId).then(
+    ConsentGroup.unlinkSampleCollection(this.props.serverURL, sampleCollection.id).then(
       () => {
         this.init()
       }).catch(error => {
@@ -756,8 +756,8 @@ class ConsentGroupReview extends Component {
       })
   };
 
-  handleRedirectToInfoLink = (projectKey, scId) => {
-     return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + this.props.consentKey +  "&scId=" + scId].join("/");
+  handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
+    return [this.props.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
 
   handleRedirectToProject = (projectKey, projectType) => {

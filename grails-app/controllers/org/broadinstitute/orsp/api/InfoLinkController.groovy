@@ -17,12 +17,10 @@ class InfoLinkController extends AuthenticatedController {
     }
 
     def getProjectSampleCollections() {
-        String consentKey = params.consentKey
-        String projectKey = params.projectKey
-        String sampleCollectionId = params.scId
+        String consentCollectionId = params.cclId
         try {
             Gson gson = new Gson()
-            Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findSpecificCollectionLink(consentKey, projectKey, sampleCollectionId)
+             Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findSpecificCollectionLink(consentCollectionId)
             if (result.isEmpty()) {
                 log.error("There was an error trying to get consent collection info associated to projectKey:${projectKey} in consentKey:${consentKey} for sampleCollectionId:${sampleCollectionId}")
                 response.status = 404

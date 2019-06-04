@@ -183,17 +183,16 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def unlinkAssociatedSampleCollection () {
-        String consentKey = request.JSON["consentKey"]
-        String projectKey = request.JSON["projectKey"]
-        String sampleCollectionId = request.JSON["sampleCollectionId"]
+        String consentCollectionId = request.JSON["consentCollectionId"]
         try {
-            ConsentCollectionLink collectionLink = queryService.findCollectionLinks(projectKey, consentKey, sampleCollectionId).first()
+
+            ConsentCollectionLink collectionLink = queryService.findCollectionLinkById(consentCollectionId).first()
             persistenceService.deleteCollectionLink(collectionLink)
             response.status = 200
         } catch(Exception e) {
             response.status = 500
-            log.error("Exception deleting collection link: " + sampleCollectionId + e)
-            flash.error = "Error deleting collection links: " + sampleCollectionId + e
+            log.error("Exception deleting collection link: " + collectionLink.sampleCollectionId + e)
+            flash.error = "Error deleting collection links: " + collectionLink.sampleCollectionId + e
         }
         render(response)
     }

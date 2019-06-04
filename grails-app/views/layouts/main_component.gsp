@@ -137,6 +137,7 @@
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
         unlinkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
         linkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
+        cclId: "${params.cclId}"
       };
     </script>
 

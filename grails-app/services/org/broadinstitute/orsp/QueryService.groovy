@@ -303,10 +303,9 @@ class QueryService implements Status {
 
     Collection<Object> getCCLSummaries() {
         final String query =
-                " select distinct ccl.consent_key, ccl.project_key, ccl.deleted, concat(ccl.sample_collection_id, ' - ', s.name) as 'sample_collection_id' " +
-                        " from consent_collection_link ccl " +
-                        " left outer join sample_collection s on s.collection_id = ccl.sample_collection_id " +
-                        " where ccl.sample_collection_id is not null and ccl.deleted = 0"
+            " select distinct ccl.consent_key, ccl.project_key, concat(ccl.sample_collection_id, ' - ', s.name) as 'sample_collection_id' " +
+                    " from consent_collection_link ccl " +
+                    " left outer join sample_collection s on s.collection_id = ccl.sample_collection_id "
         getSqlConnection().rows(query).collect()
     }
 
@@ -329,8 +328,22 @@ class QueryService implements Status {
         results as Collection<ConsentCollectionLink>
     }
 
+    Collection<ConsentCollectionLink> findCollectionLinkById(String consentCollectionLinkId) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from consent_collection_link c ' +
+                        ' where c.id = :consentCollectionLinkId '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('consentCollectionLinkId', consentCollectionLinkId)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Map<ConsentCollectionLinkDTO, List<StorageDocument>> findSpecificCollectionLink(String consentKey, String projectKey, String sampleCollectionId) {
+    Map<ConsentCollectionLinkDTO, List<StorageDocument>> findSpecificCollectionLink(String consentCollectionId) {
         Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
         final String query =
@@ -340,19 +353,14 @@ class QueryService implements Status {
                     ' ip.type projectType from consent_collection_link c ' +
                     ' inner join issue ic on ic.project_key = c.consent_key ' +
                     ' inner join issue ip on ip.project_key = c.project_key ' +
-                    ' left join sample_collection sc on sc.collection_id = :sampleCollectionId' +
-                    ' where c.consent_key = :consentKey and c.project_key = :projectKey ' +
-                    ' and c.sample_collection_id = :sampleCollectionId and c.deleted = 0'
+                    ' left join sample_collection sc on sc.collection_id = c.sample_collection_id ' +
+                    ' where c.id = :consentCollectionId and c.deleted = 0'
         List<ConsentCollectionLinkDTO> result = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
-                .setString('projectKey', projectKey)
-                .setString('consentKey', consentKey)
-                .setString('sampleCollectionId', sampleCollectionId)
+                .setString('consentCollectionId', consentCollectionId)
                 .list()
-        if (result.id) {
-            Map<Long, List<StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(result.first().id)
-            sampleInfo.put(result.first(), storageDocuments.getOrDefault(result.first().id, []))
-        }
+        Map<Long, List<StorageDocument>> storageDocuments = findAllDocumentsBySampleCollectionId(result.first().id)
+        sampleInfo.put(result.first(), storageDocuments.getOrDefault(result.first().id, []))
         sampleInfo
     }
 
@@ -360,8 +368,7 @@ class QueryService implements Status {
     Map<Long, List <StorageDocument>> findAllDocumentsBySampleCollectionId(Long consentCollectionId) {
         final session = sessionFactory.currentSession
         final String query =
-                ' select * ' +
-                ' from storage_document ' +
+                ' select * from storage_document ' +
                 ' where consent_collection_link_id = :consentCollectionIds '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
@@ -382,7 +389,7 @@ class QueryService implements Status {
                 ' inner join issue ic on ic.project_key = c.consent_key ' +
                 ' inner join issue ip on ip.project_key = c.project_key ' +
                 ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                ' where c.consent_key = :consentKey and c.deleted = 0 and c.sample_collection_id is not null'
+                ' where c.consent_key = :consentKey and c.deleted = 0'
         List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('consentKey', consentKey)

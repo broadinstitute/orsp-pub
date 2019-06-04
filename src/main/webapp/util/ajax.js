@@ -86,8 +86,8 @@ export const ConsentGroup = {
     return axios.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
   },
 
-  unlinkSampleCollection(url, projectKey, consentKey, sampleCollectionId) {
-    const data = { projectKey, consentKey, sampleCollectionId };
+  unlinkSampleCollection(url, consentCollectionId) {
+    const data = { consentCollectionId };
     return axios.put(url + '/api/consent-group/unlinkAssociatedSampleCollection', data);
   }
 };
@@ -254,8 +254,8 @@ export const DataUse = {
 };
 
 export const ProjectInfoLink = {
-  getProjectSampleCollections(projectKey, consentKey, sampleCollectionId, serverURL) {
-    return axios.get(serverURL + '/api/infoLink?projectKey=' + projectKey + '&consentKey=' + consentKey + '&scId=' + sampleCollectionId);
+  getProjectSampleCollections(cclId, serverURL) {
+    return axios.get(serverURL + '/api/infoLink?cclId=' + cclId);
   }
 };
 
