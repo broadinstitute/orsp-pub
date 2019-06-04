@@ -125,7 +125,7 @@
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
-        tab: "${tab}",
+        tab: "${params.tab}",
         consentKey: "${params.consentKey}",
         projectType: '${params.type}',
         projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",

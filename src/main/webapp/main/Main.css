@@ -50,37 +50,48 @@
   display: block;
 }
 
-/* Tab Container */
-.containerBox {
-  position: relative;
-}
-
-.containerBox .tabContainer {
-  position: absolute;
-  top: 0;
-  left: 1px;
-  width: 100%;
-  margin: 0;
-  border-top: 1px solid #aaaaaa;
-  min-height: 43px;
-  height: 43px;
-  overflow-x: auto;
-  overflow-y: hidden;
+/* Tab Headers */
+.containerBox .nav-tabs {
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  margin: 20px 0 0 0;
+  border: 1px solid #e3e3e3;
+  border-bottom: 0;
+  height: 44px;
   white-space: nowrap;
+  overflow: hidden;
+  overflow-x: auto;
 }
 
-.containerBox .tabContent {
-  border: 1px solid #aaaaaa;
-  padding: 60px 15px 10px 15px;
-  border-top: 0;
-  margin: -11px 0 0 1px;
+.containerBox .nav-tabs li {
+  margin: 0;
 }
 
-.containerBox .tabContainer .tabStep {
-  margin-bottom: 0;
-  display: inline-block;
-}
-
-.containerBox .tabContainer .tabStep.active {
+.containerBox .nav-tabs li a,
+.containerBox .nav-tabs li.active a, 
+.containerBox .nav-tabs li.active a:focus, 
+.containerBox .nav-tabs li.active a:hover {
+  color: #000000;
+  font-size: 1.2rem;
   border:0;
+  border-radius:0;
+  background-color: #FFFFFF;
+}
+
+.containerBox .nav-tabs li a:hover {
+  color: #000000;
+}
+
+.containerBox .nav-tabs li a {
+  color:#555555;
+  background-color: #e6e6e6;
+  outline: none;
+}
+
+/* Tab Container */
+.containerBox .tabContent {
+  border: 1px solid #e3e3e3;
+  padding: 50px 15px 10px 15px;
+  border-top: 0;
+  margin: 0;
 }

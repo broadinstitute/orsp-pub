@@ -752,7 +752,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   redirectToConsentGroupTab = async () => {
     let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
-    window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+    window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -927,7 +927,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }),
 
           InputFieldText({
-            isRendered: this.state.formData.projectExtraProps.affiliations.value === "other",
+            isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other" ,
             id: "affiliationOther",
             name: "affiliationOther",
             label: "Primary Investigator Other Affiliation",

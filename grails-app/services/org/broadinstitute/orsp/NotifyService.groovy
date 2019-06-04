@@ -101,11 +101,17 @@ class NotifyService implements SendgridSupport, Status {
      * @return The full url for the issue display
      */
     private String getShowIssueLink(Issue issue) {
-        return grailsLinkGenerator.link(
+        return issue.type == IssueType.CONSENT_GROUP.name ?
+             grailsLinkGenerator.link(
                 controller: issue.controller,
                 action: "show",
                 id: issue.projectKey,
-                absolute: true)
+                absolute: true) :
+                grailsLinkGenerator.link(
+                        controller: "project",
+                        action: "main",
+                        params: [projectKey: issue.projectKey],
+                        absolute: true)
     }
 
     /**
