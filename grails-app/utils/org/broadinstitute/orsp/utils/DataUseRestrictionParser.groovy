@@ -56,6 +56,22 @@ class DataUseRestrictionParser {
         dataUseRestriction.cloudStorage = params.cloudStorage
         dataUseRestriction.irb = IssueUtils.getBooleanForParam(params.irb)
         dataUseRestriction.geographicalRestrictions = params.geographicalRestrictions
+
+        dataUseRestriction.noRestriction = IssueUtils.getBooleanForParam(params.noRestriction)
+
+        if (dataUseRestriction.noRestriction) {
+            dataUseRestriction.generalUse = true
+        }
+
+        dataUseRestriction.collaborationInvestigators = IssueUtils.getBooleanForParam(params.collaborationInvestigators)
+        dataUseRestriction.publicationResults = IssueUtils.getBooleanForParam(params.publicationResults)
+        dataUseRestriction.genomicResults = IssueUtils.getBooleanForParam(params.genomicResults)
+        if (dataUseRestriction.genomicResults) {
+            dataUseRestriction.genomicSummaryResults = (String)params.genomicSummaryResults
+        } else {
+            dataUseRestriction.genomicSummaryResults = null
+        }
+
         if (params.other) {
             dataUseRestriction.other = params.other
         } else {
