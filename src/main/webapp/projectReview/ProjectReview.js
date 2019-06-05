@@ -241,11 +241,11 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   isAdmin = () => {
     return this.props.isAdmin === "true";
-  }
+  };
 
   isViewer = () => {
     return this.props.isViewer === "true";
-  }
+  };
 
   getUsersArray(array) {
     let usersArray = [];
@@ -261,7 +261,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     return usersArray;
   }
 
-  // Todo: handle data structure in Fundings component
   getFundingsArray(fundings) {
     let fundingsArray = [];
     if (fundings !== undefined && fundings !== null && fundings.length > 0) {
@@ -343,7 +342,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(this.props.serverURL, project, this.props.projectKey).then(
+    Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
@@ -358,6 +357,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   removeEdits(type) {
     Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey, type).then(
       resp => {
+        this.props.updateContent();
         this.init();
         spinnerService.hideAll();
       })
@@ -733,7 +733,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   successNotification = (type, message, time) => {
     setTimeout(this.clearAlertMessage(type), time, null);
-    this.props.updateComments();
+    this.props.updateContent();
     this.setState(prev => {
       prev[type] = true;
       prev.alertMessage = message;
@@ -752,7 +752,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   redirectToConsentGroupTab = async () => {
-    let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
     window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
   };
 
