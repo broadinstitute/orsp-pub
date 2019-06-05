@@ -129,7 +129,7 @@ class ConsentGroupController extends AuthenticatedController {
         def issue = queryService.findByKey(params.projectKey)
         def links = ConsentCollectionLink.findAllByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
         deleteCollectionLinks(links)
-        redirect(controller: issue.controller, action: "show", params: [id: params.projectKey, tab: "consent-groups"])
+        redirect(controller: "project", action: "main", params: [projectKey: params.projectKey, tab: "consent-groups"])
     }
 
     /**
