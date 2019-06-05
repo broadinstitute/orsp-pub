@@ -114,14 +114,18 @@ export const Table = hh(class Table extends Component {
     }, [row.linkedProjectKey])
   };
 
-  unlinkSampleCollection = (cell, row) => {
-    let btn = this.props.isViewer ? null :
+  unlinkSampleCollectionButton = (cell, row) => {
+    const btn = this.props.isViewer ? null :
       button({
         className: "btn btn-xs",
-        onClick: this.props.unlinkSampleCollection(row),
+        onClick: this.unlinkSampleCollection(row),
         disabled: !this.props.isAdmin
       }, ["Unlink"]);
     return btn;
+  };
+
+  unlinkSampleCollection = (data) => (e) => {
+    this.props.unlinkSampleCollection(data);
   };
 
   render() {
@@ -185,7 +189,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}
                 dataField={header.value}
-                dataFormat={this.unlinkSampleCollection}>{"Unlink"}</TableHeaderColumn>
+                dataFormat={this.unlinkSampleCollectionButton}>{"Unlink"}</TableHeaderColumn>
             } else if (header.value === 'linkedProjectKey') {
               return <TableHeaderColumn isKey= {isKey}
                 key={header.name}
