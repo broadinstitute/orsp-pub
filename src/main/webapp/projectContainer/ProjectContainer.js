@@ -45,7 +45,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.props.updateAdminOnlyStatus(status);
   };
 
-  updateComments = () => {
+  updateContent = () => {
     this.getComments();
     this.getHistory();
   };
@@ -63,17 +63,17 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   };
 
   initializeComments() {
-    tinymce.remove();
     $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
-    $("#comments-table").DataTable({
-      dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-      buttons: ['excelHtml5', 'csvHtml5', 'print'],
-      language: { search: 'Filter:' },
-      pagingType: "full_numbers",
-      order: [1, "desc"]
-    });
-  
-    this.initializeEditor();
+    if (!$.fn.dataTable.isDataTable("#comments-table")) {
+      $("#comments-table").DataTable({
+        dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+        buttons: ['excelHtml5', 'csvHtml5', 'print'],
+        language: { search: 'Filter:' },
+        pagingType: "full_numbers",
+        order: [1, "desc"]
+      });
+      this.initializeEditor();
+    }
   }
   
   initializeEditor() {
@@ -136,7 +136,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     discardReviewUrl: this.props.discardReviewUrl,
                     clarificationUrl: this.props.clarificationUrl,
                     loadingImage: this.props.loadingImage,
-                    updateComments: this.updateComments,
+                    updateContent: this.updateContent,
                   })
                 ]),
               div({
