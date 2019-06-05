@@ -3,7 +3,7 @@ package org.broadinstitute.orsp
 class ConsentCollectionLinkDTO {
 
     Long id
-    String projectKey
+    String linkedProjectKey
     String consentKey
     String sampleCollectionId
     String pii
@@ -15,9 +15,16 @@ class ConsentCollectionLinkDTO {
     String internationalCohorts
     String consentName
     String projectName
+    String projectType
     String collectionName
+    String collectionCategory
+    String collectionGroup
 
     void setId(Number id) {
         this.id = id
+    }
+
+    void setProjectType(String projectType) {
+        this.projectType = IssueType.valueOfName(projectType).controller
     }
 }

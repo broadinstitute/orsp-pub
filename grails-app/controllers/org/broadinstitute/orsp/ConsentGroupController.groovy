@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -361,10 +362,8 @@ class ConsentGroupController extends AuthenticatedController {
         } catch (Exception e) {
             flash.error = "Unable to attach consent document: " + e.getMessage()
         }
-        issue.type == IssueType.CONSENT_GROUP.name ?
-                redirect(controller: issue.controller, action: "show", params: [id: issue.projectKey, tab: "consent-groups"]) :
-                redirect(controller: "project", action: "main", params: [projectKey: issue.projectKey, tab: "consent-groups"])
-
+        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue, params.id, "consent-groups")
+        redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get(params)])
     }
 
 }

@@ -104,7 +104,6 @@ class SearchController implements UserInfo {
         columns << ["sTitle": "Updated"]
         def data = []
         queryService.findByQueryOptions(options).each {
-
             def link = applicationTagLib.createLink([controller: it.controller, action: 'show'])
             data << [
                     '<a href="' + link + "/" + it.projectKey + '">' + it.projectKey + '</a>',

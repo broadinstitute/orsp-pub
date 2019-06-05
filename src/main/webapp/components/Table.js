@@ -6,6 +6,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
+import { handleRedirectToProject } from "../util/Utils";
 
 export const Table = hh(class Table extends Component {
 
@@ -90,7 +91,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToProject = (cell, row) => {
-    const url = this.props.handleRedirectToProject(row.projectKey);
+    const url = handleRedirectToProject(this.props.serverURL, row.projectKey);
     return a({
       href: url,
       target: '_blank'
@@ -98,11 +99,29 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToInfoLink = (cell, row) => {
-    const url = this.props.handleRedirectToInfoLink(row.projectKey);
+    const url = this.props.handleRedirectToInfoLink(row.id, row.linkedProjectKey);
     return a({
       href: url,
       target: '_blank'
     }, ["Info Link"])
+  };
+
+  redirectToSampleCollectionLinkedProject = (cell, row) => {
+    const url = handleRedirectToProject(this.props.serverURL, row.linkedProjectKey);
+    return a({
+      href: url,
+      target: '_blank'
+    }, [row.linkedProjectKey])
+  };
+
+  unlinkSampleCollection = (cell, row) => {
+    let btn = this.props.isViewer ? null :
+      button({
+        className: "btn btn-xs",
+        onClick: this.props.unlinkSampleCollection(row),
+        disabled: !this.props.isAdmin
+      }, ["Unlink"]);
+    return btn;
   };
 
   render() {
@@ -162,6 +181,17 @@ export const Table = hh(class Table extends Component {
                 key={header.value}
                 dataFormat={this.formatRemoveBtn}
                 width={'45px'}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'unlinkSampleCollection') {
+              return <TableHeaderColumn isKey={isKey}
+                key={index.toString()}
+                dataField={header.value}
+                dataFormat={this.unlinkSampleCollection}>{"Unlink"}</TableHeaderColumn>
+            } else if (header.value === 'linkedProjectKey') {
+              return <TableHeaderColumn isKey= {isKey}
+                key={header.name}
+                dataField={header.value}
+                dataFormat={this.redirectToSampleCollectionLinkedProject}
+                dataSort={ true }>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

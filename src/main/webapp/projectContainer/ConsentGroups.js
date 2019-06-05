@@ -62,6 +62,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       $(".ui-dialog-titlebar").hide();
     });
     // Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
+    // https://broadinstitute.atlassian.net/browse/BTRX-628
     var url = new URLSearchParams(window.location.search);
     if (url.get('tab') === 'consent-groups' && url.has('new')) {
       $('#alert').fadeIn('slow', function () {

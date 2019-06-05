@@ -1,6 +1,5 @@
 import { Component, Fragment} from 'react';
-import { h, div, h2, label, span, a } from 'react-hyperscript-helpers';
-
+import { h, div, h2, span, a } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
@@ -34,7 +33,7 @@ class InfoLink extends Component {
 
   initData = () => {
     let sampleCollectionsIds = [];
-    ProjectInfoLink.getProjectSampleCollections(this.props.projectKey, this.props.consentKey, this.props.serverURL).then(
+    ProjectInfoLink.getProjectSampleCollections(infoLinkConstant.cclId, component.serverURL).then(
       data => {
         JSON.parse(data.data.sampleCollections).map(sampleCollection => {
           sampleCollectionsIds.push(sampleCollection);
@@ -52,7 +51,7 @@ class InfoLink extends Component {
   };
 
   redirectToProject = () => {
-    return [this.props.serverURL, "/consentGroup/show", this.props.consentKey,"?projectKey=" + this.props.projectKey].join("/");
+    return [component.serverURL, "consentGroup/show", component.consentKey,"?projectKey=" + component.projectKey].join("/");
   };
 
   render() {
@@ -63,11 +62,11 @@ class InfoLink extends Component {
             onClick: () => window.open(this.redirectToProject(),"_self"),
             target: '_blank'}, [
           span({ className: "glyphicon glyphicon-chevron-left" }, []),
-          this.props.consentKey + " : " +this.state.consentName
+          component.consentKey + " : " +this.state.consentName
         ]),
         h2({ className: "pageTitle" }, [
           div({}, ["Sample Collections associated to"]),
-          div({ className: "italic normal" }, [this.props.projectKey + " : " +this.state.projectName])
+          div({ className: "italic normal" }, [component.projectKey + " : " +this.state.projectName])
         ]),
         div({ className: "tabContainer" }, [
           sampleCollections.map((child, idx) => {

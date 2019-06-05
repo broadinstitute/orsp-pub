@@ -75,6 +75,7 @@ class ConsentGroupDocuments extends Component {
 
   getAssociatedProjects = () => {
     ConsentGroup.getConsentCollectionLinks(this.props.serverURL, this.props.projectKey).then(response => {
+      console.log("get associated projects -> ", response.data)
       this.setState({ associatedProjects: response.data.collectionLinks })
     }).catch(error => {
       this.setState({serverError: true});
@@ -163,8 +164,6 @@ class ConsentGroupDocuments extends Component {
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
-        handleRedirectToProject: this.redirectToProject,
-        handleRedirectToInfoLink: this.redirectToInfoLink,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName,
