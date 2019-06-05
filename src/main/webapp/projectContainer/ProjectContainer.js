@@ -63,6 +63,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   };
 
   initializeComments() {
+   tinymce.remove();
     $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
     if (!$.fn.dataTable.isDataTable("#comments-table")) {
       $("#comments-table").DataTable({
@@ -72,8 +73,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
         pagingType: "full_numbers",
         order: [1, "desc"]
       });
-      this.initializeEditor();
     }
+    this.initializeEditor();
   }
   
   initializeEditor() {
