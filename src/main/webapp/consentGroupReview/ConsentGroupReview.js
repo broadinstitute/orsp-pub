@@ -33,11 +33,13 @@ class ConsentGroupReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      unlinkDataRow: {},
       dialog: false,
       discardEditsDialog: false,
       approveDialog: false,
       approveInfoDialog: false,
       rejectProjectDialog: false,
+      unlinkDialog: false,
       requestClarification: false,
       readOnly: true,
       isAdmin: false,
@@ -747,9 +749,10 @@ class ConsentGroupReview extends Component {
     });
   };
 
-  unlinkSampleCollection = (sampleCollection) => () => {
-    ConsentGroup.unlinkSampleCollection(this.props.serverURL, sampleCollection.id).then(
+  unlinkSampleCollection = () => {
+    ConsentGroup.unlinkSampleCollection(this.props.serverURL, this.state.unlinkDataRow.id).then(
       () => {
+        this.toggleUnlinkDialog();
         this.init()
       }).catch(error => {
         this.setState({}, () => { throw error })
@@ -758,6 +761,16 @@ class ConsentGroupReview extends Component {
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
     return [this.props.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
+  };
+
+  toggleUnlinkDialog = (data) => {
+    this.setState(prev => {
+      prev.unlinkDialog = !this.state.unlinkDialog;
+      if (data !== undefined) {
+        prev.unlinkDataRow = data;
+      }
+      return prev;
+    });
   };
 
   render() {
@@ -778,6 +791,14 @@ class ConsentGroupReview extends Component {
     return (
       div({}, [
         h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + this.props.consentKey]),
+        ConfirmationDialog({
+          closeModal: this.toggleState('unlinkDialog'),
+          show: this.state.unlinkDialog,
+          handleOkAction : this.unlinkSampleCollection,
+          title: 'Unlink Sample Collection association',
+          bodyText: 'Are you sure you want to unlink the associated Sample Collection?',
+          actionLabel: 'Yes'
+        }),
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
@@ -917,7 +938,7 @@ class ConsentGroupReview extends Component {
             data: this.state.current.sampleCollectionLinks,
             handleRedirectToInfoLink: this.handleRedirectToInfoLink,
             serverURL: this.props.serverURL,
-            unlinkSampleCollection : this.unlinkSampleCollection,
+            unlinkSampleCollection: this.toggleUnlinkDialog,
             sizePerPage: 10,
             paginationSize: 10
           })

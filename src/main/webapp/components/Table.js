@@ -15,6 +15,10 @@ export const Table = hh(class Table extends Component {
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
   }
 
+  componentDidMount() {
+
+  }
+
   formatStatusColumn = (cell, row) => {
     if (row.status === 'Pending' && this.props.isAdmin) {
       return this.renderDropdownButton(row.uuid);
@@ -114,14 +118,18 @@ export const Table = hh(class Table extends Component {
     }, [row.linkedProjectKey])
   };
 
-  unlinkSampleCollection = (cell, row) => {
-    let btn = this.props.isViewer ? null :
+  unlinkSampleCollectionButton = (cell, row) => {
+    const btn = this.props.isViewer ? null :
       button({
         className: "btn btn-xs",
-        onClick: this.props.unlinkSampleCollection(row),
+        onClick: this.unlinkSampleCollection(row),
         disabled: !this.props.isAdmin
       }, ["Unlink"]);
     return btn;
+  };
+
+  unlinkSampleCollection = (e) => (data) => {
+    this.props.unlinkSampleCollection(e);
   };
 
   render() {
@@ -185,7 +193,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}
                 dataField={header.value}
-                dataFormat={this.unlinkSampleCollection}>{"Unlink"}</TableHeaderColumn>
+                dataFormat={this.unlinkSampleCollectionButton}>{"Unlink"}</TableHeaderColumn>
             } else if (header.value === 'linkedProjectKey') {
               return <TableHeaderColumn isKey= {isKey}
                 key={header.name}

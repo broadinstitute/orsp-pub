@@ -75,7 +75,6 @@ class ConsentGroupDocuments extends Component {
 
   getAssociatedProjects = () => {
     ConsentGroup.getConsentCollectionLinks(this.props.serverURL, this.props.projectKey).then(response => {
-      console.log("get associated projects -> ", response.data)
       this.setState({ associatedProjects: response.data.collectionLinks })
     }).catch(error => {
       this.setState({serverError: true});
