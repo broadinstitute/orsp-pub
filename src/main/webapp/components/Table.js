@@ -128,8 +128,8 @@ export const Table = hh(class Table extends Component {
     return btn;
   };
 
-  unlinkSampleCollection = (e) => (data) => {
-    this.props.unlinkSampleCollection(e);
+  unlinkSampleCollection = (data) => (e) => {
+    this.props.unlinkSampleCollection(data);
   };
 
   render() {
