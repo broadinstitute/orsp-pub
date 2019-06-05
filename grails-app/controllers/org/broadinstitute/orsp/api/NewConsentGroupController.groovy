@@ -16,6 +16,7 @@ import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response
 class NewConsentGroupController extends AuthenticatedController {
 
     ConsentService consentService
+    PersistenceService persistenceService
 
     def show() {
         render(view: "/newConsentGroup/index")
@@ -176,6 +178,20 @@ class NewConsentGroupController extends AuthenticatedController {
             response.status = 500
             log.error("Exception deleting collection links: " + e)
             flash.error = "Error deleting collection links: " + e
+        }
+        render(response)
+    }
+
+    def unlinkAssociatedSampleCollection () {
+        String consentCollectionId = request.JSON["consentCollectionId"]
+        try {
+            ConsentCollectionLink collectionLink = queryService.findCollectionLinkById(consentCollectionId).first()
+            persistenceService.deleteCollectionLink(collectionLink)
+            response.status = 200
+        } catch(Exception e) {
+            response.status = 500
+            log.error("Exception deleting collection link: " + collectionLink.sampleCollectionId + e)
+            flash.error = "Error deleting collection links: " + collectionLink.sampleCollectionId + e
         }
         render(response)
     }

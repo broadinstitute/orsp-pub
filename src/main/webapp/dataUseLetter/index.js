@@ -9,17 +9,17 @@ function DUL(props) {
   const error = component.error;
   if (error !== undefined && error !== '') {
     return <DataUseLetterMessage error = {component.error}/>;
+  } else {
+    return <ErrorHandler>
+      <DataUseLetter
+        serverUrl = {component.serverURL}
+        consentGroupUrl = {component.consentGroupUrl}
+        projectUrl = {component.projectUrl}
+        loadingImage = {component.loadingImage}
+        sourceDiseases = {component.sourceDiseases}
+      />
+    </ErrorHandler>;
   }
-  return
-  <ErrorHandler>
-    <DataUseLetter
-      serverUrl = {component.serverURL}
-      consentGroupUrl = {component.consentGroupUrl}
-      projectUrl = {component.projectUrl}
-      loadingImage = {component.loadingImage}
-      sourceDiseases = {component.sourceDiseases}
-    />
-  </ErrorHandler>;
 }
 
 ReactDOM.render(

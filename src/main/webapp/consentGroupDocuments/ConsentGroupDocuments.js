@@ -75,6 +75,7 @@ class ConsentGroupDocuments extends Component {
 
   getAssociatedProjects = () => {
     ConsentGroup.getConsentCollectionLinks(this.props.serverURL, this.props.projectKey).then(response => {
+      console.log("get associated projects -> ", response.data)
       this.setState({ associatedProjects: response.data.collectionLinks })
     }).catch(error => {
       this.setState({serverError: true});
@@ -89,21 +90,6 @@ class ConsentGroupDocuments extends Component {
       this.setState({serverError: true});
       console.error(error);
     });
-  };
-
-  redirectToProject = (projectKey) => {
-    let key = projectKey.split("-");
-    let projectType = '';
-    if (key.length === 3) {
-      projectType = key[1].toLowerCase();
-    } else {
-      projectType = key[0].toLowerCase();
-    }
-    return [this.props.serverURL, projectType, "show", projectKey,"?tab=review"].join("/");
-  };
-
-  redirectToInfoLink = (projectKey) => {
-    return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + this.props.projectKey].join("/");
   };
 
   approveDocument = (uuid) => {
@@ -170,8 +156,6 @@ class ConsentGroupDocuments extends Component {
         attachDocumentsUrl: this.props.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
-        handleRedirectToProject: this.redirectToProject,
-        handleRedirectToInfoLink: this.redirectToInfoLink,
         serverURL: this.props.serverURL,
         emailUrl: this.props.emailDulUrl,
         userName: this.state.user.userName,

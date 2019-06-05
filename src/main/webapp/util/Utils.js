@@ -41,3 +41,14 @@ export const scrollToTop = () => {
   document.body.scrollTop = 0; // For Safari
   document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
+
+// TODO this is a temporary method that will be removed in grails/react migration
+export const getProjectController = (projectType) => {
+  const types = {"'Not Engaged' Project" : "ne", "IRB Project" : "irb", "NHSR Project": "nhsr"};
+  return types[projectType];
+}
+
+export const handleRedirectToProject = (serverURL, projectKey, projectType) => {
+  const controller = getProjectController(projectType) ? getProjectController(projectType) : projectType;
+  return [serverURL, controller, "show", projectKey,"?tab=review"].join("/");
+}
