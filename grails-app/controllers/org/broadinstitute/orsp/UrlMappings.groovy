@@ -27,6 +27,7 @@ class UrlMappings {
         '/api/consent-group/delete'(controller: 'newConsentGroup', action: 'delete', method: 'DELETE')
         '/api/consent-group/associatedProjects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
         '/api/consent-group/unlinkAssociatedProjects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
+        '/api/consent-group/unlinkAssociatedSampleCollection'(controller: 'newConsentGroup', action: 'unlinkAssociatedSampleCollection', method: 'PUT')
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
@@ -41,6 +42,12 @@ class UrlMappings {
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
 
+
+        '/api/history'(controller: 'history', action: 'list', method: 'GET')
+        '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
+        '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+        '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
+        '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")

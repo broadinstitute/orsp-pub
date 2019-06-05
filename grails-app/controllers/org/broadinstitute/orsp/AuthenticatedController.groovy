@@ -145,19 +145,20 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     def addComment() {
         Issue issue = queryService.findByKey(params.id)
+        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue, params.id, "comments")
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey, getUser()?.displayName, params.comment)
             if (comment == null) {
                 flash.error = "Error saving comment"
                 log.error("Error saving comment for issue '" + params.id + "': null")
-                redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+                redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
             }
             if (comment.hasErrors()) {
                 flash.error = "Error saving comment"
                 comment.errors.getAllErrors().each {
                     log.error("Error saving comment for issue '" + params.id + "': " + it)
                 }
-                redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+                redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
             }
 
             // By default, comments should go to ORSP
@@ -187,7 +188,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
                             user: getUser(),
                             issue: issue))
         }
-        redirect([action: "show", controller: issue.controller, params: [id: params.id, tab: "comments"]])
+        redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
     }
 
     /**

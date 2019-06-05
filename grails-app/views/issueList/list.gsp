@@ -28,7 +28,7 @@
                 <tr>
                     <td>
                         <g:if test="${instance.controller}">
-                            <g:link action="show" id="${instance.projectKey}" controller="${instance.controller}">
+                            <g:link action="main" params="${[projectKey:instance.projectKey]}" controller="project">
                                 ${instance.projectKey}
                             </g:link>
                         </g:if>
@@ -36,7 +36,7 @@
                     </td>
                     <td>
                         <g:if test="${instance.controller}">
-                            <g:link action="show" id="${instance.projectKey}" controller="${instance.controller}">
+                            <g:link action="main" params="${[projectKey:instance.projectKey]}" controller="project">
                                 ${instance.summary}
                             </g:link>
                         </g:if>
@@ -45,7 +45,7 @@
                     <td>${instance.type}</td>
                     <td>
                         <g:if test="${instance.controller}">
-                            <g:link action="show" id="${instance.projectKey}" controller="${instance.controller}">
+                            <g:link action="main" params="${[projectKey:instance.projectKey]}" controller="project">
                                 ${instance.status}
                             </g:link>
                         </g:if>

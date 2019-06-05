@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import InfoLink from './InfoLink';
 import '../index.css';
 import ErrorHandler from '../components/ErrorHandler';
+import Main from "./Main";
 
 ReactDOM.render(
   <ErrorHandler>
-    <InfoLink/>
+    <Main/>
   </ErrorHandler>,
 
-  document.getElementById('infoLink')
+  document.getElementById('main')
 );

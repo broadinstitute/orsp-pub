@@ -7,6 +7,20 @@ import org.broadinstitute.orsp.utils.IssueUtils
 @Slf4j
 class SubmissionController extends AuthenticatedController {
 
+    def show() {
+        Issue issue = queryService.findByKey(params.id)
+        if (issueIsForbidden(issue)) {
+            redirect(controller: 'Index', action: 'index')
+        }
+        Collection<Submission> submissions = queryService.getSubmissionsByProject(issue.projectKey)
+        Map<String, List<Submission>> groupedSubmissions = groupSubmissions(issue, submissions)
+        render(view: '/common/_submissionsPanel',
+                model: [issue              : issue,
+                        groupedSubmissions : groupedSubmissions,
+                        attachmentsApproved: issue.attachmentsApproved()
+                ])
+    }
+
     private static Collection<String> getSubmissionTypesForIssueType(String issueType) {
         IssueUtils.isIrb(issueType) ?
                 SubmissionType.getIRBTypes()*.label :
@@ -87,7 +101,7 @@ class SubmissionController extends AuthenticatedController {
             }
             flash.message = message
         }
-        redirect(controller: 'irb', action: 'show', params: [id: params.projectKey, tab: "submissions"])
+        redirect(controller: 'project', action: 'main', params: [projectKey: params.projectKey, tab: "submissions"])
     }
 
     def addFile() {

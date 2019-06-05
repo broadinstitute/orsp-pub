@@ -209,7 +209,7 @@
                             <td>${link.sampleCollection?.name}</td>
                             <td>${link.sampleCollection?.category}</td>
                             <td>${link.sampleCollection?.groupName}</td>
-                            <td><a href="${createLink(controller: link.linkedProject?.controller, action: 'show', params: [id: link.projectKey])}">${link.projectKey}</a></td>
+                            <td><a href="${createLink(controller: 'project', action: 'main', params: [projectKey: link.projectKey])}">${link.projectKey}</a></td>
                         </tr>
                     </g:each>
                     </tbody>
@@ -256,4 +256,3 @@
         $('.datepicker').datepicker();
     });
 </asset:script>
-

@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.utils
 import com.google.gson.Gson
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
 @Slf4j
@@ -102,6 +103,24 @@ final class IssueUtils {
         if ("Yes".equalsIgnoreCase(param) || "true".equalsIgnoreCase(param)) return true
         if ("No".equalsIgnoreCase(param) || "false".equalsIgnoreCase(param)) return false
         null
+    }
+
+    static Map<String, Object> generateArgumentsForRedirect(Issue issue, String id, String tab) {
+        Map<String, Object> arguments = new HashMap<>()
+        if (issue.type == IssueType.CONSENT_GROUP.name) {
+            arguments.put("controller", issue.controller)
+            arguments.put("action", "show")
+            arguments.put("id", id)
+            tab != null ? arguments.put("params", [id: issue.projectKey, tab: tab]) :
+                    arguments.put("params", [id: issue.projectKey])
+        } else {
+            arguments.put("controller", "project")
+            arguments.put("action", "main")
+            arguments.put("projectKey", id)
+            tab != null ? arguments.put("params", [projectKey: issue.projectKey, tab: tab]) :
+                    arguments.put("params", [projectKey: issue.projectKey])
+        }
+        arguments
     }
 
 }

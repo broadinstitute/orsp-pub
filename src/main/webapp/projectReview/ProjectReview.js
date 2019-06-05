@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, p, div, h2, button } from 'react-hyperscript-helpers';
+import { h, hh, p, div, h2, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -22,7 +22,7 @@ import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
-class ProjectReview extends Component {
+export const ProjectReview = hh(class ProjectReview extends Component {
 
   constructor(props) {
     super(props);
@@ -163,8 +163,9 @@ class ProjectReview extends Component {
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
+        this.props.initStatusBoxInfo(issue.data);
         current.approvalStatus = issue.data.issue.approvalStatus;
-        current.description = issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
+        current.description = isEmpty(issue.data.issue.description) ? '' : issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
@@ -241,7 +242,7 @@ class ProjectReview extends Component {
   isAdmin = () => {
     return this.props.isAdmin === "true";
   }
-  
+
   isViewer = () => {
     return this.props.isViewer === "true";
   }
@@ -294,13 +295,13 @@ class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(this.props.addExtraPropUrl, this.props.projectKey, data).then(
+    Project.addExtraProperties(this.props.serverURL, this.props.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
           prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
-        });
+        }, () => this.props.updateDetailsStatus(this.getProject()))
       }
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -342,7 +343,7 @@ class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+    Project.updateProject(this.props.serverURL, project, this.props.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
@@ -387,10 +388,10 @@ class ProjectReview extends Component {
     project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
-    
+
     if (this.state.reviewSuggestion) {
       project.editsApproved = true;
-    }    
+    }
     if (TEXT_SHARING_TYPES.some((type) => type === project.sharingType)) {
       project.textSharingType = this.state.formData.projectExtraProps.textSharingType;
     } else {
@@ -698,7 +699,6 @@ class ProjectReview extends Component {
       attestationError = true;
       generalError = true;
     }
-
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -733,6 +733,7 @@ class ProjectReview extends Component {
 
   successNotification = (type, message, time) => {
     setTimeout(this.clearAlertMessage(type), time, null);
+    this.props.updateComments();
     this.setState(prev => {
       prev[type] = true;
       prev.alertMessage = message;
@@ -752,7 +753,7 @@ class ProjectReview extends Component {
 
   redirectToConsentGroupTab = async () => {
     let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
-    window.location.href = [this.props.serverURL, projectType, "show", this.props.projectKey, "?tab=consent-groups"].join("/");
+    window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -927,7 +928,7 @@ class ProjectReview extends Component {
           }),
 
           InputFieldText({
-            isRendered: this.state.formData.projectExtraProps.affiliations.value === "other",
+            isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other" ,
             id: "affiliationOther",
             name: "affiliationOther",
             label: "Primary Investigator Other Affiliation",
@@ -1232,6 +1233,4 @@ class ProjectReview extends Component {
       ])
     )
   }
-}
-
-export default ProjectReview;
+});

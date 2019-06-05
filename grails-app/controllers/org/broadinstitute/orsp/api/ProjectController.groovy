@@ -25,6 +25,10 @@ class ProjectController extends AuthenticatedController {
         render(view: "/newProject/index")
     }
 
+    def main() {
+        render(view: "/mainContainer/index", model: [projectKey: params.projectKey])
+    }
+
     def dul() {
         render(view: "/dataUseLetter/index")
     }
@@ -92,7 +96,8 @@ class ProjectController extends AuthenticatedController {
                 pis               : getPIsForIssue(issue),
                 fundings          : fundingList,
                 extraProperties   : projectExtraProperties,
-                collaborators     : colls
+                collaborators     : colls,
+                attachmentsApproved: issue.attachmentsApproved()
         ] as JSON)
     }
 

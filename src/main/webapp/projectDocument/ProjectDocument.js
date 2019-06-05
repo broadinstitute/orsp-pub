@@ -4,12 +4,11 @@ import { DocumentHandler } from "../util/ajax";
 import { User } from "../util/ajax";
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { h } from 'react-hyperscript-helpers';
+import { h, hh } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from '../components/Spinner';
 
-
-class ProjectDocument extends Component {
+export const ProjectDocument = hh(class ProjectDocument extends Component {
 
   constructor(props) {
     super(props);
@@ -43,7 +42,10 @@ class ProjectDocument extends Component {
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachedDocumentsUrl, this.props.projectKey).then(resp => {
-      this.setState({documents: JSON.parse(resp.data.documents)});
+      this.setState({documents: JSON.parse(resp.data.documents)},
+        () => {
+          this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
+      );
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -60,7 +62,7 @@ class ProjectDocument extends Component {
   };
 
   rejectDocument = (uuid) => {
-    DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
+    DocumentHandler.rejectDocument(this.props.serverURL, uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
@@ -68,15 +70,6 @@ class ProjectDocument extends Component {
     });
   };
 
-  removeDocument = (documentId) => {
-    DocumentHandler.delete(this.props.removeDocumentUrl, documentId).then(resp => {
-      this.getAttachedDocuments();
-    }).catch(error => {
-      this.setState({serverError: true});
-      console.error(error);
-    });
-  };
-  
   handleDialog = (uuid, action) => {
     this.setState({
       showDialog: !this.state.showDialog,
@@ -128,6 +121,7 @@ class ProjectDocument extends Component {
           downloadDocumentUrl: this.props.downloadDocumentUrl,
           options: this.state.documentOptions,
           projectKey: this.props.projectKey,
+          serverURL: this.props.serverURL,
           attachDocumentsUrl: this.props.attachDocumentsUrl,
           handleLoadDocuments: this.getAttachedDocuments,
           removeDocumentUrl: this.props.removeDocumentUrl,
@@ -143,5 +137,4 @@ class ProjectDocument extends Component {
       ])
     )}
 
-}
-export default ProjectDocument
+});
