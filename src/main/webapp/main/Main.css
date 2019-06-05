@@ -1,0 +1,96 @@
+/* Top Section */
+.headerBoxContainer .headerBox {
+  border: 1px solid lightgray;
+  padding: 15px;
+  margin-bottom:20px;
+}
+
+.headerBoxContainer .headerBox .issue-type {
+  color: #999999;
+}
+
+.headerBoxContainer .headerBox .projectTitle {
+  margin: 0 0 10px 0;
+  font-size: 18pt;
+}
+
+.headerBoxContainer .headerBox  .headerLabel span {
+  color: #000000;
+  font-weight: 500;
+}
+
+.headerBoxContainer .headerBox .projectKey {
+  font-weight: bold;
+  padding: 0;
+}
+
+.headerBoxContainer .headerBox .headerBoxStatus {
+  font-weight: 100;
+  color: #000000;
+  margin-bottom: 2px;
+}
+
+.headerBoxContainer .headerBox .headerBoxStatus .italic {
+  color: #666666;
+}
+
+.headerBoxContainer .headerBox .headerBoxStatus.top {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.headerBoxContainer .headerBox .headerLabel {
+  color: #286090;
+  font-weight: 700;
+}
+
+.headerBoxContainer .headerBox .headerLabel span {
+  color: #000000;
+  font-weight: 500;
+}
+
+/* Tab Headers */
+.containerBox .nav-tabs {
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  margin: 20px 0 0 0;
+  border: 1px solid #e3e3e3;
+  border-bottom: 0;
+  height: 44px;
+  white-space: nowrap;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.containerBox .nav-tabs li {
+  margin: 0;
+}
+
+.containerBox .nav-tabs li a,
+.containerBox .nav-tabs li.active a, 
+.containerBox .nav-tabs li.active a:focus, 
+.containerBox .nav-tabs li.active a:hover {
+  color: #000000;
+  font-size: 1.2rem;
+  border:0;
+  border-radius:0;
+  background-color: #FFFFFF;
+}
+
+.containerBox .nav-tabs li a:hover {
+  color: #000000;
+}
+
+.containerBox .nav-tabs li a {
+  color:#555555;
+  background-color: #e6e6e6;
+  outline: none;
+}
+
+/* Tab Container */
+.containerBox .tabContent {
+  border: 1px solid #e3e3e3;
+  padding: 50px 15px 10px 15px;
+  border-top: 0;
+  margin: 0;
+}

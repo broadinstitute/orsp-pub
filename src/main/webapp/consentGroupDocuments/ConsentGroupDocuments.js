@@ -92,6 +92,14 @@ class ConsentGroupDocuments extends Component {
     });
   };
 
+  redirectToProject = (projectKey) => {
+    return [this.props.serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
+  };
+
+  redirectToInfoLink = (projectKey) => {
+    return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + this.props.projectKey].join("/");
+  };
+
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.getAttachedDocuments();

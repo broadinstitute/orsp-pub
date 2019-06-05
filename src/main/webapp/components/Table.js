@@ -91,7 +91,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToProject = (cell, row) => {
-    const url = handleRedirectToProject(this.props.serverURL, row.projectKey, row.type);
+    const url = handleRedirectToProject(this.props.serverURL, row.projectKey);
     return a({
       href: url,
       target: '_blank'
@@ -107,7 +107,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
-    const url = handleRedirectToProject(this.props.serverURL, row.linkedProjectKey, row.projectType);
+    const url = handleRedirectToProject(this.props.serverURL, row.linkedProjectKey);
     return a({
       href: url,
       target: '_blank'

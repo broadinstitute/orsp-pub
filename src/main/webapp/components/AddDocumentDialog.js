@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, div, h, p, small, span, br, button, textarea } from 'react-hyperscript-helpers';
+import { hh, div, h, p, small, span, br, button } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
@@ -131,7 +131,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let files = [file];
         if(this.props.projectKey !== undefined) {
           spinnerService.showAll();
-          Files.upload(this.props.attachDocumentsUrl, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
+          Files.upload(this.props.serverURL, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             spinnerService.hideAll();
             this.setState(prev => {

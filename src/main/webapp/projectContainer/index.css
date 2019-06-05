@@ -31,6 +31,10 @@ hr {
   z-index: 5;
 }
 
+.block {
+  display: block;
+}
+
 .errorMessage {
   color: red;
 }
@@ -250,11 +254,11 @@ input[type=checkbox] {
 }
 
 .answerCurrent:after {
-  background: url('components/old-tag.svg') no-repeat;
+  background: url('/components/old-tag.svg') no-repeat;
 }
 
 .answerUpdated:after {
-  background: url('components/new-tag.svg') no-repeat;
+  background: url('/components/new-tag.svg') no-repeat;
 }
 
 .linkTab {
@@ -306,14 +310,45 @@ input[type=checkbox] {
   padding-right: 5px;
 }
 
-.headerBox {
-  border: 1px solid black;
-  padding: 20px;
+.headerBoxContainer .headerBox {
+  border: 1px solid lightgray;
+  padding: 15px;
+  margin-bottom:20px;
 }
 
-.headerBoxStatus {
+.headerBoxContainer .projectTitle {
+  margin: 0 0 10px 0;
+  font-size: 18pt;
+}
+
+.headerLabel {
+  color: #286090;
+  font-weight: 700;
+}
+
+.headerLabel span {
+  color: #000000;
+  font-weight: 500;
+}
+
+.headerBoxContainer .projectKey {
   font-weight: bold;
-  color: blue;
+  padding-right: 1em; 
+}
+
+.headerBoxContainer .headerBoxStatus {
+  font-weight: 100;
+  color: #000000;
+  margin-bottom: 2px;
+}
+
+.headerBoxContainer .headerBoxStatus .italic {
+  color: #666666;
+}
+
+.headerBoxContainer .headerBoxStatus.top {
+  font-weight: bold;
+  margin-bottom: 2px;
 }
 
 .col, [class*="col-"] {

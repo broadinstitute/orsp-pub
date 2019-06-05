@@ -31,7 +31,7 @@ class NewConsentGroupController extends AuthenticatedController {
     PersistenceService persistenceService
 
     def show() {
-        render(view: "/newConsentGroup/index")
+        render(view: "/newConsentGroup/index", model: [projectKey: params.projectKey])
     }
 
     def downloadFillablePDF () {

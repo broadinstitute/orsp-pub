@@ -43,6 +43,12 @@ class UrlMappings {
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
 
 
+        '/api/history'(controller: 'history', action: 'list', method: 'GET')
+        '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
+        '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+        '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
+        '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

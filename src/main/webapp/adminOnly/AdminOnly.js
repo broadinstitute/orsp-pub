@@ -17,7 +17,7 @@ import { Spinner } from "../components/Spinner";
 import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
 
-class AdminOnly extends Component {
+export const AdminOnly = hh(class AdminOnly extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -155,6 +155,7 @@ class AdminOnly extends Component {
           prev.showSubmissionError = false;
           return prev;
         });
+        this.props.updateAdminOnlyStatus({ projectStatus : this.state.initial.projectStatus });
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => {
@@ -406,5 +407,4 @@ class AdminOnly extends Component {
       ])
     )
   }
-}
-export default AdminOnly;
+});

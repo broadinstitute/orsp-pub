@@ -18,7 +18,7 @@ Page expects the following:
 <div class="container">
 
     <h2>Submission for <a
-            href="${createLink(controller: issue.controller, action: 'show', params: [id: issue.projectKey, tab: 'submissions'])}">${issue.typeLabel}: ${issue.projectKey}</a>
+            href="${createLink(controller: 'project', action: 'main', params: [projectKey: issue.projectKey, tab: 'submissions'])}">${issue.typeLabel}: ${issue.projectKey}</a>
     </h2>
     <g:if test="${issue.protocol}">
         <h3>Protocol Number: ${issue.protocol}</h3>

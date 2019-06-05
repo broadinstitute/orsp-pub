@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile
 class SampleConsentLinkController extends AuthenticatedController {
 
     def pages() {
-        render(view: "/linkWizard/index")
+        render(view: "/linkWizard/index", model: [projectKey: params.projectKey])
     }
 
     def save() {

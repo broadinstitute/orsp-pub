@@ -7,12 +7,10 @@
 <body>
 
  <auth:isNotViewer>
-   <button class="btn btn-default" data-toggle="modal" data-target=".add-new-consent-modal">Add Sample/Data Cohort</button>
    <a type="button" class="btn btn-default" style="color: blue" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
     <a type="button" class="btn btn-default" style="color: blue"
         href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
         Use existing Sample/Data Cohort</a>
-   <button class="btn btn-default" data-toggle="modal" data-target=".use-existing-consent-modal">Use Existing Consent Group</button>
  </auth:isNotViewer>
 
 <g:if test="${consentGroups}">
@@ -26,8 +24,7 @@
         <g:each in="${consentGroups}" var="consent" status="panelIndex">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="heading${panelIndex}">
-                    <a class="pull-right"
-                       href="#">
+                    <a class="pull-right">
                         <span class="consent-accordion-toggle btn btn-default"><i class="glyphicon glyphicon-chevron-down"></i></span>
                     </a>
                     <h3 class="panel-title">
@@ -108,6 +105,8 @@
 
         </g:each>
     </div>
+    %{-- Modal container to upload a consent group attachment type from within a project --}%
+    <div class="modal" id="add-consent-document-modal" tabindex="-1" role="dialog" aria-labelledby="addConsentDocumentModalDialog" aria-hidden="true"></div>
 </g:if>
 
 </body>

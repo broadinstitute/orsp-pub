@@ -91,9 +91,10 @@ class FileHelperController extends AuthenticatedController{
     def attachedDocuments() {
         Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
         List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
+        Boolean attachmentsApproved = queryService.findByKey(params.issueKey).attachmentsApproved()
         Gson gson = new Gson()
         String doc = gson.toJson(results)
-        render ([documents : doc] as JSON)
+        render ([documents : doc, attachmentsApproved: attachmentsApproved] as JSON)
     }
 
     def updateDocumentsVersion() {

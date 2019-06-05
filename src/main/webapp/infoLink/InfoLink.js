@@ -51,7 +51,7 @@ class InfoLink extends Component {
   };
 
   redirectToProject = () => {
-    return [component.serverURL, "/consentGroup/show", component.consentKey,"?projectKey=" + component.projectKey].join("/");
+    return [component.serverURL, "consentGroup/show", component.consentKey,"?projectKey=" + component.projectKey].join("/");
   };
 
   render() {

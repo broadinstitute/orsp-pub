@@ -123,7 +123,7 @@ export const Files = {
       headers: { 'content-type': 'multipart/form-data' }
     };
 
-    return axios.post(url, data, config);
+    return axios.post(url +'/api/files-helper/attach-document', data, config);
   },
 
   downloadFillable(pdfUrl) {
@@ -155,7 +155,7 @@ export const Project = {
   },
 
   addExtraProperties(url, projectKey, data) {
-    return axios.post(url + '?id=' + projectKey, data);
+    return axios.post(url + '/project/modifyExtraProperties?id=' + projectKey, data);
   },
 
   rejectProject(url, projectKey) {
@@ -185,7 +185,7 @@ export const DocumentHandler = {
   },
 
    rejectDocument(url, uuid) {
-    return axios.put(`${url}?uuid=${uuid}`);
+    return axios.put(`${url}/api/files-helper/reject-document?uuid=${uuid}`);
   },
 
    attachedDocuments(url, issueKey) {
@@ -273,5 +273,24 @@ export const ConsentCollectionLink = {
       headers: { 'content-type': 'multipart/form-data' }
     };
     return axios.post(serverUrl + '/api/sample-consent-link', data, config);
+  }
+};
+
+export const ProjectMigration = {
+
+  getConsentGroups(url, id) {
+    return axios.get(url + "/api/consent-groups?id=" + id);
+  },
+
+  getHistory(url, id) {
+    return axios.get(url + "/api/history?id=" + id);
+  },
+
+  getComments(url, id) {
+    return axios.get(url + "/api/comments?id=" + id);
+  },
+
+  getSubmissions(url, id) {
+    return axios.get(url + "/api/submissions?id=" + id);
   }
 };
