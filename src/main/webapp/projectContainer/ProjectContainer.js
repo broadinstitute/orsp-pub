@@ -45,7 +45,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.props.updateAdminOnlyStatus(status);
   };
 
-  updateComments = () => {
+  updateContent = () => {
     this.getComments();
     this.getHistory();
   };
@@ -72,7 +72,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
         pagingType: "full_numbers",
         order: [1, "desc"]
       });
-
       this.initializeEditor();
     }
   }
@@ -137,7 +136,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     discardReviewUrl: this.props.discardReviewUrl,
                     clarificationUrl: this.props.clarificationUrl,
                     loadingImage: this.props.loadingImage,
-                    updateComments: this.updateComments,
+                    updateContent: this.updateContent,
                   })
                 ]),
               div({
