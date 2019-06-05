@@ -15,10 +15,6 @@ export const Table = hh(class Table extends Component {
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
   }
 
-  componentDidMount() {
-
-  }
-
   formatStatusColumn = (cell, row) => {
     if (row.status === 'Pending' && this.props.isAdmin) {
       return this.renderDropdownButton(row.uuid);
