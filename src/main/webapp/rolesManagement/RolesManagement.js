@@ -11,12 +11,12 @@ const tableHeaders =
   [
     { name: 'User Name', value: 'userName' },
     { name: 'Display Name', value: 'displayName' },
-    { name: 'Mail', value: 'emailAddress' },
+    { name: 'Email Address', value: 'emailAddress' },
     { name: 'Roles', value: 'roles' },
   ];
 
   const styles = {
-    wizardTitle: {
+    pageTitle: {
       fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
     }
   };
@@ -68,7 +68,7 @@ class RolesManagement extends Component {
   render() {
     return(
       div({},[
-        span({ style: styles.wizardTitle}, ["Roles Management"]),
+        span({ style: styles.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,
           isAdmin: this.state.isAdmin,

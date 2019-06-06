@@ -32,3 +32,12 @@
 .tableContainer .btn-toolbar .dropdownButton .caret {
     margin-left: 5px;
 }
+
+.roles-container .edit {
+    float: right;
+}
+
+.tableContainer input.form-control  {
+    font-size: 15px;
+    margin-bottom: 15px;
+}

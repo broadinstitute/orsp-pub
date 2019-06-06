@@ -125,13 +125,15 @@ export const Table = hh(class Table extends Component {
 
   roleSelection = (cell,row) => {
     return this.props.isViewer ? null :
-      div({}, [
+      div({className : "roles-container"}, [
         span({}, ["Admin"]),
         button({
-            className: "glyphicon glyphicon-pencil",
+            className: "btn btn-default btn-sm edit",
             onClick: this.props.editRole(row),
             disabled: !this.props.isAdmin
-          }, []
+          }, [
+            span({className: "glyphicon glyphicon-pencil"}, [])
+          ]
       )]);
   };
 
