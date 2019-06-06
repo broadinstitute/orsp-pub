@@ -1,17 +1,14 @@
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { ProjectReview } from "../projectReview/ProjectReview";
+import { ConsentGroupReview } from "../consentGroupReview/ConsentGroupReview";
 import { History } from "../components/History";
 import { Comments } from "../components/Comments";
-import { Submissions } from "./Submissions";
-import { ConsentGroups } from "./ConsentGroups";
 import '../components/Wizard.css';
-import { ProjectDocument } from "../projectDocument/ProjectDocument";
-import { AdminOnly } from "../adminOnly/AdminOnly";
+import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
 import { MultiTab } from "../components/MultiTab";
 import { ProjectMigration } from '../util/ajax';
 
-export const ProjectContainer = hh(class ProjectContainer extends Component {
+export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
 
   constructor(props) {
     super(props);
@@ -49,7 +46,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.getComments();
     this.getHistory();
   };
- 
+
   // comments
   getComments() {
     ProjectMigration.getComments(this.props.serverURL, this.props.projectKey).then(resp => {
@@ -63,7 +60,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   };
 
   initializeComments() {
-   tinymce.remove();
+    tinymce.remove();
     $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
     if (!$.fn.dataTable.isDataTable("#comments-table")) {
       $("#comments-table").DataTable({
@@ -76,7 +73,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     }
     this.initializeEditor();
   }
-  
+
   initializeEditor() {
     tinymce.init({
       selector: 'textarea.editor',
@@ -121,65 +118,49 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
             [
               div({
                 key: "review",
-                title: "Project Details",
+                title: "Review",
               }, [
-                  h(ProjectReview, {
-                    updateDetailsStatus: this.updateDetailsStatus,
-                    initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    searchUsersURL: this.props.searchUsersURL,
-                    projectKey: this.props.projectKey,
-                    projectUrl: this.props.projectUrl,
-                    isAdmin: this.props.isAdmin,
+                  h(ConsentGroupReview, {
+                    consentKey: this.props.consentKey,
+                    consentGroupUrl: this.props.consentGroupUrl,
+                    approveConsentGroupUrl: this.props.approveConsentGroupUrl,
+                    isAdminUrl: this.props.isAdminUrl,
                     isViewer: this.props.isViewer,
+                    sampleSearchUrl: this.props.sampleSearchUrl,
+                    rejectConsentUrl: this.props.rejectConsentUrl,
+                    updateConsentUrl: this.props.updateConsentUrl,
+                    projectKey: this.props.projectKey,
                     serverURL: this.props.serverURL,
-                    rejectProjectUrl: this.props.rejectProjectUrl,
-                    updateProjectUrl: this.props.updateProjectUrl,
                     discardReviewUrl: this.props.discardReviewUrl,
+                    consentNamesSearchURL: this.props.consentNamesSearchURL,
                     clarificationUrl: this.props.clarificationUrl,
                     loadingImage: this.props.loadingImage,
-                    updateContent: this.updateContent,
+                    initStatusBoxInfo: this.initStatusBoxInfo
                   })
                 ]),
               div({
                 key: "documents",
-                title: "Project Documents",
+                title: "Documents",
               }, [
-                  h(ProjectDocument, {
-                    statusBoxHandler: this.props.statusBoxHandler,
-                    updateDocumentsStatus: this.updateDocumentsStatus,
-                    projectKey: this.props.projectKey,
-                    attachedDocumentsUrl: this.props.attachedDocumentsUrl,
+                  h(ConsentGroupDocuments, {
+                    attachmentsUrl: this.props.attachmentsUrl,
                     serverURL: this.props.serverURL,
+                    attachDocumentsUrl: this.props.attachDocumentsUrl,
+                    projectKey: this.props.projectKey,
                     approveDocumentUrl: this.props.approveDocumentUrl,
-                    downloadDocumentUrl: this.props.downloadDocumentUrl,
+                    rejectDocumentUrl: this.props.rejectDocumentUrl,
                     sessionUserUrl: this.props.sessionUserUrl,
+                    downloadDocumentUrl: this.props.downloadDocumentUrl,
+                    emailDulUrl: this.props.emailDulUrl,
                     loadingImage: this.props.loadingImage,
+                    useRestrictionUrl: this.props.useRestrictionUrl,
+                    createRestrictionUrl: this.props.createRestrictionUrl,
                     removeDocumentUrl: this.props.removeDocumentUrl
                   })
                 ]),
               div({
-                key: "consent-groups",
-                title: "Sample/Data Cohorts",
-              }, [
-                  h(Fragment, {}, [ConsentGroups({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL
-                  }
-                  )]),
-                ]),
-              div({
-                key: "submissions",
-                title: "Submissions",
-              }, [
-                  h(Fragment, {}, [Submissions({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL
-                  }
-                  )]),
-                ]),
-              div({
                 key: "comments",
-                title: "Comments",
+                title: "Messages",
               }, [
                   h(Fragment, {}, [Comments({
                     projectKey: this.props.projectKey,
@@ -197,22 +178,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     serverURL: this.props.serverURL,
                     historyContent: this.state.historyContent
                   }
-                  )]),
-                ]),
-              div({
-                key: "adminOnly",
-                title: "Admin Only",
-              }, [
-                  h(AdminOnly, {
-                    isAdmin: this.props.isAdmin,
-                    loadingImage: this.props.loadingImage,
-                    userSessionUrl: this.props.userSessionUrl,
-                    projectKey: this.props.projectKey,
-                    projectUrl: this.props.projectUrl,
-                    updateAdminOnlyPropsUrl: this.props.updateAdminOnlyPropsUrl,
-                    statusBoxHandler: this.props.statusBoxHandler,
-                    updateAdminOnlyStatus: this.updateAdminOnlyStatus
-                  })
+                  )])
                 ])
             ])
         ])

@@ -154,7 +154,7 @@ class ConsentGroupController extends AuthenticatedController {
     def unLinkConsentCollection() {
         def link = ConsentCollectionLink.findById(params.id)
         deleteCollectionLinks(Collections.singletonList(link))
-        redirect(controller: 'consentGroup', action: "show", params: [id: params.consentKey, tab: 'details'])
+        redirect(controller: 'newConsentGroup', action: "main", model: [consentKey: params.consentKey, tab: 'details'])
     }
 
     /**
@@ -287,7 +287,7 @@ class ConsentGroupController extends AuthenticatedController {
     def saveRestriction() {
         DataUseRestriction restriction = DataUseRestriction.findById(params.id)
         restriction.save(params)
-        redirect(controller: 'consentGroup', action: "show", params: [id: restriction.consentGroupKey, tab: 'documents'])
+        redirect(controller: 'newConsentGroup', action: "main", model: [consentKey: restriction.consentGroupKey, tab: 'documents'])
     }
 
     /**

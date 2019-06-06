@@ -404,7 +404,7 @@ class NewProject extends Component {
         loadingImage: this.props.loadingImage,
       }, [
           NewProjectGeneralData({
-            title: "General Data",
+            title: "Project Details",
             currentStep: currentStep,
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,

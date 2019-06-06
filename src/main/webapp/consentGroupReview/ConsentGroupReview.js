@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h,div, h2, button } from 'react-hyperscript-helpers';
+import { h,div, h2, button, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -28,7 +28,7 @@ const headers =
     { name: 'Remove', value: 'unlinkSampleCollection' }
   ];
 
-class ConsentGroupReview extends Component {
+export const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   constructor(props) {
     super(props);
@@ -178,7 +178,7 @@ class ConsentGroupReview extends Component {
             if (element.data.extraProperties.institutionalSources !== undefined) {
               current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources));
             }
-
+            this.props.initStatusBoxInfo(element.data.issue);
             current.consentForm = element.data.issue;
             currentStr = JSON.stringify(current);
             this.getReviewSuggestions();
@@ -1069,6 +1069,4 @@ class ConsentGroupReview extends Component {
       ])
     )
   }
-}
-
-export default ConsentGroupReview;
+});

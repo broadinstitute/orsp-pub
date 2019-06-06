@@ -3,12 +3,12 @@ import { Documents } from "../components/Documents";
 import { DocumentHandler, User, ConsentGroup } from "../util/ajax";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { h } from 'react-hyperscript-helpers';
+import { h, hh } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from '../components/Spinner';
 
-class ConsentGroupDocuments extends Component {
+export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
   constructor(props) {
     super(props);
@@ -183,6 +183,4 @@ class ConsentGroupDocuments extends Component {
       })
     ])
   }
-}
-
-export default ConsentGroupDocuments;
+});
