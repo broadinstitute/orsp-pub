@@ -13,6 +13,7 @@ class UserController {
 
     UserService userService
     CrowdService crowdService
+    QueryService queryService
 
     def index() {
         render crowdService.findMissingUsers() as JSON
@@ -31,6 +32,11 @@ class UserController {
 
     def rolesManagement() {
         render(view: "/rolesManagement/index")
+    }
+
+    def getOrspUsers() {
+        List<User> users = queryService.getUsers()
+        render users as JSON
     }
 
 }
