@@ -8,11 +8,17 @@ import { RoleManagementEdit } from "../components/RoleManagementEdit";
 
 const tableHeaders =
   [
-    { name: 'User Name', value: 'userName' },
-    { name: 'Display Name', value: 'displayName' },
-    { name: 'Mail', value: 'mail' },
+    { name: 'User name', value: 'userName' },
+    { name: 'Display name', value: 'displayName' },
+    { name: 'Email address', value: 'mail' },
     { name: 'Roles', value: 'roles' },
   ];
+
+  const styles = {
+    wizardTitle: {
+      fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+    }
+  };
 
 class RolesManagement extends Component {
 
@@ -68,24 +74,23 @@ class RolesManagement extends Component {
   render() {
     return(
       div({},[
-        Panel({ title: "Roles Management" }, [
-          Table({
-            headers: tableHeaders,
-            isAdmin: this.state.isAdmin,
-            data: this.state.users,
-            serverURL: component.serverURL,
-            sizePerPage: 20,
-            paginationSize: 20,
-            editRole: this.editRoleHandler
-          })
-        ]),
+        span({ style: styles.wizardTitle}, ["Roles Management"]),
+        Table({
+          headers: tableHeaders,
+          isAdmin: this.state.isAdmin,
+          data: this.state.users,
+          serverURL: component.serverURL,
+          sizePerPage: 20,
+          paginationSize: 20,
+          editRole: this.editRoleHandler
+        }), 
         RoleManagementEdit({
           closeModal: this.closeModal,
           show: this.state.editRoleDialog,
           userData : this.state.editRoleRowData
         })
       ])
-    );
+    );  
   }
 }
 
