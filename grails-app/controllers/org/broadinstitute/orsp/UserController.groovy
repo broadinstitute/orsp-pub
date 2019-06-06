@@ -29,4 +29,8 @@ class UserController {
         render syncedUsers as JSON
     }
 
+    def rolesManagement() {
+        render(view: "/rolesManagement/index")
+    }
+
 }

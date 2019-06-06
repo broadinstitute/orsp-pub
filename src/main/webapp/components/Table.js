@@ -1,12 +1,14 @@
 import { Component } from 'react';
 import React from 'react';
 import { format } from 'date-fns';
-import { a, hh, button, span } from 'react-hyperscript-helpers';
+import { a, hh, button, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
 import { Btn } from './Btn';
+import { USER_ROLES } from '../util/roles';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
+import Select from 'react-select';
 
 export const Table = hh(class Table extends Component {
 
@@ -124,6 +126,26 @@ export const Table = hh(class Table extends Component {
     return btn;
   };
 
+  roleSelection = (cell,row) => {
+    const select = this.props.isViewer ? null :
+      console.log("CELL????? ", cell)
+      return h(Select, {
+        id: cell,
+        index: cell,
+        name: 'roles',
+        value: {label:'Admin', value:'admin'},
+        className: "inputFieldSelect",
+        onChange: () => {},
+        options: USER_ROLES,
+        placeholder: '--',
+        isDisabled: false,
+        isMulti: false,
+        isClearable: false,
+        isLoading: false,
+        // styles: selectWithLabels,
+      })
+  };
+
   unlinkSampleCollection = (data) => (e) => {
     this.props.unlinkSampleCollection(data);
   };
@@ -196,6 +218,12 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.redirectToSampleCollectionLinkedProject}
                 dataSort={ true }>{header.name}</TableHeaderColumn>
+            } else if(header.value === 'roles') {
+              return <TableHeaderColumn isKey= {isKey}
+                key={header.name}
+                dataField={header.value}
+                dataFormat={this.roleSelection}
+                >{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
