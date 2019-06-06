@@ -130,7 +130,8 @@ export const Table = hh(class Table extends Component {
         button({
             className: "btn btn-default btn-sm edit",
             onClick: this.props.editRole(row),
-            disabled: !this.props.isAdmin
+            disabled: !this.props.isAdmin,
+            title: "Edit"
           }, [
             span({className: "glyphicon glyphicon-pencil"}, [])
           ]

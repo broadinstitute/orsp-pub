@@ -55,7 +55,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
         show: this.props.show
       }, [
         h(ModalHeader, {}, [
-          h(ModalTitle, { className: "dialogTitle" }, ['Edit: ' + this.props.userData.displayName + " (" + this.props.userData.emailAddress + ")"])
+          h(ModalTitle, { className: "dialogTitle" }, [this.props.userData.displayName + " (" + this.props.userData.emailAddress + ")"])
         ]),
 
         h(ModalBody, { className: "dialogBody" }, [
