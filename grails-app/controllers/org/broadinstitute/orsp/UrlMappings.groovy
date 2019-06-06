@@ -41,6 +41,7 @@ class UrlMappings {
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
+        '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
 
 
         '/api/history'(controller: 'history', action: 'list', method: 'GET')

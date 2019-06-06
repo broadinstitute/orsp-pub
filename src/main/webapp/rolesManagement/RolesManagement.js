@@ -2,15 +2,16 @@ import { Component } from 'react';
 import { h, div, h2, span, a } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
+import { User } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
+
 
 const tableHeaders =
   [
     { name: 'User Name', value: 'userName' },
     { name: 'Display Name', value: 'displayName' },
-    { name: 'Mail', value: 'mail' },
+    { name: 'Mail', value: 'emailAddress' },
     { name: 'Roles', value: 'roles' },
   ];
 
@@ -21,17 +22,19 @@ class RolesManagement extends Component {
     this.state = {
       users: [
         {
-          userName: 'jbernales',
-          displayName: 'Jaime',
-          eMail: 'jbernales@broadinstitute.org',
-          roles: 'Read only'
+          id:'',
+          userName: '',
+          displayName: '',
+          emailAddress: '',
+          roles: [""]
         },
-        {
-          userName: 'lforconesi',
-          displayName: 'Leo',
-          eMail: 'lforcone@broadinstitute.org',
-          roles: 'ORSP'
-        }
+        // {
+        //   id:'2',
+        //   userName: 'lforconesi',
+        //   displayName: 'Leo',
+        //   emailAddress: 'lforcone@broadinstitute.org',
+        //   roles: ['ORSP']
+        // }
       ],
       editRoleDialog: false,
       editRoleRowData: {},
@@ -40,13 +43,19 @@ class RolesManagement extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   this.init();
-  // }
-  //
-  // init = () => {
-  //   console.log("INIT HERE ROLES AND USERS");
-  // };
+  componentDidMount() {
+    this.init();
+  }
+
+  init = () => {
+    spinnerService.showAll();
+    User.getAllUsers(component.serverURL).then(result => {
+      this.setState(prev => {
+        prev.users = result.data;
+        return prev;
+      }, () => spinnerService.hideAll())
+    });
+  };
 
   editRoleHandler = (data) => () => {
     this.setState(prev => {
@@ -76,7 +85,8 @@ class RolesManagement extends Component {
             serverURL: component.serverURL,
             sizePerPage: 20,
             paginationSize: 20,
-            editRole: this.editRoleHandler
+            editRole: this.editRoleHandler,
+            reviewFlow: true
           })
         ]),
         RoleManagementEdit({

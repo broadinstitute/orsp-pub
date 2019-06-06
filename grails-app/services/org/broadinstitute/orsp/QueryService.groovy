@@ -1186,4 +1186,18 @@ class QueryService implements Status {
         documents
     }
 
+    Collection<User> getUsers() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from user ' +
+                        ' order by id LIMIT 0,7000'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.with {
+            addEntity(User)
+            list()
+        }
+    }
+
 }

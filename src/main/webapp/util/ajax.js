@@ -209,6 +209,10 @@ export const User = {
 
   getUserSession(url) {
     return axios.get(url)
+  },
+
+  getAllUsers(serverUrl) {
+    return axios.get(serverUrl + '/api/get-users')
   }
 
 };
