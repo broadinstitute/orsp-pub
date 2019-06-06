@@ -1,14 +1,11 @@
-import { Component } from 'react';
-import React from 'react';
+import React, { Component } from 'react';
 import { format } from 'date-fns';
-import { a, hh, button, span, h } from 'react-hyperscript-helpers';
+import { a, button, div, hh, span } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Btn } from './Btn';
-import { USER_ROLES } from '../util/roles';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
-import Select from 'react-select';
 
 export const Table = hh(class Table extends Component {
 
@@ -127,23 +124,15 @@ export const Table = hh(class Table extends Component {
   };
 
   roleSelection = (cell,row) => {
-    const select = this.props.isViewer ? null :
-      console.log("CELL????? ", cell)
-      return h(Select, {
-        id: cell,
-        index: cell,
-        name: 'roles',
-        value: {label:'Admin', value:'admin'},
-        className: "inputFieldSelect",
-        onChange: () => {},
-        options: USER_ROLES,
-        placeholder: '--',
-        isDisabled: false,
-        isMulti: false,
-        isClearable: false,
-        isLoading: false,
-        // styles: selectWithLabels,
-      })
+    return this.props.isViewer ? null :
+      div({}, [
+        span({}, ["Admin"]),
+        button({
+            className: "glyphicon glyphicon-pencil",
+            onClick: this.props.editRole(row),
+            disabled: !this.props.isAdmin
+          }, []
+      )]);
   };
 
   unlinkSampleCollection = (data) => (e) => {

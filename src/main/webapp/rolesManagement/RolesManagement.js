@@ -2,6 +2,9 @@ import { Component } from 'react';
 import { h, div, h2, span, a } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import { Table } from "../components/Table";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
+import { RoleManagementEdit } from "../components/RoleManagementEdit";
 
 const tableHeaders =
   [
@@ -20,27 +23,46 @@ class RolesManagement extends Component {
         {
           userName: 'jbernales',
           displayName: 'Jaime',
-          mail: 'jbernales@broadinstitute.org',
+          eMail: 'jbernales@broadinstitute.org',
           roles: 'Read only'
         },
         {
           userName: 'lforconesi',
           displayName: 'Leo',
-          mail: 'lforcone@broadinstitute.org',
+          eMail: 'lforcone@broadinstitute.org',
           roles: 'ORSP'
         }
       ],
+      editRoleDialog: false,
+      editRoleRowData: {},
       showError: false,
       isAdmin: true // get current user role
     };
   }
 
-  componentDidMount() {
-    this.init();
-  }
+  // componentDidMount() {
+  //   this.init();
+  // }
+  //
+  // init = () => {
+  //   console.log("INIT HERE ROLES AND USERS");
+  // };
 
-  init = () => {
-    console.log("INIT HERE ROLES AND USERS");
+  editRoleHandler = (data) => () => {
+    this.setState(prev => {
+      prev.editRoleDialog = !this.state.editRoleDialog;
+      if (data !== undefined) {
+        prev.editRoleRowData = data;
+      }
+      return prev;
+    });
+  };
+
+  closeModal = () => () => {
+    this.setState(prev => {
+      prev.editRoleDialog = false;
+      return prev;
+    });
   };
 
   render() {
@@ -53,9 +75,15 @@ class RolesManagement extends Component {
             data: this.state.users,
             serverURL: component.serverURL,
             sizePerPage: 20,
-            paginationSize: 20
+            paginationSize: 20,
+            editRole: this.editRoleHandler
           })
-        ])
+        ]),
+        RoleManagementEdit({
+          closeModal: this.closeModal,
+          show: this.state.editRoleDialog,
+          userData : this.state.editRoleRowData
+        })
       ])
     );
   }
