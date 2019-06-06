@@ -1,5 +1,7 @@
 package org.broadinstitute.orsp
 
+import groovy.json.JsonBuilder
+
 class User implements Serializable {
 
     Integer id

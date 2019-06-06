@@ -1186,7 +1186,7 @@ class QueryService implements Status {
         documents
     }
 
-    Collection<User> getUsers() {
+    List<LinkedHashMap<String, User>> getUsers() {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =
@@ -1194,9 +1194,15 @@ class QueryService implements Status {
                         ' from user ' +
                         ' order by id LIMIT 0,7000'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        sqlQuery.with {
+        Collection<User> results = sqlQuery.with {
             addEntity(User)
             list()
+        }
+
+        results.collect {
+            [user: it,
+             roles: it.roles
+            ]
         }
     }
 

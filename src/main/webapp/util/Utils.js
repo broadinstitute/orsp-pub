@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import {USER_ROLES} from "./roles";
 
 export const validateEmail = (email) => {
   let valid = false;
@@ -44,4 +45,9 @@ export const scrollToTop = () => {
 
 export const handleRedirectToProject = (serverURL, projectKey) => {
   return [serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
+}
+
+export const obtainStringRole = (role) => {
+  let stringRole = USER_ROLES.find(it =>it.value === role);
+  return !isEmpty(stringRole) ? stringRole.label : 'None'
 }

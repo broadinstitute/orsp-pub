@@ -35,7 +35,7 @@ class UserController {
     }
 
     def getOrspUsers() {
-        List<User> users = queryService.getUsers()
+        List<LinkedHashMap<String, User>> users = queryService.getUsers()
         render users as JSON
     }
 

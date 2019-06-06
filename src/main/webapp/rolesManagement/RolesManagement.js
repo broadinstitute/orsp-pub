@@ -5,7 +5,8 @@ import { Table } from "../components/Table";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
-
+import { Spinner } from '../components/Spinner';
+import { obtainStringRole } from "../util/Utils";
 
 const tableHeaders =
   [
@@ -41,10 +42,19 @@ class RolesManagement extends Component {
   init = () => {
     spinnerService.showAll();
     User.getAllUsers(component.serverURL).then(result => {
+      let parsedUsers = {};
+      result.data.map(it => {
+          parsedUsers = it.user;
+          parsedUsers.roles = it.roles.map(element => obtainStringRole(element.role));
+        }
+      );
+
       this.setState(prev => {
-        prev.users = result.data;
+        prev.users = result.data.map(it => it.user);
         return prev;
       }, () => spinnerService.hideAll())
+    }).catch(error => {
+      this.setState(() => { throw error; });
     });
   };
 
@@ -75,7 +85,7 @@ class RolesManagement extends Component {
           data: this.state.users,
           serverURL: component.serverURL,
           sizePerPage: 20,
-          paginationSize: 20,
+          paginationSize: 10,
           editRole: this.editRoleHandler,
           reviewFlow: true
         }), 
@@ -83,6 +93,9 @@ class RolesManagement extends Component {
           closeModal: this.closeModal,
           show: this.state.editRoleDialog,
           userData : this.state.editRoleRowData
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
         })
       ])
     );  

@@ -1,17 +1,9 @@
 import { Component, Fragment } from 'react';
 import { hh, div, h, button } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
-import { spinnerService } from "../util/spinner-service";
-import { ClarificationRequest } from "../util/ajax";
 import { InputFieldCheckbox } from "./InputFieldCheckbox";
 import { USER_ROLES } from '../util/roles';
-
-/*
-    PROPS needed
-* userName
-* show
-* closeModal()
-* */
+import { isEmpty } from "../util/Utils";
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 
@@ -34,19 +26,30 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
     this.props.closeModal();
   };
 
+  defaultChecked = (role) => {
+    let isChecked= false;
+    if (!isEmpty(this.props.userData)) {
+      this.props.userData.roles.forEach(it => {
+          if (role.label === it) isChecked = true
+        }
+      )
+    }
+    return isChecked
+  };
+
   submit = () => {
-    console.log("Submitted");
+    console.log("Submitted", this.props);
     this.props.closeModal();
     // submit role change
   };
 
   handleCheck = (e) => {
-    const value = e.target.value;
-    this.setState(prev => {
-      prev.roles = value;
-      prev.showAlert = false;
-      return prev;
-    });
+    const value = e.target.name;
+    console.log("cambio ", value)
+    // this.setState(prev => {
+    //   prev.roles = value;
+    //   return prev;
+    // });
   };
 
   render() {
@@ -64,9 +67,9 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
               InputFieldCheckbox({
                 id: role.value,
                 name: role.label,
-                // onChange: this.handleCheck,
+                onChange: this.handleCheck,
                 label: role.label,
-                defaultChecked: false
+                checked: this.defaultChecked(role)
               })
             ])
           }),
