@@ -668,7 +668,7 @@ class QueryService implements Status {
      * @param queryOptions A QueryOptions object that has desired fields populated.
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findIssues(QueryOptions options) {
+    List<IssueSearchItemDTO> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
         String query = ' select distinct i.id ' +
@@ -728,9 +728,29 @@ class QueryService implements Status {
         Collection result = Collections.emptyList()
 
         if (ids.size() > 0) {
-            result = Issue.findAllByIdInList(ids)
+            result = findIssuesSearchItems(ids)
         }
         result
+    }
+
+    List<IssueSearchItemDTO> findIssuesSearchItems(ArrayList<Long> ids) {
+        final String query =
+                ' select * from (select distinct i.id id, i.project_key projectKey, i.type type, ' +
+                        'i.status status, i.summary title, i.update_date updated, ' +
+                        'i.expiration_date expiration, i.reporter reporter, e.value projectManager ' +
+                        'from issue i ' +
+                        'left join issue_extra_property e ' +
+                        'on i.id = e.issue_id ' +
+                        'and e.name = "pm") a where a.id IN :issueIds'
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        List<IssueSearchItemDTO> results = sqlQuery.with{
+            setResultTransformer(Transformers.aliasToBean(IssueSearchItemDTO.class))
+            setParameterList('issueIds', ids)
+            list()
+        }
+        results
     }
 
     /**
