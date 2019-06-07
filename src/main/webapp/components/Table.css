@@ -33,11 +33,14 @@
     margin-left: 5px;
 }
 
-.roles-container .edit {
+/* Edit button into grid */
+.roles-container .edit,
+.roles-container .edit:focus {
     float: right;
+    outline: none;
 }
 
-.tableContainer input.form-control  {
+.roles-management .tableContainer input.form-control  {
     font-size: 15px;
     margin-bottom: 15px;
 }
