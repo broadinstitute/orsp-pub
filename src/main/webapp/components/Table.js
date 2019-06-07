@@ -49,7 +49,6 @@ export const Table = hh(class Table extends Component {
   };
 
   formatTooltip = (cell, row) => {
-    console.log('row ahre', row);
     return span ({
       title: row.collectionName
     },
@@ -69,7 +68,8 @@ export const Table = hh(class Table extends Component {
     if (this.props.reviewFlow) {
       return a({
         href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
-        target: '_blank'
+        target: '_blank',
+        title: row.fileName,
       }, [row.fileName])
     } else {
       return span({}, [row.fileName])
@@ -158,7 +158,29 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
                 dataFormat={this.formatStatusColumn}
-                dataSort={true}>{header.name}</TableHeaderColumn>
+                dataSort={true}
+                width={'140px'}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'fileType') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                width={'150px'}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'docVersion') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                width={'90px'}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'creator') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                width={'130px'}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
@@ -188,7 +210,8 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.parseDate}
-                dataSort={ true }>{header.name}</TableHeaderColumn>
+                dataSort={ true }
+                width={'140px'}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
               return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}
