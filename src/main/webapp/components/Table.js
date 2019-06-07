@@ -166,7 +166,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={'150px'}>{header.name}</TableHeaderColumn>
+                width={'170px'}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'docVersion') {
               return <TableHeaderColumn 
                 isKey={isKey}
