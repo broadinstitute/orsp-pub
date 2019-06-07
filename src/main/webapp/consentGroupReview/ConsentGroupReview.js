@@ -932,16 +932,18 @@ class ConsentGroupReview extends Component {
         ]),
 
         Panel({ title: "Sample Collections" }, [
-          Table({
-            headers: headers,
-            isAdmin: this.state.isAdmin,
-            data: this.state.current.sampleCollectionLinks,
-            handleRedirectToInfoLink: this.handleRedirectToInfoLink,
-            serverURL: this.props.serverURL,
-            unlinkSampleCollection: this.toggleUnlinkDialog,
-            sizePerPage: 10,
-            paginationSize: 10
-          })
+          div({ className: "fixed-columns" }, [
+            Table({
+              headers: headers,
+              isAdmin: this.state.isAdmin,
+              data: this.state.current.sampleCollectionLinks,
+              handleRedirectToInfoLink: this.handleRedirectToInfoLink,
+              serverURL: this.props.serverURL,
+              unlinkSampleCollection: this.toggleUnlinkDialog,
+              sizePerPage: 10,
+              paginationSize: 10
+            })
+          ])
         ]),
 
         Panel({ title: "Sample Collection Date Range" }, [

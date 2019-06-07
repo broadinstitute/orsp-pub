@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import React from 'react';
 import { format } from 'date-fns';
-import { a, hh, button, span } from 'react-hyperscript-helpers';
+import { a, hh, button, td, span } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
 import { Btn } from './Btn';
@@ -46,6 +46,15 @@ export const Table = hh(class Table extends Component {
       </ButtonToolbar>
     );
 
+  };
+
+  formatTooltip = (cell, row) => {
+    console.log('row ahre', row);
+    return span ({
+      title: row.collectionName
+    },
+    [row.collectionName]
+    );
   };
 
   actionApprove = (uuid) => {
@@ -172,7 +181,8 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.redirectToInfoLink}
-                dataSort={ true }>{header.name}</TableHeaderColumn>
+                dataSort={ true }
+                width={'96px'}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'creationDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
@@ -189,13 +199,20 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}
                 dataField={header.value}
-                dataFormat={this.unlinkSampleCollectionButton}>{"Unlink"}</TableHeaderColumn>
+                dataFormat={this.unlinkSampleCollectionButton}
+                width={'80px'}>{"Unlink"}</TableHeaderColumn>
             } else if (header.value === 'linkedProjectKey') {
               return <TableHeaderColumn isKey= {isKey}
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.redirectToSampleCollectionLinkedProject}
                 dataSort={ true }>{header.name}</TableHeaderColumn>
+            } else if (header.value==='collectionName') {
+                return <TableHeaderColumn isKey={isKey}
+                dataField={header.value}
+                dataFormat={this.formatTooltip}
+                key={header.value}
+                width={'270px'}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
