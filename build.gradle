@@ -1,5 +1,4 @@
 import org.broadinstitute.orsp.deploy.Deploy
-import org.broadinstitute.orsp.deploy.Dockerize
 import org.broadinstitute.orsp.deploy.RenderConfigs
 
 buildscript {
