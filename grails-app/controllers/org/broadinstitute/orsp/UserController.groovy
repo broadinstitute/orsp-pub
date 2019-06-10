@@ -59,7 +59,7 @@ class UserController extends AuthenticatedController {
 
     def editOrspUserRole() {
         Integer userId = request.JSON["userId"] as Integer
-        if (userId !== null) {
+        if (userId != null) {
             ArrayList<String> rolesToAssign = request.JSON["roles"] as ArrayList<String>
             User user = User.findById(userId)
             try {
