@@ -126,7 +126,7 @@ export const Table = hh(class Table extends Component {
   roleSelection = (cell,row) => {
     return this.props.isViewer ? null :
       div({className : "roles-container"}, [
-        span({}, [row.roles.join(", ")]),
+        span({}, [row.roles]),
         button({
             className: "btn btn-default btn-sm edit",
             onClick: this.props.editRole(row),
