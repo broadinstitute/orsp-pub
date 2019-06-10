@@ -18,7 +18,7 @@ class RenderConfigs extends DefaultTask {
     void render() {
         // TODO: This should be an input
         String userHome = System.properties['user.home']
-        String vaultToken = System.getenv("VAULT_TOKEN");
+        String vaultToken = System.getenv("VAULT_TOKEN").replace("\n", "").replace("\r", "");;
 
         // String vaultToken = new File("${userHome}/.vault-token").text
         // TODO: Look into making the secrets inputs. application.yml needs parsing, orsp-client.json just needs writing
