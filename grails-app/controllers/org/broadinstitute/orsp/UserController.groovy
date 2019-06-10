@@ -1,6 +1,9 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import java.util.stream.Collectors
+import grails.rest.Resource
+import groovy.util.logging.Slf4j
 
 /**
  * Rest-based class to handle synchronizing users from Broad's Crowd instance to Compliance database.
@@ -9,7 +12,9 @@ import grails.converters.JSON
  *
  * See {@link CrowdService#findMissingUsers} for preference to use Broad APIs.
  */
-class UserController {
+@Slf4j
+@Resource(readOnly = false, formats = ['JSON'])
+class UserController extends AuthenticatedController {
 
     UserService userService
     CrowdService crowdService
@@ -35,8 +40,41 @@ class UserController {
     }
 
     def getOrspUsers() {
-        List<LinkedHashMap<String, User>> users = queryService.getUsers()
+        JSON.registerObjectMarshaller(User) {
+            def output = [:]
+            output['id'] = it.id
+            output['userName'] = it.userName
+            output['displayName'] = it.displayName
+            output['emailAddress'] = it.emailAddress
+            output['createdDate'] = it.createdDate
+            output['updatedDate'] = it.updatedDate
+            output['lastLoginDate'] = it.lastLoginDate
+            output['roles'] = it.roles.stream().map{role ->
+                role.getRole()}.collect(Collectors.joining(", "))
+            return output
+        }
+        List<User> users = queryService.getUsers()
         render users as JSON
     }
 
+    def editOrspUserRole() {
+        Integer userId = request.JSON["userId"] as Integer
+        if (userId !== null) {
+            ArrayList<String> rolesToAssign = request.JSON["roles"] as ArrayList<String>
+            User user = User.findById(userId)
+            try {
+//                List<SupplementalRole> currentUserRoles = queryService.findSupplementalRolesByUserId(userId)
+                queryService.deleteOrspUserRoles(userId)
+                if (!rolesToAssign.isEmpty()) {
+                    queryService.updateOrspUserRoles(user, rolesToAssign)
+                }
+                response.status = 200
+                render([message: 'Role Updated'] as JSON)
+            } catch(Exception e) {
+                log.error("Error while trying to modify roles to userId: ${userId}." + e.message)
+                response.status = 500
+                render([error: e.message] as JSON)
+            }
+        }
+    }
 }

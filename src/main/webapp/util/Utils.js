@@ -48,6 +48,5 @@ export const handleRedirectToProject = (serverURL, projectKey) => {
 }
 
 export const obtainStringRole = (role) => {
-  let stringRole = USER_ROLES.find(it =>it.value === role);
-  return !isEmpty(stringRole) ? stringRole.label : 'None'
+  return USER_ROLES.map(it => it.value === role);
 }

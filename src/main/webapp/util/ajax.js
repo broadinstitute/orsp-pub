@@ -203,16 +203,16 @@ export const User = {
     return axios.get(url);
   },
 
-  addExtraProperties(url, projectKey, data) {
-    return axios.post(url+ '?id=' + projectKey, data );
-  },
-
   getUserSession(url) {
     return axios.get(url)
   },
 
   getAllUsers(serverUrl) {
     return axios.get(serverUrl + '/api/get-users')
+  },
+
+  editUserRole(serverUrl, userId, roles) {
+    return axios.put(`${serverUrl}/api/edit-UserRole`, {userId: userId, roles: roles});
   }
 
 };

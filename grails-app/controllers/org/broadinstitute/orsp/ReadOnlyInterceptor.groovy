@@ -26,6 +26,7 @@ class ReadOnlyInterceptor implements UserInfo {
         match controller: 'ne', action: ~/(handleIntake|create|edit|attachDocument|submit|modify|accept|signed)/
         match controller: 'nhsr', action: ~/(create|edit|signed)/
         match controller: 'submission', action: ~/(save|delete|addFile|removeFile)/
+        match controller: 'user', action: ~/(editOrspUserRole)/
     }
 
     boolean before() {

@@ -1,55 +1,79 @@
 import { Component, Fragment } from 'react';
-import { hh, div, h, button } from 'react-hyperscript-helpers';
+import { hh, h, button } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldCheckbox } from "./InputFieldCheckbox";
 import { USER_ROLES } from '../util/roles';
-import { isEmpty } from "../util/Utils";
+import { createObjectCopy, isEmpty } from "../util/Utils";
+import { User } from "../util/ajax";
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      roles: [],
-      submit: false,
-      showAlert: false,
+      userData: {},
+      disableButton: false,
+      roles: {
+        orsp: false,
+        'Compliance Office': false,
+        ro_admin: false
+      }
     };
   }
 
-  handleClose = () => {
-    this.setState(prev => {
-      prev.showAlert = false;
-      prev.disableBtn = false;
-      prev.disableSendBtn = false;
-      return prev;
-    });
-    this.props.closeModal();
-  };
+  componentDidMount() {
+     this.defaultChecked();
+  }
 
-  defaultChecked = (role) => {
-    let isChecked= false;
-    if (!isEmpty(this.props.userData)) {
-      this.props.userData.roles.forEach(it => {
-          if (role.label === it) isChecked = true
-        }
-      )
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (!isEmpty(nextProps.userData) && nextProps.userData !== prevState.userData){
+      return { userData: nextProps.userData};
     }
-    return isChecked
+    else return null;
+  }
+
+  defaultChecked = () => {
+    let checkedRoles = createObjectCopy(this.state.roles);
+    if (!isEmpty(this.props.userData)) {
+      USER_ROLES.forEach(role => {
+        this.props.userData.roles.split(",").forEach(item => {
+          if (role.value === item.trim()) {
+            checkedRoles[role.value] = true;
+          }
+        })
+      })
+    }
+    this.setState(prev => {
+      prev.roles = checkedRoles;
+      return prev;
+    })
   };
 
   submit = () => {
-    console.log("Submitted", this.props);
-    this.props.closeModal();
-    // submit role change
+    this.setState({ disableButton: true });
+   const rolesList = Object.keys(this.state.roles).filter(it => { return this.state.roles[it] });
+    User.editUserRole(this.props.serverURL, this.props.userData.id, rolesList).then( () => {
+      let response = createObjectCopy(this.state.userData);
+      response.roles = rolesList;
+      this.props.closeOnSubmit(response);
+    }).catch(error => {
+      this.setState(() => { throw error; });
+    });
   };
 
   handleCheck = (e) => {
-    const value = e.target.name;
-    console.log("cambio ", value)
-    // this.setState(prev => {
-    //   prev.roles = value;
-    //   return prev;
-    // });
+    e.persist();
+    this.setState(prev => {
+      prev.roles[e.target.id] = !this.state.roles[e.target.id];
+      return prev;
+    });
+  };
+
+  clearSelection = () => {
+    this.setState(prev => {
+      Object.keys(prev.roles).forEach(it => prev.roles[it] = false);
+      return prev;
+    })
   };
 
   render() {
@@ -66,17 +90,18 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
             return h(Fragment, { key: idx }, [
               InputFieldCheckbox({
                 id: role.value,
-                name: role.label,
+                name: role,
                 onChange: this.handleCheck,
                 label: role.label,
-                checked: this.defaultChecked(role)
+                checked: this.state.roles[role.value]
               })
             ])
           }),
         ]),
         h(ModalFooter, {}, [
-          button({ className: "btn buttonSecondary", disabled: false, onClick: this.props.closeModal()}, ["Cancel"]),
-          button({ className: "btn buttonPrimary", disabled: false, onClick: this.submit }, ["Submit"])
+          button({ className: "btn buttonSecondary", disabled: this.state.disableButton, onClick: this.clearSelection}, ["Clear"]),
+          button({ className: "btn buttonSecondary", disabled: this.state.disableButton, onClick: this.props.closeModal()}, ["Cancel"]),
+          button({ className: "btn buttonPrimary", disabled: this.state.disableButton, onClick: this.submit }, ["Submit"])
         ])
       ])
     );

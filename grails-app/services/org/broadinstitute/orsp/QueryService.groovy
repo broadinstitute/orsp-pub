@@ -373,7 +373,7 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                ' where consent_collection_link_id = :consentCollectionIds '
+                ' where consent_collection_link_id = :consentCollectionIds'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1186,24 +1186,34 @@ class QueryService implements Status {
         documents
     }
 
-    List<LinkedHashMap<String, User>> getUsers() {
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+    Collection<User> getUsers() {
         final session = sessionFactory.currentSession
         final String query =
-                ' select * ' +
-                        ' from user ' +
-                        ' order by id LIMIT 0,7000'
+                ' select * from user ' +
+                        ' order by id '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         Collection<User> results = sqlQuery.with {
             addEntity(User)
             list()
         }
+        results
+    }
 
-        results.collect {
-            [user: it,
-             roles: it.roles
-            ]
-        }
+    def updateOrspUserRoles (User user, ArrayList<String> newRoles) {
+        final session = sessionFactory.currentSession
+        final String query = ' insert into supplemental_role (version, role, user, user_id) values '
+        StringBuffer stringBuffer = new StringBuffer().append(query)
+        String queryAndValues = stringBuffer.append(newRoles.collect{ it -> return "(0, '${it}', '${user.userName}', ${user.id})"}.join(" , ")).toString()
+        final SQLQuery sqlQuery = session.createSQLQuery(queryAndValues)
+        sqlQuery.executeUpdate()
+    }
+
+    def deleteOrspUserRoles (userId) {
+        final session = sessionFactory.currentSession
+        final String query = 'delete from supplemental_role where user_id = :userId'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("userId", userId)
+        sqlQuery.executeUpdate()
     }
 
 }

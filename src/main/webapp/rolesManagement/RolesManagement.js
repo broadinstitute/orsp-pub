@@ -31,7 +31,7 @@ class RolesManagement extends Component {
       editRoleDialog: false,
       editRoleRowData: {},
       showError: false,
-      isAdmin: true // get current user role
+      isAdmin: true
     };
   }
 
@@ -41,16 +41,14 @@ class RolesManagement extends Component {
 
   init = () => {
     spinnerService.showAll();
+    let isCurrentUserAdmin = false;
+    User.getUserSession(component.sessionUserUrl).then( resp => {
+      isCurrentUserAdmin = resp.data.isORSP
+    });
     User.getAllUsers(component.serverURL).then(result => {
-      let parsedUsers = {};
-      result.data.map(it => {
-          parsedUsers = it.user;
-          parsedUsers.roles = it.roles.map(element => obtainStringRole(element.role));
-        }
-      );
-
       this.setState(prev => {
-        prev.users = result.data.map(it => it.user);
+        prev.isAdmin = isCurrentUserAdmin;
+        prev.users = result.data;
         return prev;
       }, () => spinnerService.hideAll())
     }).catch(error => {
@@ -75,6 +73,14 @@ class RolesManagement extends Component {
     });
   };
 
+  submit = (userUpdated) => {
+    this.setState(prev => {
+      prev.editRoleDialog = false;
+      prev.users.find(it => it.id === userUpdated.id).roles = userUpdated.roles.join(', ');
+      return prev;
+    });
+  };
+
   render() {
     return(
       div({className: "roles-management"},[
@@ -90,8 +96,11 @@ class RolesManagement extends Component {
           reviewFlow: true
         }), 
         RoleManagementEdit({
+          serverURL: component.serverURL,
           closeModal: this.closeModal,
+          closeOnSubmit: this.submit,
           show: this.state.editRoleDialog,
+          isRendered: this.state.editRoleDialog,
           userData : this.state.editRoleRowData
         }),
         h(Spinner, {
