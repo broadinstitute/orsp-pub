@@ -1,9 +1,9 @@
 FROM openjdk:8 as builder
 COPY . /app
-COPY /etc/orsp-vault-token /root
+
 WORKDIR /app
 ENV VAULT_ADDR https://clotho.broadinstitute.org:8200
-ENV VAULT_TOKEN ""
+
 RUN ./gradlew renderConfigs
 RUN ./gradlew webpackProd
 RUN grails -Dgrails.env=dev war
