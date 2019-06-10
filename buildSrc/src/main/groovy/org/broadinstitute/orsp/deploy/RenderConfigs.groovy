@@ -18,9 +18,9 @@ class RenderConfigs extends DefaultTask {
     void render() {
         // TODO: This should be an input
         String userHome = System.properties['user.home']
+        String vaultToken = System.getenv("VAULT_TOKEN");
 
-        String vaultToken = new File("${userHome}/.vault-token").text
-
+        // String vaultToken = new File("${userHome}/.vault-token").text
         // TODO: Look into making the secrets inputs. application.yml needs parsing, orsp-client.json just needs writing
         println("Rendering application.yml file from vault secrets")
         Map<String, String> parsedSecrets = VaultSecrets.getParsedSecret(vaultToken, vault, "secret/dsde/orsp/all/application.yml")

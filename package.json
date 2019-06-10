@@ -11,6 +11,7 @@
     "verbose": true
   },
   "scripts": {
+    "cloud": "webpack --progress",
     "dev": "webpack --progress --watch",
     "prod": "webpack -p",
     "bundle": "webpack",
