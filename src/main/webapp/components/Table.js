@@ -8,6 +8,18 @@ import { Btn } from './Btn';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
 
+const styles = { 
+  statusWidth: '140',
+  fileTypeWidth: '170',
+  docVersionWidth: '90',
+  creatorWidth: '130',
+  infoLinkWidth: '96',
+  creationDateWidth: '140',
+  removeWidth: '45',
+  unlinkSampleCollectionWidth: '80',
+  collectionNameWidth: '270'
+}
+
 export const Table = hh(class Table extends Component {
 
   constructor(props) {
@@ -159,28 +171,28 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.formatStatusColumn}
                 dataSort={true}
-                width={'140px'}>{header.name}</TableHeaderColumn>
+                width={styles.statusWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileType') {
               return <TableHeaderColumn 
                 isKey={isKey}
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={'170px'}>{header.name}</TableHeaderColumn>
+                width={styles.fileTypeWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'docVersion') {
               return <TableHeaderColumn 
                 isKey={isKey}
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={'90px'}>{header.name}</TableHeaderColumn>
+                width={styles.docVersionWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'creator') {
               return <TableHeaderColumn 
                 isKey={isKey}
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={'130px'}>{header.name}</TableHeaderColumn>
+                width={styles.creatorWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
@@ -204,26 +216,26 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.redirectToInfoLink}
                 dataSort={ true }
-                width={'96px'}>{header.name}</TableHeaderColumn>
+                width={styles.infoLinkWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'creationDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.parseDate}
                 dataSort={ true }
-                width={'140px'}>{header.name}</TableHeaderColumn>
+                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
               return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}
                 key={header.value}
                 dataFormat={this.formatRemoveBtn}
-                width={'45px'}>{header.name}</TableHeaderColumn>
+                width={styles.removeWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'unlinkSampleCollection') {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}
                 dataField={header.value}
                 dataFormat={this.unlinkSampleCollectionButton}
-                width={'80px'}>{"Unlink"}</TableHeaderColumn>
+                width={styles.unlinkSampleCollectionWidth}>{"Unlink"}</TableHeaderColumn>
             } else if (header.value === 'linkedProjectKey') {
               return <TableHeaderColumn isKey= {isKey}
                 key={header.name}
@@ -235,7 +247,7 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.formatTooltip}
                 key={header.value}
-                width={'270px'}>{header.name}</TableHeaderColumn>
+                width={styles.collectionNameWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
