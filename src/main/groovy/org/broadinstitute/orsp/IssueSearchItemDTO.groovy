@@ -3,16 +3,14 @@ package org.broadinstitute.orsp
 class IssueSearchItemDTO {
 
     Integer id
-    String issueKey
+    String projectKey
     String type
     String status
     String title
     String reporter
-    String collaborator
-    String pm
-    String pi
     Date expirationDate
-    Date updated
+    Date updateDate
+    Map<String, String> extraProperties = new HashMap<String, String>()
 
 
     void setId(Number id) {

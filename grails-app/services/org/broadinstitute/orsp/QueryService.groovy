@@ -735,9 +735,8 @@ class QueryService implements Status {
 
     List<IssueSearchItemDTO> findIssuesSearchItems(ArrayList<Integer> issueIds) {
 
-        List<IssueSearchItemDTO> results = new ArrayList<IssueSearchItemDTO>()
         final String query = "SELECT i.id id, " +
-                "i.project_key issueKey, " +
+                "i.project_key projectKey, " +
                 "i.type type, " +
                 "i.status status, " +
                 "i.summary title, " +
@@ -747,41 +746,41 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i INNER JOIN issue_extra_property iep " +
                 "ON i.project_key = iep.project_key " +
-                "WHERE i.id IN (:issueIds)"
+                "WHERE i.id IN (" + issueIds.join(",") + ")"
 
-        def ids = issueIds.join(",")
-        
-        getSqlConnection().rows(query, ["issueIds": ids] ).each {
-            HashMap<String, IssueSearchItemDTO> resultDTO = new HashMap<String, IssueSearchItemDTO>()
-            if (resultDTO.containsKey(it.get("issueKey"))) {
-                IssueSearchItemDTO itemDTO = resultDTO.get( it.get("issueKey").toString())
-                if(it.get("name").toString() == IssueExtraProperty.PI){
-                    itemDTO.setPi(it.get("value").toString() )
-                } else if (it.get("name").toString() == IssueExtraProperty.PM) {
-                    itemDTO.setPM(it.get("value").toString())
-                } else if (it.get("name").toString() == IssueExtraProperty.COLLABORATOR) {
-                    itemDTO.setPM(it.get("value").toString())
-                }
+        IssueSearchItemDTO issueSearchItemDTO
+        List<IssueSearchItemDTO> resultDTO = new ArrayList<IssueSearchItemDTO>()
+        String currentProjectKey = ""
+
+        getSqlConnection().rows(query).each{
+            if (it.get("projectKey") == currentProjectKey) {
+                issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
             } else {
-                IssueSearchItemDTO searchItemDTO = new IssueSearchItemDTO()
-                searchItemDTO.setId((Integer)it.get("id"))
-                searchItemDTO.setIssueKey(it.get("issueKey").toString())
-                searchItemDTO.setType(it.get("type").toString())
-                searchItemDTO.setStatus(it.get("status").toString())
-                searchItemDTO.setTitle(it.get("title").toString())
-                searchItemDTO.setReporter(it.get("reporter").toString())
+                if (currentProjectKey != "") {
+                    resultDTO.push(issueSearchItemDTO)
+                }
+                currentProjectKey = it.get("projectKey")
+                issueSearchItemDTO = new IssueSearchItemDTO()
+
+                issueSearchItemDTO.setId((Integer)it.get("id"))
+                issueSearchItemDTO.setProjectKey(it.get("projectKey").toString())
+                issueSearchItemDTO.setType(it.get("type").toString())
+                issueSearchItemDTO.setStatus(it.get("status").toString())
+                issueSearchItemDTO.setTitle(it.get("title").toString())
+                issueSearchItemDTO.setReporter(it.get("reporter").toString())
                 if (it.get("expirationDate") != null) {
-                    searchItemDTO.setExpirationDate(Date.parse("mm/dd/Y", it.get("expirationDate").toString()))
+//                    issueSearchItemDTO.setExpirationDate(Date.parse("mm/dd/Y", it.get("expirationDate").toString()))
+                    issueSearchItemDTO.setExpirationDate(it.get("expirationDate"))
                 }
                 if (it.get("updated") != null) {
-                    searchItemDTO.setUpdated(Date.parse("mm/dd/Y", it.get("updated").toString()))
+//                    issueSearchItemDTO.setUpdateDate(Date.parse("mm/dd/Y", it.get("updated").toString()))
+                    issueSearchItemDTO.setUpdateDate(it.get("updated"))
                 }
-
-                resultDTO.put(it.get("issueKey").toString(), searchItemDTO)
+                issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
             }
-            results = resultDTO.values()
+            resultDTO
         }
-        results
+        resultDTO
     }
 
     /**

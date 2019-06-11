@@ -155,8 +155,7 @@ class SearchController implements UserInfo {
                         type: it.type,
                         status: it.status,
                         updated: format.format(it.updateDate),
-                        expiration: it.expirationDate ? format.format(it.expirationDate) : "",
-                        projectManager: it.projectManager
+                        expiration: it.expirationDate ? format.format(it.expirationDate) : ""
                 ]
             }
         }
