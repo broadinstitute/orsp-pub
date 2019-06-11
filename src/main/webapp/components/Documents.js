@@ -47,9 +47,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   newRestriction = () => {
-   // createRestrictionUrl: "${createLink(controller: "dataUse", action: "create", params: [create: true, id: "${projectKey}", principalInvestigatorName: issue.consent])}",
-
-    window.location.href = "vero TODO" //this.props.newRestrictionUrl;
+    window.location.href = this.props.newRestrictionUrl + '?create=true&id=' + this.props.projectKey;
   };
 
   editRestriction = () => {

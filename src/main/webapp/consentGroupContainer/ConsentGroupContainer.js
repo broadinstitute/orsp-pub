@@ -49,7 +49,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // comments
   getComments() {
-    ProjectMigration.getComments(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getComments(this.props.serverURL, this.props.consentKey).then(resp => {
       this.setState(prev => {
         prev.commentsContent = resp.data;
         return prev;
@@ -87,7 +87,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getHistory(this.props.serverURL, this.props.consentKey).then(resp => {
       this.setState(prev => {
         prev.historyContent = resp.data;
         return prev;
@@ -135,7 +135,9 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     consentNamesSearchURL: this.props.consentNamesSearchURL,
                     clarificationUrl: this.props.clarificationUrl,
                     loadingImage: this.props.loadingImage,
-                    initStatusBoxInfo: this.initStatusBoxInfo
+                    initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    updateDetailsStatus: this.updateDetailsStatus,
+                    updateContent: this.updateContent
                   })
                 ]),
               div({
@@ -146,7 +148,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     attachmentsUrl: this.props.attachmentsUrl,
                     serverURL: this.props.serverURL,
                     attachDocumentsUrl: this.props.attachDocumentsUrl,
-                    projectKey: this.props.projectKey,
+                    projectKey: this.props.consentKey,
                     approveDocumentUrl: this.props.approveDocumentUrl,
                     rejectDocumentUrl: this.props.rejectDocumentUrl,
                     sessionUserUrl: this.props.sessionUserUrl,
@@ -155,7 +157,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     loadingImage: this.props.loadingImage,
                     useRestrictionUrl: this.props.useRestrictionUrl,
                     createRestrictionUrl: this.props.createRestrictionUrl,
-                    removeDocumentUrl: this.props.removeDocumentUrl
+                    removeDocumentUrl: this.props.removeDocumentUrl,
+                    updateDocumentsStatus: this.updateDocumentsStatus
                   })
                 ]),
               div({

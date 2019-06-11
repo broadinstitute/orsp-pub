@@ -209,7 +209,7 @@ class QueryService implements Status {
         // Order is important, see `fundingReport.gsp` for how the UI will represent this data.
         def data = fundings.collect { funding ->
             String url = funding.issue.controller == IssueType.CONSENT_GROUP.name ?
-                    applicationTagLib.createLink([controller: funding.issue.controller, action: 'show', absolute: true]) + "/" + funding.issue.projectKey :
+                    applicationTagLib.createLink([controller: "newConsentGroup", action: 'main', absolute: true]) + "?consentKey=" + funding.issue.projectKey :
                     applicationTagLib.createLink([controller: "project", action: 'main', absolute: true]) + "?projectKey=" + funding.issue.projectKey
             [funding.issue.type,
              "<a href=\"" + url + "\">" + funding.issue.projectKey + "</a>",
@@ -1007,7 +1007,8 @@ class QueryService implements Status {
             issue            : issue,
             extraProperties  : new ConsentGroupExtraProperties(issue),
             collectionLinks  : collectionLinks,
-            sampleCollections: sampleCollections
+            sampleCollections: sampleCollections,
+            attachmentsApproved: issue.attachmentsApproved()
         ]
     }
 

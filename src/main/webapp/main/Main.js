@@ -103,10 +103,10 @@ class Main extends Component {
           downloadDocumentUrl: component.downloadDocumentUrl,
           emailDulUrl: component.emailDulUrl,
           useRestrictionUrl: component.useRestrictionUrl,
-          createRestrictionUrl:"VERO",
+          createRestrictionUrl: component.createRestrictionUrl,
           removeDocumentUrl: component.removeDocumentUrl,
           consentKey: component.consentKey,
-          consentGroupUrl: component.consentGroupUrl,
+          consentGroupUrl: component.consentGroupReviewUrl,
           approveConsentGroupUrl: component.approveConsentGroupUrl,
           isAdminUrl: component.isAdminUrl,
           isViewer: component.isViewer,
@@ -119,7 +119,10 @@ class Main extends Component {
           consentNamesSearchURL: component.consentNamesSearchURL,
           clarificationUrl: component.clarificationUrl,
           loadingImage: component.loadingImage,
-          initStatusBoxInfo: this.initStatusBoxInfo
+          initStatusBoxInfo: this.initStatusBoxInfo,
+          updateDetailsStatus: this.updateDetailsStatus,
+          updateDocumentsStatus: this.updateDocumentsStatus,
+          tab: component.tab
         })
       ])
     );

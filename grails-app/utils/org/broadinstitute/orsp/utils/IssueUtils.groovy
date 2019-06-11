@@ -108,11 +108,10 @@ final class IssueUtils {
     static Map<String, Object> generateArgumentsForRedirect(Issue issue, String id, String tab) {
         Map<String, Object> arguments = new HashMap<>()
         if (issue.type == IssueType.CONSENT_GROUP.name) {
-            arguments.put("controller", issue.controller)
-            arguments.put("action", "show")
-            arguments.put("id", id)
-            tab != null ? arguments.put("params", [id: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [id: issue.projectKey])
+            arguments.put("controller", "newConsentGroup")
+            arguments.put("action", "main")
+            tab != null ? arguments.put("params", [consentKey: issue.projectKey, tab: tab]) :
+                    arguments.put("params", [consentKey: issue.projectKey])
         } else {
             arguments.put("controller", "project")
             arguments.put("action", "main")

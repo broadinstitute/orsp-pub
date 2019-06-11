@@ -49,7 +49,7 @@ class SearchController implements UserInfo {
         def response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
             def link = it.controller == IssueType.CONSENT_GROUP.controller ?
-                    applicationTagLib.createLink([controller: it.controller, action: 'show', params: [id: it.projectKey], absolute: true]) :
+                    applicationTagLib.createLink([controller: "newConsentGroup", action: 'main', params: [consentKey: it.projectKey], absolute: true]) :
                     applicationTagLib.createLink([controller: "project", action: 'main', params: [projectKey: it.projectKey]])
             response << [
                     id: it.id,

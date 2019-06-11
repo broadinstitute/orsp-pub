@@ -21,7 +21,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
       showDialog: false,
       action: '',
       uuid: '',
-      user: {isAdmin: false},
+      user: { isAdmin: false },
       serverError: false,
       documentOptions: [],
       associatedProjects: []
@@ -36,18 +36,18 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     this.getAssociatedProjects();
   }
 
-  loadOptions () {
+  loadOptions() {
     let documentOptions = [];
     CONSENT_DOCUMENTS.forEach(type => {
-      documentOptions.push({value: type, label: type});
+      documentOptions.push({ value: type, label: type });
     });
-    this.setState({documentOptions: documentOptions});
+    this.setState({ documentOptions: documentOptions });
   };
 
 
   isCurrentUserAdmin() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
-      this.setState({user: resp.data});
+      this.setState({ user: resp.data });
     }).catch(error => {
       this.setState(() => { throw error; });
     });
@@ -55,9 +55,13 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.attachmentsUrl, this.props.projectKey).then(resp => {
-      this.setState({documents: JSON.parse(resp.data.documents)});
+      this.setState({ documents: JSON.parse(resp.data.documents) },
+        () => {
+          this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved })
+        }
+      );
     }).catch(error => {
-      this.setState({serverError: true});
+      this.setState({ serverError: true });
       console.error(error);
     });
   };
@@ -77,7 +81,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     ConsentGroup.getConsentCollectionLinks(this.props.serverURL, this.props.projectKey).then(response => {
       this.setState({ associatedProjects: response.data.collectionLinks })
     }).catch(error => {
-      this.setState({serverError: true});
+      this.setState({ serverError: true });
       console.error(error);
     });
   };
@@ -86,7 +90,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     ConsentGroup.unlinkProject(this.props.serverURL, this.props.projectKey, target).then(result => {
       this.getAssociatedProjects()
     }).catch(error => {
-      this.setState({serverError: true});
+      this.setState({ serverError: true });
       console.error(error);
     });
   };
@@ -103,7 +107,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
-      this.setState({serverError: true});
+      this.setState({ serverError: true });
       console.error(error);
     });
   };
@@ -112,7 +116,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     DocumentHandler.approveDocument(this.props.rejectDocumentUrl, uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
-      this.setState({serverError: true});
+      this.setState({ serverError: true });
       console.error(error);
     });
   };
