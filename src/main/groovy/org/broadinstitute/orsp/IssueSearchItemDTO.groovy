@@ -3,14 +3,17 @@ package org.broadinstitute.orsp
 class IssueSearchItemDTO {
 
     Integer id
-    String projectKey
+    String issueKey
     String type
     String status
     String title
     String reporter
-    String projectManager
-    Date expiration
+    String collaborator
+    String pm
+    String pi
+    Date expirationDate
     Date updated
+
 
     void setId(Number id) {
         this.id = id

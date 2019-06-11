@@ -131,7 +131,7 @@ class SearchController implements UserInfo {
         if (params.type) options.getIssueTypeNames().addAll(params.type)
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
-        def rows = []
+        def rows
         def isAdmin = isAdmin()
         def isViewer = isViewer()
         // Only query if we really have values to query for.
@@ -150,13 +150,13 @@ class SearchController implements UserInfo {
                         link: link,
                         key: it.projectKey,
                         reporter: it.reporter,
-                        extraProperties: it.extraProperties,
                         linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
-                        title: it.summary,
+                        title: it.title,
                         type: it.type,
                         status: it.status,
                         updated: format.format(it.updateDate),
-                        expiration: it.expirationDate ? format.format(it.expirationDate) : ""
+                        expiration: it.expirationDate ? format.format(it.expirationDate) : "",
+                        projectManager: it.projectManager
                 ]
             }
         }

@@ -668,7 +668,7 @@ class QueryService implements Status {
      * @param queryOptions A QueryOptions object that has desired fields populated.
      * @return List of JiraIssues that match the query
      */
-    List<IssueSearchItemDTO> findIssues(QueryOptions options) {
+    Collection<IssueSearchItemDTO> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
         String query = ' select distinct i.id ' +
@@ -733,22 +733,53 @@ class QueryService implements Status {
         result
     }
 
-    List<IssueSearchItemDTO> findIssuesSearchItems(ArrayList<Long> ids) {
-        final String query =
-                ' select * from (select distinct i.id id, i.project_key projectKey, i.type type, ' +
-                        'i.status status, i.summary title, i.update_date updated, ' +
-                        'i.expiration_date expiration, i.reporter reporter, e.value projectManager ' +
-                        'from issue i ' +
-                        'left join issue_extra_property e ' +
-                        'on i.id = e.issue_id ' +
-                        'and e.name = "pm") a where a.id IN :issueIds'
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        List<IssueSearchItemDTO> results = sqlQuery.with{
-            setResultTransformer(Transformers.aliasToBean(IssueSearchItemDTO.class))
-            setParameterList('issueIds', ids)
-            list()
+    List<IssueSearchItemDTO> findIssuesSearchItems(ArrayList<Integer> issueIds) {
+
+        List<IssueSearchItemDTO> results = new ArrayList<IssueSearchItemDTO>()
+        final String query = "SELECT i.id id, " +
+                "i.project_key issueKey, " +
+                "i.type type, " +
+                "i.status status, " +
+                "i.summary title, " +
+                "i.reporter reporter, " +
+                "i.update_date updated, " +
+                "i.expiration_date expirationDate, " +
+                "iep.* " +
+                "FROM issue i INNER JOIN issue_extra_property iep " +
+                "ON i.project_key = iep.project_key " +
+                "WHERE i.id IN (:issueIds)"
+
+        def ids = issueIds.join(",")
+        
+        getSqlConnection().rows(query, ["issueIds": ids] ).each {
+            HashMap<String, IssueSearchItemDTO> resultDTO = new HashMap<String, IssueSearchItemDTO>()
+            if (resultDTO.containsKey(it.get("issueKey"))) {
+                IssueSearchItemDTO itemDTO = resultDTO.get( it.get("issueKey").toString())
+                if(it.get("name").toString() == IssueExtraProperty.PI){
+                    itemDTO.setPi(it.get("value").toString() )
+                } else if (it.get("name").toString() == IssueExtraProperty.PM) {
+                    itemDTO.setPM(it.get("value").toString())
+                } else if (it.get("name").toString() == IssueExtraProperty.COLLABORATOR) {
+                    itemDTO.setPM(it.get("value").toString())
+                }
+            } else {
+                IssueSearchItemDTO searchItemDTO = new IssueSearchItemDTO()
+                searchItemDTO.setId((Integer)it.get("id"))
+                searchItemDTO.setIssueKey(it.get("issueKey").toString())
+                searchItemDTO.setType(it.get("type").toString())
+                searchItemDTO.setStatus(it.get("status").toString())
+                searchItemDTO.setTitle(it.get("title").toString())
+                searchItemDTO.setReporter(it.get("reporter").toString())
+                if (it.get("expirationDate") != null) {
+                    searchItemDTO.setExpirationDate(Date.parse("mm/dd/Y", it.get("expirationDate").toString()))
+                }
+                if (it.get("updated") != null) {
+                    searchItemDTO.setUpdated(Date.parse("mm/dd/Y", it.get("updated").toString()))
+                }
+
+                resultDTO.put(it.get("issueKey").toString(), searchItemDTO)
+            }
+            results = resultDTO.values()
         }
         results
     }
