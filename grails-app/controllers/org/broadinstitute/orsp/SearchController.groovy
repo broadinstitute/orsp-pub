@@ -144,8 +144,8 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 def link = it.type == IssueType.CONSENT_GROUP.name ?
-                        applicationTagLib.createLink([controller: it.controller, action: 'show', params: [id: it.projectKey], absolute: true]) :
-                        applicationTagLib.createLink([controller:"project", action: 'main', params: [projectKey: it.projectKey], absolute: true])
+                        applicationTagLib.createLink([controller: "newConsentGroup", action: 'show', params: [id: it.projectKey], absolute: true]) :
+                        applicationTagLib.createLink([controller: "project", action: 'main', params: [projectKey: it.projectKey], absolute: true])
                 [
                         link: link,
                         key: it.projectKey,
