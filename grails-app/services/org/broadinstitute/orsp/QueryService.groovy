@@ -1199,7 +1199,7 @@ class QueryService implements Status {
         results
     }
 
-    def updateOrspUserRoles (User user, ArrayList<String> newRoles) {
+     void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
         final session = sessionFactory.currentSession
         final String query = ' insert into supplemental_role (version, role, user, user_id) values '
         StringBuffer stringBuffer = new StringBuffer().append(query)
@@ -1208,7 +1208,7 @@ class QueryService implements Status {
         sqlQuery.executeUpdate()
     }
 
-    def deleteOrspUserRoles (userId) {
+    void deleteOrspUserRoles (userId) {
         final session = sessionFactory.currentSession
         final String query = 'delete from supplemental_role where user_id = :userId'
         final SQLQuery sqlQuery = session.createSQLQuery(query)

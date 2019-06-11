@@ -63,7 +63,6 @@ class UserController extends AuthenticatedController {
             ArrayList<String> rolesToAssign = request.JSON["roles"] as ArrayList<String>
             User user = User.findById(userId)
             try {
-//                List<SupplementalRole> currentUserRoles = queryService.findSupplementalRolesByUserId(userId)
                 queryService.deleteOrspUserRoles(userId)
                 if (!rolesToAssign.isEmpty()) {
                     queryService.updateOrspUserRoles(user, rolesToAssign)
