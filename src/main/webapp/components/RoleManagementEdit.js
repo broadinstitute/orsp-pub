@@ -103,7 +103,6 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
             return h(Fragment, { key: idx }, [
               InputFieldCheckbox({
                 id: role.value,
-                name: role,
                 onChange: this.handleCheck,
                 label: role.label,
                 checked: this.state.roles[role.value]
@@ -119,8 +118,8 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
             }),
           ])
         ]),
-        h(ModalFooter, {}, [
-          button({ className: "btn buttonSecondary", disabled: this.state.disableButton, onClick: this.clearSelection}, ["Clear"]),
+        h(ModalFooter, {className: 'roles-cta'}, [
+          button({ className: "btn buttonTertiary", disabled: this.state.disableButton, onClick: this.clearSelection}, ["Clear"]),
           button({ className: "btn buttonSecondary", disabled: this.state.disableButton, onClick: this.props.closeModal()}, ["Cancel"]),
           button({ className: "btn buttonPrimary", disabled: this.state.disableButton, onClick: this.submit }, ["Submit"])
         ])
