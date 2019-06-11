@@ -744,8 +744,8 @@ class QueryService implements Status {
                 "i.update_date updated, " +
                 "i.expiration_date expirationDate, " +
                 "iep.* " +
-                "FROM issue i INNER JOIN issue_extra_property iep " +
-                "ON i.project_key = iep.project_key " +
+                "FROM issue i LEFT JOIN issue_extra_property iep " +
+                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator'))" +
                 "WHERE i.id IN (" + issueIds.join(",") + ")"
 
         IssueSearchItemDTO issueSearchItemDTO
@@ -754,7 +754,9 @@ class QueryService implements Status {
 
         getSqlConnection().rows(query).each{
             if (it.get("projectKey") == currentProjectKey) {
-                issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
+                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
+                }
             } else {
                 if (currentProjectKey != "") {
                     resultDTO.push(issueSearchItemDTO)
@@ -769,17 +771,17 @@ class QueryService implements Status {
                 issueSearchItemDTO.setTitle(it.get("title").toString())
                 issueSearchItemDTO.setReporter(it.get("reporter").toString())
                 if (it.get("expirationDate") != null) {
-//                    issueSearchItemDTO.setExpirationDate(Date.parse("mm/dd/Y", it.get("expirationDate").toString()))
                     issueSearchItemDTO.setExpirationDate(it.get("expirationDate"))
                 }
                 if (it.get("updated") != null) {
-//                    issueSearchItemDTO.setUpdateDate(Date.parse("mm/dd/Y", it.get("updated").toString()))
                     issueSearchItemDTO.setUpdateDate(it.get("updated"))
                 }
-                issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
+                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
+                }
             }
-            resultDTO
         }
+        resultDTO.push(issueSearchItemDTO)
         resultDTO
     }
 
