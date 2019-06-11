@@ -13,7 +13,8 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
     super(props);
     this.state = {
       userData: {},
-      disableButton: false,
+      disableClearButton: false,
+      disableSubmitButton: true,
       showError: false,
       roles: {
         'orsp': false,
@@ -43,17 +44,17 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
             checkedRoles[role.value] = true;
           }
         })
+      });
+      this.setState(prev => {
+        prev.roles = checkedRoles;
+        return prev;
       })
     }
-    this.setState(prev => {
-      prev.roles = checkedRoles;
-      return prev;
-    })
   };
 
   submit = () => {
-    this.setState({ disableButton: true });
-   const rolesList = Object.keys(this.state.roles).filter(it => { return this.state.roles[it] });
+    this.setState({ disableClearButton: true, disableSubmitButton: true });
+    const rolesList = Object.keys(this.state.roles).filter(it => { return this.state.roles[it] });
     User.editUserRole(this.props.serverURL, this.props.userData.id, rolesList).then( () => {
       let response = createObjectCopy(this.state.userData);
       response.roles = rolesList;
@@ -70,6 +71,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
     e.persist();
     this.setState(prev => {
       prev.roles[e.target.id] = !this.state.roles[e.target.id];
+      prev.disableSubmitButton = false;
       return prev;
     });
   };
@@ -77,6 +79,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
   clearSelection = () => {
     this.setState(prev => {
       Object.keys(prev.roles).forEach(it => prev.roles[it] = false);
+      prev.disableSubmitButton = this.state.showError;
       return prev;
     })
   };
@@ -84,7 +87,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
   closeAlertHandler = () => {
     this.setState(prev => {
       prev.showError = false;
-      prev.disableButton = false;
+      prev.disableSubmitButton = false;
       return prev;
     })
   };
@@ -97,7 +100,6 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
         h(ModalHeader, {}, [
           h(ModalTitle, { className: "dialogTitle" }, [this.props.userData.displayName + " (" + this.props.userData.emailAddress + ")"])
         ]),
-
         h(ModalBody, { className: "dialogBody" }, [
           USER_ROLES.map( (role, idx) => {
             return h(Fragment, { key: idx }, [
@@ -111,7 +113,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
           }),
           div({ style: { 'marginTop': '15px' } }, [
             AlertMessage({
-              msg: "Error trying to update user role, please try again later.",
+              msg: "An error has occurred while updating the user role. Please try again later.",
               show: this.state.showError,
               closeable: true,
               closeAlertHandler: this.closeAlertHandler
@@ -119,9 +121,9 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
           ])
         ]),
         h(ModalFooter, {className: 'roles-cta'}, [
-          button({ className: "btn buttonTertiary", disabled: this.state.disableButton, onClick: this.clearSelection}, ["Clear"]),
-          button({ className: "btn buttonSecondary", disabled: this.state.disableButton, onClick: this.props.closeModal()}, ["Cancel"]),
-          button({ className: "btn buttonPrimary", disabled: this.state.disableButton, onClick: this.submit }, ["Submit"])
+          button({ className: "btn buttonTertiary", disabled: this.state.disableClearButton, onClick: this.clearSelection}, ["Clear"]),
+          button({ className: "btn buttonSecondary", onClick: this.props.closeModal()}, ["Cancel"]),
+          button({ className: "btn buttonPrimary", disabled: this.state.disableSubmitButton || this.state.showError, onClick: this.submit }, ["Submit"])
         ])
       ])
     );
