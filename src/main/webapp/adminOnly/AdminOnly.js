@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, hh, p, div, h2, span, a, button } from 'react-hyperscript-helpers';
+import { h, hh, div, h2, button } from 'react-hyperscript-helpers';
 import { Project, User } from "../util/ajax";
 import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
@@ -310,7 +310,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           InputFieldText({
             id: "trackingNumber",
             name: "trackingNumber",
-            label: "Tracking Number",
+            label: "Protocol Number",
             readOnly: true,
             value: this.state.formData.trackingNumber,
             onChange: this.textHandler,

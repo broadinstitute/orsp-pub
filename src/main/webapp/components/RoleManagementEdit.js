@@ -1,10 +1,11 @@
 import { Component, Fragment } from 'react';
-import { hh, h, button } from 'react-hyperscript-helpers';
+import { hh, h, button, div } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldCheckbox } from "./InputFieldCheckbox";
 import { USER_ROLES } from '../util/roles';
 import { createObjectCopy, isEmpty } from "../util/Utils";
 import { User } from "../util/ajax";
+import { AlertMessage } from "./AlertMessage";
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 
@@ -13,10 +14,11 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
     this.state = {
       userData: {},
       disableButton: false,
+      showError: false,
       roles: {
-        orsp: false,
+        'orsp': false,
         'Compliance Office': false,
-        ro_admin: false
+        'ro_admin': false
       }
     };
   }
@@ -26,7 +28,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (!isEmpty(nextProps.userData) && nextProps.userData !== prevState.userData){
+    if (!isEmpty(nextProps.userData) && nextProps.userData !== prevState.userData) {
       return { userData: nextProps.userData};
     }
     else return null;
@@ -57,7 +59,10 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
       response.roles = rolesList;
       this.props.closeOnSubmit(response);
     }).catch(error => {
-      this.setState(() => { throw error; });
+      this.setState(prev => {
+        prev.showError = true;
+        return prev;
+      });
     });
   };
 
@@ -72,6 +77,14 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
   clearSelection = () => {
     this.setState(prev => {
       Object.keys(prev.roles).forEach(it => prev.roles[it] = false);
+      return prev;
+    })
+  };
+
+  closeAlertHandler = () => {
+    this.setState(prev => {
+      prev.showError = false;
+      prev.disableButton = false;
       return prev;
     })
   };
@@ -97,6 +110,14 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
               })
             ])
           }),
+          div({ style: { 'marginTop': '15px' } }, [
+            AlertMessage({
+              msg: "Error trying to update user role, please try again later.",
+              show: this.state.showError,
+              closeable: true,
+              closeAlertHandler: this.closeAlertHandler
+            }),
+          ])
         ]),
         h(ModalFooter, {}, [
           button({ className: "btn buttonSecondary", disabled: this.state.disableButton, onClick: this.clearSelection}, ["Clear"]),
