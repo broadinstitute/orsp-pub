@@ -7,7 +7,7 @@
 <body>
 
  <auth:isNotViewer>
-   <a type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
+   <a type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'main', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
     <a type="button" class="btn btn-default"
         href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
         Use existing Sample/Data Cohort</a>

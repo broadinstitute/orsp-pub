@@ -118,7 +118,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
             [
               div({
                 key: "review",
-                title: "Review",
+                title: "Cohort Details",
               }, [
                   h(ConsentGroupReview, {
                     consentKey: this.props.consentKey,
