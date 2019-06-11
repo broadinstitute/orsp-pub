@@ -31,3 +31,20 @@
   background-color: #f9dcdc;
   border-color: #f9cdcd;
 }
+
+.alertMessageContent.custom-error {
+  margin-right: 0;
+}
+
+.alertMessage.alert-danger .error-icon  {
+  float: right;
+}
+
+.alertMessage.alert-danger .error-icon .btnPrimary {
+  color:red;
+  background-color: transparent;
+}
+
+.alertMessage.alert-danger .error-icon .btnPrimary .glyphicon {
+  font-size: 14px;
+}

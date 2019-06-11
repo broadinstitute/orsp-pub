@@ -31,8 +31,8 @@ export const AlertMessage = hh(class AlertMessage extends Component {
       } else {
         return (
           h(Alert, { bsStyle: (this.props.type !== undefined ? this.props.type : 'danger'), className: "alertMessage" }, [
-            div({ className: "alertMessageContent" }, [this.props.msg,
-              span({ isRendered: isEmpty(this.props.closeable) ? false : this.props.closeable }, [
+            div({ className: "alertMessageContent custom-error" }, [this.props.msg,
+              span({ className: "error-icon", isRendered: isEmpty(this.props.closeable) ? false : this.props.closeable }, [
                 Btn({
                   action: {
                     labelClass: "glyphicon glyphicon-remove",
