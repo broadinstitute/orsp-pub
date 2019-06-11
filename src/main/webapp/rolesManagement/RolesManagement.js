@@ -1,12 +1,11 @@
 import { Component } from 'react';
-import { h, div, h2, span, a } from 'react-hyperscript-helpers';
-import { Panel } from "../components/Panel";
+import { h, div, span } from 'react-hyperscript-helpers';
 import { Table } from "../components/Table";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
-import { obtainStringRole } from "../util/Utils";
+import { isCurrentUserAdmin } from "../util/Utils";
 
 const tableHeaders =
   [
@@ -41,13 +40,15 @@ class RolesManagement extends Component {
 
   init = () => {
     spinnerService.showAll();
-    let isCurrentUserAdmin = false;
-    User.getUserSession(component.sessionUserUrl).then( resp => {
-      isCurrentUserAdmin = resp.data.isAdmin
-    });
+
+    let isAdmin = false;
+    isCurrentUserAdmin().then(response => {
+      isAdmin = response;
+    }).catch(() => this.setState(error => { throw error; }));
+
     User.getAllUsers(component.serverURL).then(result => {
       this.setState(prev => {
-        prev.isAdmin = isCurrentUserAdmin;
+        prev.isAdmin = isAdmin;
         prev.users = result.data;
         return prev;
       }, () => spinnerService.hideAll())
