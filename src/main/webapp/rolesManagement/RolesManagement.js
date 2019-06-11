@@ -43,7 +43,7 @@ class RolesManagement extends Component {
     spinnerService.showAll();
     let isCurrentUserAdmin = false;
     User.getUserSession(component.sessionUserUrl).then( resp => {
-      isCurrentUserAdmin = resp.data.isORSP
+      isCurrentUserAdmin = resp.data.isAdmin
     });
     User.getAllUsers(component.serverURL).then(result => {
       this.setState(prev => {
@@ -76,7 +76,7 @@ class RolesManagement extends Component {
   submit = (userUpdated) => {
     this.setState(prev => {
       prev.editRoleDialog = false;
-      prev.users.find(it => it.id === userUpdated.id).roles = userUpdated.roles.join(', ');
+      prev.users.find(it => it.id === userUpdated.id).roles = userUpdated.roles;
       return prev;
     });
   };

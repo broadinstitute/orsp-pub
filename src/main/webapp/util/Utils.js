@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import {USER_ROLES} from "./roles";
+import { User } from "./ajax";
+import "regenerator-runtime/runtime";
 
 export const validateEmail = (email) => {
   let valid = false;
@@ -49,4 +51,10 @@ export const handleRedirectToProject = (serverURL, projectKey) => {
 
 export const obtainStringRole = (role) => {
   return USER_ROLES.map(it => it.value === role);
+}
+
+export const isCurrentUserAdmin = () =>  {
+  return User.getUserSession(component.sessionUserUrl).then( resp => {
+    return (resp.data.isORSP || resp.data.isAdmin) ;
+  });
 }

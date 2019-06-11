@@ -15,7 +15,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
-import { isEmpty } from '../util/Utils';
+import { isCurrentUserAdmin, isEmpty } from '../util/Utils';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
@@ -28,6 +28,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     super(props);
 
     this.state = {
+      isAdmin: false,
       generalError: false,
       errorSubmit: false,
       subjectProtectionError: false,
@@ -160,6 +161,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     let future = {};
     let futureCopy = {};
     let formData = {};
+    this.isCurrentUserAdmin();
     Project.getProject(this.props.projectUrl, this.props.projectKey).then(
       issue => {
         // store current issue info here ....
@@ -239,9 +241,11 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       });
   }
 
-  isAdmin = () => {
-    return this.props.isAdmin === "true";
-  };
+  isCurrentUserAdmin() {
+    isCurrentUserAdmin().then(response => {
+      this.setState({ isAdmin: response });
+    }).catch(() => this.setState(error => { throw error; }));
+  }
 
   isViewer = () => {
     return this.props.isViewer === "true";
@@ -1198,33 +1202,33 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveInfoDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && projectReviewApproved === false && this.state.readOnly === true
+            isRendered: this.state.isAdmin && projectReviewApproved === false && this.state.readOnly === true
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === true
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === true
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('rejectProjectDialog'),
-            isRendered: this.isAdmin() && projectReviewApproved === false && this.state.readOnly === true
+            isRendered: this.state.isAdmin && projectReviewApproved === false && this.state.readOnly === true
           }, ["Reject"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('discardEditsDialog'),
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion && this.state.readOnly === true
           }, ["Discard Edits"]),
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('requestClarification'),
-            isRendered: this.isAdmin() && this.state.readOnly === true
+            isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
         ]),
         h(Spinner, {

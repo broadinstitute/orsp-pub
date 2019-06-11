@@ -50,7 +50,7 @@ class UserController extends AuthenticatedController {
             output['updatedDate'] = it.updatedDate
             output['lastLoginDate'] = it.lastLoginDate
             output['roles'] = it.roles.stream().map{role ->
-                role.getRole()}.collect(Collectors.joining(", "))
+                role.getRole()}.collect()
             return output
         }
         List<User> users = queryService.getUsers()

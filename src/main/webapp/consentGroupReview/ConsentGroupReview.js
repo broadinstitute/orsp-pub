@@ -15,7 +15,7 @@ import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { format } from 'date-fns';
 import { Table } from "../components/Table";
-import { isEmpty } from "../util/Utils";
+import { isCurrentUserAdmin, isEmpty } from "../util/Utils";
 
 const headers =
   [
@@ -124,7 +124,7 @@ class ConsentGroupReview extends Component {
 
   componentDidMount() {
     this.isCurrentUserAdmin();
-    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
+    ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -144,7 +144,7 @@ class ConsentGroupReview extends Component {
     ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
       element => {
         let sampleCollections = [];
-        SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
+        SampleCollections.getSampleCollections(component.sampleSearchUrl).then(
           resp => {
             sampleCollections = resp.data.map(item => {
               return {
@@ -211,7 +211,7 @@ class ConsentGroupReview extends Component {
   };
 
   isViewer = () => {
-    return this.props.isViewer === "true";
+    return component.isViewer === "true";
   }
 
   parseInstSources(instSources) {
@@ -228,7 +228,7 @@ class ConsentGroupReview extends Component {
   }
 
   getReviewSuggestions = () => {
-    Review.getSuggestions(this.props.serverURL, this.props.consentKey).then(data => {
+    Review.getSuggestions(component.serverURL, this.props.consentKey).then(data => {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
@@ -349,11 +349,9 @@ class ConsentGroupReview extends Component {
   };
 
   isCurrentUserAdmin() {
-    User.isCurrentUserAdmin(this.props.isAdminUrl).then(
-      resp => {
-        this.setState({ isAdmin: resp.data.isAdmin });
-      }
-    );
+    isCurrentUserAdmin().then(response => {
+      this.setState({ isAdmin: response });
+    }).catch(() => this.setState(error => { throw error; }));
   }
 
   rejectConsentGroup() {
@@ -461,7 +459,7 @@ class ConsentGroupReview extends Component {
         data.suggestions = JSON.stringify(newFormData);
 
         if (this.state.reviewSuggestion) {
-          Review.updateReview(this.props.serverURL, this.props.consentKey, data).then(() =>
+          Review.updateReview(component.serverURL, this.props.consentKey, data).then(() =>
             this.getReviewSuggestions()
           ).catch(error => {
             this.getReviewSuggestions();
@@ -473,7 +471,7 @@ class ConsentGroupReview extends Component {
             });
           });
         } else {
-          Review.submitReview(this.props.serverURL, data).then(() =>
+          Review.submitReview(component.serverURL, data).then(() =>
             this.getReviewSuggestions()
           ).catch(error => {
             this.getReviewSuggestions();
@@ -592,7 +590,7 @@ class ConsentGroupReview extends Component {
   };
 
   removeEdits = (type) => {
-    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.consentKey, type).then(
+    Review.deleteSuggestions(component.discardReviewUrl, this.props.consentKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();
@@ -676,7 +674,7 @@ class ConsentGroupReview extends Component {
 
   getRedirectUrl(projectKey) {
     if (projectKey === "") {
-      return this.props.serverURL + "/search/index";
+      return component.serverURL + "/search/index";
     } else {
       let key = projectKey.split("-");
       let projectType = '';
@@ -685,7 +683,7 @@ class ConsentGroupReview extends Component {
       } else {
         projectType = key[0].toLowerCase();
       }
-      return [this.props.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
+      return [component.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
     }
   }
 
@@ -750,7 +748,7 @@ class ConsentGroupReview extends Component {
   };
 
   unlinkSampleCollection = () => {
-    ConsentGroup.unlinkSampleCollection(this.props.serverURL, this.state.unlinkDataRow.id).then(
+    ConsentGroup.unlinkSampleCollection(component.serverURL, this.state.unlinkDataRow.id).then(
       () => {
         this.toggleUnlinkDialog();
         this.init()
@@ -760,7 +758,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
-    return [this.props.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
+    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
 
   toggleUnlinkDialog = (data) => {
@@ -806,7 +804,7 @@ class ConsentGroupReview extends Component {
           user: this.props.user,
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
-          clarificationUrl: this.props.clarificationUrl,
+          clarificationUrl: component.clarificationUrl,
           successClarification: this.successClarification
         }),
         ConfirmationDialog({
@@ -937,7 +935,7 @@ class ConsentGroupReview extends Component {
             isAdmin: this.state.isAdmin,
             data: this.state.current.sampleCollectionLinks,
             handleRedirectToInfoLink: this.handleRedirectToInfoLink,
-            serverURL: this.props.serverURL,
+            serverURL: component.serverURL,
             unlinkSampleCollection: this.toggleUnlinkDialog,
             sizePerPage: 10,
             paginationSize: 10
@@ -1064,7 +1062,7 @@ class ConsentGroupReview extends Component {
           }, ["Request Clarification"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

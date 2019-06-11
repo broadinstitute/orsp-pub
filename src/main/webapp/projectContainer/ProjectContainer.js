@@ -204,7 +204,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Admin Only",
               }, [
                   h(AdminOnly, {
-                    isAdmin: this.props.isAdmin,
                     loadingImage: this.props.loadingImage,
                     userSessionUrl: this.props.userSessionUrl,
                     projectKey: this.props.projectKey,

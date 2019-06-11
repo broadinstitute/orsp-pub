@@ -39,8 +39,8 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
     let checkedRoles = createObjectCopy(this.state.roles);
     if (!isEmpty(this.props.userData)) {
       USER_ROLES.forEach(role => {
-        this.props.userData.roles.split(",").forEach(item => {
-          if (role.value === item.trim()) {
+        this.props.userData.roles.forEach(item => {
+          if (role.value === item) {
             checkedRoles[role.value] = true;
           }
         })

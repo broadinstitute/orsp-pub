@@ -7,6 +7,7 @@ import { h } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from '../components/Spinner';
+import { isCurrentUserAdmin } from "../util/Utils";
 
 class ConsentGroupDocuments extends Component {
 
@@ -21,7 +22,8 @@ class ConsentGroupDocuments extends Component {
       showDialog: false,
       action: '',
       uuid: '',
-      user: {isAdmin: false},
+      user: {},
+      isAdmin: false,
       serverError: false,
       documentOptions: [],
       associatedProjects: []
@@ -32,6 +34,7 @@ class ConsentGroupDocuments extends Component {
     this.getAttachedDocuments();
     this.getUseRestriction();
     this.isCurrentUserAdmin();
+    this.getCurrentUserRoles();
     this.loadOptions();
     this.getAssociatedProjects();
   }
@@ -44,8 +47,13 @@ class ConsentGroupDocuments extends Component {
     this.setState({documentOptions: documentOptions});
   };
 
-
   isCurrentUserAdmin() {
+    isCurrentUserAdmin().then(response => {
+      this.setState({ isAdmin: response });
+    }).catch(() => this.setState(error => { throw error; }));
+  }
+
+  getCurrentUserRoles() {
     User.getUserSession(this.props.sessionUserUrl).then(resp => {
       this.setState({user: resp.data});
     }).catch(error => {
@@ -89,14 +97,6 @@ class ConsentGroupDocuments extends Component {
       this.setState({serverError: true});
       console.error(error);
     });
-  };
-
-  redirectToProject = (projectKey) => {
-    return [this.props.serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
-  };
-
-  redirectToInfoLink = (projectKey) => {
-    return [this.props.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + this.props.projectKey].join("/");
   };
 
   approveDocument = (uuid) => {
@@ -156,6 +156,7 @@ class ConsentGroupDocuments extends Component {
       Documents({
         documents: this.state.documents,
         handleDialogConfirm: this.handleDialog,
+        isAdmin: this.state.isAdmin,
         user: this.state.user,
         downloadDocumentUrl: this.props.downloadDocumentUrl,
         options: this.state.documentOptions,

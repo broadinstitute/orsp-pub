@@ -1,22 +1,22 @@
-<g:javascript>
-    const consentGroupReviewComponent = {
-      consentKey:'${issue.projectKey}',
-      consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-      isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",
-      isViewer: "${session.isViewer}",
-      sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
-      rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
-      projectKey: "${params.projectKey}",
-      serverURL: "${webRequest.baseUrl}",
-      updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
-      approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",
-      discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
-      consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
-      loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
-      clarificationUrl: "${createLink(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')}"
-    };
+<html>
+  <head>
+    <meta name="layout" content="main_component">
+    <title>Consent Group</title>
+  </head>
+  <body>
+    <g:javascript>
+      const consentGroupReviewComponent = {
+        consentKey:'${issue.projectKey}',
+        consentGroupUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
+        rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
+        projectKey: "${params.projectKey}",
+        updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
+        approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}"
+      };
+    </g:javascript>
 
-</g:javascript>
+    <div id="consentGroupReview"></div>
 
-<div id="consentGroupReview"></div>
-<asset:javascript src="build/consentGroupReview.js"/>
+    <asset:javascript src="build/consentGroupReview.js"/>
+  </body>
+</html>

@@ -6,6 +6,7 @@ import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
+import { formatRoleName } from "../util/roles";
 
 const styles = { 
   statusWidth: '140',
@@ -147,7 +148,7 @@ export const Table = hh(class Table extends Component {
   roleSelection = (cell,row) => {
     return this.props.isViewer ? null :
       div({className : "roles-container"}, [
-        span({}, [row.roles]),
+        span({}, [formatRoleName(row.roles)]),
         button({
             className: "btn btn-default btn-sm edit",
             onClick: this.props.editRole(row),

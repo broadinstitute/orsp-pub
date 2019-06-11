@@ -67,7 +67,6 @@ class Main extends Component {
           searchUsersURL : component.searchUsersURL,
           projectKey : component.projectKey,
           projectUrl : component.projectUrl,
-          isAdmin : component.isAdmin,
           isViewer : component.isViewer,
           serverURL : component.serverURL,
           rejectProjectUrl : component.rejectProjectUrl,

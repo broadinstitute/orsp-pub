@@ -1,11 +1,11 @@
 import { Component } from 'react';
 import { h, hh, div, h2, button } from 'react-hyperscript-helpers';
-import { Project, User } from "../util/ajax";
+import { Project } from "../util/ajax";
 import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
+import { isEmpty, createObjectCopy, compareNotEmptyObjects, isCurrentUserAdmin } from "../util/Utils";
 import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -23,7 +23,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
     this.state = {
       showSubmissionAlert: false,
       alertMessage: '',
-      isORSP: false,
+      isAdmin: false,
       initial: {},
       formData: {
         preferredIrb: '',
@@ -81,13 +81,9 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   isCurrentUserAdmin() {
-    User.getUserSession(this.props.userSessionUrl).then(
-      resp => {
-        this.setState({ isORSP: resp.data.isORSP });
-      }
-    ).catch(error => {
-      this.setState(() => { throw error; });
-    });
+    isCurrentUserAdmin().then(response => {
+      this.setState({ isAdmin: response });
+    }).catch(() => this.setState(error => { throw error; }));
   }
 
   getSponsorArray(sponsors) {
@@ -259,7 +255,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
               "Abandoned"
             ],
             onChange: this.radioBtnHandler,
-            readOnly: !this.state.isORSP
+            readOnly: !this.state.isAdmin
           }),
           InputFieldSelect({
             label: "IRB",
@@ -276,7 +272,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             id: "preferredIrbText",
             name: "preferredIrbText",
             label: "Please specify IRB",
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
             isRendered: this.state.formData.preferredIrb.value === "other",
             value: this.state.formData.preferredIrbText,
             onChange: this.textHandler,
@@ -285,7 +281,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             id: "investigatorFirstName",
             name: "investigatorFirstName",
             label: "First Name of Investigator",
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
             value: this.state.formData.investigatorFirstName,
             onChange: this.textHandler,
           }),
@@ -293,7 +289,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             id: "investigatorLastName",
             name: "investigatorLastName",
             label: "Last Name of Investigator",
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
             value: this.state.formData.investigatorLastName,
             onChange: this.textHandler,
           }),
@@ -305,7 +301,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             textHandler: this.degreesHandler,
             add: this.addNewDegree,
             remove: this.removeDegree,
-            isReadOnly: !this.state.isORSP
+            isReadOnly: !this.state.isAdmin
           }),
           InputFieldText({
             id: "trackingNumber",
@@ -338,7 +334,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             label: "Initial Approval Date",
             onChange: this.datePickerHandler,
             placeholder: "Enter date...",
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
           }),
           div({ style: { 'marginTop': '20px' }}, [
             Fundings({
@@ -353,7 +349,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             name: "initialReviewType",
             label: "Type of Initial Review",
             options: INITIAL_REVIEW,
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
             value: this.state.formData.initialReviewType,
             onChange: this.handleSelect("initialReviewType"),          
             placeholder: "Select..."
@@ -369,7 +365,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
               "Biomedical",
               "Non-Biomedical"
             ],
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
             required: false,
             edit: false
           }),
@@ -380,7 +376,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             label: "Expiration Date",
             onChange: this.datePickerHandler,
             placeholder: "Enter date...",
-            readOnly: !this.state.isORSP,
+            readOnly: !this.state.isAdmin,
           })
         ]),
         AlertMessage({
@@ -398,7 +394,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             disabled: compareNotEmptyObjects(this.state.formData, this.state.initial),
             className: "btn buttonPrimary floatRight",
             onClick: this.submit,
-            isRendered: this.state.isORSP
+            isRendered: this.state.isAdmin
           }, ["Submit"])
         ]),
         h(Spinner, {

@@ -138,18 +138,20 @@ export const Documents = hh(class Documents extends Component {
           paginationSize: 10,
           handleDialogConfirm: this.props.handleDialogConfirm,
           downloadDocumentUrl: this.props.downloadDocumentUrl,
-          isAdmin: this.props.user.isAdmin,
+          isAdmin: this.props.isAdmin,
           isViewer: this.props.user.isViewer,
           reviewFlow: true,
           remove: this.remove
         })
       ]),
+
+
       div({
         isRendered: this.props.restriction !== undefined
       }, [
         Panel({
           title: "Data Use Restrictions",
-          isRendered: (this.props.user.isAdmin || this.props.user.isViewer) && this.findDul()
+          isRendered: (this.props.isAdmin || this.props.user.isViewer) && this.findDul()
         }, [
           h3({
             style: {'marginTop': '10px'},
@@ -199,7 +201,7 @@ export const Documents = hh(class Documents extends Component {
               paginationSize: 10,
               unlinkProject: this.props.handleUnlinkProject,
               handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
-              isAdmin: this.props.user.isAdmin,
+              isAdmin: this.props.isAdmin,
               isViewer: this.props.user.isViewer
             })
           ])
