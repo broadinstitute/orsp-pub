@@ -31,9 +31,9 @@ class PermissionService implements UserInfo {
     def issueIsForbidden(IssueSearchItemDTO issue, String userName, boolean isAdmin, boolean isViewer) {
 
         boolean userHasAccess = (issue.reporter == userName
-                || getIssueCollaborators(issue).indexOf(userName)
-                || getIssuePMs(issue).indexOf(userName)
-                || getIssuePIs(issue).indexOf(userName)
+                || getIssueCollaborators(issue).indexOf(userName) >= 0
+                || getIssuePMs(issue).indexOf(userName) >= 0
+                || getIssuePIs(issue).indexOf(userName) >= 0
                 || isAdmin
                 || isViewer)
 

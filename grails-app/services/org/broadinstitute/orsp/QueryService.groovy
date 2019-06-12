@@ -708,10 +708,14 @@ class QueryService implements Status {
             }
         }
         if (options.getIssueStatusNames() && !options.getIssueStatusNames().empty) {
-            def q = orIfyCollection("i.status = :statusName", options.getIssueStatusNames())
-            query = andIfyQstring(query, q, params)
+            def q1 = orIfyCollection("i.status = :statusName", options.getIssueStatusNames())
+            query = andIfyQstring(query, q1, params)
+
+            def q2 = orIfyCollection("i.approval_status = :statusName", options.getIssueStatusNames())
+            query = andIfyQstring(query, q2, params)
+
             options.getIssueStatusNames().eachWithIndex { it, index ->
-                params.put("statusName" + (index + 1), it)
+                    params.put("statusName" + (index + 1), it)
             }
         }
         if (options.getIrbsOfRecord()) {

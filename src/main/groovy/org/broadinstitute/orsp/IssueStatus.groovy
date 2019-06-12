@@ -21,8 +21,13 @@ enum IssueStatus {
     Closed(10, "Closed"),
     Abandoned(11, "Abandoned"),
     ProjectApproved(12, "Approved"),
-    Disapproved(13, "Disapproved"),
-    Withdrawn(14, "Withdrawn")
+    Pending(13, "Pending ORSP Admin Review"),
+    Withdrawn(14, "Withdrawn"),
+
+    Legacy(15, "Legacy"),
+    Intake(16, "Intake"),
+    Reopened(17, "Reopened")
+
 
     Integer sequence
     String name
