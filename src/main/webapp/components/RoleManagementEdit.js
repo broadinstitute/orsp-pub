@@ -2,10 +2,14 @@ import { Component, Fragment } from 'react';
 import { hh, h, button, div } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldCheckbox } from "./InputFieldCheckbox";
-import { USER_ROLES } from '../util/roles';
+import { ROLE, USER_ROLES } from '../util/roles';
 import { createObjectCopy, isEmpty } from "../util/Utils";
 import { User } from "../util/ajax";
 import { AlertMessage } from "./AlertMessage";
+
+const READ_ONLY = USER_ROLES[ROLE.readOnly].value;
+const ADMIN = USER_ROLES[ROLE.admin].value;
+const COMPLIANCE_OFFICE = USER_ROLES[ROLE.complianceOffice].value;
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 
@@ -17,6 +21,11 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
       disableSubmitButton: true,
       showError: false,
       roles: {
+        'orsp': false,
+        'Compliance Office': false,
+        'ro_admin': false
+      },
+      disabledChecks: {
         'orsp': false,
         'Compliance Office': false,
         'ro_admin': false
@@ -69,11 +78,36 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
 
   handleCheck = (e) => {
     e.persist();
+    let rolesToAssign = this.getRoles(e.target.id);
     this.setState(prev => {
-      prev.roles[e.target.id] = !this.state.roles[e.target.id];
+      prev.roles = rolesToAssign;
       prev.disableSubmitButton = false;
       return prev;
     });
+  };
+
+  getRoles(roleChanged) {
+    let rolesToAssign = createObjectCopy(this.state.roles);
+    let role = roleChanged;
+    if (role === READ_ONLY) {
+      rolesToAssign[READ_ONLY] = !rolesToAssign[READ_ONLY];
+      rolesToAssign[COMPLIANCE_OFFICE] = false;
+      rolesToAssign[ADMIN] = false;
+    } else if (role === COMPLIANCE_OFFICE || role === ADMIN) {
+      rolesToAssign[role] = !rolesToAssign[role];
+      rolesToAssign[READ_ONLY] = false;
+    }
+    return rolesToAssign;
+  }
+
+  disableCheckBox = (checkBox) => {
+    let disable = false;
+    if (checkBox === READ_ONLY && (this.state.roles[ADMIN] === true || this.state.roles[COMPLIANCE_OFFICE] === true)) {
+      disable = true;
+    } else if ((checkBox === COMPLIANCE_OFFICE || checkBox === ADMIN) && this.state.roles[READ_ONLY]) {
+      disable = true;
+    }
+    return disable;
   };
 
   clearSelection = () => {
@@ -107,7 +141,8 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
                 id: role.value,
                 onChange: this.handleCheck,
                 label: role.label,
-                checked: this.state.roles[role.value]
+                checked: this.state.roles[role.value],
+                readOnly: this.disableCheckBox(role.value)
               })
             ])
           }),
