@@ -53,7 +53,7 @@ class IssueListController extends AuthenticatedController {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
             def items = issues.collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it, it.projectKey, null)
-                createLink(controller: arguments.get("controller"), params: arguments.get("params"), action: arguments.get("action"))
+                def url = createLink(controller: arguments.get("controller"), params: arguments.get("params"), action: arguments.get("action"))
                 [
                         url: url,
                         key: it.projectKey,
