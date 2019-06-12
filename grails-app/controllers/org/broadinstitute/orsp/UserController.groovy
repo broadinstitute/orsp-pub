@@ -59,21 +59,21 @@ class UserController extends AuthenticatedController {
 
     def editOrspUserRole() {
         Integer userId = request.JSON["userId"] as Integer
-        if (userId != null) {
-            ArrayList<String> rolesToAssign = request.JSON["roles"] as ArrayList<String>
-            User user = User.findById(userId)
-            try {
-                queryService.deleteOrspUserRoles(userId)
-                if (!rolesToAssign.isEmpty()) {
-                    queryService.updateOrspUserRoles(user, rolesToAssign)
-                }
-                response.status = 200
-                render([message: 'Role Updated'] as JSON)
-            } catch(Exception e) {
-                log.error("Error while trying to modify roles to userId: ${userId}." + e.message)
-                response.status = 500
-                render([error: e.message] as JSON)
-            }
+        ArrayList<String> rolesToAssign = request.JSON["roles"] as ArrayList<String>
+
+        try {
+            userService.editUserRoles(userId, rolesToAssign)
+            response.status = 200
+            render([message: 'Role Updated'] as JSON)
+        }
+        catch(IllegalArgumentException e) {
+            response.status = 400
+            render([error: e.message] as JSON)
+        }
+        catch(Exception e) {
+            log.error("Error while trying to modify roles to userId: ${userId}." + e.message)
+            response.status = 500
+            render([error: e.message] as JSON)
         }
     }
 }

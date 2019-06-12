@@ -38,5 +38,8 @@ class SupplementalRole {
         roles?.contains(READ_ONLY_ADMIN)
     }
 
+    static ArrayList<String> getAssignableRolesArray() {
+        return [COMPLIANCE_OFFICE, ORSP, ADMIN, READ_ONLY_ADMIN]
+    }
 }
 

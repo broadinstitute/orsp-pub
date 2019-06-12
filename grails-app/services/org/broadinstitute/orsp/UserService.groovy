@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j
 
 @Slf4j
 class UserService {
+    QueryService queryService
 
     private static String BROAD = "@broadinstitute.org"
 
@@ -151,4 +152,45 @@ class UserService {
         }
     }
 
+    /**
+     * Edits a user's roles
+     *
+     * @param userId        The user's id
+     * @param rolesToAssign Roles String array to be assigned
+     */
+    void editUserRoles (Integer userId, ArrayList<String> rolesToAssign) {
+        if (userId != null) {
+            User user = User.findById(userId)
+            if (user != null && validateRoles(rolesToAssign)) {
+                queryService.deleteOrspUserRoles(userId)
+                if (!rolesToAssign.isEmpty()) {
+                    queryService.updateOrspUserRoles(user, rolesToAssign)
+                }
+            } else {
+                log.error("Error while trying to modify roles to userId: ${userId}.")
+                throw IllegalArgumentException()
+            }
+        }
+    }
+
+    /**
+     * Receives roles intended to be assigned to a user
+     * Rules are:
+     * 1) RolesToAssign must be a valid role, defined in SupplementalRoles
+     * 2) READ_ONLY cannot coexist with ADMIN, ORSP or Compliance Office roles
+     *
+     * @param rolesToAssign     Roles String array to be assigned
+     * @return Boolean          If roles can be assigned
+     */
+    static Boolean validateRoles(ArrayList<String> rolesToAssign) {
+        ArrayList<String> validRoles = SupplementalRole.getAssignableRolesArray()
+        Boolean allRolesAreValid = rolesToAssign.stream().allMatch{e -> validRoles.contains(e)}
+
+        Boolean readOnlyCoexists = !(rolesToAssign.contains(SupplementalRole.READ_ONLY_ADMIN) &&
+                (rolesToAssign.contains(SupplementalRole.ORSP) ||
+                        rolesToAssign.contains(SupplementalRole.COMPLIANCE_OFFICE) ||
+                        rolesToAssign.contains(SupplementalRole.ADMIN)))
+
+        allRolesAreValid && readOnlyCoexists
+    }
 }
