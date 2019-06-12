@@ -11,6 +11,7 @@ import { formatRoleName } from "../util/roles";
 const styles = { 
   statusWidth: '140',
   fileTypeWidth: '170',
+  userNameWidth: '180',
   docVersionWidth: '90',
   creatorWidth: '130',
   infoLinkWidth: '96',
@@ -208,6 +209,12 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataSort={true}
                 width={styles.creatorWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'userName') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                width={styles.userNameWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
