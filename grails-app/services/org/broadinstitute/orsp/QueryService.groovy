@@ -733,8 +733,12 @@ class QueryService implements Status {
         result
     }
 
+    /**
+     * Find issues and create DTOs to narrow the amount of data used in the search process
+     * @param issueIds
+     * @return
+     */
     List<IssueSearchItemDTO> findIssuesSearchItems(ArrayList<Integer> issueIds) {
-
         final String query = "SELECT i.id id, " +
                 "i.project_key projectKey, " +
                 "i.type type, " +
@@ -755,7 +759,10 @@ class QueryService implements Status {
         getSqlConnection().rows(query).each{
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
+                    def extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
+                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
+                    extraProp.push(it.get("value").toString())
+                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
                 }
             } else {
                 if (currentProjectKey != "") {
@@ -777,7 +784,9 @@ class QueryService implements Status {
                     issueSearchItemDTO.setUpdateDate(it.get("updated"))
                 }
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), it.get("value").toString())
+                    def extraProp = issueSearchItemDTO.extraProperties ? issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
+                    extraProp.push(it.get("value").toString())
+                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
                 }
             }
         }

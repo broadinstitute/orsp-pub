@@ -10,7 +10,7 @@ class IssueSearchItemDTO {
     String reporter
     Date expirationDate
     Date updateDate
-    Map<String, String> extraProperties = new HashMap<String, String>()
+    Map<String, List<String>> extraProperties = new HashMap<String, List<String>>()
 
 
     void setId(Number id) {
