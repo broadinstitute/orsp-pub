@@ -21,12 +21,12 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         prev.content = resp.data;
         return prev;
       }, () => {
-        this.loadConsentGroups();
+        this.loadConsentGroups(this.props.serverURL);
       });
     });
   };
 
-  loadConsentGroups() {
+  loadConsentGroups(serverUrl) {
     $('.consent-group-panel-body').hide();
     $('.consent-accordion-toggle').on('click', function () {
       var icon = $(this).children().first();
@@ -41,8 +41,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
     $(".modal-add-button").on('click', function () {
       $("#add-consent-document-modal").load(
-        "https://localhost:8443/dev/api/consent-group/upload-modal?"
-        + $.param({
+      serverUrl + "/api/consent-group/upload-modal?"
+      + $.param({
           issueKey: $(this).data("issue"),
           consentKey: $(this).data("consent")
         }),

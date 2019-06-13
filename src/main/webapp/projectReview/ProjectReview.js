@@ -151,6 +151,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    spinnerService.showAll();
     this.init();
   }
 
@@ -190,7 +191,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-
+              spinnerService.hideAll();
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -201,6 +202,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 return prev;
               });
             } else {
+              spinnerService.hideAll();
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -213,6 +215,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
+        spinnerService.hideAll();
         this.setState(() => { throw error; });
       });
   }

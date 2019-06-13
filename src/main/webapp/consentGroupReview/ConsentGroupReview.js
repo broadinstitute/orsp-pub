@@ -123,6 +123,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   componentDidMount() {
+    spinnerService.showAll();
     this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data })
@@ -203,11 +204,14 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               prev.future = future;
               prev.futureCopy = futureCopy;
               return prev;
-            });
+            }, () => spinnerService.hideAll());
           }
         );
       }
-    );
+    ).catch(error => {
+      spinnerService.hideAll();
+      this.setState(() => { throw error; });
+    });
   };
 
   isViewer = () => {
