@@ -170,6 +170,9 @@ class UserService {
                 log.error("Error while trying to modify roles to userId: ${userId}.")
                 throw IllegalArgumentException()
             }
+        } else {
+            log.error("Error while trying to modify roles to userId null.")
+            throw IllegalArgumentException()
         }
     }
 

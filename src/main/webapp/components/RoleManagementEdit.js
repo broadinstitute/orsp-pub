@@ -78,29 +78,12 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
 
   handleCheck = (e) => {
     e.persist();
-    let rolesToAssign = this.getRoles(e.target.id);
-    // let rolesToAssign = createObjectCopy(this.state.roles);
-    // rolesToAssign[e.target.id] = !rolesToAssign[e.target.id];
     this.setState(prev => {
-      prev.roles = rolesToAssign;
+      prev.roles[e.target.id] = !prev.roles[e.target.id];
       prev.disableSubmitButton = false;
       return prev;
     });
   };
-
-  getRoles(roleChanged) {
-    let rolesToAssign = createObjectCopy(this.state.roles);
-    let role = roleChanged;
-    if (role === READ_ONLY) {
-      rolesToAssign[READ_ONLY] = !rolesToAssign[READ_ONLY];
-      rolesToAssign[COMPLIANCE_OFFICE] = false;
-      rolesToAssign[ADMIN] = false;
-    } else if (role === COMPLIANCE_OFFICE || role === ADMIN) {
-      rolesToAssign[role] = !rolesToAssign[role];
-      rolesToAssign[READ_ONLY] = false;
-    }
-    return rolesToAssign;
-  }
 
   disableCheckBox = (checkBox) => {
     let disable = false;
