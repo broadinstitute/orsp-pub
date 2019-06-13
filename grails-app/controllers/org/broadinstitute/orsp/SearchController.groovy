@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.grails.plugins.web.taglib.ApplicationTagLib
 
@@ -48,9 +49,8 @@ class SearchController implements UserInfo {
     def getMatchingIssues() {
         def response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
-            def link = it.controller == IssueType.CONSENT_GROUP.controller ?
-                    applicationTagLib.createLink([controller: "newConsentGroup", action: 'main', params: [consentKey: it.projectKey], absolute: true]) :
-                    applicationTagLib.createLink([controller: "project", action: 'main', params: [projectKey: it.projectKey]])
+            Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it, it.projectKey, null)
+            applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params:  arguments.get("params"), absolute: true])
             response << [
                     id: it.id,
                     label: it.projectKey + " (" + it.summary + ")",
