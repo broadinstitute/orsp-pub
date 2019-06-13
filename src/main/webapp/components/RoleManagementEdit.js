@@ -136,7 +136,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
         h(ModalHeader, {}, [
           h(ModalTitle, { className: "dialogTitle" }, [this.props.userData.displayName + " (" + this.props.userData.emailAddress + ")"])
         ]),
-        h(ModalBody, { className: "dialogBody" }, [
+        h(ModalBody, { className: "dialogBody rolesManagement" }, [
           USER_ROLES.map( (role, idx) => {
             return h(Fragment, { key: idx }, [
               InputFieldCheckbox({
