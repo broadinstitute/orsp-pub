@@ -255,5 +255,9 @@
 }
 
 .rolesManagement .inputField.inputFieldReadOnly .checkboxLabel {
-  color: #999999;
+  color: #CCCCCC;
+}
+
+.rolesManagement .inputField p.inputFieldLabel {
+  margin: 0;
 }
