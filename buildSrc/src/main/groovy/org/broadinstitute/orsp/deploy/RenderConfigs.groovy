@@ -12,24 +12,23 @@ class RenderConfigs extends DefaultTask {
     void setLocalConfig(boolean localConfig) { this.local = localConfig }
 
     public String projectHome
-    String vault
+    String vaultAddr
 
     @TaskAction
     void render() {
         // TODO: This should be an input
         String userHome = System.properties['user.home']
         String vaultToken = System.getenv("VAULT_TOKEN").replace("\n", "").replace("\r", "");;
+        String vaultAddr = System.getenv("VAULT_ADDR").replace("\n", "").replace("\r", "");;
 
-        // String vaultToken = new File("${userHome}/.vault-token").text
+        //String vaultToken = new File("${userHome}/.vaultAddr-token").text
         // TODO: Look into making the secrets inputs. application.yml needs parsing, orsp-client.json just needs writing
-        println("Rendering application.yml file from vault secrets")
-        println("--->"+vaultToken+"<---")
-        println(vault)
-        Map<String, String> parsedSecrets = VaultSecrets.getParsedSecret(vaultToken, vault, "secret/dsde/orsp/all/application.yml")
+        println("Rendering application.yml file from vaultAddr secrets")
+        Map<String, String> parsedSecrets = VaultSecrets.getParsedSecret(vaultToken, vaultAddr, "secret/dsde/orsp/all/application.yml")
         RenderTemplate.renderApplicationYaml(parsedSecrets, projectHome, local)
 
-        println("Rendering orsp-client.json file from vault secrets")
-        String orspClientText = VaultSecrets.getStringSecret(vaultToken, vault, "secret/dsde/orsp/all/compliance-storage.json")
+        println("Rendering orsp-client.json file from vaultAddr secrets")
+        String orspClientText = VaultSecrets.getStringSecret(vaultToken, vaultAddr, "secret/dsde/orsp/all/compliance-storage.json")
         new File("${projectHome}/grails-app/conf/orsp-client.json").withWriter { w ->
             w << orspClientText
         }

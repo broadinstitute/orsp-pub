@@ -62,7 +62,7 @@ dependencies {
     }
 
     // When running as a standalone jar, this dependency needs to be `compile`.
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.springframework.boot:spring-boot-starter-tomcat"
     // compile "org.springframework.boot:spring-boot-starter-tomcat"
 
     compile "org.grails:grails-web-boot"
