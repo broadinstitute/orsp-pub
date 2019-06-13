@@ -131,7 +131,7 @@ class SearchController implements UserInfo {
         if (params.type) options.getIssueTypeNames().addAll(params.type)
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
-        def rows
+        def rows = []
         def isAdmin = isAdmin()
         def isViewer = isViewer()
         // Only query if we really have values to query for.

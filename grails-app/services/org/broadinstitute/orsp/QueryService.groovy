@@ -713,7 +713,7 @@ class QueryService implements Status {
             query = andIfyQstring(query, q, params)
 
             options.getIssueStatusNames().eachWithIndex { it, index ->
-                    params.put("statusName" + (index + 1), it)
+                params.put("statusName" + (index + 1), it)
             }
         }
         if (options.getIrbsOfRecord()) {
