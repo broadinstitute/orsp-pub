@@ -14,16 +14,16 @@ commands:
     parameters:
       sa_key_name:
         type: string
-        default: 'GCLOUD_DUOS_DEV'
+        default: "GCLOUD_DUOS_DEV"
       env:
         type: string
-        default: 'dev'
+        default: "dev"
       project_name:
         type: string
-        default: 'orsp-pub'
+        default: "orsp-pub"
       google_project:
         type: string
-        default: 'orsp-dev'
+        default: "orsp-dev"
     steps:
       - run:
           name: Export env vars for substitution. $BASH_ENV is sourced before each step
@@ -56,28 +56,28 @@ commands:
     parameters:
       sa_key_name:
         type: string
-        default: 'GCLOUD_DUOS_DEV'
+        default: "GCLOUD_DUOS_DEV"
       env:
         type: string
-        default: 'dev'
+        default: "dev"
       namespace:
         type: string
-        default: 'orsp'
+        default: "orsp"
       project_name:
         type: string
-        default: 'orsp-pub'
+        default: "orsp-pub"
       google_project:
         type: string
-        default: 'orsp-dev'
+        default: "orsp-dev"
       google_zone:
         type: string
-        default: 'us-central1-a'
+        default: "us-central1-a"
       google_cluster:
         type: string
-        default: 'orsp-dev-cluster'
+        default: "orsp-dev-cluster"
       commit:
         type: string
-        default: ''
+        default: ""
     steps:
       - run:
           name: Export env vars for substitution. $BASH_ENV is sourced before each step
@@ -127,18 +127,18 @@ jobs:
     steps:
       - checkout
       - build-env:
-          sa_key_name: 'GCLOUD_DUOS_DEV'
-          env: 'dev'
-          project_name: 'orsp-pub'
-          google_project: 'orsp-dev'
+          sa_key_name: "GCLOUD_DUOS_DEV"
+          env: "dev"
+          project_name: "orsp-pub"
+          google_project: "orsp-dev"
       - deploy-env:
-          sa_key_name: 'GCLOUD_DUOS_DEV'
-          env: 'dev'
-          namespace: 'orsp'
-          project_name: 'orsp-pub'
-          google_project: 'orsp-dev'
-          google_zone: 'us-central1-a'
-          google_cluster: 'orsp-dev-cluster'
+          sa_key_name: "GCLOUD_DUOS_DEV"
+          env: "dev"
+          namespace: "orsp"
+          project_name: "orsp-pub"
+          google_project: "orsp-dev"
+          google_zone: "us-central1-a"
+          google_cluster: "orsp-dev-cluster"
           commit: ${COMMIT}
 
 workflows:
@@ -150,3 +150,4 @@ workflows:
             branches:
               only: feature
 
+              #
