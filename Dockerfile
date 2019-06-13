@@ -1,18 +1,23 @@
-
 FROM redwolfgang20/grails as builder
-
 COPY . /app
 WORKDIR /app
+# ARG VAULT_TOKEN
+# ARG VAULT_ADDR
+# ENV VAULT_TOKEN ${VAULT_TOKEN}
+# ENV VAULT_ADDR ${VAULT_ADDR}
+
+# RUN echo "VAULT_ADDR is $VAULT_ADDR"
+# RUN echo "VAULT_TOKEN is $VAULT_TOKEN"
+
+# RUN ./gradlew renderConfigs
+RUN ./gradlew webpackProd
 RUN grails -Dgrails.env=dev war
 
-FROM tomcat:latest 
-WORKDIR /usr/local/tomcat
-COPY --from=builder /app/tomcat-users.xml    /usr/local/tomcat/conf/tomcat-users.xml
-COPY --from=builder /app/context.xml         /usr/local/tomcat/conf/context.xml
-COPY --from=builder /app/server.xml          /usr/local/tomcat/conf/server.xml
-# COPY --from=builder /app/certs/server.crt    /usr/local/tomcat/conf/server.crt
-# COPY --from=builder /app/certs/server.key    /usr/local/tomcat/conf/server.key
-COPY --from=builder /app/build/libs/orsp.war /usr/local/tomcat/webapps
+FROM openjdk:8-alpine
+COPY --from=builder /app/build/libs/orsp.war /orsp
+WORKDIR /orsp
 
 EXPOSE 8080
 EXPOSE 8443
+
+CMD ["java", "-jar", "orsp.war"]
