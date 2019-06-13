@@ -151,7 +151,7 @@ class Search extends React.Component {
     axios.post(this.state.searchUrl, params).then(response => {
       const results = response.data;
       this.setState(() => ({
-        data: results.data,
+        data: results.data === null ? [] : results.data,
         loading: false,
         loaded: true
       }));
