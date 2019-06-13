@@ -84,7 +84,7 @@ class RolesManagement extends Component {
 
   render() {
     return(
-      div({className: "roles-management"},[
+      div({ className: "roles-management" },[
         span({ style: styles.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,
