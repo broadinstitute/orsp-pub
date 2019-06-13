@@ -36,7 +36,7 @@ commands:
             echo 'export PROJECT_NAME="<< parameters.project_name >>"' >> $BASH_ENV
             echo 'export GOOGLE_PROJECT="<< parameters.google_project >>"' >> $BASH_ENV
             source $BASH_ENV
-      - run:docker 
+      - run:
           name: Setup Google Cloud SDK
           command: |
             apt-get install -qq -y gettext
