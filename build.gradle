@@ -217,7 +217,7 @@ task ('cleanTest') {
 task renderConfigs(type: RenderConfigs) {
     local = false
     projectHome = projectDir
-    vault = System.getenv('VAULT_ADDR')
+    vaultAddr = System.getenv('VAULT_ADDR')
 }
 
 /**
