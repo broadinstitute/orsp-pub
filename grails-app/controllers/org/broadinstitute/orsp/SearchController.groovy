@@ -144,14 +144,14 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 def link = it.type == IssueType.CONSENT_GROUP.name ?
-                        applicationTagLib.createLink([controller: "newConsentGroup", action: 'show', params: [id: it.projectKey], absolute: true]) :
+                        applicationTagLib.createLink([controller: "consentGroup", action: 'show', params: [id: it.projectKey], absolute: true]) :
                         applicationTagLib.createLink([controller: "project", action: 'main', params: [projectKey: it.projectKey], absolute: true])
                 [
                         link: link,
                         key: it.projectKey,
                         reporter: it.reporter,
                         linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
-                        title: it.title,
+                        title: it.summary,
                         type: it.type,
                         status: it.status,
                         updated: format.format(it.updateDate),

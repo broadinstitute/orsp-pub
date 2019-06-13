@@ -10,25 +10,22 @@ class PermissionService implements UserInfo {
     UserService userService
 
     // get issue's collaborators as a List<String>
-    List<String> getIssueCollaborators(IssueSearchItemDTO issue) {
-      issue.extraProperties.get(IssueExtraProperty.COLLABORATOR) ?
-              issue.extraProperties.get(IssueExtraProperty.COLLABORATOR) : []
+    List<String> getIssueCollaborators(Issue issue) {
+        issue.extraProperties.findAll ({ it.name == IssueExtraProperty.COLLABORATOR }).collect { property -> property.value }
     }
 
     // get issue's pms as a List<String>
-    List<String> getIssuePMs(IssueSearchItemDTO issue) {
-      issue.extraProperties.get(IssueExtraProperty.PM) ?
-              issue.extraProperties.get(IssueExtraProperty.PM) : []
+    List<String> getIssuePMs(Issue issue) {
+        issue.extraProperties.findAll ({ it.name == IssueExtraProperty.PM }).collect { property -> property.value }
     }
 
     // get issue's pis as a List<String>
-     List<String> getIssuePIs(IssueSearchItemDTO issue) {
-      issue.extraProperties.get(IssueExtraProperty.PI) ?
-              issue.extraProperties.get(IssueExtraProperty.PI) : []
+    List<String> getIssuePIs(Issue issue) {
+        issue.extraProperties.findAll ({ it.name == IssueExtraProperty.PI }).collect { property -> property.value }
     }
 
     // verifies if logged user belongs to some user list ....
-    def issueIsForbidden(IssueSearchItemDTO issue, String userName, boolean isAdmin, boolean isViewer) {
+    def issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
 
         boolean userHasAccess = (issue.reporter == userName
                 || getIssueCollaborators(issue).indexOf(userName) >= 0
@@ -37,7 +34,7 @@ class PermissionService implements UserInfo {
                 || isAdmin
                 || isViewer)
 
-      !userHasAccess
+        !userHasAccess
     }
 }
 

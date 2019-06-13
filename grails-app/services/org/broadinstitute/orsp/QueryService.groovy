@@ -668,7 +668,7 @@ class QueryService implements Status {
      * @param queryOptions A QueryOptions object that has desired fields populated.
      * @return List of JiraIssues that match the query
      */
-    Collection<IssueSearchItemDTO> findIssues(QueryOptions options) {
+    List<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
         String query = ' select distinct i.id ' +
@@ -740,60 +740,38 @@ class QueryService implements Status {
      * @param issueIds
      * @return
      */
-    List<IssueSearchItemDTO> findIssuesSearchItems(ArrayList<Integer> issueIds) {
+    List<Issue> findIssuesSearchItems(ArrayList<Integer> issueIds) {
         final String query = "SELECT i.id id, " +
                 "i.project_key projectKey, " +
                 "i.type type, " +
                 "i.status status, " +
-                "i.summary title, " +
+                "i.summary summary, " +
                 "i.reporter reporter, " +
                 "i.update_date updated, " +
-                "i.expiration_date expirationDate, " +
-                "iep.* " +
-                "FROM issue i LEFT JOIN issue_extra_property iep " +
-                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator'))" +
+                "i.expiration_date expirationDate " +
+                "FROM issue i " +
                 "WHERE i.id IN (" + issueIds.join(",") + ")"
 
-        IssueSearchItemDTO issueSearchItemDTO
-        List<IssueSearchItemDTO> resultDTO = new ArrayList<IssueSearchItemDTO>()
-        String currentProjectKey = ""
+        List<Issue> result = new ArrayList<Issue>()
 
         getSqlConnection().rows(query).each{
-            if (it.get("projectKey") == currentProjectKey) {
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    def extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
-                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-                    extraProp.push(it.get("value").toString())
-                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
-                }
-            } else {
-                if (currentProjectKey != "") {
-                    resultDTO.push(issueSearchItemDTO)
-                }
-                currentProjectKey = it.get("projectKey")
-                issueSearchItemDTO = new IssueSearchItemDTO()
+            Issue issueSearchItem = new Issue()
 
-                issueSearchItemDTO.setId((Integer)it.get("id"))
-                issueSearchItemDTO.setProjectKey(it.get("projectKey").toString())
-                issueSearchItemDTO.setType(it.get("type").toString())
-                issueSearchItemDTO.setStatus(it.get("status").toString())
-                issueSearchItemDTO.setTitle(it.get("title").toString())
-                issueSearchItemDTO.setReporter(it.get("reporter").toString())
-                if (it.get("expirationDate") != null) {
-                    issueSearchItemDTO.setExpirationDate(it.get("expirationDate"))
-                }
-                if (it.get("updated") != null) {
-                    issueSearchItemDTO.setUpdateDate(it.get("updated"))
-                }
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    def extraProp = issueSearchItemDTO.extraProperties ? issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-                    extraProp.push(it.get("value").toString())
-                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
-                }
+            issueSearchItem.setId((Integer)it.get("id"))
+            issueSearchItem.setProjectKey(it.get("projectKey").toString())
+            issueSearchItem.setType(it.get("type").toString())
+            issueSearchItem.setStatus(it.get("status").toString())
+            issueSearchItem.setSummary(it.get("summary").toString())
+            issueSearchItem.setReporter(it.get("reporter").toString())
+            if (it.get("expirationDate") != null) {
+                issueSearchItem.setExpirationDate(it.get("expirationDate"))
             }
+            if (it.get("updated") != null) {
+                issueSearchItem.setUpdateDate(it.get("updated"))
+            }
+            result.push(issueSearchItem)
         }
-        resultDTO.push(issueSearchItemDTO)
-        resultDTO
+        result
     }
 
     /**
