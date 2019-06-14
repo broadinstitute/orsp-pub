@@ -30,12 +30,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     this.state = {
       generalError: false,
       errorSubmit: false,
-      subjectProtectionError: false,
       descriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
-      subjectProtection: false,
       fundingError: false,
       fundingErrorIndex: [],
       internationalCohortsError: false,
@@ -68,7 +66,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           feeForServiceWork: '',
           projectTitle: '',
           protocol: '',
-          subjectProtection: null,
           projectAvailability: null,
           attestation: '',
           describeEditType: null,
@@ -121,7 +118,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           irbProtocolId: '',
           projectTitle: '',
           protocol: '',
-          subjectProtection: null,
           projectAvailability: null,
           attestation: '',
           describeEditType: null,
@@ -372,7 +368,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
-    project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
     project.attestation = this.state.formData.projectExtraProps.attestation;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
@@ -654,7 +649,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   isValid() {
     let descriptionError = false;
     let projectTitleError = false;
-    let subjectProtectionError = false;
     let attestationError = false;
     let editTypeError = false;
     let editDescriptionError = false;
@@ -691,10 +685,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       projectTitleError = true;
       generalError = true;
     }
-    if (isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
-      subjectProtectionError = true;
-      generalError = true;
-    }
     if (isEmpty(this.state.formData.projectExtraProps.attestation)) {
       attestationError = true;
       generalError = true;
@@ -702,7 +692,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
-      prev.subjectProtectionError = subjectProtectionError;
       prev.attestationError = attestationError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
@@ -713,8 +702,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       return prev;
     });
 
-    return !subjectProtectionError &&
-      !attestationError &&
+    return !attestationError &&
       !projectTitleError &&
       !descriptionError &&
       !editTypeError &&
@@ -1019,25 +1007,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             onChange: this.handleProjectExtraPropsChange,
             valueEdited: isEmpty(this.state.current.projectExtraProps.protocol) === !isEmpty(this.state.formData.projectExtraProps.protocol),
             edit: true
-          }),
-          InputFieldRadio({
-            id: "radioSubjectProtection",
-            name: "subjectProtection",
-            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
-            moreInfo: "(as opposed to the study team independently managing the submissions)?",
-            value: this.state.formData.projectExtraProps.subjectProtection,
-            currentValue: this.state.current.projectExtraProps.subjectProtection,
-            optionValues: ["true", "false", "notapplicable"],
-            optionLabels: [
-              "Yes",
-              "No",
-              "N/A - No IRB submission required"
-            ],
-            onChange: this.handleProjectExtraPropsChangeRadio,
-            required: true,
-            readOnly: this.state.readOnly,
-            error: this.state.subjectProtectionError,
-            errorMessage: "Required field"
           }),
           InputFieldSelect({
             label: "IRB-of-record",

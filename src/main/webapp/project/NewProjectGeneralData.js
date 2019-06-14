@@ -38,7 +38,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
@@ -51,7 +50,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        subjectProtection: '',
         irbReferral: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
@@ -59,7 +57,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       errors: {
         studyDescription: false,
         pTitle: false,
-        subjectProtection: false,
         fundings: false
       }
     };
@@ -161,7 +158,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle || this.props.errors.subjectProtection,
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.studyDescription || this.props.errors.pTitle,
         errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
@@ -290,24 +287,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             disabled: false,
             required: false,
             onChange: this.handleInputChange,
-            edit: false
-          }),
-          InputFieldRadio({
-            id: "radioSubjectProtection",
-            name: "subjectProtection",
-            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
-            moreInfo: "(as opposed to the study team independently managing the submissions)? *",
-            value: this.state.formData.subjectProtection,
-            optionValues: ["true", "false", "notapplicable"],
-            optionLabels: [
-              "Yes",
-              "No",
-              "N/A - No IRB submission required"
-            ],
-            onChange: this.handleRadioChange,
-            required: true,
-            error: this.props.errors.subjectProtection,
-            errorMessage: "Required field",
             edit: false
           }),
           InputFieldSelect({
