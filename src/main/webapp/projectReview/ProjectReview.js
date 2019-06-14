@@ -239,7 +239,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   isAdmin = () => {
-    console.log(component.isAdmin);
     return component.isAdmin === "true";
   };
 
