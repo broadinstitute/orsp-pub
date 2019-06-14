@@ -16,17 +16,17 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   }
 
   getConsentGroups() {
-    ProjectMigration.getConsentGroups(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getConsentGroups(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
       }, () => {
-        this.loadConsentGroups(this.props.serverURL);
+        this.loadConsentGroups();
       });
     });
   };
 
-  loadConsentGroups(serverUrl) {
+  loadConsentGroups() {
     $('.consent-group-panel-body').hide();
     $('.consent-accordion-toggle').on('click', function () {
       var icon = $(this).children().first();
@@ -41,7 +41,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
     $(".modal-add-button").on('click', function () {
       $("#add-consent-document-modal").load(
-      serverUrl + "/api/consent-group/upload-modal?"
+      component.serverURL + "/api/consent-group/upload-modal?"
       + $.param({
           issueKey: $(this).data("issue"),
           consentKey: $(this).data("consent")

@@ -49,7 +49,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // comments
   getComments() {
-    ProjectMigration.getComments(this.props.serverURL, this.props.consentKey).then(resp => {
+    ProjectMigration.getComments(component.serverURL, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.commentsContent = resp.data;
         return prev;
@@ -87,7 +87,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(this.props.serverURL, this.props.consentKey).then(resp => {
+    ProjectMigration.getHistory(component.serverURL, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.historyContent = resp.data;
         return prev;
@@ -114,27 +114,13 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab },
+          MultiTab({ defaultActive: component.tab === "" ? this.state.defaultActive : component.tab },
             [
               div({
                 key: "review",
                 title: "Cohort Details",
               }, [
                   h(ConsentGroupReview, {
-                    consentKey: this.props.consentKey,
-                    consentGroupUrl: this.props.consentGroupUrl,
-                    approveConsentGroupUrl: this.props.approveConsentGroupUrl,
-                    isAdminUrl: this.props.isAdminUrl,
-                    isViewer: this.props.isViewer,
-                    sampleSearchUrl: this.props.sampleSearchUrl,
-                    rejectConsentUrl: this.props.rejectConsentUrl,
-                    updateConsentUrl: this.props.updateConsentUrl,
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL,
-                    discardReviewUrl: this.props.discardReviewUrl,
-                    consentNamesSearchURL: this.props.consentNamesSearchURL,
-                    clarificationUrl: this.props.clarificationUrl,
-                    loadingImage: this.props.loadingImage,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent
@@ -145,19 +131,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Documents",
               }, [
                   h(ConsentGroupDocuments, {
-                    attachmentsUrl: this.props.attachmentsUrl,
-                    serverURL: this.props.serverURL,
-                    attachDocumentsUrl: this.props.attachDocumentsUrl,
-                    projectKey: this.props.consentKey,
-                    approveDocumentUrl: this.props.approveDocumentUrl,
-                    rejectDocumentUrl: this.props.rejectDocumentUrl,
-                    sessionUserUrl: this.props.sessionUserUrl,
-                    downloadDocumentUrl: this.props.downloadDocumentUrl,
-                    emailDulUrl: this.props.emailDulUrl,
-                    loadingImage: this.props.loadingImage,
-                    useRestrictionUrl: this.props.useRestrictionUrl,
-                    createRestrictionUrl: this.props.createRestrictionUrl,
-                    removeDocumentUrl: this.props.removeDocumentUrl,
                     updateDocumentsStatus: this.updateDocumentsStatus
                   })
                 ]),
@@ -166,8 +139,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Messages",
               }, [
                   h(Fragment, {}, [Comments({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL,
                     commentsContent: this.state.commentsContent
                   }
                   )]),
@@ -177,8 +148,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "History",
               }, [
                   h(Fragment, {}, [History({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL,
                     historyContent: this.state.historyContent
                   }
                   )])

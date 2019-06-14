@@ -163,7 +163,7 @@
         approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",     
         consentGroupReviewUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
         createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}"
-        };
+      };
     </script>
 
     %{-- Set context path for all scripts to use --}%

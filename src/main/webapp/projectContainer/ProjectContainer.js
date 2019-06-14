@@ -52,7 +52,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
  
   // comments
   getComments() {
-    ProjectMigration.getComments(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getComments(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.commentsContent = resp.data;
         return prev;
@@ -90,7 +90,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getHistory(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.historyContent = resp.data;
         return prev;
@@ -117,7 +117,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab },
+          MultiTab({ defaultActive: component.tab === "" ? this.state.defaultActive : component.tab },
             [
               div({
                 key: "review",
@@ -126,17 +126,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   h(ProjectReview, {
                     updateDetailsStatus: this.updateDetailsStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    searchUsersURL: this.props.searchUsersURL,
-                    projectKey: this.props.projectKey,
-                    projectUrl: this.props.projectUrl,
-                    isAdmin: this.props.isAdmin,
-                    isViewer: this.props.isViewer,
-                    serverURL: this.props.serverURL,
-                    rejectProjectUrl: this.props.rejectProjectUrl,
-                    updateProjectUrl: this.props.updateProjectUrl,
-                    discardReviewUrl: this.props.discardReviewUrl,
-                    clarificationUrl: this.props.clarificationUrl,
-                    loadingImage: this.props.loadingImage,
                     updateContent: this.updateContent,
                   })
                 ]),
@@ -146,44 +135,26 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(ProjectDocument, {
                     statusBoxHandler: this.props.statusBoxHandler,
-                    updateDocumentsStatus: this.updateDocumentsStatus,
-                    projectKey: this.props.projectKey,
-                    attachedDocumentsUrl: this.props.attachedDocumentsUrl,
-                    serverURL: this.props.serverURL,
-                    approveDocumentUrl: this.props.approveDocumentUrl,
-                    downloadDocumentUrl: this.props.downloadDocumentUrl,
-                    sessionUserUrl: this.props.sessionUserUrl,
-                    loadingImage: this.props.loadingImage,
-                    removeDocumentUrl: this.props.removeDocumentUrl
+                    updateDocumentsStatus: this.updateDocumentsStatus
                   })
                 ]),
               div({
                 key: "consent-groups",
                 title: "Sample/Data Cohorts",
               }, [
-                  h(Fragment, {}, [ConsentGroups({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL
-                  }
-                  )]),
+                  h(Fragment, {}, [ConsentGroups({})]),
                 ]),
               div({
                 key: "submissions",
                 title: "Submissions",
               }, [
-                  h(Fragment, {}, [Submissions({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL
-                  }
-                  )]),
+                  h(Fragment, {}, [Submissions({})]),
                 ]),
               div({
                 key: "comments",
                 title: "Comments",
               }, [
                   h(Fragment, {}, [Comments({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL,
                     commentsContent: this.state.commentsContent
                   }
                   )]),
@@ -193,8 +164,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "History",
               }, [
                   h(Fragment, {}, [History({
-                    projectKey: this.props.projectKey,
-                    serverURL: this.props.serverURL,
                     historyContent: this.state.historyContent
                   }
                   )]),
@@ -204,12 +173,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Admin Only",
               }, [
                   h(AdminOnly, {
-                    isAdmin: this.props.isAdmin,
-                    loadingImage: this.props.loadingImage,
-                    userSessionUrl: this.props.userSessionUrl,
-                    projectKey: this.props.projectKey,
-                    projectUrl: this.props.projectUrl,
-                    updateAdminOnlyPropsUrl: this.props.updateAdminOnlyPropsUrl,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus
                   })
