@@ -119,7 +119,7 @@ jobs:
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
           env: "dev"
-          namespace: "orsp"
+          namespace: "orsp-pub"
           project_name: "orsp-pub"
           google_project: "orsp-dev"
           google_zone: "us-central1-a"
