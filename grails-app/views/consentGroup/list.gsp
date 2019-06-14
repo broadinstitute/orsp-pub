@@ -7,10 +7,12 @@
 <body>
 
  <auth:isNotViewer>
-   <a type="button" class="btn btn-default" style="color: blue" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
-    <a type="button" class="btn btn-default" style="color: blue"
-        href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
-        Use existing Sample/Data Cohort</a>
+    <a type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}">
+        Add New Sample/Data Cohort
+    </a>
+    <a type="button" class="btn btn-default" href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}">
+        Use existing Sample/Data Cohort
+    </a>
  </auth:isNotViewer>
 
 <g:if test="${consentGroups}">
@@ -23,23 +25,41 @@
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <g:each in="${consentGroups}" var="consent" status="panelIndex">
             <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading${panelIndex}">
+                <div class="panel-heading sample-dc" role="tab" id="heading${panelIndex}">
                     <a class="pull-right">
                         <span class="consent-accordion-toggle btn btn-default"><i class="glyphicon glyphicon-chevron-down"></i></span>
                     </a>
+
+                    <span class="status approved">Approved</span>
+                    <!-- <span class="status pending">Approved</span> -->
+                    
                     <h3 class="panel-title">
 
                         <auth:isNotViewer>
-                            <a class="btn btn-default btn-sm" style="margin-right: 15px;"
+                            <div class="cta-container">
+                                <a class="btn btn-default btn-sm" style="margin-right: 5px;" href="/">
+                                 Approve
+                             </a>
+                             <a class="btn btn-default btn-sm" style="margin-right: 10px;" href="/">
+                                 Reject
+                             </a>
+
+                            <a class="btn btn-default btn-sm" style="margin-right: 10px;"
                                href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
                                 Unlink
                             </a>
+                            </div>
                         </auth:isNotViewer>
 
-                        Sample/Data Cohort
-                        <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
-                            ${consent.projectKey}: ${consent.summary}
-                        </a>
+                        <div class="right-container">
+                            <a class="request-clarification" href="/">
+                                <span class="tooltip hidden">Request Clarification</span>
+                            </a>
+    
+                            <a class="data-name" href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
+                                ${consent.projectKey}: ${consent.summary}
+                            </a>
+                        </div>
 
                     </h3>
                 </div>
