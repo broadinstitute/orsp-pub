@@ -62,7 +62,7 @@ commands:
         default: "dev"
       namespace:
         type: string
-        default: "orsp"
+        default: "orsp-pub"
       project_name:
         type: string
         default: "orsp-pub"
