@@ -25,7 +25,7 @@
     <g:each in="${restrictions}" var="restriction">
         <tr>
             <td>
-                <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: restriction.consentGroupKey, tab: "documents"])}">
+                <a href="${createLink(controller: 'newConsentGroup', action: 'main', params: [consentKey: restriction.consentGroupKey, tab: "documents"])}">
                     ${restriction.consentGroupKey}
                 </a>
             </td>
@@ -62,7 +62,7 @@
         <g:set var="consentCollectionLink" value="${consentCollections.find {it.consentKey.equals(map.key)}}"/>
         <tr>
             <td>
-                <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: map.key, tab: "documents"])}">
+                <a href="${createLink(controller: 'newConsentGroup', action: 'main', params: [consentKey: map.key, tab: "documents"])}">
                     ${map.key}
                 </a>
             </td>

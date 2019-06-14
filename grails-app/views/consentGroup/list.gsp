@@ -7,8 +7,8 @@
 <body>
 
  <auth:isNotViewer>
-   <a type="button" class="btn btn-default" style="color: blue" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
-    <a type="button" class="btn btn-default" style="color: blue"
+   <a type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
+    <a type="button" class="btn btn-default"
         href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
         Use existing Sample/Data Cohort</a>
  </auth:isNotViewer>
@@ -37,7 +37,7 @@
                         </auth:isNotViewer>
 
                         Sample/Data Cohort
-                        <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
+                        <a href="${createLink(controller: 'newConsentGroup', action: 'main', params: [consentKey: consent.projectKey, projectKey: issue.projectKey])}">
                             ${consent.projectKey}: ${consent.summary}
                         </a>
 
