@@ -30,12 +30,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     this.state = {
       generalError: false,
       errorSubmit: false,
-      subjectProtectionError: false,
       descriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
-      subjectProtection: false,
       fundingError: false,
       fundingErrorIndex: [],
       internationalCohortsError: false,
@@ -68,7 +66,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           feeForServiceWork: '',
           projectTitle: '',
           protocol: '',
-          subjectProtection: null,
           projectAvailability: null,
           attestation: '',
           describeEditType: null,
@@ -99,9 +96,9 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           displayName: '',
           emailAddress: ''
         },
-        requestorName: this.props.user !== undefined ? this.props.user.displayName : '',
-        reporter: this.props.user !== undefined ? this.props.user.userName : '',
-        requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
+        requestorName: component.user !== undefined ? component.user.displayName : '',
+        reporter: component.user !== undefined ? component.user.userName : '',
+        requestorEmail: component.user !== undefined ? component.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
         studyDescription: '',
@@ -121,7 +118,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           irbProtocolId: '',
           projectTitle: '',
           protocol: '',
-          subjectProtection: null,
           projectAvailability: null,
           attestation: '',
           describeEditType: null,
@@ -151,6 +147,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    spinnerService.showAll();
     this.init();
   }
 
@@ -160,7 +157,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     let future = {};
     let futureCopy = {};
     let formData = {};
-    Project.getProject(this.props.projectUrl, this.props.projectKey).then(
+    Project.getProject(component.projectUrl, component.projectKey).then(
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
@@ -180,7 +177,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         futureCopy = JSON.parse(currentStr);
         this.projectType = issue.data.issue.type;
 
-        Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+        Review.getSuggestions(component.serverURL, component.projectKey).then(
           data => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('new') && urlParams.get('tab') === 'review') {
@@ -190,7 +187,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-
+              spinnerService.hideAll();
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -201,6 +198,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 return prev;
               });
             } else {
+              spinnerService.hideAll();
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -213,12 +211,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
+        spinnerService.hideAll();
         this.setState(() => { throw error; });
       });
   }
 
   getReviewSuggestions() {
-    Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+    Review.getSuggestions(component.serverURL, component.projectKey).then(
       data => {
         if (data.data !== '') {
           this.setState(prev => {
@@ -240,11 +239,11 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   isAdmin = () => {
-    return this.props.isAdmin === "true";
+    return component.isAdmin === "true";
   };
 
   isViewer = () => {
-    return this.props.isViewer === "true";
+    return component.isViewer === "true";
   };
 
   getUsersArray(array) {
@@ -294,7 +293,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(this.props.serverURL, this.props.projectKey, data).then(
+    Project.addExtraProperties(component.serverURL, component.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
@@ -307,7 +306,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     });
     if (this.state.reviewSuggestion) {
       let project = this.getProject();
-      Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+      Project.updateProject(component.updateProjectUrl, project, component.projectKey).then(
         resp => {
           this.removeEdits('approve');
         })
@@ -319,12 +318,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   rejectProject() {
     spinnerService.showAll();
-    Project.rejectProject(this.props.rejectProjectUrl, this.props.projectKey).then(resp => {
+    Project.rejectProject(component.rejectProjectUrl, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
-      window.location.href = [this.props.serverURL, "index"].join("/");
+      window.location.href = [component.serverURL, "index"].join("/");
       spinnerService.hideAll();
     }).catch(error => {
       spinnerService.hideAll();
@@ -342,7 +341,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+    Project.updateProject(component.updateProjectUrl, project, component.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
@@ -355,7 +354,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   removeEdits(type) {
-    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey, type).then(
+    Review.deleteSuggestions(component.discardReviewUrl, component.projectKey, type).then(
       resp => {
         this.props.updateContent();
         this.init();
@@ -372,7 +371,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
-    project.subjectProtection = this.state.formData.projectExtraProps.subjectProtection;
     project.attestation = this.state.formData.projectExtraProps.attestation;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
@@ -493,11 +491,11 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         return prev;
       });
       const data = {
-        projectKey: this.props.projectKey,
+        projectKey: component.projectKey,
         suggestions: JSON.stringify(this.state.formData)
       };
       if (this.state.reviewSuggestion) {
-        Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
+        Review.updateReview(component.serverURL, component.projectKey, data).then(() =>
           this.getReviewSuggestions()
         ).catch(error => {
           this.getReviewSuggestions();
@@ -508,7 +506,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           })
         });
       } else {
-        Review.submitReview(this.props.serverURL, data).then(() =>
+        Review.submitReview(component.serverURL, data).then(() =>
           this.getReviewSuggestions()
         ).catch(error => {
           this.getReviewSuggestions()
@@ -528,7 +526,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(this.props.searchUsersURL, query)
+      Search.getMatchingQuery(component.searchUsersURL, query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
@@ -654,7 +652,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   isValid() {
     let descriptionError = false;
     let projectTitleError = false;
-    let subjectProtectionError = false;
     let attestationError = false;
     let editTypeError = false;
     let editDescriptionError = false;
@@ -691,10 +688,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       projectTitleError = true;
       generalError = true;
     }
-    if (isEmpty(this.state.formData.projectExtraProps.subjectProtection)) {
-      subjectProtectionError = true;
-      generalError = true;
-    }
     if (isEmpty(this.state.formData.projectExtraProps.attestation)) {
       attestationError = true;
       generalError = true;
@@ -702,7 +695,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
-      prev.subjectProtectionError = subjectProtectionError;
       prev.attestationError = attestationError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
@@ -713,8 +705,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       return prev;
     });
 
-    return !subjectProtectionError &&
-      !attestationError &&
+    return !attestationError &&
       !projectTitleError &&
       !descriptionError &&
       !editTypeError &&
@@ -752,7 +743,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   redirectToConsentGroupTab = async () => {
-    window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
+    window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -810,11 +801,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
-          issueKey: this.props.projectKey,
-          user: this.props.user,
-          emailUrl: this.props.emailUrl,
-          userName: this.props.userName,
-          clarificationUrl: this.props.clarificationUrl,
+          issueKey: component.projectKey,
           successClarification: this.successNotification
         }),
 
@@ -1020,25 +1007,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             valueEdited: isEmpty(this.state.current.projectExtraProps.protocol) === !isEmpty(this.state.formData.projectExtraProps.protocol),
             edit: true
           }),
-          InputFieldRadio({
-            id: "radioSubjectProtection",
-            name: "subjectProtection",
-            label: "For this project, are you requesting that Broad’s ORSP assume responsibility for submitting regulatory documentation to an outside IRB ",
-            moreInfo: "(as opposed to the study team independently managing the submissions)?",
-            value: this.state.formData.projectExtraProps.subjectProtection,
-            currentValue: this.state.current.projectExtraProps.subjectProtection,
-            optionValues: ["true", "false", "notapplicable"],
-            optionLabels: [
-              "Yes",
-              "No",
-              "N/A - No IRB submission required"
-            ],
-            onChange: this.handleProjectExtraPropsChangeRadio,
-            required: true,
-            readOnly: this.state.readOnly,
-            error: this.state.subjectProtectionError,
-            errorMessage: "Required field"
-          }),
           InputFieldSelect({
             label: "IRB-of-record",
             id: "irbReferral",
@@ -1228,7 +1196,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }, ["Request Clarification"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

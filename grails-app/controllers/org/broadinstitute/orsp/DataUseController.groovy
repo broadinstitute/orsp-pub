@@ -58,7 +58,7 @@ class DataUseController extends AuthenticatedController {
         restriction = DataUseRestrictionParser.fromParams(restriction, params)
         restriction = dataUseLetterService.createSdul(restriction, getUser()?.displayName)
         if (params.create) {
-            redirect(controller: 'consentGroup', action: "show", params: [id: restriction.consentGroupKey, tab: 'documents'])
+            redirect(controller: 'newConsentGroup', action: "main", params: [consentKey: restriction.consentGroupKey, tab: 'documents'])
         } else {
             redirect(controller: 'dataUse', action: "show", params: [id: restriction.id])
         }
