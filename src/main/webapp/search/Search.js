@@ -1,10 +1,12 @@
 import React from "react";
-import { Typeahead } from "react-bootstrap-typeahead";
+import { Typeahead, Menu, MenuItem } from "react-bootstrap-typeahead";
 import axios from "axios";
 
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
+
+const newStatuses = ["Pending", "Withdrawn", "Legacy", "Intake", "Reopened"];
 
 class Search extends React.Component {
   constructor(props) {
@@ -161,6 +163,34 @@ class Search extends React.Component {
     });
   }
 
+  renderMenu = (results, menuProps) => {
+    const items = [];
+    items.push(
+      <Menu.Header key={`legacy-status-header`}>
+        {"New Statuses"}
+      </Menu.Header>,
+      results.map((status, idx) => {
+        return !!(newStatuses.indexOf(status) !== -1) && <MenuItem key={`legacy-`+idx} option={status} position={idx}>
+          {status}
+        </MenuItem>}),
+      <Menu.Header key={`new-status-header`}>
+        {"Legacy Statuses"}
+      </Menu.Header>
+    );
+    items.push(
+      results.map((status, idx) => {
+        return !!(newStatuses.indexOf(status) === -1) && <MenuItem key={`new-`+idx} option={status} position={idx}>
+          {status}
+        </MenuItem>})
+    );
+    return <Menu {...menuProps} id={"menu-item"}>{items}</Menu>
+  };
+
+  setSelected = (selected) => {
+    this.setState(() => ({ statuses: selected }));
+    this.saveStateToLocalStorage();
+  };
+
   render() {
     return (
       <div>
@@ -243,12 +273,10 @@ class Search extends React.Component {
               <Typeahead
                 ref={"issueStatus"}
                 align={"left"}
-                multiple={true}
                 options={this.state.issueStatuses}
-                onChange={selected => {
-                  this.setState(() => ({ statuses: selected }));
-                  this.saveStateToLocalStorage();
-                }}
+                multiple={true}
+                renderMenu={this.renderMenu}
+                onChange={this.setSelected}
                 defaultSelected={this.state.statuses}
               />
             </div>

@@ -100,7 +100,7 @@
         </g:each>];
 
       const issueStatuses = [
-        <g:each status="count" in="${IssueStatus.values().sort{it.sequence}}" var="status">"${raw(status.name)}"<g:if test="${count < IssueStatus.values().size() - 1}">,</g:if>
+        <g:each status="count" in="${IssueStatus.values().sort{it.sequence}}" var="status">"${raw(status)}"<g:if test="${count < IssueStatus.values().size() - 1}">,</g:if>
         </g:each>];
 
       const irbs = [
