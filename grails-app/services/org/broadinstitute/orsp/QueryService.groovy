@@ -708,8 +708,8 @@ class QueryService implements Status {
             }
         }
         if (options.getIssueStatusNames() && !options.getIssueStatusNames().empty) {
-            def q = orIfyCollection("i.status = :statusName", options.getIssueStatusNames())
-            q += "OR" + orIfyCollection("i.approval_status = :statusName", options.getIssueStatusNames())
+            def q = orIfyStatuses("i.status = :statusName", "i.approval_status = :statusName", options.getIssueStatusNames())
+//            q += "AND" + orIfyCollection("i.approval_status = :statusName", options.getIssueStatusNames())
             query = andIfyQstring(query, q, params)
 
             options.getIssueStatusNames().eachWithIndex { it, index ->
@@ -792,6 +792,13 @@ class QueryService implements Status {
         def count = collection.size()
         def collQs = (1 .. count).collect { q + it }
         " ( " + collQs.join(" OR ") + " ) "
+    }
+
+    private static String orIfyStatuses(String qLegacy, String qNew, Collection<String> collection) {
+        def count = collection.size()
+        def collQsLegacy = (1 .. count).collect { qLegacy + it }
+        def collQsNew = (1 .. count).collect { qNew + it }
+        " ( " + collQsLegacy.join(" OR ") + " OR " + collQsNew.join(" OR ") + " ) "
     }
 
     private static String andIfyQstring(String query, String q, Map params) {
