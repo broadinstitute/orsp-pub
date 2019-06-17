@@ -29,9 +29,9 @@ class RenderConfigs extends DefaultTask {
 
         println("Rendering orsp-client.json file from vaultAddr secrets")
         String orspClientText = VaultSecrets.getStringSecret(vaultToken, vaultAddr, "secret/dsde/orsp/all/compliance-storage.json")
-        new File("${projectHome}/grails-app/conf/orsp-client.json").withWriter { w ->
+        //new File("${projectHome}/grails-app/conf/orsp-client.json").withWriter { w ->
+        new File("/etc/config/orsp-client.json").withWriter { w ->
             w << orspClientText
         }
     }
-
 }
