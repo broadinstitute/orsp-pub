@@ -709,7 +709,6 @@ class QueryService implements Status {
         }
         if (options.getIssueStatusNames() && !options.getIssueStatusNames().empty) {
             def q = orIfyStatuses("i.status = :statusName", "i.approval_status = :statusName", options.getIssueStatusNames())
-//            q += "AND" + orIfyCollection("i.approval_status = :statusName", options.getIssueStatusNames())
             query = andIfyQstring(query, q, params)
 
             options.getIssueStatusNames().eachWithIndex { it, index ->

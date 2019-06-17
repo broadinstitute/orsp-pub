@@ -175,9 +175,7 @@ class Search extends React.Component {
         </MenuItem>}),
       <Menu.Header key={`new-status-header`}>
         {"Legacy Statuses"}
-      </Menu.Header>
-    );
-    items.push(
+      </Menu.Header>,
       results.map((status, idx) => {
         return !!(newStatuses.indexOf(status) === -1) && <MenuItem key={`new-`+idx} option={status} position={idx}>
           {status}
