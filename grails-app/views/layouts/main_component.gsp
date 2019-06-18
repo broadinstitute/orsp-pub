@@ -125,8 +125,9 @@
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
+        issueType: "${issueType}",
         tab: "${params.tab}",
-        consentKey: "${params.consentKey}",
+        consentKey: "${consentKey}",
         projectType: '${params.type}',
         projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
         sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
@@ -152,7 +153,16 @@
         downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
         sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         removeDocumentUrl: "${createLink(uri: '/api/files-helper/delete', 'DELETE')}",
-        updateAdminOnlyPropsUrl: "${createLink(controller: 'project', action: 'updateAdminOnlyProps')}"
+        updateAdminOnlyPropsUrl: "${createLink(controller: 'project', action: 'updateAdminOnlyProps')}",
+        attachmentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
+        emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}",
+        useRestrictionUrl: "${createLink(controller:'newConsentGroup', action: 'getDataUseRestriction')}",
+        isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",
+        rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
+        updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
+        approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",     
+        consentGroupReviewUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
+        createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}"
       };
     </script>
 

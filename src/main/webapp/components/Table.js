@@ -79,7 +79,7 @@ export const Table = hh(class Table extends Component {
   formatUrlDocument = (cell, row) => {
     if (this.props.reviewFlow) {
       return a({
-        href: `${this.props.downloadDocumentUrl}?uuid=${row.uuid}`,
+        href: `${component.downloadDocumentUrl}?uuid=${row.uuid}`,
         target: '_blank',
         title: row.fileName,
       }, [row.fileName])

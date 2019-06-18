@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
 class IssueListController extends AuthenticatedController {
@@ -51,9 +52,8 @@ class IssueListController extends AuthenticatedController {
         if (session.user) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
             def items = issues.collect {
-                String url = it.type == IssueType.CONSENT_GROUP.name ?
-                        createLink(controller: it.controller, id: it.projectKey, action: "show") :
-                        createLink(controller: "project", params: [projectKey: it.projectKey], action: "main")
+                Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it, it.projectKey, null)
+                String url = createLink(controller: arguments.get("controller"), params: arguments.get("params"), action: arguments.get("action"))
                 [
                         url: url,
                         key: it.projectKey,

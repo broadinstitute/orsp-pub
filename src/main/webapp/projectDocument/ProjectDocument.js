@@ -33,7 +33,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   isCurrentUserAdmin() {
-    User.getUserSession(this.props.sessionUserUrl).then(resp => {
+    User.getUserSession(component.sessionUserUrl).then(resp => {
       this.setState({user: resp.data});
     }).catch(error => {
       this.setState(() => { throw error; });
@@ -41,7 +41,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
-    DocumentHandler.attachedDocuments(this.props.attachedDocumentsUrl, this.props.projectKey).then(resp => {
+    DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
       this.setState({documents: JSON.parse(resp.data.documents)},
         () => {
           this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
@@ -53,7 +53,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   approveDocument = (uuid) => {
-    DocumentHandler.approveDocument(this.props.approveDocumentUrl, uuid).then(resp => {
+    DocumentHandler.approveDocument(component.approveDocumentUrl, uuid).then(resp => {
         this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
@@ -62,7 +62,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   rejectDocument = (uuid) => {
-    DocumentHandler.rejectDocument(this.props.serverURL, uuid).then(resp => {
+    DocumentHandler.rejectDocument(component.serverURL, uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
@@ -118,13 +118,9 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
           documents: this.state.documents,
           handleDialogConfirm: this.handleDialog,
           user: this.state.user,
-          downloadDocumentUrl: this.props.downloadDocumentUrl,
           options: this.state.documentOptions,
-          projectKey: this.props.projectKey,
-          serverURL: this.props.serverURL,
-          attachDocumentsUrl: this.props.attachDocumentsUrl,
+          projectKey: component.projectKey,
           handleLoadDocuments: this.getAttachedDocuments,
-          removeDocumentUrl: this.props.removeDocumentUrl,
           docsClarification: "Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."
         }),
         AlertMessage({
@@ -132,7 +128,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
           show: this.state.serverError
         }),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )}

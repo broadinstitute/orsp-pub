@@ -16,7 +16,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   }
 
   getConsentGroups() {
-    ProjectMigration.getConsentGroups(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getConsentGroups(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
@@ -41,8 +41,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
     $(".modal-add-button").on('click', function () {
       $("#add-consent-document-modal").load(
-        "https://localhost:8443/dev/api/consent-group/upload-modal?"
-        + $.param({
+      component.serverURL + "/api/consent-group/upload-modal?"
+      + $.param({
           issueKey: $(this).data("issue"),
           consentKey: $(this).data("consent")
         }),

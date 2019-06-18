@@ -45,8 +45,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       consentGroupKey: this.props.projectKey,
       creator: this.props.user.userName
     };
-    DUL.generateRedirectLink(data, this.props.serverURL).then(resp => {
-      navigator.clipboard.writeText(this.props.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
+    DUL.generateRedirectLink(data, component.serverURL).then(resp => {
+      navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
       this.successTimeAlert();
     }).catch(error => {
       this.setState(prev => {
@@ -83,8 +83,8 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       consentGroupKey: this.props.projectKey,
       creator: this.props.user.userName
     };
-    DUL.generateRedirectLink(data, this.props.serverURL).then(data => {
-      window.location.href = this.props.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
+    DUL.generateRedirectLink(data, component.serverURL).then(data => {
+      window.location.href = component.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
     }).catch(
       error => {
         this.setState(prev => {
@@ -131,7 +131,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let files = [file];
         if(this.props.projectKey !== undefined) {
           spinnerService.showAll();
-          Files.upload(this.props.serverURL, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
+          Files.upload(component.serverURL, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             spinnerService.hideAll();
             this.setState(prev => {
