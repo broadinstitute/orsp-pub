@@ -184,11 +184,6 @@ class Search extends React.Component {
     return <Menu {...menuProps} id={"menu-item"}>{items}</Menu>
   };
 
-  setSelected = (selected) => {
-    this.setState(() => ({ statuses: selected }));
-    this.saveStateToLocalStorage();
-  };
-
   render() {
     return (
       <div>
@@ -271,10 +266,13 @@ class Search extends React.Component {
               <Typeahead
                 ref={"issueStatus"}
                 align={"left"}
-                options={this.state.issueStatuses}
                 multiple={true}
+                options={this.state.issueStatuses}
                 renderMenu={this.renderMenu}
-                onChange={this.setSelected}
+                onChange={selected => {
+                  this.setState(() => ({ statuses: selected }));
+                  this.saveStateToLocalStorage();
+                }}
                 defaultSelected={this.state.statuses}
               />
             </div>
