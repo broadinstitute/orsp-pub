@@ -31,7 +31,7 @@
                     </a>
 
                     <span class="status approved">Approved</span>
-                    <!-- <span class="status pending">Approved</span> -->
+                    <span class="status pending">Pending</span>
                     
                     <h3 class="panel-title">
 
@@ -53,7 +53,10 @@
 
                         <div class="right-container">
                             <a class="request-clarification" href="/">
-                                <span class="tooltip hidden">Request Clarification</span>
+                                <span class="req-tooltip">
+                                    Request Clarification
+                                    <span class="arrow-down"></span>
+                                </span>
                             </a>
     
                             <a class="data-name" href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
