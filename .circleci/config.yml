@@ -4,9 +4,6 @@ executors:
   cloud-sdk:
     docker:
       - image: google/cloud-sdk
-  node:
-    docker:
-      - image: circleci/node:10
 
 commands:
   build-env:
