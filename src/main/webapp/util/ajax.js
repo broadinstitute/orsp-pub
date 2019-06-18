@@ -207,12 +207,21 @@ export const User = {
     return axios.get(url)
   },
 
-  getAllUsers(serverUrl) {
-    return axios.get(serverUrl + '/api/get-users')
+  getAllUsers(serverUrl, query) {
+    return axios.get(serverUrl + '/api/get-users', {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: 0,
+        sortDirection: "asc",
+        searchValue: query.searchValue
+      }
+    })
   },
 
   editUserRole(serverUrl, userId, roles) {
-    return axios.put(`${serverUrl}/api/edit-UserRole`, {userId: userId, roles: roles});
+    return axios.put(`${serverUrl}/api/edit-userRole`, {userId: userId, roles: roles});
   }
 
 };

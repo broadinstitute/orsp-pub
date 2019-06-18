@@ -1216,4 +1216,52 @@ class QueryService implements Status {
         sqlQuery.executeUpdate()
     }
 
+    @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])
+    PaginatedResponse queryUserRoles(PaginationParams pagination) {
+        Integer count = User.count()
+        String orderField
+        switch (pagination.orderColumn) {
+            case 0:
+                orderField = "userName"
+                break
+            case 1:
+                orderField = "displayName"
+                break
+            case 2:
+                orderField = "emailAddress"
+                break
+            case 3:
+                orderField = "roles"
+                break
+            default:
+                orderField = "userName"
+                break
+        }
+
+        PagedResultList<User> usersResult = User.
+                createCriteria().
+                list(max: pagination.length, offset: pagination.start) {
+                    maxResults pagination.length
+                    firstResult pagination.start
+                    order(orderField, pagination.sortDirection)
+                    if (pagination.searchValue) {
+                        or {
+                            ilike("userName", pagination.getLikeTerm())
+                            ilike("displayName", pagination.getLikeTerm())
+                            ilike("emailAddress", pagination.getLikeTerm())
+                        }
+                    }
+                }
+
+        List<User> users = usersResult.toList()
+
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: count,
+                recordsFiltered: usersResult.getTotalCount(),
+                data: users,
+                error: ""
+        )
+
+    }
 }

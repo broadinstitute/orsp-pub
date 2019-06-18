@@ -172,12 +172,16 @@ export const Table = hh(class Table extends Component {
         striped
         hover
         className='tableContainer'
-        pagination={this.props.reviewFlow}
+        pagination={this.props.pagination}
         search={this.props.reviewFlow}
         options={{
           paginationSize: this.props.paginationSize,
           paginationPosition: 'bottom',
-          sizePerPage: this.props.sizePerPage
+          sizePerPage: this.props.sizePerPage,
+          onSizePerPageList: this.props.onSizePerPageListHandler,
+          onPageChange: this.props.onPageChange,
+          onSearchChange: this.props.onSearchChange,
+          onSortChange: this.props.onSortChange
         }}>
         {
           this.props.headers.map((header, index) => {

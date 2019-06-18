@@ -6,6 +6,7 @@ import { User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
 import { isCurrentUserAdmin } from "../util/Utils";
+import { TablePaginator } from "../components/TablePaginator";
 
 const tableHeaders =
   [
@@ -26,6 +27,12 @@ class RolesManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      sizePerPage: 20,
+      search: null,
+      sort: {
+        sortDirection: 'ASC',
+        orderColumn: 0
+      },
       users: [],
       editRoleDialog: false,
       editRoleRowData: {},
@@ -45,16 +52,7 @@ class RolesManagement extends Component {
     isCurrentUserAdmin().then(response => {
       isAdmin = response;
     }).catch(() => this.setState(error => { throw error; }));
-
-    User.getAllUsers(component.serverURL).then(result => {
-      this.setState(prev => {
-        prev.isAdmin = isAdmin;
-        prev.users = result.data;
-        return prev;
-      }, () => spinnerService.hideAll())
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });
+    this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort);
   };
 
   editRoleHandler = (data) => () => {
@@ -82,7 +80,72 @@ class RolesManagement extends Component {
     });
   };
 
-  render() {
+  onSearchChange = (search) => {
+    this.tableHandler(0, this.state.sizePerPage, search, this.state.sort);
+  };
+
+  onPageChange = (page) => {
+    const offset = (page - 1) * this.state.sizePerPage;
+    this.tableHandler(offset, this.state.sizePerPage, this.state.search, this.state.sort, page);
+  };
+
+  onSizePerPageListHandler = (size) => {
+    this.setState(prev => {
+      prev.query.length = size;
+      return prev;
+    }, () =>{
+      this.tableHandler(this.state.query);
+    });
+  };
+
+  onSortChange = (sortName, sortOrder) => {
+// SORT HERE!
+
+    this.setState(prev => {
+      prev.query.orderColumn = sortName;
+      prev.query.sortDirection = sortOrder;
+      return prev;
+    }, () => {
+      this.tableHandler(this.state.query);
+    });
+
+
+  };
+
+
+  tableHandler = (offset, limit, search, sort, page) => {
+    let query = {
+        draw: 1,
+        start: offset,
+        length: limit,
+        orderColumn: sort.orderColumn,
+        sortDirection: sort.sortDirection,
+        searchValue: search,
+    };
+
+    User.getAllUsers(component.serverURL, query).then(result => {
+      const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
+      this.setState(prev => {
+        prev.lastPage = lastPage;
+        prev.currentPage = page;
+        prev.isAdmin = this.state.isAdmin;
+        prev.users = result.data.data;
+        prev.recordsTotal = result.data.recordsTotal;
+        prev.recordsFiltered = result.data.recordsFiltered;
+        prev.sizePerPage = query.length;
+        prev.search = query.searchValue;
+        prev.sort = {
+          orderColumn : query.orderColumn,
+          sortDirection: query.sortDirection
+        };
+        return prev;
+      }, () => spinnerService.hideAll())
+    }).catch(error => {
+      this.setState(() => { throw error; });
+    });
+  };
+
+   render() {
     return(
       div({ className: "roles-management" },[
         span({ style: styles.pageTitle}, ["Roles Management"]),
@@ -91,11 +154,18 @@ class RolesManagement extends Component {
           isAdmin: this.state.isAdmin,
           data: this.state.users,
           serverURL: component.serverURL,
-          sizePerPage: 20,
-          paginationSize: 10,
           editRole: this.editRoleHandler,
-          reviewFlow: true
-        }), 
+          reviewFlow: true,
+          pagination: false,
+          tableHandler: this.tableHandler,
+          onSearchChange: this.onSearchChange,
+          onSortChange: this.onSortChange
+        }),
+        TablePaginator({
+          onPageChange: this.onPageChange,
+          currentPage: this.state.currentPage,
+          lastPage: this.state.lastPage
+        }),
         RoleManagementEdit({
           serverURL: component.serverURL,
           closeModal: this.closeModal,
