@@ -105,7 +105,7 @@ paths:
         200:
           description: Issue Information
           schema:
-            $ref: '#/definitions/IssueInfo'
+            $ref: '#/definitions/OSAPDataFeed'
         500:
           description: Server Error
 
@@ -195,7 +195,7 @@ definitions:
             ok: false
             messages:
               - "DUOS is down"
-  IssueInfo:
+  OSAPDataFeed:
     properties:
       orspNumber:
         description: ORSP Number

@@ -738,9 +738,9 @@ class QueryService implements Status {
     /**
      * OSAP Integration
      * Get a list of issue information
-     * @return List of IssueInfo data
+     * @return List of OSAPDataFeed data
      */
-    Collection<IssueInfo> findIssuesSummaries() {
+    Collection<OSAPDataFeed> findIssuesSummaries() {
         final String query =
                 "select i.project_key orspNumber, irb.value irbNumber, i.status, i.expiration_date expirationDate, u.display_name pi, i.summary title " +
                 "from issue i " +
@@ -749,8 +749,8 @@ class QueryService implements Status {
                 "left outer join user u on pi.value = u.user_name " +
                 "order by i.project_key asc "
         final session = sessionFactory.currentSession
-        List<IssueInfo> result = session.createSQLQuery(query)
-                .setResultTransformer(Transformers.aliasToBean(IssueInfo.class))
+        List<OSAPDataFeed> result = session.createSQLQuery(query)
+                .setResultTransformer(Transformers.aliasToBean(OSAPDataFeed.class))
                 .list()
         return result
     }

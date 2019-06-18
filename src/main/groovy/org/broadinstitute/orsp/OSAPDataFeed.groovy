@@ -1,6 +1,6 @@
 package org.broadinstitute.orsp
 
-class IssueInfo {
+class OSAPDataFeed {
 
     String orspNumber
     String irbNumber
