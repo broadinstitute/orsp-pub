@@ -55,7 +55,7 @@ class SearchController implements UserInfo {
                     id: it.id,
                     label: it.projectKey + " (" + it.summary + ")",
                     value: it.projectKey,
-                    url: link,
+                    url: link
             ]
         }
         render response as JSON
