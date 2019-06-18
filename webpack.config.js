@@ -8,17 +8,18 @@ module.exports = {
     adminOnly: './src/main/webapp/adminOnly/AdminOnly.js',
     collectionLinks: './src/main/webapp/collectionLinks/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
-    consentGroupDocuments: './src/main/webapp/consentGroupDocuments/index.js',
-    consentGroupReview: './src/main/webapp/consentGroupReview/index.js',
     dataUseLetter: './src/main/webapp/dataUseLetter/index.js',
     footer: './src/main/webapp/components/footer.js',
     infoLink: './src/main/webapp/infoLink/index.js',
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js',
     project: './src/main/webapp/project/index.js',
+<<<<<<< HEAD
     projectDocument: './src/main/webapp/projectDocument/ProjectDocument.js',
     projectReview: './src/main/webapp/projectReview/index.js',
     rolesManagement: './src/main/webapp/rolesManagement/index.js',
+=======
+>>>>>>> 0fcb437f110e57a51526a625658d54e2654650c6
     search: './src/main/webapp/search/index.js',
   },
   output: {

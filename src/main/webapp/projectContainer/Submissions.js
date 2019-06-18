@@ -16,7 +16,7 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   getSubmissions() {
-    ProjectMigration.getSubmissions(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getSubmissions(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;

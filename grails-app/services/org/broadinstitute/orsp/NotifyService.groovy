@@ -103,9 +103,9 @@ class NotifyService implements SendgridSupport, Status {
     private String getShowIssueLink(Issue issue) {
         return issue.type == IssueType.CONSENT_GROUP.name ?
              grailsLinkGenerator.link(
-                controller: issue.controller,
-                action: "show",
-                id: issue.projectKey,
+                controller: "newConsentGroup",
+                action: "main",
+                params: [consentKey: issue.projectKey],
                 absolute: true) :
                 grailsLinkGenerator.link(
                         controller: "project",

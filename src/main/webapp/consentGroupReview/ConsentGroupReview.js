@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h,div, h2, button } from 'react-hyperscript-helpers';
+import { h, div, h2, button, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -28,7 +28,7 @@ const headers =
     { name: 'Remove', value: 'unlinkSampleCollection' }
   ];
 
-class ConsentGroupReview extends Component {
+export const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   constructor(props) {
     super(props);
@@ -123,6 +123,7 @@ class ConsentGroupReview extends Component {
   }
 
   componentDidMount() {
+    spinnerService.showAll();
     this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data })
@@ -141,7 +142,7 @@ class ConsentGroupReview extends Component {
     let formData = {};
     let sampleCollectionList = [];
 
-    ConsentGroup.getConsentGroup(this.props.consentGroupUrl, this.props.consentKey).then(
+    ConsentGroup.getConsentGroup(component.consentGroupReviewUrl, component.consentKey).then(
       element => {
         let sampleCollections = [];
         SampleCollections.getSampleCollections(component.sampleSearchUrl).then(
@@ -178,7 +179,7 @@ class ConsentGroupReview extends Component {
             if (element.data.extraProperties.institutionalSources !== undefined) {
               current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources));
             }
-
+            this.props.initStatusBoxInfo(element.data);
             current.consentForm = element.data.issue;
             currentStr = JSON.stringify(current);
             this.getReviewSuggestions();
@@ -203,11 +204,14 @@ class ConsentGroupReview extends Component {
               prev.future = future;
               prev.futureCopy = futureCopy;
               return prev;
-            });
+            }, () => spinnerService.hideAll());
           }
         );
       }
-    );
+    ).catch(error => {
+      spinnerService.hideAll();
+      this.setState(() => { throw error; });
+    });
   };
 
   isViewer = () => {
@@ -228,7 +232,7 @@ class ConsentGroupReview extends Component {
   }
 
   getReviewSuggestions = () => {
-    Review.getSuggestions(component.serverURL, this.props.consentKey).then(data => {
+    Review.getSuggestions(component.serverURL, component.consentKey).then(data => {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
@@ -328,11 +332,11 @@ class ConsentGroupReview extends Component {
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true });
     const data = { approvalStatus: "Approved" };
-    ConsentGroup.approve(this.props.approveConsentGroupUrl, this.props.consentKey, data).then(
+    ConsentGroup.approve(component.approveConsentGroupUrl, component.consentKey, data).then(
       () => {
         if (this.state.reviewSuggestion) {
           let consentGroup = this.getConsentGroup();
-          ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
+          ConsentGroup.updateConsent(component.updateConsentUrl, consentGroup, component.consentKey).then(resp => {
             this.removeEdits();
           }).catch(error => {
             console.error(error);
@@ -343,22 +347,25 @@ class ConsentGroupReview extends Component {
           prev.current.consentExtraProps.projectReviewApproved = true;
           prev.approveInfoDialog = false;
           return prev;
-        })
-      }
-    );
+        }, () =>
+            this.props.updateDetailsStatus({ projectReviewApproved: true, summary: this.state.formData.summary })
+        );
+      });
   };
 
   isCurrentUserAdmin() {
-    isCurrentUserAdmin().then(response => {
-      this.setState({ isAdmin: response });
-    }).catch(() => this.setState(error => { throw error; }));
+    User.isCurrentUserAdmin(component.isAdminUrl).then(
+      resp => {
+        this.setState({ isAdmin: resp.data.isAdmin });
+      }
+    );
   }
 
   rejectConsentGroup() {
     spinnerService.showAll();
 
-    ConsentGroup.rejectConsent(this.props.rejectConsentUrl, this.props.consentKey).then(resp => {
-      window.location.href = this.getRedirectUrl(this.props.projectKey);
+    ConsentGroup.rejectConsent(component.rejectConsentUrl, component.consentKey).then(resp => {
+      window.location.href = this.getRedirectUrl(component.projectKey);
       spinnerService.hideAll();
     }).catch(error => {
       spinnerService.hideAll();
@@ -376,13 +383,15 @@ class ConsentGroupReview extends Component {
     spinnerService.showAll();
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
-    ConsentGroup.updateConsent(this.props.updateConsentUrl, consentGroup, this.props.consentKey).then(resp => {
+    ConsentGroup.updateConsent(component.updateConsentUrl, consentGroup, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.approveDialog = false;
         return prev;
       });
       this.removeEdits('approve');
-    }).catch(error => {
+      this.props.updateContent();
+    })
+    .catch(error => {
       spinnerService.hideAll();
       console.error(error);
     });
@@ -455,13 +464,14 @@ class ConsentGroupReview extends Component {
         let institutionalSourceArray = this.state.formData.instSources;
         let newFormData = Object.assign({}, this.state.formData);
         newFormData.instSources = institutionalSourceArray;
-        data.projectKey = this.props.consentKey;
+        data.projectKey = component.consentKey;
         data.suggestions = JSON.stringify(newFormData);
 
         if (this.state.reviewSuggestion) {
-          Review.updateReview(component.serverURL, this.props.consentKey, data).then(() =>
-            this.getReviewSuggestions()
-          ).catch(error => {
+          Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
+            this.getReviewSuggestions();
+            this.props.updateContent();
+          }).catch(error => {
             this.getReviewSuggestions();
             this.setState(prev => {
               prev.submitted = true;
@@ -471,9 +481,10 @@ class ConsentGroupReview extends Component {
             });
           });
         } else {
-          Review.submitReview(component.serverURL, data).then(() =>
-            this.getReviewSuggestions()
-          ).catch(error => {
+          Review.submitReview(component.serverURL, data).then(() => {
+            this.getReviewSuggestions();
+            this.props.updateContent();
+          }).catch(error => {
             this.getReviewSuggestions();
             this.setState(prev => {
               prev.submitted = true;
@@ -569,7 +580,7 @@ class ConsentGroupReview extends Component {
     consentGroup.samples = this.getSampleCollections();
     consentGroup.startDate = this.parseDate(this.state.formData.consentExtraProps.startDate);
     consentGroup.onGoingProcess = this.state.formData.consentExtraProps.onGoingProcess;
-    consentGroup.source = this.props.projectKey;
+    consentGroup.source = component.projectKey;
     consentGroup.collInst = this.state.formData.consentExtraProps.collInst;
     consentGroup.collContact = this.state.formData.consentExtraProps.collContact;
     consentGroup.consent = this.state.formData.consentExtraProps.consent;
@@ -579,7 +590,7 @@ class ConsentGroupReview extends Component {
 
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
-    }    
+    }
     if (this.state.formData.consentExtraProps.endDate !== null) {
       consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
     }
@@ -590,11 +601,13 @@ class ConsentGroupReview extends Component {
   };
 
   removeEdits = (type) => {
-    Review.deleteSuggestions(component.discardReviewUrl, this.props.consentKey, type).then(
+    Review.deleteSuggestions(component.discardReviewUrl, component.consentKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();
-      })
+      }, () =>   
+        this.props.updateContent()
+      )
       .catch(error => {
         spinnerService.hideAll();
         console.error(error);
@@ -730,6 +743,7 @@ class ConsentGroupReview extends Component {
 
   successClarification = () => {
     setTimeout(this.clearAlertMessage, 5000, null);
+    this.props.updateContent();
     this.setState(prev => {
       prev.errorSubmit = true;
       prev.errorMessage = 'Request clarification sent.';
@@ -758,7 +772,7 @@ class ConsentGroupReview extends Component {
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
-    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
+    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + component.consentKey].join("/");
   };
 
   toggleUnlinkDialog = (data) => {
@@ -788,11 +802,11 @@ class ConsentGroupReview extends Component {
     let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
-        h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + this.props.consentKey]),
+        h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + component.consentKey]),
         ConfirmationDialog({
           closeModal: this.toggleState('unlinkDialog'),
           show: this.state.unlinkDialog,
-          handleOkAction : this.unlinkSampleCollection,
+          handleOkAction: this.unlinkSampleCollection,
           title: 'Unlink Sample Collection association',
           bodyText: 'Are you sure you want to unlink the associated Sample Collection?',
           actionLabel: 'Yes'
@@ -800,10 +814,10 @@ class ConsentGroupReview extends Component {
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
-          issueKey: this.props.consentKey,
-          user: this.props.user,
-          emailUrl: this.props.emailUrl,
-          userName: this.props.userName,
+          issueKey: component.consentKey,
+          user: component.user,
+          emailUrl: component.emailUrl,
+          userName: component.userName,
           clarificationUrl: component.clarificationUrl,
           successClarification: this.successClarification
         }),
@@ -967,8 +981,8 @@ class ConsentGroupReview extends Component {
                 name: "endDate",
                 label: "End Date",
                 onChange: this.handleChange,
-                disabled: onGoingProcess === true || onGoingProcess === "true", 
-                readOnly: this.state.readOnly, 
+                disabled: onGoingProcess === true || onGoingProcess === "true",
+                readOnly: this.state.readOnly,
                 error: this.state.errors.endDate,
                 errorMessage: "Required field",
               })
@@ -990,7 +1004,7 @@ class ConsentGroupReview extends Component {
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: instSources,
             readOnly: this.state.readOnly,
-            edit: true, 
+            edit: true,
             errorHandler: this.setInstitutionalError,
             institutionalNameErrorIndex: this.state.errors.institutionalNameErrorIndex,
             institutionalCountryErrorIndex: this.state.errors.institutionalCountryErrorIndex,
@@ -1067,6 +1081,4 @@ class ConsentGroupReview extends Component {
       ])
     )
   }
-}
-
-export default ConsentGroupReview;
+});

@@ -37,7 +37,7 @@
                 <tr>
                     <th>Consent Group</th>
                     <td>
-                        <a href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, tab: "documents"])}">${consent.projectKey}: ${consent.summary}</a>
+                        <a href="${createLink(controller: 'newConsentGroup', action: 'main', params: [consentKey: consent.projectKey, tab: "documents"])}">${consent.projectKey}: ${consent.summary}</a>
                     </td>
                 </tr>
                 <tr>

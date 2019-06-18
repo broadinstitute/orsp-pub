@@ -51,6 +51,7 @@ class UrlMappings {
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
 
+        '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

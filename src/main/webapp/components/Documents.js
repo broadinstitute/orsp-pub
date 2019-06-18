@@ -47,15 +47,15 @@ export const Documents = hh(class Documents extends Component {
   };
 
   newRestriction = () => {
-    window.location.href =  this.props.newRestrictionUrl;
+    window.location.href = this.props.newRestrictionUrl + '?create=true&id=' + this.props.projectKey;
   };
 
   editRestriction = () => {
-    window.location.href =  this.props.serverURL + "/dataUse/edit/" + this.props.restrictionId;
+    window.location.href =  component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
   };
 
   showRestriction = () => {
-    window.location.href =  this.props.serverURL + "/dataUse/show/" + this.props.restrictionId;
+    window.location.href =  component.serverURL + "/dataUse/show/" + this.props.restrictionId;
   };
 
   closeRemoveModal = () => {
@@ -77,7 +77,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-   DocumentHandler.delete(this.props.removeDocumentUrl, this.state.documentToRemove.id).
+   DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
     then(resp => {
       this.closeRemoveModal();
       this.props.handleLoadDocuments();
@@ -106,11 +106,10 @@ export const Documents = hh(class Documents extends Component {
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
-        attachDocumentsUrl: this.props.attachDocumentsUrl,
+        attachDocumentsUrl: component.attachDocumentsUrl,
         projectKey: this.props.projectKey,
         user: this.props.user,
         handleLoadDocuments: this.props.handleLoadDocuments,
-        serverURL: this.props.serverURL,
         emailUrl: this.props.emailUrl,
         userName: this.props.userName,
         isConsentGroup: this.props.isConsentGroup
@@ -137,10 +136,10 @@ export const Documents = hh(class Documents extends Component {
           sizePerPage: 10,
           paginationSize: 10,
           handleDialogConfirm: this.props.handleDialogConfirm,
-          downloadDocumentUrl: this.props.downloadDocumentUrl,
-          isAdmin: this.props.isAdmin,
+          isAdmin: this.props.user.isAdmin,
           isViewer: this.props.user.isViewer,
           reviewFlow: true,
+          pagination: true,
           remove: this.remove
         })
       ]),

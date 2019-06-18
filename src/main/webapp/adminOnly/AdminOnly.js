@@ -51,15 +51,15 @@ export const AdminOnly = hh(class AdminOnly extends Component {
 
   init = () => {
     this.isCurrentUserAdmin();
-    Project.getProject(this.props.projectUrl, this.props.projectKey).then(
+    Project.getProject(component.projectUrl, component.projectKey).then(
       issue => {
         let formData = {};
         let initial = {};
-        formData.projectKey = this.props.projectKey;
+        formData.projectKey = component.projectKey;
         formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
         formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
         formData.degrees = issue.data.extraProperties.degrees;
-        formData.preferredIrb = isEmpty(issue.data.extraProperties.irbReferral) ? '' : JSON.parse(issue.data.extraProperties.irbReferral);
+        formData.preferredIrb = isEmpty(issue.data.extraProperties.irb) ? '' : JSON.parse(issue.data.extraProperties.irb);
         formData.preferredIrbText = issue.data.extraProperties.irbReferralText;
         formData.trackingNumber = issue.data.extraProperties.protocol;
         formData.projectTitle = issue.data.extraProperties.projectTitle;
@@ -81,9 +81,13 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   isCurrentUserAdmin() {
-    isCurrentUserAdmin().then(response => {
-      this.setState({ isAdmin: response });
-    }).catch(() => this.setState(error => { throw error; }));
+    User.getUserSession(component.sessionUserUrl).then(
+      resp => {
+        this.setState({ isORSP: resp.data.isORSP });
+      }
+    ).catch(error => {
+      this.setState(() => { throw error; });
+    });
   }
 
   getSponsorArray(sponsors) {
@@ -143,7 +147,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   submit = () => {
     spinnerService.showAll();
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(this.props.updateAdminOnlyPropsUrl, parsedForm , this.props.projectKey).then(
+    Project.updateAdminOnlyProps(component.updateAdminOnlyPropsUrl, parsedForm , component.projectKey).then(
       response => {
         spinnerService.hideAll();
         this.setState(prev => {
@@ -398,7 +402,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           }, ["Submit"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
