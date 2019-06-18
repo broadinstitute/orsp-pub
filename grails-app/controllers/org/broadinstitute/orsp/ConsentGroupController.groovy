@@ -183,7 +183,11 @@ class ConsentGroupController extends AuthenticatedController {
     @Override
     show() {
         Issue issue = queryService.findByKey(params.id)
-        if (issueIsForbidden(issue)) {
+        Boolean isUserReporter = false
+        if (params.projectKey != null) {
+            isUserReporter = queryService.findByKey(params.projectKey).reporter == getUser().userName
+        }
+        if (issueIsForbidden(issue) && !isUserReporter) {
             redirect(controller: 'Index', action: 'index')
         }
         def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}

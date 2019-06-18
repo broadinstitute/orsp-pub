@@ -85,7 +85,9 @@
                     }
                 },
                 select: function (event, ui) {
-                    window.location = ui.item.url;
+                    if (!ui.item.linkDisabled) {
+                        window.location = ui.item.url;
+                    }
                 }
             });
         });
