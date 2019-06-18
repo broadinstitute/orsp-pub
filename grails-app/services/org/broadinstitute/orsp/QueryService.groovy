@@ -733,6 +733,29 @@ class QueryService implements Status {
         result
     }
 
+
+
+    /**
+     * OSAP Integration
+     * Get a list of issue information
+     * @return List of IssueInfo data
+     */
+    @SuppressWarnings("GroovyAssignabilityCheck")
+    Collection<IssueInfo> findIssueInfo() {
+        final String query =
+                "select i.project_key orspNumber, irb.value irbNumber, i.status, i.expiration_date expirationDate, u.display_name pi, i.summary " +
+                "from issue i " +
+                "left outer join issue_extra_property irb on i.id = irb.issue_id and irb.name = 'irb' " +
+                "left outer join issue_extra_property pi on i.id = pi.issue_id and pi.name = 'pi' " +
+                "left outer join user u on pi.value = u.user_name " +
+                "order by i.project_key asc "
+        final session = sessionFactory.currentSession
+        List<IssueInfo> result = session.createSQLQuery(query)
+                .setResultTransformer(Transformers.aliasToBean(IssueInfo.class))
+                .list()
+        return result
+    }
+
     /**
      * Builds a list of named parameter subqueries which are OR-ed together
      *  ( i.type = :typeName1 OR

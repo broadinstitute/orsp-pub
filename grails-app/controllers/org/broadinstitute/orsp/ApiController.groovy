@@ -16,6 +16,7 @@ class ApiController {
     DataBioOntologyService dataBioOntologyService
     SwaggerService swaggerService
     StatusService statusService
+    QueryService queryService
 
     def index() {
         swaggerService.handleRequest(request)
@@ -62,6 +63,10 @@ class ApiController {
 
     def bookit() {
         render apiService.getBookitSummaries() as JSON
+    }
+
+    def osapDataFeed() {
+        render queryService.findIssueInfo() as JSON
     }
 
 }

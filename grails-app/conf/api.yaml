@@ -95,7 +95,19 @@ paths:
             $ref: '#/definitions/SystemStatus'
         500:
           description: Server Error
-
+  /api/osap/data-feed:
+    get:
+      tags:
+        -  OSAP DataFeed
+      summary: OSAP Integration
+      description: ORSP issues information for OSAP.
+      responses:
+        200:
+          description: Issue Information
+          schema:
+            $ref: '#/definitions/IssueInfo'
+        500:
+          description: Server Error
 
 definitions:
   Consent:
@@ -183,4 +195,24 @@ definitions:
             ok: false
             messages:
               - "DUOS is down"
+  IssueInfo:
+    properties:
+      orspNumber:
+        description: ORSP Number
+        type: string
+      irbNumber:
+        description: IRB Number
+        type: string
+      status:
+        description: Status
+        type: string
+      expirationDate:
+        description: Expiration Date
+        type: string
+      pi:
+        description: Principal Investigator
+        type: string
+      title:
+        description: Title
+        type: string
 
