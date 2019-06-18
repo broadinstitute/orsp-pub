@@ -242,3 +242,12 @@
 .rbt-input-main, .rbt-input-hint {
     height: 34px;
 }
+
+.dropdown-header {
+    text-transform: uppercase;
+    cursor: default;
+    border-bottom: 1px solid #CCCCCC;
+    color: #666666;
+    margin: 15px 0 5px 0;
+    padding-bottom: 5px;
+}
