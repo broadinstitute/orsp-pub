@@ -51,11 +51,11 @@ export const AdminOnly = hh(class AdminOnly extends Component {
 
   init = () => {
     this.isCurrentUserAdmin();
-    Project.getProject(this.props.projectUrl, this.props.projectKey).then(
+    Project.getProject(component.projectUrl, component.projectKey).then(
       issue => {
         let formData = {};
         let initial = {};
-        formData.projectKey = this.props.projectKey;
+        formData.projectKey = component.projectKey;
         formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
         formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
         formData.degrees = issue.data.extraProperties.degrees;
@@ -81,7 +81,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   isCurrentUserAdmin() {
-    User.getUserSession(this.props.userSessionUrl).then(
+    User.getUserSession(component.sessionUserUrl).then(
       resp => {
         this.setState({ isORSP: resp.data.isORSP });
       }
@@ -147,7 +147,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   submit = () => {
     spinnerService.showAll();
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(this.props.updateAdminOnlyPropsUrl, parsedForm , this.props.projectKey).then(
+    Project.updateAdminOnlyProps(component.updateAdminOnlyPropsUrl, parsedForm , component.projectKey).then(
       response => {
         spinnerService.hideAll();
         this.setState(prev => {
@@ -402,7 +402,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           }, ["Submit"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

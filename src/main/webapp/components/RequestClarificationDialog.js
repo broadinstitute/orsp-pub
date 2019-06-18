@@ -34,7 +34,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
   submit = () => {
     if (this.state.clarification !== '') {
       spinnerService.showAll();
-      ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey).
+      ClarificationRequest.sendNewClarification(component.clarificationUrl, this.state.clarification, this.props.issueKey).
       then(resp => {
         spinnerService.hideAll();
         this.setState(prev => {

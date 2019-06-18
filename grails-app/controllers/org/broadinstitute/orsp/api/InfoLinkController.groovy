@@ -13,7 +13,7 @@ import org.broadinstitute.orsp.StorageDocument
 class InfoLinkController extends AuthenticatedController {
 
     def showInfoLink() {
-        render(view: "/infoLink/index", model: [projectKey: params.projectKey])
+        render(view: "/infoLink/index", model: [projectKey: params.projectKey, consentKey: params.consentKey])
     }
 
     def getProjectSampleCollections() {

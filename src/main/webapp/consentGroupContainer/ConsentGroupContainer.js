@@ -1,17 +1,14 @@
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { ProjectReview } from "../projectReview/ProjectReview";
+import { ConsentGroupReview } from "../consentGroupReview/ConsentGroupReview";
 import { History } from "../components/History";
 import { Comments } from "../components/Comments";
-import { Submissions } from "./Submissions";
-import { ConsentGroups } from "./ConsentGroups";
 import '../components/Wizard.css';
-import { ProjectDocument } from "../projectDocument/ProjectDocument";
-import { AdminOnly } from "../adminOnly/AdminOnly";
+import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
 import { MultiTab } from "../components/MultiTab";
 import { ProjectMigration } from '../util/ajax';
 
-export const ProjectContainer = hh(class ProjectContainer extends Component {
+export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
 
   constructor(props) {
     super(props);
@@ -49,10 +46,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.getComments();
     this.getHistory();
   };
- 
+
   // comments
   getComments() {
-    ProjectMigration.getComments(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getComments(component.serverURL, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.commentsContent = resp.data;
         return prev;
@@ -63,7 +60,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   };
 
   initializeComments() {
-   tinymce.remove();
+    tinymce.remove();
     $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
     if (!$.fn.dataTable.isDataTable("#comments-table")) {
       $("#comments-table").DataTable({
@@ -76,7 +73,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     }
     this.initializeEditor();
   }
-  
+
   initializeEditor() {
     tinymce.init({
       selector: 'textarea.editor',
@@ -90,7 +87,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getHistory(component.serverURL, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.historyContent = resp.data;
         return prev;
@@ -121,38 +118,25 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
             [
               div({
                 key: "review",
-                title: "Project Details",
+                title: "Cohort Details",
               }, [
-                  h(ProjectReview, {
-                    updateDetailsStatus: this.updateDetailsStatus,
+                  h(ConsentGroupReview, {
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    updateContent: this.updateContent,
+                    updateDetailsStatus: this.updateDetailsStatus,
+                    updateContent: this.updateContent
                   })
                 ]),
               div({
                 key: "documents",
-                title: "Project Documents",
+                title: "Documents",
               }, [
-                  h(ProjectDocument, {
-                    statusBoxHandler: this.props.statusBoxHandler,
+                  h(ConsentGroupDocuments, {
                     updateDocumentsStatus: this.updateDocumentsStatus
                   })
                 ]),
               div({
-                key: "consent-groups",
-                title: "Sample/Data Cohorts",
-              }, [
-                  h(Fragment, {}, [ConsentGroups({})]),
-                ]),
-              div({
-                key: "submissions",
-                title: "Submissions",
-              }, [
-                  h(Fragment, {}, [Submissions({})]),
-                ]),
-              div({
                 key: "comments",
-                title: "Comments",
+                title: "Messages",
               }, [
                   h(Fragment, {}, [Comments({
                     commentsContent: this.state.commentsContent
@@ -166,16 +150,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   h(Fragment, {}, [History({
                     historyContent: this.state.historyContent
                   }
-                  )]),
-                ]),
-              div({
-                key: "adminOnly",
-                title: "Admin Only",
-              }, [
-                  h(AdminOnly, {
-                    statusBoxHandler: this.props.statusBoxHandler,
-                    updateAdminOnlyStatus: this.updateAdminOnlyStatus
-                  })
+                  )])
                 ])
             ])
         ])
