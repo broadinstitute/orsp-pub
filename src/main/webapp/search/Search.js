@@ -6,7 +6,7 @@ import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
 
-const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned"];
+const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
 
 class Search extends React.Component {
   constructor(props) {
