@@ -59,3 +59,12 @@
     background-color: #ffffff;
     outline: none
 }
+
+.pagination.custom-component {
+    margin-top: 20px;
+    float: right;
+}
+
+.custom-component .page-item .page-link {
+    cursor: pointer;
+}

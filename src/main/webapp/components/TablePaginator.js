@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { a, div, hh } from 'react-hyperscript-helpers';
+import { a, div, hh, ul, li } from 'react-hyperscript-helpers';
 
 export const TablePaginator = hh(class TablePaginator extends Component {
 
@@ -21,20 +21,47 @@ export const TablePaginator = hh(class TablePaginator extends Component {
   render() {
 
     return (
-      div({}, [
+      ul({className: "pagination custom-component"}, [
 
-        a({ onClick: (e) => {this.props.onPageChange(1)}, style: {'cursor':'pointer'} }, ['<< ']),
-        a({ onClick: this.goPrevPage, style: {'cursor':'pointer'} }, ['< ']),
+        li({ className: "page-item", title: "first page", onClick: (e) => {this.props.onPageChange(1)}}, [
+          a({className: "page-link"}, ['<<']),
+        ]),
 
-        a({ isRendered: this.props.lastPage >= 1, onClick: (e) => {this.props.onPageChange(1)}, style: {'cursor':'pointer'} }, ['1 ']),
-        a({ isRendered: this.props.lastPage >= 2, onClick: (e) => {this.props.onPageChange(2)}, style: {'cursor':'pointer'} }, ['2 ']),
-        a({ isRendered: this.props.lastPage >= 3, onClick: (e) => {this.props.onPageChange(3)}, style: {'cursor':'pointer'} }, ['3 ']),
-        a({ isRendered: this.props.lastPage >= 4, onClick: (e) => {this.props.onPageChange(4)}, style: {'cursor':'pointer'} }, ['4 ']),
-        a({ isRendered: this.props.lastPage >= 5, onClick: (e) => {this.props.onPageChange(5)}, style: {'cursor':'pointer'} }, ['5 ']),
-        a({ isRendered: this.props.lastPage >= 6, onClick: (e) => {this.props.onPageChange(6)}, style: {'cursor':'pointer'} }, ['6 ']),
+        li({ className: "page-item", title: "prev page", onClick: this.goPrevPage}, [
+          a({className: "page-link"}, ['<'])
+        ]),
 
-        a({ onClick: this.goNextPage, style: {'cursor':'pointer'} }, [' >']),
-        a({ onClick: this.goLastPage, style: {'cursor':'pointer'} }, [' >>']),
+        li({ className: "page-item", isRendered: this.props.lastPage >= 1, onClick: (e) => {this.props.onPageChange(1)}}, [
+          a({className: "page-link"}, ['1'])
+        ]),
+
+        li({ className: "page-item active", isRendered: this.props.lastPage >= 2, onClick: (e) => {this.props.onPageChange(2)}}, [
+          a({className: "page-link"}, ['2'])
+        ]),
+
+        li({ className: "page-item", isRendered: this.props.lastPage >= 3, onClick: (e) => {this.props.onPageChange(3)}}, [
+          a({className: "page-link"}, ['3'])
+        ]),
+
+        li({ className: "page-item", isRendered: this.props.lastPage >= 4, onClick: (e) => {this.props.onPageChange(4)}}, [
+          a({className: "page-link"}, ['4'])
+        ]),
+
+        li({ className: "page-item", isRendered: this.props.lastPage >= 5, onClick: (e) => {this.props.onPageChange(5)}}, [
+          a({className: "page-link"}, ['5'])
+        ]),
+
+        li({ className: "page-item", isRendered: this.props.lastPage >= 6, onClick: (e) => {this.props.onPageChange(6)}}, [
+          a({className:"page-link"}, ['6'])
+        ]),
+
+        li({ className: "page-item", title: "next page", onClick: this.goNextPage}, [
+          a({className: "page-link"}, ['>'])
+        ]),
+
+        li({ className: "page-item", title: "last page", onClick: this.goLastPage}, [
+          a({className: "page-link"}, ['>>'])
+        ])
 
       ])
     );
