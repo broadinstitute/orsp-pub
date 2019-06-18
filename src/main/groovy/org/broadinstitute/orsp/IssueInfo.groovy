@@ -7,6 +7,6 @@ class IssueInfo {
     String status
     Date expirationDate
     String pi
-    String summary
+    String title
 
 }

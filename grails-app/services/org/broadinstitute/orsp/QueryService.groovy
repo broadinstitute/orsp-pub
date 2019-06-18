@@ -742,7 +742,7 @@ class QueryService implements Status {
      */
     Collection<IssueInfo> findIssuesSummaries() {
         final String query =
-                "select i.project_key orspNumber, irb.value irbNumber, i.status, i.expiration_date expirationDate, u.display_name pi, i.summary " +
+                "select i.project_key orspNumber, irb.value irbNumber, i.status, i.expiration_date expirationDate, u.display_name pi, i.summary title" +
                 "from issue i " +
                 "left outer join issue_extra_property irb on i.id = irb.issue_id and irb.name = 'irb' " +
                 "left outer join issue_extra_property pi on i.id = pi.issue_id and pi.name = 'pi' " +
