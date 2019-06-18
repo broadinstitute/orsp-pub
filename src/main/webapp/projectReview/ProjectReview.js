@@ -59,7 +59,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         pmList: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
-          irbReferral: '',
+          irb: '',
           affiliations: '',
           affiliationOther: '',
           accurate: '',
@@ -110,7 +110,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
-          irbReferral: '',
+          irb: '',
           affiliations: '',
           affiliationOther: '',
           accurate: '',
@@ -165,7 +165,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         current.description = isEmpty(issue.data.issue.description) ? '' : issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
-        current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
+        current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),
         current.projectExtraProps.affiliations = isEmpty(current.projectExtraProps.affiliations) ? '' : JSON.parse(current.projectExtraProps.affiliations),
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
@@ -385,7 +385,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     project.pii = this.state.formData.projectExtraProps.pii;
     project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
-    project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
+    project.irb = isEmpty(this.state.formData.projectExtraProps.irb.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irb);
 
     if (this.state.reviewSuggestion) {
       project.editsApproved = true;
@@ -1009,14 +1009,14 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }),
           InputFieldSelect({
             label: "IRB-of-record",
-            id: "irbReferral",
-            name: "irbReferral",
+            id: "irb",
+            name: "irb",
             options: PREFERRED_IRB,
-            value: this.state.formData.projectExtraProps.irbReferral,
-            currentValue: this.state.current.projectExtraProps.irbReferral,
-            onChange: this.handleSelect("irbReferral"),
+            value: this.state.formData.projectExtraProps.irb,
+            currentValue: this.state.current.projectExtraProps.irb,
+            onChange: this.handleSelect("irb"),
             readOnly: this.state.readOnly,
-            placeholder: isEmpty(this.state.formData.projectExtraProps.irbReferral) && this.state.readOnly ? "--" : "Select...",
+            placeholder: isEmpty(this.state.formData.projectExtraProps.irb) && this.state.readOnly ? "--" : "Select...",
             edit: true
           })
         ]),

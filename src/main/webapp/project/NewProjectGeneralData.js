@@ -38,7 +38,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        irbReferral: '',
+        irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
       },
@@ -50,7 +50,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: '',
         pTitle: '',
         irbProtocolId: '',
-        irbReferral: '',
+        irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         collaborators: []
       },
@@ -291,11 +291,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           InputFieldSelect({
             label: "If IRB submission is anticipated, please indicate the IRB-of-record:",
-            id: "irbReferral",
-            name: "irbReferral",
+            id: "irb",
+            name: "irb",
             options: PREFERRED_IRB,
-            value: this.state.formData.irbReferral,
-            onChange: this.handleSelectChange("irbReferral"),
+            value: this.state.formData.irb,
+            onChange: this.handleSelectChange("irb"),
             readOnly: false,
             edit: false
           })
