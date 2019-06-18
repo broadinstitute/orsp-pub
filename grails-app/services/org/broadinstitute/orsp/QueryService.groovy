@@ -668,7 +668,7 @@ class QueryService implements Status {
      * @param queryOptions A QueryOptions object that has desired fields populated.
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findIssues(QueryOptions options) {
+    Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
         String query = ' select distinct i.id ' +
@@ -726,7 +726,7 @@ class QueryService implements Status {
 
         def rows = getSqlConnection().rows(query, params)
         def ids = rows.collect{it.get("id")}
-        Collection result = Collections.emptyList()
+        Set result = new HashSet<Issue>()
 
         if (ids.size() > 0) {
             result = findIssuesSearchItems(ids)
@@ -751,7 +751,7 @@ class QueryService implements Status {
                 "FROM issue i " +
                 "WHERE i.id IN (" + issueIds.join(",") + ")"
 
-        List<Issue> result = new ArrayList<Issue>()
+        Set<Issue> result = new HashSet<Issue>()
 
         getSqlConnection().rows(query).each{
             Issue issueSearchItem = new Issue()
@@ -768,7 +768,7 @@ class QueryService implements Status {
             if (it.get("updated") != null) {
                 issueSearchItem.setUpdateDate(it.get("updated"))
             }
-            result.push(issueSearchItem)
+            result.add(issueSearchItem)
         }
         result
     }
