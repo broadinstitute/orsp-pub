@@ -16,6 +16,21 @@ spec:
   sessionAffinity: None
   type: NodePort
 ---
+apiVersion: v1
+kind: Ingress
+metadata:
+  name: orsp-pub-dev-ingress
+spec:
+  tls:
+  - secretName: ui-orsp-dev-certificate
+  rules:
+  - host: ui.dsp-orsp-dev.broadinstitute.org
+    http:
+      paths:
+      - backend:
+          serviceName: orsp-pub-service
+          servicePort: 443
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -24,7 +39,7 @@ metadata:
     app: ${PROJECT_NAME}
   namespace: ${NAMESPACE}
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: ${PROJECT_NAME}
@@ -41,13 +56,53 @@ spec:
       containers:
         - name: ${PROJECT_NAME}
           image: gcr.io/${GOOGLE_PROJECT}/${PROJECT_NAME}:${COMMIT}
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          env:
+            - name: MYSQL_DB_HOST
+              value: 127.0.0.1:3306
+            # These secrets are required to start the pod.
+            # [START cloudsql_secrets]
+            - name: MYSQL_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: MYSQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
           imagePullPolicy: Always
           volumeMounts:
           - mountPath: /app/grails-app/conf/orsp-client.json
             name: orsp-config
           - mountPath: /app/grails-app/conf/application.yml
             name: orsp-config
+            # [END cloudsql_secrets]
+        # [START proxy_container]            
+        - name: "cloudsql-proxy"
+          image: gcr.io/cloudsql-docker/gce-proxy:1.12
+          command:
+            [
+              "/cloud_sql_proxy",
+              "-instances=orsp-dev:us-east1:bricc-mysql-dev=tcp:3306",
+              "-credential_file=/secrets/cloudsql/credentials.json",
+            ]
+          # [START cloudsql_security_context]
+          securityContext:
+            runAsUser: 2 # non-root user
+            allowPrivilegeEscalation: false
+          # [END cloudsql_security_context]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
       volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials      
         - name: orsp-config
           configMap:
             name: orsp-config-dev
@@ -56,3 +111,4 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+
