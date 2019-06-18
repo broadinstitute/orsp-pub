@@ -6,7 +6,7 @@ import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
 
-const newStatuses = ["Pending ORSP Admin Review", "Legacy", "Intake", "Reopened"];
+const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approve"];
 
 class Search extends React.Component {
   constructor(props) {
@@ -167,14 +167,14 @@ class Search extends React.Component {
     const items = [];
     items.push(
       <Menu.Header key={`legacy-status-header`}>
-        {"New Statuses"}
+        {"New Status"}
       </Menu.Header>,
       results.map((status, idx) => {
         return !!(newStatuses.indexOf(status) !== -1) && <MenuItem key={`legacy-`+idx} option={status} position={idx}>
           {status}
         </MenuItem>}),
       <Menu.Header key={`new-status-header`}>
-        {"Legacy Statuses"}
+        {"Legacy Status"}
       </Menu.Header>,
       results.map((status, idx) => {
         return !!(newStatuses.indexOf(status) === -1) && <MenuItem key={`new-`+idx} option={status} position={idx}>
