@@ -740,8 +740,7 @@ class QueryService implements Status {
      * Get a list of issue information
      * @return List of IssueInfo data
      */
-    @SuppressWarnings("GroovyAssignabilityCheck")
-    Collection<IssueInfo> findIssueInfo() {
+    Collection<IssueInfo> findIssuesSummaries() {
         final String query =
                 "select i.project_key orspNumber, irb.value irbNumber, i.status, i.expiration_date expirationDate, u.display_name pi, i.summary " +
                 "from issue i " +

@@ -66,7 +66,7 @@ class ApiController {
     }
 
     def osapDataFeed() {
-        render queryService.findIssueInfo() as JSON
+        render queryService.findIssuesSummaries() as JSON
     }
 
 }
