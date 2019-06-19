@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import "regenerator-runtime/runtime";
 
 export const validateEmail = (email) => {
   let valid = false;
