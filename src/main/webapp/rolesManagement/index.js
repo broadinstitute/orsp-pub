@@ -6,9 +6,7 @@ import RolesManagement from "./RolesManagement";
 
 ReactDOM.render(
   <ErrorHandler>
-    <RolesManagement
-      loadingImage = {component.loadingImage}
-    />
+    <RolesManagement/>
   </ErrorHandler>,
   document.getElementById('rolesManagement')
 );

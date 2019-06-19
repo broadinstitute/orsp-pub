@@ -32,7 +32,7 @@ class RolesManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sizePerPage: 20,
+      sizePerPage: 15,
       search: null,
       sort: {
         sortDirection: 'asc',
@@ -83,7 +83,7 @@ class RolesManagement extends Component {
   };
 
   onSearchChange = (search) => {
-    this.tableHandler(0, this.state.sizePerPage, search, this.state.sort);
+    this.tableHandler(0, this.state.sizePerPage, search, this.state.sort, 1);
   };
 
   onPageChange = (page) => {
@@ -149,7 +149,6 @@ class RolesManagement extends Component {
           headers: tableHeaders,
           isAdmin: this.state.isAdmin,
           data: this.state.users,
-          serverURL: component.serverURL,
           editRole: this.editRoleHandler,
           reviewFlow: true,
           pagination: false,
@@ -163,7 +162,6 @@ class RolesManagement extends Component {
           lastPage: this.state.lastPage
         }),
         RoleManagementEdit({
-          serverURL: component.serverURL,
           closeModal: this.closeModal,
           closeOnSubmit: this.submit,
           show: this.state.editRoleDialog,
@@ -171,7 +169,7 @@ class RolesManagement extends Component {
           userData : this.state.editRoleRowData
         }),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );  
@@ -179,4 +177,3 @@ class RolesManagement extends Component {
 }
 
 export default RolesManagement;
-

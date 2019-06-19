@@ -681,14 +681,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     if (projectKey === "") {
       return component.serverURL + "/search/index";
     } else {
-      let key = projectKey.split("-");
-      let projectType = '';
-      if (key.length === 3) {
-        projectType = key[1].toLowerCase();
-      } else {
-        projectType = key[0].toLowerCase();
-      }
-      return [component.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
+      return [component.serverURL, "project/main?projectKey=" + projectKey + "&tab=consent-groups"].join("/");
     }
   }
 

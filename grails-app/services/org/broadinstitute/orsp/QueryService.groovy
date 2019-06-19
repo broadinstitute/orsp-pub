@@ -1210,21 +1210,16 @@ class QueryService implements Status {
     }
 
      void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
-        final session = sessionFactory.currentSession
-        final String query = ' insert into supplemental_role (version, role, user, user_id) values '
-        String queryAndValues = new StringBuffer()
-                .append(query)
-                .append(newRoles.withIndex().collect{ it, index ->
-            return "(0, :role${index}, :userName, :userId)"
-        }.join(" , ")).toString()
-
-        final SQLQuery sqlQuery = session.createSQLQuery(queryAndValues)
-        newRoles.eachWithIndex { String role, int i ->
-            sqlQuery.setString("role${i}", role)
-            sqlQuery.setString("userName", user.userName)
-            sqlQuery.setLong("userId", user.id)
-        }
-        sqlQuery.executeUpdate()
+         final session = sessionFactory.currentSession
+         final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
+         final SQLQuery sqlQuery = session.createSQLQuery(query)
+         newRoles.each { it ->
+             sqlQuery.setLong("version", 0)
+             sqlQuery.setString("role", it)
+             sqlQuery.setString("userName", user.userName)
+             sqlQuery.setLong("userId", user.id)
+             sqlQuery.executeUpdate()
+         }
     }
 
     void deleteOrspUserRoles (userId) {

@@ -177,15 +177,6 @@ class UserService {
         }
     }
 
-    /*
-     It would be nice to know what the error is here.
-      Can you pass that into the exception so it can bubble up?
-      Also, it would be nice to know why the failure happened.
-       Was the user null? What failed in the validation? etc.
-
-
-    */
-
     /**
      * Receives roles intended to be assigned to a user
      * Rules are:

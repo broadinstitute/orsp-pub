@@ -5,7 +5,7 @@ export const TablePaginator = hh(class TablePaginator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageCounter : 0
+      pageCounter : 0,
     }
   }
 
@@ -27,7 +27,7 @@ export const TablePaginator = hh(class TablePaginator extends Component {
 
   goLastPage = (e) => {
     this.setState( prev => {
-      prev.pageCounter = this.props.lastPage-6;
+      prev.pageCounter = this.props.lastPage - 1;
       return prev;
     }, () => this.props.onPageChange(this.props.lastPage));
   };
@@ -37,26 +37,29 @@ export const TablePaginator = hh(class TablePaginator extends Component {
       prev.pageCounter = 0;
       return prev;
     }, () => this.props.onPageChange(1));
-
   };
 
   selected = (position) => {
-    this.props.onPageChange(position + this.state.pageCounter)
+    this.props.onPageChange(position + this.state.pageCounter);
+    this.setState( prev => {
+      prev.pageCounter = position + this.state.pageCounter - 1;
+      return prev;
+    });
   };
 
   render() {
     return (
       ul({className: "pagination custom-component"}, [
         li({ className: "page-item", title: "first page", onClick: (e) => { this.goFirstPage() }}, [
-          a({ className: "page-link", isRendered: this.props.currentPage !== 1 }, ['<<'])
+          a({ className: "page-link", isRendered: this.props.currentPage !== 1 && this.props.lastPage !== 1 }, ['<<'])
         ]),
 
         li({ className: "page-item", title: "prev page", onClick: this.goPrevPage }, [
-          a({ className: "page-link", isRendered: this.props.currentPage !== 1 }, ['<'])
+          a({ className: "page-link", isRendered: this.props.currentPage !== 1 && this.props.lastPage !== 1 }, ['<'])
         ]),
 
         li({ className: "page-item " + (this.props.currentPage === 1 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage > 1 + this.state.pageCounter, onClick: (e) => { this.selected(1) }}, [
+          isRendered: this.props.lastPage > 1 + this.state.pageCounter || this.props.currentPage === 1 + this.state.pageCounter , onClick: (e) => { this.selected(1) }}, [
           a({ className: "page-link" }, [1 + this.state.pageCounter])
         ]),
 
@@ -87,15 +90,13 @@ export const TablePaginator = hh(class TablePaginator extends Component {
         ]),
 
         li({ className: "page-item", title: "next page", onClick: this.goNextPage }, [
-          a({ className: "page-link", isRendered: this.props.currentPage !== this.props.lastPage }, ['>'])
+          a({ className: "page-link", isRendered: this.props.currentPage !== this.props.lastPage && this.props.lastPage !== 1 }, ['>'])
         ]),
 
         li({ className: "page-item", title: "last page", onClick: this.goLastPage }, [
-          a({ className: "page-link", isRendered: this.props.currentPage !== this.props.lastPage }, ['>>'])
+          a({ className: "page-link", isRendered: this.props.currentPage !== this.props.lastPage && this.props.lastPage !== 1 }, ['>>'])
         ])
       ])
     );
   }
 });
-
-

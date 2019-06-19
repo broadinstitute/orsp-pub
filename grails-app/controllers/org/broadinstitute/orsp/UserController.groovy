@@ -49,8 +49,7 @@ class UserController extends AuthenticatedController {
             output['createdDate'] = it.createdDate
             output['updatedDate'] = it.updatedDate
             output['lastLoginDate'] = it.lastLoginDate
-            output['roles'] = it.roles.stream().map{role ->
-                role.getRole()}.collect()
+            output['roles'] = it.roles.collect{r -> r.getRole()}
             return output
         }
 
@@ -77,7 +76,7 @@ class UserController extends AuthenticatedController {
             response.status = 400
             render([error: e.message] as JSON)
         }
-        catch(Exception e) {
+        catch(Throwable e) {
             log.error("Error while trying to modify roles to userId: ${userId}." + e.message)
             response.status = 500
             render([error: e.message] as JSON)
