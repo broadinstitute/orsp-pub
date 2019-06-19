@@ -58,7 +58,7 @@ class UserController extends AuthenticatedController {
                 draw: params.getInt("draw") ?: 1,
                 start: params.getInt("start")?: 0,
                 length: params.getInt("length")?: 10,
-                orderColumn: params.getInt("orderColumn")?: 0,
+                orderColumn: params.getInt("orderColumn")? params.get("orderColumn"): 0,
                 sortDirection: params.get("sortDirection")? params.get("sortDirection").toString() : "asc",
                 searchValue: params.get("searchValue")? params.get("searchValue").toString() : null)
         render(queryService.queryUserRoles(pagination) as JSON)

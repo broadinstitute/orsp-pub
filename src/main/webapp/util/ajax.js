@@ -199,10 +199,6 @@ export const DocumentHandler = {
 
 export const User = {
 
-  isCurrentUserAdmin(url) {
-    return axios.get(url);
-  },
-
   getUserSession(url) {
     return axios.get(url)
   },
@@ -213,15 +209,15 @@ export const User = {
         draw: 1,
         start: query.start,
         length: query.length,
-        orderColumn: 0,
-        sortDirection: "asc",
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
         searchValue: query.searchValue
       }
     })
   },
 
   editUserRole(serverUrl, userId, roles) {
-    return axios.put(`${serverUrl}/api/edit-userRole`, {userId: userId, roles: roles});
+    return axios.put(`${serverUrl}/api/edit-user-role`, {userId: userId, roles: roles});
   }
 
 };

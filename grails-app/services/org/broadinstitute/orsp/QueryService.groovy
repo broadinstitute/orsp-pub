@@ -1209,25 +1209,21 @@ class QueryService implements Status {
         documents
     }
 
-    Collection<User> getUsers() {
-        final session = sessionFactory.currentSession
-        final String query =
-                ' select * from user ' +
-                        ' order by id '
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        Collection<User> results = sqlQuery.with {
-            addEntity(User)
-            list()
-        }
-        results
-    }
-
      void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
         final session = sessionFactory.currentSession
         final String query = ' insert into supplemental_role (version, role, user, user_id) values '
-        StringBuffer stringBuffer = new StringBuffer().append(query)
-        String queryAndValues = stringBuffer.append(newRoles.collect{ it -> return "(0, '${it}', '${user.userName}', ${user.id})"}.join(" , ")).toString()
+        String queryAndValues = new StringBuffer()
+                .append(query)
+                .append(newRoles.withIndex().collect{ it, index ->
+            return "(0, :role${index}, :userName, :userId)"
+        }.join(" , ")).toString()
+
         final SQLQuery sqlQuery = session.createSQLQuery(queryAndValues)
+        newRoles.eachWithIndex { String role, int i ->
+            sqlQuery.setString("role${i}", role)
+            sqlQuery.setString("userName", user.userName)
+            sqlQuery.setLong("userId", user.id)
+        }
         sqlQuery.executeUpdate()
     }
 

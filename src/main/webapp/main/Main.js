@@ -5,6 +5,7 @@ import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
 import './Main.css';
+import { User } from "../util/ajax";
 
 class Main extends Component {
   constructor(props) {

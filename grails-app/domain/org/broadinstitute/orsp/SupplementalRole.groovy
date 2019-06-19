@@ -9,7 +9,7 @@ class SupplementalRole {
 
     public static final List<String> CCO_USERS = ["sdonnell", "saltzman"]
     public static final List<String> ORSP_ROLES = [COMPLIANCE_OFFICE, ORSP]
-    public static final List<String> ADMIN_ROLES = [ADMIN]
+    public static final List<String> ADMIN_ROLES = [ADMIN, ORSP]
 
     static constraints = {
         user nullable: false

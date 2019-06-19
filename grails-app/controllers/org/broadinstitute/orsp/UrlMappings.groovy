@@ -42,8 +42,7 @@ class UrlMappings {
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
-        '/api/edit-userRole'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
-
+        '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
 
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/comments'(controller: 'comments', action: 'list', method: 'GET')

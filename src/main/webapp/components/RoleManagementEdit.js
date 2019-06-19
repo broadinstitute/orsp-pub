@@ -2,14 +2,14 @@ import { Component, Fragment } from 'react';
 import { hh, h, button, div } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldCheckbox } from "./InputFieldCheckbox";
-import { ROLE, USER_ROLES } from '../util/roles';
+import { USER_ROLES } from '../util/roles';
 import { createObjectCopy, isEmpty } from "../util/Utils";
 import { User } from "../util/ajax";
 import { AlertMessage } from "./AlertMessage";
 
-const READ_ONLY = USER_ROLES[ROLE.readOnly].value;
-const ADMIN = USER_ROLES[ROLE.admin].value;
-const COMPLIANCE_OFFICE = USER_ROLES[ROLE.complianceOffice].value;
+const READ_ONLY = USER_ROLES[0].value;
+const ADMIN = USER_ROLES[1].value;
+const COMPLIANCE_OFFICE = USER_ROLES[2].value;
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 

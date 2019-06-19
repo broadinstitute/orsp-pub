@@ -5,7 +5,7 @@ import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty, createObjectCopy, compareNotEmptyObjects, isCurrentUserAdmin } from "../util/Utils";
+import { isEmpty, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
 import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -50,7 +50,6 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   init = () => {
-    this.isCurrentUserAdmin();
     Project.getProject(component.projectUrl, component.projectKey).then(
       issue => {
         let formData = {};
@@ -73,22 +72,13 @@ export const AdminOnly = hh(class AdminOnly extends Component {
         this.setState(prev => {
           prev.formData = formData;
           prev.initial = initial;
+          prev.isAdmin = component.isAdmin;
           return prev;
         })
       }).catch(error => {
         this.setState(() => { throw error; });
       });
   };
-
-  isCurrentUserAdmin() {
-    User.getUserSession(component.sessionUserUrl).then(
-      resp => {
-        this.setState({ isORSP: resp.data.isORSP });
-      }
-    ).catch(error => {
-      this.setState(() => { throw error; });
-    });
-  }
 
   getSponsorArray(sponsors) {
     let sponsorArray = [];

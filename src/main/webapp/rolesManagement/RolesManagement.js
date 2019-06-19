@@ -5,7 +5,6 @@ import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
-import { isCurrentUserAdmin } from "../util/Utils";
 import { TablePaginator } from "../components/TablePaginator";
 
 const tableHeaders =
@@ -22,6 +21,12 @@ const tableHeaders =
     }
   };
 
+  const SORT_NAME_INDEX = {
+    'userName': 0,
+    'displayName': 1,
+    'emailAddress': 2
+  };
+
 class RolesManagement extends Component {
 
   constructor(props) {
@@ -30,9 +35,10 @@ class RolesManagement extends Component {
       sizePerPage: 20,
       search: null,
       sort: {
-        sortDirection: 'ASC',
-        orderColumn: 0
+        sortDirection: 'asc',
+        orderColumn: null
       },
+      currentPage: 1,
       users: [],
       editRoleDialog: false,
       editRoleRowData: {},
@@ -47,12 +53,8 @@ class RolesManagement extends Component {
 
   init = () => {
     spinnerService.showAll();
-
-    let isAdmin = false;
-    isCurrentUserAdmin().then(response => {
-      isAdmin = response;
-    }).catch(() => this.setState(error => { throw error; }));
-    this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort);
+    this.setState({ isAdmin: component.isAdmin });
+    this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
   editRoleHandler = (data) => () => {
@@ -99,17 +101,11 @@ class RolesManagement extends Component {
   };
 
   onSortChange = (sortName, sortOrder) => {
-// SORT HERE!
-
-    this.setState(prev => {
-      prev.query.orderColumn = sortName;
-      prev.query.sortDirection = sortOrder;
-      return prev;
-    }, () => {
-      this.tableHandler(this.state.query);
-    });
-
-
+    const sort = {
+      sortDirection: sortOrder,
+      orderColumn: SORT_NAME_INDEX[sortName]
+    };
+    this.tableHandler(0, this.state.sizePerPage, null, sort)
   };
 
 
@@ -141,7 +137,7 @@ class RolesManagement extends Component {
         return prev;
       }, () => spinnerService.hideAll())
     }).catch(error => {
-      this.setState(() => { throw error; });
+      this.setState(() => { throw error });
     });
   };
 

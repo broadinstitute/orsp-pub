@@ -1,13 +1,12 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
-import { DocumentHandler, User, ConsentGroup } from "../util/ajax";
+import { DocumentHandler, ConsentGroup } from "../util/ajax";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from '../components/Spinner';
-import { isCurrentUserAdmin } from "../util/Utils";
 
 export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
@@ -32,8 +31,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   componentDidMount() {
     this.getAttachedDocuments();
     this.getUseRestriction();
-    this.isCurrentUserAdmin();
-    this.getCurrentUserRoles();
     this.loadOptions();
     this.getAssociatedProjects();
   }
@@ -46,18 +43,13 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     this.setState({ documentOptions: documentOptions });
   };
 
-  isCurrentUserAdmin() {
-    User.getUserSession(component.sessionUserUrl).then(resp => {
-      this.setState({ user: resp.data });
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });
-  }
-
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(component.attachmentsUrl, component.consentKey).then(resp => {
-      this.setState({ documents: JSON.parse(resp.data.documents) },
-        () => {
+      this.setState(prev => {
+        prev.documents = JSON.parse(resp.data.documents);
+        prev.user.isAdmin = component.isAdmin;
+        return prev;
+        }, () => {
           this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved })
         }
       );
@@ -96,13 +88,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     });
   };
 
-  redirectToProject = (projectKey) => {
-    return [component.serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
-  };
 
-  redirectToInfoLink = (projectKey) => {
-    return [component.serverURL, "infoLink", "showInfoLink?projectKey=" + projectKey + "&consentKey=" + component.consentKey].join("/");
-  };
 
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(component.approveDocumentUrl, uuid).then(resp => {

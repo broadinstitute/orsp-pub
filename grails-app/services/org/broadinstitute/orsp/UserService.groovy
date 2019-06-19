@@ -161,20 +161,30 @@ class UserService {
     void editUserRoles (Integer userId, ArrayList<String> rolesToAssign) {
         if (userId != null) {
             User user = User.findById(userId)
-            if (user != null && validateRoles(rolesToAssign)) {
+            def validatedRoles = validateRoles(rolesToAssign)
+            if (user != null && validatedRoles.hasErrors) {
                 queryService.deleteOrspUserRoles(userId)
                 if (!rolesToAssign.isEmpty()) {
                     queryService.updateOrspUserRoles(user, rolesToAssign)
                 }
             } else {
-                log.error("Error while trying to modify roles to userId: ${userId}.")
+                log.error("Error while trying to modify roles to userId: ${userId}. ${validatedRoles.errorMessage}")
                 throw IllegalArgumentException()
             }
         } else {
             log.error("Error while trying to modify roles to userId null.")
-            throw IllegalArgumentException()
+            throw IllegalArgumentException("Cannot update roles of null userId")
         }
     }
+
+    /*
+     It would be nice to know what the error is here.
+      Can you pass that into the exception so it can bubble up?
+      Also, it would be nice to know why the failure happened.
+       Was the user null? What failed in the validation? etc.
+
+
+    */
 
     /**
      * Receives roles intended to be assigned to a user
@@ -185,7 +195,7 @@ class UserService {
      * @param rolesToAssign     Roles String array to be assigned
      * @return Boolean          If roles can be assigned
      */
-    static Boolean validateRoles(ArrayList<String> rolesToAssign) {
+    static def validateRoles(ArrayList<String> rolesToAssign) {
         ArrayList<String> validRoles = SupplementalRole.getAssignableRolesArray()
         Boolean allRolesAreValid = rolesToAssign.stream().allMatch{e -> validRoles.contains(e)}
 
@@ -194,6 +204,12 @@ class UserService {
                         rolesToAssign.contains(SupplementalRole.COMPLIANCE_OFFICE) ||
                         rolesToAssign.contains(SupplementalRole.ADMIN)))
 
-        allRolesAreValid && readOnlyCoexists
+        String errorMessage = "Roles cannot coexists " + !allRolesAreValid ? (!readOnlyCoexists ? "Read only cannot coexists with : ${SupplementalRole.COMPLIANCE_OFFICE} or ${SupplementalRole.ADMIN}": "") : "invalid roles."
+
+        [
+            errorMessage: errorMessage,
+            hasErrors: allRolesAreValid && readOnlyCoexists
+        ]
+
     }
 }

@@ -6,7 +6,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
+import { ConsentGroup, SampleCollections, Review } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
@@ -15,7 +15,7 @@ import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { format } from 'date-fns';
 import { Table } from "../components/Table";
-import { isCurrentUserAdmin, isEmpty } from "../util/Utils";
+import { isEmpty } from "../util/Utils";
 
 const headers =
   [
@@ -124,7 +124,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   componentDidMount() {
     spinnerService.showAll();
-    this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
@@ -203,6 +202,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
+              prev.isAdmin = component.isAdmin;
               return prev;
             }, () => spinnerService.hideAll());
           }
@@ -352,14 +352,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         );
       });
   };
-
-  isCurrentUserAdmin() {
-    User.isCurrentUserAdmin(component.isAdminUrl).then(
-      resp => {
-        this.setState({ isAdmin: resp.data.isAdmin });
-      }
-    );
-  }
 
   rejectConsentGroup() {
     spinnerService.showAll();

@@ -15,7 +15,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
-import { isCurrentUserAdmin, isEmpty } from '../util/Utils';
+import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
@@ -196,6 +196,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.futureCopy = futureCopy;
                 prev.editedForm = JSON.parse(data.data.suggestions);
                 prev.reviewSuggestion = true;
+                prev.isAdmin = component.isAdmin;
                 return prev;
               });
             } else {
@@ -207,6 +208,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.future = future;
                 prev.futureCopy = futureCopy;
                 prev.reviewSuggestion = false;
+                prev.isAdmin = component.isAdmin;
                 return prev;
               });
             }
@@ -238,10 +240,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(() => { throw error; });
       });
   }
-
-  isAdmin = () => {
-    return component.isAdmin === "true";
-  };
 
   isViewer = () => {
     return component.isViewer === "true";
