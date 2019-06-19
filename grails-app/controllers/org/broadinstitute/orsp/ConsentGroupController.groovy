@@ -208,7 +208,8 @@ class ConsentGroupController extends AuthenticatedController {
     def projectConsentGroups() {
         Issue issue = queryService.findByKey(params.id)
         Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
-        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinks?.collect {it.consentKey})
+        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks.collectEntries{[it.consentKey, it]}
+        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
         render(
                 view: "/consentGroup/list",
                 model: [

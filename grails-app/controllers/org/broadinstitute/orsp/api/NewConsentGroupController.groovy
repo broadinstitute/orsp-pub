@@ -15,6 +15,7 @@ import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
+import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.User
@@ -195,4 +196,22 @@ class NewConsentGroupController extends AuthenticatedController {
         }
         render(response)
     }
+
+
+    /**
+     * This action breaks the link between a project and the consent from the point of view of the consent.
+     *
+     */
+    def approveLink () {
+        try {
+            persistenceService.updateCollectionLinkStatus(params.consentKey, params.projectKey, IssueStatus.Approved.name)
+            response.status = 200
+        } catch (Exception e) {
+            response.status = 500
+            log.error("Exception deleting collection links: " + e)
+            flash.error = "Error deleting collection links: " + e
+        }
+        redirect(controller: "project", action: "main", params: [projectKey: params.projectKey, tab: "consent-groups"])
+    }
+
 }

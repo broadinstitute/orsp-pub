@@ -567,19 +567,28 @@ class QueryService implements Status {
         issue
     }
 
+    Boolean areLinksApproved(String projectKey, String consentKey) {
+        List<ConsentCollectionLink> links = ConsentCollectionLink.findByProjectKeyAndConsentKey(projectKey, consentKey)
+        ArrayList approvedLinks = links.findAll {
+            it.status == IssueStatus.Approved.name
+        }
+        approvedLinks?.size() > 0
+    }
+
     /**
      * Find issues by keys
      *
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys(Collection<String> keys) {
+    Collection<Issue> findByKeys( Map<String, ConsentCollectionLink> keys) {
         if (keys && !keys.isEmpty()) {
-            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.toList()) ?: Collections.emptyList()
-            Collection<StorageDocument> documents = getAttachmentsForProjects(keys)
+            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
+            Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
             def docsByProject = documents.groupBy({d -> d.projectKey})
             issues.each { issue ->
                 issue.setAttachments(docsByProject.getOrDefault(issue.projectKey, Collections.emptyList()))
+                issue.setStatus(keys.get(issue.projectKey).status)
             }
             issues
         } else {
