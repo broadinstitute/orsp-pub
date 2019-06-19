@@ -147,7 +147,7 @@ class NewProject extends Component {
     extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
-    extraProperties.push({name: 'irbReferral', value: isEmpty(this.state.generalDataFormData.irbReferral.value) ? null : JSON.stringify(this.state.generalDataFormData.irbReferral)});
+    extraProperties.push({name: 'irb', value: isEmpty(this.state.generalDataFormData.irb.value) ? null : JSON.stringify(this.state.generalDataFormData.irb)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
 
     let collaborators = this.state.generalDataFormData.collaborators;
@@ -392,7 +392,7 @@ class NewProject extends Component {
         loadingImage: this.props.loadingImage,
       }, [
           NewProjectGeneralData({
-            title: "General Data",
+            title: "Project Details",
             currentStep: currentStep,
             user: this.state.user,
             searchUsersURL: this.props.searchUsersURL,

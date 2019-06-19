@@ -59,7 +59,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         pmList: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
-          irbReferral: '',
+          irb: '',
           affiliations: '',
           affiliationOther: '',
           accurate: '',
@@ -96,9 +96,9 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           displayName: '',
           emailAddress: ''
         },
-        requestorName: this.props.user !== undefined ? this.props.user.displayName : '',
-        reporter: this.props.user !== undefined ? this.props.user.userName : '',
-        requestorEmail: this.props.user !== undefined ? this.props.user.email.replace("&#64;", "@") : '',
+        requestorName: component.user !== undefined ? component.user.displayName : '',
+        reporter: component.user !== undefined ? component.user.userName : '',
+        requestorEmail: component.user !== undefined ? component.user.email.replace("&#64;", "@") : '',
         projectManager: '',
         piName: '',
         studyDescription: '',
@@ -110,7 +110,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
-          irbReferral: '',
+          irb: '',
           affiliations: '',
           affiliationOther: '',
           accurate: '',
@@ -147,6 +147,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    spinnerService.showAll();
     this.init();
   }
 
@@ -156,7 +157,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     let future = {};
     let futureCopy = {};
     let formData = {};
-    Project.getProject(this.props.projectUrl, this.props.projectKey).then(
+    Project.getProject(component.projectUrl, component.projectKey).then(
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
@@ -164,7 +165,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         current.description = isEmpty(issue.data.issue.description) ? '' : issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
-        current.projectExtraProps.irbReferral = isEmpty(current.projectExtraProps.irbReferral) ? '' : JSON.parse(current.projectExtraProps.irbReferral),
+        current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),
         current.projectExtraProps.affiliations = isEmpty(current.projectExtraProps.affiliations) ? '' : JSON.parse(current.projectExtraProps.affiliations),
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
@@ -176,7 +177,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         futureCopy = JSON.parse(currentStr);
         this.projectType = issue.data.issue.type;
 
-        Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+        Review.getSuggestions(component.serverURL, component.projectKey).then(
           data => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('new') && urlParams.get('tab') === 'review') {
@@ -186,7 +187,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-
+              spinnerService.hideAll();
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -197,6 +198,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 return prev;
               });
             } else {
+              spinnerService.hideAll();
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -209,12 +211,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
+        spinnerService.hideAll();
         this.setState(() => { throw error; });
       });
   }
 
   getReviewSuggestions() {
-    Review.getSuggestions(this.props.serverURL, this.props.projectKey).then(
+    Review.getSuggestions(component.serverURL, component.projectKey).then(
       data => {
         if (data.data !== '') {
           this.setState(prev => {
@@ -236,11 +239,11 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   isAdmin = () => {
-    return this.props.isAdmin === "true";
+    return component.isAdmin === "true";
   };
 
   isViewer = () => {
-    return this.props.isViewer === "true";
+    return component.isViewer === "true";
   };
 
   getUsersArray(array) {
@@ -290,7 +293,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(this.props.serverURL, this.props.projectKey, data).then(
+    Project.addExtraProperties(component.serverURL, component.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
@@ -303,7 +306,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     });
     if (this.state.reviewSuggestion) {
       let project = this.getProject();
-      Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+      Project.updateProject(component.updateProjectUrl, project, component.projectKey).then(
         resp => {
           this.removeEdits('approve');
         })
@@ -315,12 +318,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   rejectProject() {
     spinnerService.showAll();
-    Project.rejectProject(this.props.rejectProjectUrl, this.props.projectKey).then(resp => {
+    Project.rejectProject(component.rejectProjectUrl, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
-      window.location.href = [this.props.serverURL, "index"].join("/");
+      window.location.href = [component.serverURL, "index"].join("/");
       spinnerService.hideAll();
     }).catch(error => {
       spinnerService.hideAll();
@@ -338,7 +341,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(this.props.updateProjectUrl, project, this.props.projectKey).then(
+    Project.updateProject(component.updateProjectUrl, project, component.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
@@ -351,7 +354,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   removeEdits(type) {
-    Review.deleteSuggestions(this.props.discardReviewUrl, this.props.projectKey, type).then(
+    Review.deleteSuggestions(component.discardReviewUrl, component.projectKey, type).then(
       resp => {
         this.props.updateContent();
         this.init();
@@ -382,7 +385,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     project.pii = this.state.formData.projectExtraProps.pii;
     project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
-    project.irbReferral = isEmpty(this.state.formData.projectExtraProps.irbReferral.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irbReferral);
+    project.irb = isEmpty(this.state.formData.projectExtraProps.irb.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irb);
 
     if (this.state.reviewSuggestion) {
       project.editsApproved = true;
@@ -488,11 +491,11 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         return prev;
       });
       const data = {
-        projectKey: this.props.projectKey,
+        projectKey: component.projectKey,
         suggestions: JSON.stringify(this.state.formData)
       };
       if (this.state.reviewSuggestion) {
-        Review.updateReview(this.props.serverURL, this.props.projectKey, data).then(() =>
+        Review.updateReview(component.serverURL, component.projectKey, data).then(() =>
           this.getReviewSuggestions()
         ).catch(error => {
           this.getReviewSuggestions();
@@ -503,7 +506,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           })
         });
       } else {
-        Review.submitReview(this.props.serverURL, data).then(() =>
+        Review.submitReview(component.serverURL, data).then(() =>
           this.getReviewSuggestions()
         ).catch(error => {
           this.getReviewSuggestions()
@@ -523,7 +526,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(this.props.searchUsersURL, query)
+      Search.getMatchingQuery(component.searchUsersURL, query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
@@ -740,7 +743,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   redirectToConsentGroupTab = async () => {
-    window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
+    window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -798,11 +801,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
-          issueKey: this.props.projectKey,
-          user: this.props.user,
-          emailUrl: this.props.emailUrl,
-          userName: this.props.userName,
-          clarificationUrl: this.props.clarificationUrl,
+          issueKey: component.projectKey,
           successClarification: this.successNotification
         }),
 
@@ -1010,14 +1009,14 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }),
           InputFieldSelect({
             label: "IRB-of-record",
-            id: "irbReferral",
-            name: "irbReferral",
+            id: "irb",
+            name: "irb",
             options: PREFERRED_IRB,
-            value: this.state.formData.projectExtraProps.irbReferral,
-            currentValue: this.state.current.projectExtraProps.irbReferral,
-            onChange: this.handleSelect("irbReferral"),
+            value: this.state.formData.projectExtraProps.irb,
+            currentValue: this.state.current.projectExtraProps.irb,
+            onChange: this.handleSelect("irb"),
             readOnly: this.state.readOnly,
-            placeholder: isEmpty(this.state.formData.projectExtraProps.irbReferral) && this.state.readOnly ? "--" : "Select...",
+            placeholder: isEmpty(this.state.formData.projectExtraProps.irb) && this.state.readOnly ? "--" : "Select...",
             edit: true
           })
         ]),
@@ -1197,7 +1196,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }, ["Request Clarification"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

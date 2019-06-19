@@ -16,7 +16,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   }
 
   getConsentGroups() {
-    ProjectMigration.getConsentGroups(this.props.serverURL, this.props.projectKey).then(resp => {
+    ProjectMigration.getConsentGroups(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
@@ -41,8 +41,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
     $(".modal-add-button").on('click', function () {
       $("#add-consent-document-modal").load(
-        "https://localhost:8443/dev/api/consent-group/upload-modal?"
-        + $.param({
+      component.serverURL + "/api/consent-group/upload-modal?"
+      + $.param({
           issueKey: $(this).data("issue"),
           consentKey: $(this).data("consent")
         }),
@@ -61,6 +61,31 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       }).parent().removeClass("ui-widget-content");
       $(".ui-dialog-titlebar").hide();
     });
+
+    $(".confirmationModal").on('click', function () {
+      $("#confirmation-modal-dialog").load(
+      component.serverURL + "/api/consent-group/confirmation-modal?"
+      + $.param({
+          issueKey: $(this).data("issue"),
+          consentKey: $(this).data("consent"),
+          action: $(this).data("action")
+        }),
+        function () {
+          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+          $("button[data-dismiss='modal']").on("click", function () { $("#confirmation-modal-dialog").dialog("close"); });
+        }
+      ).dialog({
+        modal: true,
+        minWidth: 1000,
+        minHeight: 500,
+        closeOnEscape: true,
+        hide: { effect: "fadeOut", duration: 300 },
+        show: { effect: "fadeIn", duration: 300 },
+        dialogClass: "no-titlebar"
+      }).parent().removeClass("ui-widget-content");
+      $(".ui-dialog-titlebar").hide();
+    });
+
     // Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
     // https://broadinstitute.atlassian.net/browse/BTRX-628
     var url = new URLSearchParams(window.location.search);

@@ -7,18 +7,14 @@
 
 <body>
 
-  <auth:isNotViewer>
+ <auth:isNotViewer>
+   <a type="button" class="btn btn-default" href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}" >Add New Sample/Data Cohort</a>
     <a type="button" class="btn btn-default"
-      href="${createLink(controller: 'newConsentGroup', action: 'show', params: [projectKey: issue.projectKey, type: issue.getController()])}">
-      Add New Sample/Data Cohort
-    </a>
-    <a type="button" class="btn btn-default"
-      href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}">
-      Use existing Sample/Data Cohort
-    </a>
-  </auth:isNotViewer>
+        href="${createLink(controller: 'sampleConsentLink', params: [projectKey: issue.projectKey], action: 'pages')}" >
+        Use existing Sample/Data Cohort</a>
+ </auth:isNotViewer>
 
-  <g:if test="${consentGroups}">
+<g:if test="${consentGroups}">
     <h3>Sample/Data Cohort</h3>
 
     <div id="alert" class="alert alert-success" style="display:none;">
@@ -46,20 +42,18 @@
               <auth:isNotViewer>
                 <div class="cta-container">
                   <g:if test="${consent.status != 'Approved'}">
-                    <a class="btn btn-default btn-sm" style="margin-right: 5px;" 
-                    href="${createLink(controller: 'newConsentGroup', action: 'approveLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
-                    Approve
-                    </a>
-                    <a class="btn btn-default btn-sm" style="margin-right: 10px;"
-                      href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
-                      Reject
-                    </a>
+                      <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="approve"
+                      data-target="#upload-attachment"> Approve</button>       
+                
+                      <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="reject"
+                      data-target="#upload-attachment"> Reject</button>   
                   </g:if>
                   <g:if test="${consent.status == 'Approved'}">
-                    <a class="btn btn-default btn-sm" style="margin-right: 10px;"
-                      href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
-                      Unlink
-                    </a>
+                      <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="unlink"
+                      data-target="#upload-attachment"> Unlink</button> 
                   </g:if>
                 </div>
               </auth:isNotViewer>
@@ -142,11 +136,13 @@
     </div>
     %{-- Modal container to upload a consent group attachment type from within a project --}%
     <div class="modal" id="add-consent-document-modal" tabindex="-1" role="dialog"
-      aria-labelledby="addConsentDocumentModalDialog" aria-hidden="true"></div>
+      aria-labelledby="addConsentDocumentModalDialog" aria-hidden="true">
+    </div>
 
       %{-- Modal container to confirm approve / reject / unlink --}%
-      <div class="modal" id="cg-confirmation-modal" tabindex="-1" role="dialog"
-        aria-labelledby="confirmationModalDialog" aria-hidden="true"></div>
+      <div class="modal" id="confirmation-modal-dialog" tabindex="-1" role="dialog"
+        aria-labelledby="confirmationModalDialog" aria-hidden="true">
+      </div>
   </g:if>
 
 </body>
