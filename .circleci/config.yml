@@ -59,7 +59,7 @@ commands:
         default: "dev"
       namespace:
         type: string
-        default: "orsp-pub"
+        default: "default"
       project_name:
         type: string
         default: "orsp-pub"
@@ -116,7 +116,7 @@ jobs:
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
           env: "dev"
-          namespace: "orsp-pub"
+          namespace: "default"
           project_name: "orsp-pub"
           google_project: "orsp-dev"
           google_zone: "us-central1-a"
