@@ -185,7 +185,7 @@ class ConsentGroupController extends AuthenticatedController {
         Issue issue = queryService.findByKey(params.id)
         Boolean isUserReporter = false
         if (params.projectKey != null) {
-            isUserReporter = queryService.findByKey(params.projectKey).reporter == getUser().userName
+            isUserReporter = queryService.findByKey(params.projectKey)?.reporter == getUser().userName
         }
         if (issueIsForbidden(issue) && !isUserReporter) {
             redirect(controller: 'Index', action: 'index')
