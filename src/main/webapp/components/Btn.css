@@ -32,6 +32,17 @@
   float: left;
 }
 
+.cta-container .btn {
+  margin-right: 5px;
+}
+
+.cta-container .btn,
+.cta-container .btn:hover,
+.cta-container .btn:active,
+.cta-container .btn:focus {
+  outline: none;
+}
+
 .request-clarification {
   display: inline-block;
   position: relative;
@@ -39,10 +50,12 @@
   background: url('../../../../grails-app/assets/images/icon-live_help.svg') no-repeat center center;
   width: 44px;
   float: left;
-  margin: -10px 10px 0 0;
+  margin: -10px 15px 0 10px;
   opacity: 0.4;
+  border:0;
   border-left: 1px solid #A9A9A9;
   border-right: 1px solid #A9A9A9;
+  box-shadow: 0;
 }
 
 .request-clarification:hover {
@@ -120,4 +133,8 @@
 
 .consent-group-panel-body {
   min-width: 100%;
+}
+
+p.modal-large {
+  font-size: 16px;
 }

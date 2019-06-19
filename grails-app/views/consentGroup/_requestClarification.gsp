@@ -8,17 +8,20 @@ This template requires the following arguments:
 ]
 
 --}%
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-md">
     <div class="modal-content">
         <g:form controller="consentGroup" action="attachConsentDocument" enctype="multipart/form-data" method="POST" class="attach-input">
             <div class="modal-header panel-heading">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Attach Document to ${consent.projectKey}: ${consent.summary}</h4>
+                <button type="button" class="close" data-dismiss="modal" style="outline:none"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Request Clarification on ${consent.projectKey}</h4>
             </div>
             <div class="modal-body">
-                <input name="issueKey" value="${issue.projectKey}" id="issueKey" type="hidden">
-                <input name="consentKey" value="${consent.projectKey}" id="consentKey" type="hidden">
-              
+                    <div class="inputField ">
+                        <p class="inputFieldLabel">Please describe the clarification you are requesting</p>
+                        <div class="inputFieldWrapper">
+                            <textarea name="clarification" id="xx" rows="5" class="form-control inputFieldTextarea" style="resize: none"></textarea>
+                        </div>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel Request Clarification</button>
