@@ -71,7 +71,7 @@ commands:
         default: "us-central1-a"
       google_cluster:
         type: string
-        default: "orsp-dev-cluster"
+        default: "orsp-portal-dev"
       commit:
         type: string
         default: ""
@@ -120,7 +120,7 @@ jobs:
           project_name: "orsp-pub"
           google_project: "orsp-dev"
           google_zone: "us-central1-a"
-          google_cluster: "orsp-dev-cluster"
+          google_cluster: "orsp-portal-dev"
           commit: ${COMMIT}
 
 workflows:
