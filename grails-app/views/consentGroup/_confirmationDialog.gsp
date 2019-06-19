@@ -2,9 +2,9 @@
 This template requires the following arguments:
 
 [
-    issue
-    consent
-    attachmentTypes
+issue
+consent
+attachmentTypes
 ]
 
 --}%
@@ -15,17 +15,22 @@ This template requires the following arguments:
                 <button type="button" class="close" data-dismiss="modal" style="outline:none"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             </div>
             <div class="modal-body">
-              <p class="modal-large">Are you sure you want to approve reject this Sample / Data Cohort?</p>
+              <p class="modal-large">Are you sure you want to 
+                  <g:if test="${actionKey == 'reject' || actionKey == 'unlink'}">
+                    reject
+                  </g:if>
+                  <g:else> approve </g:else>
+                  this Sample / Data Cohort?</p>
             </div>
 
             <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <g:if test="${action == 'approve'}">
+                    <g:if test="${actionKey == 'approve'}">
                       <a class="btn btn-primary" href="${createLink(controller: 'newConsentGroup', action: 'approveLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
                         Approve
                       </a>
                     </g:if>
-                    <g:if test="${action == 'reject'} || ${action == 'unlink'}">
+                    <g:if test="${actionKey == 'reject' || actionKey == 'unlink'}">
                       <a class="btn btn-primary" href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
                         Accept
                       </a>

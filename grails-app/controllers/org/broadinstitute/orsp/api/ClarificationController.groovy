@@ -58,6 +58,9 @@ class ClarificationController extends AuthenticatedController {
                 render([error: "${e}"] as JSON)
             }
         }
+        if(params.type == "link") {
+            redirect([action: "main", controller: "project", params: [tab: "consent-groups", projectKey: params.id]])
+        }
         response
     }
 }

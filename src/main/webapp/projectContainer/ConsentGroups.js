@@ -68,7 +68,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       + $.param({
           issueKey: $(this).data("issue"),
           consentKey: $(this).data("consent"),
-          action: $(this).data("action")
+          actionKey: $(this).data("handler")
         }),
         function () {
           $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
@@ -90,8 +90,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       component.serverURL + "/api/consent-group/request-clarification?"
       + $.param({
           issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent"),
-          action: $(this).data("action")
+          consentKey: $(this).data("consent")
         }),
         function () {
           $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");

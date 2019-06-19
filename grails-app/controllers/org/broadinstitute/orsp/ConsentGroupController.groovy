@@ -208,7 +208,7 @@ class ConsentGroupController extends AuthenticatedController {
     def projectConsentGroups() {
         Issue issue = queryService.findByKey(params.id)
         Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
-        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks.collectEntries{[it.consentKey, it]}
+        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
         Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
         render(
                 view: "/consentGroup/list",
@@ -373,7 +373,8 @@ class ConsentGroupController extends AuthenticatedController {
         render(template: "confirmationDialog",
                 model:
                         [issue: issue,
-                         consent: consent])
+                         consent: consent,
+                         actionKey: params.actionKey])
     }
 
     def loadRequestClarification() {

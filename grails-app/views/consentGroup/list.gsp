@@ -43,14 +43,14 @@
                 <div class="cta-container">
                   <g:if test="${consent.status != 'Approved'}">
                       <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
-                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="approve"> Approve</button>       
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-handler="approve"> Approve</button>       
                 
                       <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
-                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="reject"> Reject</button>   
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-handler="reject"> Reject</button>   
                   </g:if>
                   <g:if test="${consent.status == 'Approved'}">
                       <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
-                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="unlink"> Unlink</button> 
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-handler="unlink"> Unlink</button> 
                   </g:if>
                 </div>
               </auth:isNotViewer>
