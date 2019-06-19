@@ -85,6 +85,29 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       }).parent().removeClass("ui-widget-content");
       $(".ui-dialog-titlebar").hide();
     });
+    $(".request-clarification").on('click', function () {
+      $("#request-clarification-dialog").load(
+      component.serverURL + "/api/consent-group/request-clarification?"
+      + $.param({
+          issueKey: $(this).data("issue"),
+          consentKey: $(this).data("consent"),
+          action: $(this).data("action")
+        }),
+        function () {
+          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+          $("button[data-dismiss='modal']").on("click", function () { $("#request-clarification-dialog").dialog("close"); });
+        }
+      ).dialog({
+        modal: true,
+        minWidth: 1000,
+        minHeight: 500,
+        closeOnEscape: true,
+        hide: { effect: "fadeOut", duration: 300 },
+        show: { effect: "fadeIn", duration: 300 },
+        dialogClass: "no-titlebar"
+      }).parent().removeClass("ui-widget-content");
+      $(".ui-dialog-titlebar").hide();
+    });
 
     // Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
     // https://broadinstitute.atlassian.net/browse/BTRX-628

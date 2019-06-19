@@ -43,27 +43,24 @@
                 <div class="cta-container">
                   <g:if test="${consent.status != 'Approved'}">
                       <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
-                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="approve"
-                      data-target="#upload-attachment"> Approve</button>       
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="approve"> Approve</button>       
                 
                       <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
-                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="reject"
-                      data-target="#upload-attachment"> Reject</button>   
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="reject"> Reject</button>   
                   </g:if>
                   <g:if test="${consent.status == 'Approved'}">
                       <button class="btn btn-default btn-sm confirmationModal" data-toggle="modal"
-                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="unlink"
-                      data-target="#upload-attachment"> Unlink</button> 
+                      data-issue="${issue.projectKey}" data-consent="${consent.projectKey}" data-action="unlink"> Unlink</button> 
                   </g:if>
                 </div>
               </auth:isNotViewer>
               <div class="right-container">
-                <a class="request-clarification" href="/">
+                <button class="request-clarification" data-toggle="modal" data-issue="${issue.projectKey}" data-consent="${consent.projectKey}">
                   <span class="req-tooltip">
                     Request Clarification
                     <span class="arrow-down"></span>
                   </span>
-                </a>
+                </button>
 
                 <a class="data-name"
                   href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
@@ -142,6 +139,11 @@
       %{-- Modal container to confirm approve / reject / unlink --}%
       <div class="modal" id="confirmation-modal-dialog" tabindex="-1" role="dialog"
         aria-labelledby="confirmationModalDialog" aria-hidden="true">
+      </div>
+
+      %{-- Modal container to request clarification --}%
+      <div class="modal" id="request-clarification-dialog" tabindex="-1" role="dialog"
+        aria-labelledby="requestClarificationModalDialog" aria-hidden="true">
       </div>
   </g:if>
 

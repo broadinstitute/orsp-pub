@@ -376,4 +376,12 @@ class ConsentGroupController extends AuthenticatedController {
                          consent: consent])
     }
 
+    def loadRequestClarification() {
+        def issue = queryService.findByKey(params.issueKey)
+        def consent = queryService.findByKey(params.consentKey)
+        render(template: "requestClarification",
+                model:
+                        [issue: issue,
+                         consent: consent])
+    }
 }
