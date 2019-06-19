@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueSearchItemDTO
 import org.broadinstitute.orsp.IssueType
 
 @Slf4j
@@ -126,4 +127,24 @@ final class IssueUtils {
         return issue.type == IssueType.CONSENT_GROUP.name || issue.controller == IssueType.CONSENT_GROUP.name
     }
 
+    static Map<String, Object> generateArgumentsForRedirect(IssueSearchItemDTO issue, String id, String tab) {
+        Map<String, Object> arguments = new HashMap<>()
+        if (isConsentGroup(issue)) {
+            arguments.put("controller", "newConsentGroup")
+            arguments.put("action", "main")
+            tab != null ? arguments.put("params", [consentKey: issue.projectKey, tab: tab]) :
+                    arguments.put("params", [consentKey: issue.projectKey])
+        } else {
+            arguments.put("controller", "project")
+            arguments.put("action", "main")
+            arguments.put("projectKey", id)
+            tab != null ? arguments.put("params", [projectKey: issue.projectKey, tab: tab]) :
+                    arguments.put("params", [projectKey: issue.projectKey])
+        }
+        arguments
+    }
+
+    static boolean isConsentGroup(IssueSearchItemDTO issue) {
+        return issue.type == IssueType.CONSENT_GROUP.name
+    }
 }

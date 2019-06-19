@@ -5,6 +5,7 @@ import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.IssueSearchItemDTO
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -729,7 +730,8 @@ class QueryService implements Status {
         Set result = new HashSet<Issue>()
 
         if (ids.size() > 0) {
-            result = findIssuesSearchItems(ids)
+//            result = findIssuesSearchItems(ids)
+            result = findIssuesSearchItemsDTO(ids)
         }
         result
     }
@@ -739,7 +741,7 @@ class QueryService implements Status {
      * @param issueIds
      * @return
      */
-    List<Issue> findIssuesSearchItems(ArrayList<Integer> issueIds) {
+    Set<Issue> findIssuesSearchItems(ArrayList<Integer> issueIds) {
         final String query = "SELECT i.id id, " +
                 "i.project_key projectKey, " +
                 "i.type type, " +
@@ -773,6 +775,58 @@ class QueryService implements Status {
         result
     }
 
+    Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+        final String query = "SELECT i.id id, " +
+                "i.project_key projectKey, " +
+                "i.type type, " +
+                "i.status status, " +
+                "i.summary summary, " +
+                "i.reporter reporter, " +
+                "i.update_date updated, " +
+                "i.expiration_date expirationDate, " +
+                "iep.* " +
+                "FROM issue i LEFT JOIN issue_extra_property iep " +
+                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
+                "WHERE i.id IN (" + issueIds.join(",") + ")"
+
+        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+        IssueSearchItemDTO issueSearchItemDTO
+        String currentProjectKey = ""
+
+        getSqlConnection().rows(query).each {
+            if (it.get("projectKey") == currentProjectKey) {
+                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                   def extraPropItem = new ExtraPropsSearchItemDTO()
+                    extraPropItem.setName(it.get("name").toString())
+                    extraPropItem.setValue(it.get("value").toString())
+//                    def extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
+//                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
+//                    extraProp.push(it.get("value").toString())
+                    issueSearchItemDTO.extraProperties.add(extraPropItem)
+                }
+            } else {
+                if (currentProjectKey != "") {
+                    resultDTO.add(issueSearchItemDTO)
+                }
+                currentProjectKey = it.get("projectKey")
+                issueSearchItemDTO = new IssueSearchItemDTO()
+
+                issueSearchItemDTO.setId((Integer)it.get("id"))
+                issueSearchItemDTO.setProjectKey(it.get("projectKey").toString())
+                issueSearchItemDTO.setType(it.get("type").toString())
+                issueSearchItemDTO.setStatus(it.get("status").toString())
+                issueSearchItemDTO.setSummary(it.get("summary").toString())
+                issueSearchItemDTO.setReporter(it.get("reporter").toString())
+                if (it.get("expirationDate") != null) {
+                    issueSearchItemDTO.setExpirationDate(it.get("expirationDate"))
+                }
+                if (it.get("updated") != null) {
+                    issueSearchItemDTO.setUpdateDate(it.get("updated"))
+                }
+            }
+        }
+        resultDTO
+    }
 
 
     /**
