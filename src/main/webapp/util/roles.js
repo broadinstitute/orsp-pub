@@ -1,8 +1,9 @@
-export const USER_ROLES = [
-  { label: 'Admin', value: 'orsp' },
-  { label: 'Compliance Office', value: 'Compliance Office' },
-  { label: 'Read Only', value: 'ro_admin' }
-];
+export const USER_ROLES = {
+  'Admin' : { label: 'Admin', value :'orsp', index: 0 },
+  'Compliance Office' : { label: 'Compliance Office', value :'Compliance Office', index: 1 },
+  'Read Only' : { label: 'Read Only', value :'ro_admin', index: 2 }
+};
+
 
 export const formatRoleName = (roles) => {
   let formattedRole = [];

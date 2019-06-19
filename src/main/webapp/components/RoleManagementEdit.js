@@ -7,9 +7,9 @@ import { createObjectCopy, isEmpty } from "../util/Utils";
 import { User } from "../util/ajax";
 import { AlertMessage } from "./AlertMessage";
 
-const READ_ONLY = USER_ROLES[0].value;
-const ADMIN = USER_ROLES[1].value;
-const COMPLIANCE_OFFICE = USER_ROLES[2].value;
+const READ_ONLY = USER_ROLES['Read Only'].value;
+const ADMIN = USER_ROLES['Admin'].value;
+const COMPLIANCE_OFFICE = USER_ROLES['Compliance Office'].value;
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 
@@ -47,12 +47,12 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
   defaultChecked = () => {
     let checkedRoles = createObjectCopy(this.state.roles);
     if (!isEmpty(this.props.userData)) {
-      USER_ROLES.forEach(role => {
-        this.props.userData.roles.forEach(item => {
-          if (role.value === item) {
-            checkedRoles[role.value] = true;
+      this.props.userData.roles.forEach(item => {
+        Object.keys(USER_ROLES).forEach(role => {
+          if (USER_ROLES[role].value === item) {
+            checkedRoles[USER_ROLES[role].value] = true
           }
-        })
+        });
       });
       this.setState(prev => {
         prev.roles = checkedRoles;
@@ -120,14 +120,14 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
           h(ModalTitle, { className: "dialogTitle" }, [this.props.userData.displayName + " (" + this.props.userData.emailAddress + ")"])
         ]),
         h(ModalBody, { className: "dialogBody rolesManagement" }, [
-          USER_ROLES.map( (role, idx) => {
+          Object.keys(USER_ROLES).map((role, idx) => {
             return h(Fragment, { key: idx }, [
               InputFieldCheckbox({
-                id: role.value,
+                id: USER_ROLES[role].value,
                 onChange: this.handleCheck,
-                label: role.label,
-                checked: this.state.roles[role.value],
-                readOnly: this.disableCheckBox(role.value)
+                label: role,
+                checked: this.state.roles[USER_ROLES[role].value],
+                readOnly: this.disableCheckBox(USER_ROLES[role].value)
               })
             ])
           }),
