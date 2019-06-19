@@ -1,35 +1,33 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: ${PROJECT_NAME}-dev-ingress
+  name: ${PROJECT_NAME}-service
+  labels:
+    app: ${PROJECT_NAME}
+  namespace: ${NAMESPACE}
 spec:
-  tls:
-  - secretName: ui-orsp-dev-certificate
-  rules:
-  - host: ui.dsp-orsp-dev.broadinstitute.org
-    http:
-      paths:
-      - backend:
-          serviceName: ${PROJECT_NAME}-service
-          servicePort: 443
+  selector:
+    app: ${PROJECT_NAME}
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  sessionAffinity: None
+  type: NodePort
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: ${PROJECT_NAME}
+  namespace: ${NAMESPACE}
   labels:
     app: ${PROJECT_NAME}
-  namespace: ${NAMESPACE}
 spec:
   replicas: 3
   selector:
     matchLabels:
       app: ${PROJECT_NAME}
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -40,7 +38,6 @@ spec:
           image: gcr.io/${GOOGLE_PROJECT}/${PROJECT_NAME}:${COMMIT}
           ports:
             - containerPort: 8080
-            - containerPort: 8443
           env:
             - name: MYSQL_DB_HOST
               value: 127.0.0.1:3306
@@ -61,7 +58,7 @@ spec:
           - mountPath: /orsp-config
             name: orsp-config
             # [END cloudsql_secrets]
-        # [START proxy_container]            
+        # [START proxy_container]
         - name: "cloudsql-proxy"
           image: gcr.io/cloudsql-docker/gce-proxy:1.12
           command:
@@ -79,10 +76,12 @@ spec:
             - name: cloudsql-instance-credentials
               mountPath: /secrets/cloudsql
               readOnly: true
+          # [END proxy_container]
+      # [START volumes]
       volumes:
         - name: cloudsql-instance-credentials
           secret:
-            secretName: cloudsql-instance-credentials      
+            secretName: cloudsql-instance-credentials
         - name: orsp-config
           configMap:
             name: orsp-config-dev
@@ -91,4 +90,6 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+      # [END volumes]
+---
 
