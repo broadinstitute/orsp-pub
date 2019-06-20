@@ -18,25 +18,25 @@ spec:
 ---
 apiVersion: extensions/v1beta1
   kind: Ingress
-  metadata: 
-    annotations: 
+  metadata:
+    annotations:
       kubernetes.io/ingress.global-static-ip-name: orsp-pub-dev-ip
-    labels: 
+    labels:
       app: ${REPO_NAME}
     name: ${REPO_NAME}-ingress
     namespace: default
-  spec: 
-    backend: 
+  spec:
+    backend:
       serviceName: ${REPO_NAME}-service
       servicePort: http
-    rules: 
+    rules:
       - host: ui.dsp-orsp-dev.broadinstitute.org
-        http: 
-          paths: 
+        http:
+          paths:
             backend:   
               serviceName: ${REPO_NAME}-service
               servicePort: http
-    tls: 
+    tls:
       - hosts: ui.dsp-orsp-dev.broadinstitute.org
         secretName: wildcard.dsp-orsp-dev.broadinstitute.org
 ---
@@ -45,7 +45,7 @@ kind: Deployment
 metadata:
   name: ${REPO_NAME}
   namespace: ${NAMESPACE}
-  labels::
+  labels: :
     app: ${REPO_NAME}
 spec:
   replicas: 3
@@ -88,7 +88,7 @@ spec:
           command:
             [
               "/cloud_sql_proxy",
-              "-instances=orsp-dev:us-east1:bricc-mysql-dev=tcp:3306",
+              "-instances=orsp-dev: us-east1:bricc-mysql-dev=tcp:3306",
               "-credential_file=/secrets/cloudsql/credentials.json",
             ]
           # [START cloudsql_security_context]
