@@ -1,41 +1,65 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${PROJECT_NAME}-service
+  name: ${REPO_NAME}-service
   labels:
-    app: ${PROJECT_NAME}
+    app: ${REPO_NAME}
   namespace: ${NAMESPACE}
 spec:
   selector:
-    app: ${PROJECT_NAME}
+    app: ${REPO_NAME}
   ports:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: 8080
   sessionAffinity: None
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    annotations: 
+      kubernetes.io/ingress.global-static-ip-name: orsp-pub-dev-ip
+    labels: 
+      app: ${REPO_NAME}
+    name: ${REPO_NAME}-ingress
+    namespace: default
+  spec: 
+    backend: 
+      serviceName: ${REPO_NAME}-service
+      servicePort: http
+    rules: 
+      - host: ui.dsp-orsp-dev.broadinstitute.org
+        http: 
+          paths: 
+            backend:   
+              serviceName: ${REPO_NAME}-service
+              servicePort: http
+    tls: 
+      - hosts: ui.dsp-orsp-dev.broadinstitute.org
+        secretName: wildcard.dsp-orsp-dev.broadinstitute.org
+---
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: ${PROJECT_NAME}
+  name: ${REPO_NAME}
   namespace: ${NAMESPACE}
-  labels:
-    app: ${PROJECT_NAME}
+  labels::
+    app: ${REPO_NAME}
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: ${PROJECT_NAME}
+      app: ${REPO_NAME}
   template:
     metadata:
       labels:
-        app: ${PROJECT_NAME}
+        app: ${REPO_NAME}
     spec:
       containers:
-        - name: ${PROJECT_NAME}
-          image: gcr.io/${GOOGLE_PROJECT}/${PROJECT_NAME}:${COMMIT}
+        - name: ${REPO_NAME}
+          image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
           ports:
             - containerPort: 8080
           env:
