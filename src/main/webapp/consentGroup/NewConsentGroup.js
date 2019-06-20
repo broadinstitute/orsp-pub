@@ -100,7 +100,6 @@ class NewConsentGroup extends Component {
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
-      let projectType = await Project.getProjectType(this.props.serverURL, this.props.projectKey);
       this.removeErrorMessage();
       this.changeSubmitState();
       let consentGroup = this.getConsentGroup();

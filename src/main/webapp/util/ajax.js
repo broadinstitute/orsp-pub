@@ -199,16 +199,25 @@ export const DocumentHandler = {
 
 export const User = {
 
-  isCurrentUserAdmin(url) {
-    return axios.get(url);
-  },
-
-  addExtraProperties(url, projectKey, data) {
-    return axios.post(url+ '?id=' + projectKey, data );
-  },
-
   getUserSession(url) {
     return axios.get(url)
+  },
+
+  getAllUsers(serverUrl, query) {
+    return axios.get(serverUrl + '/api/get-users', {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
+
+  editUserRole(serverUrl, userId, roles) {
+    return axios.put(`${serverUrl}/api/edit-user-role`, {userId: userId, roles: roles});
   }
 
 };
