@@ -1,16 +1,17 @@
-import { Component } from 'react';
-import React from 'react';
+import React, { Component } from 'react';
 import { format } from 'date-fns';
-import { a, hh, button, td, span } from 'react-hyperscript-helpers';
+import { a, button, div, hh, span } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { DropdownButton, MenuItem, ButtonToolbar } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
+import { formatRoleName } from "../util/roles";
 
 const styles = { 
   statusWidth: '140',
   fileTypeWidth: '170',
+  userNameWidth: '180',
   docVersionWidth: '90',
   creatorWidth: '130',
   infoLinkWidth: '96',
@@ -18,7 +19,7 @@ const styles = {
   removeWidth: '45',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270'
-}
+};
 
 export const Table = hh(class Table extends Component {
 
@@ -112,7 +113,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToProject = (cell, row) => {
-    const url = handleRedirectToProject(this.props.serverURL, row.projectKey);
+    const url = handleRedirectToProject(component.serverURL, row.projectKey);
     return a({
       href: url,
       target: '_blank'
@@ -128,7 +129,7 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
-    const url = handleRedirectToProject(this.props.serverURL, row.linkedProjectKey);
+    const url = handleRedirectToProject(component.serverURL, row.linkedProjectKey);
     return a({
       href: url,
       target: '_blank'
@@ -145,6 +146,21 @@ export const Table = hh(class Table extends Component {
     return btn;
   };
 
+  roleSelection = (cell,row) => {
+    return this.props.isViewer ? null :
+      div({className : "roles-container"}, [
+        span({}, [formatRoleName(row.roles)]),
+        button({
+            className: "btn btn-default btn-sm edit",
+            onClick: this.props.editRole(row),
+            disabled: !this.props.isAdmin,
+            title: "Edit"
+          }, [
+            span({className: "glyphicon glyphicon-pencil"}, [])
+          ]
+      )]);
+  };
+
   unlinkSampleCollection = (data) => (e) => {
     this.props.unlinkSampleCollection(data);
   };
@@ -156,12 +172,16 @@ export const Table = hh(class Table extends Component {
         striped
         hover
         className='tableContainer'
-        pagination={this.props.reviewFlow}
+        pagination={this.props.pagination}
         search={this.props.reviewFlow}
         options={{
           paginationSize: this.props.paginationSize,
           paginationPosition: 'bottom',
-          sizePerPage: this.props.sizePerPage
+          sizePerPage: this.props.sizePerPage,
+          onSizePerPageList: this.props.onSizePerPageListHandler,
+          onPageChange: this.props.onPageChange,
+          onSearchChange: this.props.onSearchChange,
+          onSortChange: this.props.onSortChange
         }}>
         {
           this.props.headers.map((header, index) => {
@@ -193,6 +213,12 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataSort={true}
                 width={styles.creatorWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'userName') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                width={styles.userNameWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
@@ -242,6 +268,12 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.redirectToSampleCollectionLinkedProject}
                 dataSort={ true }>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'roles') {
+              return <TableHeaderColumn isKey= {isKey}
+                key={header.name}
+                dataField={header.value}
+                dataFormat={this.roleSelection}
+                >{header.name}</TableHeaderColumn>
             } else if (header.value==='collectionName') {
                 return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}

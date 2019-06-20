@@ -32,3 +32,39 @@
 .tableContainer .btn-toolbar .dropdownButton .caret {
     margin-left: 5px;
 }
+
+.roles-container {
+    text-transform: capitalize;
+}
+
+/* Edit button into grid */
+.roles-container .edit,
+.roles-container .edit:focus {
+    float: right;
+    outline: none;
+}
+
+.roles-management .tableContainer input.form-control  {
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+/* Modal > Roles */
+.roles-cta .buttonTertiary,
+.roles-cta .buttonTertiary:hover,
+.roles-cta .buttonTertiary:focus,
+.roles-cta .buttonTertiary:active {
+    float: left;
+    color: #000000;
+    background-color: #ffffff;
+    outline: none
+}
+
+.pagination.custom-component {
+    margin-top: 20px;
+    float: right;
+}
+
+.custom-component .page-item .page-link {
+    cursor: pointer;
+}

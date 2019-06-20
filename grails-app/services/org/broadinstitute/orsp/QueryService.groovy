@@ -373,7 +373,7 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                ' where consent_collection_link_id = :consentCollectionIds '
+                ' where consent_collection_link_id = :consentCollectionIds'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1209,4 +1209,73 @@ class QueryService implements Status {
         documents
     }
 
+     void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
+         final session = sessionFactory.currentSession
+         final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
+         final SQLQuery sqlQuery = session.createSQLQuery(query)
+         newRoles.each { it ->
+             sqlQuery.setLong("version", 0)
+             sqlQuery.setString("role", it)
+             sqlQuery.setString("userName", user.userName)
+             sqlQuery.setLong("userId", user.id)
+             sqlQuery.executeUpdate()
+         }
+    }
+
+    void deleteOrspUserRoles (userId) {
+        final session = sessionFactory.currentSession
+        final String query = 'delete from supplemental_role where user_id = :userId'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("userId", userId)
+        sqlQuery.executeUpdate()
+    }
+
+    @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])
+    PaginatedResponse queryUserRoles(PaginationParams pagination) {
+        Integer count = User.count()
+        String orderField
+        switch (pagination.orderColumn) {
+            case 0:
+                orderField = "userName"
+                break
+            case 1:
+                orderField = "displayName"
+                break
+            case 2:
+                orderField = "emailAddress"
+                break
+            case 3:
+                orderField = "roles"
+                break
+            default:
+                orderField = "userName"
+                break
+        }
+
+        PagedResultList<User> usersResult = User.
+                createCriteria().
+                list(max: pagination.length, offset: pagination.start) {
+                    maxResults pagination.length
+                    firstResult pagination.start
+                    order(orderField, pagination.sortDirection)
+                    if (pagination.searchValue) {
+                        or {
+                            ilike("userName", pagination.getLikeTerm())
+                            ilike("displayName", pagination.getLikeTerm())
+                            ilike("emailAddress", pagination.getLikeTerm())
+                        }
+                    }
+                }
+
+        List<User> users = usersResult.toList()
+
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: count,
+                recordsFiltered: usersResult.getTotalCount(),
+                data: users,
+                error: ""
+        )
+
+    }
 }
