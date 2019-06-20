@@ -730,7 +730,6 @@ class QueryService implements Status {
         Set result = new HashSet<Issue>()
 
         if (ids.size() > 0) {
-//            result = findIssuesSearchItems(ids)
             result = findIssuesSearchItemsDTO(ids)
         }
         result
@@ -741,40 +740,6 @@ class QueryService implements Status {
      * @param issueIds
      * @return
      */
-    Set<Issue> findIssuesSearchItems(ArrayList<Integer> issueIds) {
-        final String query = "SELECT i.id id, " +
-                "i.project_key projectKey, " +
-                "i.type type, " +
-                "i.status status, " +
-                "i.summary summary, " +
-                "i.reporter reporter, " +
-                "i.update_date updated, " +
-                "i.expiration_date expirationDate " +
-                "FROM issue i " +
-                "WHERE i.id IN (" + issueIds.join(",") + ")"
-
-        Set<Issue> result = new HashSet<Issue>()
-
-        getSqlConnection().rows(query).each{
-            Issue issueSearchItem = new Issue()
-
-            issueSearchItem.setId((Integer)it.get("id"))
-            issueSearchItem.setProjectKey(it.get("projectKey").toString())
-            issueSearchItem.setType(it.get("type").toString())
-            issueSearchItem.setStatus(it.get("status").toString())
-            issueSearchItem.setSummary(it.get("summary").toString())
-            issueSearchItem.setReporter(it.get("reporter").toString())
-            if (it.get("expirationDate") != null) {
-                issueSearchItem.setExpirationDate(it.get("expirationDate"))
-            }
-            if (it.get("updated") != null) {
-                issueSearchItem.setUpdateDate(it.get("updated"))
-            }
-            result.add(issueSearchItem)
-        }
-        result
-    }
-
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
         final String query = "SELECT i.id id, " +
                 "i.project_key projectKey, " +
@@ -796,13 +761,9 @@ class QueryService implements Status {
         getSqlConnection().rows(query).each {
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                   def extraPropItem = new ExtraPropsSearchItemDTO()
-                    extraPropItem.setName(it.get("name").toString())
-                    extraPropItem.setValue(it.get("value").toString())
-//                    def extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
-//                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-//                    extraProp.push(it.get("value").toString())
-                    issueSearchItemDTO.extraProperties.add(extraPropItem)
+                    def extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
+                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
+                    extraProp.push(it.get("value").toString())
                 }
             } else {
                 if (currentProjectKey != "") {
@@ -823,7 +784,13 @@ class QueryService implements Status {
                 if (it.get("updated") != null) {
                     issueSearchItemDTO.setUpdateDate(it.get("updated"))
                 }
+                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    def extraProp = issueSearchItemDTO.extraProperties.size() != 0 ? issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
+                    extraProp.push(it.get("value").toString())
+                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
+                }
             }
+            resultDTO.add(issueSearchItemDTO)
         }
         resultDTO
     }
