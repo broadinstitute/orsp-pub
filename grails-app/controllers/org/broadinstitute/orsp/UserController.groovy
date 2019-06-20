@@ -79,7 +79,7 @@ class UserController extends AuthenticatedController {
         } catch(SQLException e) {
             response.status = 500
             log.error("Error trying to execute delete/insert for new roles: ${rolesToAssign} to userId: ${userId}. " + e.message)
-            render([error: e.message] as JSON)
+            render([error: "An error has ocurred trying to update roles"] as JSON)
         } catch(Exception e) {
             log.error("Error while trying to modify roles to userId: ${userId}. " + e.message)
             response.status = 500

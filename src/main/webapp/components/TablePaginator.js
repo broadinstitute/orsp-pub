@@ -9,7 +9,7 @@ export const TablePaginator = hh(class TablePaginator extends Component {
     }
   }
 
-  goPrevPage = (e) => {
+  goPrevPage = () => {
     const page = this.props.currentPage > 1 ? this.props.currentPage -1 : this.props.currentPage;
     this.setState( prev => {
       prev.pageCounter = this.state.pageCounter - 1;
@@ -17,7 +17,7 @@ export const TablePaginator = hh(class TablePaginator extends Component {
     }, () => this.props.onPageChange(page));
   };
 
-  goNextPage = (e) => {
+  goNextPage = () => {
     const page = this.props.currentPage < this.props.lastPage ? this.props.currentPage + 1 :this.props.currentPage;
     this.setState( prev => {
       prev.pageCounter = this.state.pageCounter + 1;
@@ -25,14 +25,14 @@ export const TablePaginator = hh(class TablePaginator extends Component {
     }, () => this.props.onPageChange(page));
   };
 
-  goLastPage = (e) => {
+  goLastPage = () => {
     this.setState( prev => {
       prev.pageCounter = this.props.lastPage - 1;
       return prev;
     }, () => this.props.onPageChange(this.props.lastPage));
   };
 
-  goFirstPage = (e) => {
+  goFirstPage = () => {
     this.setState( prev => {
       prev.pageCounter = 0;
       return prev;
@@ -50,50 +50,50 @@ export const TablePaginator = hh(class TablePaginator extends Component {
   render() {
     return (
       ul({className: "pagination custom-component"}, [
-        li({ className: "page-item", title: "first page", onClick: (e) => { this.goFirstPage() }}, [
+        li({ className: "page-item", title: "first page", onClick: () => { this.goFirstPage() }}, [
           a({ className: "page-link", isRendered: this.props.currentPage !== 1 && this.props.lastPage !== 1 }, ['<<'])
         ]),
 
-        li({ className: "page-item", title: "prev page", onClick: this.goPrevPage }, [
+        li({ className: "page-item", title: "prev page", onClick:() => { this.goPrevPage() }}, [
           a({ className: "page-link", isRendered: this.props.currentPage !== 1 && this.props.lastPage !== 1 }, ['<'])
         ]),
 
         li({ className: "page-item " + (this.props.currentPage === 1 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage > 1 + this.state.pageCounter || this.props.currentPage === 1 + this.state.pageCounter , onClick: (e) => { this.selected(1) }}, [
+          isRendered: this.props.lastPage > 1 + this.state.pageCounter || this.props.currentPage === 1 + this.state.pageCounter , onClick: () => { this.selected(1) }}, [
           a({ className: "page-link" }, [1 + this.state.pageCounter])
         ]),
 
         li({ className: "page-item " + (this.props.currentPage === 2 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage >= 2 + this.state.pageCounter, onClick: (e) => { this.selected(2) }}, [
+          isRendered: this.props.lastPage >= 2 + this.state.pageCounter, onClick: () => { this.selected(2) }}, [
           a({ className: "page-link" }, [2 + this.state.pageCounter])
         ]),
 
         li({
           className: "page-item " + (this.props.currentPage === 3 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage >= 3 + this.state.pageCounter, onClick: (e) => { this.selected(3) }}, [
+          isRendered: this.props.lastPage >= 3 + this.state.pageCounter, onClick: () => { this.selected(3) }}, [
           a({ className: "page-link" }, [3 + this.state.pageCounter])
         ]),
 
         li({ className: "page-item " + (this.props.currentPage === 4 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage >= 4 + this.state.pageCounter, onClick: (e) => { this.selected(4) }}, [
+          isRendered: this.props.lastPage >= 4 + this.state.pageCounter, onClick: () => { this.selected(4) }}, [
           a({ className: "page-link" }, [4 + this.state.pageCounter])
         ]),
 
         li({ className: "page-item " + (this.props.currentPage === 5 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage >= 5 + this.state.pageCounter, onClick: (e) => { this.selected(5) }}, [
+          isRendered: this.props.lastPage >= 5 + this.state.pageCounter, onClick: () => { this.selected(5) }}, [
           a({ className: "page-link" }, [5 + this.state.pageCounter])
         ]),
 
         li({ className: "page-item " + (this.props.currentPage === 6 + this.state.pageCounter ?  'active ' : ''),
-          isRendered: this.props.lastPage >= 6 + this.state.pageCounter, onClick: (e) => { this.selected(6) }}, [
+          isRendered: this.props.lastPage >= 6 + this.state.pageCounter, onClick: () => { this.selected(6) }}, [
           a({ className:"page-link" }, [6 + this.state.pageCounter])
         ]),
 
-        li({ className: "page-item", title: "next page", onClick: this.goNextPage }, [
+        li({ className: "page-item", title: "next page", onClick: () => { this.goNextPage() }}, [
           a({ className: "page-link", isRendered: this.props.currentPage !== this.props.lastPage && this.props.lastPage !== 1 }, ['>'])
         ]),
 
-        li({ className: "page-item", title: "last page", onClick: this.goLastPage }, [
+        li({ className: "page-item", title: "last page", onClick: () => { this.goLastPage() }}, [
           a({ className: "page-link", isRendered: this.props.currentPage !== this.props.lastPage && this.props.lastPage !== 1 }, ['>>'])
         ])
       ])

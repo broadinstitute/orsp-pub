@@ -171,7 +171,7 @@ class UserService {
                 }
             } else {
                 log.error("Error while trying to modify roles to userId: ${userId}. ${validatedRoles.errorMessage}")
-                throw new IllegalArgumentException()
+                throw new IllegalArgumentException("Error while trying to modify roles for user ${user.displayName}")
             }
         } else {
             log.error("Error while trying to modify roles to userId null.")
