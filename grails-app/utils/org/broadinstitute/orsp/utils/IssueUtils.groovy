@@ -106,45 +106,20 @@ final class IssueUtils {
         null
     }
 
-    static Map<String, Object> generateArgumentsForRedirect(Issue issue, String id, String tab) {
+    static Map<String, Object> generateArgumentsForRedirect(String type, String id, String tab) {
         Map<String, Object> arguments = new HashMap<>()
-        if (isConsentGroup(issue)) {
+        if (type == IssueType.CONSENT_GROUP.name) {
             arguments.put("controller", "newConsentGroup")
             arguments.put("action", "main")
-            tab != null ? arguments.put("params", [consentKey: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [consentKey: issue.projectKey])
+            tab != null ? arguments.put("params", [consentKey: id, tab: tab]) :
+                    arguments.put("params", [consentKey: id])
         } else {
             arguments.put("controller", "project")
             arguments.put("action", "main")
             arguments.put("projectKey", id)
-            tab != null ? arguments.put("params", [projectKey: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [projectKey: issue.projectKey])
+            tab != null ? arguments.put("params", [projectKey: id, tab: tab]) :
+                    arguments.put("params", [projectKey: id])
         }
         arguments
-    }
-
-    static boolean isConsentGroup(Issue issue) {
-        return issue.type == IssueType.CONSENT_GROUP.name || issue.controller == IssueType.CONSENT_GROUP.name
-    }
-
-    static Map<String, Object> generateArgumentsForRedirect(IssueSearchItemDTO issue, String id, String tab) {
-        Map<String, Object> arguments = new HashMap<>()
-        if (isConsentGroup(issue)) {
-            arguments.put("controller", "newConsentGroup")
-            arguments.put("action", "main")
-            tab != null ? arguments.put("params", [consentKey: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [consentKey: issue.projectKey])
-        } else {
-            arguments.put("controller", "project")
-            arguments.put("action", "main")
-            arguments.put("projectKey", id)
-            tab != null ? arguments.put("params", [projectKey: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [projectKey: issue.projectKey])
-        }
-        arguments
-    }
-
-    static boolean isConsentGroup(IssueSearchItemDTO issue) {
-        return issue.type == IssueType.CONSENT_GROUP.name
     }
 }

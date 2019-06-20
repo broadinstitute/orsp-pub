@@ -49,7 +49,7 @@ class SearchController implements UserInfo {
     def getMatchingIssues() {
         def response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
-            Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect((Issue)it, it.projectKey, null)
+            Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
             String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params:  arguments.get("params"), absolute: true])
             response << [
                     id: it.id,
@@ -143,7 +143,7 @@ class SearchController implements UserInfo {
                 options.fundingInstitute ||
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
-                Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect((IssueSearchItemDTO)it, it.projectKey, null)
+                Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
 
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
