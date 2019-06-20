@@ -10,7 +10,7 @@ This template requires the following arguments:
 --}%
 <div class="modal-dialog modal-md">
     <div class="modal-content">
-        <g:form controller="clarification" action="addClarificationRequest" method="POST">
+        <g:form controller="clarification" action="collectionRequestClarification" method="POST">
             <div class="modal-header panel-heading">
                 <button type="button" class="close" data-dismiss="modal" style="outline:none"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">Request Clarification on ${issue.projectKey}</h4>
@@ -22,9 +22,15 @@ This template requires the following arguments:
                     <div class="inputField ">
                         <p class="inputFieldLabel">Please describe the clarification you are requesting</p>
                         <div class="inputFieldWrapper">
-                            <textarea name="comment" id="comment" rows="5" class="form-control inputFieldTextarea" style="resize: none"></textarea>
+                            <textarea required oninvalid="this.setCustomValidity('Required field')" name="comment" id="comment" rows="5" class="form-control inputFieldTextarea" style="resize: none"></textarea>
                         </div>
                     </div>
+            </div>
+            <div class="form-group">
+                <label class="inputFieldLabel" for="projectMember">Project Member</label>
+                <span class="badge addProjectMember inputFieldWrapper"></span>
+                <input required oninvalid="this.setCustomValidity('Required field')" type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete"/>
+                <input type="hidden" name="pm"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

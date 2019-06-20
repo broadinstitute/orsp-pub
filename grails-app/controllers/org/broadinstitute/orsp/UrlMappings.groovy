@@ -42,7 +42,6 @@ class UrlMappings {
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
 
-
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')

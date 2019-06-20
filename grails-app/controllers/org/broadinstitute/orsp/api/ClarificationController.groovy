@@ -58,9 +58,31 @@ class ClarificationController extends AuthenticatedController {
                 render([error: "${e}"] as JSON)
             }
         }
-        if(params.type == "link") {
-            redirect([action: "main", controller: "project", params: [tab: "consent-groups", projectKey: params.id]])
-        }
         response
+    }
+
+    def collectionRequestClarification() {
+        Issue issue = queryService.findByKey(params.id)
+        if (params.comment) {
+            Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
+            String toAddresses = userService.findUser(params.pm)?.collect {it.emailAddress}
+            String fromAddress = (String) getUser()?.emailAddress
+            try {
+                notifyService.sendClarificationRequest(
+                        new NotifyArguments(
+                                toAddresses: [toAddresses],
+                                fromAddress: fromAddress,
+                                subject: "Clarification Requested: " + issue.projectKey,
+                                comment: comment.description,
+                                user: getUser(),
+                                issue: issue))
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
+                response.status = 201
+            } catch (Exception e) {
+                response.status = 500
+                render([error: "${e}"] as JSON)
+            }
+        }
+        redirect([action: "main", controller: "project", params: [tab: "consent-groups", projectKey: params.id]])
     }
 }
