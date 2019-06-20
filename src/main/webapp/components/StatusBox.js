@@ -22,11 +22,11 @@ export const StatusBox = hh(class StatusBox extends Component {
           span({className: "projectKey"}, [projectKey+": " ]),
           span({className: "italic"}, [summary])
         ]),
-        p({className: "headerLabel"}, [
+        p({isRendered: component.issueType === 'project', className: "headerLabel"}, [
           "Status: ",
           span({}, [status])
         ]),
-        p({className: "headerLabel"}, [
+        p({isRendered: component.issueType === 'project', className: "headerLabel"}, [
           "Awaiting action from: ",
           span({}, [actor[0]])
         ]),

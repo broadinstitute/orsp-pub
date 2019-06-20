@@ -7,7 +7,7 @@ function projectLinkFormatter(cell, row) {
 }
 
 function consentLinkFormatter(cell, row) {
-  return a({href: '../consentGroup/show/' + row.consent_key}, [row.consent_key]);
+  return a({href: '../newConsentGroup/main?consentKey=' + row.consent_key}, [row.consent_key]);
 }
 
 export default class CollectionTable extends React.Component {

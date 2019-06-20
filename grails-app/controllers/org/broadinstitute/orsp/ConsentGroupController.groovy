@@ -154,7 +154,7 @@ class ConsentGroupController extends AuthenticatedController {
     def unLinkConsentCollection() {
         def link = ConsentCollectionLink.findById(params.id)
         deleteCollectionLinks(Collections.singletonList(link))
-        redirect(controller: 'consentGroup', action: "show", params: [id: params.consentKey, tab: 'details'])
+        redirect(controller: 'newConsentGroup', action: "main", model: [consentKey: params.consentKey, tab: 'details'])
     }
 
     /**
@@ -183,7 +183,11 @@ class ConsentGroupController extends AuthenticatedController {
     @Override
     show() {
         Issue issue = queryService.findByKey(params.id)
-        if (issueIsForbidden(issue)) {
+        Boolean isUserReporter = false
+        if (params.projectKey != null) {
+            isUserReporter = queryService.findByKey(params.projectKey)?.reporter == getUser().userName
+        }
+        if (issueIsForbidden(issue) && !isUserReporter) {
             redirect(controller: 'Index', action: 'index')
         }
         def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
@@ -287,7 +291,7 @@ class ConsentGroupController extends AuthenticatedController {
     def saveRestriction() {
         DataUseRestriction restriction = DataUseRestriction.findById(params.id)
         restriction.save(params)
-        redirect(controller: 'consentGroup', action: "show", params: [id: restriction.consentGroupKey, tab: 'documents'])
+        redirect(controller: 'newConsentGroup', action: "main", model: [consentKey: restriction.consentGroupKey, tab: 'documents'])
     }
 
     /**
@@ -362,8 +366,8 @@ class ConsentGroupController extends AuthenticatedController {
         } catch (Exception e) {
             flash.error = "Unable to attach consent document: " + e.getMessage()
         }
-        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue, params.id, "consent-groups")
-        redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get(params)])
+        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue, params.issueKey, "consent-groups")
+        redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
     }
 
 }

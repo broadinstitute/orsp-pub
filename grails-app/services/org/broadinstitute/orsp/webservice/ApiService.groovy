@@ -61,13 +61,11 @@ class ApiService {
         Map<String, String> projectTypeMap = queryService.getIssueKeysWithType()
         filterUnique(queryService.findCollectionLinksWithSamples().
                 collect { link ->
-                    def consentLink = getTagLib().createLink([controller: 'consentGroup', action: 'show', params: [id: link.consentKey], absolute: true])
-                    def projectController = IssueUtils.getControllerForIssueTypeName(projectTypeMap.get(link.projectKey))
+                    def consentLink = getTagLib().createLink([controller: 'newConsentGroup', action: 'main', params: [consentKey: link.consentKey], absolute: true])
                     def sampleCollectionName = link.sampleCollection?.name
                     // Possibility exists for bad data in consent collection link table such that we might not have a valid project to link to.
                     // See https://broadinstitute.atlassian.net/browse/DSDECOM-58 for more info.
-                    if (projectController && !projectController.isEmpty()) {
-                        def projectLink = getTagLib().createLink([controller: projectController, action: 'show', params: [id: link.projectKey], absolute: true])
+                        def projectLink = getTagLib().createLink([controller: "project", action: 'main', params: [projectKey: link.projectKey], absolute: true])
                         [
                                 "sampleCollection": link.sampleCollectionId,
                                 "sampleCollectionName": sampleCollectionName,
@@ -76,7 +74,6 @@ class ApiService {
                                 "consent": link.consentKey,
                                 "consentUrl": consentLink
                         ]
-                    }
                 })
     }
 
