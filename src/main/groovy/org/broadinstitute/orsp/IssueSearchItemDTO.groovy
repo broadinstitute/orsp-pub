@@ -10,5 +10,4 @@ class IssueSearchItemDTO {
     Date expirationDate
     Date updateDate
     Map<String, List<String>> extraProperties = new HashMap<String, List<String>>()
-//    Set<ExtraPropsSearchItemDTO> extraProperties = new HashSet<ExtraPropsSearchItemDTO>()
 }
