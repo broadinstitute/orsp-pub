@@ -5,6 +5,8 @@ import org.broadinstitute.orsp.webservice.PaginationParams
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 
+import java.sql.SQLException
+
 /**
  * Rest-based class to handle synchronizing users from Broad's Crowd instance to Compliance database.
  * TODO: Should be admin linked and auth-ed at some point.
@@ -71,13 +73,15 @@ class UserController extends AuthenticatedController {
             userService.editUserRoles(userId, rolesToAssign)
             response.status = 200
             render([message: 'Role Updated'] as JSON)
-        }
-        catch(IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             response.status = 400
             render([error: e.message] as JSON)
-        }
-        catch(Throwable e) {
-            log.error("Error while trying to modify roles to userId: ${userId}." + e.message)
+        } catch(SQLException e) {
+            response.status = 500
+            log.error("Error trying to execute delete/insert for new roles: ${rolesToAssign} to userId: ${userId}. " + e.message)
+            render([error: e.message] as JSON)
+        } catch(Exception e) {
+            log.error("Error while trying to modify roles to userId: ${userId}. " + e.message)
             response.status = 500
             render([error: e.message] as JSON)
         }

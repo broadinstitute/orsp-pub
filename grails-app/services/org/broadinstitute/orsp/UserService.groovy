@@ -3,6 +3,8 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 
+import java.sql.SQLException
+
 @Slf4j
 class UserService {
     QueryService queryService
@@ -158,22 +160,22 @@ class UserService {
      * @param userId        The user's id
      * @param rolesToAssign Roles String array to be assigned
      */
-    void editUserRoles (Integer userId, ArrayList<String> rolesToAssign) {
+    void editUserRoles (Integer userId, ArrayList<String> rolesToAssign) throws SQLException {
         if (userId != null) {
             User user = User.findById(userId)
             def validatedRoles = validateRoles(rolesToAssign)
-            if (user != null && validatedRoles.hasErrors) {
+            if (user != null && !validatedRoles?.hasErrors) {
                 queryService.deleteOrspUserRoles(userId)
                 if (!rolesToAssign.isEmpty()) {
                     queryService.updateOrspUserRoles(user, rolesToAssign)
                 }
             } else {
                 log.error("Error while trying to modify roles to userId: ${userId}. ${validatedRoles.errorMessage}")
-                throw IllegalArgumentException()
+                throw new IllegalArgumentException()
             }
         } else {
             log.error("Error while trying to modify roles to userId null.")
-            throw IllegalArgumentException("Cannot update roles of null userId")
+            throw new IllegalArgumentException("Cannot update roles of null userId")
         }
     }
 
@@ -195,11 +197,13 @@ class UserService {
                         rolesToAssign.contains(SupplementalRole.COMPLIANCE_OFFICE) ||
                         rolesToAssign.contains(SupplementalRole.ADMIN)))
 
-        String errorMessage = "Roles cannot coexists " + !allRolesAreValid ? (!readOnlyCoexists ? "Read only cannot coexists with : ${SupplementalRole.COMPLIANCE_OFFICE} or ${SupplementalRole.ADMIN}": "") : "invalid roles."
+        String errorMessage = "Roles validation error " + ( allRolesAreValid ?
+                (!readOnlyCoexists ? "Read only cannot coexists with : ${SupplementalRole.COMPLIANCE_OFFICE} or ${SupplementalRole.ADMIN}": "")
+                : "invalid role(s) ${rolesToAssign}.")
 
         [
             errorMessage: errorMessage,
-            hasErrors: allRolesAreValid && readOnlyCoexists
+            hasErrors: !(allRolesAreValid && readOnlyCoexists)
         ]
 
     }

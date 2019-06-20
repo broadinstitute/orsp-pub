@@ -9,7 +9,7 @@ import { AlertMessage } from "./AlertMessage";
 
 const READ_ONLY = USER_ROLES['Read Only'].value;
 const ADMIN = USER_ROLES['Admin'].value;
-const COMPLIANCE_OFFICE = USER_ROLES['Compliance Office'].value;
+const COMPLIANCE_OFFICE = 'Compliance Office';
 
 export const RoleManagementEdit = hh(class RoleManagementEdit extends Component {
 
@@ -22,19 +22,17 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
       showError: false,
       roles: {
         'orsp': false,
-        'Compliance Office': false,
         'ro_admin': false
       },
       disabledChecks: {
         'orsp': false,
-        'Compliance Office': false,
         'ro_admin': false
       }
     };
   }
 
   componentDidMount() {
-     this.defaultChecked();
+    this.defaultChecked();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -51,6 +49,8 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
         Object.keys(USER_ROLES).forEach(role => {
           if (USER_ROLES[role].value === item) {
             checkedRoles[USER_ROLES[role].value] = true
+          } else if (COMPLIANCE_OFFICE === item) {
+            checkedRoles[ADMIN] = true
           }
         });
       });
@@ -87,9 +87,9 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
 
   disableCheckBox = (checkBox) => {
     let disable = false;
-    if (checkBox === READ_ONLY && (this.state.roles[ADMIN] === true || this.state.roles[COMPLIANCE_OFFICE] === true)) {
+    if (checkBox === READ_ONLY && this.state.roles[ADMIN] === true) {
       disable = true;
-    } else if ((checkBox === COMPLIANCE_OFFICE || checkBox === ADMIN) && this.state.roles[READ_ONLY]) {
+    } else if (checkBox === ADMIN && this.state.roles[READ_ONLY]) {
       disable = true;
     }
     return disable;
