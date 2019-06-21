@@ -128,7 +128,7 @@ export const Documents = hh(class Documents extends Component {
           className: "btn buttonSecondary",
           style: addDocumentBtn,
           onClick: this.addDocuments,
-          isRendered: !this.props.user.isViewer,
+          isRendered: !component.isViewer,
         }, ["Add Document"]),
         Table({
           headers: headers,
@@ -136,8 +136,8 @@ export const Documents = hh(class Documents extends Component {
           sizePerPage: 10,
           paginationSize: 10,
           handleDialogConfirm: this.props.handleDialogConfirm,
-          isAdmin: this.props.user.isAdmin,
-          isViewer: this.props.user.isViewer,
+          isAdmin: component.isAdmin,
+          isViewer: component.isViewer,
           reviewFlow: true,
           pagination: true,
           remove: this.remove
@@ -150,7 +150,7 @@ export const Documents = hh(class Documents extends Component {
       }, [
         Panel({
           title: "Data Use Restrictions",
-          isRendered: (this.props.isAdmin || this.props.user.isViewer) && this.findDul()
+          isRendered: (component.isAdmin || component.isViewer) && this.findDul()
         }, [
           h3({
             style: {'marginTop': '10px'},
@@ -172,14 +172,14 @@ export const Documents = hh(class Documents extends Component {
                 className: "btn buttonSecondary",
                 style: {'marginRight': '15px'},
                 onClick: this.newRestriction,
-                isRendered: this.props.restrictionId === null && this.findDul() && !this.props.user.isViewer,
+                isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer,
               },
               ["Create Restriction"]),
             button({
                 className: "btn buttonSecondary",
                 style: {'marginRight': '15px'},
                 onClick: this.editRestriction,
-                isRendered: this.props.restrictionId !== null && !this.props.user.isViewer,
+                isRendered: this.props.restrictionId !== null && !component.isViewer,
               },
               ["Edit Restrictions"]),
             button({
@@ -200,8 +200,8 @@ export const Documents = hh(class Documents extends Component {
               paginationSize: 10,
               unlinkProject: this.props.handleUnlinkProject,
               handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
-              isAdmin: this.props.isAdmin,
-              isViewer: this.props.user.isViewer
+              isAdmin: component.isAdmin,
+              isViewer: component.isViewer
             })
           ])
         ])
