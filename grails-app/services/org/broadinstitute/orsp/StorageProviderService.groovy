@@ -441,23 +441,15 @@ class StorageProviderService implements Status {
      * @return A GoogleCredential from json secrets.
      */
     private GoogleCredential getCredential() {
-        println "storageConfiguration.config: " + storageConfiguration.config
         java.net.URL config_url = this.getClass().getResource(storageConfiguration.config)
-        println 'step000'
-        println "getClass: " + config_url
-        println GrailsResourceUtils.toURI("/orsp-config/orsp-client.json")
         if (!credential) {
-            println 'step001'
             // File configFile = GrailsResourceUtils.getFile(
             //        GrailsResourceUtils.toURI(config_url), "GCS Config")
             File configFile = new File(storageConfiguration.config);
-            println 'step002'
             setCredential(GoogleCredential.
                     fromStream(new FileInputStream(configFile)).
                     createScoped(Collections.singletonList(StorageScopes.DEVSTORAGE_FULL_CONTROL)))
-            println 'step003'
         }
-        println 'step004'
         credential
     }
 
