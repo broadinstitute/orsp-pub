@@ -15,27 +15,30 @@ This template requires the following arguments:
                 <button type="button" class="close" data-dismiss="modal" style="outline:none"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">Request Clarification on ${issue.projectKey}</h4>
             </div>
-            <input name="id" value="${issue.projectKey}" id="id" type="hidden">
-            <input name="type" value="link" id="type" type="hidden">
+            <input name="id" value="${issue.projectKey}" id="id" type="hidden"/>
+            <input name="type" value="link" id="type" type="hidden"/>
 
             <div class="modal-body">
-                    <div class="inputField">
-                        <p class="inputFieldLabel">Please describe the clarification you are requesting</p>
-                        <div class="inputFieldWrapper">
-                            <textarea required oninvalid="this.setCustomValidity('Required field')" name="comment" id="comment" rows="5" class="form-control inputFieldTextarea" style="resize: none"></textarea>
-                        </div>
+                <div class="inputField" id="inputFieldDescribe">
+                    <p class="inputFieldLabel">Please describe the clarification you are requesting</p>
+                    <div class="inputFieldWrapper">
+                        <textarea name="comment" id="comment" rows="5" class="form-control inputFieldTextarea" style="resize: none"
+                                  required = "true" oninvalid="$('#inputFieldDescribe').addClass('inputFieldError')"
+                                  onkeydown="$('#inputFieldDescribe').removeClass('inputFieldError')"/>
                     </div>
+                </div>
 
-                    <div class="form-group" style="margin-top: 20px">
-                        <label class="inputFieldLabel" for="projectMember">Project Member</label>
-                        <span class="badge addProjectMember inputFieldWrapper"></span>
-                        <input required oninvalid="this.setCustomValidity('Required field')" type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete"/>
-                        <input type="hidden" name="pm"/>
-                    </div>
+                <div style="margin-top: 20px" id="member">
+                    <label class="inputFieldLabel" for="projectMember">Project Member</label>
+                    <span class="badge addProjectMember inputFieldWrapper"/>
+                    <input type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete" required="true"
+                           oninvalid="$('#member').addClass('inputFieldError')"
+                           onChange="$('#member').removeClass('inputFieldError')"/>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <input name="requestClarification" class="btn btn-primary" value="Request Clarification" id="rc" type="submit">
+                <input name="requestClarification" class="btn btn-primary" value="Request Clarification" id="rc" type="submit"/>
             </div>
         </g:form>
     </div>
