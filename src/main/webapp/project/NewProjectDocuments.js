@@ -141,7 +141,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               handleDialogConfirm: this.props.handleDialogConfirm,
               downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
-              reviewFlow: false
+              reviewFlow: false,
+              pagination: false
             }),
             div({ style: { 'marginTop': '25px' }}, [
               Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [

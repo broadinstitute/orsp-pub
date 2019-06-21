@@ -71,7 +71,7 @@
                   </button>
                 </g:if>
                 <a class="data-name"
-                  href="${createLink(controller: 'consentGroup', action: 'show', params: [id: consent.projectKey, projectKey: issue.projectKey])}">
+                  href="${createLink(controller: 'newConsentGroup', action: 'main', params: [consentKey: consent.projectKey, projectKey: issue.projectKey])}">
                   ${consent.projectKey}: ${consent.summary}
                 </a>
               </div>

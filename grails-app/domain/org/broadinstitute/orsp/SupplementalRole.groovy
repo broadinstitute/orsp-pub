@@ -9,7 +9,7 @@ class SupplementalRole {
 
     public static final List<String> CCO_USERS = ["sdonnell", "saltzman"]
     public static final List<String> ORSP_ROLES = [COMPLIANCE_OFFICE, ORSP]
-    public static final List<String> ADMIN_ROLES = [ADMIN]
+    public static final List<String> ADMIN_ROLES = [ADMIN, ORSP, COMPLIANCE_OFFICE]
 
     static constraints = {
         user nullable: false
@@ -38,5 +38,8 @@ class SupplementalRole {
         roles?.contains(READ_ONLY_ADMIN)
     }
 
+    static ArrayList<String> getAssignableRolesArray() {
+        return [COMPLIANCE_OFFICE, ORSP, ADMIN, READ_ONLY_ADMIN]
+    }
 }
 

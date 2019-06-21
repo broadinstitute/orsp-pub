@@ -253,3 +253,11 @@
 .inputFieldUpdated .inputFieldSelectWrapper:after {
   background: url('./new-tag.svg') no-repeat;
 }
+
+.rolesManagement .inputField.inputFieldReadOnly .checkboxLabel {
+  color: #CCCCCC;
+}
+
+.rolesManagement .inputField p.inputFieldLabel {
+  margin: 0;
+}
