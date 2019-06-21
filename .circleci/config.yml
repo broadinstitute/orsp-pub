@@ -101,9 +101,13 @@ commands:
           name: Deploy to Kubernetes
           command: |
             envsubst < ${HOME}/project/conf/k8s.yml > ${HOME}/patched_k8s.yml
+            envsubst < ${HOME}/project/conf/service.yaml > ${HOME}/patched_service.yml
+            envsubst < ${HOME}/project/conf/ingress.yaml > ${HOME}/patched_ingress.yml
             cat ${HOME}/patched_k8s.yml
             kubectl config set-context --current --namespace=${NAMESPACE}
             kubectl apply -f ${HOME}/patched_k8s.yml
+            kubectl apply -f ${HOME}/patched_service.yml
+            kubectl apply -f ${HOME}/patched_ingress.yml
             kubectl rollout status deployment/${REPO_NAME}
 
 jobs:

@@ -1,12 +1,13 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  annotations: {}
+  labels:
+    app: ${REPO_NAME}
   name: ${REPO_NAME}
   namespace: ${NAMESPACE}
-  labels: :
-    app: ${REPO_NAME}
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: ${REPO_NAME}
@@ -16,62 +17,50 @@ spec:
         app: ${REPO_NAME}
     spec:
       containers:
-        - name: ${REPO_NAME}
-          image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
-          ports:
-            - containerPort: 8080
-          env:
-            - name: MYSQL_DB_HOST
-              value: 127.0.0.1:3306
-            # These secrets are required to start the pod.
-            # [START cloudsql_secrets]
-            - name: MYSQL_DB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: cloudsql-db-credentials
-                  key: username
-            - name: MYSQL_DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: cloudsql-db-credentials
-                  key: password
-          imagePullPolicy: Always
-          volumeMounts:
-          - mountPath: /orsp-config
-            name: orsp-config
-            # [END cloudsql_secrets]
-        # [START proxy_container]
-        - name: "cloudsql-proxy"
-          image: gcr.io/cloudsql-docker/gce-proxy:1.12
-          command:
-            [
-              "/cloud_sql_proxy",
-              "-instances=orsp-dev: us-east1:bricc-mysql-dev=tcp:3306",
-              "-credential_file=/secrets/cloudsql/credentials.json",
-            ]
-          # [START cloudsql_security_context]
-          securityContext:
-            runAsUser: 2 # non-root user
-            allowPrivilegeEscalation: false
-          # [END cloudsql_security_context]
-          volumeMounts:
-            - name: cloudsql-instance-credentials
-              mountPath: /secrets/cloudsql
-              readOnly: true
-          # [END proxy_container]
-      # [START volumes]
-      volumes:
-        - name: cloudsql-instance-credentials
-          secret:
-            secretName: cloudsql-instance-credentials
-        - name: orsp-config
-          configMap:
-            name: orsp-config-dev
+      - env:
+        - name: MYSQL_DB_HOST
+          value: 127.0.0.1:3306
+        - name: MYSQL_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: cloudsql-db-credentials
+        - name: MYSQL_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: cloudsql-db-credentials
+        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
+        imagePullPolicy: Always
+        name: ${REPO_NAME}
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: "/orsp-config"
+          name: orsp-config
+      - command:
+        - "/cloud_sql_proxy"
+        - "-instances=orsp-dev:us-east1:bricc-mysql-dev=tcp:3306"
+        - "-credential_file=/secrets/cloudsql/credentials.json"
+        image: gcr.io/cloudsql-docker/gce-proxy:1.12
+        name: cloudsql-proxy
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 2
+        volumeMounts:
+        - mountPath: /secrets/cloudsql
+          name: cloudsql-instance-credentials
+          readOnly: true
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-      # [END volumes]
-
+      volumes:
+      - name: cloudsql-instance-credentials
+        secret:
+          secretName: cloudsql-instance-credentials
+      - configMap:
+          name: orsp-config-dev
+        name: orsp-config
 
