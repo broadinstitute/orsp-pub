@@ -136,7 +136,7 @@
         serverURL: "${webRequest.baseUrl}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
-        isAdmin: "${session.isAdmin}",
+        isAdmin: ${session.isAdmin},
         isViewer: "${session.isViewer}",
         rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
         updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
