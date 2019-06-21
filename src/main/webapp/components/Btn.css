@@ -108,12 +108,12 @@
 }
 
 .sample-dc .status.approved {
-  background-color: #DDEBB6;
-  color: #425900;
+  background-color: #DFF0D8;
+  color: #3C763D;
 }
 
 .sample-dc .status.pending {
-  background-color: #F6E58D;
+  background-color: #F0E5A9;
   color: #333333;
 }
 

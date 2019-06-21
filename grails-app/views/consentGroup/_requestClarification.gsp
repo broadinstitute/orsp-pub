@@ -19,18 +19,19 @@ This template requires the following arguments:
             <input name="type" value="link" id="type" type="hidden">
 
             <div class="modal-body">
-                    <div class="inputField ">
+                    <div class="inputField">
                         <p class="inputFieldLabel">Please describe the clarification you are requesting</p>
                         <div class="inputFieldWrapper">
                             <textarea required oninvalid="this.setCustomValidity('Required field')" name="comment" id="comment" rows="5" class="form-control inputFieldTextarea" style="resize: none"></textarea>
                         </div>
                     </div>
-            </div>
-            <div class="form-group">
-                <label class="inputFieldLabel" for="projectMember">Project Member</label>
-                <span class="badge addProjectMember inputFieldWrapper"></span>
-                <input required oninvalid="this.setCustomValidity('Required field')" type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete"/>
-                <input type="hidden" name="pm"/>
+
+                    <div class="form-group" style="margin-top: 20px">
+                        <label class="inputFieldLabel" for="projectMember">Project Member</label>
+                        <span class="badge addProjectMember inputFieldWrapper"></span>
+                        <input required oninvalid="this.setCustomValidity('Required field')" type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete"/>
+                        <input type="hidden" name="pm"/>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -40,4 +41,9 @@ This template requires the following arguments:
     </div>
 </div>
 
-
+<!-- Fix autocomplete Dropdown -->
+<style>
+.ui-autocomplete.ui-widget {
+    z-index: 1500;
+}
+</style>
