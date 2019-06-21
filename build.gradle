@@ -11,7 +11,7 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.moowork.gradle:gradle-node-plugin:1.1.1"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.6"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.6"
         classpath "org.grails.plugins:views-gradle:1.1.6"
         classpath "gradle.plugin.com.srcclr:gradle:3.0.4"
         classpath 'com.bmuschko:gradle-clover-plugin:2.2.0'
@@ -187,9 +187,8 @@ task jest(type: YarnTask, dependsOn: 'yarn') {
 // Turning off minify. See https://github.com/bertramdev/asset-pipeline/issues/147
 // 
 assets {
-  minifyJs = true
+  minifyJs = false
   minifyCss = true
-  enableSourceMaps = true
 }
 
 war {
