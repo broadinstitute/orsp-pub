@@ -761,32 +761,22 @@ class QueryService implements Status {
         getSqlConnection().rows(query).each {
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    def extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
+                    Set<String> extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
                             issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-                    extraProp.push(it.get("value").toString())
+                    extraProp.add(it.get("value").toString())
                 }
             } else {
                 if (currentProjectKey != "") {
                     resultDTO.add(issueSearchItemDTO)
                 }
-                currentProjectKey = it.get("projectKey")
-                issueSearchItemDTO = new IssueSearchItemDTO()
 
-                issueSearchItemDTO.setId((Integer)it.get("id"))
-                issueSearchItemDTO.setProjectKey(it.get("projectKey").toString())
-                issueSearchItemDTO.setType(it.get("type").toString())
-                issueSearchItemDTO.setStatus(it.get("status").toString())
-                issueSearchItemDTO.setSummary(it.get("summary").toString())
-                issueSearchItemDTO.setReporter(it.get("reporter").toString())
-                if (it.get("expirationDate") != null) {
-                    issueSearchItemDTO.setExpirationDate(it.get("expirationDate"))
-                }
-                if (it.get("updated") != null) {
-                    issueSearchItemDTO.setUpdateDate(it.get("updated"))
-                }
+                currentProjectKey = it.get("projectKey")
+                issueSearchItemDTO = new IssueSearchItemDTO(it)
+
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    def extraProp = issueSearchItemDTO.extraProperties.size() != 0 ? issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-                    extraProp.push(it.get("value").toString())
+                    Set<String> extraProp = issueSearchItemDTO.extraProperties.size() != 0 ?
+                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
+                    extraProp.add(it.get("value").toString())
                     issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
                 }
             }
