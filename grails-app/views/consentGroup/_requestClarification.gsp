@@ -41,9 +41,16 @@ This template requires the following arguments:
     </div>
 </div>
 
-<!-- Fix autocomplete Dropdown -->
+<!-- Fix autocomplete Dropdown under: Request Clarification Modal -->
 <style>
-.ui-autocomplete.ui-widget {
+.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content {
     z-index: 1500;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 300px;
+}
+
+.ui-dialog.ui-widget.ui-corner-all.ui-front {
+    overflow: visible;
 }
 </style>
