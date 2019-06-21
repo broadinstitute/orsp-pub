@@ -76,8 +76,8 @@ class QueryService implements Status {
     Collection<String> findAllDiseaseAndPopulationRestrictions() {
         final String query =
                 ' select distinct disease_restrictions_string from data_use_restriction_disease_restrictions ' +
-                ' union ' +
-                ' select distinct disease_restrictions_string from data_use_restriction_disease_restrictions '
+                        ' union ' +
+                        ' select distinct disease_restrictions_string from data_use_restriction_disease_restrictions '
         getSqlConnection().rows(query).collect { it.get("disease_restrictions_string").toString() }
     }
 
@@ -136,9 +136,9 @@ class QueryService implements Status {
     Collection<String> findAllSampleCollectionIdsForConsent(String consentKey) {
         final String query =
                 ' select distinct TRIM(sample_collection_id) as sample_collection_id ' +
-                ' from consent_collection_link ' +
-                ' where consent_key = :consentKey ' +
-                ' and sample_collection_id is not null '
+                        ' from consent_collection_link ' +
+                        ' where consent_key = :consentKey ' +
+                        ' and sample_collection_id is not null '
         getSqlConnection().rows(query, ["consentKey": consentKey]).collect { it.get("sample_collection_id").toString() }
     }
 
@@ -181,24 +181,24 @@ class QueryService implements Status {
         PagedResultList<Funding> fundingResults = Funding.
                 createCriteria().
                 list(max: pagination.length, offset: pagination.start) {
-            fetchMode 'issue', FetchMode.JOIN
-            fetchMode 'issue.extraProperties', FetchMode.SELECT
-            createAlias('issue', 'issue')
-            maxResults pagination.length
-            firstResult pagination.start
-            order(orderField, pagination.sortDirection)
-            if (pagination.searchValue) {
-                or {
-                    ilike("issue.type", pagination.getLikeTerm())
-                    ilike("issue.projectKey", pagination.getLikeTerm())
-                    ilike("issue.summary", pagination.getLikeTerm())
-                    ilike("issue.status", pagination.getLikeTerm())
-                    ilike("source", pagination.getLikeTerm())
-                    ilike("name", pagination.getLikeTerm())
-                    ilike("awardNumber", pagination.getLikeTerm())
+                    fetchMode 'issue', FetchMode.JOIN
+                    fetchMode 'issue.extraProperties', FetchMode.SELECT
+                    createAlias('issue', 'issue')
+                    maxResults pagination.length
+                    firstResult pagination.start
+                    order(orderField, pagination.sortDirection)
+                    if (pagination.searchValue) {
+                        or {
+                            ilike("issue.type", pagination.getLikeTerm())
+                            ilike("issue.projectKey", pagination.getLikeTerm())
+                            ilike("issue.summary", pagination.getLikeTerm())
+                            ilike("issue.status", pagination.getLikeTerm())
+                            ilike("source", pagination.getLikeTerm())
+                            ilike("name", pagination.getLikeTerm())
+                            ilike("awardNumber", pagination.getLikeTerm())
+                        }
+                    }
                 }
-            }
-        }
 
         List<Funding> fundings = fundingResults.findAll()
         List<String> piUserNames = fundings*.issue*.getPIs().flatten().unique()
@@ -350,14 +350,14 @@ class QueryService implements Status {
         Map<ConsentCollectionLink, List<StorageDocument>> sampleInfo = new HashMap<>()
         final session = sessionFactory.currentSession
         final String query =
-            ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
-                    ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
-                    ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
-                    ' ip.type projectType from consent_collection_link c ' +
-                    ' inner join issue ic on ic.project_key = c.consent_key ' +
-                    ' inner join issue ip on ip.project_key = c.project_key ' +
-                    ' left join sample_collection sc on sc.collection_id = c.sample_collection_id ' +
-                    ' where c.id = :consentCollectionId and c.deleted = 0'
+                ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
+                        ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                        ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
+                        ' ip.type projectType from consent_collection_link c ' +
+                        ' inner join issue ic on ic.project_key = c.consent_key ' +
+                        ' inner join issue ip on ip.project_key = c.project_key ' +
+                        ' left join sample_collection sc on sc.collection_id = c.sample_collection_id ' +
+                        ' where c.id = :consentCollectionId and c.deleted = 0'
         List<ConsentCollectionLinkDTO> result = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('consentCollectionId', consentCollectionId)
@@ -374,7 +374,7 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                ' where consent_collection_link_id = :consentCollectionIds '
+                        ' where consent_collection_link_id = :consentCollectionIds'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -387,14 +387,14 @@ class QueryService implements Status {
     List<ConsentCollectionLinkDTO> getCollectionLinksDtoByConsentKey(String consentKey) {
         final session = sessionFactory.currentSession
         final String query =
-        ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
-                ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
-                ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, ip.type projectType, c.international_cohorts internationalCohorts ' +
-                ' from consent_collection_link c ' +
-                ' inner join issue ic on ic.project_key = c.consent_key ' +
-                ' inner join issue ip on ip.project_key = c.project_key ' +
-                ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                ' where c.consent_key = :consentKey and c.deleted = 0'
+                ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
+                        ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                        ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, ip.type projectType, c.international_cohorts internationalCohorts ' +
+                        ' from consent_collection_link c ' +
+                        ' inner join issue ic on ic.project_key = c.consent_key ' +
+                        ' inner join issue ip on ip.project_key = c.project_key ' +
+                        ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
+                        ' where c.consent_key = :consentKey and c.deleted = 0'
         List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('consentKey', consentKey)
@@ -515,7 +515,7 @@ class QueryService implements Status {
     Collection<SampleCollection> findCollectionByIdInList(Collection<String> idList) {
         if (!idList.isEmpty()) {
             final String query = 'select * from sample_collection ' +
-                                 'where lower(collection_id) IN :collectionIds'
+                    'where lower(collection_id) IN :collectionIds'
             SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
             final session = sessionFactory.currentSession
             final SQLQuery sqlQuery = session.createSQLQuery(query)
@@ -617,12 +617,12 @@ class QueryService implements Status {
     List<Issue> findIssuesByConsentTerm(String term) {
         def likeTerm = generateILikeTerm(term)
         Issue.withCriteria {
-                eq("type", IssueType.CONSENT_GROUP.name)
-                or {
-                    ilike "summary", likeTerm
-                    ilike "description", likeTerm
-                }
-                order("id", "asc")
+            eq("type", IssueType.CONSENT_GROUP.name)
+            or {
+                ilike "summary", likeTerm
+                ilike "description", likeTerm
+            }
+            order("id", "asc")
         }.unique()
     }
 
@@ -761,6 +761,8 @@ class QueryService implements Status {
         getSqlConnection().rows(query).each {
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    // Check if already exists extra properties for the specified name, get the values
+                    // and add to the existing ones. If not create an empty Set to add the extra prop value
                     Set<String> extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
                             issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
                     extraProp.add(it.get("value").toString())
@@ -774,12 +776,9 @@ class QueryService implements Status {
                 issueSearchItemDTO = new IssueSearchItemDTO(it)
 
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    // Check if already exists extra properties for the specified name, get the values
-                    // and add to the existing ones. If not create an empty Set to add the extra prop value
-                    Set<String> extraProp = !issueSearchItemDTO.extraProperties.isEmpty() ?
+                    Set<String> extraProp = issueSearchItemDTO.extraProperties.size() != 0 ?
                             issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
                     extraProp.add(it.get("value").toString())
-
                     issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
                 }
             }
