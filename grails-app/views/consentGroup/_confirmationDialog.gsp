@@ -16,8 +16,11 @@ attachmentTypes
             </div>
             <div class="modal-body">
               <p class="modal-large">Are you sure you want to 
-                  <g:if test="${actionKey == 'reject' || actionKey == 'unlink'}">
+                  <g:if test="${actionKey == 'reject'}">
                     reject
+                  </g:if>
+                  <g:if test="${actionKey == 'unlink'}">
+                  unlink
                   </g:if>
                   <g:else> approve </g:else>
                   this Sample / Data Cohort?</p>
