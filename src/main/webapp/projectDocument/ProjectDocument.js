@@ -1,7 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from '../components/Documents'
 import { DocumentHandler } from "../util/ajax";
-import { User } from "../util/ajax";
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
@@ -28,22 +27,16 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
 
   componentDidMount() {
     this.getAttachedDocuments();
-    this.isCurrentUserAdmin();
     this.loadOptions();
-  }
-
-  isCurrentUserAdmin() {
-    User.getUserSession(component.sessionUserUrl).then(resp => {
-      this.setState({user: resp.data});
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });
   }
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
-      this.setState({documents: JSON.parse(resp.data.documents)},
-        () => {
+      this.setState(prev => {
+        prev.documents = JSON.parse(resp.data.documents);
+        prev.isAdmin = component.isAdmin;
+        return prev;
+      },() => {
           this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
       );
     }).catch(error => {

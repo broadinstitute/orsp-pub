@@ -3,8 +3,11 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 
+import java.sql.SQLException
+
 @Slf4j
 class UserService {
+    QueryService queryService
 
     private static String BROAD = "@broadinstitute.org"
 
@@ -151,4 +154,57 @@ class UserService {
         }
     }
 
+    /**
+     * Edits a user's roles
+     *
+     * @param userId        The user's id
+     * @param rolesToAssign Roles String array to be assigned
+     */
+    void editUserRoles (Integer userId, ArrayList<String> rolesToAssign) throws SQLException {
+        if (userId != null) {
+            User user = User.findById(userId)
+            def validatedRoles = validateRoles(rolesToAssign)
+            if (user != null && !validatedRoles?.hasErrors) {
+                queryService.deleteOrspUserRoles(userId)
+                if (!rolesToAssign.isEmpty()) {
+                    queryService.updateOrspUserRoles(user, rolesToAssign)
+                }
+            } else {
+                log.error("Error while trying to modify roles to userId: ${userId}. ${validatedRoles.errorMessage}")
+                throw new IllegalArgumentException("Error while trying to modify roles for user ${user.displayName}")
+            }
+        } else {
+            log.error("Error while trying to modify roles to userId null.")
+            throw new IllegalArgumentException("Cannot update roles of null userId")
+        }
+    }
+
+    /**
+     * Receives roles intended to be assigned to a user
+     * Rules are:
+     * 1) RolesToAssign must be a valid role, defined in SupplementalRoles
+     * 2) READ_ONLY cannot coexist with ADMIN, ORSP or Compliance Office roles
+     *
+     * @param rolesToAssign     Roles String array to be assigned
+     * @return Boolean          If roles can be assigned
+     */
+    static def validateRoles(ArrayList<String> rolesToAssign) {
+        ArrayList<String> validRoles = SupplementalRole.getAssignableRolesArray()
+        Boolean allRolesAreValid = rolesToAssign.stream().allMatch{e -> validRoles.contains(e)}
+
+        Boolean readOnlyCoexists = !(rolesToAssign.contains(SupplementalRole.READ_ONLY_ADMIN) &&
+                (rolesToAssign.contains(SupplementalRole.ORSP) ||
+                        rolesToAssign.contains(SupplementalRole.COMPLIANCE_OFFICE) ||
+                        rolesToAssign.contains(SupplementalRole.ADMIN)))
+
+        String errorMessage = "Roles validation error " + ( allRolesAreValid ?
+                (!readOnlyCoexists ? "Read only cannot coexists with : ${SupplementalRole.COMPLIANCE_OFFICE} or ${SupplementalRole.ADMIN}": "")
+                : "invalid role(s) ${rolesToAssign}.")
+
+        [
+            errorMessage: errorMessage,
+            hasErrors: !(allRolesAreValid && readOnlyCoexists)
+        ]
+
+    }
 }

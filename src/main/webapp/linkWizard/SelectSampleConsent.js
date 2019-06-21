@@ -266,7 +266,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               handleDialogConfirm: this.props.handleDialogConfirm,
               downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
-              reviewFlow: false
+              reviewFlow: false,
+              pagination: false
             }),
           ])
         ])

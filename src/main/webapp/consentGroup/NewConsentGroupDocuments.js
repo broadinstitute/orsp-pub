@@ -122,7 +122,8 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               handleDialogConfirm: this.props.handleDialogConfirm,
               downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
-              reviewFlow: false
+              reviewFlow: false,
+              pagination: false
             })
           ])
     )
