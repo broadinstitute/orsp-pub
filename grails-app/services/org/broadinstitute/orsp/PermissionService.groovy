@@ -11,25 +11,20 @@ class PermissionService implements UserInfo {
 
     // get issue's collaborators as a List<String>
     List<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
+        Collection<List<String>> collaboratorsValues = extraProperties.
+                findAll({ [IssueExtraProperty.COLLABORATOR, IssueExtraProperty.COLLABORATORS].contains(it.key) }).
+                values()
         List<String> results = new ArrayList<String>()
-
-        def collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.COLLABORATOR }).values()
         if (collaboratorsValues.size() != 0) {
             results = collaboratorsValues.first()
         }
-
-        collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.COLLABORATORS }).values()
-        if (results.size() == 0 && collaboratorsValues.size() != 0) {
-            results = collaboratorsValues.first()
-        }
-
         results
     }
 
     // get issue's pms as a List<String>
     List<String> getIssuePMs(Map<String, List<String>> extraProperties) {
+        Collection<List<String>> collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values()
         List<String> results = new ArrayList<String>()
-        def collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values()
         if (collaboratorsValues.size() != 0) {
             results = collaboratorsValues.first()
         }
@@ -38,8 +33,8 @@ class PermissionService implements UserInfo {
 
     // get issue's pis as a List<String>
     List<String> getIssuePIs(Map<String, List<String>> extraProperties) {
+        Collection<List<String>> collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.PI }).values()
         List<String> results = new ArrayList<String>()
-        def collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.PI }).values()
         if (collaboratorsValues.size() != 0) {
             results = collaboratorsValues.first()
         }
@@ -59,9 +54,9 @@ class PermissionService implements UserInfo {
 
     def userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer) {
         boolean userHasAccess = (reporter == userName
-                || getIssueCollaborators(extraProperties).indexOf(userName) >= 0
-                || getIssuePMs(extraProperties).indexOf(userName) >= 0
-                || getIssuePIs(extraProperties).indexOf(userName) >= 0
+                || getIssueCollaborators(extraProperties)?.contains(userName)
+                || getIssuePMs(extraProperties).contains(userName)
+                || getIssuePIs(extraProperties).contains(userName)
                 || isAdmin
                 || isViewer)
         !userHasAccess
