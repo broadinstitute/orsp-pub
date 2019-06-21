@@ -445,7 +445,7 @@ class StorageProviderService implements Status {
         java.net.URL config_url = this.getClass().getResource(storageConfiguration.config)
         println 'step000'
         println "getClass: " + config_url
-        println GrailsResourceUtils.toURI(config_url)
+        println GrailsResourceUtils.toURI("/orsp-config/orsp-client.json")
         if (!credential) {
             println 'step001'
             File configFile = GrailsResourceUtils.getFile(
