@@ -1001,7 +1001,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !component.isViewer(),
+            isRendered: this.state.readOnly === true && !component.isViewer,
           }, ["Edit Information"]),
 
           button({
