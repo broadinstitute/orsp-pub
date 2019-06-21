@@ -10,35 +10,22 @@ class PermissionService implements UserInfo {
     UserService userService
 
     // get issue's collaborators as a List<String>
-    List<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
-        Collection<List<String>> collaboratorsValues = extraProperties.
-                findAll({ [IssueExtraProperty.COLLABORATOR, IssueExtraProperty.COLLABORATORS].contains(it.key) }).
+    Collection<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
+        Collection<String> collaborators = extraProperties.findAll({ [IssueExtraProperty.COLLABORATOR, IssueExtraProperty.COLLABORATORS].contains(it.key) }).
                 values()
-        List<String> results = new ArrayList<String>()
-        if (collaboratorsValues.size() != 0) {
-            results = collaboratorsValues.first()
-        }
-        results
+        collaborators
     }
 
     // get issue's pms as a List<String>
-    List<String> getIssuePMs(Map<String, List<String>> extraProperties) {
-        Collection<List<String>> collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values()
-        List<String> results = new ArrayList<String>()
-        if (collaboratorsValues.size() != 0) {
-            results = collaboratorsValues.first()
-        }
-        results
+    Collection<String> getIssuePMs(Map<String, List<String>> extraProperties) {
+        Collection<String> pms = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values()
+        pms
     }
 
     // get issue's pis as a List<String>
-    List<String> getIssuePIs(Map<String, List<String>> extraProperties) {
-        Collection<List<String>> collaboratorsValues = extraProperties.findAll ({ it.key == IssueExtraProperty.PI }).values()
-        List<String> results = new ArrayList<String>()
-        if (collaboratorsValues.size() != 0) {
-            results = collaboratorsValues.first()
-        }
-        results
+    Collection<String> getIssuePIs(Map<String, List<String>> extraProperties) {
+        Collection<String> pis = extraProperties.findAll ({ it.key == IssueExtraProperty.PI }).values()
+        pis
     }
 
     // verifies if logged user belongs to some user list ....
