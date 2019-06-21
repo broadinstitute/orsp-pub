@@ -49,8 +49,6 @@ if (Environment.getCurrent() == Environment.TEST) {
     logger 'org.broadinstitute', DEBUG, ['STDOUT']
 }
 
-logger 'org.broadinstitute', DEBUG, ['STDOUT']
-
 logger("org.apache.http.headers", INFO)
 logger("org.apache.http.wire", INFO)
 logger("org.broadinstitute.orsp.NotifyService", DEBUG, ["NOTIFY"], true)
