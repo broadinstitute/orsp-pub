@@ -133,7 +133,7 @@
         sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
         searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-        serverURL: "${webRequest.baseUrl}",
+        serverURL: "${grailsApplication.config.grails.serverURL}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
         isAdmin: "${session.isAdmin}",
