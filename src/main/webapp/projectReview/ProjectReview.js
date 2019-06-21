@@ -500,7 +500,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           this.getReviewSuggestions();
           this.setState(prev => {
             prev.errorSubmit = true;
-            prev.alertMessage = "Something went wrong. Please try again later."
+            prev.alertMessage = "Something went wrong. Please try again later.";
             return prev;
           })
         });
@@ -508,10 +508,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         Review.submitReview(component.serverURL, data).then(() =>
           this.getReviewSuggestions()
         ).catch(error => {
-          this.getReviewSuggestions()
+          this.getReviewSuggestions();
           this.setState(prev => {
             prev.errorSubmit = true;
-            prev.alertMessage = "Something went wrong. Please try again later."
+            prev.alertMessage = "Something went wrong. Please try again later.";
             return prev;
           })
         });

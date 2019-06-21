@@ -658,6 +658,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
+        // add reviewer between the recipients
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
@@ -674,6 +675,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
+        // add reviewer between the recipients
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
@@ -688,6 +690,8 @@ class NotifyService implements SendgridSupport, Status {
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
+
+    //    Map<Boolean, String> sendEditsRequestClarificationNotification(Issue issue) {}
 
     Map<Boolean, String> sendDulFormLinkNotification(NotifyArguments arguments) {
         arguments.view = "/notify/dulFormLink"
