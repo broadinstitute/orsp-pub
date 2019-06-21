@@ -448,8 +448,9 @@ class StorageProviderService implements Status {
         println GrailsResourceUtils.toURI("/orsp-config/orsp-client.json")
         if (!credential) {
             println 'step001'
-            File configFile = GrailsResourceUtils.getFile(
-                    GrailsResourceUtils.toURI(config_url), "GCS Config")
+            // File configFile = GrailsResourceUtils.getFile(
+            //        GrailsResourceUtils.toURI(config_url), "GCS Config")
+            File configFile = new File(storageConfiguration.config);
             println 'step002'
             setCredential(GoogleCredential.
                     fromStream(new FileInputStream(configFile)).
