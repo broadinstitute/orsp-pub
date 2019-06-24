@@ -41,7 +41,7 @@ class PermissionService implements UserInfo {
         userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
     }
 
-    def userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer) {
+    Boolean userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer) {
         boolean userHasAccess = (reporter == userName
                 || getIssueCollaborators(extraProperties)?.contains(userName)
                 || getIssuePMs(extraProperties).contains(userName)
