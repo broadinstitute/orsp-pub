@@ -23,7 +23,7 @@ class IssueReviewService implements UserInfo {
             ir.delete(flush: true)
         }
         if (type == 'reject') {
-            String editCreatorName = ir.getEditCreator()
+            String editCreatorName = ir.getEditCreatorName()
             notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey), editCreatorName)
         }
     }

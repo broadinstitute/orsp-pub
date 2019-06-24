@@ -13,7 +13,7 @@ class IssueReview {
         suggestions nullable: false
     }
 
-    String getEditCreator() {
+    String getEditCreatorName() {
         return JSON.parse(this.suggestions).getAt(IssueExtraProperty.EDIT_CREATOR).toString()
     }
 }

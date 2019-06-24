@@ -260,7 +260,7 @@ class IssueService implements UserInfo {
         }
         if (input.get("editsApproved")) {
             IssueReview issueReview = issueReviewService.findByProjectKey(issue.projectKey)
-            notifyService.sendEditsApprovedNotification(issue, issueReview.getEditCreator())
+            notifyService.sendEditsApprovedNotification(issue, issueReview.getEditCreatorName())
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
