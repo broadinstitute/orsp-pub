@@ -10,7 +10,6 @@ attachmentTypes
 --}%
 <div class="modal-dialog modal-md">
     <div class="modal-content">
-        <g:form controller="consentGroup" action="attachConsentDocument" enctype="multipart/form-data" method="POST" class="attach-input">
             <div class="modal-header panel-heading">
                 <button type="button" class="close" data-dismiss="modal" style="outline:none"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             </div>
@@ -34,11 +33,10 @@ attachmentTypes
                       </a>
                     </g:if>
                     <g:if test="${actionKey == 'reject' || actionKey == 'unlink'}">
-                      <a class="btn btn-primary" href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey])}">
+                      <a class="btn btn-primary" href="${createLink(controller: 'consentGroup', action: 'breakLink', params: [projectKey: issue.projectKey, consentKey: consent.projectKey, type: actionKey])}">
                         Accept
                       </a>
                     </g:if>
             </div>
-        </g:form>
     </div>
 </div>

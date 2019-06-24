@@ -22,7 +22,10 @@ enum IssueStatus {
     Abandoned(11, "Abandoned"),
     ProjectApproved(12, "Approved"),
     Disapproved(13, "Disapproved"),
-    Withdrawn(14, "Withdrawn")
+    Withdrawn(14, "Withdrawn"),
+
+    Rejected(15, "Rejected"),
+    Unlink(16, "Unlink")
 
     Integer sequence
     String name
