@@ -161,6 +161,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     Project.getProject(component.projectUrl, component.projectKey).then(
       issue => {
         // store current issue info here ....
+        console.log('issue.data ', issue.data);
         this.props.initStatusBoxInfo(issue.data);
         current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = isEmpty(issue.data.issue.description) ? '' : issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
@@ -199,6 +200,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
+              issue.data.extraProperties.projectReviewApproved = false;
+              this.props.initStatusBoxInfo(issue.data);
             } else {
               spinnerService.hideAll();
               formData = JSON.parse(currentStr);
@@ -211,6 +214,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
+              // issue.data.extraProperties.projectReviewApproved = true;
+              this.props.initStatusBoxInfo(issue.data);
             }
           });
       }).catch(error => {

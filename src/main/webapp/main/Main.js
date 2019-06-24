@@ -23,6 +23,7 @@ class Main extends Component {
   }
 
   initStatusBoxInfo = (elementInfo) => {
+    console.log('elementInfo ', elementInfo);
     this.setState(prev => {
       prev.status.type = get(elementInfo, 'issue.type', '');
       prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
@@ -59,6 +60,7 @@ class Main extends Component {
   };
 
   render() {
+    console.log(this.state.status);
     return (
       div({ className: "headerBoxContainer" }, [
         StatusBox({

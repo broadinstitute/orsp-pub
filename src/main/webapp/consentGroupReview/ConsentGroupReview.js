@@ -233,6 +233,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   getReviewSuggestions = () => {
     Review.getSuggestions(component.serverURL, component.consentKey).then(data => {
+      console.log(this.state.reviewSuggestion);
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
