@@ -10,31 +10,33 @@ class PermissionService implements UserInfo {
     UserService userService
 
     // get issue's collaborators as a List<String>
-    Collection<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
-        Collection<String> collaborators = extraProperties.findAll({ [IssueExtraProperty.COLLABORATOR, IssueExtraProperty.COLLABORATORS].contains(it.key) }).
-                values()
+    List<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
+        List<String> collaborators = extraProperties.findAll({ [IssueExtraProperty.COLLABORATOR, IssueExtraProperty.COLLABORATORS].contains(it.key) })
+                .values().flatten().collect({ it -> it.toString() })
         collaborators
     }
 
     // get issue's pms as a List<String>
-    Collection<String> getIssuePMs(Map<String, List<String>> extraProperties) {
-        Collection<String> pms = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values()
+    List<String> getIssuePMs(Map<String, List<String>> extraProperties) {
+        List<String> pms = extraProperties.findAll ({ it.key == IssueExtraProperty.PM })
+                .values().flatten().collect({ it -> it.toString() })
         pms
     }
 
     // get issue's pis as a List<String>
-    Collection<String> getIssuePIs(Map<String, List<String>> extraProperties) {
-        Collection<String> pis = extraProperties.findAll ({ it.key == IssueExtraProperty.PI }).values()
+    List<String> getIssuePIs(Map<String, List<String>> extraProperties) {
+        List<String> pis = extraProperties.findAll ({ it.key == IssueExtraProperty.PI })
+                .values().flatten().collect({ it -> it.toString() })
         pis
     }
 
     // verifies if logged user belongs to some user list ....
-    def issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
+    Boolean issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
         Map<String, List<String>> extraProperties = issue.extraPropertiesMap
         userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
     }
 
-    def issueIsForbidden(IssueSearchItemDTO issue, String userName, boolean isAdmin, boolean isViewer) {
+    Boolean issueIsForbidden(IssueSearchItemDTO issue, String userName, boolean isAdmin, boolean isViewer) {
         Map<String, List<String>> extraProperties = issue.extraProperties
         userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
     }

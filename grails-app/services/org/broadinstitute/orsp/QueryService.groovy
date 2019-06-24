@@ -776,6 +776,8 @@ class QueryService implements Status {
                 issueSearchItemDTO = new IssueSearchItemDTO(it)
 
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    // Check if already exists extra properties for the specified name, get the values
+                    // and add to the existing ones. If not create an empty Set to add the extra prop value
                     Set<String> extraProp = issueSearchItemDTO.extraProperties.size() != 0 ?
                             issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
                     extraProp.add(it.get("value").toString())
