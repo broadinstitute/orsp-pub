@@ -773,7 +773,7 @@ class QueryService implements Status {
                 }
 
                 currentProjectKey = it.get("projectKey")
-                issueSearchItemDTO = new IssueSearchItemDTO(it)
+                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
 
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
                     // Check if already exists extra properties for the specified name, get the values

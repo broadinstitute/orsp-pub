@@ -16,7 +16,7 @@ class IssueSearchItemDTO {
     Date updateDate
     Map<String, Set<String>> extraProperties = new HashMap<String, Set<String>>()
 
-    IssueSearchItemDTO(GroovyRowResult result) {
+    IssueSearchItemDTO(Map<String, String> result) {
         try {
             this.id = result.get("id") != null ? Integer.valueOf(result.get("id").toString()) : null
         } catch (NumberFormatException nfe) {
