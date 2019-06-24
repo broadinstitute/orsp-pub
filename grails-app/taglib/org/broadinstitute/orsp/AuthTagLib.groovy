@@ -35,6 +35,15 @@ class AuthTagLib {
     }
 
     /**
+     * Renders the tag body when the user has one of the ADMIN roles
+     */
+    def isAdmin = { attrs, body ->
+        if (SupplementalRole.isAdmin(session["roles"] as Collection<String>)) {
+            out << body()
+        }
+    }
+
+    /**
      * Renders the tag body when the user does not have an ORSP role
      */
     def isNotOrsp = { attrs, body ->

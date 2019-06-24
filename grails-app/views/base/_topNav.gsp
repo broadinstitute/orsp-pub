@@ -30,7 +30,7 @@
                     </li>
                     </auth:isNotViewer>
                     
-                    <auth:isOrsp>
+                    <auth:isAdmin>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -43,7 +43,7 @@
                                 <li><a href="${createLink(controller: 'user', action: 'rolesManagement')}">Roles Management</a></li>
                             </ul>
                         </li>
-                    </auth:isOrsp>
+                    </auth:isAdmin>
                 </auth:isAuthenticated>
             </ul>
 
