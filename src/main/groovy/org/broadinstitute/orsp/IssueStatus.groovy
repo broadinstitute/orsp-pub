@@ -25,7 +25,7 @@ enum IssueStatus {
     Withdrawn(14, "Withdrawn"),
 
     Rejected(15, "Rejected"),
-    Unlink(16, "Unlink")
+    Unlink(16, "Unlinked")
 
     Integer sequence
     String name
