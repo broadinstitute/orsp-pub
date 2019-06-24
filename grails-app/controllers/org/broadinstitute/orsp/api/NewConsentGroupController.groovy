@@ -203,7 +203,7 @@ class NewConsentGroupController extends AuthenticatedController {
 
 
     /**
-     * This action breaks the link between a project and the consent from the point of view of the consent.
+     * This action approve the link between a project and the consent.
      *
      */
     def approveLink () {
