@@ -1,6 +1,5 @@
 package org.broadinstitute.orsp
 
-import groovy.sql.GroovyRowResult
 import groovy.util.logging.Slf4j
 
 @Slf4j
