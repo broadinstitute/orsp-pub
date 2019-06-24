@@ -20,7 +20,7 @@ export default class ErrorHandler extends Component {
   }
  
   componentDidCatch(error, info) {
-    console.error(error, info);
+    console.error(error);
     this.setState({ 
       hasError: true
     })

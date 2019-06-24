@@ -443,8 +443,6 @@ class StorageProviderService implements Status {
     private GoogleCredential getCredential() {
         java.net.URL config_url = this.getClass().getResource(storageConfiguration.config)
         if (!credential) {
-            // File configFile = GrailsResourceUtils.getFile(
-            //        GrailsResourceUtils.toURI(config_url), "GCS Config")
             File configFile = new File(storageConfiguration.config);
             setCredential(GoogleCredential.
                     fromStream(new FileInputStream(configFile)).

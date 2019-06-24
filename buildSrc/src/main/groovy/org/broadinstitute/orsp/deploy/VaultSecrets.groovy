@@ -13,7 +13,6 @@ class VaultSecrets {
             request.headers['Content-Type'] = "application/json"
             request.headers['X-Vault-Token'] = token
         }
-        println(http.toString())
         http.get(Map){}.get("data")
 
     }
@@ -23,7 +22,6 @@ class VaultSecrets {
             request.uri = "${vaultAddress}/v1/${secretPath}"
             request.headers['X-Vault-Token'] = token
         }
-        println(http.toString())
         http.get(String){
             response.success { resp, json ->
                 json.data.value.toString()
