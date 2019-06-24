@@ -43,7 +43,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       requestClarification: false,
       readOnly: true,
       isAdmin: false,
-      isViewer: false,
       disableApproveButton: false,
       reviewSuggestion: false,
       submitted: false,
@@ -213,10 +212,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       this.setState(() => { throw error; });
     });
   };
-
-  isViewer = () => {
-    return component.isViewer === "true";
-  }
 
   parseInstSources(instSources) {
     let instSourcesArray = [];
@@ -842,7 +837,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !this.isViewer(),
+          isRendered: this.state.readOnly === true && !component.isViewer,
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -1006,7 +1001,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !this.isViewer(),
+            isRendered: this.state.readOnly === true && !component.isViewer,
           }, ["Edit Information"]),
 
           button({
