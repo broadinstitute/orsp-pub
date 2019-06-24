@@ -657,13 +657,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
-        // add reviewer between the recipients
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User editCreator = userService.findUser(editCreatorName)
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(user.emailAddress),
+                        toAddresses: [user.emailAddress, editCreator.emailAddress],
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
                         user: user,
@@ -674,13 +674,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
-        // add reviewer between the recipients
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User editCreator = userService.findUser(editCreatorName)
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(user.emailAddress),
+                        toAddresses: [user.emailAddress, editCreator.emailAddress],
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
                         user: user,
@@ -690,8 +690,6 @@ class NotifyService implements SendgridSupport, Status {
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
-
-    //    Map<Boolean, String> sendEditsRequestClarificationNotification(Issue issue) {}
 
     Map<Boolean, String> sendDulFormLinkNotification(NotifyArguments arguments) {
         arguments.view = "/notify/dulFormLink"

@@ -9,7 +9,7 @@ import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
-import org.broadinstitute.orsp.PersistenceService
+import org.broadinstitute.orsp.User
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -25,7 +25,8 @@ class IssueReviewController extends AuthenticatedController {
             response.status = 404
             render([message: "Project key does not exist"] as JSON)
         } else {
-            issueReviewService.create(issueReview)
+            User editCreator = getUser()
+            issueReviewService.create(issueReview, editCreator)
             persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
             response.status = 201
             render([issueReview] as JSON)
@@ -42,7 +43,8 @@ class IssueReviewController extends AuthenticatedController {
         }
         IssueReview ir = parseIssueReview(gson.toJson(request.JSON))
         issueReviewFormer.suggestions = ir.suggestions
-        issueReviewService.create(issueReviewFormer)
+        User editCreator = getUser()
+        issueReviewService.create(issueReviewFormer, editCreator)
         response.status = 200
         render([issueReviewFormer] as JSON)
     }
