@@ -126,7 +126,7 @@ class ConsentGroupController extends AuthenticatedController {
      * @return Redirect to the project view page
      */
     def breakLink() {
-        persistenceService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? IssueStatus.Unlink.name : IssueStatus.Rejected.name)
+        persistenceService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? IssueStatus.Unlinked.name : IssueStatus.Rejected.name)
         List<ConsentCollectionLink> links = ConsentCollectionLink.findAllByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
         deleteCollectionLinks(links)
         redirect(controller: "project", action: "main", params: [projectKey: params.projectKey, tab: "consent-groups"])

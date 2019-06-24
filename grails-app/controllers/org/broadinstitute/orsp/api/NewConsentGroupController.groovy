@@ -212,8 +212,8 @@ class NewConsentGroupController extends AuthenticatedController {
             response.status = 200
         } catch (Exception e) {
             response.status = 500
-            log.error("Exception deleting collection links: " + e)
-            flash.error = "Error deleting collection links: " + e
+            log.error("Exception updating collection links status: " + e)
+            flash.error = "Error updating collection links status: " + e
         }
         redirect(controller: "project", action: "main", params: [projectKey: params.projectKey, tab: "consent-groups"])
     }
