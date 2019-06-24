@@ -568,7 +568,8 @@ class QueryService implements Status {
     }
 
     Boolean areLinksApproved(String projectKey, String consentKey) {
-        List<ConsentCollectionLink> links = ConsentCollectionLink.findByProjectKeyAndConsentKey(projectKey, consentKey)
+        List<ConsentCollectionLink> links = ConsentCollectionLink.findAll("from ConsentCollectionLink as ccl where ccl.projectKey= :projectKey and ccl.consentKey = :consentKey",
+                [consentKey: consentKey, projectKey: projectKey])
         ArrayList approvedLinks = links.findAll {
             it.status == IssueStatus.Approved.name
         }

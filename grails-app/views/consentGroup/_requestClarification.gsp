@@ -19,6 +19,14 @@ This template requires the following arguments:
             <input name="type" value="link" id="type" type="hidden"/>
 
             <div class="modal-body">
+                <div style="margin-top: 20px" id="member">
+                    <label class="inputFieldLabel" for="projectMember">Project Member</label>
+                    <span class="badge addProjectMember inputFieldWrapper"/>
+                    <input type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete" required="true"
+                           oninvalid="$('#member').addClass('inputFieldError')"
+                           onChange="$('#member').removeClass('inputFieldError')"/>
+                    <input type="hidden" name="pm"/>       
+                </div>
                 <div class="inputField" id="inputFieldDescribe">
                     <p class="inputFieldLabel">Please describe the clarification you are requesting</p>
                     <div class="inputFieldWrapper">
@@ -26,14 +34,6 @@ This template requires the following arguments:
                                   required = "true" oninvalid="$('#inputFieldDescribe').addClass('inputFieldError')"
                                   onkeydown="$('#inputFieldDescribe').removeClass('inputFieldError')"/>
                     </div>
-                </div>
-
-                <div style="margin-top: 20px" id="member">
-                    <label class="inputFieldLabel" for="projectMember">Project Member</label>
-                    <span class="badge addProjectMember inputFieldWrapper"/>
-                    <input type="text" value="" id="projectMember" name="projectMember" class="form-control userAutocomplete" required="true"
-                           oninvalid="$('#member').addClass('inputFieldError')"
-                           onChange="$('#member').removeClass('inputFieldError')"/>
                 </div>
             </div>
             <div class="modal-footer">
