@@ -30,4 +30,16 @@ class IssueSearchItemDTO {
         this.expirationDate = result.get("expirationDate")
         this.updateDate = result.get("updated")
     }
+
+    /**
+     * Check if already exists extra properties for the specified name, get the values  and
+     * add to the existing ones. If not create an empty Set to add the extra prop value
+     * @param name
+     * @param value
+     */
+    void setExtraProperty(String name, String value) {
+        Set<String> extraProp = this.extraProperties.size() != 0 ? this.extraProperties.get(name) : []
+        extraProp.add(value)
+        this.extraProperties.put(name, extraProp)
+    }
 }

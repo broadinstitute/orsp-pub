@@ -761,11 +761,7 @@ class QueryService implements Status {
         getSqlConnection().rows(query).each {
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    // Check if already exists extra properties for the specified name, get the values
-                    // and add to the existing ones. If not create an empty Set to add the extra prop value
-                    Set<String> extraProp = issueSearchItemDTO.extraProperties.get(it.get("name").toString()) ?
-                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-                    extraProp.add(it.get("value").toString())
+                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
                 }
             } else {
                 if (currentProjectKey != "") {
@@ -776,12 +772,10 @@ class QueryService implements Status {
                 issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
 
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
                     // Check if already exists extra properties for the specified name, get the values
                     // and add to the existing ones. If not create an empty Set to add the extra prop value
-                    Set<String> extraProp = issueSearchItemDTO.extraProperties.size() != 0 ?
-                            issueSearchItemDTO.extraProperties.get(it.get("name").toString()) : []
-                    extraProp.add(it.get("value").toString())
-                    issueSearchItemDTO.extraProperties.put(it.get("name").toString(), extraProp)
+
                 }
             }
             resultDTO.add(issueSearchItemDTO)
