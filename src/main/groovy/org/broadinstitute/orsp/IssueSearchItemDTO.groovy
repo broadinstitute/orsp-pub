@@ -17,7 +17,7 @@ class IssueSearchItemDTO {
 
     IssueSearchItemDTO(Map<String, String> result) {
         try {
-            this.id = result.get("id") != null ? Integer.valueOf(result.get("id").toString()) : null
+            this.id = result.get("idIssue") != null ? Integer.valueOf(result.get("idIssue").toString()) : null
         } catch (NumberFormatException nfe) {
             log.error("Cast error " + nfe)
         }

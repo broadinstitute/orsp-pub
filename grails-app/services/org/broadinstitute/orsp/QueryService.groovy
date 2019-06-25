@@ -3,9 +3,9 @@ package org.broadinstitute.orsp
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import grails.util.Environment
+import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.IssueSearchItemDTO
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -741,7 +741,9 @@ class QueryService implements Status {
      * @return
      */
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT i.id id, " +
+        final session = sessionFactory.currentSession
+
+        final String query = "SELECT i.id idIssue, " +
                 "i.project_key projectKey, " +
                 "i.type type, " +
                 "i.status status, " +
@@ -752,15 +754,25 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id IN (" + issueIds.join(",") + ")"
+                "WHERE i.id IN (:issueIds)"
+
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameterList("issueIds", issueIds)
+        List<GroovyRowResult> results = sqlQuery.list()
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         IssueSearchItemDTO issueSearchItemDTO
 
-        getSqlConnection().rows(query).each {
+        results.each {
             issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
             resultDTO.add(issueSearchItemDTO)
         }
+
+
+//        getSqlConnection().rows(query, issueIds).each {
+//            issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+//            resultDTO.add(issueSearchItemDTO)
+//        }
         resultDTO
     }
 
