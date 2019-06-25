@@ -1,6 +1,6 @@
 import { Component, React } from 'react';
-import { hh, h1, span, a, div, label } from 'react-hyperscript-helpers';
-import { isEmpty, capitalize } from "../util/Utils";
+import { hh, span, a, div, label } from 'react-hyperscript-helpers';
+import { isEmpty } from "../util/Utils";
 import './QuestionnaireWorkflow.css';
 
 const sharingTypes = {
@@ -10,6 +10,7 @@ const sharingTypes = {
     noDataSharing: "No data sharing via a repository (data returned to research collaborator only)",
     undetermined: "Data sharing plan not yet determined"
 }
+
 export const SecurityReview = hh(class SecurityReview extends Component {
 
   constructor(props) {
@@ -23,6 +24,8 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     let answer = '';
     if (current === 'true' || current === true) {
       answer = 'Yes';
+    } else if (current === 'uncertain') {
+      answer = 'Uncertain'
     } else if (current === 'false' || current === false) {
       answer = 'No'
     } else if (current === 'null' || current === null || isEmpty(current)) {
