@@ -3,7 +3,6 @@ package org.broadinstitute.orsp
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import grails.util.Environment
-import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
@@ -374,7 +373,7 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                ' where consent_collection_link_id = :consentCollectionIds '
+                ' where consent_collection_link_id = :consentCollectionIds'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1235,16 +1234,16 @@ class QueryService implements Status {
     }
 
     void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
-        final session = sessionFactory.currentSession
-        final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        newRoles.each { it ->
-            sqlQuery.setLong("version", 0)
-            sqlQuery.setString("role", it)
-            sqlQuery.setString("userName", user.userName)
-            sqlQuery.setLong("userId", user.id)
-            sqlQuery.executeUpdate()
-        }
+       final session = sessionFactory.currentSession
+       final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
+       final SQLQuery sqlQuery = session.createSQLQuery(query)
+       newRoles.each { it ->
+           sqlQuery.setLong("version", 0)
+           sqlQuery.setString("role", it)
+           sqlQuery.setString("userName", user.userName)
+           sqlQuery.setLong("userId", user.id)
+           sqlQuery.executeUpdate()
+       }
     }
 
     void deleteOrspUserRoles (userId) {
