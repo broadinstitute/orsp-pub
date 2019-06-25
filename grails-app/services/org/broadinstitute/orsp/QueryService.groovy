@@ -1233,7 +1233,7 @@ class QueryService implements Status {
         documents
     }
 
-    void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
+     void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
          final session = sessionFactory.currentSession
          final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
          final SQLQuery sqlQuery = session.createSQLQuery(query)
