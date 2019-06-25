@@ -736,44 +736,21 @@ class QueryService implements Status {
     }
 
     /**
-     * Find issues and create DTOs to narrow the amount of data used in the search process
+     * Find issues from a list of Ids
      * @param issueIds
      * @return
      */
-    Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds)"
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-
-        final String query = "SELECT i.id idIssue, " +
-                "i.project_key projectKey, " +
-                "i.type type, " +
-                "i.status status, " +
-                "i.summary summary, " +
-                "i.reporter reporter, " +
-                "i.update_date updated, " +
-                "i.expiration_date expirationDate, " +
-                "iep.* " +
-                "FROM issue i LEFT JOIN issue_extra_property iep " +
-                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id IN (:issueIds)"
-
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        sqlQuery.setParameterList("issueIds", issueIds)
-        List<GroovyRowResult> results = sqlQuery.list()
-
-        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
-        IssueSearchItemDTO issueSearchItemDTO
-
-        results.each {
-            issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-            resultDTO.add(issueSearchItemDTO)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setParameterList('issueIds', issueIds)
+            list()
         }
-
-
-//        getSqlConnection().rows(query, issueIds).each {
-//            issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-//            resultDTO.add(issueSearchItemDTO)
-//        }
-        resultDTO
+        results
     }
 
     /**

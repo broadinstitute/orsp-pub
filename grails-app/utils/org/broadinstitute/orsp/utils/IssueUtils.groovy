@@ -3,8 +3,6 @@ package org.broadinstitute.orsp.utils
 import com.google.gson.Gson
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueSearchItemDTO
 import org.broadinstitute.orsp.IssueType
 
 @Slf4j
