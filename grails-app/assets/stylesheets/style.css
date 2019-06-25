@@ -164,7 +164,31 @@ div.invalid {
 }
 
 .ui-menu {
-    width: 170px;
+    width: 500px;
+    z-index: 3000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ui-menu .ui-menu-item.disabled {
+    border: 1px solid #F1F1F1;
+    border-bottom-color: #E1E1E1; 
+    background:#F1F1F1;
+    font-weight: normal;
+    color: #999999;
+    padding: 40px 1em 10px .4em;
+    cursor: default;
+}
+    
+.ui-menu .ui-menu-item.disabled p {
+    font-size: 13px;
+    margin: 0;
+    padding: 4px 8px;
+    color: #fafafa;
+    background: #bbbbbb;
+    position: absolute;
+    top: 8px;
+    border-radius: 4px;
 }
 
 span.plus {

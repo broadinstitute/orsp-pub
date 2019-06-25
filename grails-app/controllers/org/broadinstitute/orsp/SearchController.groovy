@@ -47,6 +47,10 @@ class SearchController implements UserInfo {
     }
 
     def getMatchingIssues() {
+        def user = getUser()
+        def userName = user.userName
+        def isAdmin = isAdmin()
+        def isViewer = isViewer()
         def response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
             Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect((Issue)it, it.projectKey, null)
@@ -55,7 +59,11 @@ class SearchController implements UserInfo {
                     id: it.id,
                     label: it.projectKey + " (" + it.summary + ")",
                     value: it.projectKey,
-                    url: link
+                    url: link,
+                    reporter: it.reporter,
+                    linkDisabled: permissionService.issueIsForbidden((Issue)it, userName, isAdmin, isViewer),
+                    pm: it.pm,
+                    actor: it.actor
             ]
         }
         render response as JSON
