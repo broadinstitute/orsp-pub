@@ -6,7 +6,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { ConsentGroup, SampleCollections, User, Review } from "../util/ajax";
+import { ConsentGroup, SampleCollections, Review } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
@@ -43,7 +43,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       requestClarification: false,
       readOnly: true,
       isAdmin: false,
-      isViewer: false,
       disableApproveButton: false,
       reviewSuggestion: false,
       submitted: false,
@@ -124,7 +123,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   componentDidMount() {
     spinnerService.showAll();
-    this.isCurrentUserAdmin();
     ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
@@ -203,6 +201,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               prev.current = current;
               prev.future = future;
               prev.futureCopy = futureCopy;
+              prev.isAdmin = component.isAdmin;
               return prev;
             }, () => spinnerService.hideAll());
           }
@@ -213,10 +212,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       this.setState(() => { throw error; });
     });
   };
-
-  isViewer = () => {
-    return component.isViewer === "true";
-  }
 
   parseInstSources(instSources) {
     let instSourcesArray = [];
@@ -352,14 +347,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         );
       });
   };
-
-  isCurrentUserAdmin() {
-    User.isCurrentUserAdmin(component.isAdminUrl).then(
-      resp => {
-        this.setState({ isAdmin: resp.data.isAdmin });
-      }
-    );
-  }
 
   rejectConsentGroup() {
     spinnerService.showAll();
@@ -689,14 +676,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     if (projectKey === "") {
       return component.serverURL + "/search/index";
     } else {
-      let key = projectKey.split("-");
-      let projectType = '';
-      if (key.length === 3) {
-        projectType = key[1].toLowerCase();
-      } else {
-        projectType = key[0].toLowerCase();
-      }
-      return [component.serverURL, projectType, "show", projectKey, "?tab=consent-groups"].join("/");
+      return [component.serverURL, "project/main?projectKey=" + projectKey + "&tab=consent-groups"].join("/");
     }
   }
 
@@ -857,7 +837,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !this.isViewer(),
+          isRendered: this.state.readOnly === true && !component.isViewer,
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -1021,7 +1001,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !this.isViewer(),
+            isRendered: this.state.readOnly === true && !component.isViewer,
           }, ["Edit Information"]),
 
           button({

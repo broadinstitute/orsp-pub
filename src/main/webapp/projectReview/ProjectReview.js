@@ -28,6 +28,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     super(props);
 
     this.state = {
+      isAdmin: false,
       generalError: false,
       errorSubmit: false,
       descriptionError: false,
@@ -195,6 +196,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.futureCopy = futureCopy;
                 prev.editedForm = JSON.parse(data.data.suggestions);
                 prev.reviewSuggestion = true;
+                prev.isAdmin = component.isAdmin;
                 return prev;
               });
             } else {
@@ -206,6 +208,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.future = future;
                 prev.futureCopy = futureCopy;
                 prev.reviewSuggestion = false;
+                prev.isAdmin = component.isAdmin;
                 return prev;
               });
             }
@@ -237,14 +240,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(() => { throw error; });
       });
   }
-
-  isAdmin = () => {
-    return component.isAdmin === "true";
-  };
-
-  isViewer = () => {
-    return component.isViewer === "true";
-  };
 
   getUsersArray(array) {
     let usersArray = [];
@@ -809,13 +804,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !this.isViewer()
+          isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToConsentGroupTab,
-          isRendered: this.state.readOnly === true && !this.isViewer()
+          isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Add Sample/Data Cohort"]),
 
         button({
@@ -1142,7 +1137,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !this.isViewer()
+            isRendered: this.state.readOnly === true && !component.isViewer
           }, ["Edit Information"]),
 
           button({
@@ -1158,7 +1153,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
-            isRendered: this.state.readOnly === false && !this.isViewer()
+            isRendered: this.state.readOnly === false && !component.isViewer
           }, ["Submit Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
@@ -1166,33 +1161,33 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveInfoDialog,
             disabled: this.state.disableApproveButton,
-            isRendered: this.isAdmin() && projectReviewApproved === false && this.state.readOnly === true
+            isRendered: this.state.isAdmin && projectReviewApproved === false && this.state.readOnly === true
           }, ["Approve"]),
 
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",
             onClick: this.handleApproveDialog,
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === true
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === true
           }, ["Approve Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('rejectProjectDialog'),
-            isRendered: this.isAdmin() && projectReviewApproved === false && this.state.readOnly === true
+            isRendered: this.state.isAdmin && projectReviewApproved === false && this.state.readOnly === true
           }, ["Reject"]),
 
           /*visible for every user in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('discardEditsDialog'),
-            isRendered: this.isAdmin() && this.state.reviewSuggestion && this.state.readOnly === true
+            isRendered: this.state.isAdmin && this.state.reviewSuggestion && this.state.readOnly === true
           }, ["Discard Edits"]),
           button({
             className: "btn buttonSecondary floatRight",
             onClick: this.toggleState('requestClarification'),
-            isRendered: this.isAdmin() && this.state.readOnly === true
+            isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
         ]),
         h(Spinner, {

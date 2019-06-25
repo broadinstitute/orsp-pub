@@ -30,7 +30,7 @@
                     </li>
                     </auth:isNotViewer>
                     
-                    <auth:isOrsp>
+                    <auth:isAdmin>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -40,9 +40,10 @@
                                 <li><a href="${createLink(controller: 'statusEvent', action: 'index')}">QA Event Report</a></li>
                                 <li><a href="${createLink(controller: 'admin', action: 'fundingReport')}">Funding Source Report</a></li>
                                 <li><a href="${createLink(controller: 'report', action: 'aahrppMetrics')}">AAHRPP Metrics Report (CSV)</a></li>
+                                <li><a href="${createLink(controller: 'user', action: 'rolesManagement')}">Roles Management</a></li>
                             </ul>
                         </li>
-                    </auth:isOrsp>
+                    </auth:isAdmin>
                 </auth:isAuthenticated>
             </ul>
 
