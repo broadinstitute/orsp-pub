@@ -756,25 +756,9 @@ class QueryService implements Status {
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         IssueSearchItemDTO issueSearchItemDTO
-        String currentProjectKey = ""
 
         getSqlConnection().rows(query).each {
-            if (it.get("projectKey") == currentProjectKey) {
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-                }
-            } else {
-                if (currentProjectKey != "") {
-                    resultDTO.add(issueSearchItemDTO)
-                }
-
-                currentProjectKey = it.get("projectKey")
-                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-                }
-            }
+            issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
             resultDTO.add(issueSearchItemDTO)
         }
         resultDTO

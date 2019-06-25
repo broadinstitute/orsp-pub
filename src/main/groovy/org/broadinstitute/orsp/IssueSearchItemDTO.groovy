@@ -28,6 +28,10 @@ class IssueSearchItemDTO {
         this.reporter = result.get("reporter")?.toString()
         this.expirationDate = result.get("expirationDate")
         this.updateDate = result.get("updated")
+
+        if (result.get("type") != IssueType.CONSENT_GROUP.name) {
+            this.setExtraProperty(result.get("name").toString(), result.get("value").toString())
+        }
     }
 
     /**
