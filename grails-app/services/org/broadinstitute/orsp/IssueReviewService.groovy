@@ -1,7 +1,5 @@
 package org.broadinstitute.orsp
 
-import com.google.gson.Gson
-import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 
 class IssueReviewService {
@@ -22,8 +20,7 @@ class IssueReviewService {
             ir.delete(flush: true)
         }
         if (type == 'reject') {
-            String editCreatorName = ir.getEditCreatorName()
-            notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey), editCreatorName)
+            notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey), ir.getEditCreatorName())
         }
     }
 
