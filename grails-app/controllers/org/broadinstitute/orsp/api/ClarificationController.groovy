@@ -31,7 +31,7 @@ class ClarificationController extends AuthenticatedController {
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress
             if (issueReview != null) {
-                toAddresses.addAll(userService.findUser(issueReview.getEditCreatorName())?.emailAddress)
+                toAddresses.add(userService.findUser(issueReview.getEditCreatorName())?.emailAddress)
             }
 
             if (issue.getType() != IssueType.CONSENT_GROUP.name) {
