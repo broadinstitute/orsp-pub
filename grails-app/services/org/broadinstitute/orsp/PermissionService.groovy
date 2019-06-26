@@ -36,11 +36,6 @@ class PermissionService implements UserInfo {
         userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
     }
 
-    Boolean issueIsForbidden(IssueSearchItemDTO issue, String userName, boolean isAdmin, boolean isViewer) {
-        Map<String, List<String>> extraProperties = issue.extraProperties
-        userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
-    }
-
     Boolean userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer) {
         boolean userHasAccess = (reporter == userName
                 || getIssueCollaborators(extraProperties)?.contains(userName)
