@@ -4,13 +4,13 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 
-class IssueReviewService implements UserInfo {
+class IssueReviewService {
 
     NotifyService notifyService
 
     @Transactional
     IssueReview create(IssueReview issueReview, User editCreator) throws DomainException {
-        IssueReview issueReviewToSave = addEditCreator(issueReview, editCreator)
+        IssueReview issueReviewToSave = addEditCreatorToIssueReview(issueReview, editCreator)
         issueReviewToSave.save(flush: true)
         notifyService.sendEditsSubmissionNotification(Issue.findByProjectKey(issueReviewToSave.projectKey))
         issueReviewToSave
@@ -32,12 +32,13 @@ class IssueReviewService implements UserInfo {
         return IssueReview.findByProjectKey(projectKey)
     }
 
-    private static IssueReview addEditCreator(IssueReview issueReview, User editCreator) {
-        Gson gson = new Gson()
-        IssueReview issueReviewWithEditor = issueReview
-        Object suggestions = JSON.parse(issueReview.getSuggestions())
+    private static IssueReview addEditCreatorToIssueReview(IssueReview issueReview, User editCreator) {
+        IssueReview issueReviewWithEditor = new IssueReview()
+        issueReviewWithEditor.id = issueReview?.id
+        issueReviewWithEditor.projectKey = issueReview?.projectKey
+        Object suggestions = JSON.parse(issueReview?.getSuggestions())
         suggestions.putAt(IssueExtraProperty.EDIT_CREATOR, editCreator.getUserName())
-        issueReviewWithEditor.setSuggestions(gson.toJson(suggestions))
+        issueReviewWithEditor.suggestions = new Gson().toJson(suggestions)
         issueReviewWithEditor
     }
 }

@@ -16,7 +16,6 @@ import org.broadinstitute.orsp.NotifyArguments
 class ClarificationController extends AuthenticatedController {
 
 IssueReviewService issueReviewService
-
     def addClarificationRequest() {
         Issue issue = queryService.findByKey(params.id)
         if (params.comment) {
