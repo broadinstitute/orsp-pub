@@ -10,7 +10,6 @@ const sharingTypes = {
     noDataSharing: "No data sharing via a repository (data returned to research collaborator only)",
     undetermined: "Data sharing plan not yet determined"
 }
-
 export const SecurityReview = hh(class SecurityReview extends Component {
 
   constructor(props) {
