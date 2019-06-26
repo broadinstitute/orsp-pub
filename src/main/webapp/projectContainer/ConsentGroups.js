@@ -4,6 +4,7 @@ import { ProjectMigration } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
+import { Spinner } from "../components/Spinner";
 
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
@@ -154,6 +155,9 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         successClarification: this.successClarification,
         linkClarification: true
       }),
+      h(Spinner, {
+        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+      })
      ]))
     }
 });
