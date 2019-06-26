@@ -6,7 +6,8 @@ import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from './AlertMessage';
 import { spinnerService } from "../util/spinner-service";
 import { ClarificationRequest } from "../util/ajax";
-import { Search } from "../util/ajax";
+import { Search } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 
 import './ConfirmationDialog.css';
 
@@ -40,8 +41,9 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
 
   validateClarification() {
     let isValid = false;
-    if(this.props.linkClarification == true) {
-      if (this.state.clarification !== '' && this.state.pm !== null && this.state.pm.length > 0 && this.state.pm[0] != null && this.state.pm[0].key !== '') {
+    if(this.props.linkClarification === true) {
+      if (!isEmpty(this.state.clarification) && !isEmpty(this.state.pm) && 
+          !isEmpty(this.state.pm[0]) && !isEmpty(this.state.pm[0].key)) {
         isValid = true;
       }
     } else if (this.state.clarification !== '') {

@@ -143,16 +143,6 @@
     <div class="modal" id="add-consent-document-modal" tabindex="-1" role="dialog"
       aria-labelledby="addConsentDocumentModalDialog" aria-hidden="true">
     </div>
-
-    %{-- Modal container to confirm approve / reject / unlink --}%
-    <div class="modal" id="confirmation-modal-dialog" tabindex="-1" role="dialog"
-      aria-labelledby="confirmationModalDialog" aria-hidden="true">
-    </div>
-
-    %{-- Modal container to request clarification --}%
-    <div class="modal" id="request-clarification-dialog" tabindex="-1" role="dialog"
-      aria-labelledby="requestClarificationModalDialog" aria-hidden="true">
-    </div>
   </g:if>
 
 </body>

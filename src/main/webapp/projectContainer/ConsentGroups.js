@@ -34,7 +34,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   handleOkConfirmation = () => {
-    if(this.state.action == "unlink" || this.state.action == "reject") {
+    if(this.state.action === "unlink" || this.state.action === "reject") {
       ConsentCollectionLink.breakLink(this.state.issueKey, this.state.consentKey, this.state.action).then(resp => {
         this.getConsentGroups();
         this.closeConfirmationModal();
@@ -45,12 +45,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         this.closeConfirmationModal();
       });
     }
-  };
-
-  toggleState = (e) => () => {
-    this.setState((state, props) => {
-      return { [e]: !state[e] }
-    });
   };
 
   getConsentGroups() {
