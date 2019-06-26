@@ -23,7 +23,6 @@ class Main extends Component {
   }
 
   initStatusBoxInfo = (elementInfo) => {
-    console.log('elementInfo ', elementInfo);
     this.setState(prev => {
       prev.status.type = get(elementInfo, 'issue.type', '');
       prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
@@ -32,6 +31,13 @@ class Main extends Component {
       prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
       prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
       prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
+      return prev;
+    });
+  };
+
+  changeInfoStatus = (data) => {
+    this.setState(prev => {
+      prev.status.projectReviewApproved = data;
       return prev;
     });
   };
@@ -60,7 +66,6 @@ class Main extends Component {
   };
 
   render() {
-    console.log(this.state.status);
     return (
       div({ className: "headerBoxContainer" }, [
         StatusBox({
@@ -69,6 +74,7 @@ class Main extends Component {
         ProjectContainer({
           isRendered: component.issueType === 'project',
           initStatusBoxInfo: this.initStatusBoxInfo,
+          changeInfoStatus: this.changeInfoStatus,
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
           updateAdminOnlyStatus: this.updateAdminOnlyStatus,
@@ -77,6 +83,7 @@ class Main extends Component {
         ConsentGroupContainer({
           isRendered: component.issueType === 'consent-group',
           initStatusBoxInfo: this.initStatusBoxInfo,
+          changeInfoStatus: this.changeInfoStatus,
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
         })

@@ -214,6 +214,10 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     });
   };
 
+  changePendingStatus = (status) => {
+    this.props.changeInfoStatus(status);
+  };
+
   isViewer = () => {
     return component.isViewer === "true";
   }
@@ -233,7 +237,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   getReviewSuggestions = () => {
     Review.getSuggestions(component.serverURL, component.consentKey).then(data => {
-      console.log(this.state.reviewSuggestion);
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
@@ -241,12 +244,14 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.reviewSuggestion = true;
           return prev;
         });
+        this.changePendingStatus(false);
       } else {
         this.setState(prev => {
           prev.formData = JSON.parse(JSON.stringify(this.state.current));
           prev.reviewSuggestion = false;
           return prev;
         });
+        this.changePendingStatus(true);
       }
     });
   };

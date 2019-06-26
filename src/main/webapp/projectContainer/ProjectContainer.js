@@ -125,6 +125,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(ProjectReview, {
                     updateDetailsStatus: this.updateDetailsStatus,
+                    changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     updateContent: this.updateContent,
                   })
