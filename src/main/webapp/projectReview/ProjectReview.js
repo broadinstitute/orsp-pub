@@ -241,10 +241,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       });
   }
 
-  isViewer = () => {
-    return component.isViewer === "true";
-  };
-
   getUsersArray(array) {
     let usersArray = [];
     if (array !== undefined && array !== null && array.length > 0) {
@@ -809,13 +805,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !this.isViewer()
+          isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToConsentGroupTab,
-          isRendered: this.state.readOnly === true && !this.isViewer()
+          isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Add Sample/Data Cohort"]),
 
         button({
@@ -1142,7 +1138,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !this.isViewer()
+            isRendered: this.state.readOnly === true && !component.isViewer
           }, ["Edit Information"]),
 
           button({
@@ -1158,7 +1154,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
-            isRendered: this.state.readOnly === false && !this.isViewer()
+            isRendered: this.state.readOnly === false && !component.isViewer
           }, ["Submit Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/
