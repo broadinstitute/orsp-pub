@@ -15,7 +15,8 @@ import org.broadinstitute.orsp.NotifyArguments
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ClarificationController extends AuthenticatedController {
 
-IssueReviewService issueReviewService
+    IssueReviewService issueReviewService
+
     def addClarificationRequest() {
         Issue issue = queryService.findByKey(params.id)
         if (params.comment) {
@@ -26,7 +27,7 @@ IssueReviewService issueReviewService
                 render([message: "Error saving comment"])
             }
 
-            IssueReview issueReview = issueReviewService.findByProjectKey(issue?.projectKey)
+            IssueReview issueReview = issueReviewService.findByProjectKey(issue.projectKey)
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress
             if (issueReview != null) {

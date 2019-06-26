@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+
 class IssueReview {
 
     Long id
