@@ -2,17 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: orsp-pub-dev-ip
+    kubernetes.io/ingress.global-static-ip-name: ${HOST_IP}
   labels:
     app: ${REPO_NAME}
   name: ${REPO_NAME}-ingress
-  namespace: default
+  namespace: ${NAMESPACE}
 spec:
   backend:
     serviceName: ${REPO_NAME}-service
     servicePort: http
   rules:
-  - host: ui.dsp-orsp-dev.broadinstitute.org
+  - host: ${HOST_NAME}
     http:
       paths:
       - backend:
@@ -20,6 +20,6 @@ spec:
           servicePort: http
   tls:
   - hosts:
-    - ui.dsp-orsp-dev.broadinstitute.org
-    secretName: wildcard.dsp-orsp-dev.broadinstitute.org
+    - ${HOST_NAME}
+    secretName: ${TLS_CERT_SECRET}
 

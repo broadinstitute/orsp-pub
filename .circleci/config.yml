@@ -62,7 +62,19 @@ commands:
         default: "dev"
       namespace:
         type: string
-        default: "default"
+        default: "orsp"
+      host_name:
+        type: string
+        default: "ui.dsp-orsp-dev.broadinstitute.org"
+      host_ip:
+        type: string
+        default: "orsp-pub-dev-ip"
+      tls_cert_secret:
+        type: string
+        default: "wildcard.dsp-orsp-dev.broadinstitute.org"
+      orsp_config_map:
+        type: string
+        default: "orsp-config-dev"       
       repo_name:
         type: string
         default: "orsp-pub"
@@ -83,6 +95,10 @@ commands:
           name: Export env vars for substitution. $BASH_ENV is sourced before each step
           command: |
             echo 'export NAMESPACE="<< parameters.namespace >>"' >> $BASH_ENV
+            echo 'export HOST_NAME="<< parameters.host_name >>"' >> $BASH_ENV
+            echo 'export HOST_IP="<< parameters.host_ip >>"' >> $BASH_ENV
+            echo 'export TLS_CERT_SECRET="<< parameters.tls_cert_secret >>"' >> $BASH_ENV
+            echo 'export ORSP_CONFIG_MAP="<< parameters.orsp_config_map >>"' >> $BASH_ENV
             echo 'export REPO_NAME="<< parameters.repo_name >>"' >> $BASH_ENV
             echo 'export GOOGLE_PROJECT="<< parameters.google_project >>"' >> $BASH_ENV
             echo 'export GOOGLE_ZONE="<< parameters.google_zone >>"' >> $BASH_ENV
@@ -123,12 +139,17 @@ jobs:
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
           env: "dev"
-          namespace: "default"
+          namespace: "orsp"
           repo_name: "orsp-pub"
           google_project: "orsp-dev"
           google_zone: "us-central1-a"
           google_cluster: "orsp-portal-dev"
           commit: ${COMMIT}
+          host_name: "ui.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-pub-dev-ip"
+          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
+          orsp_config_map: "orsp-config-dev"
+
 
 workflows:
   version: 2
