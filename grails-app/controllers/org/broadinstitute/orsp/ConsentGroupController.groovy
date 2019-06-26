@@ -371,22 +371,4 @@ class ConsentGroupController extends AuthenticatedController {
         redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
     }
 
-    def loadConfirmationDialog() {
-        def issue = queryService.findByKey(params.issueKey)
-        def consent = queryService.findByKey(params.consentKey)
-        render(template: "confirmationDialog",
-                model:
-                        [issue: issue,
-                         consent: consent,
-                         actionKey: params.actionKey])
-    }
-
-    def loadRequestClarification() {
-        def issue = queryService.findByKey(params.issueKey)
-        def consent = queryService.findByKey(params.consentKey)
-        render(template: "requestClarification",
-                model:
-                        [issue: issue,
-                         consent: consent])
-    }
 }

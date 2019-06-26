@@ -53,10 +53,4 @@ class PersistenceService {
         consentCollectionLink?.delete(flush: true)
     }
 
-    void updateCollectionLinkStatus(String consentKey, String projectKey, String status) {
-        ConsentCollectionLink.executeUpdate("update ConsentCollectionLink ccl set ccl.status = :status where ccl.projectKey = :projectKey and ccl.consentKey = :consentKey",
-        [status: status, consentKey: consentKey, projectKey: projectKey])
-    }
-
-
 }

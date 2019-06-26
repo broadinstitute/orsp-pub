@@ -49,8 +49,9 @@ class UrlMappings {
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
-        '/api/consent-group/confirmation-modal'(controller: 'consentGroup', action: 'loadConfirmationDialog', method: 'GET')
-        '/api/consent-group/request-clarification'(controller: 'consentGroup', action: 'loadRequestClarification', method: 'GET')
+
+        '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'DELETE')
+        '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
         // Custom Error handlers.

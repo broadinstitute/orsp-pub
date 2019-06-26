@@ -401,6 +401,17 @@ class QueryService implements Status {
         results
     }
 
+    void updateCollectionLinkStatus(String consentKey, String projectKey, String status) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' update consent_collection_link set status = :status ' +
+                'where project_key = :projectKey and consent_key = :consentKey'
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('consentKey', consentKey)
+        sqlQuery.executeUpdate()
+    }
+
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
         final session = sessionFactory.currentSession
         final String query =

@@ -208,7 +208,7 @@ class NewConsentGroupController extends AuthenticatedController {
      */
     def approveLink () {
         try {
-            persistenceService.updateCollectionLinkStatus(params.consentKey, params.projectKey, IssueStatus.Approved.name)
+            queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, IssueStatus.Approved.name)
             response.status = 200
         } catch (Exception e) {
             response.status = 500

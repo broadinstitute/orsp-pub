@@ -47,7 +47,7 @@
   display: inline-block;
   position: relative;
   height: 50px;
-  background: url('../../../../grails-app/assets/images/icon-live_help.svg') no-repeat center center;
+  background: url('./icon-live_help.svg') no-repeat center center;
   width: 44px;
   float: left;
   margin: -10px 15px 0 10px;

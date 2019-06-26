@@ -162,7 +162,8 @@
         updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
         approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",     
         consentGroupReviewUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-        createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}"
+        createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}",
+        requestLinkClarificationUrl: "${createLink(controller: 'clarification', action:'collectionRequestClarification')}"
       };
     </script>
 

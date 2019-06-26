@@ -1,13 +1,21 @@
-import { Component } from 'react';
-import { div, hh } from 'react-hyperscript-helpers';
+import { Component, Fragment } from 'react';
+import { div, hh, h } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
+import { ConsentCollectionLink } from '../util/ajax';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      content: ''
+      content: '',
+      showConfirmationModal: false,
+      action: '',
+      issueKey: '',
+      consentKey: '',
+      showRequestClarification: false
     };
     this.loadConsentGroups = this.loadConsentGroups.bind(this);
   }
@@ -16,18 +24,53 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     this.getConsentGroups();
   }
 
+  closeConfirmationModal = () => {
+    this.setState({showConfirmationModal: !this.state.showConfirmationModal});
+  };
+
+  closeRequestClarification = () => {
+    this.setState({showRequestClarification: false});
+  };
+
+  handleOkConfirmation = () => {
+    if(this.state.action == "unlink" || this.state.action == "reject") {
+      ConsentCollectionLink.breakLink(this.state.issueKey, this.state.consentKey, this.state.action).then(resp => {
+        this.getConsentGroups();
+        this.closeConfirmationModal();
+      });
+    } else {
+      ConsentCollectionLink.approveLink(this.state.issueKey, this.state.consentKey).then(resp => {
+        this.getConsentGroups();
+        this.closeConfirmationModal();
+      });
+    }
+  };
+
+  toggleState = (e) => () => {
+    this.setState((state, props) => {
+      return { [e]: !state[e] }
+    });
+  };
+
   getConsentGroups() {
     ProjectMigration.getConsentGroups(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
       }, () => {
-        this.loadConsentGroups();
+        this.loadConsentGroups(this);
       });
     });
   };
 
-  loadConsentGroups() {
+  successClarification = () => {
+    console.log("requesttttttttttttttttt");
+    this.props.updateContent();
+    this.closeRequestClarification();
+    
+  };
+
+  loadConsentGroups = (rThis) => {
     $('.consent-group-panel-body').hide();
     $('.consent-accordion-toggle').on('click', function () {
       var icon = $(this).children().first();
@@ -64,67 +107,22 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
 
     $(".confirmationModal").on('click', function () {
-      $("#confirmation-modal-dialog").load(
-        component.serverURL + "/api/consent-group/confirmation-modal?"
-        + $.param({
-          issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent"),
-          actionKey: $(this).data("handler")
-        }),
-        function () {
-          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-          $("button[data-dismiss='modal']").on("click", function () { $("#confirmation-modal-dialog").dialog("close"); });
-        }
-      ).dialog({
-        modal: true,
-        minWidth: 1000,
-        minHeight: 500,
-        closeOnEscape: true,
-        hide: { effect: "fadeOut", duration: 300 },
-        show: { effect: "fadeIn", duration: 300 },
-        dialogClass: "no-titlebar"
-      }).parent().removeClass("ui-widget-content");
-      $(".ui-dialog-titlebar").hide();
+      rThis.setState(prev => {
+        prev.showConfirmationModal = true;
+        prev.action = $(this).data("handler");
+        prev.issueKey = $(this).data("issue");
+        prev.consentKey = $(this).data("consent");
+        return prev;
+      });
     });
     $(".request-clarification").on('click', function () {
-      $("#request-clarification-dialog").load(
-        component.serverURL + "/api/consent-group/request-clarification?"
-        + $.param({
-          issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent")
-        }),
-        function () {
-          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-          $("button[data-dismiss='modal']").on("click", function () { $("#request-clarification-dialog").dialog("close"); });
-          $(".userAutocomplete").
-            autocomplete({
-              source: component.serverURL + "/search/getMatchingUsers",
-              minLength: 2,
-              change: function (event, ui) {
-                if (!ui.item) {
-                  $(this).val('');
-                  $(this).next().val('');
-                }
-              },
-              select: function (e, ui) {
-                $(this).next().val(ui.item.id);
-              }
-            });
-        }
-      ).dialog({
-        modal: true,
-        minWidth: 1000,
-        minHeight: 500,
-        closeOnEscape: true,
-        hide: { effect: "fadeOut", duration: 300 },
-        show: { effect: "fadeIn", duration: 300 },
-        dialogClass: "no-titlebar"
-      }).parent().removeClass("ui-widget-content");
-
-      $(".ui-dialog-titlebar").hide();
+      rThis.setState(prev => {
+        prev.showRequestClarification = true;
+        prev.issueKey = $(this).data("issue");
+        prev.consentKey = $(this).data("consent");
+        return prev;
+      });
     });
-
-
     // Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
     // https://broadinstitute.atlassian.net/browse/BTRX-628
     var url = new URLSearchParams(window.location.search);
@@ -135,9 +133,29 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       });
     }
   }
+
   render() {
     return (
-      div({ dangerouslySetInnerHTML: { __html: this.state.content } }, [])
-    )
-  }
+     h(Fragment, {}, [       
+      div({ dangerouslySetInnerHTML: { __html: this.state.content } }, []),
+      ConfirmationDialog({
+        closeModal: this.closeConfirmationModal,
+        show: this.state.showConfirmationModal,
+        handleOkAction: this.handleOkConfirmation,
+        bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
+        actionLabel: 'Yes'
+      }, []),
+      RequestClarificationDialog({
+        closeModal: this.closeRequestClarification,
+        show: this.state.showRequestClarification,
+        issueKey: this.state.issueKey,
+        user: component.user,
+        emailUrl: component.emailUrl,
+        userName: component.userName,
+        clarificationUrl: component.requestLinkClarificationUrl,
+        successClarification: this.successClarification,
+        linkClarification: true
+      }),
+     ]))
+    }
 });

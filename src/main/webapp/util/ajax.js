@@ -94,11 +94,11 @@ export const ConsentGroup = {
 
 export const ClarificationRequest = {
 
-  sendNewClarification(url, comment, issueId) {
+  sendNewClarification(url, comment, issueId, pm) {
     let data= new FormData();
     data.append('comment', comment);
     data.append('id', issueId);
-
+    data.append('pm', pm)
     return axios.post(url, data);
   }
 };
@@ -282,6 +282,14 @@ export const ConsentCollectionLink = {
       headers: { 'content-type': 'multipart/form-data' }
     };
     return axios.post(serverUrl + '/api/sample-consent-link', data, config);
+  },
+
+  breakLink(projectKey, consentKey, actionKey) {
+    return axios.delete(component.serverURL + '/api/break-link?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
+  },
+
+  approveLink(projectKey, consentKey) {
+    return axios.put(component.serverURL + '/api/approve-link?projectKey='+ projectKey +"&consentKey=" + consentKey);
   }
 };
 
