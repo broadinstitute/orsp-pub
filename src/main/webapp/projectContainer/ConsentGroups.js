@@ -64,10 +64,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   successClarification = () => {
-    console.log("requesttttttttttttttttt");
     this.props.updateContent();
     this.closeRequestClarification();
-    
   };
 
   loadConsentGroups = (rThis) => {
