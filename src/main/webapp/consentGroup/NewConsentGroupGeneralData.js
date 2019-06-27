@@ -202,18 +202,20 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleInputChange
           }),
 
-          InputFieldSelect({
-            id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey,
-            isDisabled: false,
-            options: this.props.sampleCollectionList,
-            onChange: this.handleSampleCollectionChange,
-            value: this.state.formData.sampleCollections,
-            placeholder: "Start typing a Sample Collection",
-            isMulti: false,
-            isClearable: true,
-            edit: false
-          }),
+          div({ style: { 'margin': '20px 0' }}, [
+            InputFieldSelect({
+              id: "sampleCollection_select",
+              label: "Link Sample Collection to " + this.props.projectKey,
+              isDisabled: false,
+              options: this.props.sampleCollectionList,
+              onChange: this.handleSampleCollectionChange,
+              value: this.state.formData.sampleCollections,
+              placeholder: "Start typing a Sample Collection",
+              isMulti: false,
+              isClearable: true,
+              edit: false
+            }),
+          ]),
 
         Panel({
           title: "Sample Collection Date Range ",
