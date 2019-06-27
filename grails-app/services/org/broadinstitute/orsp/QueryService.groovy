@@ -740,7 +740,7 @@ class QueryService implements Status {
      * @return
      */
     Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds)"
+        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
