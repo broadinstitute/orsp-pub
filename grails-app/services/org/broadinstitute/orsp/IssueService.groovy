@@ -163,31 +163,7 @@ class IssueService implements UserInfo {
             issue.removeFromFundings(it)
             it.delete(hard: true)
         }
-
-        def sampleCollectionIds = input.get('samples')
-        Collection<ConsentCollectionLink> sclOld = ConsentCollectionLink.findAllByConsentKey(issue.projectKey)
-
-        def deletableConsentCollectionLinks = sclOld.findAll { !sampleCollectionIds.contains(it.sampleCollectionId)}
-        if (!deletableConsentCollectionLinks.isEmpty()) {
-            deletableConsentCollectionLinks.each {
-                it.delete(hard: true)
-                sclOld.remove(it)
-            }
-        }
-
-        def newSampleCollectionLinks = sampleCollectionIds.findAll { !sclOld.sampleCollectionId.contains(it) }
-
-        newSampleCollectionLinks.each {
-            if (!sclOld.contains(it)) {
-                new ConsentCollectionLink(
-                        projectKey: issue.source,
-                        consentKey: issue.projectKey,
-                        sampleCollectionId: it,
-                        creationDate: new Date()
-                ).save(flush: true)
-            }
-        }
-
+        
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)

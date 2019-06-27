@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="changelog-13.0-1" author="tadeork">
+        <createIndex
+                tableName="funding"
+                indexName="idx_funding_project_key">
+            <column name="project_key" type="varchar(60)"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
