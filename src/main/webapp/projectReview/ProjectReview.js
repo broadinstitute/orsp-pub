@@ -458,8 +458,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   sortFundingsBySource = (fundings) => {
     if (!isEmpty(fundings)) {
       return fundings.sort(function (a, b) {
-        let x = a.future.source.label;
-        let y = b.future.source.label;
+        let x = a.source !== undefined ? a.source.label : '';
+        let y = b.source !== undefined ? b.source.label : '';
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
       });
     }
