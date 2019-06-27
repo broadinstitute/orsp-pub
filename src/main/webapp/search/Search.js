@@ -1,10 +1,12 @@
 import React from "react";
-import { Typeahead } from "react-bootstrap-typeahead";
+import { Typeahead, Menu, MenuItem } from "react-bootstrap-typeahead";
 import axios from "axios";
 
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
+
+const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
 
 class Search extends React.Component {
   constructor(props) {
@@ -151,7 +153,7 @@ class Search extends React.Component {
     axios.post(this.state.searchUrl, params).then(response => {
       const results = response.data;
       this.setState(() => ({
-        data: results.data,
+        data: results.data === null ? [] : results.data,
         loading: false,
         loaded: true
       }));
@@ -160,6 +162,27 @@ class Search extends React.Component {
       this.setState(() => { throw error; });
     });
   }
+
+  renderMenu = (results, menuProps) => {
+    const items = [];
+    items.push(
+      <Menu.Header key={`legacy-status-header`}>
+        {"New Status"}
+      </Menu.Header>,
+      results.map((status, idx) => {
+        return !!(newStatuses.indexOf(status) !== -1) && <MenuItem key={`legacy-`+idx} option={status} position={idx}>
+          {status}
+        </MenuItem>}),
+      <Menu.Header key={`new-status-header`}>
+        {"Legacy Status"}
+      </Menu.Header>,
+      results.map((status, idx) => {
+        return !!(newStatuses.indexOf(status) === -1) && <MenuItem key={`new-`+idx} option={status} position={idx}>
+          {status}
+        </MenuItem>})
+    );
+    return <Menu {...menuProps} id={"menu-item"}>{items}</Menu>
+  };
 
   render() {
     return (
@@ -245,6 +268,7 @@ class Search extends React.Component {
                 align={"left"}
                 multiple={true}
                 options={this.state.issueStatuses}
+                renderMenu={this.renderMenu}
                 onChange={selected => {
                   this.setState(() => ({ statuses: selected }));
                   this.saveStateToLocalStorage();
