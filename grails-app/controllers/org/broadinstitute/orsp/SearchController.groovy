@@ -123,7 +123,9 @@ class SearchController implements UserInfo {
     def generalReactTablesJsonSearch() {
         def user = getUser()
         def userName = user.userName
+        log.error(params)
         QueryOptions options = new QueryOptions()
+        log.error("0001")
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)
         if (params.userName) options.setUserName(params.userName)
@@ -132,8 +134,11 @@ class SearchController implements UserInfo {
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
         def rows = []
+        log.error("0002")
         def isAdmin = isAdmin()
+        log.error("0003")
         def isViewer = isViewer()
+        log.error("0004")
         // Only query if we really have values to query for.
         if (options.projectKey ||
                 options.issueTypeNames ||
@@ -142,10 +147,15 @@ class SearchController implements UserInfo {
                 options.userName ||
                 options.fundingInstitute ||
                 options.irbsOfRecord) {
+            log.error("0005")
+            try {
             rows = queryService.findIssues(options).collect {
+                log.error("0006 " + it.projectKey)
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
+                log.error("0007")
 
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+                log.error("0008 " + link)
                 [
                         link: link,
                         key: it.projectKey,
@@ -158,7 +168,11 @@ class SearchController implements UserInfo {
                         expiration: it.expirationDate ? format.format(it.expirationDate) : ""
                 ]
             }
+            } catch(Exception e) {
+                log.error("Error in Search", e)
+            }
         }
+        log.error("0009")
         render ([data: rows] as JSON)
     }
 
