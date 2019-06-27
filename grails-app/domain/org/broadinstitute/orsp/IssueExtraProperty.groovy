@@ -70,6 +70,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String END_DATE = "endDate"
     public static final String ATTESTATION = "attestation"
     public static final String NO_CONSENT_FORM_REASON = "noConsentFormReason"
+    public static final String COLLABORATORS = "collaborators"
 
     // Admin Only
     public static final String IRB_REFERRAL_TEXT = "irbReferralText"

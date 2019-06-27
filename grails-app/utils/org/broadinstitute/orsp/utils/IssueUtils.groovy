@@ -3,7 +3,6 @@ package org.broadinstitute.orsp.utils
 import com.google.gson.Gson
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
 @Slf4j
@@ -105,25 +104,20 @@ final class IssueUtils {
         null
     }
 
-    static Map<String, Object> generateArgumentsForRedirect(Issue issue, String id, String tab) {
+    static Map<String, Object> generateArgumentsForRedirect(String type, String id, String tab) {
         Map<String, Object> arguments = new HashMap<>()
-        if (isConsentGroup(issue)) {
+        if (type == IssueType.CONSENT_GROUP.name) {
             arguments.put("controller", "newConsentGroup")
             arguments.put("action", "main")
-            tab != null ? arguments.put("params", [consentKey: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [consentKey: issue.projectKey])
+            tab != null ? arguments.put("params", [consentKey: id, tab: tab]) :
+                    arguments.put("params", [consentKey: id])
         } else {
             arguments.put("controller", "project")
             arguments.put("action", "main")
             arguments.put("projectKey", id)
-            tab != null ? arguments.put("params", [projectKey: issue.projectKey, tab: tab]) :
-                    arguments.put("params", [projectKey: issue.projectKey])
+            tab != null ? arguments.put("params", [projectKey: id, tab: tab]) :
+                    arguments.put("params", [projectKey: id])
         }
         arguments
     }
-
-    static boolean isConsentGroup(Issue issue) {
-        return issue.type == IssueType.CONSENT_GROUP.name || issue.controller == IssueType.CONSENT_GROUP.name
-    }
-
 }
