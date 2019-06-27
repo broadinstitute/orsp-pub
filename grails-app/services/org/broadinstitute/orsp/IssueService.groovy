@@ -305,8 +305,8 @@ class IssueService implements UserInfo {
                 type = EventType.ABANDON_PROJECT
                 break
 
-            case IssueStatus.ProjectApproved.getName():
-                type = EventType.APPROVED
+            case IssueStatus.Approved.getName():
+                type = EventType.APPROVE_PROJECT
                 break
 
             case IssueStatus.Disapproved.getName():
