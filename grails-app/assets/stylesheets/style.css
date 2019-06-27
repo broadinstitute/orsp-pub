@@ -163,7 +163,7 @@ div.invalid {
     margin-left: 5px;
 }
 
-/*
+
 .ui-menu {
     width: 500px;
     z-index: 3000;
@@ -171,10 +171,14 @@ div.invalid {
     overflow-y: auto;
 }
 
+.ui-menu .ui-menu-item {
+    padding: 20px 1em 20px .4em;
+}
+
 .ui-menu .ui-menu-item.disabled {
     border: 1px solid #F1F1F1;
     border-bottom-color: #E1E1E1; 
-    background:#F1F1F1;
+    background:#FAFAFA;
     font-weight: normal;
     color: #999999;
     padding: 40px 1em 10px .4em;
@@ -190,15 +194,6 @@ div.invalid {
     position: absolute;
     top: 8px;
     border-radius: 4px;
-}
-*/
-
-.ui-menu {
-    width: auto;
-    max-width: 500px;
-    z-index: 3000;
-    max-height: 400px;
-    overflow-y: auto;
 }
 
 span.plus {

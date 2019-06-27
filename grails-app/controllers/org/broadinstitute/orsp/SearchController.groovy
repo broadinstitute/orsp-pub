@@ -61,7 +61,7 @@ class SearchController implements UserInfo {
                     value: it.projectKey,
                     url: link,
                     reporter: it.reporter,
-                    linkDisabled: permissionService.issueIsForbidden((Issue)it, userName, isAdmin, isViewer),
+                    linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
                     pm: it.pm,
                     actor: it.actor
             ]
