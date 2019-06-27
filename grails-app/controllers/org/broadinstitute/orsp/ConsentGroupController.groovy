@@ -1,7 +1,6 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
-import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
 /**
