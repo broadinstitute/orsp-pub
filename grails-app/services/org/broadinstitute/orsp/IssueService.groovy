@@ -179,9 +179,6 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE_WORK)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE_WORK})
         }
-        if (!input.containsKey(IssueExtraProperty.END_DATE)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
-        }
         if (!input.containsKey(IssueExtraProperty.SAMPLES)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SAMPLES})
         }
