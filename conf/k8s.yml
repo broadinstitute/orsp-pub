@@ -62,5 +62,6 @@ spec:
           secretName: cloudsql-instance-credentials
       - configMap:
           name: ${ORSP_CONFIG_MAP}
+          namespace: ${NAMESPACE}
         name: orsp-config
 
