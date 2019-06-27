@@ -376,7 +376,6 @@ class ConsentGroupController extends AuthenticatedController {
         } catch (Exception e) {
             flash.error = "Unable to attach consent document: " + e.getMessage()
         }
-        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue, params.issueKey, "consent-groups")
         redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
     }
 
