@@ -123,7 +123,7 @@ class SearchController implements UserInfo {
     def generalReactTablesJsonSearch() {
         def user = getUser()
         def userName = user.userName
-        log.error(params)
+        log.error(userName)
         QueryOptions options = new QueryOptions()
         log.error("0001")
         if (params.projectKey) options.setProjectKey(params.projectKey)
