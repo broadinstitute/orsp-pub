@@ -26,12 +26,13 @@ class ClarificationController extends AuthenticatedController {
                 response.status = 500
                 render([message: "Error saving comment"])
             }
-
-            IssueReview issueReview = issueReviewService.findByProjectKey(issue.projectKey)
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress
-            if (issueReview != null) {
-                toAddresses.add(userService.findUser(issueReview.getEditCreatorName())?.emailAddress)
+
+            String editCreatorEmail = userService.findUser(
+                    issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName())?.emailAddress
+            if (editCreatorEmail != null) {
+                toAddresses.add(editCreatorEmail)
             }
 
             if (issue.getType() != IssueType.CONSENT_GROUP.name) {

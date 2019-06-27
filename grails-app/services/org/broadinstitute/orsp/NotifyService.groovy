@@ -659,12 +659,11 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
-        User editCreator = userService.findUser(editCreatorName)
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
-                        ccAddresses: Collections.singletonList(editCreator.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : [""],
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
                         user: user,
@@ -677,12 +676,11 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
-        User editCreator = userService.findUser(editCreatorName)
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
-                        ccAddresses: Collections.singletonList(editCreator.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : [""],
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
                         user: user,
