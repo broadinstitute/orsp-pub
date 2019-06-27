@@ -306,7 +306,7 @@ class IssueService implements UserInfo {
                 break
 
             case IssueStatus.ProjectApproved.getName():
-                type = EventType.APPROVE_PROJECT
+                type = EventType.APPROVED
                 break
 
             case IssueStatus.Disapproved.getName():
