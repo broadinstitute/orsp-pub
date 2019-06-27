@@ -173,7 +173,11 @@ class SearchController implements UserInfo {
             }
         }
         log.error("0009")
+        try {
         render ([data: rows] as JSON)
+        } catch(Exception e) {
+            log.error("Error in render",e);
+        }
     }
 
     def projectKeyAutocomplete() {
