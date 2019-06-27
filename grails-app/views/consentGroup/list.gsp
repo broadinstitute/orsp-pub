@@ -152,10 +152,10 @@
 
 <script>
   // Display for 8 seconds a message indicating the submission of a new consent group. This is temporary until this page is moved to react.
-  $(document).ready(function () {
+  $(document).ready(function() {
     var url = new URLSearchParams(window.location.search);
     if (url.get('tab') === 'consent-groups' && url.has('new')) {
-      $('#alert').fadeIn('slow', function () {
+      $('#alert').fadeIn('slow', function() {
         $('#alert').delay(8000).fadeOut();
         history.pushState({}, null, window.location.href.split('&')[0]);
       });

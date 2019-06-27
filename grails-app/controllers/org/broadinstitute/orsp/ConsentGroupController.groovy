@@ -128,10 +128,11 @@ class ConsentGroupController extends AuthenticatedController {
     def breakLink() {
         try {
             queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? IssueStatus.Unlinked.name : IssueStatus.Rejected.name)
-            List<ConsentCollectionLink> links = ConsentCollectionLink.findAllByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
+            List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
             deleteCollectionLinks(links)
             response.status = 200
-            render([message: "Links are been deleted"] as JSON)
+            render([message: "Links with the following ids: " + links.collect{it.sampleCollectionId}.join(",")  +
+                    " for the specified consent key: " + params.consentKey + " and project key " + params.projectKey + " are been deleted"] as JSON)
         } catch (Exception e) {
             response.status = 500
             log.error("Exception deleting collection links: " + e)

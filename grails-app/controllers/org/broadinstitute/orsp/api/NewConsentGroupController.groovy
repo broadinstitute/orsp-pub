@@ -209,17 +209,17 @@ class NewConsentGroupController extends AuthenticatedController {
     def approveLink () {
         try {
             boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, IssueStatus.Approved.name)
+            List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
             if (!isUpdated) {
               response.status = 400
               render([message: 'Error updating collection links, please check specified parameters.'] as JSON)
             } else {
               response.status = 200
-              render([message: 'Collection links are been updated.'] as JSON)
+              render(links as JSON)
             }
         } catch (Exception e) {
             response.status = 500
             log.error("Exception updating collection links status: " + e)
-            flash.error = "Error updating collection links status: " + e
         }
         render(response)
     }

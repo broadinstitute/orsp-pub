@@ -285,7 +285,7 @@ export const ConsentCollectionLink = {
   },
 
   breakLink(projectKey, consentKey, actionKey) {
-    return axios.delete(component.serverURL + '/api/break-link?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
+    return axios.post(component.serverURL + '/api/break-link?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
   },
 
   approveLink(projectKey, consentKey) {

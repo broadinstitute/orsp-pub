@@ -141,6 +141,21 @@ class QueryService implements Status {
         getSqlConnection().rows(query, ["consentKey": consentKey]).collect { it.get("sample_collection_id").toString() }
     }
 
+    /**
+     * Find all sample collection ids that have been associated to the provided consent.
+     *
+     * @return Collection of distinct sample collection ids
+     */
+    boolean areLinksApproved(String consentKey, String projectKey) {
+        final String query =
+                ' select distinct status as status ' +
+                        ' from consent_collection_link ' +
+                        ' where consent_key = :consentKey ' +
+                        ' and projectKey = : projectKey '
+                        ' and status = :status '
+        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: IssueStatus.Approved.name])
+                .collect { it.get("status").toString() }?.size() > 0
+    }
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"]) // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
@@ -325,6 +340,23 @@ class QueryService implements Status {
             setString('projectKey', projectKey)
             setString('consentKey', consentKey)
             setString('sampleCollectionId', sampleCollectionId)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
+    Collection<ConsentCollectionLink> findConsentCollectionLinksByProjectKeyAndConsentKey(String projectKey, String consentKey) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from consent_collection_link c ' +
+                        ' where c.project_key = :projectKey ' +
+                        ' and c.consent_key = :consentKey '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('projectKey', projectKey)
+            setString('consentKey', consentKey)
             list()
         }
         results as Collection<ConsentCollectionLink>
@@ -580,22 +612,13 @@ class QueryService implements Status {
         issue
     }
 
-    Boolean areLinksApproved(String projectKey, String consentKey) {
-        List<ConsentCollectionLink> links = ConsentCollectionLink.findAll("from ConsentCollectionLink as ccl where ccl.projectKey= :projectKey and ccl.consentKey = :consentKey",
-                [consentKey: consentKey, projectKey: projectKey])
-        ArrayList approvedLinks = links.findAll {
-            it.status == IssueStatus.Approved.name
-        }
-        approvedLinks?.size() > 0
-    }
-
     /**
      * Find issues by keys
      *
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys( Map<String, ConsentCollectionLink> keys) {
+    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys) {
         if (keys && !keys.isEmpty()) {
             Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
             Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
