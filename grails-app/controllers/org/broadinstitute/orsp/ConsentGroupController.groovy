@@ -127,7 +127,7 @@ class ConsentGroupController extends AuthenticatedController {
      */
     def breakLink() {
         try {
-            queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? IssueStatus.Unlinked.name : IssueStatus.Rejected.name)
+            queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? CollectionLinkStatus.Unlinked.name : CollectionLinkStatus.Rejected.name)
             List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
             deleteCollectionLinks(links)
             response.status = 200

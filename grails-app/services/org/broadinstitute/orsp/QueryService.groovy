@@ -153,7 +153,7 @@ class QueryService implements Status {
                         ' where consent_key = :consentKey ' +
                         ' and project_key = :projectKey '
                         ' and status = :status '
-        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: IssueStatus.Approved.name])
+        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.Approved.name])
                 .collect { it.get("status").toString() }?.size() > 0
     }
 

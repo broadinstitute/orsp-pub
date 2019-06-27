@@ -5,6 +5,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.User
@@ -26,7 +27,7 @@ class SampleConsentLinkController extends AuthenticatedController {
         try {
             consentCollectionLink.creationDate = new Date()
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
-            consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? IssueStatus.Approved.name : IssueStatus.InitialPending.name
+            consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.Approved.name : CollectionLinkStatus.Pending.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
             if (!files?.isEmpty()) {
                 files.forEach {

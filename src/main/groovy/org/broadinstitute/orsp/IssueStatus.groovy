@@ -26,12 +26,8 @@ enum IssueStatus {
     Legacy(14, "Legacy"),
     Intake(15, "Intake"),
     Reopened(16, "Reopened"),
-    Disapproved(17, "Disapproved"),
+    Disapproved(17, "Disapproved")
 
-
-    Rejected(18, "Rejected"),
-    Unlinked(19, "Unlinked"),
-    InitialPending(20, "Pending")
 
     Integer sequence
     String name

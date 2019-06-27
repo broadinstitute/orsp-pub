@@ -6,7 +6,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
-
+import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
 
 import org.broadinstitute.orsp.ConsentService
@@ -208,7 +208,7 @@ class NewConsentGroupController extends AuthenticatedController {
      */
     def approveLink () {
         try {
-            boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, IssueStatus.Approved.name)
+            boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, CollectionLinkStatus.Approved.name)
             List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
             if (!isUpdated) {
               response.status = 400
