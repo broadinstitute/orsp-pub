@@ -1,131 +1,118 @@
 package org.broadinstitute.orsp
 
-import grails.async.PromiseList
 import groovy.util.logging.Slf4j
-import groovyx.net.http.Method
-import groovyx.net.http.HTTPBuilder
-import org.broadinstitute.orsp.config.AppInfoConfiguration
 import org.broadinstitute.orsp.config.CrowdConfiguration
+import com.google.cloud.bigquery.BigQuery
+import com.google.cloud.bigquery.BigQueryOptions
+import com.google.cloud.bigquery.FieldValueList
+import com.google.cloud.bigquery.Job
+import com.google.cloud.bigquery.JobId
+import com.google.cloud.bigquery.JobInfo
+import com.google.cloud.bigquery.QueryJobConfiguration
+import com.google.cloud.bigquery.TableResult
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 
 @Slf4j
 class CrowdService implements Status {
 
     UserService userService
     CrowdConfiguration crowdConfiguration
-    AppInfoConfiguration appInfoConfiguration
 
-    private Integer getInterval() {
-        crowdConfiguration.interval ?: 500
-    }
-
-    private Integer getRange() {
-        crowdConfiguration.range ?: 10
-    }
-
-    private String getUsername() {
-        crowdConfiguration.username
-    }
-
-    private String getPassword() {
-        crowdConfiguration.password
-    }
-
-    private String getCredentials() {
-        String plainCreds = getUsername() + ":" + getPassword()
-        plainCreds.bytes.encodeBase64().toString()
-    }
-
-    private String getSearchUri(Integer startIndex) {
-        crowdConfiguration.url +
-                "/rest/usermanagement/latest/search?" +
-                "entity-type=user&expand=user&restriction=active%3Dtrue&max-results=${getInterval()}&start-index=${startIndex * getInterval()}"
-    }
+    private GoogleCredentials credential
 
     SubsystemStatus getStatus() {
+        // TODO: implement big query status 
         SubsystemStatus status = new SubsystemStatus()
-        try {
-            def http = new HTTPBuilder(crowdConfiguration.url)
-            http.request(Method.HEAD) {
-                headers.Accept = 'application/json'
-                headers."User-Agent" = "ORSP" + appInfoConfiguration.version
-                headers.Authorization = "Basic " + getCredentials()
-                response.success = {
-                    status.ok = true
-                }
-                response.failure = { resp ->
-                    status.ok = false
-                    status.messages = [resp]
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error accessing Crowd ${e.message}")
-            status.ok = false
-            status.messages = [e.getMessage()]
-        }
+        status.ok = true
         status
     }
+
     /**
-     * Find all valid users that exist in Crowd, but not in ORSP as a List of CrowdUserDetail
-     * objects from all possible search queries Broad's Crowd has a limit of 500 so break up
-     * the search queries to return 500 at a time. Make the calls via async Promises so we're
-     * not blocking on lots of crowd queries
+     * Find all valid users that exist in Crowd, but not in ORSP 
+     * as a List of CrowdUserDetail objects
      *
      * @return List of CrowdUserDetail objects
      */
     @SuppressWarnings("GroovyAssignabilityCheck")
     List<CrowdUserDetail> findMissingUsers() {
         Collection<String> filterUsers = userService.findAllUserNames()
-        PromiseList promises = new PromiseList()
-        (0..getRange()).each {
-            range -> promises << {
-                getCrowdQueryUserDetails(filterUsers, getSearchUri(range))
-            }
-        }
-        promises.onError { Throwable t -> log.error(t.getMessage()) }
-        promises.onComplete { List<CrowdUserDetail> results -> results }
-        PromiseUtil.promisesGet(promises, "Crowd User Update").
-                flatten().
-                unique { userDetail -> userDetail.userName }
+        getCrowdQueryUserDetails(filterUsers)
     }
 
     /**
      * Return a List of CrowdUserDetail objects from a single search query
      *
-     * Note that this is not updated to the latest HttpBuilder code. The
-     * version used here is TLSv1 friendly out of the box, while HttpBuilder
-     * is not.
-     *
      * @param filterUsers Collection of userNames to filter on
-     * @param uri Full query url to crowd search
-     * @return List of CrowdUserDetail objects
+     * @return List of CrowdUserDetail objects that do NOT exists on filterUsers
      */
-    private List<CrowdUserDetail> getCrowdQueryUserDetails(Collection<String> filterUsers, String uri) {
+    private List<CrowdUserDetail> getCrowdQueryUserDetails(Collection<String> filterUsers) {
         List<CrowdUserDetail> crowdUsers = new ArrayList<>()
-        def http = new HTTPBuilder(uri)
-        http.request(Method.GET) { req->
-            headers.Accept = 'application/json'
-            headers."User-Agent" = "ORSP" + appInfoConfiguration.version
-            headers.Authorization = "Basic " + getCredentials()
-            response.success = { resp, json ->
-                json.users?.
-                        findAll { it.email && !filterUsers.contains(it.name) }?.
-                        collect(crowdUsers) {
-                            new CrowdUserDetail(
-                                    userName: it.name,
-                                    firstName: it["first-name"],
-                                    lastName: it["last-name"],
-                                    displayName: it["display-name"],
-                                    email: it.email)
-                        }
-            }
 
-            response.failure = { resp ->
-                log.error("Got response: ${resp.statusLine}")
-                log.error("Content-Type: ${resp.headers.'Content-Type'}")
+        // Instantiate a client.
+        BigQuery bigquery =
+                BigQueryOptions.newBuilder()
+                        .setCredentials(getCredentials())
+                        .build()
+                        .getService();
+
+        QueryJobConfiguration queryConfig = QueryJobConfiguration
+                .newBuilder("SELECT * FROM `broad-bits.data_warehouse.people`")
+                .setUseLegacySql(false).build()
+
+        // Create a job ID so that we can safely retry.
+        JobId jobId = JobId.of(UUID.randomUUID().toString());
+        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
+
+        // Wait for the query to complete.
+        queryJob = queryJob.waitFor()
+
+        // Check for errors
+        if (queryJob == null) {
+            log.error("Job no longer exists")
+        } else if (queryJob.getStatus().getError() != null) {
+            log.error(queryJob.getStatus().getError().toString())
+
+            // Get the results.
+            TableResult result = queryJob.getQueryResults()
+
+            // Print all pages of the results.
+            for (FieldValueList row : result.iterateAll()) {
+                String email = row.get("broad_email").getStringValue()
+                String userName = row.get("username").getStringValue()
+                if (email && !filterUsers.contains(userName)) {
+                    String firstName = row.get("first_name").getStringValue()
+                    String lastName = row.get("last_name").getStringValue()
+                    String displayName = firstName + " " + lastName
+                    crowdUsers.add(new CrowdUserDetail(userName: userName,
+                            firstName: firstName, lastName: lastName,
+                            displayName: displayName, email: email))
+
+                    System.out.printf("NEW : %s, %s\n", userName, email)
+                } else {
+                    System.out.printf("OLD : %s, %s\n", userName, email)
+                }
             }
+            crowdUsers
         }
+    }
 
-        crowdUsers
+    /**
+     *
+     * @return A GoogleCredentials from json secrets.
+     */
+    private GoogleCredentials getCredential() {
+
+        if (!credential) {
+            File credentialsPath = new File(crowdConfiguration.config);
+            FileInputStream serviceAccountStream = new FileInputStream(credentialsPath);
+            setCredential(ServiceAccountCredentials.fromStream(serviceAccountStream))
+        }
+        credential
+    }
+
+    void setCredential(GoogleCredentials credential) {
+        this.credential = credential
     }
 
 }

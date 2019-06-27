@@ -441,7 +441,7 @@ class StorageProviderService implements Status {
      * @return A GoogleCredential from json secrets.
      */
     private GoogleCredential getCredential() {
-        java.net.URL config_url = this.getClass().getResource(storageConfiguration.config)
+
         if (!credential) {
             File configFile = new File(storageConfiguration.config);
             setCredential(GoogleCredential.
