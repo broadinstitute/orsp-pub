@@ -155,9 +155,11 @@ class SearchController implements UserInfo {
                         type: it.type,
                         status: it.status,
                         updated: it.updateDate ? format.format(it.updateDate): "",
-                        expiration: it.expirationDate ? format.format(it.expirationDate) : ""
+                        expiration: it.expirationDate ? format.format(it.expirationDate) : "",
+                        pm: it.extraPropertiesMap.findAll ({ it.key == IssueExtraProperty.PM })
                 ]
             }
+//            userService.findUser('triveros')
         }
         render ([data: rows] as JSON)
     }

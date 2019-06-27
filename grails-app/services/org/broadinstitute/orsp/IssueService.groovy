@@ -489,4 +489,8 @@ class IssueService implements UserInfo {
         IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
     }
 
+    static String getPMActorOrCreator(Map<String, List<String>> extraProperties) {
+        String userPm = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
+        userPm = userPm.isEmpty() ? extraProperties.findAll {it.key == IssueExtraProperty}
+    }
 }
