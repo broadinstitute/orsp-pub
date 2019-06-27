@@ -670,7 +670,7 @@ class QueryService implements Status {
      * @param queryOptions A QueryOptions object that has desired fields populated.
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findIssues(QueryOptions options) {
+    Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
         String query = ' select distinct i.id ' +
@@ -710,8 +710,9 @@ class QueryService implements Status {
             }
         }
         if (options.getIssueStatusNames() && !options.getIssueStatusNames().empty) {
-            def q = orIfyCollection("i.status = :statusName", options.getIssueStatusNames())
+            def q = orIfyStatuses("i.status = :statusName", "i.approval_status = :statusName", options.getIssueStatusNames())
             query = andIfyQstring(query, q, params)
+
             options.getIssueStatusNames().eachWithIndex { it, index ->
                 params.put("statusName" + (index + 1), it)
             }
@@ -727,15 +728,31 @@ class QueryService implements Status {
 
         def rows = getSqlConnection().rows(query, params)
         def ids = rows.collect{it.get("id")}
-        Collection result = Collections.emptyList()
+        Set result = new HashSet<Issue>()
 
         if (ids.size() > 0) {
-            result = Issue.findAllByIdInList(ids)
+            result = findIssuesSearchItemsDTO(ids)
         }
         result
     }
 
-
+    /**
+     * Find issues from a list of Ids
+     * @param issueIds
+     * @return
+     */
+    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setParameterList('issueIds', issueIds)
+            list()
+        }
+        results
+    }
 
     /**
      * OSAP Integration
@@ -775,6 +792,13 @@ class QueryService implements Status {
         def count = collection.size()
         def collQs = (1 .. count).collect { q + it }
         " ( " + collQs.join(" OR ") + " ) "
+    }
+
+    private static String orIfyStatuses(String qLegacy, String qNew, Collection<String> collection) {
+        def count = collection.size()
+        def collQsLegacy = (1 .. count).collect { qLegacy + it }
+        def collQsNew = (1 .. count).collect { qNew + it }
+        " ( " + collQsLegacy.join(" OR ") + " OR " + collQsNew.join(" OR ") + " ) "
     }
 
     private static String andIfyQstring(String query, String q, Map params) {

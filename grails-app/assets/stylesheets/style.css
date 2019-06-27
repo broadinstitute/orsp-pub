@@ -163,8 +163,18 @@ div.invalid {
     margin-left: 5px;
 }
 
+/*
 .ui-menu {
     width: 170px;
+}
+*/
+
+.ui-menu {
+    width: auto;
+    max-width: 500px;
+    z-index: 3000;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 span.plus {

@@ -10,31 +10,40 @@ class PermissionService implements UserInfo {
     UserService userService
 
     // get issue's collaborators as a List<String>
-    List<String> getIssueCollaborators(Issue issue) {
-      issue.extraProperties.findAll ({ it.name == IssueExtraProperty.COLLABORATOR }).collect { property -> property.value }
+    List<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
+        List<String> collaborators = extraProperties.findAll({ [IssueExtraProperty.COLLABORATOR, IssueExtraProperty.COLLABORATORS].contains(it.key) })
+                .values().flatten().collect({ it -> it.toString() })
+        collaborators
     }
 
     // get issue's pms as a List<String>
-    List<String> getIssuePMs(Issue issue) {
-      issue.extraProperties.findAll ({ it.name == IssueExtraProperty.PM }).collect { property -> property.value }
+    List<String> getIssuePMs(Map<String, List<String>> extraProperties) {
+        List<String> pms = extraProperties.findAll ({ it.key == IssueExtraProperty.PM })
+                .values().flatten().collect({ it -> it.toString() })
+        pms
     }
 
     // get issue's pis as a List<String>
-    List<String> getIssuePIs(Issue issue) {
-      issue.extraProperties.findAll ({ it.name == IssueExtraProperty.PI }).collect { property -> property.value }
+    List<String> getIssuePIs(Map<String, List<String>> extraProperties) {
+        List<String> pis = extraProperties.findAll ({ it.key == IssueExtraProperty.PI })
+                .values().flatten().collect({ it -> it.toString() })
+        pis
     }
 
     // verifies if logged user belongs to some user list ....
-    def issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
+    Boolean issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
+        Map<String, List<String>> extraProperties = issue.extraPropertiesMap
+        userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
+    }
 
-        boolean userHasAccess = (issue.reporter == userName
-                || getIssueCollaborators(issue).indexOf(userName) >= 0
-                || getIssuePMs(issue).indexOf(userName) >= 0
-                || getIssuePIs(issue).indexOf(userName) >= 0
+    Boolean userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer) {
+        boolean userHasAccess = (reporter == userName
+                || getIssueCollaborators(extraProperties)?.contains(userName)
+                || getIssuePMs(extraProperties).contains(userName)
+                || getIssuePIs(extraProperties).contains(userName)
                 || isAdmin
                 || isViewer)
-
-      !userHasAccess
+        !userHasAccess
     }
 }
 
