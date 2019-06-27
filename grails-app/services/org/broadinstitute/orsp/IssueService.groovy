@@ -163,7 +163,7 @@ class IssueService implements UserInfo {
             issue.removeFromFundings(it)
             it.delete(hard: true)
         }
-
+        
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
