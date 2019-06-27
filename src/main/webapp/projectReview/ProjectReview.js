@@ -478,7 +478,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
-  submitEdit = (e) => () => {
+  submitEdit = () => () => {
     if (this.isValid()) {
       this.setState(prev => {
         prev.readOnly = true;
@@ -503,7 +503,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.errorSubmit = true;
                 prev.alertMessage = "Something went wrong. Please try again later.";
                 return prev;
-              })
+              });
             });
           } else {
             Review.submitReview(component.serverURL, data).then(() =>
@@ -512,13 +512,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               this.getReviewSuggestions();
               this.setState(prev => {
                 prev.errorSubmit = true;
-                prev.alertMessage = "Something went wrong. Please try again later."
+                prev.alertMessage = "Something went wrong. Please try again later.";
                 return prev;
-              })
+              });
             });
           }
       }).catch( error => {
-        this.setState(this.setState(() => { throw error; }))
+        this.setState(this.setState(() => { throw error; }));
       });
     } else {
       this.setState({

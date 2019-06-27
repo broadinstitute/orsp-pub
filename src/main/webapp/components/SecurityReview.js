@@ -24,9 +24,9 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     if (current === 'true' || current === true) {
       answer = 'Yes';
     } else if (current === 'uncertain') {
-      answer = 'Uncertain'
+      answer = 'Uncertain';
     } else if (current === 'false' || current === false) {
-      answer = 'No'
+      answer = 'No';
     } else if (current === 'null' || current === null || isEmpty(current)) {
       answer = '--';
     }
