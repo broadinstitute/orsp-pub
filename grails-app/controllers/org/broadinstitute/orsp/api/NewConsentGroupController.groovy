@@ -6,7 +6,7 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
-
+import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
 
 import org.broadinstitute.orsp.ConsentService
@@ -15,6 +15,7 @@ import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
+import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.User
@@ -199,4 +200,28 @@ class NewConsentGroupController extends AuthenticatedController {
         }
         render(response)
     }
+
+
+    /**
+     * This action approve the link between a project and the consent.
+     *
+     */
+    def approveLink () {
+        try {
+            boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, CollectionLinkStatus.APPROVED.name)
+            List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
+            if (!isUpdated) {
+              response.status = 400
+              render([message: 'Error updating collection links, please check specified parameters.'] as JSON)
+            } else {
+              response.status = 200
+              render(links as JSON)
+            }
+        } catch (Exception e) {
+            response.status = 500
+            log.error("Exception updating collection links status: " + e)
+        }
+        render(response)
+    }
+
 }
