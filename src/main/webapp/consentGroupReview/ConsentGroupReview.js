@@ -56,8 +56,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         protocol: '',
         collInst: '',
         collContact: '',
-        describeConsentGroup: '',
-
         startDate: null,
         endDate: null,
         onGoingProcess: false,
@@ -82,7 +80,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         protocol: false,
         consentGroupName: false,
         collInst: false,
-        describeConsentGroup: false,
         institutionalSourcesName: false,
         institutionalSourcesCountry: false,
         endDate: false,
@@ -249,7 +246,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     let consent = false;
     let protocol = false;
     let collInst = false;
-    let describeConsentGroup = false;
     let endDate = false;
     let startDate = false;
     let consentGroupName = false;
@@ -264,10 +260,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
     if (isEmpty(this.state.formData.consentExtraProps.collInst)) {
       collInst = true;
-    }
-
-    if (isEmpty(this.state.formData.consentExtraProps.describeConsentGroup)) {
-      describeConsentGroup = true;
     }
 
     if (!this.state.formData.consentExtraProps.onGoingProcess
@@ -289,7 +281,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       !this.institutionalSrcHasErrors() &&
       !protocol &&
       !collInst &&
-      !describeConsentGroup &&
       !startDate &&
       !consentGroupName &&
       !endDate;
@@ -298,7 +289,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
       prev.errors.collInst = collInst;
-      prev.errors.describeConsentGroup = describeConsentGroup;
       prev.errors.endDate = endDate;
       prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
@@ -313,7 +303,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       prev.errors.consent = false;
       prev.errors.protocol = false;
       prev.errors.collInst = false;
-      prev.errors.describeConsentGroup = false;
       prev.errors.endDate = false;
       prev.errors.startDate = false;
       prev.errors.consentGroupName = false;
@@ -573,7 +562,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     consentGroup.consent = this.state.formData.consentExtraProps.consent;
     consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
-    consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
 
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
@@ -772,7 +760,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       collInst = '',
       collContact = '',
       onGoingProcess = false,
-      describeConsentGroup = '',
       startDate = null,
       endDate = null
     } = get(this.state.formData, 'consentExtraProps', '');
@@ -903,24 +890,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
             valueEdited: !isEmpty(collContact) === isEmpty(this.state.current.consentExtraProps.collContact)
-          }),
-          InputFieldRadio({
-            edit: true,
-            id: "radioDescribeConsentGroup",
-            name: "describeConsentGroup",
-            label: "Please choose one of the following to describe this proposed  Group as Sample/Data Cohort: ",
-            value: describeConsentGroup,
-            currentValue: this.state.current.consentExtraProps.describeConsentGroup,
-            optionValues: ["01", "02"],
-            optionLabels: [
-              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-              "I am requesting assistance in updating and existing project"
-            ],
-            onChange: this.handleRadio2Change,
-            readOnly: this.state.readOnly,
-            error: this.state.errors.describeConsentGroup,
-            errorMessage: "Required field"
-          }),
+          })
         ]),
 
         Panel({ title: "Sample Collections" }, [
