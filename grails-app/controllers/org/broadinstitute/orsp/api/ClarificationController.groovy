@@ -6,12 +6,16 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueReview
+import org.broadinstitute.orsp.IssueReviewService
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.NotifyArguments
 
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ClarificationController extends AuthenticatedController {
+
+    IssueReviewService issueReviewService
 
     def addClarificationRequest() {
         Issue issue = queryService.findByKey(params.id)
@@ -22,9 +26,14 @@ class ClarificationController extends AuthenticatedController {
                 response.status = 500
                 render([message: "Error saving comment"])
             }
-
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress
+
+            String editCreatorEmail = userService.findUser(
+                    issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName())?.emailAddress
+            if (editCreatorEmail != null) {
+                toAddresses.add(editCreatorEmail)
+            }
 
             if (issue.getType() != IssueType.CONSENT_GROUP.name) {
                 if (issue.getPMs().toString() == issue.getReporter().toString()) {

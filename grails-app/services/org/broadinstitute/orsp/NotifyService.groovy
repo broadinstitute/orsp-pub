@@ -657,12 +657,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
                         user: user,
@@ -673,12 +674,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
                         user: user,
