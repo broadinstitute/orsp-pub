@@ -41,7 +41,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
 
   validateClarification() {
     let isValid = false;
-    if(this.props.linkClarification === true) {
+    if (this.props.linkClarification === true) {
       if (!isEmpty(this.state.clarification) && !isEmpty(this.state.pm) && 
           !isEmpty(this.state.pm[0]) && !isEmpty(this.state.pm[0].key)) {
         isValid = true;
