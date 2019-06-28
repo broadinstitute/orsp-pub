@@ -488,8 +488,11 @@ class IssueService implements UserInfo {
         IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
     }
 
+    // Project PM ACTOR CREATOR
+    // CG show CREATOR
     static String getPMActorOrCreator(Map<String, List<String>> extraProperties) {
         String userPm = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
-        userPm = userPm.isEmpty() ? extraProperties.findAll {it.key == IssueExtraProperty}
+        userPm = userPm.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : userPm
+        userPm
     }
 }

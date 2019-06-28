@@ -144,7 +144,7 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-
+                String projectAccessContact = IssueService.getPMActorOrCreator(it.extraPropertiesMap)
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
                         link: link,
@@ -156,7 +156,8 @@ class SearchController implements UserInfo {
                         status: it.status,
                         updated: it.updateDate ? format.format(it.updateDate): "",
                         expiration: it.expirationDate ? format.format(it.expirationDate) : "",
-                        pm: it.extraPropertiesMap.findAll ({ it.key == IssueExtraProperty.PM })
+                        // TODO keep going from here
+                        projectAccessContact: projectAccessContact.isEmpty() ? it.reporter.toString() : projectAccessContact
                 ]
             }
 //            userService.findUser('triveros')
