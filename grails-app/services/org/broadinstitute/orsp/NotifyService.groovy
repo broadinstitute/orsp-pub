@@ -663,7 +663,7 @@ class NotifyService implements SendgridSupport, Status {
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
-                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : [""],
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
                         user: user,
@@ -680,7 +680,7 @@ class NotifyService implements SendgridSupport, Status {
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
-                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : [""],
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
                         user: user,
