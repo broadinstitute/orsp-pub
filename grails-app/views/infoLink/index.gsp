@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta name="layout" content="main_component">
-        <title>Consent Group</title>
+        <title>ORSP</title>
     </head>
     <body>
         <g:javascript>

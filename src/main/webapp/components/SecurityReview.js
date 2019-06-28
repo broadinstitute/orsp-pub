@@ -1,6 +1,6 @@
 import { Component, React } from 'react';
-import { hh, h1, span, a, div, label } from 'react-hyperscript-helpers';
-import { isEmpty, capitalize } from "../util/Utils";
+import { hh, span, a, div, label } from 'react-hyperscript-helpers';
+import { isEmpty } from "../util/Utils";
 import './QuestionnaireWorkflow.css';
 
 const sharingTypes = {
@@ -23,8 +23,10 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     let answer = '';
     if (current === 'true' || current === true) {
       answer = 'Yes';
+    } else if (current === 'uncertain') {
+      answer = 'Uncertain';
     } else if (current === 'false' || current === false) {
-      answer = 'No'
+      answer = 'No';
     } else if (current === 'null' || current === null || isEmpty(current)) {
       answer = '--';
     }

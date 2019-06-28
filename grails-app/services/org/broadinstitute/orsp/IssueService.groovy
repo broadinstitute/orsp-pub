@@ -18,6 +18,7 @@ class IssueService implements UserInfo {
     QueryService queryService
     PersistenceService persistenceService
     NotifyService notifyService
+    IssueReviewService issueReviewService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -233,7 +234,7 @@ class IssueService implements UserInfo {
             issue.save(flush: true)
         }
         if (input.get("editsApproved")) {
-            notifyService.sendEditsApprovedNotification(issue)
+            notifyService.sendEditsApprovedNotification(issue, issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName())
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
