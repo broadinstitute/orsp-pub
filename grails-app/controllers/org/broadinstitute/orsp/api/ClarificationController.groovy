@@ -66,7 +66,7 @@ class ClarificationController extends AuthenticatedController {
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
             String toAddresses = userService.findUser(params.pm)?.collect {it.emailAddress}
-            String fromAddress = (String) getUser()?.emailAddress
+            String fromAddress = getUser()?.emailAddress
             try {
                 notifyService.sendClarificationRequest(
                         new NotifyArguments(

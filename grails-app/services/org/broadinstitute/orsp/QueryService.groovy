@@ -142,9 +142,9 @@ class QueryService implements Status {
     }
 
     /**
-     * Find all sample collection ids that have been associated to the provided consent.
+     * Check if all the links related to the specifiend consent and project key are been approved.
      *
-     * @return Collection of distinct sample collection ids
+     * @return boolean, true if links are been approved
      */
     boolean areLinksApproved(String projectKey, String consentKey) {
         final String query =
@@ -153,7 +153,7 @@ class QueryService implements Status {
                         ' where consent_key = :consentKey ' +
                         ' and project_key = :projectKey '
                         ' and status = :status '
-        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.Approved.name])
+        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.APPROVED.name])
                 .collect { it.get("status").toString() }?.size() > 0
     }
 

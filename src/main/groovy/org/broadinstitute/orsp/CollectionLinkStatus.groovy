@@ -3,10 +3,10 @@ package org.broadinstitute.orsp
 enum CollectionLinkStatus {
 
 
-    Approved("Approved"),
-    Rejected("Rejected"),
-    Unlinked("Unlinked"),
-    Pending("Pending")
+    APPROVED("Approved"),
+    REJECTED("Rejected"),
+    UNLINKED("Unlinked"),
+    PENDING("Pending")
 
     String name
 
