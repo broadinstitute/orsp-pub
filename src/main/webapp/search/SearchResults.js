@@ -116,6 +116,7 @@ class SearchResults extends Component {
         reporter: project.reporter,
         linkDisabled: project.linkDisabled,
         extraProperties: project.extraProperties,
+        projectAccessContact: project.projectAccessContact
       };
       this.formattedProjectData.push(row);
     });
@@ -220,6 +221,13 @@ class SearchResults extends Component {
               sortFunc={this.expirationSort}
             >
               Expiration
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              csvHeader="Project Access Contact"
+              dataField="projectAccessContact"
+              dataSort={true}
+            >
+              Project Access Contact
             </TableHeaderColumn>
           </BootstrapTable>
         </div>
