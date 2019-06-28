@@ -169,31 +169,48 @@ div.invalid {
     z-index: 3000;
     max-height: 400px;
     overflow-y: auto;
+    position: fixed;
+    top: 0;
 }
 
 .ui-menu .ui-menu-item {
-    padding: 20px 1em 20px .4em;
+    padding: 0 20px;
+    border: 0 !important;
+    height: 71px;
+    line-height: 71px;
+    overflow: hidden;
 }
 
-.ui-menu .ui-menu-item.disabled {
-    border: 1px solid #F1F1F1;
-    border-bottom-color: #E1E1E1; 
+.ui-menu .ui-state-focus {
+    background:#EAEAEA;
+    color: #999999;
+    height: 71px;
+    line-height: 71px;
+}   
+
+.ui-menu .ui-menu-item.disabled,
+.ui-menu .ui-state-focus.disabled {
     background:#FAFAFA;
     font-weight: normal;
     color: #999999;
-    padding: 40px 1em 10px .4em;
+    padding: 0 20px;
     cursor: default;
+    height: 71px;
+    line-height: 92px;
 }
     
-.ui-menu .ui-menu-item.disabled p {
+.ui-menu .ui-menu-item.disabled p,
+.ui-menu .ui-menu-item p {
     font-size: 13px;
     margin: 0;
-    padding: 4px 8px;
+    padding: 0 8px;
     color: #fafafa;
     background: #bbbbbb;
     position: absolute;
     top: 8px;
     border-radius: 4px;
+    height: 24px;
+    line-height: 24px;
 }
 
 span.plus {
