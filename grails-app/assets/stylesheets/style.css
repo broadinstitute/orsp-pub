@@ -197,6 +197,7 @@ div.invalid {
     cursor: default;
     height: 71px;
     line-height: 92px;
+    pointer-events: none;
 }
     
 .ui-menu .ui-menu-item.disabled p,
