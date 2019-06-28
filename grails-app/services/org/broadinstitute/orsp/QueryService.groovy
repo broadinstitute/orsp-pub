@@ -484,6 +484,10 @@ class QueryService implements Status {
             [id: it.id,
              projectKey: it.projectKey,
              summary: it.summary,
+             reporter: it.reporter,
+             pm: userService.findUsers(it.getPMs()).displayName,
+             actor: userService.findUsers(it.getActorUsernames()).displayName,
+             extraProperties: it.extraPropertiesMap,
              controller: it.controller,
              type: it.type
             ]
