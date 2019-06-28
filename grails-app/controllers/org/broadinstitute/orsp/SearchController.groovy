@@ -60,7 +60,7 @@ class SearchController implements UserInfo {
                     label: it.projectKey + " (" + it.summary + ")",
                     value: it.projectKey,
                     url: link,
-                    reporter: it.reporter,
+                    reporter: userService.findUser(it.reporter).displayName,
                     linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
                     pm: it.pm,
                     actor: it.actor
