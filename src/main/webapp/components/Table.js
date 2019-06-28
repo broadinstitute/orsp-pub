@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { format } from 'date-fns';
 import { a, button, div, hh, span } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, DropdownItem } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
@@ -53,8 +53,8 @@ export const Table = hh(class Table extends Component {
           key={0}
           id={`dropdown-basic-0`}
         >
-          <MenuItem onSelect={this.actionApprove} eventKey={uuid} >Approve</MenuItem>
-          <MenuItem onSelect={this.actionReject} eventKey={uuid} >Reject</MenuItem>
+          <DropdownItem onSelect={this.actionApprove} eventKey={uuid} >Approve</DropdownItem>
+          <DropdownItem onSelect={this.actionReject} eventKey={uuid} >Reject</DropdownItem>
         </DropdownButton>
       </ButtonToolbar>
     );

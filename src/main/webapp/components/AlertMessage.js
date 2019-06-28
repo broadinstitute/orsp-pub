@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { hh, h, span, div } from 'react-hyperscript-helpers';
-import Alert from 'react-bootstrap/lib/Alert';
+import Alert from 'react-bootstrap/Alert';
 import './AlertMessage.css';
 import { Btn } from "./Btn";
 import { isEmpty } from "../util/Utils";

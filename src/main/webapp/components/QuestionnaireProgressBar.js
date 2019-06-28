@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { hh, div, h } from 'react-hyperscript-helpers';
-import ProgressBar from 'react-bootstrap/lib/ProgressBar';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 export const QuestionnaireProgressBar = hh(class QuestionnaireProgressBar extends Component {
 
