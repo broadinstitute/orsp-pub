@@ -62,7 +62,6 @@ class IssueService implements UserInfo {
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.ON_GOING_PROCESS,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
-            IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
@@ -306,7 +305,7 @@ class IssueService implements UserInfo {
                 type = EventType.ABANDON_PROJECT
                 break
 
-            case IssueStatus.ProjectApproved.getName():
+            case IssueStatus.Approved.getName():
                 type = EventType.APPROVE_PROJECT
                 break
 

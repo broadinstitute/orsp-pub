@@ -1,7 +1,6 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
-import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -126,10 +125,19 @@ class ConsentGroupController extends AuthenticatedController {
      * @return Redirect to the project view page
      */
     def breakLink() {
-        def issue = queryService.findByKey(params.projectKey)
-        def links = ConsentCollectionLink.findAllByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
-        deleteCollectionLinks(links)
-        redirect(controller: "project", action: "main", params: [projectKey: params.projectKey, tab: "consent-groups"])
+        try {
+            queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? CollectionLinkStatus.UNLINKED.name : CollectionLinkStatus.REJECTED.name)
+            List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
+            deleteCollectionLinks(links)
+            response.status = 200
+            render([message: "Links with the following ids: " + links.collect{it.sampleCollectionId}.join(",")  +
+                    " for the specified consent key: " + params.consentKey + " and project key " + params.projectKey + " have been deleted"] as JSON)
+        } catch (Exception e) {
+            response.status = 500
+            log.error("Exception deleting collection links: " + e)
+            render([error: "There was an error trying to remove project sample data cohort associations."] as JSON)
+        }
+
     }
 
     /**
@@ -212,7 +220,8 @@ class ConsentGroupController extends AuthenticatedController {
     def projectConsentGroups() {
         Issue issue = queryService.findByKey(params.id)
         Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
-        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinks?.collect {it.consentKey})
+        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
+        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
         render(
                 view: "/consentGroup/list",
                 model: [
