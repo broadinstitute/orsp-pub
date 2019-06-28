@@ -179,18 +179,12 @@ div.invalid {
     height: 71px;
     line-height: 71px;
     overflow: hidden;
+    background: #FFFFFF;
 }
-
-.ui-menu .ui-state-focus {
-    background:#EAEAEA;
-    color: #999999;
-    height: 71px;
-    line-height: 71px;
-}   
 
 .ui-menu .ui-menu-item.disabled,
 .ui-menu .ui-state-focus.disabled {
-    background:#FAFAFA;
+    background: #FAFAFA;
     font-weight: normal;
     color: #999999;
     padding: 0 20px;
@@ -198,6 +192,15 @@ div.invalid {
     height: 71px;
     line-height: 92px;
     pointer-events: none;
+}
+
+.ui-menu .ui-menu-item:hover {
+    background: #2c3e50;
+    color: #FFFFFF;
+}
+
+.ui-menu .ui-menu-item:hover a {
+    color: #FFFFFF;
 }
     
 .ui-menu .ui-menu-item.disabled p,
