@@ -48,7 +48,7 @@ class SearchController implements UserInfo {
 
     def getMatchingIssues() {
         def user = getUser()
-        def userName = user.userName
+        def userName = user?.userName
         def isAdmin = isAdmin()
         def isViewer = isViewer()
         def response = []
@@ -130,7 +130,7 @@ class SearchController implements UserInfo {
 
     def generalReactTablesJsonSearch() {
         def user = getUser()
-        def userName = user.userName
+        def userName = user?.userName
         QueryOptions options = new QueryOptions()
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)
