@@ -12,7 +12,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { Project, Search, Review } from "../util/ajax";
+import { Project, Search, Review, User } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
@@ -478,40 +478,48 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
-  submitEdit = (e) => () => {
+  submitEdit = () => () => {
     if (this.isValid()) {
       this.setState(prev => {
         prev.readOnly = true;
         prev.errorSubmit = false;
         return prev;
       });
-      const data = {
-        projectKey: component.projectKey,
-        suggestions: JSON.stringify(this.state.formData)
-      };
-      if (this.state.reviewSuggestion) {
-        Review.updateReview(component.serverURL, component.projectKey, data).then(() =>
-          this.getReviewSuggestions()
-        ).catch(error => {
-          this.getReviewSuggestions();
-          this.setState(prev => {
-            prev.errorSubmit = true;
-            prev.alertMessage = "Something went wrong. Please try again later."
-            return prev;
-          })
-        });
-      } else {
-        Review.submitReview(component.serverURL, data).then(() =>
-          this.getReviewSuggestions()
-        ).catch(error => {
-          this.getReviewSuggestions()
-          this.setState(prev => {
-            prev.errorSubmit = true;
-            prev.alertMessage = "Something went wrong. Please try again later."
-            return prev;
-          })
-        });
-      }
+      let suggestions = this.state.formData;
+      User.getUserSession(component.getUserUrl).then(
+        resp => {
+          suggestions.editCreator = resp.data.userName;
+          const data = {
+            projectKey: component.projectKey,
+            suggestions: JSON.stringify(suggestions)
+          };
+
+          if (this.state.reviewSuggestion) {
+            Review.updateReview(component.serverURL, component.projectKey, data).then(() =>
+              this.getReviewSuggestions()
+            ).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.errorSubmit = true;
+                prev.alertMessage = "Something went wrong. Please try again later.";
+                return prev;
+              });
+            });
+          } else {
+            Review.submitReview(component.serverURL, data).then(() =>
+              this.getReviewSuggestions()
+            ).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.errorSubmit = true;
+                prev.alertMessage = "Something went wrong. Please try again later.";
+                return prev;
+              });
+            });
+          }
+      }).catch( error => {
+        this.setState(this.setState(() => { throw error; }));
+      });
     } else {
       this.setState({
         errorSubmit: true

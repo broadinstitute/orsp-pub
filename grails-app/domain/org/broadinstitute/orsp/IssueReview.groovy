@@ -1,5 +1,7 @@
 package org.broadinstitute.orsp
 
+import grails.converters.JSON
+
 class IssueReview {
 
     Long id
@@ -11,4 +13,7 @@ class IssueReview {
         suggestions nullable: false
     }
 
+    String getEditCreatorName() {
+        return JSON.parse(this.suggestions)?.getAt(IssueExtraProperty.EDIT_CREATOR)?.toString()
+    }
 }

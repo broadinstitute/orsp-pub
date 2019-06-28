@@ -484,7 +484,9 @@ class QueryService implements Status {
             [id: it.id,
              projectKey: it.projectKey,
              summary: it.summary,
-             controller: it.controller]
+             controller: it.controller,
+             type: it.type
+            ]
         }
     }
 
