@@ -162,6 +162,7 @@ class NewConsentGroup extends Component {
     consentCollectionLink.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
     consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
     consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
+    consentCollectionLink.status = "Pending";
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {

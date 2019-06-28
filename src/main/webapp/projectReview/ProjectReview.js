@@ -797,7 +797,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: component.projectKey,
-          successClarification: this.successNotification
+          successClarification: this.successNotification,
+          clarificationUrl: component.clarificationUrl
         }),
 
         button({
