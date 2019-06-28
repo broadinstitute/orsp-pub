@@ -27,3 +27,114 @@
   font-size: 0.8rem;
   padding-left: 1px;
 }
+
+.cta-container {
+  float: left;
+}
+
+.cta-container .btn {
+  margin-right: 5px;
+}
+
+.cta-container .btn,
+.cta-container .btn:hover,
+.cta-container .btn:active,
+.cta-container .btn:focus {
+  outline: none;
+}
+
+.request-clarification {
+  display: inline-block;
+  position: relative;
+  height: 50px;
+  background: url('./icon-live_help.svg') no-repeat center center;
+  width: 44px;
+  float: left;
+  margin: -10px 15px 0 10px;
+  opacity: 0.4;
+  border:0;
+  border-left: 1px solid #A9A9A9;
+  border-right: 1px solid #A9A9A9;
+  box-shadow: 0;
+}
+
+.request-clarification:hover {
+  opacity: 1;
+  border-color: #DEDEDE;
+}
+
+.panel-default>.panel-heading.sample-dc {
+  min-height: 50px;
+}
+
+.request-clarification .req-tooltip {
+  display: none;
+  position: absolute;
+  top: -20px;
+  left: -51px;
+  color: #FFFFFF;
+  font-size: 12px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.84);
+  border-radius: 3px;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 12px;
+  min-width: 140px;
+}
+
+.request-clarification:hover .req-tooltip {
+  display: block;
+}
+
+.request-clarification .req-tooltip  .arrow-down {
+  width: 0px;
+  height: 0px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 5px solid rgba(0, 0, 0, 0.84);
+  top: 24px;
+  position: absolute;
+  left: calc(50% - 5px);
+}
+
+.sample-dc .status {
+  float: right;
+  background-color: #E1E1E1;
+  padding: 5px 18px;
+  border-radius: 4px;
+  margin-right: 15px;
+  cursor: default;
+}
+
+.sample-dc .status.approved {
+  background-color: #DFF0D8;
+  color: #3C763D;
+}
+
+.sample-dc .status.pending {
+  background-color: #F0E5A9;
+  color: #333333;
+}
+
+.sample-dc .data-name,
+.sample-dc .data-name:focus,
+.sample-dc .data-name:active {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+}
+
+.sample-dc .data-name:hover {
+  text-decoration: underline;
+}
+
+.consent-group-panel-body {
+  min-width: 100%;
+}
+
+p.modal-large {
+  font-size: 16px;
+}

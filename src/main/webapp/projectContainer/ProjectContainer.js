@@ -126,7 +126,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   h(ProjectReview, {
                     updateDetailsStatus: this.updateDetailsStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    updateContent: this.updateContent,
+                    updateContent: this.updateContent
                   })
                 ]),
               div({
@@ -142,7 +142,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "consent-groups",
                 title: "Sample/Data Cohorts",
               }, [
-                  h(Fragment, {}, [ConsentGroups({})]),
+                  h(Fragment, {}, [ConsentGroups({
+                    updateContent: this.updateContent
+                  })]),
                 ]),
               div({
                 key: "submissions",
