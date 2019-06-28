@@ -46,7 +46,6 @@ class NewConsentGroup extends Component {
         institutionProtocolNumber: false,
         consentGroupName: false,
         collaboratingInstitution: false,
-        describeConsentGroup: false,
         requireMta: false,
         institutionalSourcesName: false,
         institutionalSourcesCountry: false,
@@ -162,6 +161,7 @@ class NewConsentGroup extends Component {
     consentCollectionLink.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
     consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
     consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
+    consentCollectionLink.status = "Pending";
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
@@ -191,7 +191,6 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'consent', value: this.state.generalDataFormData.investigatorLastName });
     extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.institutionProtocolNumber });
     extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.generalDataFormData.institutionalSources) });
-    extraProperties.push({ name: 'describeConsentGroup', value: this.state.generalDataFormData.describeConsentGroup });
     extraProperties.push({ name: 'noConsentFormReason', value: this.state.generalDataFormData.noConsentFormReason });
     if (this.state.generalDataFormData.endDate !== null) {
       extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.generalDataFormData.endDate) });
@@ -290,7 +289,6 @@ class NewConsentGroup extends Component {
     let institutionProtocolNumber = false;
     let consentGroupName = false;
     let collaboratingInstitution = false;
-    let describeConsentGroup = false;
     let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
     let noConsentFormReason = false;
@@ -316,10 +314,6 @@ class NewConsentGroup extends Component {
       collaboratingInstitution = true;
       isValid = false;
     }
-    if (isEmpty(this.state.generalDataFormData.describeConsentGroup)) {
-      describeConsentGroup = true;
-      isValid = false;
-    }
     if (this.state.generalDataFormData.institutionalSources === undefined) {
       institutionalSourcesName = true;
       institutionalSourcesCountry = true;
@@ -343,7 +337,6 @@ class NewConsentGroup extends Component {
         prev.errors.institutionProtocolNumber = institutionProtocolNumber;
         prev.errors.consentGroupName = consentGroupName;
         prev.errors.collaboratingInstitution = collaboratingInstitution;
-        prev.errors.describeConsentGroup = describeConsentGroup;
         prev.errors.institutionalSourcesName = institutionalSourcesName;
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.noConsentFormReason = noConsentFormReason;
@@ -356,7 +349,7 @@ class NewConsentGroup extends Component {
     }
 
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
-      field === 'consentGroupName' || field === 'collaboratingInstitution' || field === 'describeConsentGroup' ||
+      field === 'consentGroupName' || field === 'collaboratingInstitution' ||
       field === 'nameInstitutional' || field === 'countryInstitutional' || field === 'noConsentFormReason') {
 
       this.setState(prev => {
@@ -368,8 +361,6 @@ class NewConsentGroup extends Component {
           prev.errors.consentGroupName = consentGroupName;
         } else if (field === 'collaboratingInstitution') {
           prev.errors.collaboratingInstitution = collaboratingInstitution;
-        } else if (field === 'describeConsentGroup') {
-          prev.errors.describeConsentGroup = describeConsentGroup;
         } else if (field === 'nameInstitutional') {
           prev.errors.institutionalSourcesName = institutionalSourcesName;
         } else if (field === 'countryInstitutional') {

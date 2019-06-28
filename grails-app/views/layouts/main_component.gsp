@@ -34,7 +34,7 @@
     <style type="text/css" title="TableTools">
     @import "${request.contextPath}/assets/media/css/TableTools.css";
     .ui-autocomplete-loading {
-        background: white url('${request.contextPath}/assets/spinner.gif') right center no-repeat;
+        background: white url('${request.contextPath}/assets/spinner.gif') right 10px center no-repeat;
     }
     @media (min-width: 765px) and (max-width: 1200px) {
         body {
@@ -162,7 +162,8 @@
         updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
         approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",     
         consentGroupReviewUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-        createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}"
+        createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}",
+        requestLinkClarificationUrl: "${createLink(controller: 'clarification', action:'collectionRequestClarification')}"
       };
     </script>
 

@@ -24,7 +24,6 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         collaboratingInstitution: '',
         primaryContact: '',
         sampleCollections: [],
-        describeConsentGroup: '',
         requireMta: '',
         institutionalSources: [{ name: '', country: '' }],
         startDate: null,
@@ -132,7 +131,6 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.institutionProtocolNumber ||
           this.props.errors.collaboratingInstitution ||
           this.props.errors.primaryContact ||
-          this.props.errors.describeConsentGroup ||
           this.props.errors.requireMta ||
           this.props.errors.institutionalSourcesName ||
           this.props.errors.institutionalSourcesCountry ||
@@ -204,36 +202,20 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleInputChange
           }),
 
-          InputFieldSelect({
-            id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey,
-            isDisabled: false,
-            options: this.props.sampleCollectionList,
-            onChange: this.handleSampleCollectionChange,
-            value: this.state.formData.sampleCollections,
-            placeholder: "Start typing a Sample Collection",
-            isMulti: false,
-            isClearable: true,
-            edit: false
-          }),
-
-          InputFieldRadio({
-            id: "radioDescribeConsentGroup",
-            name: "describeConsentGroup",
-            label: "Please choose one of the following to describe this proposed Sample/Data Cohort:* ",
-            moreInfo: "",
-            value: this.state.formData.describeConsentGroup,
-            optionValues: ["01", "02"],
-            optionLabels: [
-              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-              "I am requesting assistance in updating and existing project"
-            ],
-            onChange: this.handleRadio2Change,
-            required: true,
-            error: this.props.errors.describeConsentGroup,
-            errorMessage: "Required field",
-            edit: false
-          }),
+          div({ style: { 'margin': '20px 0' }}, [
+            InputFieldSelect({
+              id: "sampleCollection_select",
+              label: "Link Sample Collection to " + this.props.projectKey,
+              isDisabled: false,
+              options: this.props.sampleCollectionList,
+              onChange: this.handleSampleCollectionChange,
+              value: this.state.formData.sampleCollections,
+              placeholder: "Start typing a Sample Collection",
+              isMulti: false,
+              isClearable: true,
+              edit: false
+            }),
+          ]),
 
         Panel({
           title: "Sample Collection Date Range ",
