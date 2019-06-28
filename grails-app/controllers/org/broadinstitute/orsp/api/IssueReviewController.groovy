@@ -9,7 +9,6 @@ import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
-import org.broadinstitute.orsp.PersistenceService
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])

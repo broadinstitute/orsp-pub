@@ -6,7 +6,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { ConsentGroup, SampleCollections, Review } from "../util/ajax";
+import { ConsentGroup, SampleCollections, Review, User } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
@@ -450,36 +450,40 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         let institutionalSourceArray = this.state.formData.instSources;
         let newFormData = Object.assign({}, this.state.formData);
         newFormData.instSources = institutionalSourceArray;
-        data.projectKey = component.consentKey;
-        data.suggestions = JSON.stringify(newFormData);
-
-        if (this.state.reviewSuggestion) {
-          Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
-            this.getReviewSuggestions();
-            this.props.updateContent();
-          }).catch(error => {
-            this.getReviewSuggestions();
-            this.setState(prev => {
-              prev.submitted = true;
-              prev.errorSubmit = true;
-              prev.errorMessage = 'Something went wrong. Please try again later.';
-              return prev;
+        User.getUserSession(component.getUserUrl).then(resp => {
+          data.projectKey = component.consentKey;
+          newFormData.editCreator = resp.data.userName;
+          data.suggestions = JSON.stringify(newFormData);
+          if (this.state.reviewSuggestion) {
+            Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
+              this.getReviewSuggestions();
+              this.props.updateContent();
+            }).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
             });
-          });
-        } else {
-          Review.submitReview(component.serverURL, data).then(() => {
-            this.getReviewSuggestions();
-            this.props.updateContent();
-          }).catch(error => {
-            this.getReviewSuggestions();
-            this.setState(prev => {
-              prev.submitted = true;
-              prev.errorSubmit = true;
-              prev.errorMessage = 'Something went wrong. Please try again later.';
-              return prev;
+          } else {
+            Review.submitReview(component.serverURL, data).then(() => {
+              this.getReviewSuggestions();
+              this.props.updateContent();
+            }).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
             });
-          });
-        }
+          }
+        }).catch(error => {
+          this.setState(this.setState(() => { throw error; }));
+        });
       });
     } else {
       this.setState(prev => {
