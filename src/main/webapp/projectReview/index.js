@@ -1,12 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { ProjectReview } from "./ProjectReview";
-import "../index.css";
-import ErrorHandler from "../components/ErrorHandler";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ProjectReview from './ProjectReview';
+import '../index.css';
+import ErrorHandler from '../components/ErrorHandler';
 
 ReactDOM.render(
   <ErrorHandler>
-    <ProjectReview />
+    <ProjectReview/>
   </ErrorHandler>,
-  document.getElementById("projectReview")
+  document.getElementById('projectReview')
 );

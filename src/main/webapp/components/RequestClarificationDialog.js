@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { hh, div, h, button } from 'react-hyperscript-helpers';
-import { Modal, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
-import ModalHeader from 'react-bootstrap/ModalHeader';
+import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from './AlertMessage';

@@ -1,7 +1,6 @@
 import { Component, Fragment } from 'react';
 import { hh, h, button, div } from 'react-hyperscript-helpers';
-import { Modal, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
-import ModalHeader from 'react-bootstrap/ModalHeader';
+import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldCheckbox } from "./InputFieldCheckbox";
 import { USER_ROLES } from '../util/roles';
 import { createObjectCopy, isEmpty } from "../util/Utils";

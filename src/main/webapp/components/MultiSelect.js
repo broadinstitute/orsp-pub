@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
-import Async from 'react-select/async';
+import AsyncSelect from 'react-select/lib/Async';
 import './InputField.css';
 
 export const MultiSelect = hh(class MultiSelect extends Component {
@@ -86,7 +86,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
         edited: edited
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
-            h(Async, {
+            h(AsyncSelect, {
               id: this.props.id,
               isDisabled: this.props.isDisabled || this.props.readOnly,
               isMulti: this.props.isMulti,
