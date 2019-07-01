@@ -3,9 +3,11 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import ExportExcel from "./ExportExcel";
 import { User } from "../util/ajax";
 
-const styles = { 
+const styles = {
+  projectTitleWidth: '220',
   projectAccessWidth: '200',
-  datesWidth: '110'
+  datesWidth: '110',
+  typeWidth: '170'
 };
 
 class SearchResults extends Component {
@@ -205,7 +207,7 @@ class SearchResults extends Component {
             <TableHeaderColumn
               csvHeader="Title"
               dataField="title"
-              width={"30%"}
+              width={styles.projectTitleWidth}
               dataFormat={this.formatTooltipTitle}
               dataSort={true}
             >
@@ -214,6 +216,7 @@ class SearchResults extends Component {
             <TableHeaderColumn
               csvHeader="Project Type"
               dataField="type"
+              width={styles.typeWidth}
               dataSort={true}
             >
               Type
