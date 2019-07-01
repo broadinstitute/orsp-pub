@@ -145,7 +145,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     def addComment() {
         Issue issue = queryService.findByKey(params.id)
-        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue, params.id, "comments")
+        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue.type, params.id, "comments")
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey, getUser()?.displayName, params.comment)
             if (comment == null) {

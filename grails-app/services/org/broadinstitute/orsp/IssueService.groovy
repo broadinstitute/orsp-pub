@@ -18,6 +18,7 @@ class IssueService implements UserInfo {
     QueryService queryService
     PersistenceService persistenceService
     NotifyService notifyService
+    IssueReviewService issueReviewService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -61,7 +62,6 @@ class IssueService implements UserInfo {
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.ON_GOING_PROCESS,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
-            IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.END_DATE,
             IssueExtraProperty.START_DATE,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
@@ -163,31 +163,7 @@ class IssueService implements UserInfo {
             issue.removeFromFundings(it)
             it.delete(hard: true)
         }
-
-        def sampleCollectionIds = input.get('samples')
-        Collection<ConsentCollectionLink> sclOld = ConsentCollectionLink.findAllByConsentKey(issue.projectKey)
-
-        def deletableConsentCollectionLinks = sclOld.findAll { !sampleCollectionIds.contains(it.sampleCollectionId)}
-        if (!deletableConsentCollectionLinks.isEmpty()) {
-            deletableConsentCollectionLinks.each {
-                it.delete(hard: true)
-                sclOld.remove(it)
-            }
-        }
-
-        def newSampleCollectionLinks = sampleCollectionIds.findAll { !sclOld.sampleCollectionId.contains(it) }
-
-        newSampleCollectionLinks.each {
-            if (!sclOld.contains(it)) {
-                new ConsentCollectionLink(
-                        projectKey: issue.source,
-                        consentKey: issue.projectKey,
-                        sampleCollectionId: it,
-                        creationDate: new Date()
-                ).save(flush: true)
-            }
-        }
-
+        
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -258,7 +234,7 @@ class IssueService implements UserInfo {
             issue.save(flush: true)
         }
         if (input.get("editsApproved")) {
-            notifyService.sendEditsApprovedNotification(issue)
+            notifyService.sendEditsApprovedNotification(issue, issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName())
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
@@ -329,7 +305,7 @@ class IssueService implements UserInfo {
                 type = EventType.ABANDON_PROJECT
                 break
 
-            case IssueStatus.ProjectApproved.getName():
+            case IssueStatus.Approved.getName():
                 type = EventType.APPROVE_PROJECT
                 break
 

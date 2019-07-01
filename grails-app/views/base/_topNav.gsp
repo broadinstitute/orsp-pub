@@ -86,9 +86,36 @@
                     }
                 },
                 select: function (event, ui) {
-                    window.location = ui.item.url;
+                    if (ui.item.linkDisabled === true){
+                        event.preventDefault();
+                    } else {
+                        window.location = ui.item.url;
+                    }
                 }
-            });
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                var listItem = $("<li></li>")
+
+                if (item.linkDisabled === true && item.pm.length > 0) {
+                    listItem
+                    .addClass("disabled")
+                    .append("<p> Please contact "+ item.pm + " for access</p>")
+                } else if (item.linkDisabled === true && item.actor.length > 0){
+                    listItem
+                    .addClass("disabled")
+                    .append("<p> Please contact "+ item.actor + " for access</p>")
+                } else if (item.linkDisabled === true){
+                    listItem
+                    .addClass("disabled")
+                    .append("<p> Please contact "+ item.reporter + " for access</p>")
+                }
+
+                listItem
+                .data("item.autocomplete", item)
+                .append("<a>" + item.label + "</a>")
+                .appendTo(ul);
+
+                return listItem;
+            };
         });
     </asset:script>
 </auth:isAuthenticated>

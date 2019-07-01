@@ -20,7 +20,7 @@ class IssueReviewService {
             ir.delete(flush: true)
         }
         if (type == 'reject') {
-            notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey))
+            notifyService.sendEditsDisapprovedNotification(Issue.findByProjectKey(ir.projectKey), ir.getEditCreatorName())
         }
     }
 
