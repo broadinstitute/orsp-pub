@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyperscript-helpers';
+import { hh, h, h3, div, p, button } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
@@ -64,9 +64,6 @@ export const Documents = hh(class Documents extends Component {
 
   closeModal = () => {
     this.setState({showAddKeyDocuments: !this.state.showAddKeyDocuments});
-  };
-  closeAdditionalModal = () => {
-    this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
   remove = (row) => (e) => {
@@ -143,7 +140,6 @@ export const Documents = hh(class Documents extends Component {
           remove: this.remove
         })
       ]),
-
 
       div({
         isRendered: this.props.restriction !== undefined

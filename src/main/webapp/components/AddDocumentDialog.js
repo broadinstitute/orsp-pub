@@ -78,26 +78,6 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     });
   };
 
-  redirectToDul = () => {
-    let data = {
-      consentGroupKey: this.props.projectKey,
-      creator: this.props.user.userName
-    };
-    DUL.generateRedirectLink(data, component.serverURL).then(data => {
-      window.location.href = component.serverURL + "/dataUseLetter/show?id=" + data.data.dulToken;
-    }).catch(
-      error => {
-        this.setState(prev => {
-          prev.disableBtn = false;
-          prev.alertType ="danger";
-          prev.alertMessage = 'Something went wrong. Please try again.';
-          prev.showAlert = true;
-          return prev;
-        })
-      }
-    );
-  };
-
   handleClose = () => {
     this.setState(prev => {
       prev.file = {
@@ -129,7 +109,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         });
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
-        if(this.props.projectKey !== undefined) {
+        if (this.props.projectKey !== undefined) {
           spinnerService.showAll();
           Files.upload(component.serverURL, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
@@ -276,87 +256,87 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
       h(Modal, {
         show: this.props.show
       }, [
-          h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
-          ]),
-          h(ModalBody, { className: "dialogBody" }, [
-            InputFieldSelect({
-              label: "Type",
-              id: "documentType",
-              name: "documentType",
-              options: this.props.options,
-              value: this.state.type,
-              onChange: this.handleTypeSelect,
-              currentValue: this.state.currentValue,
-              error: this.state.typeError,
-              errorMessage: "Required field"
-            }),
-            InputFieldFile({
-              label: "File ",
-              moreInfo: "(Max file size 15.7 Mb)",
-              id: "documentFile",
-              name: "documentFile",
-              callback: this.setFilesToUpload(this.state.documents),
-              fileName: this.state.file.name,
-              required: true,
-              error: this.state.fileError,
-              errorMessage: "Required field",
-              removeHandler: () => this.removeFile(document)
-            }),
-            div({ isRendered: this.state.type.value === 'Data Use Letter' && this.props.isConsentGroup === true, style: { 'marginTop': '10px' } }, [
-              p({ className: "bold" }, [
-                "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
-                br({}),
-                small({ className: "normal" }, ["You can either insert their emails below and a link will be sent to them directly, get a shareable link, or click to be redirected to the Data Use Letter form."])
+        h(ModalHeader, {}, [
+          h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
+        ]),
+        h(ModalBody, { className: "dialogBody" }, [
+          InputFieldSelect({
+            label: "Type",
+            id: "documentType",
+            name: "documentType",
+            options: this.props.options,
+            value: this.state.type,
+            onChange: this.handleTypeSelect,
+            currentValue: this.state.currentValue,
+            error: this.state.typeError,
+            errorMessage: "Required field"
+          }),
+          InputFieldFile({
+            label: "File ",
+            moreInfo: "(Max file size 15.7 Mb)",
+            id: "documentFile",
+            name: "documentFile",
+            callback: this.setFilesToUpload(this.state.documents),
+            fileName: this.state.file.name,
+            required: true,
+            error: this.state.fileError,
+            errorMessage: "Required field",
+            removeHandler: () => this.removeFile(document)
+          }),
+          div({ isRendered: this.state.type.value === 'Data Use Letter' && this.props.isConsentGroup === true, style: { 'marginTop': '10px' } }, [
+            p({ className: "bold" }, [
+              "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
+              br({}),
+              small({ className: "normal" }, ["You can either insert their emails below and a link will be sent to them directly, get a shareable link, or click to be redirected to the Data Use Letter form."])
+            ]),
+            div({ className: "row positionRelative" }, [
+              div({ className: "col-lg-10 col-md-9 col-sm-9 col-9" }, [
+                InputFieldText({
+                  id: "inputCollaboratorEmail",
+                  name: "collaboratorEmail",
+                  label: "Collaborator Email",
+                  value: this.state.collaboratorEmail,
+                  disabled: false,
+                  required: false,
+                  placeholder: "Enter email address...",
+                  onChange: this.handleInputChange,
+                  error: this.state.invalidEmail,
+                  errorMessage: 'Invalid email address'
+                })
               ]),
-              div({ className: "row positionRelative" }, [
-                div({ className: "col-lg-10 col-md-9 col-sm-9 col-9" }, [
-                  InputFieldText({
-                    id: "inputCollaboratorEmail",
-                    name: "collaboratorEmail",
-                    label: "Collaborator Email",
-                    value: this.state.collaboratorEmail,
-                    disabled: false,
-                    required: false,
-                    placeholder: "Enter email address...",
-                    onChange: this.handleInputChange,
-                    error: this.state.invalidEmail,
-                    errorMessage: 'Invalid email address'
-                  })
-                ]),
-                div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'top': '25px', 'right': '0'} }, [
-                    button({ className: "btn buttonPrimary fullWidth", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
-                ]),
+              div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'top': '25px', 'right': '0'} }, [
+                  button({ className: "btn buttonPrimary fullWidth", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
               ]),
-              div({ className: "row" }, [
-                div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
-                  button({
-                    className: "btn buttonSecondary fullWidth",
-                    onClick: this.getShareableLink,
-                    name: "getLink",
-                    disabled: false,
-                    id: 'shareable-link'
-                  }, [
-                    span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
-                    "Get shareable link"
-                  ])
+            ]),
+            div({ className: "row" }, [
+              div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
+                button({
+                  className: "btn buttonSecondary fullWidth",
+                  onClick: this.getShareableLink,
+                  name: "getLink",
+                  disabled: false,
+                  id: 'shareable-link'
+                }, [
+                  span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
+                  "Get shareable link"
                 ])
               ])
-            ]),
-            div({ style: { 'marginTop': '15px' } }, [
-              AlertMessage({
-                type: this.state.alertType,
-                msg: this.state.alertMessage,
-                show: this.state.showAlert
-              }),
             ])
           ]),
-
-          h(ModalFooter, {}, [
-            button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
+          div({ style: { 'marginTop': '15px' } }, [
+            AlertMessage({
+              type: this.state.alertType,
+              msg: this.state.alertMessage,
+              show: this.state.showAlert
+            }),
           ])
+        ]),
+
+        h(ModalFooter, {}, [
+          button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
+          button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
         ])
+      ])
     )
   }
 });

@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from '../components/Documents'
-import { DocumentHandler } from "../util/ajax";
+import { DocumentHandler, User } from "../util/ajax";
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
@@ -32,13 +32,15 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
-      this.setState(prev => {
-        prev.documents = JSON.parse(resp.data.documents);
-        prev.isAdmin = component.isAdmin;
-        return prev;
-      },() => {
-          this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
-      );
+      User.getUserSession(component.getUserUrl).then(user => {
+        this.setState(prev => {
+            prev.documents = JSON.parse(resp.data.documents);
+            prev.user = user.data;
+            return prev;
+          },() => {
+            this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
+        );
+      });
     }).catch(error => {
       this.setState({serverError: true});
       console.error(error);
@@ -125,5 +127,4 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
         })
       ])
     )}
-
 });
