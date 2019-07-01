@@ -56,13 +56,12 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   };
 
   removeFile = (row) => (e) => {
-    let docs = this.state.documents;
-    var documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
+    let documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
     this.setState(prev => {
       prev.documents = documentsToUpdate;
       return prev;
     }, () => this.props.fileHandler(this.state.documents));
-  }
+  };
 
   closeModal = () => {
     this.setState({ showAddDocuments: !this.state.showAddDocuments });
@@ -90,42 +89,41 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     }
 
     let documents = this.props.files;
-    let errors = false;
     return (
-          div({ className: "questionnaireContainerLight" }, [
-            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
-            AddDocumentDialog({
-              closeModal: this.closeModal,
-              show: this.state.showAddDocuments,
-              options: this.state.documentOptions,
-              attachDocumentsUrl: this.props.attachDocumentsUrl,
-              projectKey: this.props.projectKey,
-              user: this.props.user,
-              handleLoadDocuments: this.props.handleLoadDocuments,
-              serverURL: this.props.serverURL,
-              emailUrl: this.props.emailUrl,
-              userName: this.props.userName,
-              documentHandler: this.setFilesToUpload
-            }),
-            div({ style: styles.addDocumentContainer }, [
-              button({
-                className: "btn buttonSecondary",
-                style: styles.addDocumentBtn,
-                onClick: this.addDocuments
-              }, ["Add Document"])
-            ]),
-            Table({
-              headers: headers,
-              data: documents,
-              sizePerPage: 10,
-              paginationSize: 10,
-              handleDialogConfirm: this.props.handleDialogConfirm,
-              downloadDocumentUrl: this.props.downloadDocumentUrl,
-              remove: this.removeFile,
-              reviewFlow: false,
-              pagination: false
-            })
-          ])
+      div({ className: "questionnaireContainerLight" }, [
+        p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
+        AddDocumentDialog({
+          closeModal: this.closeModal,
+          show: this.state.showAddDocuments,
+          options: this.state.documentOptions,
+          attachDocumentsUrl: this.props.attachDocumentsUrl,
+          projectKey: this.props.projectKey,
+          user: this.props.user,
+          handleLoadDocuments: this.props.handleLoadDocuments,
+          serverURL: this.props.serverURL,
+          emailUrl: this.props.emailUrl,
+          userName: this.props.userName,
+          documentHandler: this.setFilesToUpload
+        }),
+        div({ style: styles.addDocumentContainer }, [
+          button({
+            className: "btn buttonSecondary",
+            style: styles.addDocumentBtn,
+            onClick: this.addDocuments
+          }, ["Add Document"])
+        ]),
+        Table({
+          headers: headers,
+          data: documents,
+          sizePerPage: 10,
+          paginationSize: 10,
+          handleDialogConfirm: this.props.handleDialogConfirm,
+          downloadDocumentUrl: this.props.downloadDocumentUrl,
+          remove: this.removeFile,
+          reviewFlow: false,
+          pagination: false
+        })
+      ])
     )
   }
 });
