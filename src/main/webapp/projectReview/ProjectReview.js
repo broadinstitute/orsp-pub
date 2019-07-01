@@ -231,7 +231,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             prev.reviewSuggestion = true;
             return prev;
           });
-          this.props.changeInfoStatus(true);
+          this.props.changeInfoStatus(false);
         } else {
           this.setState(prev => {
             prev.editedForm = {};
