@@ -806,7 +806,7 @@ final String query = "SELECT i.id id, " +
 "iep.* " +
 "FROM issue i LEFT JOIN issue_extra_property iep " +
 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-"WHERE i.id  IN ("+ issueIds.join(",") +")"
+"WHERE i.id  IN ("+ issueIds.join(",") +") order by i.project_key asc "
         log.info("findIssuesSearchItemsDTO start : " + System.currentTimeMillis());
 Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
 String currentProjectKey = ""
