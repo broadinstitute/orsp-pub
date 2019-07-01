@@ -199,7 +199,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
-              this.changePendingStatus(false);
+              this.props.changeInfoStatus(false);
             } else {
               spinnerService.hideAll();
               formData = JSON.parse(currentStr);
@@ -212,7 +212,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
-              this.changePendingStatus(issue.data.extraProperties.projectReviewApproved);
+              this.props.changeInfoStatus(true);
             }
           });
       }).catch(error => {
@@ -220,10 +220,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(() => { throw error; });
       });
   }
-
-  changePendingStatus = (status) => {
-    this.props.changeInfoStatus(status);
-  };
 
   getReviewSuggestions() {
     Review.getSuggestions(component.serverURL, component.projectKey).then(
@@ -235,14 +231,14 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             prev.reviewSuggestion = true;
             return prev;
           });
-          this.changePendingStatus(false);
+          this.props.changeInfoStatus(true);
         } else {
           this.setState(prev => {
             prev.editedForm = {};
             prev.reviewSuggestion = false;
             return prev;
           });
-          this.changePendingStatus(true);
+          this.props.changeInfoStatus(true);
         }
       }).catch(error => {
         this.setState(() => { throw error; });
