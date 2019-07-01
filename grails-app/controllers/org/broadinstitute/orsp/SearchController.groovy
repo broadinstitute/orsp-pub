@@ -38,7 +38,7 @@ class SearchController implements UserInfo {
         def response = []
         queryService.findIssuesByConsentTerm(params.term).each {
             response << [
-                    "id": it.projectKey,
+                    "id"   : it.projectKey,
                     "label": it.projectKey + " (" + it.summary + ")",
                     "value": it.projectKey
             ]
@@ -54,16 +54,16 @@ class SearchController implements UserInfo {
         Collection response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
             Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-            String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params:  arguments.get("params"), absolute: true])
+            String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
             response << [
-                    id: it.id,
-                    label: it.projectKey + " (" + it.summary + ")",
-                    value: it.projectKey,
-                    url: link,
-                    reporter: userService.findUser(it.reporter).displayName,
+                    id          : it.id,
+                    label       : it.projectKey + " (" + it.summary + ")",
+                    value       : it.projectKey,
+                    url         : link,
+                    reporter    : userService.findUser(it.reporter).displayName,
                     linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
-                    pm: it.pm,
-                    actor: it.actor
+                    pm          : it.pm,
+                    actor       : it.actor
             ]
         }
         render response as JSON
@@ -73,7 +73,7 @@ class SearchController implements UserInfo {
         def response = []
         userService.findUsersBySearchTerm(params.term).each {
             response << [
-                    "id": it.userName,
+                    "id"   : it.userName,
                     "label": it.displayName + " (" + it.emailAddress + ")",
                     "value": it.displayName
             ]
@@ -85,10 +85,10 @@ class SearchController implements UserInfo {
         def response = []
         queryService.findCollectionsBySearchTerm(params.term).each {
             response << [
-                    "id": it.collectionId,
-                    "label": it.collectionId + " (" + it.name + ": " + it.category + ")",
-                    "value": it.collectionId,
-                    "group": it.groupName,
+                    "id"      : it.collectionId,
+                    "label"   : it.collectionId + " (" + it.name + ": " + it.category + ")",
+                    "value"   : it.collectionId,
+                    "group"   : it.groupName,
                     "category": it.category
             ]
         }
@@ -96,7 +96,6 @@ class SearchController implements UserInfo {
     }
 
     def generalDataTablesJsonSearch() {
-        log(info, "generalDataTablesJsonSearch start " + System.currentTimeMillis())
         QueryOptions options = new QueryOptions()
         if (params.key) options.projectKey = params.key
         if (params.type) options.issueTypeNames.addAll(params.type)
@@ -126,53 +125,50 @@ class SearchController implements UserInfo {
                 "aaData"   : data,
                 "aoColumns": columns
         ]
-        log(info, "generalDataTablesJsonSearch end   " + System.currentTimeMillis())
         render returnData as JSON
     }
 
-def generalReactTablesJsonSearch() {
-def user = getUser()
-def userName = user.userName
-        log.info("generalReactTablesJsonSearch start   " + System.currentTimeMillis())
-QueryOptions options = new QueryOptions()
-if (params.projectKey) options.setProjectKey(params.projectKey)
-if (params.text) options.setFreeText(params.text)
-if (params.userName) options.setUserName(params.userName)
-if (params.funding) options.setFundingInstitute(params.funding)
-if (params.type) options.getIssueTypeNames().addAll(params.type)
-if (params.status) options.getIssueStatusNames().addAll(params.status)
-if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
-def rows = []
-def isAdmin = isAdmin()
-def isViewer = isViewer()
-// Only query if we really have values to query for.
-if (options.projectKey ||
-options.issueTypeNames ||
-options.issueStatusNames ||
-options.freeText ||
-options.userName ||
-options.fundingInstitute ||
-options.irbsOfRecord) {
-rows = queryService.findIssues(options).collect {
-Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
+    def generalReactTablesJsonSearch() {
+        def user = getUser()
+        def userName = user.userName
+        QueryOptions options = new QueryOptions()
+        if (params.projectKey) options.setProjectKey(params.projectKey)
+        if (params.text) options.setFreeText(params.text)
+        if (params.userName) options.setUserName(params.userName)
+        if (params.funding) options.setFundingInstitute(params.funding)
+        if (params.type) options.getIssueTypeNames().addAll(params.type)
+        if (params.status) options.getIssueStatusNames().addAll(params.status)
+        if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
+        def rows = []
+        def isAdmin = isAdmin()
+        def isViewer = isViewer()
+        // Only query if we really have values to query for.
+        if (options.projectKey ||
+                options.issueTypeNames ||
+                options.issueStatusNames ||
+                options.freeText ||
+                options.userName ||
+                options.fundingInstitute ||
+                options.irbsOfRecord) {
+            rows = queryService.findIssues(options).collect {
+                Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
 
-String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
-[
-link: link,
-key: it.projectKey,
-reporter: it.reporter,
-linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
-title: it.summary,
-type: it.type,
-status: it.status,
-updated: it.updateDate ? format.format(it.updateDate): "",
-expiration: it.expirationDate ? format.format(it.expirationDate) : ""
-]
-}
-}
-        log.info("generalReactTablesJsonSearch end   " + System.currentTimeMillis())
-render ([data: rows] as JSON)
-}
+                String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+                [
+                        link        : link,
+                        key         : it.projectKey,
+                        reporter    : it.reporter,
+                        linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
+                        title       : it.summary,
+                        type        : it.type,
+                        status      : it.status,
+                        updated     : it.updateDate ? format.format(it.updateDate) : "",
+                        expiration  : it.expirationDate ? format.format(it.expirationDate) : ""
+                ]
+            }
+        }
+        render([data: rows] as JSON)
+    }
 
     def projectKeyAutocomplete() {
         List<Map> data = queryService.projectKeyAutocomplete(params.term)
@@ -199,7 +195,7 @@ render ([data: rows] as JSON)
         if (params.dateRestriction) options.dateRestriction = Date.parse('mm/dd/yyyy', params.dateRestriction)
         if (params.methodsResearchExcluded) options.methodsResearchExcluded = true
         List<Issue> issues = queryService.findByQueryOptions(options)
-        render (view: '_dataUseRecords', model: ["issues": issues])
+        render(view: '_dataUseRecords', model: ["issues": issues])
     }
 
     def getMatchingDiseaseOntologies() {
