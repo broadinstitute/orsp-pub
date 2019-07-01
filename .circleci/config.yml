@@ -86,7 +86,7 @@ commands:
         default: "us-central1-a"
       google_cluster:
         type: string
-        default: "orsp-dev-cluster"
+        default: "orsp-pub-dev"
       commit:
         type: string
         default: ""
@@ -143,7 +143,7 @@ jobs:
           repo_name: "orsp-pub"
           google_project: "orsp-dev"
           google_zone: "us-central1-a"
-          google_cluster: "orsp-dev-cluster"
+          google_cluster: "orsp-pub-dev"
           commit: ${COMMIT}
           host_name: "ui.dsp-orsp-dev.broadinstitute.org"
           host_ip: "orsp-pub-dev-ip"
