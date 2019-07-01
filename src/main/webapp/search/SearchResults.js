@@ -3,6 +3,11 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import ExportExcel from "./ExportExcel";
 import { User } from "../util/ajax";
 
+const styles = { 
+  projectAccessWidth: '200',
+  datesWidth: '110'
+};
+
 class SearchResults extends Component {
   excelData = [];
   formattedProjectData = [];
@@ -211,6 +216,7 @@ class SearchResults extends Component {
               dataField="updated"
               dataSort={true}
               sortFunc={this.updateSort}
+              width={styles.datesWidth}
             >
               Updated
             </TableHeaderColumn>
@@ -219,6 +225,7 @@ class SearchResults extends Component {
               dataField="expiration"
               dataSort={true}
               sortFunc={this.expirationSort}
+              width={styles.datesWidth}
             >
               Expiration
             </TableHeaderColumn>
@@ -226,6 +233,7 @@ class SearchResults extends Component {
               csvHeader="Project Access Contact"
               dataField="projectAccessContact"
               dataSort={true}
+              width={styles.projectAccessWidth}
             >
               Project Access Contact
             </TableHeaderColumn>
