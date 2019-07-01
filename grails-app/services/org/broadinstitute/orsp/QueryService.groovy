@@ -830,13 +830,19 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id  IN (" + issueIds.join(",") + ") order by i.project_key asc "
+                "WHERE i.id  IN (:issueIds) and i.deleted = 0 " +
+                "ORDER BY by i.id asc "
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         String currentProjectKey = ""
         IssueSearchItemDTO issueSearchItemDTO
 
-        getSqlConnection().rows(query).each {
+        //getSqlConnection().rows(query, [])
+
+        Query query1 = sessionFactory.getCurrentSession().createSQLQuery(query)
+        .setParameterList('issueIds', issueIds)
+        .list()
+        .each {
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
