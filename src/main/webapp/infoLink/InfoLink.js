@@ -1,9 +1,11 @@
 import { Component, Fragment} from 'react';
-import { h, div, h2, span, a } from 'react-hyperscript-helpers';
+import { h, div, h2, span, a, p, b } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { isEmpty } from "../util/Utils";
+import { format } from 'date-fns';
 
 class InfoLink extends Component {
 
@@ -16,6 +18,9 @@ class InfoLink extends Component {
       currentStep: 0,
       consentName: "",
       projectName: "",
+      startDate: "",
+      endDate: "",
+      onGoingProcess: false,
       determination: {
         projectType: null,
         questions: [],
@@ -43,6 +48,9 @@ class InfoLink extends Component {
           prev.sampleCollections = sampleCollectionsIds;
           prev.consentName = sampleCollectionsIds[0].consentName;
           prev.projectName = sampleCollectionsIds[0].projectName;
+          prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
+          prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
+          prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
           return prev;
         });
     }).catch(error => {
@@ -72,6 +80,27 @@ class InfoLink extends Component {
           sampleCollections.map((child, idx) => {
             return h(Fragment, { key: idx }, [
               Panel({ title: isEmpty(child.sampleCollectionId) ? "N/A" : child.sampleCollectionId + " : " + child.collectionName }, [
+                div({isRendered: this.state.startDate !== null, className:"row", style: { 'margin': '5px 0 20px 0' }}, [
+                  div({className: "col-xs-12 col-sm-4"}, [
+                    p({}, [
+                      b({}, ["Start Date: "]), this.state.startDate
+                    ])
+                  ]),
+                  div({className: "col-xs-12 col-sm-4"}, [
+                    p({}, [
+                      b({}, ["End Date: "]), this.state.endDate
+                    ])
+                  ]),                  
+                  div({className: "col-xs-12 col-sm-4"}, [
+                    InputFieldCheckbox({
+                      id: "onGoingProcess",
+                      name: "onGoingProcess",
+                      label: "Ongoing Process",
+                      checked: this.state.onGoingProcess,
+                      readOnly: true
+                    })
+                  ])
+                ]),
                 SampleCollectionWizard({
                   sample: child,
                   documents: this.state.documents

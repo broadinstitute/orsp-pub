@@ -2,9 +2,6 @@ package org.broadinstitute.orsp
 
 class ConsentGroupExtraProperties {
     // General Data
-    String startDate
-    String endDate
-    String onGoingProcess
     String source
     String collInst
     String collContact
@@ -16,9 +13,6 @@ class ConsentGroupExtraProperties {
 
     ConsentGroupExtraProperties(Issue consentGroup) {
         // General Data
-        this.setStartDate(consentGroup.getStartDate())
-        this.setEndDate(consentGroup.getEndDate())
-        this.setOnGoingProcess(consentGroup.getOnGoingProcess() ?: "")
         this.setSource(consentGroup.getSource() ?: "")
         this.setCollInst(consentGroup.getCollInst() ?: "")
         this.setCollContact(consentGroup.getCollContact() ?: "")

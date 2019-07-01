@@ -57,11 +57,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         collInst: '',
         collContact: '',
         describeConsentGroup: '',
-
-        startDate: null,
-        endDate: null,
-        onGoingProcess: false,
-
         individualDataSourced: null,
         isLinkMaintained: null,
         feeForService: null,
@@ -84,9 +79,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         collInst: false,
         describeConsentGroup: false,
         institutionalSourcesName: false,
-        institutionalSourcesCountry: false,
-        endDate: false,
-        startDate: false,
+        institutionalSourcesCountry: false
       },
       editedForm: {},
       formData: {
@@ -251,7 +244,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     let collInst = false;
     let describeConsentGroup = false;
     let endDate = false;
-    let startDate = false;
     let consentGroupName = false;
 
     if (isEmpty(this.state.formData.consentExtraProps.consent)) {
@@ -270,17 +262,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       describeConsentGroup = true;
     }
 
-    if (!this.state.formData.consentExtraProps.onGoingProcess
-      && isEmpty(this.state.formData.consentExtraProps.endDate)
-      && !isEmpty(this.state.formData.consentExtraProps.startDate)
-    ) {
-      endDate = true;
-    }
-
-    if (!isEmpty(this.state.formData.consentExtraProps.endDate) && isEmpty(this.state.formData.consentExtraProps.startDate)) {
-      startDate = true;
-    }
-
     if (this.consentGroupNameExists()) {
       consentGroupName = true;
     }
@@ -290,17 +271,13 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       !protocol &&
       !collInst &&
       !describeConsentGroup &&
-      !startDate &&
-      !consentGroupName &&
-      !endDate;
+      !consentGroupName;
 
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
       prev.errors.collInst = collInst;
       prev.errors.describeConsentGroup = describeConsentGroup;
-      prev.errors.endDate = endDate;
-      prev.errors.startDate = startDate;
       prev.errors.consentGroupName = consentGroupName;
       return prev;
     });
@@ -314,8 +291,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       prev.errors.protocol = false;
       prev.errors.collInst = false;
       prev.errors.describeConsentGroup = false;
-      prev.errors.endDate = false;
-      prev.errors.startDate = false;
       prev.errors.consentGroupName = false;
       prev.errors.instError = false;
       prev.errors.institutionalNameErrorIndex = [];
@@ -565,8 +540,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
     consentGroup.summary = this.state.formData.consentForm.summary;
     consentGroup.samples = this.getSampleCollections();
-    consentGroup.startDate = this.parseDate(this.state.formData.consentExtraProps.startDate);
-    consentGroup.onGoingProcess = this.state.formData.consentExtraProps.onGoingProcess;
     consentGroup.source = component.projectKey;
     consentGroup.collInst = this.state.formData.consentExtraProps.collInst;
     consentGroup.collContact = this.state.formData.consentExtraProps.collContact;
@@ -578,12 +551,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
     }
-    if (this.state.formData.consentExtraProps.endDate !== null) {
-      consentGroup.endDate = this.parseDate(this.state.formData.consentExtraProps.endDate);
-    }
-
     consentGroup.sensitive = this.state.formData.consentExtraProps.sensitive;
-
     return consentGroup;
   };
 
@@ -599,18 +567,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         spinnerService.hideAll();
         console.error(error);
       });
-  };
-
-  handleCheck = (e) => {
-    const checked = e.target.checked;
-    const date = this.state.current.consentExtraProps.endDate;
-    this.setState(prev => {
-      prev.errors.endDate = false;
-      prev.formData.consentExtraProps.onGoingProcess = checked;
-      prev.formData.consentExtraProps.endDate = checked ? null : date;
-      prev.isEdited = !this.areObjectsEqual("formData", "current");
-      return prev;
-    });
   };
 
   handleUpdateinstitutionalSources = (updated) => {
@@ -771,15 +727,9 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       protocol = '',
       collInst = '',
       collContact = '',
-      onGoingProcess = false,
-      describeConsentGroup = '',
-      startDate = null,
-      endDate = null
+      describeConsentGroup = ''
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
-
-    let currentEndDate = this.state.current.consentExtraProps.endDate !== null ? format(new Date(this.state.current.consentExtraProps.endDate), 'MM/DD/YYYY') : null;
-    let currentStartDate = this.state.current.consentExtraProps.startDate !== null ? format(new Date(this.state.current.consentExtraProps.startDate), 'MM/DD/YYYY') : null;
     return (
       div({}, [
         h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + component.consentKey]),
@@ -936,49 +886,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           })
         ]),
 
-        Panel({ title: "Sample Collection Date Range" }, [
-          div({ className: "row" }, [
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-              InputFieldDatePicker({
-                selected: startDate,
-                value: startDate !== null ? format(new Date(startDate), 'MM/DD/YYYY') : null,
-                currentValue: currentStartDate,
-                name: "startDate",
-                label: "Start Date",
-                onChange: this.handleChange,
-                readOnly: this.state.readOnly,
-                maxDate: this.state.formData.consentExtraProps.endDate !== null ? new Date(this.state.formData.consentExtraProps.endDate) : null,
-                error: this.state.errors.startDate,
-                errorMessage: "Required field",
-              })
-            ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-              InputFieldDatePicker({
-                minDate: new Date(this.state.formData.consentExtraProps.startDate),
-                selected: endDate,
-                value: endDate !== null ? format(new Date(endDate), 'MM/DD/YYYY') : null,
-                currentValue: currentEndDate,
-                name: "endDate",
-                label: "End Date",
-                onChange: this.handleChange,
-                disabled: onGoingProcess === true || onGoingProcess === "true",
-                readOnly: this.state.readOnly,
-                error: this.state.errors.endDate,
-                errorMessage: "Required field",
-              })
-            ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
-              InputFieldCheckbox({
-                id: "onGoingProcess",
-                name: "onGoingProcess",
-                onChange: this.handleCheck,
-                label: "Ongoing Process",
-                checked: onGoingProcess === true || onGoingProcess === "true",
-                readOnly: this.state.readOnly
-              })
-            ])
-          ])
-        ]),
         Panel({ title: "Institutional Source of Data/Samples and Location" }, [
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
