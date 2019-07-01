@@ -20,7 +20,7 @@ class Search extends React.Component {
     this.projectAutocomplete = React.createRef();
     this.state = {
       // setup data
-      searchUrl: props.searchUrl,
+      searchUrl: 'http://orsp-pub-service/search/generalReactTablesJsonSearch', // props.searchUrl,
       projectKeySearchUrl: props.projectKeySearchUrl,
       issueTypes: props.issueTypes,
       issueStatuses: props.issueStatuses,
