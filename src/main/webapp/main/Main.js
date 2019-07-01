@@ -35,13 +35,6 @@ class Main extends Component {
     });
   };
 
-  changeInfoStatus = (data) => {
-    this.setState(prev => {
-      prev.status.projectReviewApproved = data;
-      return prev;
-    });
-  };
-
   updateDetailsStatus = (status) => {
     this.setState(prev => {
       prev.status.projectReviewApproved = status.projectReviewApproved;

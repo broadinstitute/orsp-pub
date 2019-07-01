@@ -236,14 +236,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.reviewSuggestion = true;
           return prev;
         });
-        this.props.changeInfoStatus(false);
       } else {
         this.setState(prev => {
           prev.formData = JSON.parse(JSON.stringify(this.state.current));
           prev.reviewSuggestion = false;
           return prev;
         });
-        this.props.changeInfoStatus(true);
       }
     });
   };

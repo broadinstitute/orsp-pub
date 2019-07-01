@@ -199,7 +199,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
-              this.props.changeInfoStatus(false);
             } else {
               spinnerService.hideAll();
               formData = JSON.parse(currentStr);
@@ -212,7 +211,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
-              this.props.changeInfoStatus(true);
             }
           });
       }).catch(error => {
@@ -231,14 +229,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             prev.reviewSuggestion = true;
             return prev;
           });
-          this.props.changeInfoStatus(false);
         } else {
           this.setState(prev => {
             prev.editedForm = {};
             prev.reviewSuggestion = false;
             return prev;
           });
-          this.props.changeInfoStatus(true);
         }
       }).catch(error => {
         this.setState(() => { throw error; });
