@@ -11,6 +11,7 @@ import org.broadinstitute.orsp.webservice.PaginationParams
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
+import org.hibernate.Query
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
 import org.hibernate.transform.Transformers
@@ -837,11 +838,10 @@ class QueryService implements Status {
         String currentProjectKey = ""
         IssueSearchItemDTO issueSearchItemDTO
 
-        //getSqlConnection().rows(query, [])
-
-        Query query1 = sessionFactory.getCurrentSession().createSQLQuery(query)
-        .setParameterList('issueIds', issueIds)
-        .list()
+        getSqlConnection().rows(query, [issueIds])
+//        Query query1 = sessionFactory.getCurrentSession().createQuery(query)
+//        .setParameterList('issueIds', issueIds)
+//        .list()
         .each {
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
