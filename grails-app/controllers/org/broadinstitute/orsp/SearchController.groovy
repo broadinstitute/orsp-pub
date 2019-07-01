@@ -130,50 +130,49 @@ class SearchController implements UserInfo {
         render returnData as JSON
     }
 
-    def generalReactTablesJsonSearch() {
-        User user = getUser()
-        String userName = user?.userName
-        QueryOptions options = new QueryOptions()
-        if (params.projectKey) options.setProjectKey(params.projectKey)
-        if (params.text) options.setFreeText(params.text)
-        if (params.userName) options.setUserName(params.userName)
-        if (params.funding) options.setFundingInstitute(params.funding)
-        if (params.type) options.getIssueTypeNames().addAll(params.type)
-        if (params.status) options.getIssueStatusNames().addAll(params.status)
-        if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
-        Collection rows = []
-        Boolean isAdmin = isAdmin()
-        Boolean isViewer = isViewer()
-        // Only query if we really have values to query for.
-        if (options.projectKey ||
-                options.issueTypeNames ||
-                options.issueStatusNames ||
-                options.freeText ||
-                options.userName ||
-                options.fundingInstitute ||
-                options.irbsOfRecord) {
-            try {
-                rows = queryService.findIssues(options).collect {
-                    Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                    String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
-                    [
-                        link: link,
-                        key: it.projectKey,
-                        reporter: it.reporter,
-                        linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
-                        title: it.summary,
-                        type: it.type,
-                        status: it.status,
-                        updated: it.updateDate ? format.format(it.updateDate): "",
-                        expiration: it.expirationDate ? format.format(it.expirationDate) : ""
-                    ]
-                }
-            } catch(Exception e) {
-                log.error("Error in Search", e)
-            }
-        }
-        render ([data: rows] as JSON)
-    }
+def generalReactTablesJsonSearch() {
+def user = getUser()
+def userName = user.userName
+        log(info, "generalReactTablesJsonSearch start   " + System.currentTimeMillis())
+QueryOptions options = new QueryOptions()
+if (params.projectKey) options.setProjectKey(params.projectKey)
+if (params.text) options.setFreeText(params.text)
+if (params.userName) options.setUserName(params.userName)
+if (params.funding) options.setFundingInstitute(params.funding)
+if (params.type) options.getIssueTypeNames().addAll(params.type)
+if (params.status) options.getIssueStatusNames().addAll(params.status)
+if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
+def rows = []
+def isAdmin = isAdmin()
+def isViewer = isViewer()
+// Only query if we really have values to query for.
+if (options.projectKey ||
+options.issueTypeNames ||
+options.issueStatusNames ||
+options.freeText ||
+options.userName ||
+options.fundingInstitute ||
+options.irbsOfRecord) {
+rows = queryService.findIssues(options).collect {
+Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
+
+String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+[
+link: link,
+key: it.projectKey,
+reporter: it.reporter,
+linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
+title: it.summary,
+type: it.type,
+status: it.status,
+updated: it.updateDate ? format.format(it.updateDate): "",
+expiration: it.expirationDate ? format.format(it.expirationDate) : ""
+]
+}
+}
+        log(info, "generalReactTablesJsonSearch end   " + System.currentTimeMillis())
+render ([data: rows] as JSON)
+}
 
     def projectKeyAutocomplete() {
         List<Map> data = queryService.projectKeyAutocomplete(params.term)

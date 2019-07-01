@@ -788,27 +788,35 @@ class QueryService implements Status {
         result
     }
 
-    /**
-     * Find issues from a list of Ids
-     * @param issueIds
-     * @return
-     */
-    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+/**
+* Find issues and create DTOs to narrow the amount of data used in the search process
+* @param issueIds
+* @return
+*/
+Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+final String query = "SELECT i.id id, " +
+"i.project_key projectKey, " +
+"i.type type, " +
+"i.status status, " +
+"i.summary summary, " +
+"i.reporter reporter, " +
+"i.update_date updated, " +
+"i.expiration_date expirationDate, " +
+"iep.* " +
+"FROM issue i LEFT JOIN issue_extra_property iep " +
+"ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
+"WHERE i.id  IN (:issueIds)"
         log.info("findIssuesSearchItemsDTO start : " + System.currentTimeMillis());
-       final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
-        // final String query = "SELECT * FROM issue i WHERE i.id IN (" + issueIds.join(',') + ") and i.deleted = 0"
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        log.info("findIssuesSearchItemsDTO before exec : " + System.currentTimeMillis());
-        final results = sqlQuery.with {
-            addEntity(Issue)
-            setParameterList('issueIds', issueIds)
-            list()
-        }
+Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+IssueSearchItemDTO issueSearchItemDTO
+        sqlQuery.setParameterList("issueIds", issueIds)
+getSqlConnection().rows(query).each {
+issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+resultDTO.add(issueSearchItemDTO)
+}
         log.info("findIssuesSearchItemsDTO end : " + System.currentTimeMillis());
-        results
-    }
+resultDTO
+}
 
     /**
      * OSAP Integration
