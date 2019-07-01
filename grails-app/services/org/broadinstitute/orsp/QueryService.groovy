@@ -794,18 +794,19 @@ class QueryService implements Status {
      * @return
      */
     Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        log.info("findIssuesSearchItemsDTO start : ", System.currentTimeMillis());
-//        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
-        final String query = "SELECT * FROM issue i WHERE i.id IN (" + issueIds.join(',') + ") and i.deleted = 0"
+        log.info("findIssuesSearchItemsDTO start : " + System.currentTimeMillis());
+       final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        // final String query = "SELECT * FROM issue i WHERE i.id IN (" + issueIds.join(',') + ") and i.deleted = 0"
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
+        log.info("findIssuesSearchItemsDTO before exec : " + System.currentTimeMillis());
         final results = sqlQuery.with {
             addEntity(Issue)
-            //setParameterList('issueIds', issueIds)
+            setParameterList('issueIds', issueIds)
             list()
         }
-        log.info("findIssuesSearchItemsDTO end : ", System.currentTimeMillis());
+        log.info("findIssuesSearchItemsDTO end : " + System.currentTimeMillis());
         results
     }
 
