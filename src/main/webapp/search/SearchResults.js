@@ -47,7 +47,7 @@ class SearchResults extends Component {
 
   linkFormatter = (cell, row) => {
     if (row.linkDisabled === false) {
-      return '<a href="' + row.link + '">' + row.key + "</a>";
+      return <a title={row.key} href={row.link}>{row.key}</a>;
     } else {
       return row.key;
     }
@@ -134,6 +134,19 @@ class SearchResults extends Component {
     );
   }
 
+  formatTooltipNames = (cell, row) => {
+    const names = row.projectAccessContact.join(", ");
+    return <span title={names}>{names}</span>
+  };
+
+  formatTooltipStatus = (cell, row) => {
+    return <span title={row.status}>{row.status}</span>
+  };
+
+  formatTooltipTitle = (cell, row) => {
+    return <span title={row.title}>{row.title}</span>
+  };
+
   render(props) {
     if (this.props.loading) {
       return (
@@ -193,6 +206,7 @@ class SearchResults extends Component {
               csvHeader="Title"
               dataField="title"
               width={"30%"}
+              dataFormat={this.formatTooltipTitle}
               dataSort={true}
             >
               Title
@@ -207,6 +221,7 @@ class SearchResults extends Component {
             <TableHeaderColumn
               csvHeader="Status"
               dataField="status"
+              dataFormat={this.formatTooltipStatus}
               dataSort={true}
             >
               Status
@@ -233,6 +248,7 @@ class SearchResults extends Component {
               csvHeader="Project Access Contact"
               dataField="projectAccessContact"
               dataSort={true}
+              dataFormat={this.formatTooltipNames}
               width={styles.projectAccessWidth}
             >
               Project Access Contact
