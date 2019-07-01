@@ -16,6 +16,7 @@ import get from 'lodash/get';
 import { format } from 'date-fns';
 import { Table } from "../components/Table";
 import { isEmpty } from "../util/Utils";
+import { InputFieldTextArea } from "../components/InputFieldTextArea";
 
 const headers =
   [
@@ -59,7 +60,8 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         startDate: null,
         endDate: null,
         onGoingProcess: false,
-
+        describeEditType: null,
+        editDescription: null,
         individualDataSourced: null,
         isLinkMaintained: null,
         feeForService: null,
@@ -71,6 +73,8 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       },
       errorSubmit: false,
       errors: {
+        editTypeError: false,
+        editDescriptionError: false,
         instError: false,
         institutionalSourceNameError: false,
         institutionalSourceCountryError: false,
@@ -765,7 +769,9 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       collContact = '',
       onGoingProcess = false,
       startDate = null,
-      endDate = null
+      endDate = null,
+      describeEditType = null,
+      editDescription = null
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
 
@@ -836,7 +842,40 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
-
+        Panel({ title: "Notes to ORSP",
+          isRendered: !this.state.readOnly || !isEmpty(this.state.formData.consentExtraProps.editDescription) || !isEmpty(this.state.formData.consentExtraProps.describeEditType)
+        }, [
+          InputFieldRadio({
+            id: "radioDescribeEdits",
+            name: "describeEditType",
+            currentValue: this.state.current.consentExtraProps.describeEditType,
+            label: "Please choose one of the following to describe the proposed edits: ",
+            value: describeEditType,
+            optionValues: ["newAmendment", "requestingAssistance", "clarificationResponse"],
+            optionLabels: [
+              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+              "I am requesting assistance in updating and existing project",
+              "I am responding to a request for clarifications from ORSP"
+            ],
+            onChange: this.handleRadio2Change,
+            readOnly: this.state.readOnly,
+            required: true,
+            error: this.state.errors.editTypeError,
+            errorMessage: "Required field"
+          }),
+          InputFieldTextArea({
+            id: "inputDescribeEdits",
+            name: "editDescription",
+            label: "You may use this space to add additional information or clarifications related to your edits below",
+            currentValue: this.state.current.consentExtraProps.editDescription,
+            value: editDescription === null ? undefined : editDescription,
+            readOnly: this.state.readOnly,
+            required: true,
+            onChange: this.handleExtraPropsInputChange,
+            error: this.state.errors.editDescriptionError,
+            errorMessage: "Required field"
+          })
+        ]),
         Panel({ title: " Group as Sample/Data Cohort Details" }, [
           InputFieldText({
             id: "inputConsentGroupName",
