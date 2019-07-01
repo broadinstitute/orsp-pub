@@ -9,6 +9,7 @@ ReactDOM.render(
     <Search
       getUserUrl = {component.getUserUrl}
       searchUrl = {component.searchUrl}
+      gkeServiceName = {component.gkeServiceName}
       projectKeySearchUrl = {component.projectKeySearchUrl}
       userNameSearchUrl = {component.userNameSearchUrl}
       issueTypes = {component.issueTypes}
