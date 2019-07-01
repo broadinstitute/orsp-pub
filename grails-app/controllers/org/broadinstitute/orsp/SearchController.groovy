@@ -133,7 +133,7 @@ class SearchController implements UserInfo {
 def generalReactTablesJsonSearch() {
 def user = getUser()
 def userName = user.userName
-        log(info, "generalReactTablesJsonSearch start   " + System.currentTimeMillis())
+        log.info("generalReactTablesJsonSearch start   " + System.currentTimeMillis())
 QueryOptions options = new QueryOptions()
 if (params.projectKey) options.setProjectKey(params.projectKey)
 if (params.text) options.setFreeText(params.text)
@@ -170,7 +170,7 @@ expiration: it.expirationDate ? format.format(it.expirationDate) : ""
 ]
 }
 }
-        log(info, "generalReactTablesJsonSearch end   " + System.currentTimeMillis())
+        log.info("generalReactTablesJsonSearch end   " + System.currentTimeMillis())
 render ([data: rows] as JSON)
 }
 
