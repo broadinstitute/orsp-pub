@@ -805,11 +805,11 @@ final String query = "SELECT i.id id, " +
 "iep.* " +
 "FROM issue i LEFT JOIN issue_extra_property iep " +
 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-"WHERE i.id  IN (:issueIds)"
+"WHERE i.id  IN ("+ issueIds.join(",") +")"
         log.info("findIssuesSearchItemsDTO start : " + System.currentTimeMillis());
 Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
 IssueSearchItemDTO issueSearchItemDTO
-        sqlQuery.setParameterList("issueIds", issueIds)
+        // sqlQuery.setParameterList("issueIds", issueIds)
 getSqlConnection().rows(query).each {
 issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
 resultDTO.add(issueSearchItemDTO)
