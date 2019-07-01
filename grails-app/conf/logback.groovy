@@ -49,6 +49,9 @@ if (Environment.getCurrent() == Environment.TEST) {
     logger 'org.broadinstitute', DEBUG, ['STDOUT']
 }
 
+logger('org.broadinstitute.orsp.SearchController', DEBUG, ['FILE'])
+logger('org.broadinstitute.orsp.QueryService', DEBUG, ['FILE'])
+
 logger("org.apache.http.headers", INFO)
 logger("org.apache.http.wire", INFO)
 logger("org.broadinstitute.orsp.NotifyService", DEBUG, ["NOTIFY"], true)

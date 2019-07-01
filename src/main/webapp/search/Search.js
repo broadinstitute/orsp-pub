@@ -11,6 +11,7 @@ const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disappr
 class Search extends React.Component {
   constructor(props) {
     super(props);
+    console.log("Search.js props: ", props);
     this.getLocalStorageState = this.getLocalStorageState.bind(this);
     this.saveStateToLocalStorage = this.saveStateToLocalStorage.bind(this);
     this.handleClear = this.handleClear.bind(this);
@@ -20,7 +21,7 @@ class Search extends React.Component {
     this.projectAutocomplete = React.createRef();
     this.state = {
       // setup data
-      searchUrl: 'http://orsp-pub-service/search/generalReactTablesJsonSearch', // props.searchUrl,
+      searchUrl: props.gkeServiceName, //'http://orsp-pub-service/search/generalReactTablesJsonSearch', // props.searchUrl,
       projectKeySearchUrl: props.projectKeySearchUrl,
       issueTypes: props.issueTypes,
       issueStatuses: props.issueStatuses,
@@ -47,6 +48,7 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array")
     };
+    console.log("Search.js state : ", this.state);
   }
 
   componentDidMount() {

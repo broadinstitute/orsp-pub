@@ -96,6 +96,7 @@ class SearchController implements UserInfo {
     }
 
     def generalDataTablesJsonSearch() {
+        log(info, "generalDataTablesJsonSearch start " + System.currentTimeMillis())
         QueryOptions options = new QueryOptions()
         if (params.key) options.projectKey = params.key
         if (params.type) options.issueTypeNames.addAll(params.type)
@@ -125,6 +126,7 @@ class SearchController implements UserInfo {
                 "aaData"   : data,
                 "aoColumns": columns
         ]
+        log(info, "generalDataTablesJsonSearch end   " + System.currentTimeMillis())
         render returnData as JSON
     }
 

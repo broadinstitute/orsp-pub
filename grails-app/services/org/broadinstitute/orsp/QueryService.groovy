@@ -723,6 +723,7 @@ class QueryService implements Status {
     Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
+        log.info("Start --> " +System.currentTimeMillis());
         String query = ' select distinct i.id ' +
                 ' from issue i ' +
                 ' left outer join issue_extra_property p on p.issue_id = i.id ' +
@@ -783,6 +784,7 @@ class QueryService implements Status {
         if (ids.size() > 0) {
             result = findIssuesSearchItemsDTO(ids)
         }
+        log.info("End   --> " +System.currentTimeMillis());
         result
     }
 
@@ -792,15 +794,18 @@ class QueryService implements Status {
      * @return
      */
     Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        log.info("findIssuesSearchItemsDTO start : ", System.currentTimeMillis());
+//        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        final String query = "SELECT * FROM issue i WHERE i.id IN (" + issueIds.join(',') + ") and i.deleted = 0"
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(Issue)
-            setParameterList('issueIds', issueIds)
+            //setParameterList('issueIds', issueIds)
             list()
         }
+        log.info("findIssuesSearchItemsDTO end : ", System.currentTimeMillis());
         results
     }
 
