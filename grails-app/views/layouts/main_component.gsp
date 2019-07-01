@@ -134,7 +134,6 @@
         searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         serverURL: "${grailsApplication.config.grails.serverURL}",
-        gkeServiceName: "${grailsApplication.config.gkeServiceName}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
         isAdmin: ${session.isAdmin},
