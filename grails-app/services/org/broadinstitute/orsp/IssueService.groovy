@@ -489,8 +489,12 @@ class IssueService implements UserInfo {
         IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
     }
 
-    // Project PM ACTOR CREATOR
-    // CG show CREATOR
+    /**
+     * Project can have PM ACTOR CREATOR.
+     * CG only have CREATOR.
+     * @param extraProperties
+     * @return
+     */
     static Collection<String> getPmOrActor(Map<String, List<String>> extraProperties) {
         Collection<String> userPm = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
         userPm = userPm.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : userPm
