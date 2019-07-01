@@ -74,7 +74,6 @@ class Main extends Component {
         ProjectContainer({
           isRendered: component.issueType === 'project',
           initStatusBoxInfo: this.initStatusBoxInfo,
-          changeInfoStatus: this.changeInfoStatus,
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
           updateAdminOnlyStatus: this.updateAdminOnlyStatus,
@@ -83,7 +82,6 @@ class Main extends Component {
         ConsentGroupContainer({
           isRendered: component.issueType === 'consent-group',
           initStatusBoxInfo: this.initStatusBoxInfo,
-          changeInfoStatus: this.changeInfoStatus,
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
         })

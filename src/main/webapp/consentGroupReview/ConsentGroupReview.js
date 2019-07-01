@@ -210,10 +210,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     });
   };
 
-  changePendingStatus = (status) => {
-    this.props.changeInfoStatus(status);
-  };
-
   isViewer = () => {
     return component.isViewer === "true";
   };
@@ -240,14 +236,14 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.reviewSuggestion = true;
           return prev;
         });
-        this.changePendingStatus(false);
+        this.props.changeInfoStatus(false);
       } else {
         this.setState(prev => {
           prev.formData = JSON.parse(JSON.stringify(this.state.current));
           prev.reviewSuggestion = false;
           return prev;
         });
-        this.changePendingStatus(true);
+        this.props.changeInfoStatus(true);
       }
     });
   };

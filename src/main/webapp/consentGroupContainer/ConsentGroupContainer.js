@@ -122,7 +122,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
               }, [
                   h(ConsentGroupReview, {
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    changeInfoStatus: this.props.changeInfoStatus,
                     updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent
                   })
