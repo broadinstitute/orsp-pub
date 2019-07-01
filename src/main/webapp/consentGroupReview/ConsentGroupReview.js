@@ -210,10 +210,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     });
   };
 
-  isViewer = () => {
-    return component.isViewer === "true";
-  };
-
   parseInstSources(instSources) {
     let instSourcesArray = [];
     if (instSources !== undefined && instSources !== null && instSources.length > 0) {
