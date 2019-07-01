@@ -8,7 +8,6 @@ class ConsentGroupExtraProperties {
     String consent
     String protocol
     String institutionalSources
-    String describeConsentGroup
     Boolean projectReviewApproved
 
     ConsentGroupExtraProperties(Issue consentGroup) {
@@ -19,7 +18,6 @@ class ConsentGroupExtraProperties {
         this.setConsent(consentGroup.getConsent() ?: "")
         this.setProtocol(consentGroup.getProtocol() ?: "")
         this.setInstitutionalSources(consentGroup.getInstitutionalSources() ?: null)
-        this.setDescribeConsentGroup(consentGroup.getDescribeConsentGroup() ?: "")
         this.setProjectReviewApproved(consentGroup.getProjectReviewApproved() ?: false)
     }
 }

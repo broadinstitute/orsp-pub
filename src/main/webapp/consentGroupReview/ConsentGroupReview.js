@@ -6,7 +6,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { ConsentGroup, SampleCollections, Review } from "../util/ajax";
+import { ConsentGroup, SampleCollections, Review, User } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
@@ -56,7 +56,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         protocol: '',
         collInst: '',
         collContact: '',
-        describeConsentGroup: '',
         individualDataSourced: null,
         isLinkMaintained: null,
         feeForService: null,
@@ -77,7 +76,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         protocol: false,
         consentGroupName: false,
         collInst: false,
-        describeConsentGroup: false,
         institutionalSourcesName: false,
         institutionalSourcesCountry: false
       },
@@ -242,7 +240,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     let consent = false;
     let protocol = false;
     let collInst = false;
-    let describeConsentGroup = false;
     let endDate = false;
     let consentGroupName = false;
 
@@ -257,9 +254,11 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     if (isEmpty(this.state.formData.consentExtraProps.collInst)) {
       collInst = true;
     }
-
-    if (isEmpty(this.state.formData.consentExtraProps.describeConsentGroup)) {
-      describeConsentGroup = true;
+    if (!this.state.formData.consentExtraProps.onGoingProcess
+      && isEmpty(this.state.formData.consentExtraProps.endDate)
+      && !isEmpty(this.state.formData.consentExtraProps.startDate)
+    ) {
+      endDate = true;
     }
 
     if (this.consentGroupNameExists()) {
@@ -270,14 +269,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       !this.institutionalSrcHasErrors() &&
       !protocol &&
       !collInst &&
-      !describeConsentGroup &&
       !consentGroupName;
 
     this.setState(prev => {
       prev.errors.consent = consent;
       prev.errors.protocol = protocol;
       prev.errors.collInst = collInst;
-      prev.errors.describeConsentGroup = describeConsentGroup;
       prev.errors.consentGroupName = consentGroupName;
       return prev;
     });
@@ -290,7 +287,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       prev.errors.consent = false;
       prev.errors.protocol = false;
       prev.errors.collInst = false;
-      prev.errors.describeConsentGroup = false;
       prev.errors.consentGroupName = false;
       prev.errors.instError = false;
       prev.errors.institutionalNameErrorIndex = [];
@@ -426,36 +422,40 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         let institutionalSourceArray = this.state.formData.instSources;
         let newFormData = Object.assign({}, this.state.formData);
         newFormData.instSources = institutionalSourceArray;
-        data.projectKey = component.consentKey;
-        data.suggestions = JSON.stringify(newFormData);
-
-        if (this.state.reviewSuggestion) {
-          Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
-            this.getReviewSuggestions();
-            this.props.updateContent();
-          }).catch(error => {
-            this.getReviewSuggestions();
-            this.setState(prev => {
-              prev.submitted = true;
-              prev.errorSubmit = true;
-              prev.errorMessage = 'Something went wrong. Please try again later.';
-              return prev;
+        User.getUserSession(component.getUserUrl).then(resp => {
+          data.projectKey = component.consentKey;
+          newFormData.editCreator = resp.data.userName;
+          data.suggestions = JSON.stringify(newFormData);
+          if (this.state.reviewSuggestion) {
+            Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
+              this.getReviewSuggestions();
+              this.props.updateContent();
+            }).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
             });
-          });
-        } else {
-          Review.submitReview(component.serverURL, data).then(() => {
-            this.getReviewSuggestions();
-            this.props.updateContent();
-          }).catch(error => {
-            this.getReviewSuggestions();
-            this.setState(prev => {
-              prev.submitted = true;
-              prev.errorSubmit = true;
-              prev.errorMessage = 'Something went wrong. Please try again later.';
-              return prev;
+          } else {
+            Review.submitReview(component.serverURL, data).then(() => {
+              this.getReviewSuggestions();
+              this.props.updateContent();
+            }).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
             });
-          });
-        }
+          }
+        }).catch(error => {
+          this.setState(this.setState(() => { throw error; }));
+        });
       });
     } else {
       this.setState(prev => {
@@ -546,7 +546,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     consentGroup.consent = this.state.formData.consentExtraProps.consent;
     consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
-    consentGroup.describeConsentGroup = this.state.formData.consentExtraProps.describeConsentGroup;
 
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
@@ -726,8 +725,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       consent = '',
       protocol = '',
       collInst = '',
-      collContact = '',
-      describeConsentGroup = ''
+      collContact = ''
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
     return (
@@ -853,24 +851,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
             valueEdited: !isEmpty(collContact) === isEmpty(this.state.current.consentExtraProps.collContact)
-          }),
-          InputFieldRadio({
-            edit: true,
-            id: "radioDescribeConsentGroup",
-            name: "describeConsentGroup",
-            label: "Please choose one of the following to describe this proposed  Group as Sample/Data Cohort: ",
-            value: describeConsentGroup,
-            currentValue: this.state.current.consentExtraProps.describeConsentGroup,
-            optionValues: ["01", "02"],
-            optionLabels: [
-              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-              "I am requesting assistance in updating and existing project"
-            ],
-            onChange: this.handleRadio2Change,
-            readOnly: this.state.readOnly,
-            error: this.state.errors.describeConsentGroup,
-            errorMessage: "Required field"
-          }),
+          })
         ]),
 
         Panel({ title: "Sample Collections" }, [

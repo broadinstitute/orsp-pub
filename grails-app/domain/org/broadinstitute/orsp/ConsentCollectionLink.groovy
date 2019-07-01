@@ -21,7 +21,7 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     Date startDate
     Date endDate
     Boolean onGoingProcess
-
+    String status
     Issue linkedProject
     SampleCollection sampleCollection
     DataUseRestriction restriction
@@ -41,6 +41,7 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         startDate nullable: true
         endDate nullable: true
         onGoingProcess nullable: true
+        status nullable: true
     }
 
     static transients = ['linkedProject', 'sampleCollection', 'restriction']

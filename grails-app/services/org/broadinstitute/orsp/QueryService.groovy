@@ -141,6 +141,21 @@ class QueryService implements Status {
         getSqlConnection().rows(query, ["consentKey": consentKey]).collect { it.get("sample_collection_id").toString() }
     }
 
+    /**
+     * Check if all the links related to the specifiend consent and project key are been approved.
+     *
+     * @return boolean, true if links are been approved
+     */
+    boolean areLinksApproved(String projectKey, String consentKey) {
+        final String query =
+                ' select distinct status as status ' +
+                        ' from consent_collection_link ' +
+                        ' where consent_key = :consentKey ' +
+                        ' and project_key = :projectKey '
+                        ' and status = :status '
+        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.APPROVED.name])
+                .collect { it.get("status").toString() }?.size() > 0
+    }
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"]) // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
@@ -330,6 +345,23 @@ class QueryService implements Status {
         results as Collection<ConsentCollectionLink>
     }
 
+    Collection<ConsentCollectionLink> findConsentCollectionLinksByProjectKeyAndConsentKey(String projectKey, String consentKey) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from consent_collection_link c ' +
+                        ' where c.project_key = :projectKey ' +
+                        ' and c.consent_key = :consentKey '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('projectKey', projectKey)
+            setString('consentKey', consentKey)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
     Collection<ConsentCollectionLink> findCollectionLinkById(String consentCollectionLinkId) {
         final session = sessionFactory.currentSession
         final String query =
@@ -401,6 +433,19 @@ class QueryService implements Status {
         results
     }
 
+    boolean updateCollectionLinkStatus(String consentKey, String projectKey, String status) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' update consent_collection_link set status = :status ' +
+                'where project_key = :projectKey and consent_key = :consentKey'
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('consentKey', consentKey)
+        sqlQuery.setParameter('status', status)
+        int rowsUpdated = sqlQuery.executeUpdate()
+        rowsUpdated > 0
+    }
+
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
         final session = sessionFactory.currentSession
         final String query =
@@ -439,7 +484,13 @@ class QueryService implements Status {
             [id: it.id,
              projectKey: it.projectKey,
              summary: it.summary,
-             controller: it.controller]
+             reporter: it.reporter,
+             pm: userService.findUsers(it.getPMs()).displayName,
+             actor: userService.findUsers(it.getActorUsernames()).displayName,
+             extraProperties: it.extraPropertiesMap,
+             controller: it.controller,
+             type: it.type
+            ]
         }
     }
 
@@ -573,13 +624,14 @@ class QueryService implements Status {
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys(Collection<String> keys) {
+    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys) {
         if (keys && !keys.isEmpty()) {
-            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.toList()) ?: Collections.emptyList()
-            Collection<StorageDocument> documents = getAttachmentsForProjects(keys)
+            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
+            Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
             def docsByProject = documents.groupBy({d -> d.projectKey})
             issues.each { issue ->
                 issue.setAttachments(docsByProject.getOrDefault(issue.projectKey, Collections.emptyList()))
+                issue.setStatus(keys.get(issue.projectKey).status)
             }
             issues
         } else {

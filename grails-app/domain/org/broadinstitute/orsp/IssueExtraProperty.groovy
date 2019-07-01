@@ -64,10 +64,10 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String DESCRIBE_EDIT_TYPE = "describeEditType"
     public static final String SAMPLES = "samples"
     public static final String INSTITUTIONAL_SOURCES = "institutionalSources"
-    public static final String DESCRIBE_CONSENT = "describeConsentGroup"
     public static final String ATTESTATION = "attestation"
     public static final String NO_CONSENT_FORM_REASON = "noConsentFormReason"
     public static final String COLLABORATORS = "collaborators"
+    public static final String EDIT_CREATOR = "editCreator"
 
     // Admin Only
     public static final String IRB_REFERRAL_TEXT = "irbReferralText"

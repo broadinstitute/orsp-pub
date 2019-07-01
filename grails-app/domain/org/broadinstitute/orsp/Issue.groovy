@@ -93,8 +93,6 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getInstitutionalSources() { getExtraProperties().find { it.name == IssueExtraProperty.INSTITUTIONAL_SOURCES }?.value }
 
-    transient String getDescribeConsentGroup() { getExtraProperties().find { it.name == IssueExtraProperty.DESCRIBE_CONSENT }?.value }
-
     transient String getUploadConsent() { getExtraProperties().find { it.name == IssueExtraProperty.UPLOAD_CONSENT_GROUP }?.value }
 
     transient String getIrbReferral() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_REFERRAL }?.value }

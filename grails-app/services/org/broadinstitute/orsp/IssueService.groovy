@@ -18,6 +18,7 @@ class IssueService implements UserInfo {
     QueryService queryService
     PersistenceService persistenceService
     NotifyService notifyService
+    IssueReviewService issueReviewService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -60,7 +61,6 @@ class IssueService implements UserInfo {
             IssueExtraProperty.EDIT_DESCRIPTION,
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
-            IssueExtraProperty.DESCRIBE_CONSENT,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
             IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
             IssueExtraProperty.IRB_REFERRAL,
@@ -228,7 +228,7 @@ class IssueService implements UserInfo {
             issue.save(flush: true)
         }
         if (input.get("editsApproved")) {
-            notifyService.sendEditsApprovedNotification(issue)
+            notifyService.sendEditsApprovedNotification(issue, issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName())
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
@@ -299,7 +299,7 @@ class IssueService implements UserInfo {
                 type = EventType.ABANDON_PROJECT
                 break
 
-            case IssueStatus.ProjectApproved.getName():
+            case IssueStatus.Approved.getName():
                 type = EventType.APPROVE_PROJECT
                 break
 
