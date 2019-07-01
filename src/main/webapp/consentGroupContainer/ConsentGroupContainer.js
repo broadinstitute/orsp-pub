@@ -23,7 +23,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
   }
 
   componentDidMount() {
-    console.log("carga consent group")
     this.getHistory();
     this.getComments();
   }
