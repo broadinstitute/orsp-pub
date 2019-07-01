@@ -44,8 +44,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       consentGroupIsLoading: false,
       startDate: null,
       endDate: null,
-      onGoingProcess: false,
-      errorSampleCollectionDateRange: false
+      onGoingProcess: false
     };
   }
 
@@ -198,16 +197,20 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       prev.onGoingProcess = !this.state.onGoingProcess;
       prev.endDate = null;
       return prev;
-    });
-    // this.props.removeErrorMessage();
+    }, () => this.props.updateDateRange(this.state.onGoingProcess, this.state.endDate, this.state.startDate));
   };
 
   handleChange = (id) => (date) => {
     this.setState(prev => {
       prev[id] = date;
       return prev;
+    }, () => {
+      if (id == 'startDate' || id == 'endDate') {
+        this.props.updateDateRange(this.state.onGoingProcess, this.state.endDate, this.state.startDate);
+      } else {
+        this.props.updateForm(this.state.sampleCollection, id);
+      }      
     });
-   // this.props.removeErrorMessage();
   };
 
   render() {
@@ -266,7 +269,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
                 onChange: this.handleChange,
                 placeholder: "Enter Start Date",
                 maxDate: this.state.endDate !== null ? this.state.endDate : null,
-                error: this.state.errorSampleCollectionDateRange,
+                error: this.props.errors.errorSampleCollectionDateRange && this.props.generalError,
                 errorMessage: 'Required Fields'
               })
             ]),

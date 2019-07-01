@@ -18,6 +18,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     super(props);
     this.state = {
       files: [],
+      startDate: null,
+      endDate: null,
+      onGoingProcess: '',
       user: {
         displayName: '',
         userName: '',
@@ -26,6 +29,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       submitError: false,
       errors: {
         consentGroup: false,
+        errorSampleCollectionDateRange: false,
         isValid: true,
         internationalCohortsError: {
         },
@@ -169,7 +173,8 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     const isInternationalCohortsValid = this.validateInternationalCohorts();
     const isInfoSecurityValid = this.validateInfoSecurity();
     const isMTAValid = this.validateMTA();
-    return isValidStep1 && isInfoSecurityValid && isInfoSecurityValid && isInternationalCohortsValid && isMTAValid;
+    const isDateRangeValid = this.validateDateRange();
+    return isValidStep1 && isInfoSecurityValid && isInternationalCohortsValid && isMTAValid && isDateRangeValid;
   };
 
   getConsentCollectionData = () => {
@@ -186,6 +191,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
     consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
     consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
+    // date range
+    consentCollectionLink.startDate = this.state.startDate;
+    consentCollectionLink.endDate = this.state.endDate;
+    consentCollectionLink.onGoingProcess = this.state.onGoingProcess;
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
@@ -229,21 +238,27 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   };
 
-  validateLinkStep = (field) => {
+  validateLinkStep = (field, nextStep) => {
     let consentGroup = false;
     let isValid = true;
-
+    let isDateRangeValid = true;
     if (isEmpty(this.state.consentGroup)) {
       consentGroup = true;
       isValid = false;
     }
-
+    if(this.validateDateRange() == false) {
+      isDateRangeValid = false;
+      isValid = false;
+    }    
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.consentGroup = consentGroup;
+        prev.errors.errorSampleCollectionDateRange = !isDateRangeValid;
         prev.errors.isValid = isValid;
         if (isValid) {
           prev.generalError = false;
+        } else if (nextStep) {
+          prev.generalError = true;
         }
         return prev;
       });
@@ -263,7 +278,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   isValid = (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateLinkStep(field)
+      isValid = this.validateLinkStep(field, true)
     } else if (this.state.currentStep === 1) {
       isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
       if (!this.validateMTA()) {
@@ -296,14 +311,28 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     return isValid;
   }
 
-  updateGeneralForm = (updatedForm, field) => {
-    if (this.state.currentStep === 0) {
-      this.validateLinkStep(field);
+  validateDateRange() {
+    let isValid = true;
+    if (this.state.onGoingProcess == false && this.state.endDate === null || this.state.startDate ==  null) {
+      isValid = false;
     }
+    return isValid;
+  }
+
+  updateGeneralForm = (updatedForm, field) => {
     this.setState(prev => {
       prev[field] = updatedForm;
       return prev;
     }, () => this.isValid(field));
+  };
+
+  updateDateRange = (onGoingProcess, endDate, startDate) => {
+    this.setState(prev => {
+      prev.startDate = startDate;
+      prev.endDate = endDate;
+      prev.onGoingProcess = onGoingProcess;
+      return prev;
+    }, () => this.validateLinkStep());
   };
 
   render() {
@@ -336,6 +365,8 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           consentGroup: this.state.consentGroup,
           updateForm: this.updateGeneralForm,
           consentGroupIsLoading: this.state.consentGroupIsLoading,
+          updateDateRange: this.updateDateRange,
+          generalError: this.state.generalError
         }),
         LinkQuestions({
           title: "Security/MTA/International Info",
