@@ -794,6 +794,7 @@ class QueryService implements Status {
 * @return
 */
 Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+
 final String query = "SELECT i.id id, " +
 "i.project_key projectKey, " +
 "i.type type, " +
@@ -808,14 +809,36 @@ final String query = "SELECT i.id id, " +
 "WHERE i.id  IN ("+ issueIds.join(",") +")"
         log.info("findIssuesSearchItemsDTO start : " + System.currentTimeMillis());
 Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+String currentProjectKey = ""
 IssueSearchItemDTO issueSearchItemDTO
         // sqlQuery.setParameterList("issueIds", issueIds)
-getSqlConnection().rows(query).each {
-issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-resultDTO.add(issueSearchItemDTO)
-}
-        log.info("findIssuesSearchItemsDTO end : " + System.currentTimeMillis());
-resultDTO
+// getSqlConnection().rows(query).each {
+// issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+// resultDTO.add(issueSearchItemDTO)
+// }
+
+    getSqlConnection().rows(query).each {
+        if (it.get("projectKey") == currentProjectKey) {
+            if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+            }
+        } else {
+            if (currentProjectKey != "") {
+                resultDTO.add(issueSearchItemDTO)
+            }
+
+            currentProjectKey = it.get("projectKey")
+            issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+
+            if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+            }
+        }
+        resultDTO.add(issueSearchItemDTO)
+    }
+
+    log.info("findIssuesSearchItemsDTO end : " + System.currentTimeMillis());
+    resultDTO
 }
 
     /**
