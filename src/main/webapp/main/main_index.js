@@ -11,9 +11,9 @@ ReactDOM.render(
   <ErrorHandler>
     <BrowserRouter>
       <Switch>
-        <Route exact path='/dev/user/rolesManagement' component = { RolesManagement }/>
-        <Route exact path='/dev/project/main' component = { Main }/>
-        <Route exact path='/dev/newConsentGroup/main' component = { Main }/>
+        <Route exact path='/dev/user/rolesManagement' render = {(routeProps) =>  <RolesManagement {...routeProps}/> }/>
+        <Route exact path='/dev/project/main' render = {(routeProps) => <Main {...routeProps}/> }/>
+        <Route exact path='/dev/newConsentGroup/main' render = {(routeProps) => <Main {...routeProps}/> }/>
       </Switch>
     </BrowserRouter>
   </ErrorHandler>,
