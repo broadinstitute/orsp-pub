@@ -830,13 +830,14 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id IN (" + issueIds.join(",") + ")"
+                "WHERE i.id IN (:issueIds)"
+                //"WHERE i.id IN (" + issueIds.join(",") + ")"
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         IssueSearchItemDTO issueSearchItemDTO
         String currentProjectKey = ""
-        
-        getSqlConnection().rows(query).each {
+
+        getSqlConnection().rows(query, ['issueIds': issueIds]).each {
 
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
