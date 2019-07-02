@@ -834,7 +834,8 @@ class QueryService implements Status {
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         IssueSearchItemDTO issueSearchItemDTO
-
+        String currentProjectKey = ""
+        
         getSqlConnection().rows(query).each {
 
             if (it.get("projectKey") == currentProjectKey) {
