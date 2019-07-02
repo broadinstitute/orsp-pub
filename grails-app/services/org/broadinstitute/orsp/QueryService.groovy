@@ -831,7 +831,7 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id  IN (:issueIds) and i.deleted = 0 " +
+                "WHERE i.id  IN ( " + issueIds.join(",") + ") and i.deleted = 0 " +
                 "ORDER BY by i.id asc "
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
@@ -843,7 +843,7 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
 
         final results = sqlQuery.with {
-            setParameterList('issueIds', issueIds)
+            // setParameterList('issueIds', issueIds)
             list()
             each {
                 if (it.get("projectKey") == currentProjectKey) {
