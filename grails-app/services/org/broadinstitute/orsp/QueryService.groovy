@@ -831,8 +831,7 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id  IN (:issueIds) and i.deleted = 0 " +
-                "ORDER BY i.id asc "
+                "WHERE i.id IN (:issueIds) and i.deleted = 0 "
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         String currentProjectKey = ""
