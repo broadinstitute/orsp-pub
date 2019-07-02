@@ -1,6 +1,6 @@
-import { Component } from 'react';
-import { div, hh } from 'react-hyperscript-helpers';
-import { ProjectMigration } from '../util/ajax';
+import { Component, Fragment } from 'react';
+import { div, hh, h, br } from 'react-hyperscript-helpers';
+import { TextEditor } from "../main/TextEditor";
 
 export const Comments = hh(class Comments extends Component {
 
@@ -10,7 +10,11 @@ export const Comments = hh(class Comments extends Component {
 
   render() {
     return (
-      div({dangerouslySetInnerHTML: { __html: this.props.commentsContent } },[])
+      h(Fragment, {}, [
+        TextEditor({}),
+        br({}),
+        div({dangerouslySetInnerHTML: { __html: this.props.commentsContent } },[])
+      ])
     )
   }
 });

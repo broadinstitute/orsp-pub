@@ -9,20 +9,20 @@
 
 <div class="container col-md-11 row">
 
-<auth:isNotViewer>
-    <div class="well">
-        <g:form controller="authenticated" action="addComment" role="form">
-            <g:hiddenField name="id" value="${issue.projectKey}"/>
-            <div class="form-group">
-                <label for="comment-field">Add Comment</label>
-                <br/>
-                <textarea name="comment" id="comment-field" rows="10" class="editor"></textarea>
-                <br/>
-                <g:submitButton name="Add" value="Add" class="btn btn-primary"/>
-            </div>
-        </g:form>
-    </div>
-</auth:isNotViewer>
+<!--<auth:isNotViewer>-->
+    <!--<div class="well">-->
+        <!--<g:form controller="authenticated" action="addComment" role="form">-->
+            <!--<g:hiddenField name="id" value="${issue.projectKey}"/>-->
+            <!--<div class="form-group">-->
+                <!--<label for="comment-field">Add Comment</label>-->
+                <!--<br/>-->
+                <!--<textarea name="comment" id="comment-field" rows="10" class="editor"></textarea>-->
+                <!--<br/>-->
+                <!--<g:submitButton name="Add" value="Add" class="btn btn-primary"/>-->
+            <!--</div>-->
+        <!--</g:form>-->
+    <!--</div>-->
+<!--</auth:isNotViewer>-->
 
     <div>
         <table id="comments-table" class="table table-bordered table-striped table-condensed table-hover">
