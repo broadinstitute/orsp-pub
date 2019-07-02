@@ -38,7 +38,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: 3,
       noOutput: DETERMINATION.EXIT,
       answer: null,
-      progress: 17,
+      progress: 34,
       key: 'isLinkMaintained',
       id: 2
     });
@@ -48,7 +48,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: DETERMINATION.DPA,
       noOutput: 4,
       answer: null,
-      progress: 34,
+      progress: 50,
       key: this.props.origin === 'newProject' ? 'feeForServiceWork' : 'feeForService',
       id: 3
     });
@@ -58,7 +58,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: 5,
       noOutput: DETERMINATION.RA,
       answer: null,
-      progress: 50,
+      progress: 70,
       key: 'areSamplesComingFromEEAA',
       id: 4
     });
@@ -66,21 +66,11 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     questions.push({
       question: span({}, ["Is Broad or the EEA collaborator providing goods/services ", span({ className: "normal" }, ["(including routine return of research results) "]), "to EEA subjects, or engaging in ongoing monitoring of them", span({ className: "normal" }, ["(e.g. via use of a FitBit)?"])]),
       yesOutput: DETERMINATION.OSAP,
-      noOutput: 6,
+      noOutput: DETERMINATION.EXIT,
       answer: null,
       progress: 67,
       key: 'isCollaboratorProvidingGoodService',
       id: 5
-    });
-
-    questions.push({
-      question: span({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-      yesOutput: DETERMINATION.EXIT,
-      noOutput: DETERMINATION.CTC,
-      answer: null,
-      progress: 83,
-      key: 'isConsentUnambiguous',
-      id: 6
     });
 
     return {
