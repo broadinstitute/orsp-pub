@@ -570,7 +570,8 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     consentGroup.consent = this.state.formData.consentExtraProps.consent;
     consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
-
+    consentGroup.editDescription = this.state.formData.consentExtraProps.editDescription;
+    consentGroup.describeEditType = this.state.formData.consentExtraProps.describeEditType;
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
     }
@@ -854,7 +855,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             optionValues: ["newAmendment", "requestingAssistance", "clarificationResponse"],
             optionLabels: [
               "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-              "I am requesting assistance in updating and existing project",
+              "I am requesting assistance in updating an existing project",
               "I am responding to a request for clarifications from ORSP"
             ],
             onChange: this.handleRadio2Change,

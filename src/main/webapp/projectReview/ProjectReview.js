@@ -846,7 +846,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               optionValues: ["newAmendment", "requestingAssistance", "clarificationResponse"],
               optionLabels: [
                 "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                "I am requesting assistance in updating and existing project",
+                "I am requesting assistance in updating an existing project",
                 "I am responding to a request for clarifications from ORSP"
               ],
               onChange: this.handleProjectExtraPropsChangeRadio,

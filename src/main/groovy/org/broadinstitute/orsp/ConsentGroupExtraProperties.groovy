@@ -12,6 +12,9 @@ class ConsentGroupExtraProperties {
     String protocol
     String institutionalSources
     Boolean projectReviewApproved
+    String editDescription
+    String describeEditType
+
 
     ConsentGroupExtraProperties(Issue consentGroup) {
         // General Data
@@ -25,5 +28,7 @@ class ConsentGroupExtraProperties {
         this.setProtocol(consentGroup.getProtocol() ?: "")
         this.setInstitutionalSources(consentGroup.getInstitutionalSources() ?: null)
         this.setProjectReviewApproved(consentGroup.getProjectReviewApproved() ?: false)
+        this.setEditDescription(consentGroup.getEditDescription() ?: "")
+        this.setDescribeEditType(consentGroup.getDescribeEditType() ?: "")
     }
 }
