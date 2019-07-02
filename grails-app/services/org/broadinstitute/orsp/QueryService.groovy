@@ -151,7 +151,7 @@ class QueryService implements Status {
                 ' select distinct status as status ' +
                         ' from consent_collection_link ' +
                         ' where consent_key = :consentKey ' +
-                        ' and project_key = :projectKey '
+                        ' and project_key = :projectKey ' +
                         ' and status = :status '
         getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.APPROVED.name])
                 .collect { it.get("status").toString() }?.size() > 0
