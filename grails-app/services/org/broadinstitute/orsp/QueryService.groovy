@@ -141,6 +141,21 @@ class QueryService implements Status {
         getSqlConnection().rows(query, ["consentKey": consentKey]).collect { it.get("sample_collection_id").toString() }
     }
 
+    /**
+     * Check if all the links related to the specifiend consent and project key are been approved.
+     *
+     * @return boolean, true if links are been approved
+     */
+    boolean areLinksApproved(String projectKey, String consentKey) {
+        final String query =
+                ' select distinct status as status ' +
+                        ' from consent_collection_link ' +
+                        ' where consent_key = :consentKey ' +
+                        ' and project_key = :projectKey '
+                        ' and status = :status '
+        getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.APPROVED.name])
+                .collect { it.get("status").toString() }?.size() > 0
+    }
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"]) // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
@@ -330,6 +345,23 @@ class QueryService implements Status {
         results as Collection<ConsentCollectionLink>
     }
 
+    Collection<ConsentCollectionLink> findConsentCollectionLinksByProjectKeyAndConsentKey(String projectKey, String consentKey) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from consent_collection_link c ' +
+                        ' where c.project_key = :projectKey ' +
+                        ' and c.consent_key = :consentKey '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('projectKey', projectKey)
+            setString('consentKey', consentKey)
+            list()
+        }
+        results as Collection<ConsentCollectionLink>
+    }
+
     Collection<ConsentCollectionLink> findCollectionLinkById(String consentCollectionLinkId) {
         final session = sessionFactory.currentSession
         final String query =
@@ -401,6 +433,19 @@ class QueryService implements Status {
         results
     }
 
+    boolean updateCollectionLinkStatus(String consentKey, String projectKey, String status) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' update consent_collection_link set status = :status ' +
+                'where project_key = :projectKey and consent_key = :consentKey'
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('consentKey', consentKey)
+        sqlQuery.setParameter('status', status)
+        int rowsUpdated = sqlQuery.executeUpdate()
+        rowsUpdated > 0
+    }
+
     Collection<ConsentCollectionLink> findCollectionLinksBySample(String sampleCollectionId) {
         final session = sessionFactory.currentSession
         final String query =
@@ -439,7 +484,13 @@ class QueryService implements Status {
             [id: it.id,
              projectKey: it.projectKey,
              summary: it.summary,
-             controller: it.controller]
+             reporter: it.reporter,
+             pm: userService.findUsers(it.getPMs()).displayName,
+             actor: userService.findUsers(it.getActorUsernames()).displayName,
+             extraProperties: it.extraPropertiesMap,
+             controller: it.controller,
+             type: it.type
+            ]
         }
     }
 
@@ -573,13 +624,14 @@ class QueryService implements Status {
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys(Collection<String> keys) {
+    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys) {
         if (keys && !keys.isEmpty()) {
-            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.toList()) ?: Collections.emptyList()
-            Collection<StorageDocument> documents = getAttachmentsForProjects(keys)
+            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
+            Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
             def docsByProject = documents.groupBy({d -> d.projectKey})
             issues.each { issue ->
                 issue.setAttachments(docsByProject.getOrDefault(issue.projectKey, Collections.emptyList()))
+                issue.setStatus(keys.get(issue.projectKey).status)
             }
             issues
         } else {
@@ -668,7 +720,7 @@ class QueryService implements Status {
      * @param queryOptions A QueryOptions object that has desired fields populated.
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findIssues(QueryOptions options) {
+    Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
         String query = ' select distinct i.id ' +
@@ -708,8 +760,9 @@ class QueryService implements Status {
             }
         }
         if (options.getIssueStatusNames() && !options.getIssueStatusNames().empty) {
-            def q = orIfyCollection("i.status = :statusName", options.getIssueStatusNames())
+            def q = orIfyStatuses("i.status = :statusName", "i.approval_status = :statusName", options.getIssueStatusNames())
             query = andIfyQstring(query, q, params)
+
             options.getIssueStatusNames().eachWithIndex { it, index ->
                 params.put("statusName" + (index + 1), it)
             }
@@ -725,15 +778,31 @@ class QueryService implements Status {
 
         def rows = getSqlConnection().rows(query, params)
         def ids = rows.collect{it.get("id")}
-        Collection result = Collections.emptyList()
+        Set result = new HashSet<Issue>()
 
         if (ids.size() > 0) {
-            result = Issue.findAllByIdInList(ids)
+            result = findIssuesSearchItemsDTO(ids)
         }
         result
     }
 
-
+    /**
+     * Find issues from a list of Ids
+     * @param issueIds
+     * @return
+     */
+    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setParameterList('issueIds', issueIds)
+            list()
+        }
+        results
+    }
 
     /**
      * OSAP Integration
@@ -773,6 +842,13 @@ class QueryService implements Status {
         def count = collection.size()
         def collQs = (1 .. count).collect { q + it }
         " ( " + collQs.join(" OR ") + " ) "
+    }
+
+    private static String orIfyStatuses(String qLegacy, String qNew, Collection<String> collection) {
+        def count = collection.size()
+        def collQsLegacy = (1 .. count).collect { qLegacy + it }
+        def collQsNew = (1 .. count).collect { qNew + it }
+        " ( " + collQsLegacy.join(" OR ") + " OR " + collQsNew.join(" OR ") + " ) "
     }
 
     private static String andIfyQstring(String query, String q, Map params) {
