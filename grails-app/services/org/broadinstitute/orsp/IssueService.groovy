@@ -495,9 +495,9 @@ class IssueService implements UserInfo {
      * @param extraProperties
      * @return
      */
-    static Collection<String> getPmOrActor(Map<String, List<String>> extraProperties) {
+    static Collection<String> getAccessContacts(Map<String, List<String>> extraProperties) {
         Collection<String> accessContacts = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
-        accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContact
+        accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
         accessContacts
     }
 }

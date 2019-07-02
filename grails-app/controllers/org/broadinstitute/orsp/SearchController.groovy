@@ -223,7 +223,7 @@ class SearchController implements UserInfo {
     }
 
     private Collection<String> getProjectAccessContact(Map<String, List<String>> extraPropertiesMap, String reporter) {
-        Collection<String> accessContacts = IssueService.getPmOrActor(extraPropertiesMap)
+        Collection<String> accessContacts = IssueService.getAccessContacts(extraPropertiesMap)
 
         if (accessContacts.isEmpty()) {
             accessContacts.add(userService.findUser(reporter).displayName)
