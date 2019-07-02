@@ -837,7 +837,7 @@ class QueryService implements Status {
         IssueSearchItemDTO issueSearchItemDTO
         String currentProjectKey = ""
 
-        getSqlConnection().rows(query, ['issueIds': issueIds]).each {
+        getSqlConnection().rows(query, [issueIds]).each {
 
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
