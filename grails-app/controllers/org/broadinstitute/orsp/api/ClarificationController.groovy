@@ -77,6 +77,8 @@ class ClarificationController extends AuthenticatedController {
             String toAddresses = userService.findUser(params.pm)?.collect {it.emailAddress}
             String fromAddress = getUser()?.emailAddress
             try {
+                Map<String, String> values = new HashMap<>()
+                values.put("isLink", "true")
                 notifyService.sendClarificationRequest(
                         new NotifyArguments(
                                 toAddresses: [toAddresses],
@@ -84,7 +86,8 @@ class ClarificationController extends AuthenticatedController {
                                 subject: "Clarification Requested: " + issue.projectKey,
                                 comment: comment.description,
                                 user: getUser(),
-                                issue: issue))
+                                issue: issue,
+                                values: values))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
                 response.status = 201
             } catch (Exception e) {
