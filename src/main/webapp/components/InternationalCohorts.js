@@ -38,7 +38,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: 3,
       noOutput: DETERMINATION.EXIT,
       answer: null,
-      progress: 34,
+      progress: 20,
       key: 'isLinkMaintained',
       id: 2
     });
@@ -48,7 +48,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: DETERMINATION.DPA,
       noOutput: 4,
       answer: null,
-      progress: 50,
+      progress: 40,
       key: this.props.origin === 'newProject' ? 'feeForServiceWork' : 'feeForService',
       id: 3
     });
@@ -58,7 +58,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: 5,
       noOutput: DETERMINATION.RA,
       answer: null,
-      progress: 70,
+      progress: 60,
       key: 'areSamplesComingFromEEAA',
       id: 4
     });
@@ -68,7 +68,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       yesOutput: DETERMINATION.OSAP,
       noOutput: DETERMINATION.EXIT,
       answer: null,
-      progress: 67,
+      progress: 80,
       key: 'isCollaboratorProvidingGoodService',
       id: 5
     });
