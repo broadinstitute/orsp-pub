@@ -813,6 +813,20 @@ class QueryService implements Status {
         result
     }
 
+    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setParameterList('issueIds', issueIds)
+            list()
+        }
+        results
+    }
+
+
 /**
  * Find issues and create DTOs to narrow the amount of data used in the search process
  * @param issueIds
@@ -831,36 +845,60 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id  IN :issueIds and i.deleted = 0 " +
+                "WHERE i.id  IN (:issueIds) and i.deleted = 0 " +
                 "ORDER BY by i.id asc "
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         String currentProjectKey = ""
         IssueSearchItemDTO issueSearchItemDTO
 
-        getSqlConnection().rows(query, [ issueIds: issueIds ])
-//        Query query1 = sessionFactory.getCurrentSession().createQuery(query)
-//        .setParameterList('issueIds', issueIds)
-//        .list()
-        .each {
-            if (it.get("projectKey") == currentProjectKey) {
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-                }
-            } else {
-                if (currentProjectKey != "") {
-                    resultDTO.add(issueSearchItemDTO)
-                }
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
 
-                currentProjectKey = it.get("projectKey")
-                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+        final results = sqlQuery.with {
+            setParameterList('issueIds', issueIds)
+            list()
+            each {
+                if (it.get("projectKey") == currentProjectKey) {
+                    if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                        issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+                    }
+                } else {
+                    if (currentProjectKey != "") {
+                     resultDTO.add(issueSearchItemDTO)
+                    }
+                    currentProjectKey = it.get("projectKey")
+                    issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
 
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+                    if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                        issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+                    }
                 }
+                resultDTO.add(issueSearchItemDTO)
             }
-            resultDTO.add(issueSearchItemDTO)
         }
+
+        // getSqlConnection().rows(query, [ issueIds: issueIds ])
+        // .each {
+        //     if (it.get("projectKey") == currentProjectKey) {
+        //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+        //             issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+        //         }
+        //     } else {
+        //         if (currentProjectKey != "") {
+        //             resultDTO.add(issueSearchItemDTO)
+        //         }
+
+        //         currentProjectKey = it.get("projectKey")
+        //         issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+
+        //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+        //             issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+        //         }
+        //     }
+        //     resultDTO.add(issueSearchItemDTO)
+        // }
         resultDTO
     }
 
