@@ -821,27 +821,27 @@ class QueryService implements Status {
  */
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
 
-        // Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
-        // IssueSearchItemDTO issueSearchItemDTO
-        // String currentProjectKey = ""
+        Set<IssueSearchItemDTO> resultDTO2 = new HashSet<IssueSearchItemDTO>()
+        IssueSearchItemDTO issueSearchItemDTO2
+        String currentProjectKey2 = ""
 
-        final String query2 = "SELECT i.id id, " + 
+        final String query2 = "SELECT i.id id, " +
                 "i.project_key projectKey, " +
                 "i.type type,  " +
                 "i.status status,  " +
                 "i.summary summary,  " +
                 "i.reporter reporter,  " +
                 "i.update_date updated,  " +
-                "i.expiration_date expirationDate, " + 
+                "i.expiration_date expirationDate, " +
                 "iep.name, " +
                 "iep.value " +
                 "FROM issue i  " +
                 "LEFT JOIN issue_extra_property iep  " +
                 "ON (iep.project_key = i.project_key  " +
-                "AND iep.name IN ('pm','pi','collaborator') AND iep.deleted = 0) " + 
+                "AND iep.name IN ('pm','pi','collaborator') AND iep.deleted = 0) " +
                 "WHERE i.id IN (:issueIds) " +
                 "AND i.deleted = 0 AND iep.name is NOT NULL"
-                
+
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query2)
@@ -852,39 +852,61 @@ class QueryService implements Status {
         }
         System.out.println("mark 002 " + System.currentTimeMillis());
 
-        def keys = ["id","project_key","type", "status","summary", "reporter", "updated", "expirationDate", "name","value"]
-
-        for (Object[] entity : results) {
-            def jsonRow = new JsonBuilder(entity)
-            System.out.println(jsonRow.toPrettyString());
-
-            // i= 0;
-            // System.out.print("{");
-            // for (Object entityCol : entity) {
-            //     System.out.print(keys[i++] + ":" + entityCol + ",");
-
-            //     if (entity[1] == currentProjectKey) {
-            //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-            //          issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-            //         }
-            //     } else {
-            //         if (currentProjectKey != "") {
-            //         resultDTO.add(issueSearchItemDTO)
-            //         }
-            //         currentProjectKey = it.get("projectKey")
-            //         issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-
-            //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-            //             issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-            //         }
-            //     }
-            //     resultDTO.add(issueSearchItemDTO)
-            //  }
-            //System.out.println("}");
+        final rows = results.collect {
+            [
+                    "id"            : it[0],
+                    "project_key"   : it[1],
+                    "type"          : it[2],
+                    "status"        : it[3],
+                    "summary"       : it[4],
+                    "reporter"      : it[5],
+                    "updated"       : it[6],
+                    "expirationDate": it[7],
+                    "name"          : it[8],
+                    "value"         : it[9]
+            ]
         }
+
+        rows.each {
+            if (it.get["project_key"] == currentProjectKey2) {
+                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO2.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+                }
+            } else {
+                if (currentProjectKey2 != "") {
+                    resultDTO2.add(issueSearchItemDTO)
+                }
+                currentProjectKey2 = it.get("projectKey")
+                issueSearchItemDTO2 = new IssueSearchItemDTO(it.toSorted())
+
+                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO2.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+                }
+            }
+            resultDTO2.add(issueSearchItemDTO2)
+        }
+
         System.out.println("mark 003 " + System.currentTimeMillis());
 
-        // each {
+
+        // final String query = "SELECT i.id id, " +
+        //         "i.project_key projectKey, " +
+        //         "i.type type, " +
+        //         "i.status status, " +
+        //         "i.summary summary, " +
+        //         "i.reporter reporter, " +
+        //         "i.update_date updated, " +
+        //         "i.expiration_date expirationDate, " +
+        //         "iep.* " +
+        //         "FROM issue i LEFT JOIN issue_extra_property iep " +
+        //         "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
+        //         "WHERE i.id IN (" + issueIds.join(",") + ") and i.deleted = 0"
+
+        // Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+        // IssueSearchItemDTO issueSearchItemDTO
+        // String currentProjectKey = ""
+
+        // getSqlConnection().rows(query).each {
 
         //     if (it.get("projectKey") == currentProjectKey) {
         //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
@@ -902,49 +924,11 @@ class QueryService implements Status {
         //         }
         //     }
         //     resultDTO.add(issueSearchItemDTO)
-        //     }
+        // }
+        // System.out.println("mark 004 " + System.currentTimeMillis());
 
         // resultDTO
-
-        final String query = "SELECT i.id id, " +
-                "i.project_key projectKey, " +
-                "i.type type, " +
-                "i.status status, " +
-                "i.summary summary, " +
-                "i.reporter reporter, " +
-                "i.update_date updated, " +
-                "i.expiration_date expirationDate, " +
-                "iep.* " +
-                "FROM issue i LEFT JOIN issue_extra_property iep " +
-                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id IN (" + issueIds.join(",") + ") and i.deleted = 0"
-
-        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
-        IssueSearchItemDTO issueSearchItemDTO
-        String currentProjectKey = ""
-
-        getSqlConnection().rows(query).each {
-
-            if (it.get("projectKey") == currentProjectKey) {
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-                }
-            } else {
-                if (currentProjectKey != "") {
-                    resultDTO.add(issueSearchItemDTO)
-                }
-                currentProjectKey = it.get("projectKey")
-                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
-                }
-            }
-            resultDTO.add(issueSearchItemDTO)
-        }
-        System.out.println("mark 004 " + System.currentTimeMillis());
-
-        resultDTO
+        resultDTO2
     }
 
     /**
