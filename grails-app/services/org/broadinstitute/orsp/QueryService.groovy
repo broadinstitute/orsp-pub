@@ -151,7 +151,7 @@ class QueryService implements Status {
                 ' select distinct status as status ' +
                         ' from consent_collection_link ' +
                         ' where consent_key = :consentKey ' +
-                        ' and project_key = :projectKey '
+                        ' and project_key = :projectKey ' +
                         ' and status = :status '
         getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.APPROVED.name])
                 .collect { it.get("status").toString() }?.size() > 0
@@ -384,7 +384,7 @@ class QueryService implements Status {
             ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
                     ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
                     ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
-                    ' ip.type projectType from consent_collection_link c ' +
+                    ' ip.type projectType, c.start_date startDate, c.end_date endDate, c.on_going_process onGoingProcess from consent_collection_link c ' +
                     ' inner join issue ic on ic.project_key = c.consent_key ' +
                     ' inner join issue ip on ip.project_key = c.project_key ' +
                     ' left join sample_collection sc on sc.collection_id = c.sample_collection_id ' +
@@ -748,7 +748,7 @@ class QueryService implements Status {
             params.put('funding', "%" + options.getFundingInstitute() + "%")
         }
         if (options.userName) {
-            def q = ' u.user_name like :userName '
+            def q = ' u.user_name like :userName or i.reporter like :userName'
             query = andIfyQstring(query, q, params)
             params.put('userName', "%" + options.userName + "%")
         }
