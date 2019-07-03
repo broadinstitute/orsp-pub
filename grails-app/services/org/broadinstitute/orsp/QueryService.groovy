@@ -819,25 +819,19 @@ class QueryService implements Status {
  * @return
  */
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT i.id id, " +
-                "i.project_key projectKey, " +
-                "i.type type, " +
-                "i.status status, " +
-                "i.summary summary, " +
-                "i.reporter reporter, " +
-                "i.update_date updated, " +
-                "i.expiration_date expirationDate, " +
-                "iep.* " +
-                "FROM issue i LEFT JOIN issue_extra_property iep " +
-                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                // "WHERE i.id IN (:issueIds)"
-                "WHERE i.id IN (" + issueIds.join(",") + ")"
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         IssueSearchItemDTO issueSearchItemDTO
         String currentProjectKey = ""
 
-        getSqlConnection().rows(query).each {
+        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            setParameterList('issueIds', issueIds)
+            list()
+            each {
 
             if (it.get("projectKey") == currentProjectKey) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
@@ -855,9 +849,49 @@ class QueryService implements Status {
                 }
             }
             resultDTO.add(issueSearchItemDTO)
+            }
         }
-
         resultDTO
+
+        // final String query = "SELECT i.id id, " +
+        //         "i.project_key projectKey, " +
+        //         "i.type type, " +
+        //         "i.status status, " +
+        //         "i.summary summary, " +
+        //         "i.reporter reporter, " +
+        //         "i.update_date updated, " +
+        //         "i.expiration_date expirationDate, " +
+        //         "iep.* " +
+        //         "FROM issue i LEFT JOIN issue_extra_property iep " +
+        //         "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
+        //         // "WHERE i.id IN (:issueIds)"
+        //         "WHERE i.id IN (" + issueIds.join(",") + ")"
+
+        // Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+        // IssueSearchItemDTO issueSearchItemDTO
+        // String currentProjectKey = ""
+
+        // getSqlConnection().rows(query).each {
+
+        //     if (it.get("projectKey") == currentProjectKey) {
+        //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+        //             issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+        //         }
+        //     } else {
+        //         if (currentProjectKey != "") {
+        //             resultDTO.add(issueSearchItemDTO)
+        //         }
+        //         currentProjectKey = it.get("projectKey")
+        //         issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+
+        //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+        //             issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+        //         }
+        //     }
+        //     resultDTO.add(issueSearchItemDTO)
+        // }
+
+        // resultDTO
     }
 
     /**
