@@ -855,7 +855,7 @@ class QueryService implements Status {
         def rows = results.collect { resultRow ->
             [
                 id            : resultRow[0],
-                project_key   : resultRow[1],
+                projectKey    : resultRow[1],
                 type          : resultRow[2],
                 status        : resultRow[3],
                 summary       : resultRow[4],
@@ -868,7 +868,7 @@ class QueryService implements Status {
         }
 
         rows.each { 
-            if (it.project_key == currentProjectKey) {
+            if (it.projectKey == currentProjectKey) {
                 if (it.type != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
                 }
