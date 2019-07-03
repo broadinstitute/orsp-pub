@@ -152,6 +152,7 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
+                Collection<String> accessContacts = getProjectAccessContact(it.extraPropertiesMap, it.reporter)
 
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
@@ -159,11 +160,12 @@ class SearchController implements UserInfo {
                         key         : it.projectKey,
                         reporter    : it.reporter,
                         linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
-                        title       : it.summary,
-                        type        : it.type,
-                        status      : it.status,
-                        updated     : it.updateDate ? format.format(it.updateDate) : "",
-                        expiration  : it.expirationDate ? format.format(it.expirationDate) : ""
+                        title: it.summary,
+                        type: it.type,
+                        status: it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
+                        updated: it.updateDate ? format.format(it.updateDate): "",
+                        expiration: it.expirationDate ? format.format(it.expirationDate) : "",
+                        projectAccessContact: accessContacts
                 ]
             }
         }
@@ -218,6 +220,18 @@ class SearchController implements UserInfo {
             [key: it.projectKey, summary: it.summary]
         }
         render([text: data as JSON, contentType: "application/json"])
+    }
+
+    private Collection<String> getProjectAccessContact(Map<String, List<String>> extraPropertiesMap, String reporter) {
+        Collection<String> accessContacts = IssueService.getAccessContacts(extraPropertiesMap)
+
+        if (accessContacts.isEmpty()) {
+            accessContacts.add(userService.findUser(reporter).displayName)
+        } else {
+            accessContacts = accessContacts.collect({ userService.findUser(it.toString()).displayName })
+        }
+
+        accessContacts.sort()
     }
 
 }

@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="vvicario" id="changelog-15.0">
+        <addColumn tableName="consent_collection_link">
+            <column name="start_date" type="datetime(6)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="end_date" type="datetime(6)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="on_going_process" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -35,6 +35,13 @@ class Main extends Component {
     });
   };
 
+  changeInfoStatus = (data) => {
+    this.setState(prev => {
+      prev.status.projectReviewApproved = data;
+      return prev;
+    });
+  };
+
   updateDetailsStatus = (status) => {
     this.setState(prev => {
       prev.status.projectReviewApproved = status.projectReviewApproved;
@@ -67,6 +74,7 @@ class Main extends Component {
         ProjectContainer({
           isRendered: component.issueType === 'project',
           initStatusBoxInfo: this.initStatusBoxInfo,
+          changeInfoStatus: this.changeInfoStatus,
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
           updateAdminOnlyStatus: this.updateAdminOnlyStatus,
@@ -75,6 +83,7 @@ class Main extends Component {
         ConsentGroupContainer({
           isRendered: component.issueType === 'consent-group',
           initStatusBoxInfo: this.initStatusBoxInfo,
+          changeInfoStatus: this.changeInfoStatus,
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
         })

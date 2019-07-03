@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
-import { DocumentHandler, ConsentGroup } from "../util/ajax";
+import { DocumentHandler, ConsentGroup, User } from "../util/ajax";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
@@ -45,14 +45,16 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(component.attachmentsUrl, component.consentKey).then(resp => {
-      this.setState(prev => {
-        prev.documents = JSON.parse(resp.data.documents);
-        prev.user.isAdmin = component.isAdmin;
-        return prev;
-        }, () => {
-          this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved })
-        }
-      );
+      User.getUserSession(component.getUserUrl).then(user => {
+        this.setState(prev => {
+            prev.documents = JSON.parse(resp.data.documents);
+            prev.user = user.data;
+            return prev;
+          }, () => {
+            this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved })
+          }
+        );
+      });
     }).catch(error => {
       this.setState({ serverError: true });
       console.error(error);

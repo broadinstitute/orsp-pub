@@ -155,6 +155,11 @@ class NewConsentGroup extends Component {
     consentCollectionLink.sampleCollectionId = sampleCollectionId;
     consentCollectionLink.projectKey = this.props.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
+    consentCollectionLink.startDate = this.parseDate(this.state.generalDataFormData.startDate);
+    consentCollectionLink.onGoingProcess = this.state.generalDataFormData.onGoingProcess ;
+    if (this.state.generalDataFormData.endDate !== null) {
+      consentCollectionLink.endDate = this.state.generalDataFormData.endDate;
+    }
     // security
     consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
     consentCollectionLink.compliance = this.state.securityInfoFormData.compliance;
@@ -183,8 +188,7 @@ class NewConsentGroup extends Component {
     consentGroup.reporter = this.state.user.userName;
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
-    extraProperties.push({ name: 'startDate', value: this.parseDate(this.state.generalDataFormData.startDate) });
-    extraProperties.push({ name: 'onGoingProcess', value: this.state.generalDataFormData.onGoingProcess });
+   
     extraProperties.push({ name: 'source', value: this.props.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
@@ -192,9 +196,7 @@ class NewConsentGroup extends Component {
     extraProperties.push({ name: 'protocol', value: this.state.generalDataFormData.institutionProtocolNumber });
     extraProperties.push({ name: 'institutionalSources', value: JSON.stringify(this.state.generalDataFormData.institutionalSources) });
     extraProperties.push({ name: 'noConsentFormReason', value: this.state.generalDataFormData.noConsentFormReason });
-    if (this.state.generalDataFormData.endDate !== null) {
-      extraProperties.push({ name: 'endDate', value: this.parseDate(this.state.generalDataFormData.endDate) });
-    }
+
     consentGroup.extraProperties = extraProperties;
     return consentGroup;
 
