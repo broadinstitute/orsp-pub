@@ -2,9 +2,7 @@ import { Component } from 'react';
 import { h, div, h2, button, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
-import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConsentGroup, SampleCollections, Review, User } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
@@ -12,9 +10,10 @@ import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
-import { format } from 'date-fns';
 import { Table } from "../components/Table";
 import { isEmpty } from "../util/Utils";
+import { InputFieldTextArea } from "../components/InputFieldTextArea";
+import { InputFieldRadio } from "../components/InputFieldRadio";
 
 const headers =
   [
@@ -55,6 +54,8 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         protocol: '',
         collInst: '',
         collContact: '',
+        describeEditType: null,
+        editDescription: null,
         individualDataSourced: null,
         isLinkMaintained: null,
         feeForService: null,
@@ -66,6 +67,8 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       },
       errorSubmit: false,
       errors: {
+        editTypeError: false,
+        editDescriptionError: false,
         instError: false,
         institutionalSourceNameError: false,
         institutionalSourceCountryError: false,
@@ -547,7 +550,8 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     consentGroup.consent = this.state.formData.consentExtraProps.consent;
     consentGroup.protocol = this.state.formData.consentExtraProps.protocol;
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
-
+    consentGroup.editDescription = this.state.formData.consentExtraProps.editDescription;
+    consentGroup.describeEditType = this.state.formData.consentExtraProps.describeEditType;
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
     }
@@ -726,7 +730,9 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       consent = '',
       protocol = '',
       collInst = '',
-      collContact = ''
+      collContact = '',
+      describeEditType = null,
+      editDescription = null
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
     return (
@@ -794,7 +800,40 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
-
+        Panel({ title: "Notes to ORSP",
+          isRendered: !this.state.readOnly || !isEmpty(this.state.formData.consentExtraProps.editDescription) || !isEmpty(this.state.formData.consentExtraProps.describeEditType)
+        }, [
+          InputFieldRadio({
+            id: "radioDescribeEdits",
+            name: "describeEditType",
+            currentValue: this.state.current.consentExtraProps.describeEditType,
+            label: "Please choose one of the following to describe the proposed edits: ",
+            value: describeEditType,
+            optionValues: ["newAmendment", "requestingAssistance", "clarificationResponse"],
+            optionLabels: [
+              "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
+              "I am requesting assistance in updating an existing project",
+              "I am responding to a request for clarifications from ORSP"
+            ],
+            onChange: this.handleRadio2Change,
+            readOnly: this.state.readOnly,
+            required: true,
+            error: this.state.errors.editTypeError,
+            errorMessage: "Required field"
+          }),
+          InputFieldTextArea({
+            id: "inputDescribeEdits",
+            name: "editDescription",
+            label: "You may use this space to add additional information or clarifications related to your edits below",
+            currentValue: this.state.current.consentExtraProps.editDescription,
+            value: editDescription === null ? undefined : editDescription,
+            readOnly: this.state.readOnly,
+            required: true,
+            onChange: this.handleExtraPropsInputChange,
+            error: this.state.errors.editDescriptionError,
+            errorMessage: "Required field"
+          })
+        ]),
         Panel({ title: " Group as Sample/Data Cohort Details" }, [
           InputFieldText({
             id: "inputConsentGroupName",
