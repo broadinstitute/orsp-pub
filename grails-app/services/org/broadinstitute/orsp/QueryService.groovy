@@ -870,23 +870,22 @@ class QueryService implements Status {
         println rows
 
         rows.each { 
-            if (it.get["project_key"] == currentProjectKey2) {
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO2.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+            if (it.project_key == currentProjectKey2) {
+                if (it.type != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO2.setExtraProperty(it.name.toString(), it.value.toString())
                 }
             } else {
                 if (currentProjectKey2 != "") {
                     resultDTO2.add(issueSearchItemDTO)
                 }
-                currentProjectKey2 = it.get("projectKey")
+                currentProjectKey2 = it.projectKey
                 issueSearchItemDTO2 = new IssueSearchItemDTO(it.toSorted())
 
-                if (it.get("type") != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO2.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+                if (it.type != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO2.setExtraProperty(it.name.toString(), it.value.toString())
                 }
             }
             resultDTO2.add(issueSearchItemDTO2)
-    
         }
 
         System.out.println("mark 003 " + System.currentTimeMillis());
