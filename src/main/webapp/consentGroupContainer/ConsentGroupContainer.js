@@ -71,19 +71,19 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
         order: [1, "desc"]
       });
     }
-    this.initializeEditor();
+    // this.initializeEditor();
   }
 
-  initializeEditor() {
-    tinymce.init({
-      selector: 'textarea.editor',
-      width: '100%',
-      menubar: false,
-      statusbar: false,
-      plugins: "paste",
-      paste_data_images: false
-    });
-  }
+  // initializeEditor() {
+  //   tinymce.init({
+  //     selector: 'textarea.editor',
+  //     width: '100%',
+  //     menubar: false,
+  //     statusbar: false,
+  //     plugins: "paste",
+  //     paste_data_images: false
+  //   });
+  // }
 
   // history
   getHistory() {

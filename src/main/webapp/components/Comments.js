@@ -15,6 +15,9 @@ export const Comments = hh(class Comments extends Component {
           updateContent: this.props.updateContent
         }),
         br({}),
+
+
+
         div({dangerouslySetInnerHTML: { __html: this.props.commentsContent } },[])
       ])
     )

@@ -45,7 +45,6 @@ export const TextEditor = hh(class TextEditor extends Component {
         label({},["Add comment"]),
         h(Editor, {
           init: {
-            selector: 'textarea',
             width: '100%',
             menubar: false,
             statusbar: false,
