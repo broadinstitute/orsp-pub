@@ -826,7 +826,7 @@ class QueryService implements Status {
         String currentProjectKey2 = ""
 
         final String query2 = "SELECT i.id id, " +
-                "i.project_key projectKey, " +
+                "i.project_key, " +
                 "i.type type,  " +
                 "i.status status,  " +
                 "i.summary summary,  " +
@@ -852,22 +852,24 @@ class QueryService implements Status {
         }
         System.out.println("mark 002 " + System.currentTimeMillis());
 
-        final rows = results.collect {
+        def rows = results.collect { resultRow ->
             [
-                    "id"            : it[0],
-                    "project_key"   : it[1],
-                    "type"          : it[2],
-                    "status"        : it[3],
-                    "summary"       : it[4],
-                    "reporter"      : it[5],
-                    "updated"       : it[6],
-                    "expirationDate": it[7],
-                    "name"          : it[8],
-                    "value"         : it[9]
+                id            : resultRow[0],
+                project_key   : resultRow[1],
+                type          : resultRow[2],
+                status        : resultRow[3],
+                summary       : resultRow[4],
+                reporter      : resultRow[5],
+                updated       : resultRow[6],
+                expirationDate: resultRow[7],
+                name          : resultRow[8],
+                value         : resultRow[9]
             ]
         }
 
-        rows.each {
+        println rows
+
+        rows.each { 
             if (it.get["project_key"] == currentProjectKey2) {
                 if (it.get("type") != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO2.setExtraProperty(it.get("name").toString(), it.get("value").toString())
@@ -884,6 +886,7 @@ class QueryService implements Status {
                 }
             }
             resultDTO2.add(issueSearchItemDTO2)
+    
         }
 
         System.out.println("mark 003 " + System.currentTimeMillis());
