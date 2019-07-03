@@ -20,7 +20,7 @@
     <h3>Sample/Data Cohort</h3>
 
     <div id="alert" class="alert alert-success" style="display:none;">
-      <p>Your Consent Group was successfully submitted to the Broad Institute’s Office of Research Subject Protection.
+      <p>Your Sample/Data Cohort was successfully submitted to the Broad Institute’s Office of Research Subject Protection.
         It will now be reviewed by the ORSP team who will reach out to you if they have any questions.</p>
     </div>
 
