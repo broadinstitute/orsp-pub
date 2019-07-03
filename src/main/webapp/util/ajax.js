@@ -238,8 +238,11 @@ export const Review = {
 
   updateReview(serverURL, projectKey, data) {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
-  }
+  },
 
+  addComments(id, comment) {
+    return axios.post(component.serverURL + '/api/addComment?id=' + id + '&comment=' + comment)
+  }
 };
 
 export const DUL = {

@@ -158,7 +158,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Comments",
               }, [
                   h(Fragment, {}, [Comments({
-                    commentsContent: this.state.commentsContent
+                    commentsContent: this.state.commentsContent,
+                      updateContent: this.updateContent
                   }
                   )]),
                 ]),

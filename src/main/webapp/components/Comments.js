@@ -11,7 +11,9 @@ export const Comments = hh(class Comments extends Component {
   render() {
     return (
       h(Fragment, {}, [
-        TextEditor({}),
+        TextEditor({
+          updateContent: this.props.updateContent
+        }),
         br({}),
         div({dangerouslySetInnerHTML: { __html: this.props.commentsContent } },[])
       ])

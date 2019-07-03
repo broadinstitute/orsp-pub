@@ -5,28 +5,43 @@ import '../components/Wizard.css';
 
 import { Editor } from "@tinymce/tinymce-react";
 import { Btn } from "../components/Btn";
+import { Review } from "../util/ajax";
 
-export const TextEditor = hh(class Prueba extends Component {
+export const TextEditor = hh(class TextEditor extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      content : ''
+      comment : ''
     };
     this.handleEditorChange = this.handleEditorChange.bind(this);
-
   }
 
-  handleEditorChange(content, editor) {
+  handleEditorChange = (comment, editor) => {
     this.setState(prev => {
-      prev.content =  content;
+      prev.comment =  comment;
       return prev;
     });
-  }
+  };
+
+  addComment = () => {
+
+    Review.addComments(component.projectKey, this.state.comment).then(
+      response => {
+        console.log("FULLFILLED");
+        this.setState(prev => {
+          prev.comment = '';
+        });
+        this.props.updateContent();
+      }
+    ).catch(error =>
+      this.setState(() => { throw error })
+    )
+  };
 
   render() {
     return (
-      div({},[
+      div({className: "well"},[
         label({},["Add comment"]),
         h(Editor, {
           init: {
@@ -37,12 +52,16 @@ export const TextEditor = hh(class Prueba extends Component {
             plugins: "paste",
             paste_data_images: false
           },
-          value: this.state.content,
+          value: this.state.comment,
           onEditorChange: this.handleEditorChange
         }, []),
         Btn({
           isRendered: true,
-          action: { label: "Go", handler: () => console.log("CLICK!"), disabled: false }
+          action: {
+            label: "Add",
+            handler: this.addComment,
+            disabled: false
+          }
         }),
       ])
     );
