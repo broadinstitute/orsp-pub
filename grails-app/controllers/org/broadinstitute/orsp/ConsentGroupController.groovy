@@ -182,10 +182,11 @@ class ConsentGroupController extends AuthenticatedController {
     @Override
     show() {
         Issue issue = queryService.findByKey(params.id)
-        def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
-        def restriction = DataUseRestriction.findByConsentGroupKey(issue.projectKey)
+        Collection<StorageDocument> attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
+        boolean duLetter = attachments.any{it.fileType?.startsWith(DU_LETTER)}
+        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(issue.projectKey)
         Collection<String> duSummary = consentService.getSummary(restriction)
-        def collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
+        Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
 //        def checklistAnswers = ChecklistAnswer.findAllByProjectKey(issue.projectKey)
         [issue: issue,
          collectionLinks: collectionLinks,
@@ -194,7 +195,7 @@ class ConsentGroupController extends AuthenticatedController {
          restriction: restriction,
          duSummary: duSummary,
          tab: params.tab,
-         duLetter: DU_LETTER,
+         duLetter: duLetter,
 //         checklistAnswers: checklistAnswers
         ]
     }

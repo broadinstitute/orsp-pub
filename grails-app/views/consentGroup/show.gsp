@@ -66,7 +66,7 @@
                     <a href="${createLink(controller: "dataUse", action: "show", params: [id: restriction.id])}" class="btn btn-default">View Restrictions</a>
                 </g:if>
                 <g:else>
-                    <g:if test="${attachments*.fileType.contains(duLetter)}">
+                    <g:if test="${duLetter}">
                         <a href="${createLink(controller: "dataUse", action: "create", params: [create: true, id: issue.projectKey, principalInvestigatorName: issue.consent])}" class="btn btn-default">Create Restrictions</a>
                     </g:if>
                 </g:else>
