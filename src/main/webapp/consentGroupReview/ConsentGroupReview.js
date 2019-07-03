@@ -2,7 +2,6 @@ import { Component } from 'react';
 import { h, div, h2, button, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
@@ -208,10 +207,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       spinnerService.hideAll();
       this.setState(() => { throw error; });
     });
-  };
-
-  isViewer = () => {
-    return component.isViewer === "true";
   };
 
   parseInstSources(instSources) {
