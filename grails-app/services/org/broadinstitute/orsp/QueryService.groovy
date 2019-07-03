@@ -849,7 +849,7 @@ class QueryService implements Status {
             list()
         }
 
-        for (Object[] entity : entities) {
+        for (Object[] entity : results) {
             for (Object entityCol : entity) {
                 System.out.print(" " + entityCol);
          }
