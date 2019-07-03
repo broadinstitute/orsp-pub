@@ -854,8 +854,8 @@ class QueryService implements Status {
         def keys = ["id","project_key","type", "status","summary", "reporter", "updated", "expirationDate", "name","value"]
 
         for (Object[] entity : results) {
-            def jsownRow = groovy.json.JsonOutput.toJson(entity)
-            System.out.println(groovy.json.JsonOutput.prettyPrint(jsonRow));
+            def jsonRow = groovy.json.JsonBuilder(entity)
+            System.out.println(jsonRow.toPrettyString());
 
             // i= 0;
             // System.out.print("{");
