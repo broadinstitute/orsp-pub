@@ -5,6 +5,7 @@ import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
+import groovy.json.JsonBuilder
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -854,7 +855,7 @@ class QueryService implements Status {
         def keys = ["id","project_key","type", "status","summary", "reporter", "updated", "expirationDate", "name","value"]
 
         for (Object[] entity : results) {
-            def jsonRow = groovy.json.JsonBuilder(entity)
+            def jsonRow = JsonBuilder(entity)
             System.out.println(jsonRow.toPrettyString());
 
             // i= 0;
