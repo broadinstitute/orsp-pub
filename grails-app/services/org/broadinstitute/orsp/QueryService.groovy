@@ -845,12 +845,11 @@ class QueryService implements Status {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        System.out.println("mark 001 " + System.currentTimeMillis());
+
         final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
             list()
         }
-        System.out.println("mark 002 " + System.currentTimeMillis());
 
         def rows = results.collect { resultRow ->
             [
@@ -885,8 +884,6 @@ class QueryService implements Status {
             }
             resultDTO.add(issueSearchItemDTO)
         }
-
-        System.out.println("mark 003 " + System.currentTimeMillis());
         resultDTO
     }
 
