@@ -204,13 +204,18 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     this.setState(prev => {
       prev[id] = date;
       return prev;
-    }, () => {
-      if (id == 'startDate' || id == 'endDate') {
-        this.props.updateDateRange(this.state.onGoingProcess, this.state.endDate, this.state.startDate);
-      } else {
-        this.props.updateForm(this.state.sampleCollection, id);
-      }      
-    });
+    }, () =>
+        this.props.updateForm(this.state.sampleCollection, id) 
+    );
+  };
+
+  handleDateChange = (id) => (date) => {
+    this.setState(prev => {
+      prev[id] = date;
+      return prev;
+    }, () =>
+        this.props.updateDateRange(this.state.onGoingProcess, this.state.endDate, this.state.startDate)
+    );
   };
 
   render() {
@@ -266,7 +271,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
                 selected: this.state.startDate,
                 name: "startDate",
                 label: "Start Date",
-                onChange: this.handleChange,
+                onChange: this.handleDateChange,
                 placeholder: "Enter Start Date",
                 maxDate: this.state.endDate !== null ? this.state.endDate : null,
                 error: this.props.errors.errorSampleCollectionDateRange && this.props.generalError,
@@ -279,7 +284,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
                 name: "endDate",
                 label: "End Date",
                 selected: this.state.endDate,
-                onChange: this.handleChange,
+                onChange: this.handleDateChange,
                 placeholder: "Enter End Date",
                 disabled: (this.state.onGoingProcess === true) || (this.state.startDate === null),
                 minDate: this.state.startDate

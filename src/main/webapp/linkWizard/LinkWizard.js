@@ -246,7 +246,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       consentGroup = true;
       isValid = false;
     }
-    if(this.validateDateRange() == false) {
+    if (this.validateDateRange() == false) {
       isDateRangeValid = false;
       isValid = false;
     }    
