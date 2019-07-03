@@ -485,6 +485,7 @@ class IssueService implements UserInfo {
 
     static Collection<String> getAccessContacts(Map<String, List<String>> extraProperties) {
         Collection<String> accessContacts = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
+        println accessContacts
         accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
         accessContacts
     }

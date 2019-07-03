@@ -151,9 +151,11 @@ class SearchController implements UserInfo {
                 options.fundingInstitute ||
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
+                println it.reporter
+                println it.extraProperties
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
                 Collection<String> accessContacts = getProjectAccessContact(it.extraProperties, it.reporter)
-
+                println accessContacts
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
                         link        : link,
@@ -224,7 +226,7 @@ class SearchController implements UserInfo {
 
     private Collection<String> getProjectAccessContact(Map<String, List<String>> extraPropertiesMap, String reporter) {
         Collection<String> accessContacts = IssueService.getAccessContacts(extraPropertiesMap)
-
+        println accessContacts
         if (accessContacts.isEmpty()) {
             accessContacts.add(userService.findUser(reporter).displayName)
         } else {
