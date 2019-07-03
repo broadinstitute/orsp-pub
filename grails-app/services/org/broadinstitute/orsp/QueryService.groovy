@@ -831,6 +831,7 @@ class QueryService implements Status {
                 "i.status status,  " +
                 "i.summary summary,  " +
                 "i.reporter reporter,  " +
+                "i.approval_status,  " +
                 "i.update_date updated,  " +
                 "i.expiration_date expirationDate, " +
                 "iep.name, " +
@@ -859,10 +860,11 @@ class QueryService implements Status {
                 status        : resultRow[3],
                 summary       : resultRow[4],
                 reporter      : resultRow[5],
-                updated       : resultRow[6],
-                expirationDate: resultRow[7],
-                name          : resultRow[8],
-                value         : resultRow[9]
+                approvalStatus: resultRow[6],
+                updated       : resultRow[7],
+                expirationDate: resultRow[8],
+                name          : resultRow[9],
+                value         : resultRow[10]
             ]
         }
 

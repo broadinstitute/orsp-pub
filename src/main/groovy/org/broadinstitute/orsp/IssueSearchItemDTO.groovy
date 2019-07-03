@@ -11,6 +11,7 @@ class IssueSearchItemDTO {
     String status
     String summary
     String reporter
+    String approvalStatus
     Date expirationDate
     Date updateDate
     Map<String, Set<String>> extraProperties = new HashMap<String, Set<String>>()
@@ -26,6 +27,7 @@ class IssueSearchItemDTO {
         this.status = result.get("status")?.toString()
         this.summary = result.get("summary")?.toString()
         this.reporter = result.get("reporter")?.toString()
+        this.approvalStatus = result.get("approvalStatus")?.toString()
         this.expirationDate = result.get("expirationDate")
         this.updateDate = result.get("updated")
 
