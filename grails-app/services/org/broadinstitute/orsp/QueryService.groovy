@@ -824,14 +824,35 @@ class QueryService implements Status {
         // IssueSearchItemDTO issueSearchItemDTO
         // String currentProjectKey = ""
 
-        // final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
-        // SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        // final session = sessionFactory.currentSession
-        // final SQLQuery sqlQuery = session.createSQLQuery(query)
-        // final results = sqlQuery.with {
-        //     setParameterList('issueIds', issueIds)
-        //     list()
-        //     each {
+        final String query2 = "SELECT i.id id, " +
+                "i.project_key projectKey, " +
+                "i.type type, " +
+                "i.status status, " +
+                "i.summary summary, " +
+                "i.reporter reporter, " +
+                "i.update_date updated, " +
+                "i.expiration_date expirationDate, " +
+                "iep.* " +
+                "FROM issue i LEFT JOIN issue_extra_property iep " +
+                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
+                "WHERE i.id IN (:issueIds) and i.deleted = 0"
+
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query2)
+        final List<Object[]> results = sqlQuery.with {
+            setParameterList('issueIds', issueIds)
+            list()
+        }
+
+        for (Object[] entity : entities) {
+            for (Object entityCol : entity) {
+                System.out.print(" " + entityCol);
+         }
+         System.out.println("");
+        }
+
+        // each {
 
         //     if (it.get("projectKey") == currentProjectKey) {
         //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
@@ -850,7 +871,7 @@ class QueryService implements Status {
         //     }
         //     resultDTO.add(issueSearchItemDTO)
         //     }
-        // }
+
         // resultDTO
 
         final String query = "SELECT i.id id, " +
@@ -864,8 +885,7 @@ class QueryService implements Status {
                 "iep.* " +
                 "FROM issue i LEFT JOIN issue_extra_property iep " +
                 "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                // "WHERE i.id IN (:issueIds)"
-                "WHERE i.id IN (" + issueIds.join(",") + ")"
+                "WHERE i.id IN (" + issueIds.join(",") + ") and i.deleted = 0"
 
         Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
         IssueSearchItemDTO issueSearchItemDTO
