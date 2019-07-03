@@ -3,7 +3,9 @@
         ORSP has completed review of your
         <g:if test="${values != null && values.containsKey('isLink')}">  Sample/Data Cohort  </g:if>
         submission,
-        ${issue.summary}, and requires additional clarifications
+         <g:if test="${values != null && values.containsKey('summary')}"> ${values.get("summary")}, </g:if>
+        <g:else> ${issue.summary}, </g:else>
+        and requires additional clarifications
         or modifications. Please log in to the ORSP portal to respond to the comment below, and
         upload any new documents that might be required.
         If you have any questions, please contact orsp-portal@broadinstitute.org.

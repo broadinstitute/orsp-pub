@@ -72,6 +72,7 @@ class ClarificationController extends AuthenticatedController {
 
     def collectionRequestClarification() {
         Issue issue = queryService.findByKey(params.id)
+        Issue consent = queryService.findByKey(params.consentKey)
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
             String toAddresses = userService.findUser(params.pm)?.collect {it.emailAddress}
@@ -79,6 +80,7 @@ class ClarificationController extends AuthenticatedController {
             try {
                 Map<String, String> values = new HashMap<>()
                 values.put("isLink", "true")
+                values.put("summary", consent.getSummary())
                 notifyService.sendClarificationRequest(
                         new NotifyArguments(
                                 toAddresses: [toAddresses],
