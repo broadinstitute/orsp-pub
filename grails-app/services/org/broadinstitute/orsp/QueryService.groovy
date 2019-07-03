@@ -824,19 +824,23 @@ class QueryService implements Status {
         // IssueSearchItemDTO issueSearchItemDTO
         // String currentProjectKey = ""
 
-        final String query2 = "SELECT i.id id, " +
+        final String query2 = "SELECT i.id id, " + 
                 "i.project_key projectKey, " +
-                "i.type type, " +
-                "i.status status, " +
-                "i.summary summary, " +
-                "i.reporter reporter, " +
-                "i.update_date updated, " +
-                "i.expiration_date expirationDate, " +
-                "iep.* " +
-                "FROM issue i LEFT JOIN issue_extra_property iep " +
-                "ON (iep.project_key = i.project_key AND iep.name in ('pm','pi','collaborator')) " +
-                "WHERE i.id IN (:issueIds) and i.deleted = 0"
-
+                "i.type type,  " +
+                "i.status status,  " +
+                "i.summary summary,  " +
+                "i.reporter reporter,  " +
+                "i.update_date updated,  " +
+                "i.expiration_date expirationDate, " + 
+                "iep.name, " +
+                "iep.value " +
+                "FROM issue i  " +
+                "LEFT JOIN issue_extra_property iep  " +
+                "ON (iep.project_key = i.project_key  " +
+                "AND iep.name IN ('pm','pi','collaborator') AND iep.deleted = 0) " + 
+                "WHERE i.id IN (:issueIds) " +
+                "AND i.deleted = 0 AND iep.name is NOT NULL"
+                
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query2)
