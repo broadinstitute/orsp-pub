@@ -231,7 +231,7 @@ class SearchController implements UserInfo {
             accessContacts = accessContacts.collect({ userService.findUser(it.toString()).displayName })
         }
 
-        accessContacts
+        accessContacts.sort()
     }
 
 }
