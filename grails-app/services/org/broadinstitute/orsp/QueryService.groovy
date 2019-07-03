@@ -844,17 +844,44 @@ class QueryService implements Status {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query2)
+        System.out.println("mark 001 " + System.currentTimeMillis());
         final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
             list()
         }
+        System.out.println("mark 002 " + System.currentTimeMillis());
+
+        def keys = ["id","project_key","type", "status","summary", "reporter", "updated", "expirationDate", "name","value"]
 
         for (Object[] entity : results) {
-            for (Object entityCol : entity) {
-                System.out.print(" " + entityCol);
-         }
-         System.out.println("");
+            def jsownRow = groovy.json.JsonOutput.toJson(entity)
+            System.out.println(groovy.json.JsonOutput.prettyPrint(jsonRow));
+
+            // i= 0;
+            // System.out.print("{");
+            // for (Object entityCol : entity) {
+            //     System.out.print(keys[i++] + ":" + entityCol + ",");
+
+            //     if (entity[1] == currentProjectKey) {
+            //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+            //          issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+            //         }
+            //     } else {
+            //         if (currentProjectKey != "") {
+            //         resultDTO.add(issueSearchItemDTO)
+            //         }
+            //         currentProjectKey = it.get("projectKey")
+            //         issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+
+            //         if (it.get("type") != IssueType.CONSENT_GROUP.name) {
+            //             issueSearchItemDTO.setExtraProperty(it.get("name").toString(), it.get("value").toString())
+            //         }
+            //     }
+            //     resultDTO.add(issueSearchItemDTO)
+            //  }
+            //System.out.println("}");
         }
+        System.out.println("mark 003 " + System.currentTimeMillis());
 
         // each {
 
@@ -914,6 +941,7 @@ class QueryService implements Status {
             }
             resultDTO.add(issueSearchItemDTO)
         }
+        System.out.println("mark 004 " + System.currentTimeMillis());
 
         resultDTO
     }
