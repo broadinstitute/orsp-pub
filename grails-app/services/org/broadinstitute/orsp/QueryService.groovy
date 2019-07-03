@@ -855,7 +855,7 @@ class QueryService implements Status {
         def keys = ["id","project_key","type", "status","summary", "reporter", "updated", "expirationDate", "name","value"]
 
         for (Object[] entity : results) {
-            def jsonRow = JsonBuilder(entity)
+            def jsonRow = new JsonBuilder(entity)
             System.out.println(jsonRow.toPrettyString());
 
             // i= 0;
