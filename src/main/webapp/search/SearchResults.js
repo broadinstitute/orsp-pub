@@ -3,6 +3,13 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import ExportExcel from "./ExportExcel";
 import { User } from "../util/ajax";
 
+const styles = {
+  projectTitleWidth: '220',
+  projectAccessWidth: '200',
+  datesWidth: '110',
+  typeWidth: '170'
+};
+
 class SearchResults extends Component {
   excelData = [];
   formattedProjectData = [];
@@ -42,7 +49,7 @@ class SearchResults extends Component {
 
   linkFormatter = (cell, row) => {
     if (row.linkDisabled === false) {
-      return '<a href="' + row.link + '">' + row.key + "</a>";
+      return <a title={row.key} href={row.link}>{row.key}</a>;
     } else {
       return row.key;
     }
@@ -116,6 +123,7 @@ class SearchResults extends Component {
         reporter: project.reporter,
         linkDisabled: project.linkDisabled,
         extraProperties: project.extraProperties,
+        projectAccessContact: project.projectAccessContact
       };
       this.formattedProjectData.push(row);
     });
@@ -127,6 +135,19 @@ class SearchResults extends Component {
       </p>
     );
   }
+
+  formatTooltipNames = (cell, row) => {
+    const names = row.projectAccessContact.join(", ");
+    return <span title={names}>{names}</span>
+  };
+
+  formatTooltipStatus = (cell, row) => {
+    return <span title={row.status}>{row.status}</span>
+  };
+
+  formatTooltipTitle = (cell, row) => {
+    return <span title={row.title}>{row.title}</span>
+  };
 
   render(props) {
     if (this.props.loading) {
@@ -186,7 +207,8 @@ class SearchResults extends Component {
             <TableHeaderColumn
               csvHeader="Title"
               dataField="title"
-              width={"30%"}
+              width={styles.projectTitleWidth}
+              dataFormat={this.formatTooltipTitle}
               dataSort={true}
             >
               Title
@@ -194,6 +216,7 @@ class SearchResults extends Component {
             <TableHeaderColumn
               csvHeader="Project Type"
               dataField="type"
+              width={styles.typeWidth}
               dataSort={true}
             >
               Type
@@ -201,6 +224,7 @@ class SearchResults extends Component {
             <TableHeaderColumn
               csvHeader="Status"
               dataField="status"
+              dataFormat={this.formatTooltipStatus}
               dataSort={true}
             >
               Status
@@ -210,6 +234,7 @@ class SearchResults extends Component {
               dataField="updated"
               dataSort={true}
               sortFunc={this.updateSort}
+              width={styles.datesWidth}
             >
               Updated
             </TableHeaderColumn>
@@ -218,8 +243,18 @@ class SearchResults extends Component {
               dataField="expiration"
               dataSort={true}
               sortFunc={this.expirationSort}
+              width={styles.datesWidth}
             >
               Expiration
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              csvHeader="Project Access Contact"
+              dataField="projectAccessContact"
+              dataSort={true}
+              dataFormat={this.formatTooltipNames}
+              width={styles.projectAccessWidth}
+            >
+              Project Access Contact
             </TableHeaderColumn>
           </BootstrapTable>
         </div>
