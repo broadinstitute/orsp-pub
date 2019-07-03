@@ -152,7 +152,7 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                Collection<String> accessContacts = getProjectAccessContact(it.extraPropertiesMap, it.reporter)
+                Collection<String> accessContacts = getProjectAccessContact(it.extraProperties, it.reporter)
 
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
