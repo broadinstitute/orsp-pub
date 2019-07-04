@@ -878,8 +878,6 @@ class QueryService implements Status {
             ]
         }
 
-println rows
-
         rows.each { 
             if (it.projectKey == currentProjectKey) {
                 if (it.type != IssueType.CONSENT_GROUP.name) {
@@ -900,7 +898,6 @@ println rows
             }
             resultDTO.add(issueSearchItemDTO)
         }
-        println resultDTO
         resultDTO
     }
 
