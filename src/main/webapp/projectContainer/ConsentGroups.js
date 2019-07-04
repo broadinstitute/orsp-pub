@@ -142,6 +142,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         closeModal: this.closeRequestClarification,
         show: this.state.showRequestClarification,
         issueKey: this.state.issueKey,
+        consentKey: this.state.consentKey,
         user: component.user,
         emailUrl: component.emailUrl,
         userName: component.userName,
