@@ -75,8 +75,8 @@ class QueryService implements Status {
     Collection<String> findAllDiseaseAndPopulationRestrictions() {
         final String query =
                 ' select distinct disease_restrictions_string from data_use_restriction_disease_restrictions ' +
-                ' union ' +
-                ' select distinct disease_restrictions_string from data_use_restriction_disease_restrictions '
+                        ' union ' +
+                        ' select distinct disease_restrictions_string from data_use_restriction_disease_restrictions '
         getSqlConnection().rows(query).collect { it.get("disease_restrictions_string").toString() }
     }
 
@@ -104,9 +104,9 @@ class QueryService implements Status {
                     summary: it.get("summary").toString(),
                     projectKey: it.get("project_key").toString()
             )
-            if (it.get("review-category") != null)  metric.reviewCategory = it.get("review-category").toString()
-            if (it.get("protocol") != null)         metric.protocol = it.get("protocol").toString()
-            if (it.get("irb") != null)              metric.irb = PreferredIrb.getLabelForKey(it.get("irb").toString())
+            if (it.get("review-category") != null) metric.reviewCategory = it.get("review-category").toString()
+            if (it.get("protocol") != null) metric.protocol = it.get("protocol").toString()
+            if (it.get("irb") != null) metric.irb = PreferredIrb.getLabelForKey(it.get("irb").toString())
             if (it.get("name") != null && !it.get("name").toString().trim().isEmpty())
                 metric.names.add(it.get("name").toString())
             if (it.get("display_name") != null && !it.get("display_name").toString().trim().isEmpty())
@@ -135,16 +135,16 @@ class QueryService implements Status {
     Collection<String> findAllSampleCollectionIdsForConsent(String consentKey) {
         final String query =
                 ' select distinct TRIM(sample_collection_id) as sample_collection_id ' +
-                ' from consent_collection_link ' +
-                ' where consent_key = :consentKey ' +
-                ' and sample_collection_id is not null '
+                        ' from consent_collection_link ' +
+                        ' where consent_key = :consentKey ' +
+                        ' and sample_collection_id is not null '
         getSqlConnection().rows(query, ["consentKey": consentKey]).collect { it.get("sample_collection_id").toString() }
     }
 
     /**
      * Check if all the links related to the specifiend consent and project key are been approved.
      *
-     * @return boolean, true if links are been approved
+     * @return boolean , true if links are been approved
      */
     boolean areLinksApproved(String projectKey, String consentKey) {
         final String query =
@@ -157,13 +157,14 @@ class QueryService implements Status {
                 .collect { it.get("status").toString() }?.size() > 0
     }
 
-    @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"]) // IJ has some problems here.
+    @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])
+    // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
         ApplicationTagLib applicationTagLib = (ApplicationTagLib) grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
         Integer count = Funding.count()
 
         String orderField
-        switch(pagination.orderColumn) {
+        switch (pagination.orderColumn) {
             case 0:
                 orderField = "issue.type"
                 break
@@ -195,24 +196,24 @@ class QueryService implements Status {
         PagedResultList<Funding> fundingResults = Funding.
                 createCriteria().
                 list(max: pagination.length, offset: pagination.start) {
-            fetchMode 'issue', FetchMode.JOIN
-            fetchMode 'issue.extraProperties', FetchMode.SELECT
-            createAlias('issue', 'issue')
-            maxResults pagination.length
-            firstResult pagination.start
-            order(orderField, pagination.sortDirection)
-            if (pagination.searchValue) {
-                or {
-                    ilike("issue.type", pagination.getLikeTerm())
-                    ilike("issue.projectKey", pagination.getLikeTerm())
-                    ilike("issue.summary", pagination.getLikeTerm())
-                    ilike("issue.status", pagination.getLikeTerm())
-                    ilike("source", pagination.getLikeTerm())
-                    ilike("name", pagination.getLikeTerm())
-                    ilike("awardNumber", pagination.getLikeTerm())
+                    fetchMode 'issue', FetchMode.JOIN
+                    fetchMode 'issue.extraProperties', FetchMode.SELECT
+                    createAlias('issue', 'issue')
+                    maxResults pagination.length
+                    firstResult pagination.start
+                    order(orderField, pagination.sortDirection)
+                    if (pagination.searchValue) {
+                        or {
+                            ilike("issue.type", pagination.getLikeTerm())
+                            ilike("issue.projectKey", pagination.getLikeTerm())
+                            ilike("issue.summary", pagination.getLikeTerm())
+                            ilike("issue.status", pagination.getLikeTerm())
+                            ilike("source", pagination.getLikeTerm())
+                            ilike("name", pagination.getLikeTerm())
+                            ilike("awardNumber", pagination.getLikeTerm())
+                        }
+                    }
                 }
-            }
-        }
 
         List<Funding> fundings = fundingResults.findAll()
         List<String> piUserNames = fundings*.issue*.getPIs().flatten().unique()
@@ -231,7 +232,7 @@ class QueryService implements Status {
              funding.issue.summary,
              funding.issue.status,
              funding.issue.protocol,
-             userMap.findAll{ funding.issue.getPIs().contains(it.key) }.values().join(", "),
+             userMap.findAll { funding.issue.getPIs().contains(it.key) }.values().join(", "),
              funding.source,
              funding.name,
              funding.awardNumber]
@@ -247,7 +248,7 @@ class QueryService implements Status {
     }
 
     private Map<String, SampleCollection> getCollectionIdMap(Collection<ConsentCollectionLink> links) {
-        Collection<String> sampleCollectionIds = links.collect { it.sampleCollectionId }.findAll { it && !it.isEmpty()}
+        Collection<String> sampleCollectionIds = links.collect { it.sampleCollectionId }.findAll { it && !it.isEmpty() }
         Map<String, SampleCollection> collectionMap = new HashMap<>()
         if (!sampleCollectionIds.isEmpty()) {
             collectionMap.putAll(
@@ -305,7 +306,9 @@ class QueryService implements Status {
         Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAll()
         Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
         Collection<Issue> projects = Issue.findAllByProjectKeyInList(links.collect { it.projectKey })
-        Collection<DataUseRestriction> durs = DataUseRestriction.findAllByConsentGroupKeyInList(links.collect { it.consentKey })
+        Collection<DataUseRestriction> durs = DataUseRestriction.findAllByConsentGroupKeyInList(links.collect {
+            it.consentKey
+        })
         links.each { link ->
             if (link) {
                 if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
@@ -401,11 +404,11 @@ class QueryService implements Status {
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    Map<Long, List <StorageDocument>> findAllDocumentsBySampleCollectionId(Long consentCollectionId) {
+    Map<Long, List<StorageDocument>> findAllDocumentsBySampleCollectionId(Long consentCollectionId) {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                ' where consent_collection_link_id = :consentCollectionIds'
+                        ' where consent_collection_link_id = :consentCollectionIds'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -418,14 +421,14 @@ class QueryService implements Status {
     List<ConsentCollectionLinkDTO> getCollectionLinksDtoByConsentKey(String consentKey) {
         final session = sessionFactory.currentSession
         final String query =
-        ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
-                ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
-                ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, ip.type projectType, c.international_cohorts internationalCohorts ' +
-                ' from consent_collection_link c ' +
-                ' inner join issue ic on ic.project_key = c.consent_key ' +
-                ' inner join issue ip on ip.project_key = c.project_key ' +
-                ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                ' where c.consent_key = :consentKey and c.deleted = 0'
+                ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType,  ' +
+                        ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                        ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, ip.type projectType, c.international_cohorts internationalCohorts ' +
+                        ' from consent_collection_link c ' +
+                        ' inner join issue ic on ic.project_key = c.consent_key ' +
+                        ' inner join issue ip on ip.project_key = c.project_key ' +
+                        ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
+                        ' where c.consent_key = :consentKey and c.deleted = 0'
         List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('consentKey', consentKey)
@@ -437,7 +440,7 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' update consent_collection_link set status = :status ' +
-                'where project_key = :projectKey and consent_key = :consentKey'
+                        'where project_key = :projectKey and consent_key = :consentKey'
         final sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter('projectKey', projectKey)
         sqlQuery.setParameter('consentKey', consentKey)
@@ -464,9 +467,11 @@ class QueryService implements Status {
     Collection<ConsentCollectionLink> findCollectionLinksWithSamples() {
         Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllBySampleCollectionIdIsNotNull()
         Collection<SampleCollection> sampleCollections = SampleCollection.
-                findAllByCollectionIdInList(links.collect { it.sampleCollectionId }.findAll { it && !it.isEmpty()})
+                findAllByCollectionIdInList(links.collect { it.sampleCollectionId }.findAll { it && !it.isEmpty() })
         Collection<Issue> projects = Issue.findAllByProjectKeyInList(links.collect { it.projectKey })
-        Collection<DataUseRestriction> durs = DataUseRestriction.findAllByConsentGroupKeyInList(links.collect { it.consentKey })
+        Collection<DataUseRestriction> durs = DataUseRestriction.findAllByConsentGroupKeyInList(links.collect {
+            it.consentKey
+        })
         links.each { link ->
             if (link.sampleCollectionId) {
                 link.setSampleCollection(sampleCollections.find { it.collectionId == link.sampleCollectionId })
@@ -481,15 +486,15 @@ class QueryService implements Status {
         // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
         String iLikeTerm = "%" + getIssueNumberFromString(term) + "%"
         Issue.findAllByProjectKeyIlike(iLikeTerm).collect {
-            [id: it.id,
-             projectKey: it.projectKey,
-             summary: it.summary,
-             reporter: it.reporter,
-             pm: userService.findUsers(it.getPMs()).displayName,
-             actor: userService.findUsers(it.getActorUsernames()).displayName,
+            [id             : it.id,
+             projectKey     : it.projectKey,
+             summary        : it.summary,
+             reporter       : it.reporter,
+             pm             : userService.findUsers(it.getPMs()).displayName,
+             actor          : userService.findUsers(it.getActorUsernames()).displayName,
              extraProperties: it.extraPropertiesMap,
-             controller: it.controller,
-             type: it.type
+             controller     : it.controller,
+             type           : it.type
             ]
         }
     }
@@ -501,8 +506,8 @@ class QueryService implements Status {
         final String query = ' select distinct i.project_key, i.summary, i.type from issue i where i.project_key like :projectKey '
         getSqlConnection().rows(query, ['projectKey': iLikeTerm]).collect {
             [projectKey: it.get("project_key").toString(),
-             summary: it.get("summary").toString(),
-             type: it.get("type").toString()]
+             summary   : it.get("summary").toString(),
+             type      : it.get("type").toString()]
         }
     }
 
@@ -565,7 +570,7 @@ class QueryService implements Status {
     Collection<SampleCollection> findCollectionByIdInList(Collection<String> idList) {
         if (!idList.isEmpty()) {
             final String query = 'select * from sample_collection ' +
-                                 'where lower(collection_id) IN :collectionIds'
+                    'where lower(collection_id) IN :collectionIds'
             SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
             final session = sessionFactory.currentSession
             final SQLQuery sqlQuery = session.createSQLQuery(query)
@@ -628,7 +633,7 @@ class QueryService implements Status {
         if (keys && !keys.isEmpty()) {
             Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
             Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
-            def docsByProject = documents.groupBy({d -> d.projectKey})
+            def docsByProject = documents.groupBy({ d -> d.projectKey })
             issues.each { issue ->
                 issue.setAttachments(docsByProject.getOrDefault(issue.projectKey, Collections.emptyList()))
                 issue.setStatus(keys.get(issue.projectKey).status)
@@ -654,8 +659,12 @@ class QueryService implements Status {
         }
         Issue.withCriteria {
             inList("type", typeList)
-            if (options.after) { gt("requestDate", options.after) }
-            if (options.before) { lt("requestDate", options.before) }
+            if (options.after) {
+                gt("requestDate", options.after)
+            }
+            if (options.before) {
+                lt("requestDate", options.before)
+            }
         }
     }
 
@@ -668,12 +677,12 @@ class QueryService implements Status {
     List<Issue> findIssuesByConsentTerm(String term) {
         def likeTerm = generateILikeTerm(term)
         Issue.withCriteria {
-                eq("type", IssueType.CONSENT_GROUP.name)
-                or {
-                    ilike "summary", likeTerm
-                    ilike "description", likeTerm
-                }
-                order("id", "asc")
+            eq("type", IssueType.CONSENT_GROUP.name)
+            or {
+                ilike "summary", likeTerm
+                ilike "description", likeTerm
+            }
+            order("id", "asc")
         }.unique()
     }
 
@@ -685,11 +694,19 @@ class QueryService implements Status {
      * @return List of JiraIssues that match the query
      */
     List<Issue> findByAssignee(Collection<String> userNames, Integer max) {
-        if (userNames.isEmpty()) { return Collections.emptyList() }
-        List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect { it.projectKey }
-        if (keys.isEmpty()) { return Collections.emptyList() }
+        if (userNames.isEmpty()) {
+            return Collections.emptyList()
+        }
+        List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect {
+            it.projectKey
+        }
+        if (keys.isEmpty()) {
+            return Collections.emptyList()
+        }
         Map params = [sort: "updateDate", order: "desc"]
-        if (max) { params += ["max": max] }
+        if (max) {
+            params += ["max": max]
+        }
         Issue.findAllByProjectKeyInList(keys, params)
     }
 
@@ -701,12 +718,20 @@ class QueryService implements Status {
      * @return List of JiraIssues that match the query
      */
     List<Issue> findByUserNames(Collection<String> userNames, Integer max) {
-        if (userNames.isEmpty()) { return Collections.emptyList() }
+        if (userNames.isEmpty()) {
+            return Collections.emptyList()
+        }
         List<String> propertyNames = [IssueExtraProperty.ACTOR, IssueExtraProperty.PM, IssueExtraProperty.PI]
-        List<String> keys = IssueExtraProperty.findAllByNameInListAndValueInList(propertyNames, userNames.asList(), [:])?.collect { it.projectKey }
-        if (keys.isEmpty()) { return Collections.emptyList() }
+        List<String> keys = IssueExtraProperty.findAllByNameInListAndValueInList(propertyNames, userNames.asList(), [:])?.collect {
+            it.projectKey
+        }
+        if (keys.isEmpty()) {
+            return Collections.emptyList()
+        }
         Map params = [sort: "updateDate", order: "desc"]
-        if (max) { params += ["max": max] }
+        if (max) {
+            params += ["max": max]
+        }
         Issue.findAllByProjectKeyInList(keys, params)
     }
 
@@ -723,6 +748,7 @@ class QueryService implements Status {
     Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
         // TODO: Handle all of the other query types both as input arguments and in the following query
+
         String query = ' select distinct i.id ' +
                 ' from issue i ' +
                 ' left outer join issue_extra_property p on p.issue_id = i.id ' +
@@ -777,7 +803,7 @@ class QueryService implements Status {
         }
 
         def rows = getSqlConnection().rows(query, params)
-        def ids = rows.collect{it.get("id")}
+        def ids = rows.collect { it.get("id") }
         Set result = new HashSet<Issue>()
 
         if (ids.size() > 0) {
@@ -786,22 +812,91 @@ class QueryService implements Status {
         result
     }
 
-    /**
-     * Find issues from a list of Ids
-     * @param issueIds
-     * @return
-     */
-    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+/**
+ * Find issues and create DTOs to narrow the amount of data used in the search process
+ * @param issueIds
+ * @return
+ */
+    Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+
+        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+        IssueSearchItemDTO issueSearchItemDTO
+        String currentProjectKey = ""
+
+        final String query = "SELECT i.id id, " +
+                "i.project_key, " +
+                "i.type type,  " +
+                "i.status status,  " +
+                "i.summary summary,  " +
+                "i.reporter reporter,  " +
+                "ur.display_name reporter_name, " +
+                "i.approval_status,  " +
+                "i.update_date updated,  " +
+                "i.expiration_date expirationDate, " +
+                "iep.name, " +
+                "iep.value ," +
+                "u.display_name " +
+                "FROM issue i  " +
+                "LEFT JOIN issue_extra_property iep  " +
+                "ON (iep.project_key = i.project_key  " +
+                "AND iep.name IN ('pm','pi','collaborator')) " +
+                "LEFT JOIN user u ON (u.user_name = iep.value) " +
+                "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
+                "WHERE i.id IN (:issueIds) " +
+                "AND i.deleted = 0 " +
+                "AND iep.name is NOT NULL " +
+                "AND iep.deleted = 0 "+
+                "AND iep.value != '' " +
+                "AND iep.value IS NOT NULL"
+
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(Issue)
+
+        final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
             list()
         }
-        results
+
+        def rows = results.collect { resultRow ->
+            [
+                id            : resultRow[0],
+                projectKey    : resultRow[1],
+                type          : resultRow[2],
+                status        : resultRow[3],
+                summary       : resultRow[4],
+                reporter      : resultRow[5],
+                reporterName  : resultRow[6],
+                approvalStatus: resultRow[7],
+                updated       : resultRow[8],
+                expirationDate: resultRow[9],
+                name          : resultRow[10],
+                value         : resultRow[11],
+                displayName   : resultRow[12]
+            ]
+        }
+
+        rows.each { 
+            if (it.projectKey == currentProjectKey) {
+                if (it.type != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
+                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
+                }
+            } else {
+                if (currentProjectKey != "") {
+                    resultDTO.add(issueSearchItemDTO)
+                }
+                currentProjectKey = it.projectKey
+                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+
+                if (it.type != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
+                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
+                }
+            }
+            resultDTO.add(issueSearchItemDTO)
+        }
+        resultDTO
     }
 
     /**
@@ -812,11 +907,11 @@ class QueryService implements Status {
     Collection<OSAPDataFeed> findIssuesSummaries() {
         final String query =
                 "select i.project_key orspNumber, irb.value irbNumber, i.status, i.expiration_date expirationDate, u.display_name pi, i.summary title " +
-                "from issue i " +
-                "left outer join issue_extra_property irb on i.id = irb.issue_id and irb.name = 'irb' " +
-                "left outer join issue_extra_property pi on i.id = pi.issue_id and pi.name = 'pi' " +
-                "left outer join user u on pi.value = u.user_name " +
-                "order by i.project_key asc "
+                        "from issue i " +
+                        "left outer join issue_extra_property irb on i.id = irb.issue_id and irb.name = 'irb' " +
+                        "left outer join issue_extra_property pi on i.id = pi.issue_id and pi.name = 'pi' " +
+                        "left outer join user u on pi.value = u.user_name " +
+                        "order by i.project_key asc "
         final session = sessionFactory.currentSession
         List<OSAPDataFeed> result = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(OSAPDataFeed.class))
@@ -840,14 +935,14 @@ class QueryService implements Status {
      */
     private static String orIfyCollection(String q, Collection<String> collection) {
         def count = collection.size()
-        def collQs = (1 .. count).collect { q + it }
+        def collQs = (1..count).collect { q + it }
         " ( " + collQs.join(" OR ") + " ) "
     }
 
     private static String orIfyStatuses(String qLegacy, String qNew, Collection<String> collection) {
         def count = collection.size()
-        def collQsLegacy = (1 .. count).collect { qLegacy + it }
-        def collQsNew = (1 .. count).collect { qNew + it }
+        def collQsLegacy = (1..count).collect { qLegacy + it }
+        def collQsNew = (1..count).collect { qNew + it }
         " ( " + collQsLegacy.join(" OR ") + " OR " + collQsNew.join(" OR ") + " ) "
     }
 
@@ -911,8 +1006,8 @@ class QueryService implements Status {
             results.retainAll {
                 issue ->
                     issue.getFundings()*.source?.any { it?.equalsIgnoreCase(options.fundingInstitute) } ||
-                    issue.getFundings()*.name?.any { it?.equalsIgnoreCase(options.fundingInstitute) } ||
-                    issue.getFundings()*.awardNumber?.any { it?.equalsIgnoreCase(options.fundingInstitute) }
+                            issue.getFundings()*.name?.any { it?.equalsIgnoreCase(options.fundingInstitute) } ||
+                            issue.getFundings()*.awardNumber?.any { it?.equalsIgnoreCase(options.fundingInstitute) }
             }
         }
 
@@ -921,7 +1016,7 @@ class QueryService implements Status {
             String filterTerm = options.irbOfRecord.toLowerCase()
             results.retainAll {
                 issue ->
-                    issue.getAllIRBValues()?.any { it?.equalsIgnoreCase(filterTerm)} ||
+                    issue.getAllIRBValues()?.any { it?.equalsIgnoreCase(filterTerm) } ||
                             issue.collInst?.equalsIgnoreCase(filterTerm)
             }
         }
@@ -933,14 +1028,16 @@ class QueryService implements Status {
             Map<String, Collection<Comment>> commentMap = new HashMap<>()
             Map<String, Collection<Event>> eventMap = new HashMap<>()
             if (projectKeys != null && !projectKeys.isEmpty()) {
-                commentMap.putAll(Comment.findAllByProjectKeyInList(projectKeys).groupBy {it.projectKey})
-                eventMap.putAll(Event.findAllByProjectKeyInList(projectKeys).groupBy {it.projectKey})
+                commentMap.putAll(Comment.findAllByProjectKeyInList(projectKeys).groupBy { it.projectKey })
+                eventMap.putAll(Event.findAllByProjectKeyInList(projectKeys).groupBy { it.projectKey })
             }
             results.retainAll {
                 issue ->
                     issue.getAllExtraPropertyValues()*.toLowerCase()?.contains(freeText) ||
-                            commentMap.get(issue.projectKey)?.any{it.description?.toLowerCase()?.contains(freeText)} ||
-                            eventMap.get(issue.projectKey)?.any{it.summary?.toLowerCase()?.contains(freeText)} ||
+                            commentMap.get(issue.projectKey)?.any {
+                                it.description?.toLowerCase()?.contains(freeText)
+                            } ||
+                            eventMap.get(issue.projectKey)?.any { it.summary?.toLowerCase()?.contains(freeText) } ||
                             issue.summary?.toLowerCase()?.contains(freeText) ||
                             issue.description?.toLowerCase()?.contains(freeText)
             }
@@ -968,7 +1065,7 @@ class QueryService implements Status {
         if (options.investigatorName) {
             results.retainAll {
                 issue ->
-                    issue.getPIs()?.any{ it?.equalsIgnoreCase(options.investigatorName) }
+                    issue.getPIs()?.any { it?.equalsIgnoreCase(options.investigatorName) }
             }
         }
 
@@ -977,12 +1074,11 @@ class QueryService implements Status {
 
             // Set up a list of Data Use Restrictions that we can further filter the results by
             Collection<DataUseRestriction> restrictions =
-                    DataUseRestriction.findAllByConsentGroupKeyInList(results.collect {it.projectKey})
+                    DataUseRestriction.findAllByConsentGroupKeyInList(results.collect { it.projectKey })
 
             if (options.generalUse) {
                 restrictions.retainAll { it.generalUse }
-            }
-            else {
+            } else {
                 if (options.commercialUseExcluded) restrictions.retainAll { it.commercialUseExcluded }
 
                 /**
@@ -1072,7 +1168,9 @@ class QueryService implements Status {
                 }
                 consentedSamples.get(project).add(sample)
                 def dul = row.get("id")
-                if (dul != null) { consentsWithDULS.add(project) }
+                if (dul != null) {
+                    consentsWithDULS.add(project)
+                }
         }
 
         // Generate the final results from second query, and results of previous lookup
@@ -1082,10 +1180,10 @@ class QueryService implements Status {
                 def project_key = row.get("project_key")
                 def summary = row.get("summary")
                 [
-                        project_key: project_key,
-                        summary: summary,
+                        project_key       : project_key,
+                        summary           : summary,
                         sample_collections: consentedSamples.get(project_key),
-                        dul: consentsWithDULS.contains(project_key)
+                        dul               : consentsWithDULS.contains(project_key)
                 ]
         }
         results
@@ -1102,11 +1200,11 @@ class QueryService implements Status {
             sampleCollections = Collections.emptyList()
         }
         [
-            issue            : issue,
-            extraProperties  : new ConsentGroupExtraProperties(issue),
-            collectionLinks  : collectionLinks,
-            sampleCollections: sampleCollections,
-            attachmentsApproved: issue.attachmentsApproved()
+                issue              : issue,
+                extraProperties    : new ConsentGroupExtraProperties(issue),
+                collectionLinks    : collectionLinks,
+                sampleCollections  : sampleCollections,
+                attachmentsApproved: issue.attachmentsApproved()
         ]
     }
 
@@ -1119,11 +1217,11 @@ class QueryService implements Status {
     List<StorageDocument> getDataUseLettersForConsent(String consentKey) {
         final String query =
                 ' select d.* ' +
-                ' from storage_document d ' +
-                ' where d.project_key = :projectKey ' +
-                ' and d.file_type = :fileType ' +
-                ' and d.deleted = 0 '+
-                ' order by d.creation_date desc '
+                        ' from storage_document d ' +
+                        ' where d.project_key = :projectKey ' +
+                        ' and d.file_type = :fileType ' +
+                        ' and d.deleted = 0 ' +
+                        ' order by d.creation_date desc '
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
@@ -1141,10 +1239,10 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select d.* ' +
-                ' from storage_document d ' +
-                ' where d.id not in (select distinct storage_document_id from submission_document) ' +
-                ' and d.project_key = :projectKey' +
-                ' and d.deleted = 0 '
+                        ' from storage_document d ' +
+                        ' where d.id not in (select distinct storage_document_id from submission_document) ' +
+                        ' and d.project_key = :projectKey' +
+                        ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1159,9 +1257,9 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select distinct d.* ' +
-                ' from storage_document d ' +
-                ' where d.project_key = :projectKey' +
-                ' and d.deleted = 0 '
+                        ' from storage_document d ' +
+                        ' where d.project_key = :projectKey' +
+                        ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1176,10 +1274,10 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select d.* ' +
-                ' from storage_document d ' +
-                ' where d.id not in (select distinct submission_document_id from submission_document) ' +
-                ' and d.project_key in :projectKeys ' +
-                ' and d.deleted = 0 '
+                        ' from storage_document d ' +
+                        ' where d.id not in (select distinct submission_document_id from submission_document) ' +
+                        ' and d.project_key in :projectKeys ' +
+                        ' and d.deleted = 0 '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1238,7 +1336,7 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setString(0, projectKey)
         sqlQuery.setString(1, fileType)
-        String version = (String)sqlQuery.list()?.get(0)
+        String version = (String) sqlQuery.list()?.get(0)
         ++Long.valueOf(version)
     }
 
@@ -1273,7 +1371,7 @@ class QueryService implements Status {
                         ' where d.project_key = ?' +
                         ' and d.file_type = ?' +
                         ' and d.deleted = 0 '
-                        ' order by creation_date'
+        ' order by creation_date'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setString(0, projectKey)
         sqlQuery.setString(1, fileType)
@@ -1285,20 +1383,20 @@ class QueryService implements Status {
         documents
     }
 
-     void updateOrspUserRoles (User user, ArrayList<String> newRoles) {
-         final session = sessionFactory.currentSession
-         final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
-         final SQLQuery sqlQuery = session.createSQLQuery(query)
-         newRoles.each { it ->
-             sqlQuery.setLong("version", 0)
-             sqlQuery.setString("role", it)
-             sqlQuery.setString("userName", user.userName)
-             sqlQuery.setLong("userId", user.id)
-             sqlQuery.executeUpdate()
-         }
+    void updateOrspUserRoles(User user, ArrayList<String> newRoles) {
+        final session = sessionFactory.currentSession
+        final String query = ' insert into supplemental_role (version, role, user, user_id) values (:version, :role, :userName, :userId)'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        newRoles.each { it ->
+            sqlQuery.setLong("version", 0)
+            sqlQuery.setString("role", it)
+            sqlQuery.setString("userName", user.userName)
+            sqlQuery.setLong("userId", user.id)
+            sqlQuery.executeUpdate()
+        }
     }
 
-    void deleteOrspUserRoles (userId) {
+    void deleteOrspUserRoles(userId) {
         final session = sessionFactory.currentSession
         final String query = 'delete from supplemental_role where user_id = :userId'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
