@@ -4,6 +4,7 @@ import { div, hh, h } from 'react-hyperscript-helpers';
 import { TextEditor } from "../main/TextEditor";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import './Comments.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit';
@@ -75,8 +76,9 @@ export const Comments = hh(class Comments extends Component {
             props =>
               <div>
                 <SearchBar { ...props.searchProps } />
-                <ExportCSVButton { ...props.csvProps }>CSV</ExportCSVButton>
-                <hr />
+                <ExportCSVButton
+                     { ...props.csvProps }>Download CSV</ExportCSVButton>
+                <hr/>
                 <BootstrapTable
                   pagination= { paginationFactory() }
                   {...props.baseProps }
