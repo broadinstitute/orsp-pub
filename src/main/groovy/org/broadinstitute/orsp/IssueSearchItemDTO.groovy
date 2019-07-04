@@ -11,9 +11,12 @@ class IssueSearchItemDTO {
     String status
     String summary
     String reporter
+    String reporterName
     String approvalStatus
     Date expirationDate
     Date updateDate
+
+    Map<String, Set<String>> contactNames = new HashMap<String, Set<String>>()
     Map<String, Set<String>> extraProperties = new HashMap<String, Set<String>>()
 
     IssueSearchItemDTO(Map<String, String> result) {
@@ -27,12 +30,14 @@ class IssueSearchItemDTO {
         this.status = result.get("status")?.toString()
         this.summary = result.get("summary")?.toString()
         this.reporter = result.get("reporter")?.toString()
+        this.reporterName = result.get("reporterName")?.toString()
         this.approvalStatus = result.get("approvalStatus")?.toString()
         this.expirationDate = result.get("expirationDate")
         this.updateDate = result.get("updated")
 
         if (result.get("type") != IssueType.CONSENT_GROUP.name) {
             this.setExtraProperty(result.get("name").toString(), result.get("value").toString())
+            this.setAccessContacts(result.get("name").toString(), result.get("displayName"))
         }
     }
 
@@ -46,5 +51,18 @@ class IssueSearchItemDTO {
         Set<String> extraProp = this.extraProperties.get(name) != null ? this.extraProperties.get(name) : []
         extraProp.add(value)
         this.extraProperties.put(name, extraProp)
+    }
+
+    void setAccessContacts(String name, String value) {
+        Set<String> access  = this.contactNames.get(name) != null ? this.contactNames.get(name) : []
+        access.add(value)
+        this.contactNames.put(name, extraProp)
+    }
+
+    String getAccessContacts() {
+        Collection<String> accessContacts = this.contactNames.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
+        accessContacts = accessContacts.isEmpty() ? this.contactNames.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
+        accessContacts = accessContacts.isEmpty() ? accessContacts.add(this.reporterName);
+        accessContacts
     }
 }

@@ -831,17 +831,25 @@ class QueryService implements Status {
                 "i.status status,  " +
                 "i.summary summary,  " +
                 "i.reporter reporter,  " +
+                "ur.display_name reporter_name, " +
                 "i.approval_status,  " +
                 "i.update_date updated,  " +
                 "i.expiration_date expirationDate, " +
                 "iep.name, " +
                 "iep.value " +
+                "u.display_name" +
                 "FROM issue i  " +
                 "LEFT JOIN issue_extra_property iep  " +
                 "ON (iep.project_key = i.project_key  " +
-                "AND iep.name IN ('pm','pi','collaborator') AND iep.deleted = 0) " +
+                "AND iep.name IN ('pm','pi','collaborator')) " +
+                "LEFT JOIN user u ON (u.user_name = iep.value) " +
+                "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
                 "WHERE i.id IN (:issueIds) " +
-                "AND i.deleted = 0 AND iep.name is NOT NULL"
+                "AND i.deleted = 0 " +
+                "AND iep.name is NOT " +
+                "AND iep.deleted = 0 "+
+                "AND iep.value != '' " +
+                "AND iep.value IS NOT NULL"
 
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
@@ -860,11 +868,13 @@ class QueryService implements Status {
                 status        : resultRow[3],
                 summary       : resultRow[4],
                 reporter      : resultRow[5],
-                approvalStatus: resultRow[6],
-                updated       : resultRow[7],
-                expirationDate: resultRow[8],
-                name          : resultRow[9],
-                value         : resultRow[10]
+                reporterName  : resultRow[6],
+                approvalStatus: resultRow[7],
+                updated       : resultRow[8],
+                expirationDate: resultRow[9],
+                name          : resultRow[10],
+                value         : resultRow[11],
+                displayName   : resultRow[12]
             ]
         }
 

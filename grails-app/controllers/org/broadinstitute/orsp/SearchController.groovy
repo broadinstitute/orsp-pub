@@ -130,7 +130,7 @@ class SearchController implements UserInfo {
 
     def generalReactTablesJsonSearch() {
         def user = getUser()
-        def userName = user.userName
+        def userName = user?.userName
         QueryOptions options = new QueryOptions()
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)
@@ -152,7 +152,8 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                Collection<String> accessContacts = getProjectAccessContact(it.extraProperties, it.reporter)
+                // TODO coll it.extraProperties.displaName ...
+                // Collection<String> accessContacts = getProjectAccessContact(it.extraProperties, it.reporter)
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
                         link        : link,
@@ -164,7 +165,7 @@ class SearchController implements UserInfo {
                         status: it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
                         updated: it.updateDate ? format.format(it.updateDate): "",
                         expiration: it.expirationDate ? format.format(it.expirationDate) : "",
-                        projectAccessContact: accessContacts
+                        projectAccessContact: it.accessContacts
                 ]
             }
         }
@@ -221,15 +222,15 @@ class SearchController implements UserInfo {
         render([text: data as JSON, contentType: "application/json"])
     }
 
-    private Collection<String> getProjectAccessContact(Map<String, List<String>> extraPropertiesMap, String reporter) {
-        Collection<String> accessContacts = IssueService.getAccessContacts(extraPropertiesMap)
-        if (accessContacts.isEmpty()) {
-            accessContacts.add(userService.findUser(reporter)?.displayName)
-        } else {
-            accessContacts = accessContacts.collect({ userService.findUser(it.toString())?.displayName })
-        }
+    // private Collection<String> getProjectAccessContact(Map<String, List<String>> extraPropertiesMap, String reporter) {
+    //     Collection<String> accessContacts = IssueService.getAccessContacts(extraPropertiesMap)
+    //     if (accessContacts.isEmpty()) {
+    //         accessContacts.add(userService.findUser(reporter)?.displayName)
+    //     } else {
+    //         accessContacts = accessContacts.collect({ userService.findUser(it.toString())?.displayName })
+    //     }
 
-        accessContacts.sort()
-    }
+    //     accessContacts.sort()
+    // }
 
 }
