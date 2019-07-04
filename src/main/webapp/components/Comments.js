@@ -30,7 +30,9 @@ const columns = [{
   text: 'Comment',
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) =>
-    div({dangerouslySetInnerHTML: { __html: cell } },[])
+    div({dangerouslySetInnerHTML: { __html: cell } },[]),
+  csvFormatter: (cell, row, rowIndex, colIndex) =>
+    cell.replace(/<[^>]*>?/gm, '')
 }];
 
 export const Comments = hh(class Comments extends Component {
@@ -69,7 +71,10 @@ export const Comments = hh(class Comments extends Component {
           keyField="id"
           data={ this.state.comments }
           columns={ columns }
-          exportCSV={ true }
+          exportCSV={
+            { fileName: 'ORSP.csv' }
+          }
+
           search={ true }
         >
           {
