@@ -13,8 +13,8 @@
     <p>Clarification :</p>
     <p style="margin-left: 50px;">${raw(comment)}</p>
     <p>
-        Details regarding this submission can be accessed at:
-        <a href="${issueLink}">${issueLink}</a>
+        Details regarding this submission can be accessed at
+        <a href="${issueLink}">this link</a>.
     </p>
     <p>
         Thank you,
