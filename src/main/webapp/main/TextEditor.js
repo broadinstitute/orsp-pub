@@ -36,12 +36,7 @@ export const TextEditor = hh(class TextEditor extends Component {
           prev.comment = '';
           return prev;
         });
-        this.props.insertNewComment({
-          id: response.data.id,
-          author: response.data.author,
-          date: response.data.date,
-          comment: response.data.comment
-        });
+        this.props.loadComments();
       }
     ).catch(error =>
       this.setState(prev => {

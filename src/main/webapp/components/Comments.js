@@ -12,6 +12,10 @@ import { Review } from "../util/ajax";
 
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
+const defaultSorted = [{
+  dataField: 'date', // if dataField is not match to any column you defined, it will be ignored.
+  order: 'desc' // desc or asc
+}];
 
 const columns = [{
   dataField: 'author',
@@ -39,6 +43,10 @@ export const Comments = hh(class Comments extends Component {
   }
 
   componentDidMount() {
+    this.loadComments();
+  }
+
+  loadComments = () => {
     Review.getComments(this.props.id).then(result => {
       this.setState(prev => {
         prev.comments = result.data;
@@ -47,15 +55,6 @@ export const Comments = hh(class Comments extends Component {
     }).catch(error => {
       this.setState(() => { throw error; });
     })
-  }
-
-  insertNewComment = (comment) => {
-    let currentComments = this.state.comments;
-    currentComments.push(comment);
-    this.setState(prev => {
-      prev.comments = currentComments;
-      return prev;
-    })
   };
 
   render() {
@@ -63,7 +62,7 @@ export const Comments = hh(class Comments extends Component {
       h(Fragment, {}, [
         TextEditor({
           id: this.props.id,
-          insertNewComment: this.insertNewComment
+          loadComments: this.loadComments
         }),
         <ToolkitProvider
           keyField="id"
@@ -81,6 +80,7 @@ export const Comments = hh(class Comments extends Component {
                 <hr/>
                 <BootstrapTable
                   pagination= { paginationFactory() }
+                  defaultSorted={defaultSorted}
                   {...props.baseProps }
                 />
               </div>
