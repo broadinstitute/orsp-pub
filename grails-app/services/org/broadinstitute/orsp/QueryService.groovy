@@ -837,7 +837,7 @@ class QueryService implements Status {
                 "i.expiration_date expirationDate, " +
                 "iep.name, " +
                 "iep.value " +
-                "u.display_name" +
+                "u.display_name " +
                 "FROM issue i  " +
                 "LEFT JOIN issue_extra_property iep  " +
                 "ON (iep.project_key = i.project_key  " +
