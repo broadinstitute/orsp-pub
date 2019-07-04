@@ -9,6 +9,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit';
 import { Review } from "../util/ajax";
+import './Btn.css';
 
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
@@ -58,6 +59,7 @@ export const Comments = hh(class Comments extends Component {
   };
 
   render() {
+
     return (
       h(Fragment, {}, [
         TextEditor({
@@ -75,8 +77,14 @@ export const Comments = hh(class Comments extends Component {
             props =>
               <div>
                 <SearchBar { ...props.searchProps } />
+
                 <ExportCSVButton
-                     { ...props.csvProps }>Download CSV</ExportCSVButton>
+                  // className={"btn-primary"}
+                     { ...props.csvProps }>
+                  <span>
+                    <i className={"fa glyphicon glyphicon-export fa-download"}></i> Download CSV
+                  </span>
+                </ExportCSVButton>
                 <hr/>
                 <BootstrapTable
                   pagination= { paginationFactory() }

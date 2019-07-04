@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import { div, hh, h, label } from 'react-hyperscript-helpers';
+import { div, hh, h, label, button } from 'react-hyperscript-helpers';
 import '../components/Wizard.css';
 import { Editor } from "@tinymce/tinymce-react";
 import { Btn } from "../components/Btn";
@@ -8,6 +8,7 @@ import { Review } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { AlertMessage } from "../components/AlertMessage";
+import '../components/Btn.css';
 
 export const TextEditor = hh(class TextEditor extends Component {
 
@@ -67,14 +68,13 @@ export const TextEditor = hh(class TextEditor extends Component {
           value: this.state.comment,
           onEditorChange: this.handleEditorChange
         }, []),
-        Btn({
+        button({
+          className: "btn btn-primary",
+          style: {marginTop:"15px"},
           isRendered: true,
-          action: {
-            label: "Add",
-            handler: this.addComment,
-            disabled: false
-          }
-        }),
+          onClick: this.addComment,
+          disabled: false
+        }, ["Add"]),
         AlertMessage({
           msg: 'Error trying to save comments, please try again later.',
           show: this.state.showError,
