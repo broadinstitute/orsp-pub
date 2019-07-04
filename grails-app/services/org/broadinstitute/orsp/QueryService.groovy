@@ -802,9 +802,15 @@ class QueryService implements Status {
             }
         }
 
+println query
+println params
+println options.getIssueTypeNames()
+
         def rows = getSqlConnection().rows(query, params)
         def ids = rows.collect { it.get("id") }
         Set result = new HashSet<Issue>()
+
+println ids
 
         if (ids.size() > 0) {
             result = findIssuesSearchItemsDTO(ids)
@@ -843,11 +849,7 @@ class QueryService implements Status {
                 "LEFT JOIN user u ON (u.user_name = iep.value) " +
                 "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
                 "WHERE i.id IN (:issueIds) " +
-                "AND i.deleted = 0 " +
-                "AND iep.name is NOT NULL " +
-                "AND iep.deleted = 0 "+
-                "AND iep.value != '' " +
-                "AND iep.value IS NOT NULL"
+                "AND i.deleted != 1"
 
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
