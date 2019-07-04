@@ -62,7 +62,7 @@ dependencies {
     }
 
     // When running as a standalone jar, this dependency needs to be `compile`.
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.springframework.boot:spring-boot-starter-tomcat"
     // compile "org.springframework.boot:spring-boot-starter-tomcat"
 
     compile "org.grails:grails-web-boot"
@@ -185,9 +185,10 @@ task jest(type: YarnTask, dependsOn: 'yarn') {
 }
 
 // Turning off minify. See https://github.com/bertramdev/asset-pipeline/issues/147
+// 
 assets {
-    minifyJs = false
-    minifyCss = true
+  minifyJs = false
+  minifyCss = true
 }
 
 war {
@@ -217,7 +218,7 @@ task ('cleanTest') {
 task renderConfigs(type: RenderConfigs) {
     local = false
     projectHome = projectDir
-    vault = System.getenv('VAULT_ADDR')
+    vaultAddr = System.getenv('VAULT_ADDR')
 }
 
 /**

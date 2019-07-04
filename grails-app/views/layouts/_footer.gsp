@@ -37,7 +37,7 @@
 <asset:javascript src="jquery.fn.dataTablesExt.ticket.js"/>
 <asset:javascript src="chosen.jquery.min.js"/>
 <asset:javascript src="jasny-bootstrap.min.js"/>
-<script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=8zknubfnjvv9l3sg0cpxrome1qk6r2wlpdw7j4ebb3gjxige"></script>
+<script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=kyknyn3xmeam53u8vyway2oxf18oecyfwkjoym1xcydpyfyh"></script>
 <asset:javascript src="jquery.validate.min.js"/>
 <asset:javascript src="jsrender.js"/>
 

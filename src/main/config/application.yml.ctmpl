@@ -67,10 +67,10 @@ environments:
       password: {{$orsp.Data.crowd_password}}
       interval: 500
       range: 10
-    grails.serverURL: https://orsp.broadinstitute.org/dev
+    grails.serverURL: https://ui.dsp-orsp-dev.broadinstitute.org
     googleSignInClientId: {{$orsp.Data.google_signin_client_id}}
     server:
-      contextPath: '/dev'
+      contextPath: '/'
     notifyService:
       sendGridUrl: https://api.sendgrid.com/v3/mail/send
       apiKey: {{$orsp.Data.sendgrid_api}}
@@ -84,7 +84,7 @@ environments:
       replyToRecipient: orsp-dev@broadinstitute.org
       sendGridStatusUrl: http://status.sendgrid.com/
     storage:
-      config: /orsp-client.json
+      config: /orsp-config/orsp-client.json
       url: https://storage.googleapis.com/
       bucket: {{$orsp.Data.dev_bucket}}
     consent:
@@ -101,7 +101,7 @@ environments:
       statusUrl: http://data.bioontology.org/
       apiKey: {{$orsp.Data.data_bio_api}}
     bsp:
-      sync: true
+      sync: false
       service:
         username: {{$orsp.Data.dev_bsp_username}}
         password: {{$orsp.Data.dev_bsp_password}}
@@ -110,6 +110,7 @@ environments:
     dataSource:
       pooled: true
       driverClassName: org.mariadb.jdbc.Driver
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
       username: {{$orsp.Data.dev_ds_username}}
       password: {{$orsp.Data.dev_ds_password}}
       url: jdbc:mariadb://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
@@ -155,7 +156,7 @@ environments:
       replyToRecipient: orsp-portal@broadinstitute.org
       sendGridStatusUrl: http://status.sendgrid.com/
     storage:
-      config: /orsp-client.json
+      config: /orsp-config/orsp-client.json
       url: https://storage.googleapis.com/
       bucket: {{$orsp.Data.prod_bucket}}
     consent:
