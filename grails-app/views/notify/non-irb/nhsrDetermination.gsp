@@ -26,6 +26,6 @@
     information into Mercury's product ordering system: <a href="http://mercury/Mercury">http://mercury/Mercury</a>
 </p>
 <p>
-    Details regarding this submission can be accessed at:
-    <a href="${issueLink}">${issueLink}</a>
+    Details regarding this submission can be accessed at
+    <a href="${issueLink}">this link</a>.
 </p>

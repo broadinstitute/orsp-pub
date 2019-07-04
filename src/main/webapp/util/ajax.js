@@ -94,11 +94,12 @@ export const ConsentGroup = {
 
 export const ClarificationRequest = {
 
-  sendNewClarification(url, comment, issueId, pm) {
+  sendNewClarification(url, comment, issueId, pm, consentKey) {
     let data= new FormData();
     data.append('comment', comment);
     data.append('id', issueId);
     data.append('pm', pm)
+    data.append('consentKey', consentKey)
     return axios.post(url, data);
   }
 };

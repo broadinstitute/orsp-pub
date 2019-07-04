@@ -61,7 +61,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         feeForService: null,
         areSamplesComingFromEEAA: null,
         isCollaboratorProvidingGoodService: null,
-        isConsentUnambiguous: null,
         textSharingType: null,
         instSources: []
       },
