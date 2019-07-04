@@ -878,10 +878,13 @@ class QueryService implements Status {
             ]
         }
 
+println rows
+
         rows.each { 
             if (it.projectKey == currentProjectKey) {
                 if (it.type != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
+                    isueeSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
                 }
             } else {
                 if (currentProjectKey != "") {
@@ -892,10 +895,12 @@ class QueryService implements Status {
 
                 if (it.type != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
+                    isueeSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
                 }
             }
             resultDTO.add(issueSearchItemDTO)
         }
+        println resultDTO
         resultDTO
     }
 
