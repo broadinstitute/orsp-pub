@@ -802,15 +802,9 @@ class QueryService implements Status {
             }
         }
 
-println query
-println params
-println options.getIssueTypeNames()
-
         def rows = getSqlConnection().rows(query, params)
         def ids = rows.collect { it.get("id") }
         Set result = new HashSet<Issue>()
-
-println ids
 
         if (ids.size() > 0) {
             result = findIssuesSearchItemsDTO(ids)
