@@ -129,8 +129,8 @@ class SearchController implements UserInfo {
     }
 
     def generalReactTablesJsonSearch() {
-        def user = getUser()
-        def userName = user?.userName
+        User user = getUser()
+        String userName = user?.userName
         QueryOptions options = new QueryOptions()
         if (params.projectKey) options.setProjectKey(params.projectKey)
         if (params.text) options.setFreeText(params.text)
@@ -139,9 +139,9 @@ class SearchController implements UserInfo {
         if (params.type) options.getIssueTypeNames().addAll(params.type)
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
-        def rows = []
-        def isAdmin = isAdmin()
-        def isViewer = isViewer()
+        Collection rows = []
+        Boolean isAdmin = isAdmin()
+        Boolean isViewer = isViewer()
         // Only query if we really have values to query for.
         if (options.projectKey ||
                 options.issueTypeNames ||
@@ -152,18 +152,18 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                String link = applicationTagLib.createLink([controller: arguments.get("controller"), 
-                action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+                String link = applicationTagLib.createLink([controller: arguments.get("controller"),
+                                                            action    : arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
-                        link        : link,
-                        key         : it.projectKey,
-                        reporter    : it.reporter,
-                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
-                        title: it.summary,
-                        type: it.type,
-                        status: it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
-                        updated: it.updateDate ? format.format(it.updateDate): "",
-                        expiration: it.expirationDate ? format.format(it.expirationDate) : "",
+                        link                : link,
+                        key                 : it.projectKey,
+                        reporter            : it.reporter,
+                        linkDisabled        : permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
+                        title               : it.summary,
+                        type                : it.type,
+                        status              : it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
+                        updated             : it.updateDate ? format.format(it.updateDate) : "",
+                        expiration          : it.expirationDate ? format.format(it.expirationDate) : "",
                         projectAccessContact: it.accessContacts
                 ]
             }
