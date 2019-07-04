@@ -137,7 +137,8 @@ class SearchResults extends Component {
   }
 
   formatTooltipNames = (cell, row) => {
-    const names = row.projectAccessContact.join(", ");
+    console.log("formatTooltipNames ", row)
+    const names = row.projectAccessContact //.join(", ");
     return <span title={names}>{names}</span>
   };
 
