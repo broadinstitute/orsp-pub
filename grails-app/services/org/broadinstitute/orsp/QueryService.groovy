@@ -846,7 +846,7 @@ class QueryService implements Status {
                 "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
                 "WHERE i.id IN (:issueIds) " +
                 "AND i.deleted = 0 " +
-                "AND iep.name is NOT " +
+                "AND iep.name is NOT NULL " +
                 "AND iep.deleted = 0 "+
                 "AND iep.value != '' " +
                 "AND iep.value IS NOT NULL"
