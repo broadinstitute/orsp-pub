@@ -6,6 +6,8 @@ import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.utils.IssueUtils
 
+import java.sql.SQLException
+
 @Slf4j
 class AuthenticatedController implements Interceptor, UserInfo {
 
@@ -143,22 +145,20 @@ class AuthenticatedController implements Interceptor, UserInfo {
         redirect([controller: issue.controller, action: "show", id: issue.projectKey])
     }
 
-    def addComment() {
-        Issue issue = queryService.findByKey(params.id)
-        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue.type, params.id, "comments")
-        if (params.comment) {
-            Comment comment = persistenceService.saveComment(issue.projectKey, getUser()?.displayName, params.comment)
+    Comment addComment(String issueId, String commentToSave) throws IllegalArgumentException{
+        Issue issue = queryService.findByKey(issueId)
+        if (commentToSave) {
+            Comment comment = persistenceService.saveComment(issue.projectKey, getUser()?.displayName, commentToSave)
+
             if (comment == null) {
-                flash.error = "Error saving comment"
-                log.error("Error saving comment for issue '" + params.id + "': null")
-                redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
+                log.error("Error saving comment for issue '" + issueId + "': null")
+                throw new IllegalArgumentException("Error trying to save comment.")
             }
             if (comment.hasErrors()) {
-                flash.error = "Error saving comment"
                 comment.errors.getAllErrors().each {
-                    log.error("Error saving comment for issue '" + params.id + "': " + it)
+                    log.error("Error saving comment for issue '" + issueId + "': " + it)
                 }
-                redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
+                throw new Exception("Error trying to save comment.")
             }
 
             // By default, comments should go to ORSP
@@ -187,8 +187,29 @@ class AuthenticatedController implements Interceptor, UserInfo {
                             comment: comment.description,
                             user: getUser(),
                             issue: issue))
+            return comment
+        } else {
+            throw new IllegalArgumentException("Empty comment to save")
         }
-        redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
+    }
+
+    Collection<Comment> getCommentsForIssueId(String issueId) {
+        if (issueId) {
+            try {
+                Collection<Comment> comments = queryService.getCommentsByIssueId(issueId)
+                return comments
+            } catch (SQLException e) {
+                log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
+                throw new Error()
+            } catch (Exception e) {
+                log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
+                throw new Error()
+            }
+        } else {
+            log.error("Unable to get Comments from null issueId.")
+            throw new IllegalArgumentException()
+        }
+
     }
 
     /**

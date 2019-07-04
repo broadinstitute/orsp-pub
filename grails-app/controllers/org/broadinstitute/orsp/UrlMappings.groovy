@@ -11,7 +11,8 @@ class UrlMappings {
         // TODO: Would prefer a better way to redirect a root url to a controller regardless of action.
         // Without the extra declarations, the default index action is always the one called even if /funding is hit.
 
-        '/api/addComment'(controller: 'authenticated', action: 'addComment', method: 'POST')
+        '/api/addComment'(controller: 'comments', action: 'saveNewComment', method: 'POST')
+        '/api/commentsList'(controller: 'comments', action: 'getComments', method: 'GET')
         "/api/report"(controller: 'report', action: "index")
         "/api/report/funding"(controller: 'report', action: "funding")
         "/"(view:"/index")

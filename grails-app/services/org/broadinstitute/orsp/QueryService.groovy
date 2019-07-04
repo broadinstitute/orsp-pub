@@ -1354,4 +1354,18 @@ class QueryService implements Status {
         )
 
     }
+
+    Collection<Comment> getCommentsByIssueId(String issueId) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from comment where project_key = :issueId'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Comment)
+            setString('issueId', issueId)
+            list()
+        }
+        results
+    }
 }

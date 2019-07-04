@@ -242,6 +242,10 @@ export const Review = {
 
   addComments(id, comment) {
     return axios.post(component.serverURL + '/api/addComment?id=' + id + '&comment=' + comment)
+  },
+
+  getComments(id) {
+    return axios.get(component.serverURL + '/api/commentsList?id=' + id)
   }
 };
 
@@ -304,10 +308,6 @@ export const ProjectMigration = {
 
   getHistory(url, id) {
     return axios.get(url + "/api/history?id=" + id);
-  },
-
-  getComments(url, id) {
-    return axios.get(url + "/api/comments?id=" + id);
   },
 
   getSubmissions(url, id) {

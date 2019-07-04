@@ -1,18 +1,21 @@
 import React from 'react';
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { div, hh, h, label } from 'react-hyperscript-helpers';
 import '../components/Wizard.css';
-
 import { Editor } from "@tinymce/tinymce-react";
 import { Btn } from "../components/Btn";
 import { Review } from "../util/ajax";
+import { spinnerService } from "../util/spinner-service";
+import { Spinner } from "../components/Spinner";
+import { AlertMessage } from "../components/AlertMessage";
 
 export const TextEditor = hh(class TextEditor extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      comment : ''
+      comment : '',
+      showError: false
     };
     this.handleEditorChange = this.handleEditorChange.bind(this);
   }
@@ -25,18 +28,33 @@ export const TextEditor = hh(class TextEditor extends Component {
   };
 
   addComment = () => {
-
-    Review.addComments(component.projectKey, this.state.comment).then(
+    spinnerService.showAll();
+    Review.addComments(this.props.id, this.state.comment).then(
       response => {
-        console.log("FULLFILLED");
+        spinnerService.hideAll();
         this.setState(prev => {
           prev.comment = '';
+          return prev;
         });
-        this.props.updateContent();
+        this.props.insertNewComment({
+          id: response.data.id,
+          author: response.data.author,
+          date: response.data.date,
+          comment: response.data.comment
+        });
       }
     ).catch(error =>
-      this.setState(() => { throw error })
+      this.setState(prev => {
+        prev.showError = true;
+      })
     )
+  };
+
+  closeAlertHandler = () => {
+    this.setState(prev => {
+      prev.showError = false;
+      return prev;
+    })
   };
 
   render() {
@@ -62,6 +80,16 @@ export const TextEditor = hh(class TextEditor extends Component {
             disabled: false
           }
         }),
+        AlertMessage({
+          msg: 'Error trying to save comments, please try again later.',
+          show: this.state.showError,
+          type: 'danger',
+          closeable: true,
+          closeAlertHandler: this.closeAlertHandler
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+        })
       ])
     );
   }

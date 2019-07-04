@@ -16,7 +16,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
       loading: false,
       currentStepIndex: 0,
       historyContent: '',
-      commentsContent: '',
       dialogContent: '',
       defaultActive: 'review'
     };
@@ -24,7 +23,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   componentDidMount() {
     this.getHistory();
-    this.getComments();
   }
 
   updateDetailsStatus = (status) => {
@@ -43,47 +41,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
   };
 
   updateContent = () => {
-    this.getComments();
     this.getHistory();
   };
-
-  // comments
-  getComments() {
-    ProjectMigration.getComments(component.serverURL, component.consentKey).then(resp => {
-      this.setState(prev => {
-        prev.commentsContent = resp.data;
-        return prev;
-      }, () => {
-        this.initializeComments();
-      });
-    })
-  };
-
-  initializeComments() {
-    tinymce.remove();
-    $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
-    if (!$.fn.dataTable.isDataTable("#comments-table")) {
-      $("#comments-table").DataTable({
-        dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-        buttons: ['excelHtml5', 'csvHtml5', 'print'],
-        language: { search: 'Filter:' },
-        pagingType: "full_numbers",
-        order: [1, "desc"]
-      });
-    }
-    // this.initializeEditor();
-  }
-
-  // initializeEditor() {
-  //   tinymce.init({
-  //     selector: 'textarea.editor',
-  //     width: '100%',
-  //     menubar: false,
-  //     statusbar: false,
-  //     plugins: "paste",
-  //     paste_data_images: false
-  //   });
-  // }
 
   // history
   getHistory() {
@@ -140,9 +99,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Messages",
               }, [
                   h(Fragment, {}, [Comments({
-                    commentsContent: this.state.commentsContent
-                  }
-                  )]),
+                    id: component.consentKey
+                  })]),
                 ]),
               div({
                 key: "history",
