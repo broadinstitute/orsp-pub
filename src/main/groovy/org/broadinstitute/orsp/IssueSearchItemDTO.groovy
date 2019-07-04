@@ -62,7 +62,7 @@ class IssueSearchItemDTO {
     String getAccessContacts() {
         Collection<String> accessContacts = this.contactNames.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
         accessContacts = accessContacts.isEmpty() ? this.contactNames.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
-        accessContacts = accessContacts.isEmpty() ? accessContacts.add(this.reporterName) : 'No Contacts !'
+        accessContacts = accessContacts.isEmpty() ? accessContacts.add(this.reporterName) : accessContacts
         accessContacts
     }
 }
