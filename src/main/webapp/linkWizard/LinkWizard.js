@@ -173,8 +173,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     const isInternationalCohortsValid = this.validateInternationalCohorts();
     const isInfoSecurityValid = this.validateInfoSecurity();
     const isMTAValid = this.validateMTA();
-    const isDateRangeValid = this.validateDateRange();
-    return isValidStep1 && isInfoSecurityValid && isInternationalCohortsValid && isMTAValid && isDateRangeValid;
+    return isValidStep1 && isInfoSecurityValid && isInternationalCohortsValid && isMTAValid;
   };
 
   getConsentCollectionData = () => {
@@ -238,18 +237,14 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   };
 
-  validateLinkStep = (field, nextStep) => {
+  validateLinkStep = (field) => {
     let consentGroup = false;
     let isValid = true;
     let isDateRangeValid = true;
     if (isEmpty(this.state.consentGroup)) {
       consentGroup = true;
       isValid = false;
-    }
-    if (this.validateDateRange() == false) {
-      isDateRangeValid = false;
-      isValid = false;
-    }    
+    }  
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.consentGroup = consentGroup;
@@ -257,8 +252,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         prev.errors.isValid = isValid;
         if (isValid) {
           prev.generalError = false;
-        } else if (nextStep) {
-          prev.generalError = true;
         }
         return prev;
       });
@@ -278,7 +271,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   isValid = (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateLinkStep(field, true)
+      isValid = this.validateLinkStep(field)
     } else if (this.state.currentStep === 1) {
       isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
       if (!this.validateMTA()) {
@@ -311,14 +304,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     return isValid;
   }
 
-  validateDateRange() {
-    let isValid = true;
-    if (this.state.onGoingProcess == false && this.state.endDate === null || this.state.startDate ==  null) {
-      isValid = false;
-    }
-    return isValid;
-  }
-
   updateGeneralForm = (updatedForm, field) => {
     this.setState(prev => {
       prev[field] = updatedForm;
@@ -332,7 +317,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       prev.endDate = endDate;
       prev.onGoingProcess = onGoingProcess;
       return prev;
-    }, () => this.validateLinkStep());
+    });
   };
 
   render() {

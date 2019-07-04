@@ -22,6 +22,6 @@
 </g:if>
 
 <p>
-    Details regarding this submission can be accessed at:
-    <a href="${issueLink}">${issueLink}</a>
+    Details regarding this submission can be accessed at
+    <a href="${issueLink}">this link</a>.
 </p>

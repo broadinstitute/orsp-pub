@@ -23,7 +23,6 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
       isLinkMaintained = '',
       areSamplesComingFromEEAA = '',
       isCollaboratorProvidingGoodService = '',
-      isConsentUnambiguous = ''
     } = this.props.future;
     const projectFeeForService = this.props.origin === 'project' ? get(this.props.future, 'feeForServiceWork', '') : get(this.props.future, 'feeForService', '');
 
@@ -60,12 +59,6 @@ export const IntCohortsReview = hh(class IntCohortsReview extends Component {
             div({
             }, [this.stringAnswer(isCollaboratorProvidingGoodService)]),
           ]),
-
-          div({ className: "answerWrapper" }, [
-            label({}, ["GDPR does not apply, but a legal basis for transfer must be established. Is consent unambiguous ", span({ className: "normal" }, ["(identifies transfer to the US, and risks associated with less stringent data protections here)?"])]),
-            div({
-            }, [this.stringAnswer(isConsentUnambiguous)]),
-          ])
         ])
       )
     } else {
