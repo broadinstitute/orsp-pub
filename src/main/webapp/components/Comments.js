@@ -4,7 +4,6 @@ import { div, hh, h } from 'react-hyperscript-helpers';
 import { TextEditor } from "../main/TextEditor";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import './Comments.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit';
@@ -79,7 +78,7 @@ export const Comments = hh(class Comments extends Component {
                 <SearchBar { ...props.searchProps } />
 
                 <ExportCSVButton
-                  // className={"btn-primary"}
+                  className={"pull-right"}
                      { ...props.csvProps }>
                   <span>
                     <i className={"fa glyphicon glyphicon-export fa-download"}></i> Download CSV
