@@ -296,7 +296,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
                 name: "onGoingProcess",
                 onChange: this.handleCheck,
                 label: "Ongoing Process",
-                defaultChecked: this.state.onGoingProcess
+                checked: this.state.onGoingProcess
               })
             ])
           ])
