@@ -158,4 +158,4 @@ workflows:
       - deploy-dev:
           filters:
             branches:
-              only: BTRX-666-dgil
+              only: BTRX-666-PR-dgil
