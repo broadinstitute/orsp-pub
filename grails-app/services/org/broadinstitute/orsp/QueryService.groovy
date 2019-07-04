@@ -884,7 +884,7 @@ println rows
             if (it.projectKey == currentProjectKey) {
                 if (it.type != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
-                    isueeSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
+                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
                 }
             } else {
                 if (currentProjectKey != "") {
@@ -895,7 +895,7 @@ println rows
 
                 if (it.type != IssueType.CONSENT_GROUP.name) {
                     issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
-                    isueeSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
+                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
                 }
             }
             resultDTO.add(issueSearchItemDTO)
