@@ -38,7 +38,7 @@ class SearchController implements UserInfo {
         def response = []
         queryService.findIssuesByConsentTerm(params.term).each {
             response << [
-                    "id"   : it.projectKey,
+                    "id": it.projectKey,
                     "label": it.projectKey + " (" + it.summary + ")",
                     "value": it.projectKey
             ]
@@ -54,16 +54,16 @@ class SearchController implements UserInfo {
         Collection response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
             Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-            String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+            String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params:  arguments.get("params"), absolute: true])
             response << [
-                    id          : it.id,
-                    label       : it.projectKey + " (" + it.summary + ")",
-                    value       : it.projectKey,
-                    url         : link,
-                    reporter    : userService.findUser(it.reporter).displayName,
+                    id: it.id,
+                    label: it.projectKey + " (" + it.summary + ")",
+                    value: it.projectKey,
+                    url: link,
+                    reporter: userService.findUser(it.reporter).displayName,
                     linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
-                    pm          : it.pm,
-                    actor       : it.actor
+                    pm: it.pm,
+                    actor: it.actor
             ]
         }
         render response as JSON
@@ -73,7 +73,7 @@ class SearchController implements UserInfo {
         def response = []
         userService.findUsersBySearchTerm(params.term).each {
             response << [
-                    "id"   : it.userName,
+                    "id": it.userName,
                     "label": it.displayName + " (" + it.emailAddress + ")",
                     "value": it.displayName
             ]
@@ -85,10 +85,10 @@ class SearchController implements UserInfo {
         def response = []
         queryService.findCollectionsBySearchTerm(params.term).each {
             response << [
-                    "id"      : it.collectionId,
-                    "label"   : it.collectionId + " (" + it.name + ": " + it.category + ")",
-                    "value"   : it.collectionId,
-                    "group"   : it.groupName,
+                    "id": it.collectionId,
+                    "label": it.collectionId + " (" + it.name + ": " + it.category + ")",
+                    "value": it.collectionId,
+                    "group": it.groupName,
                     "category": it.category
             ]
         }
@@ -152,23 +152,22 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                String link = applicationTagLib.createLink([controller: arguments.get("controller"),
-                                                            action    : arguments.get("action"), params: arguments.get("params"), absolute: true])
+                String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
-                        link                : link,
-                        key                 : it.projectKey,
-                        reporter            : it.reporter,
-                        linkDisabled        : permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
-                        title               : it.summary,
-                        type                : it.type,
-                        status              : it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
-                        updated             : it.updateDate ? format.format(it.updateDate) : "",
-                        expiration          : it.expirationDate ? format.format(it.expirationDate) : "",
+                        link: link,
+                        key: it.projectKey,
+                        reporter: it.reporter,
+                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
+                        title: it.summary,
+                        type: it.type,
+                        status: it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
+                        updated: it.updateDate ? format.format(it.updateDate): "",
+                        expiration: it.expirationDate ? format.format(it.expirationDate) : "",
                         projectAccessContact: it.accessContacts
                 ]
             }
         }
-        render([data: rows] as JSON)
+        render ([data: rows] as JSON)
     }
 
     def projectKeyAutocomplete() {
@@ -196,7 +195,7 @@ class SearchController implements UserInfo {
         if (params.dateRestriction) options.dateRestriction = Date.parse('mm/dd/yyyy', params.dateRestriction)
         if (params.methodsResearchExcluded) options.methodsResearchExcluded = true
         List<Issue> issues = queryService.findByQueryOptions(options)
-        render(view: '_dataUseRecords', model: ["issues": issues])
+        render (view: '_dataUseRecords', model: ["issues": issues])
     }
 
     def getMatchingDiseaseOntologies() {
