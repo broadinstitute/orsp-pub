@@ -54,7 +54,7 @@ class IssueSearchItemDTO {
     }
 
     void setAccessContacts(String name, String value) {
-        Set<String> access  = this.contactNames.get(name) != null ? this.contactNames.get(name) : []
+        Set<String> access  = this.contactNames.get(name) != null ? this.contactNames.get(name) :  new ArrayList<String>()
         access.add(value)
         this.contactNames.put(name, access)
     }
