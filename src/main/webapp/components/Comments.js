@@ -68,6 +68,8 @@ export const Comments = hh(class Comments extends Component {
     this.state.comments.forEach(comment => {
       commentsArray.push([comment.author, comment.date, comment.comment.replace(/<[^>]*>?/gm, '')])
     });
+    const titleText = (component.issueType === "project" ? ("Project ID: "+ component.projectKey)
+      : ("Sample Data Cohort ID:"+ component.consentKey));
 
     let dd = {
       footer: function(currentPage, pageCount) {
@@ -77,10 +79,7 @@ export const Comments = hh(class Comments extends Component {
         }
       },
       header: function(currentPage, pageCount, pageSize) {
-        return [{
-          text: new Date().toLocaleDateString(),
-          alignment: 'center'
-        },
+        return [
           {
             canvas: [{
               type: 'rect',
@@ -93,11 +92,13 @@ export const Comments = hh(class Comments extends Component {
         ]
       },
       content: [
-      {
-        // ORSP Comments DEV-NE-5555
-        text: 'ORSP Comments',
-        style: 'subheader'
-      },
+        {
+          text: new Date().toLocaleDateString(),
+          alignment: 'left'
+        },
+        {text: ['ORSP Comments'], style: 'header'},
+        {text: [titleText
+          ], fontSize: 14},
       {
         style: 'tableExample',
         table: {
@@ -110,15 +111,15 @@ export const Comments = hh(class Comments extends Component {
         header: {
           fontSize: 18,
           bold: true,
-          margin: [0, 0, 0, 10]
+          margin: [0, 5, 0, 0]
         },
         subheader: {
           fontSize: 16,
           bold: true,
-          margin: [0, 10, 0, 5]
+          margin: [0, 0, 0, 5]
         },
         tableExample: {
-          margin: [0, 5, 0, 15]
+          margin: [0, 20, 0, 15]
         },
         tableHeader: {
           bold: true,
