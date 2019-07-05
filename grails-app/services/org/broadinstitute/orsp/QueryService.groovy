@@ -718,7 +718,7 @@ class QueryService implements Status {
      * Much faster than the hibernate criteria approach in 'QueryService.findByQueryOptions'
      *
      * @param queryOptions A QueryOptions object that has desired fields populated.
-     * @return List of JiraIssues that match the query
+     * @return List of Issues that match the query
      */
     Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
@@ -789,7 +789,7 @@ class QueryService implements Status {
 /**
  * Find issues and create DTOs to narrow the amount of data used in the search process
  * @param issueIds
- * @return
+ * @return Set of issues DTO that match the query, suitable to be shown in SearchResults.js
  */
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
 
