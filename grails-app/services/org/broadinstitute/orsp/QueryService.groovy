@@ -718,7 +718,7 @@ class QueryService implements Status {
      * Much faster than the hibernate criteria approach in 'QueryService.findByQueryOptions'
      *
      * @param queryOptions A QueryOptions object that has desired fields populated.
-     * @return List of JiraIssues that match the query
+     * @return List of Issues that match the query
      */
     Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
@@ -786,22 +786,44 @@ class QueryService implements Status {
         result
     }
 
-    /**
-     * Find issues from a list of Ids
-     * @param issueIds
-     * @return
-     */
-    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+/**
+ * Find issues and create DTOs to narrow the amount of data used in the search process
+ * @param issueIds
+ * @return Set of issues DTO that match the query, suitable to be shown in SearchResults.js
+ */
+    Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+
+        final String query = "SELECT i.id id, " +
+                "i.project_key, " +
+                "i.type type,  " +
+                "i.status status,  " +
+                "i.summary summary,  " +
+                "i.reporter reporter,  " +
+                "ur.display_name reporter_name, " +
+                "i.approval_status,  " +
+                "i.update_date updated,  " +
+                "i.expiration_date expirationDate, " +
+                "iep.name, " +
+                "iep.value ," +
+                "u.display_name " +
+                "FROM issue i  " +
+                "LEFT JOIN issue_extra_property iep  " +
+                "ON (iep.project_key = i.project_key  " +
+                "AND iep.name IN ('pm','pi','collaborator')) " +
+                "LEFT JOIN user u ON (u.user_name = iep.value) " +
+                "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
+                "WHERE i.id IN (:issueIds) " +
+                "AND i.deleted != 1"
+
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(Issue)
+
+        final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
             list()
         }
-        results
+        IssueSearchItemDTO.processResults(results);
     }
 
     /**
