@@ -793,10 +793,6 @@ class QueryService implements Status {
  */
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
 
-        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
-        IssueSearchItemDTO issueSearchItemDTO
-        String currentProjectKey = ""
-
         final String query = "SELECT i.id id, " +
                 "i.project_key, " +
                 "i.type type,  " +
@@ -827,46 +823,7 @@ class QueryService implements Status {
             setParameterList('issueIds', issueIds)
             list()
         }
-
-        def rows = results.collect { resultRow ->
-            [
-                id            : resultRow[0],
-                projectKey    : resultRow[1],
-                type          : resultRow[2],
-                status        : resultRow[3],
-                summary       : resultRow[4],
-                reporter      : resultRow[5],
-                reporterName  : resultRow[6],
-                approvalStatus: resultRow[7],
-                updated       : resultRow[8],
-                expirationDate: resultRow[9],
-                name          : resultRow[10],
-                value         : resultRow[11],
-                displayName   : resultRow[12]
-            ]
-        }
-
-        rows.each { 
-            if (it.projectKey == currentProjectKey) {
-                if (it.type != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
-                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
-                }
-            } else {
-                if (currentProjectKey != "") {
-                    resultDTO.add(issueSearchItemDTO)
-                }
-                currentProjectKey = it.projectKey
-                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-
-                if (it.type != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
-                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
-                }
-            }
-            resultDTO.add(issueSearchItemDTO)
-        }
-        resultDTO
+        IssueSearchItemDTO.processResults(results);
     }
 
     /**
