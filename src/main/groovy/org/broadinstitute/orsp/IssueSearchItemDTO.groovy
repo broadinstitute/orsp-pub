@@ -48,7 +48,7 @@ class IssueSearchItemDTO {
  * @param value
  */
     void setExtraProperty(String name, String value) {
-        Set<String> extraProp = this.extraProperties.get(name) != null ? this.extraProperties.get(name) : []
+        Set<String> extraProp = this.extraProperties.get(name) != null ? this.extraProperties.get(name) : new ArrayList<String>()
         extraProp.add(value)
         this.extraProperties.put(name, extraProp)
     }
