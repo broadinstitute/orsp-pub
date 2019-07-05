@@ -234,7 +234,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.reviewSuggestion = false;
           return prev;
         });
-        this.props.changeInfoStatus(true);
+        // this.props.changeInfoStatus(true);
       }
     });
   };
