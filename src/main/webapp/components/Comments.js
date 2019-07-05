@@ -1,20 +1,23 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { TextEditor } from "../main/TextEditor";
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit';
+import { TextEditor } from "../main/TextEditor";
 import { Review } from "../util/ajax";
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 const defaultSorted = [{
-  dataField: 'date', // if dataField is not match to any column you defined, it will be ignored.
-  order: 'desc' // desc or asc
+  dataField: 'date',
+  order: 'desc'
 }];
 
 const columns = [{
@@ -59,8 +62,75 @@ export const Comments = hh(class Comments extends Component {
     })
   };
 
-  render() {
+  printComments = () => {
+    let commentsArray = [];
+    commentsArray.push(columns.map(el => el.text));
+    this.state.comments.forEach(comment => {
+      commentsArray.push([comment.author, comment.date, comment.comment.replace(/<[^>]*>?/gm, '')])
+    });
 
+    let dd = {
+      footer: function(currentPage, pageCount) {
+        return {
+          text: "Page " + currentPage.toString() + ' of ' + pageCount,
+          alignment: 'center'
+        }
+      },
+      header: function(currentPage, pageCount, pageSize) {
+        return [{
+          text: new Date().toLocaleDateString(),
+          alignment: 'center'
+        },
+          {
+            canvas: [{
+              type: 'rect',
+              x: 170,
+              y: 32,
+              w: pageSize.width - 170,
+              h: 40
+            }]
+          }
+        ]
+      },
+      content: [
+      {
+        // ORSP Comments DEV-NE-5555
+        text: 'ORSP Comments',
+        style: 'subheader'
+      },
+      {
+        style: 'tableExample',
+        table: {
+          widths: [100, '*', 200],
+          body: commentsArray
+        }
+      }
+    ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 10, 0, 5]
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15]
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'black'
+        }
+      }
+    };
+    pdfMake.createPdf(dd).print();
+  };
+
+  render() {
     return (
       h(Fragment, {}, [
         TextEditor({
@@ -68,31 +138,28 @@ export const Comments = hh(class Comments extends Component {
           loadComments: this.loadComments
         }),
         <ToolkitProvider
-          keyField="id"
-          data={ this.state.comments }
-          columns={ columns }
-          exportCSV={
-            { fileName: 'ORSP.csv' }
-          }
-
-          search={ true }
+          keyField= "id"
+          data= { this.state.comments }
+          columns= { columns }
+          search= { true }
+          exportCSV= {{ fileName: 'ORSP.csv' }}
         >
           {
             props =>
               <div>
                 <SearchBar { ...props.searchProps } />
-
-                <ExportCSVButton
-                  className={"pull-right"}
-                     { ...props.csvProps }>
+                <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                   <span>
-                    <i className={"fa glyphicon glyphicon-export fa-download"}></i> Download CSV
+                    <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV
                   </span>
                 </ExportCSVButton>
+                <button onClick= { this.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
+                  <i style={{marginRight:'5px'}} className= { "fa fa-print" }></i> Print All
+                </button>
                 <hr/>
                 <BootstrapTable
                   pagination= { paginationFactory() }
-                  defaultSorted={defaultSorted}
+                  defaultSorted= { defaultSorted}
                   {...props.baseProps }
                 />
               </div>

@@ -3,12 +3,12 @@ import { Component } from 'react';
 import { div, hh, h, label, button } from 'react-hyperscript-helpers';
 import '../components/Wizard.css';
 import { Editor } from "@tinymce/tinymce-react";
-import { Btn } from "../components/Btn";
 import { Review } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { AlertMessage } from "../components/AlertMessage";
 import '../components/Btn.css';
+import { isEmpty } from "../util/Utils";
 
 export const TextEditor = hh(class TextEditor extends Component {
 
@@ -42,7 +42,7 @@ export const TextEditor = hh(class TextEditor extends Component {
     ).catch(error =>
       this.setState(prev => {
         prev.showError = true;
-      })
+      },()=> spinnerService.hideAll())
     )
   };
 
@@ -73,15 +73,19 @@ export const TextEditor = hh(class TextEditor extends Component {
           style: {marginTop:"15px"},
           isRendered: true,
           onClick: this.addComment,
-          disabled: false
+          disabled: isEmpty(this.state.comment)
         }, ["Add"]),
-        AlertMessage({
-          msg: 'Error trying to save comments, please try again later.',
-          show: this.state.showError,
-          type: 'danger',
-          closeable: true,
-          closeAlertHandler: this.closeAlertHandler
-        }),
+        div({
+          style: {marginTop:"15px"}
+          },[
+          AlertMessage({
+            msg: 'Error trying to save comments, please try again later.',
+            show: this.state.showError,
+            type: 'danger',
+            closeable: true,
+            closeAlertHandler: this.closeAlertHandler
+          })
+        ]),
         h(Spinner, {
           name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
