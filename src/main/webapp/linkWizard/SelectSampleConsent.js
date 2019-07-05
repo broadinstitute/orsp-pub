@@ -2,6 +2,8 @@ import { Component } from 'react';
 import { hh, button, div, p } from 'react-hyperscript-helpers';
 import { WizardStep } from "../components/WizardStep";
 import { InputFieldSelect } from "../components/InputFieldSelect";
+import { InputFieldCheckbox } from "../components/InputFieldCheckbox";
+import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
@@ -40,6 +42,9 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       consentGroup: {},
       sampleCollectionIsLoading: false,
       consentGroupIsLoading: false,
+      startDate: null,
+      endDate: null,
+      onGoingProcess: false
     };
   }
 
@@ -187,6 +192,32 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     return sampleCollectionList;
   };
 
+  handleCheck = () => {
+    this.setState(prev => {
+      prev.onGoingProcess = !this.state.onGoingProcess;
+      prev.endDate = null;
+      return prev;
+    }, () => this.props.updateDateRange(this.state.onGoingProcess, this.state.endDate, this.state.startDate));
+  };
+
+  handleChange = (id) => (date) => {
+    this.setState(prev => {
+      prev[id] = date;
+      return prev;
+    }, () =>
+        this.props.updateForm(this.state.sampleCollection, id) 
+    );
+  };
+
+  handleDateChange = (id) => (date) => {
+    this.setState(prev => {
+      prev[id] = date;
+      return prev;
+    }, () =>
+        this.props.updateDateRange(this.state.onGoingProcess, this.state.endDate, this.state.startDate)
+    );
+  };
+
   render() {
     let documents = this.props.files;
 
@@ -232,6 +263,43 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isLoading: this.state.sampleCollectionIsLoading,
 
           }),
+        ]),
+        Panel({ title: "Sample Collection Date Range*" }, [
+          div({ className: "row" }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                selected: this.state.startDate,
+                name: "startDate",
+                label: "Start Date",
+                onChange: this.handleDateChange,
+                placeholder: "Enter Start Date",
+                maxDate: this.state.endDate !== null ? this.state.endDate : null,
+                error: this.props.errors.errorSampleCollectionDateRange && this.props.generalError,
+                errorMessage: 'Required Fields'
+              })
+            ]),
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              InputFieldDatePicker({
+                startDate: this.state.startDate,
+                name: "endDate",
+                label: "End Date",
+                selected: this.state.endDate,
+                onChange: this.handleDateChange,
+                placeholder: "Enter End Date",
+                disabled: (this.state.onGoingProcess === true) || (this.state.startDate === null),
+                minDate: this.state.startDate
+              })
+            ]),
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+              InputFieldCheckbox({
+                id: "onGoingProcess",
+                name: "onGoingProcess",
+                onChange: this.handleCheck,
+                label: "Ongoing Process",
+                checked: this.state.onGoingProcess
+              })
+            ])
+          ])
         ]),
         Panel({
           title: "Documents"

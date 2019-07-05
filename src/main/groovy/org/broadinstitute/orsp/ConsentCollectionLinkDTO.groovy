@@ -19,6 +19,9 @@ class ConsentCollectionLinkDTO {
     String collectionName
     String collectionCategory
     String collectionGroup
+    Date startDate
+    Date endDate
+    Boolean onGoingProcess
 
     void setId(Number id) {
         this.id = id

@@ -4,6 +4,6 @@
                                                     details: details,
                                                     issueLink: issueLink]"/>
 <div style="font-size: 12pt; margin-top: 12pt">
-    Details regarding this submission can be accessed at:
-    <a href="${issueLink}" style="color: blue">${issueLink}</a>
+    Details regarding this submission can be accessed at
+    <a href="${issueLink}" style="color: blue">this link</a>
 </div>

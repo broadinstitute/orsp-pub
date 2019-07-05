@@ -151,7 +151,7 @@ class QueryService implements Status {
                 ' select distinct status as status ' +
                         ' from consent_collection_link ' +
                         ' where consent_key = :consentKey ' +
-                        ' and project_key = :projectKey '
+                        ' and project_key = :projectKey ' +
                         ' and status = :status '
         getSqlConnection().rows(query, ["projectKey": projectKey, "consentKey": consentKey, status: CollectionLinkStatus.APPROVED.name])
                 .collect { it.get("status").toString() }?.size() > 0
@@ -384,7 +384,7 @@ class QueryService implements Status {
             ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
                     ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
                     ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
-                    ' ip.type projectType from consent_collection_link c ' +
+                    ' ip.type projectType, c.start_date startDate, c.end_date endDate, c.on_going_process onGoingProcess from consent_collection_link c ' +
                     ' inner join issue ic on ic.project_key = c.consent_key ' +
                     ' inner join issue ip on ip.project_key = c.project_key ' +
                     ' left join sample_collection sc on sc.collection_id = c.sample_collection_id ' +
@@ -718,7 +718,7 @@ class QueryService implements Status {
      * Much faster than the hibernate criteria approach in 'QueryService.findByQueryOptions'
      *
      * @param queryOptions A QueryOptions object that has desired fields populated.
-     * @return List of JiraIssues that match the query
+     * @return List of Issues that match the query
      */
     Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
@@ -748,7 +748,7 @@ class QueryService implements Status {
             params.put('funding', "%" + options.getFundingInstitute() + "%")
         }
         if (options.userName) {
-            def q = ' u.user_name like :userName '
+            def q = ' u.user_name like :userName or i.reporter like :userName'
             query = andIfyQstring(query, q, params)
             params.put('userName', "%" + options.userName + "%")
         }
@@ -786,22 +786,44 @@ class QueryService implements Status {
         result
     }
 
-    /**
-     * Find issues from a list of Ids
-     * @param issueIds
-     * @return
-     */
-    Set<Issue> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-        final String query = "SELECT * FROM issue i WHERE i.id IN (:issueIds) and i.deleted = 0"
+/**
+ * Find issues and create DTOs to narrow the amount of data used in the search process
+ * @param issueIds
+ * @return Set of issues DTO that match the query, suitable to be shown in SearchResults.js
+ */
+    Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
+
+        final String query = "SELECT i.id id, " +
+                "i.project_key, " +
+                "i.type type,  " +
+                "i.status status,  " +
+                "i.summary summary,  " +
+                "i.reporter reporter,  " +
+                "ur.display_name reporter_name, " +
+                "i.approval_status,  " +
+                "i.update_date updated,  " +
+                "i.expiration_date expirationDate, " +
+                "iep.name, " +
+                "iep.value ," +
+                "u.display_name " +
+                "FROM issue i  " +
+                "LEFT JOIN issue_extra_property iep  " +
+                "ON (iep.project_key = i.project_key  " +
+                "AND iep.name IN ('pm','pi','collaborator')) " +
+                "LEFT JOIN user u ON (u.user_name = iep.value) " +
+                "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
+                "WHERE i.id IN (:issueIds) " +
+                "AND i.deleted != 1"
+
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(Issue)
+
+        final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
             list()
         }
-        results
+        IssueSearchItemDTO.processResults(results);
     }
 
     /**

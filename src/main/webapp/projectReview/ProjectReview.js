@@ -199,6 +199,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
+              this.props.changeInfoStatus(false);
             } else {
               spinnerService.hideAll();
               formData = JSON.parse(currentStr);
@@ -229,12 +230,14 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             prev.reviewSuggestion = true;
             return prev;
           });
+          this.props.changeInfoStatus(false);
         } else {
           this.setState(prev => {
             prev.editedForm = {};
             prev.reviewSuggestion = false;
             return prev;
           });
+          this.props.changeInfoStatus(true);
         }
       }).catch(error => {
         this.setState(() => { throw error; });
@@ -846,7 +849,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               optionValues: ["newAmendment", "requestingAssistance", "clarificationResponse"],
               optionLabels: [
                 "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                "I am requesting assistance in updating and existing project",
+                "I am requesting assistance in updating an existing project",
                 "I am responding to a request for clarifications from ORSP"
               ],
               onChange: this.handleProjectExtraPropsChangeRadio,
