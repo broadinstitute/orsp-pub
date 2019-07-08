@@ -9,11 +9,11 @@ import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <ErrorHandler>
-    <BrowserRouter>
+    <BrowserRouter basename= {component.contextPath}>
       <Switch>
-        <Route exact path='/dev/user/rolesManagement' render = {(routeProps) =>  <RolesManagement {...routeProps}/> }/>
-        <Route exact path='/dev/project/main' render = {(routeProps) => <Main {...routeProps}/> }/>
-        <Route exact path='/dev/newConsentGroup/main' render = {(routeProps) => <Main {...routeProps}/> }/>
+        <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps}/> }/>
+        <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps}/> }/>
+        <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps}/> }/>
       </Switch>
     </BrowserRouter>
   </ErrorHandler>,
