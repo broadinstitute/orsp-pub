@@ -19,7 +19,6 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
         isLinkMaintained : '',
         areSamplesComingFromEEAA : '',
         isCollaboratorProvidingGoodService: '',
-        isConsentUnambiguous: '',
       },
     };
   }
