@@ -207,7 +207,7 @@
                   Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
               </div>
           </div>
-          <h3>About the ORSP Portal 1</h3>
+          <h3>About the ORSP Portal</h3>
           <g:render template="/index/aboutBlurb"/>
       </div>
   </g:else>
@@ -219,7 +219,7 @@
             You must be a Broad Institute User for further access. Please sign out and log in with
             a "broadinstitute.org" email account.
         </div>
-        <h3>About the ORSP Portal 2 </h3>
+        <h3>About the ORSP Portal</h3>
         <g:render template="/index/aboutBlurb"/>
     </div>
 </auth:nonBroadSession>
