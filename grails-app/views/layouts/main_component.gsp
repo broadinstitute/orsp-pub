@@ -194,23 +194,15 @@
 <g:render template="/base/topNav" />
 
 <auth:isNotAuthenticated>
-  <g:if test="${pageProperty(name:'body.dul') == 'true'}">
-      <div class="container">
-          <g:render template="/base/messages" />
-          <g:layoutBody/>
-      </div>
-  </g:if>
-  <g:else>
-      <div class="container">
-          <div id="login_spinner" class="hidden">
-              <div class="alert alert-success alert-dismissable" style="display: block">
-                  Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-              </div>
-          </div>
-          <h3>About the ORSP Portal</h3>
-          <g:render template="/index/aboutBlurb"/>
-      </div>
-  </g:else>
+    <div class="container">
+        <div id="login_spinner" class="hidden">
+            <div class="alert alert-success alert-dismissable" style="display: block">
+                Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+             </div>
+        </div>
+        <h3>About the ORSP Portal</h3>
+        <g:render template="/index/aboutBlurb"/>
+    </div>
 </auth:isNotAuthenticated>
 
 <auth:nonBroadSession>
