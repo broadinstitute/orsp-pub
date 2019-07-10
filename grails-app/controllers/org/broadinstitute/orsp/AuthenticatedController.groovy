@@ -6,8 +6,6 @@ import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.utils.IssueUtils
 
-import java.sql.SQLException
-
 @Slf4j
 class AuthenticatedController implements Interceptor, UserInfo {
 
@@ -143,73 +141,6 @@ class AuthenticatedController implements Interceptor, UserInfo {
         // Transition issue to correct intake status:
         handleIntake(issue.projectKey)
         redirect([controller: issue.controller, action: "show", id: issue.projectKey])
-    }
-
-    Comment addComment(String issueId, String commentToSave) throws IllegalArgumentException{
-        Issue issue = queryService.findByKey(issueId)
-        if (commentToSave) {
-            Comment comment = persistenceService.saveComment(issue.projectKey, getUser()?.displayName, commentToSave)
-
-            if (comment == null) {
-                log.error("Error saving comment for issue '" + issueId + "': null")
-                throw new IllegalArgumentException("Error trying to save comment.")
-            }
-            if (comment.hasErrors()) {
-                comment.errors.getAllErrors().each {
-                    log.error("Error saving comment for issue '" + issueId + "': " + it)
-                }
-                throw new Exception("Error trying to save comment.")
-            }
-
-            // By default, comments should go to ORSP
-            List<String> toAddresses = new ArrayList<>()
-            toAddresses.addAll(notifyService.getOrspSpecialRecipients())
-            String fromAddress = (String) getUser()?.emailAddress
-
-            // If the user is ORSP/Admin, and there are PMs available, send the comment to the PMs.
-            if (isAdmin() && !issue.getPMs().isEmpty()) {
-                toAddresses?.clear()
-                toAddresses.addAll(userService.findUsers(issue.getPMs())?.collect {it.emailAddress})
-                fromAddress = notifyService.ORSP_ADDRESS
-            }
-
-            // Extra check to cover error condition of empty PMs
-            if (toAddresses.isEmpty()) {
-                log.error("Issue " + issue.projectKey + " has empty PMs.")
-                toAddresses.addAll(notifyService.getOrspSpecialRecipients())
-            }
-
-            notifyService.sendComment(
-                    new NotifyArguments(
-                            toAddresses: toAddresses,
-                            fromAddress: fromAddress,
-                            subject: "Comment Entered: " + issue.projectKey,
-                            comment: comment.description,
-                            user: getUser(),
-                            issue: issue))
-            return comment
-        } else {
-            throw new IllegalArgumentException("Empty comment to save")
-        }
-    }
-
-    Collection<Comment> getCommentsForIssueId(String issueId) {
-        if (issueId) {
-            try {
-                Collection<Comment> comments = queryService.getCommentsByIssueId(issueId)
-                return comments
-            } catch (SQLException e) {
-                log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
-                throw new Error()
-            } catch (Exception e) {
-                log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
-                throw new Error()
-            }
-        } else {
-            log.error("Unable to get Comments from null issueId.")
-            throw new IllegalArgumentException()
-        }
-
     }
 
     /**

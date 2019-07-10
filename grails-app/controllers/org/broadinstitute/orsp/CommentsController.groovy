@@ -8,9 +8,11 @@ import groovy.util.logging.Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class CommentsController extends AuthenticatedController {
 
+    CommentsService commentsService
+
     def index = { list }
 
-
+    @Deprecated
     def list = {
         Issue issue = queryService.findByKey(params.id)
         Collection<Comment> comments = Comment.findAllByProjectKey(params.id)
@@ -19,7 +21,7 @@ class CommentsController extends AuthenticatedController {
 
     def saveNewComment() {
         try {
-            Comment savedComment = addComment(params.id, params.comment)
+            Comment savedComment = commentsService.addComment(params.id, params.comment)
             response.status = 200
             render savedComment as JSON
         } catch (IllegalArgumentException e) {
@@ -41,7 +43,7 @@ class CommentsController extends AuthenticatedController {
             return output
         }
         try {
-            Collection<Comment> comments = getCommentsForIssueId(params.id)
+            Collection<Comment> comments = commentsService.getCommentsForIssueId(params.id)
             response.status = 200
             render comments as JSON
         } catch(IllegalArgumentException e) {
