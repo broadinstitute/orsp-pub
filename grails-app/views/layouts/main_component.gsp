@@ -136,8 +136,8 @@
         serverURL: "${webRequest.baseUrl}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
-        isAdmin: ${session.isAdmin},
-        isViewer: ${session.isViewer},
+        isAdmin: ${session.isAdmin ? session.isAdmin : false},
+        isViewer: ${session.isViewer ? session.isViewer : false},
         rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
         updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
         discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
@@ -194,15 +194,23 @@
 <g:render template="/base/topNav" />
 
 <auth:isNotAuthenticated>
-    <div class="container">
-        <div id="login_spinner" class="hidden">
-            <div class="alert alert-success alert-dismissable" style="display: block">
-                Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-            </div>
-        </div>
-        <h3>About the ORSP Portal</h3>
-        <g:render template="/index/aboutBlurb"/>
-    </div>
+  <g:if test="${pageProperty(name:'body.dul') == 'true'}">
+      <div class="container">
+          <g:render template="/base/messages" />
+          <g:layoutBody/>
+      </div>
+  </g:if>
+  <g:else>
+      <div class="container">
+          <div id="login_spinner" class="hidden">
+              <div class="alert alert-success alert-dismissable" style="display: block">
+                  Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+              </div>
+          </div>
+          <h3>About the ORSP Portal 1</h3>
+          <g:render template="/index/aboutBlurb"/>
+      </div>
+  </g:else>
 </auth:isNotAuthenticated>
 
 <auth:nonBroadSession>
@@ -211,7 +219,7 @@
             You must be a Broad Institute User for further access. Please sign out and log in with
             a "broadinstitute.org" email account.
         </div>
-        <h3>About the ORSP Portal</h3>
+        <h3>About the ORSP Portal 2 </h3>
         <g:render template="/index/aboutBlurb"/>
     </div>
 </auth:nonBroadSession>
