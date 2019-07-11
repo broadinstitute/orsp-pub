@@ -10,9 +10,6 @@ class UrlMappings {
         }
         // TODO: Would prefer a better way to redirect a root url to a controller regardless of action.
         // Without the extra declarations, the default index action is always the one called even if /funding is hit.
-
-        '/api/addComment'(controller: 'comments', action: 'saveNewComment', method: 'POST')
-        '/api/commentsList'(controller: 'comments', action: 'getComments', method: 'GET')
         "/api/report"(controller: 'report', action: "index")
         "/api/report/funding"(controller: 'report', action: "funding")
         "/"(view:"/index")
@@ -46,9 +43,10 @@ class UrlMappings {
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
+        '/api/addComment'(controller: 'comments', action: 'saveNewComment', method: 'POST')
+        '/api/commentsList'(controller: 'comments', action: 'getComments', method: 'GET')
 
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
-        '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
