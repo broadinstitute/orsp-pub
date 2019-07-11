@@ -57,14 +57,13 @@ class CommentsService implements UserInfo {
                             comment: comment.description,
                             user: getUser(),
                             issue: issue))
-            return comment
+            comment
         } else {
             throw new IllegalArgumentException("Empty comment to save")
         }
     }
 
     /**
-     *
      * @param issueId Project or Data Sample Cohort id
      * @return  Collection of Comments associated to the given issueId
      */
@@ -72,7 +71,7 @@ class CommentsService implements UserInfo {
         if (issueId) {
             try {
                 Collection<Comment> comments = queryService.getCommentsByIssueId(issueId)
-                return comments
+                comments
             } catch (Exception e) {
                 log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
                 throw new Error()

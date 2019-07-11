@@ -1379,14 +1379,17 @@ class QueryService implements Status {
         )
 
     }
-
+    /**
+     * @param issueId
+     * @return A collection of Comments for a given IssueId if an error occurs it is logged and an empty list is returned.
+     */
     Collection<Comment> getCommentsByIssueId(String issueId) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from comment where project_key = :issueId'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        Collection<Comment> results = null
+        Collection<Comment> results = Collections.emptyList()
         try {
             results = sqlQuery.with {
                 addEntity(Comment)
