@@ -38,7 +38,7 @@ class UserController extends AuthenticatedController {
     }
 
     def rolesManagement() {
-        render(view: "/rolesManagement/index")
+        render(view: "/mainContainer/index")
     }
 
     def getOrspUsers() {

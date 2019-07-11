@@ -60,6 +60,7 @@
     "react-data-export": "0.4.2",
     "react-datepicker": "2.0.0",
     "react-dom": "16.6.3",
+    "react-router-dom" : "5.0.1",
     "react-hyperscript-helpers": "2.0.0",
     "react-select": "2.1.2",
     "regenerator-runtime": "0.13.2"
