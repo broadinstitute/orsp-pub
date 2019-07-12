@@ -5,12 +5,13 @@ import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { DocumentHandler, DUL, ConsentGroup } from  '../util/ajax';
+import { DocumentHandler, DUL, ConsentGroup } from '../util/ajax';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
 import { validateEmail } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
+import './Documents.css';
 
 const headers =
   [
@@ -101,9 +102,9 @@ export const Documents = hh(class Documents extends Component {
   send = () => {
     spinnerService.showAll();
     const collaboratorEmail = this.state.collaboratorEmail;
-    if (this.validEmail(collaboratorEmail)){
-      this.setState({alertMessage: '', collaboratorEmail: '', showAlert: false});
-      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then( resp => {
+    if (this.validEmail(collaboratorEmail)) {
+      this.setState({ alertMessage: '', collaboratorEmail: '', showAlert: false });
+      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then(resp => {
         setTimeout(this.removeAlertMessage, 5000, null);
         this.setState(prev => {
           prev.alertType = 'success';
@@ -111,8 +112,8 @@ export const Documents = hh(class Documents extends Component {
           prev.showAlert = true;
           prev.collaboratorEmail = '';
           return prev;
-        },()=> spinnerService.hideAll());
-      }).catch( error => {
+        }, () => spinnerService.hideAll());
+      }).catch(error => {
         spinnerService.hideAll();
         this.setState(prev => {
           prev.alertType = 'danger';
@@ -122,7 +123,7 @@ export const Documents = hh(class Documents extends Component {
           return prev;
         });
       });
-    }
+    } else spinnerService.hideAll();
   };
 
   addDocuments = () => {
@@ -136,11 +137,11 @@ export const Documents = hh(class Documents extends Component {
   };
 
   editRestriction = () => {
-    window.location.href =  component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
+    window.location.href = component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
   };
 
   showRestriction = () => {
-    window.location.href =  component.serverURL + "/dataUse/show/" + this.props.restrictionId;
+    window.location.href = component.serverURL + "/dataUse/show/" + this.props.restrictionId;
   };
 
   closeRemoveModal = () => {
@@ -148,27 +149,27 @@ export const Documents = hh(class Documents extends Component {
   };
 
   closeModal = () => {
-    this.setState({showAddKeyDocuments: !this.state.showAddKeyDocuments});
+    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
   };
   closeAdditionalModal = () => {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
   remove = (row) => (e) => {
-    this.setState({ 
+    this.setState({
       showRemoveDocuments: !this.state.showRemoveDocuments,
       documentToRemove: row
     });
   };
 
   removeDocument() {
-   DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
-    then(resp => {
-      this.closeRemoveModal();
-      this.props.handleLoadDocuments();
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });   
+    DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
+      then(resp => {
+        this.closeRemoveModal();
+        this.props.handleLoadDocuments();
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
   }
 
   findDul = () => {
@@ -197,7 +198,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   render() {
-    const {restriction = []} = this.props;
+    const { restriction = [] } = this.props;
     return div({}, [
       AddDocumentDialog({
         closeModal: this.closeModal,
@@ -219,9 +220,9 @@ export const Documents = hh(class Documents extends Component {
         bodyText: 'Are you sure you want to remove this document?',
         actionLabel: 'Yes'
       }, []),
-      
-      Panel({title: "Documents"}, [
-        p({ isRendered: this.props.docsClarification },[this.props.docsClarification]),
+
+      Panel({ title: "Documents" }, [
+        p({ isRendered: this.props.docsClarification }, [this.props.docsClarification]),
         button({
           className: "btn buttonSecondary",
           style: addDocumentBtn,
@@ -242,15 +243,14 @@ export const Documents = hh(class Documents extends Component {
         })
       ]),
 
-      Panel({title: "Data Use Letter"}, [
+      Panel({ title: "Data Use Letter" }, [
         div({ style: { 'marginTop': '10px' } }, [
           p({ className: "bold" }, [
             "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
-            br({}),
-            small({ className: "normal" }, ["You can either insert their emails below and a link will be sent to them directly or get a shareable link."])
+            span({ className: "data-use-clarification" }, ["You can either insert the email below and a link will be sent to them directly or click to get a shareable link."])
           ]),
-          div({ className: "row positionRelative" }, [
-            div({ className: "col-lg-10 col-md-9 col-sm-9 col-9" }, [
+          div({ className: "collaborator-email-container row" }, [
+            div({ className: "col-xs-12 col-sm-6 col-md-8" }, [
               InputFieldText({
                 id: "inputCollaboratorEmail",
                 name: "collaboratorEmail",
@@ -262,83 +262,84 @@ export const Documents = hh(class Documents extends Component {
                 onChange: this.handleInputChange,
                 error: this.state.invalidEmail,
                 errorMessage: 'Invalid email address'
-              })
+              }),
+              button({ className: "btn buttonPrimary", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
             ]),
-            div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'top': '25px', 'right': '0'} }, [
-                button({ className: "btn buttonPrimary fullWidth", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
-            ]),
-          ]),
-          div({ className: "row" }, [
-            div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
+            div({ className: "col-xs-12 col-sm-6 col-md-4 shareable-link" }, [
               button({
-                className: "btn buttonSecondary fullWidth",
+                className: "btn buttonPrimary",
                 onClick: this.getShareableLink,
                 name: "getLink",
                 disabled: false,
                 id: 'shareable-link'
               }, [
-                span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
-                "Get shareable link"
+                  span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
+                  "Get shareable link"
+                ]),
+            ])
+          ]),
+
+          div({ className: "row" }, [
+            div({ className: "col-xs-12" }, [
+              div({ style: { 'marginTop': '30px' } }, [
+                AlertMessage({
+                  type: this.state.alertType,
+                  msg: this.state.alertMessage,
+                  show: this.state.showAlert
+                }),
               ])
             ])
           ])
-        ]),
-        div({ style: { 'marginTop': '15px' } }, [
-          AlertMessage({
-            type: this.state.alertType,
-            msg: this.state.alertMessage,
-            show: this.state.showAlert
-          }),
         ])
       ]),
- 
+
       div({ isRendered: this.props.restriction !== undefined }, [
         Panel({
           title: "Data Use Restrictions",
           isRendered: (component.isAdmin || component.isViewer) && this.findDul()
         }, [
-          h3({
-            style: {'marginTop': '10px'},
-            isRendered: this.props.restrictionId !== null
-          }, ["Summary"]),
-          div({
-            isRendered: restriction.length > 1
-          }, [
-            restriction.map((elem, index) => {
-              return h(Fragment, {key: index}, [
-                div({style: {'marginBottom': '10px'}}, [
-                  div({style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented'}, [elem])
-                ]),
-              ]);
-            }),
-          ]),
-          div({}, [
-            button({
+            h3({
+              style: { 'marginTop': '10px' },
+              isRendered: this.props.restrictionId !== null
+            }, ["Summary"]),
+            div({
+              isRendered: restriction.length > 1
+            }, [
+                restriction.map((elem, index) => {
+                  return h(Fragment, { key: index }, [
+                    div({ style: { 'marginBottom': '10px' } }, [
+                      div({ style: { 'marginTop': '10px' }, className: index === 0 ? 'first' : 'indented' }, [elem])
+                    ]),
+                  ]);
+                }),
+              ]),
+            div({}, [
+              button({
                 className: "btn buttonSecondary",
-                style: {'marginRight': '15px'},
+                style: { 'marginRight': '15px' },
                 onClick: this.newRestriction,
                 isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer,
               },
-              ["Create Restriction"]),
-            button({
+                ["Create Restriction"]),
+              button({
                 className: "btn buttonSecondary",
-                style: {'marginRight': '15px'},
+                style: { 'marginRight': '15px' },
                 onClick: this.editRestriction,
                 isRendered: this.props.restrictionId !== null && !component.isViewer,
               },
-              ["Edit Restrictions"]),
-            button({
+                ["Edit Restrictions"]),
+              button({
                 className: "btn buttonSecondary",
                 onClick: this.showRestriction,
                 isRendered: this.props.restrictionId !== null,
               },
-              ["View Restrictions"])
-          ]),
-        ])
+                ["View Restrictions"])
+            ]),
+          ])
       ]),
 
-      div({isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0}, [
-        Panel({title: "Associated Projects"}, [
+      div({ isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0 }, [
+        Panel({ title: "Associated Projects" }, [
           Table({
             serverURL: this.props.serverURL,
             headers: associatedProjectsHeaders,
@@ -350,7 +351,7 @@ export const Documents = hh(class Documents extends Component {
             isAdmin: component.isAdmin,
             isViewer: component.isViewer
           })
-        ]) 
+        ])
       ]),
 
       h(Spinner, {
