@@ -1,11 +1,16 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyperscript-helpers';
+import { input, hh, h, h3, div, p, hr, small, button, ul, li, br, span } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { DocumentHandler } from  '../util/ajax';
+import { DocumentHandler, DUL, ConsentGroup } from  '../util/ajax';
+import { AlertMessage } from './AlertMessage';
+import { InputFieldText } from './InputFieldText';
+import { validateEmail } from "../util/Utils";
+import { spinnerService } from "../util/spinner-service";
+import { Spinner } from '../components/Spinner';
 
 const headers =
   [
@@ -32,13 +37,93 @@ export const Documents = hh(class Documents extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      alertMessage: '',
+      showAlert: false,
       showAddKeyDocuments: false,
       showAddAdditionalDocuments: false,
       showRemoveDocuments: false,
-      documentToRemove: null
+      documentToRemove: null,
+      error: false,
+      alertType: 'success',
+      invalidEmail: false,
+      collaboratorEmail: '',
     }
     this.removeDocument = this.removeDocument.bind(this);
+    this.getShareableLink = this.getShareableLink.bind(this);
   }
+
+  getShareableLink = () => {
+    let data = {
+      consentGroupKey: this.props.projectKey,
+      creator: this.props.user.userName
+    };
+    DUL.generateRedirectLink(data, component.serverURL).then(resp => {
+      navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
+      this.successTimeAlert();
+    }).catch(error => {
+      this.setState(prev => {
+        prev.disableBtn = false;
+        prev.alertType = "danger";
+        prev.alertMessage = 'Something went wrong. Please try again.';
+        prev.showAlert = true;
+        return prev;
+      });
+    });
+  };
+
+  successTimeAlert = () => {
+    setTimeout(this.removeAlertMessage, 3000, null);
+    this.setState(prev => {
+      prev.alertType = "success";
+      prev.alertMessage = "Link copied to clipboard!";
+      prev.showAlert = true;
+      return prev;
+    });
+  };
+
+  removeAlertMessage = () => {
+    this.setState(prev => {
+      prev.alertType = "success";
+      prev.alertMessage = "";
+      prev.showAlert = false;
+      return prev;
+    });
+  };
+
+  validEmail = (email) => {
+    if (validateEmail(email)) {
+      return true;
+    } else {
+      this.setState({ invalidEmail: true });
+    }
+  };
+
+  send = () => {
+    spinnerService.showAll();
+    const collaboratorEmail = this.state.collaboratorEmail;
+    if (this.validEmail(collaboratorEmail)){
+      this.setState({alertMessage: '', collaboratorEmail: '', showAlert: false});
+      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then( resp => {
+        setTimeout(this.removeAlertMessage, 5000, null);
+        this.setState(prev => {
+          prev.alertType = 'success';
+          prev.alertMessage = 'Email sent to: ' + collaboratorEmail;
+          prev.showAlert = true;
+          prev.collaboratorEmail = '';
+          return prev;
+        },()=> spinnerService.hideAll());
+      }).catch( error => {
+        spinnerService.hideAll();
+        this.setState(prev => {
+          prev.alertType = 'danger';
+          prev.alertMessage = 'Error sending email sent to: ' + collaboratorEmail + '. Please try again later.';
+          prev.showAlert = false;
+          prev.collaboratorEmail = '';
+          return prev;
+        });
+      });
+    }
+  };
 
   addDocuments = () => {
     this.setState({
@@ -98,9 +183,21 @@ export const Documents = hh(class Documents extends Component {
     return dulPresent;
   };
 
+  handleInputChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.fileError = false;
+      prev[field] = value;
+      if (field === 'collaboratorEmail') {
+        prev.invalidEmail = false;
+      }
+      return prev;
+    })
+  };
+
   render() {
     const {restriction = []} = this.props;
-
     return div({}, [
       AddDocumentDialog({
         closeModal: this.closeModal,
@@ -122,6 +219,7 @@ export const Documents = hh(class Documents extends Component {
         bodyText: 'Are you sure you want to remove this document?',
         actionLabel: 'Yes'
       }, []),
+      
       Panel({title: "Documents"}, [
         p({ isRendered: this.props.docsClarification },[this.props.docsClarification]),
         button({
@@ -144,10 +242,57 @@ export const Documents = hh(class Documents extends Component {
         })
       ]),
 
-
-      div({
-        isRendered: this.props.restriction !== undefined
-      }, [
+      Panel({title: "Data Use Letter"}, [
+        div({ style: { 'marginTop': '10px' } }, [
+          p({ className: "bold" }, [
+            "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
+            br({}),
+            small({ className: "normal" }, ["You can either insert their emails below and a link will be sent to them directly or get a shareable link."])
+          ]),
+          div({ className: "row positionRelative" }, [
+            div({ className: "col-lg-10 col-md-9 col-sm-9 col-9" }, [
+              InputFieldText({
+                id: "inputCollaboratorEmail",
+                name: "collaboratorEmail",
+                label: "Collaborator Email",
+                value: this.state.collaboratorEmail,
+                disabled: false,
+                required: false,
+                placeholder: "Enter email address...",
+                onChange: this.handleInputChange,
+                error: this.state.invalidEmail,
+                errorMessage: 'Invalid email address'
+              })
+            ]),
+            div({ className: "col-lg-2 col-md-3 col-sm-3 col-3 positionAbsolute", style: {'top': '25px', 'right': '0'} }, [
+                button({ className: "btn buttonPrimary fullWidth", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
+            ]),
+          ]),
+          div({ className: "row" }, [
+            div({ className: "col-lg-6 col-md-6 col-sm-6 col-6" }, [
+              button({
+                className: "btn buttonSecondary fullWidth",
+                onClick: this.getShareableLink,
+                name: "getLink",
+                disabled: false,
+                id: 'shareable-link'
+              }, [
+                span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
+                "Get shareable link"
+              ])
+            ])
+          ])
+        ]),
+        div({ style: { 'marginTop': '15px' } }, [
+          AlertMessage({
+            type: this.state.alertType,
+            msg: this.state.alertMessage,
+            show: this.state.showAlert
+          }),
+        ])
+      ]),
+ 
+      div({ isRendered: this.props.restriction !== undefined }, [
         Panel({
           title: "Data Use Restrictions",
           isRendered: (component.isAdmin || component.isViewer) && this.findDul()
@@ -189,23 +334,29 @@ export const Documents = hh(class Documents extends Component {
               },
               ["View Restrictions"])
           ]),
-        ]),
-        div({isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0}, [
-          Panel({title: "Associated Projects"}, [
-            Table({
-              serverURL: this.props.serverURL,
-              headers: associatedProjectsHeaders,
-              data: this.props.associatedProjects,
-              sizePerPage: 10,
-              paginationSize: 10,
-              unlinkProject: this.props.handleUnlinkProject,
-              handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
-              isAdmin: component.isAdmin,
-              isViewer: component.isViewer
-            })
-          ])
         ])
-      ])
+      ]),
+
+      div({isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0}, [
+        Panel({title: "Associated Projects"}, [
+          Table({
+            serverURL: this.props.serverURL,
+            headers: associatedProjectsHeaders,
+            data: this.props.associatedProjects,
+            sizePerPage: 10,
+            paginationSize: 10,
+            unlinkProject: this.props.handleUnlinkProject,
+            handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
+            isAdmin: component.isAdmin,
+            isViewer: component.isViewer
+          })
+        ]) 
+      ]),
+
+      h(Spinner, {
+        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+      })
+
     ])
   }
 });
