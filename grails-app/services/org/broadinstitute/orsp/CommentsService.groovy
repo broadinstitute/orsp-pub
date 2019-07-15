@@ -68,7 +68,7 @@ class CommentsService implements UserInfo {
      * @return  Collection of Comments associated to the given issueId
      */
     Collection<Comment> getCommentsForIssueId(String issueId) throws IllegalArgumentException {
-        Collection<Comment> comments
+        Collection<Comment> comments = []
         if (issueId) {
             comments = queryService.getCommentsByIssueId(issueId)
         } else {
