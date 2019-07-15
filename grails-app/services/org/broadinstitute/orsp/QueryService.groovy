@@ -1063,6 +1063,23 @@ class QueryService implements Status {
         results
     }
 
+    List<Issue> findIssueByProjectType(String type) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from issue ' +
+                        ' where type = :projectType ' +
+                        ' and deleted = 0 '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setParameterList('projectType', type)
+            list()
+        }
+        results
+    }
+
     Collection<Submission> getSubmissionsByProject(String projectKey) {
         if (!projectKey) return Collections.emptyList()
         Submission.findAllByProjectKey(projectKey)

@@ -12,6 +12,7 @@ class UrlMappings {
         // Without the extra declarations, the default index action is always the one called even if /funding is hit.
         "/api/report"(controller: 'report', action: "index")
         "/api/report/funding"(controller: 'report', action: "funding")
+        "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
         '/api/project'(resource: 'project')
