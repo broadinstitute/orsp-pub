@@ -53,6 +53,7 @@
     "react-datepicker": "2.0.0",
     "react-data-export": "0.4.2",
     "react-dom": "16.6.3",
+    "react-router-dom" : "5.0.1",
     "react-hyperscript-helpers": "2.0.0",
     "react-select": "2.1.2",
     "lodash": "4.17.11",
