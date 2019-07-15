@@ -241,7 +241,7 @@ class QueryService implements Status {
                 draw: pagination.draw,
                 recordsTotal: count,
                 recordsFiltered: fundingResults.getTotalCount(),
-                data: data,
+                data: fundings,
                 error: ""
         )
     }
