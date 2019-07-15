@@ -44,7 +44,7 @@ class UserController extends AuthenticatedController {
     def getOrspUsers() {
         JSON.registerObjectMarshaller(User) {
             def output = [:]
-            output['id'] = it[field].id
+            output['id'] = it.id
             output['userName'] = it.userName
             output['displayName'] = it.displayName
             output['emailAddress'] = it.emailAddress
