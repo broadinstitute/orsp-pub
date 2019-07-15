@@ -6,7 +6,6 @@ import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
-import org.broadinstitute.orsp.QueryOptions
 import org.broadinstitute.orsp.ReportService
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.webservice.PaginationParams
