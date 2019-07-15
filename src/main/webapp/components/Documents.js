@@ -117,8 +117,8 @@ export const Documents = hh(class Documents extends Component {
         spinnerService.hideAll();
         this.setState(prev => {
           prev.alertType = 'danger';
-          prev.alertMessage = 'Error sending email sent to: ' + collaboratorEmail + '. Please try again later.';
-          prev.showAlert = false;
+          prev.alertMessage = 'Error sending email to: ' + collaboratorEmail + '. Please try again later.';
+          prev.showAlert = true;
           prev.collaboratorEmail = '';
           return prev;
         });
