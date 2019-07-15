@@ -29,14 +29,6 @@ const MySearch = (props) => {
 };
 
 export const TableAsync = hh(class TableAsync extends Component {
-// implement custom pagination from react bootstrap table 2 -> https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/basic-pagination.html#completely-customization
-// set remote attributes to customize all functionality -> https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/basic-remote.html
-// set onTableChange after set remote enable. -> https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#ontablechange-function
-// use custom search bar. -> https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/basic-search.html
-  onTableChange = (e) => {
-   this.props.onTableChange(e, "queso")
-  };
-
   render() {
     return(
       h(Fragment, {}, [
@@ -69,7 +61,7 @@ export const TableAsync = hh(class TableAsync extends Component {
                   sort: true,
                   cellEdit: false
                 }}
-                pagination={ paginationFactory({ this.props.page, this.props.sizePerPage, this.props.totalSize })}
+                pagination={ paginationFactory({ page: this.props.page, totalSize: this.props.totalSize })}
                 defaultSorted= { this.props.defaultSorted}
                 onTableChange= { this.props.onTableChange }
                 {...props.baseProps }

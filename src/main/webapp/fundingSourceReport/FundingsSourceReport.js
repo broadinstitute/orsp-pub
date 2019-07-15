@@ -6,17 +6,26 @@ import { Spinner } from "../components/Spinner";
 import { TableAsync } from "../components/TableAsync";
 
 const SORT_NAME_INDEX = {
-  'userName': 0,
-  'displayName': 1,
-  'emailAddress': 2
+  'type': 0,
+  'projectKey': 1,
+  'summary': 2,
+  'status': 3,
+  'protocol': 4, // Not implemented
+  'pis': 5, // Not implemented
+  'source': 6,
+  'name': 7,
+  'awardNumber': 8
 };
 
 const TABLE_ACTIONS = {
-  SEARCH : "search"
+  SEARCH : "search",
+  FILTER: "filter",
+  PAGINATION: "pagination",
+  SORT: "sort"
 };
 
 const defaultSorted = [{
-  dataField: 'date',
+  dataField: 'projectKey',
   order: 'desc'
 }];
 
@@ -30,9 +39,10 @@ const columns = [
     text: 'Project Key',
     sort: true
   }, {
-    dataField: 'summary',
+  dataField: 'summary',
     text: 'Title',
-    sort: true
+    sort: true,
+    style: {'table-layout': 'auto'}
   }, {
     dataField: 'status',
     text: 'Status',
@@ -132,9 +142,9 @@ class FundingsSourceReport extends Component {
     this.tableHandler(0, this.state.sizePerPage, search, this.state.sort, 1);
   };
 
-  onPageChange = (page) => {
-    const offset = (page - 1) * this.state.sizePerPage;
-    this.tableHandler(offset, this.state.sizePerPage, this.state.search, this.state.sort, page);
+  onPageChange = (page, sizePerPage) => {
+    const offset = (page - 1) * sizePerPage;
+    this.tableHandler(offset, sizePerPage, this.state.search, this.state.sort, page);
   };
 
   onSizePerPageListHandler = (size) => {
@@ -153,36 +163,34 @@ class FundingsSourceReport extends Component {
     };
     this.tableHandler(0, this.state.sizePerPage, null, sort)
   };
-  // Only used when remote value is established as true
+
   onTableChange = (type, newState) => {
-    // types =
-    // filter
-    // pagination
-    // sort
-    // cellEdit
     switch(type) {
       case TABLE_ACTIONS.SEARCH: {
-        console.log("BUSCA", newState.searchText);
-        this.tableHandler(0, this.state.sizePerPage, newState.searchText, this.state.sort, 1);
+        this.onSearchChange(newState.searchText);
         break
       }
+      case TABLE_ACTIONS.FILTER: {
+        break;
+      }
+      case TABLE_ACTIONS.PAGINATION: {
+        this.onPageChange(newState.page, newState.sizePerPage);
+        break;
+      }
+      case TABLE_ACTIONS.SORT: {
+        this.onSortChange(newState.sortName, newState.sortOrder);
+        break;
+      }
       default: {
-        console.log("nada");
         break;
       }
     }
-
-    console.log("type => ", type, "\nnewState => ",newState);
 
   };
   render() {
     return(
       div({},[
         TableAsync({
-          customFilter: true,
-          customPagination: true,
-          customSort: true,
-          customCellEdit: false,
           onTableChange: this.onTableChange,
           data: this.state.fundings,
           columns: columns,
@@ -191,7 +199,9 @@ class FundingsSourceReport extends Component {
           csvFileName: 'FundingsReport.csv',
           showPrintButton: false,
           printComments: () => { console.log("HOLIS") },
-          defaultSorted: defaultSorted
+          defaultSorted: defaultSorted,
+          page: this.state.currentPage,
+          totalSize: this.state.recordsFiltered
         }),
         h(Spinner, {
           name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
