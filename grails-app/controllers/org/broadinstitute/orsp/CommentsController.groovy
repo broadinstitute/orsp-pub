@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.utils.UtilityClass
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -34,14 +35,7 @@ class CommentsController extends AuthenticatedController {
     }
 
     def getComments() {
-        JSON.registerObjectMarshaller(Comment) {
-            def output = [:]
-            output['id'] = it.id
-            output['author'] = it.author
-            output['comment'] = it.description
-            output['date'] = it.created
-            return output
-        }
+        UtilityClass.registerCommentMarshaller()
         try {
             Collection<Comment> comments = commentsService.getCommentsForIssueId(params.id)
             response.status = 200
@@ -49,7 +43,7 @@ class CommentsController extends AuthenticatedController {
         } catch(IllegalArgumentException e) {
             response.status = 400
             render([error: e.message] as JSON)
-        } catch(Error e) {
+        } catch(Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
         }

@@ -67,18 +67,14 @@ class CommentsService implements UserInfo {
      * @param issueId Project or Data Sample Cohort id
      * @return  Collection of Comments associated to the given issueId
      */
-    Collection<Comment> getCommentsForIssueId(String issueId) {
+    Collection<Comment> getCommentsForIssueId(String issueId) throws IllegalArgumentException {
+        Collection<Comment> comments
         if (issueId) {
-            try {
-                Collection<Comment> comments = queryService.getCommentsByIssueId(issueId)
-                comments
-            } catch (Exception e) {
-                log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
-                throw new Error()
-            }
+            comments = queryService.getCommentsByIssueId(issueId)
         } else {
             log.error("Unable to get Comments from null issueId.")
-            throw new IllegalArgumentException()
+            throw new IllegalArgumentException("Issue id is required.")
         }
+        comments
     }
 }
