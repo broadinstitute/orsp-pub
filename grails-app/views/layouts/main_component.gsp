@@ -111,15 +111,7 @@
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
-        consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
-        consentGroupsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroups')}",
-        createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consent-group', method: 'POST')}",
-        createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
         error: "${error}",
-        fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
-        getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
@@ -129,7 +121,6 @@
         tab: "${params.tab}",
         consentKey: "${consentKey}",
         projectType: '${params.type}',
-        projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
         sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
         searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",

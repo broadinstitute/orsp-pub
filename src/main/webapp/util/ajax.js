@@ -1,5 +1,6 @@
 import axios from 'axios';
 import "regenerator-runtime/runtime";
+import  { UrlConstants }  from './UrlConstants';
 
 export const Search = {
 
@@ -11,8 +12,8 @@ export const Search = {
 
 export const SampleCollections = {
 
-  getSampleCollections(url, query) {
-    return axios.get(url + '?term=' + query);
+  getSampleCollections(query) {
+    return axios.get(UrlConstants.sampleSearchUrl + '?term=' + query);
   },
 
   getCollectionsCGLinked(url, consentKey) {
@@ -21,11 +22,11 @@ export const SampleCollections = {
 };
 
 export const ConsentGroup = {
-  getConsentGroupNames(url) {
-    return axios.get(url);
+  getConsentGroupNames() {
+    return axios.get(UrlConstants.consentNamesSearchURL);
   },
 
-  create(url, dataProject, dataConsentCollection, files, displayName, userName) {
+  create(dataProject, dataConsentCollection, files, displayName, userName) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -42,7 +43,7 @@ export const ConsentGroup = {
       headers: { 'content-type': 'multipart/form-data' }
     };
 
-    return axios.post(url, data, config);
+    return axios.post(UrlConstants.createConsentGroupURL, data, config);
   },
 
   getConsentGroup(url, consentKey) {
@@ -61,8 +62,8 @@ export const ConsentGroup = {
     return axios.put(url + '?consentKey=' + projectKey, data);
   },
 
-  getConsentGroupByUUID(url, uuid) {
-    return axios.get(url + '?uuid=' + uuid);
+  getConsentGroupByUUID(uuid) {
+    return axios.get(UrlConstants.getConsentGroupByUUID + '?uuid=' + uuid);
   },
 
   sendEmailDul(url, consentKey, userName, recipients) {
@@ -124,18 +125,18 @@ export const Files = {
       headers: { 'content-type': 'multipart/form-data' }
     };
 
-    return axios.post(url +'/api/files-helper/attach-document', data, config);
+    return axios.post(url + UrlConstants.attachDocuments, data, config);
   },
 
-  downloadFillable(pdfUrl) {
-    return axios({ url: pdfUrl, method: 'GET', responseType: 'blob' });
+  downloadFillable() {
+    return axios({ url: UrlConstants.fillablePdfURL, method: 'GET', responseType: 'blob' });
   }
 
 };
 
 export const Project = {
 
-  createProject(url, dataProject, files, displayName, userName) {
+  createProject(dataProject, files, displayName, userName) {
     let data = new FormData();
     files.forEach(file => {
       if (file.file != null) {
@@ -148,7 +149,7 @@ export const Project = {
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };
-    return axios.post(url, data, config);
+    return axios.post(UrlConstants.createProjectUrl, data, config);
   },
 
   getProject(url, projectkey) {
@@ -200,8 +201,8 @@ export const DocumentHandler = {
 
 export const User = {
 
-  getUserSession(url) {
-    return axios.get(url)
+  getUserSession() {
+    return axios.get(UrlConstants.getUserUrl)
   },
 
   getAllUsers(serverUrl, query) {

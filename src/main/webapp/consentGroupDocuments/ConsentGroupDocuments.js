@@ -45,7 +45,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(component.attachmentsUrl, component.consentKey).then(resp => {
-      User.getUserSession(component.getUserUrl).then(user => {
+      User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
             prev.user = user.data;
@@ -154,7 +154,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         downloadDocumentUrl: component.downloadDocumentUrl,
         options: this.state.documentOptions,
         projectKey: component.consentKey,
-        attachDocumentsUrl: component.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
         serverURL: component.serverURL,

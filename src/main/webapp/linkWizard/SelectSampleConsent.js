@@ -121,7 +121,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   getConsentGroups = () => {
     this.setState({ consentGroupIsLoading: true });
-    ConsentGroup.getConsentGroupNames(component.consentGroupsUrl).then(
+    ConsentGroup.getConsentGroupNames().then(
       resp => {
         const existingConsentGroups = resp.data.map(item => {
           return {

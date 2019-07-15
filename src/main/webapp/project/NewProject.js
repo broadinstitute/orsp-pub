@@ -62,7 +62,7 @@ class NewProject extends Component {
   }
 
   componentDidMount() {
-    User.getUserSession(this.props.getUserUrl).then(resp =>
+    User.getUserSession().then(resp =>
       this.setState({ user: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -84,7 +84,6 @@ class NewProject extends Component {
     if (this.validateForm()) {
       this.changeStateSubmitButton();
       Project.createProject(
-        this.props.createProjectURL, 
         this.getProject(),
         this.state.files,
         this.state.user.displayName,

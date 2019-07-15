@@ -115,7 +115,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   componentDidMount() {
     spinnerService.showAll();
-    ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
+    ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -135,7 +135,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     ConsentGroup.getConsentGroup(component.consentGroupReviewUrl, component.consentKey).then(
       element => {
         let sampleCollections = [];
-        SampleCollections.getSampleCollections(component.sampleSearchUrl).then(
+        SampleCollections.getSampleCollections().then(
           resp => {
             sampleCollections = resp.data.map(item => {
               return {
@@ -424,7 +424,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         let institutionalSourceArray = this.state.formData.instSources;
         let newFormData = Object.assign({}, this.state.formData);
         newFormData.instSources = institutionalSourceArray;
-        User.getUserSession(component.getUserUrl).then(resp => {
+        User.getUserSession().then(resp => {
           data.projectKey = component.consentKey;
           newFormData.editCreator = resp.data.userName;
           data.suggestions = JSON.stringify(newFormData);

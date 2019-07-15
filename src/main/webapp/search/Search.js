@@ -21,7 +21,6 @@ class Search extends React.Component {
     this.state = {
       // setup data
       searchUrl: props.searchUrl,
-      projectKeySearchUrl: props.projectKeySearchUrl,
       issueTypes: props.issueTypes,
       issueStatuses: props.issueStatuses,
       userNameSearchUrl: props.userNameSearchUrl,
@@ -197,7 +196,6 @@ class Search extends React.Component {
                 ref={el => {
                   this.projectAutocomplete = el;
                 }}
-                searchUrl={this.state.projectKeySearchUrl}
                 onChange={selected => {
                   if (
                     selected[0] != null &&
@@ -338,7 +336,6 @@ class Search extends React.Component {
         </form>
         <hr />
         <SearchResults
-          getUserUrl={this.props.getUserUrl}
           data={this.state.data}
           loading={this.state.loading}
           loaded={this.state.loaded}

@@ -123,7 +123,6 @@ export default class CollectionLinks extends React.Component {
               <label htmlFor="projectKey">Project</label>
               <ProjectAutocomplete
                 ref={el => { this.projectAutocomplete = el; }}
-                searchUrl={this.props.projectKeySearchUrl}
                 onChange={ (selected) => {
                   if (selected[0] != null && !(typeof selected[0].projectKey === "undefined")) {
                     this.setState(() => ({ projectKey: selected[0].projectKey}));

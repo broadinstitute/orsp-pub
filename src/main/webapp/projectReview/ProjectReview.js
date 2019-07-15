@@ -489,7 +489,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         return prev;
       });
       let suggestions = this.state.formData;
-      User.getUserSession(component.getUserUrl).then(
+      User.getUserSession().then(
         resp => {
           suggestions.editCreator = resp.data.userName;
           const data = {

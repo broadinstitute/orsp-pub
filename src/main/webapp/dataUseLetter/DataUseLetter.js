@@ -110,7 +110,7 @@ class DataUseLetter extends Component {
 
   initFormData = () => {
     const uuid = window.location.href.split('id=')[1];
-    ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
+    ConsentGroup.getConsentGroupByUUID(uuid).then(consentGroup => {
       this.setState(prev => {
         prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
         prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';

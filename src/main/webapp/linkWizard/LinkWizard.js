@@ -76,7 +76,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   getUserSession() {
-    User.getUserSession(component.getUserUrl).then(
+    User.getUserSession().then(
       resp => this.setState({ user: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -339,7 +339,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       }, [
         SelectSampleConsent({
           title: "Sample/Data Cohort Info",
-          consentNamesSearchURL: component.consentNamesSearchURL,
           removeErrorMessage: this.removeErrorMessage,
           sampleCollectionList: this.state.sampleCollectionList,
           sampleCollection: this.state.sampleCollection,

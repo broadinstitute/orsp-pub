@@ -1,12 +1,13 @@
 import React from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { UrlConstants } from "./UrlConstants";
 
 class ProjectAutocomplete extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             onChange: props.onChange,
-            searchUrl: props.searchUrl,
+            searchUrl: UrlConstants.projectKeySearchUrl,
             allowNew: false,
             isLoading: false,
             multiple: false,

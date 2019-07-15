@@ -106,7 +106,6 @@ export const Documents = hh(class Documents extends Component {
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
-        attachDocumentsUrl: component.attachDocumentsUrl,
         projectKey: this.props.projectKey,
         user: this.props.user,
         handleLoadDocuments: this.props.handleLoadDocuments,
