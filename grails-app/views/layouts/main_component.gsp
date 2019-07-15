@@ -46,48 +46,8 @@
 
     <script>
       if (location.protocol !== "https:") location.protocol = "https:";
-      function onSignIn(googleUser) {
-        // show spinner while the page is re-loading
-        document.getElementById("login_spinner").setAttribute("class", "visible");
-        let profile = googleUser.getBasicProfile();
-        let token = googleUser.getAuthResponse().id_token;
-        let auth2 = gapi.auth2.getAuthInstance();
-        auth2.then(function() {
-          let xhttp = new XMLHttpRequest();
-
-          %{--
-              This is here so that after a Broad user signs in, their page is refreshed with valid content
-              Overwrites previous onreadystatechange
-          --}%
-          <auth:isNotAuthenticated>
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              location.reload();
-            }
-          };
-          </auth:isNotAuthenticated>
-          let url = "${raw(createLink(controller: "auth", action: "authUser"))}";
-          let postData = "token=" + token;
-          xhttp.open("POST", url, true);
-          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          xhttp.send(postData);
-        });
-      }
-      function signOut() {
-        let auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function (){
-          let xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              window.location = "${request.contextPath}";
-            }
-          };
-          let url = "${raw(createLink(controller: "logout", action: "logout"))}";
-          xhttp.open("POST", url, true);
-          xhttp.send();
-        });
-      }
     </script>
+    <g:render template="/layouts/signin"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
 
     %{--
