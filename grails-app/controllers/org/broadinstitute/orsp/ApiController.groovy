@@ -31,6 +31,7 @@ class ApiController {
         // We do this to-from conversion because Gson excludes null/empty objects
         // whereas the grails JSON converter does not
         Gson gson = new Gson()
+        gson.toJson(test)
         Object status = gson.fromJson(gson.toJson(statusService.status()), Object.class)
         render status as JSON
     }
