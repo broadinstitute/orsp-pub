@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
@@ -42,24 +43,13 @@ class UserController extends AuthenticatedController {
     }
 
     def getOrspUsers() {
-        JSON.registerObjectMarshaller(User) {
-            def output = [:]
-            output['id'] = it.id
-            output['userName'] = it.userName
-            output['displayName'] = it.displayName
-            output['emailAddress'] = it.emailAddress
-            output['createdDate'] = it.createdDate
-            output['updatedDate'] = it.updatedDate
-            output['lastLoginDate'] = it.lastLoginDate
-            output['roles'] = it.roles.collect{r -> r.getRole()}
-            return output
-        }
+        UtilityClass.registerUserRolesMarshaller()
 
         PaginationParams pagination = new PaginationParams(
                 draw: params.getInt("draw") ?: 1,
                 start: params.getInt("start")?: 0,
                 length: params.getInt("length")?: 10,
-                orderColumn: params.getInt("orderColumn")? params.get("orderColumn"): 0,
+                orderColumn: params.getInt("orderColumn")? params.getInt("orderColumn"): 0,
                 sortDirection: params.get("sortDirection")? params.get("sortDirection").toString() : "asc",
                 searchValue: params.get("searchValue")? params.get("searchValue").toString() : null)
         render(queryService.queryUserRoles(pagination) as JSON)
