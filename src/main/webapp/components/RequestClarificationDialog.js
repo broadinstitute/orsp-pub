@@ -20,7 +20,6 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       clarification: '',
       showAlert: false,
       pm: [{key:''}],
-      submit: false
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
   }
@@ -103,7 +102,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(component.searchUsersURL, query)
+      Search.getMatchingQuery(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {

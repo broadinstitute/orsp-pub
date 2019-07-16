@@ -7,7 +7,6 @@ class ProjectAutocomplete extends React.Component {
         super(props);
         this.state = {
             onChange: props.onChange,
-            searchUrl: UrlConstants.projectKeySearchUrl,
             allowNew: false,
             isLoading: false,
             multiple: false,
@@ -49,7 +48,7 @@ class ProjectAutocomplete extends React.Component {
                     onChange={this.state.onChange}
                     onSearch={query => {
                         this.setState(() => ({isLoading: true}));
-                        fetch(this.state.searchUrl + "?term=" + query)
+                        fetch(UrlConstants.projectKeySearchUrl + "?term=" + query)
                             .then(resp => resp.json())
                             .then(json => this.setState(() => ({
                                 isLoading: false,

@@ -157,7 +157,7 @@ class DataUseLetter extends Component {
 
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(this.props.sourceDiseases, query)
+      Search.getSourceDiseases(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {

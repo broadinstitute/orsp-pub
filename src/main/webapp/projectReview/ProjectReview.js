@@ -158,7 +158,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     let future = {};
     let futureCopy = {};
     let formData = {};
-    Project.getProject(component.projectUrl, component.projectKey).then(
+    Project.getProject(component.projectKey).then(
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
@@ -532,7 +532,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(component.searchUsersURL, query)
+      Search.getMatchingQuery(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {

@@ -7,7 +7,6 @@ import ErrorHandler from '../components/ErrorHandler';
 ReactDOM.render(
   <ErrorHandler>
     <NewProject
-        searchUsersURL = {component.searchUsersURL}
         attachDocumentsURL = {component.attachDocumentsURL}
         serverURL = {component.serverURL}
         loadingImage = {component.loadingImage}

@@ -50,7 +50,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   init = () => {
-    Project.getProject(component.projectUrl, component.projectKey).then(
+    Project.getProject(component.projectKey).then(
       issue => {
         let formData = {};
         let initial = {};
@@ -137,7 +137,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   submit = () => {
     spinnerService.showAll();
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(component.updateAdminOnlyPropsUrl, parsedForm , component.projectKey).then(
+    Project.updateAdminOnlyProps(parsedForm , component.projectKey).then(
       response => {
         spinnerService.hideAll();
         this.setState(prev => {

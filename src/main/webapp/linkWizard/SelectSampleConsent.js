@@ -144,7 +144,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   getAllSampleCollections = (consentKey) => {
     this.setState({ sampleCollectionIsLoading: true });
 
-    SampleCollections.getCollectionsCGLinked(component.linkedSampleCollectionsUrl, consentKey).then(
+    SampleCollections.getCollectionsCGLinked(consentKey).then(
       resp => {
         const label = "Sample Collections Linked to ";
         const sampleCollectionList = this.setOptionsValues(resp.data, consentKey, label);
@@ -332,7 +332,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
-              downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
               reviewFlow: false,
               pagination: false

@@ -15,7 +15,6 @@ function DUL(props) {
         serverUrl = {component.serverURL}
         projectUrl = {component.projectUrl}
         loadingImage = {component.loadingImage}
-        sourceDiseases = {component.sourceDiseases}
       />
     </ErrorHandler>;
   }

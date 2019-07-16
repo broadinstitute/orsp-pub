@@ -77,7 +77,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-   DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
+   DocumentHandler.delete(this.state.documentToRemove.id).
     then(resp => {
       this.closeRemoveModal();
       this.props.handleLoadDocuments();

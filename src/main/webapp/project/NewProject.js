@@ -394,7 +394,6 @@ class NewProject extends Component {
             title: "Project Details",
             currentStep: currentStep,
             user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
             updateForm: this.updateGeneralDataFormData,
             errors: this.state.errors,
             removeErrorMessage: this.removeErrorMessage

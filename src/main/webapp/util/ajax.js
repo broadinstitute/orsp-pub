@@ -4,8 +4,12 @@ import  { UrlConstants }  from './UrlConstants';
 
 export const Search = {
 
-  getMatchingQuery(url, query) {
-    return axios.get(url + '?term=' + query);
+  getMatchingQuery(query) {
+    return axios.get(UrlConstants.searchUsersURL + '?term=' + query);
+  },
+
+  getSourceDiseases(query) {
+    return axios.get(UrlConstants.matchingDiseasesOntologiesUrl + '?term=' + query);
   }
 
 };
@@ -16,8 +20,8 @@ export const SampleCollections = {
     return axios.get(UrlConstants.sampleSearchUrl + '?term=' + query);
   },
 
-  getCollectionsCGLinked(url, consentKey) {
-    return axios.get(url + '?consentKey=' + consentKey);
+  getCollectionsCGLinked(consentKey) {
+    return axios.get(UrlConstants.linkedSampleCollectionsUrl + '?consentKey=' + consentKey);
   }
 };
 
@@ -152,8 +156,8 @@ export const Project = {
     return axios.post(UrlConstants.createProjectUrl, data, config);
   },
 
-  getProject(url, projectkey) {
-    return axios.get(url + '?id=' + projectkey);
+  getProject(projectKey) {
+    return axios.get(UrlConstants.projectInfoURl + '?id=' + projectKey);
   },
 
   addExtraProperties(projectKey, data) {
@@ -168,8 +172,8 @@ export const Project = {
     return axios.put(UrlConstants.updateProjectUrl + '?projectKey=' + projectKey, data);
   },
 
-  updateAdminOnlyProps(url, data, projectKey) {
-    return axios.put(url + '?projectKey=' + projectKey, data);
+  updateAdminOnlyProps(data, projectKey) {
+    return axios.put(UrlConstants.updateAdminOnlyPropsUrl + '?projectKey=' + projectKey, data);
   },
 
   async getProjectType(url, projectKey) {
@@ -182,20 +186,20 @@ export const Project = {
 };
 
 export const DocumentHandler = {
-  approveDocument(url, uuid) {
-    return axios.put(`${url}?uuid=${uuid}`);
+  approveDocument(uuid) {
+    return axios.put(`${UrlConstants.approveDocumentUrl}?uuid=${uuid}`);
   },
 
-   rejectDocument(url, uuid) {
-    return axios.put(`${url}/api/files-helper/reject-document?uuid=${uuid}`);
+   rejectDocument(uuid) {
+    return axios.put(`${UrlConstants.rejectDocumentUrl}?uuid=${uuid}`);
   },
 
    attachedDocuments(url, issueKey) {
-    return axios.get(`${url}?issueKey=${issueKey}`);
+    return axios.get(`${UrlConstants.attachedDocumentsUrl}?issueKey=${issueKey}`);
   },
 
-  delete(url, documentId) {
-    return axios.delete(`${url}?documentId=${documentId}`);
+  delete(documentId) {
+    return axios.delete(`${UrlConstants.rejectDocumentUrl}?documentId=${documentId}`);
   }
 };
 

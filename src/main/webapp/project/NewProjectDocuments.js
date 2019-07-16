@@ -137,7 +137,6 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
-              downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
               reviewFlow: false,
               pagination: false

@@ -5,6 +5,7 @@ import axios from "axios";
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
+import {UrlConstants} from "../util/UrlConstants";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
 
@@ -20,10 +21,8 @@ class Search extends React.Component {
     this.projectAutocomplete = React.createRef();
     this.state = {
       // setup data
-      searchUrl: props.searchUrl,
       issueTypes: props.issueTypes,
       issueStatuses: props.issueStatuses,
-      userNameSearchUrl: props.userNameSearchUrl,
       irbs: props.irbs,
       data: [],
       loading: false,
@@ -149,7 +148,7 @@ class Search extends React.Component {
     this.state.irb.map(function(irb, index) {
       params.append("irb", irb.id);
     });
-    axios.post(this.state.searchUrl, params).then(response => {
+    axios.post(UrlConstants.searchUrl, params).then(response => {
       const results = response.data;
       this.setState(() => ({
         data: results.data === null ? [] : results.data,
@@ -238,7 +237,7 @@ class Search extends React.Component {
                 ref={el => {
                   this.userAutocomplete = el;
                 }}
-                userNameSearchUrl={this.state.userNameSearchUrl}
+                userNameSearchUrl={UrlConstants.searchUsersURL}
                 onChange={selected => {
                   if (
                     selected[0] != null &&

@@ -118,7 +118,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   loadUsersOptions(query, callback) {
     if (query.length > 2) {
-      Search.getMatchingQuery(this.props.searchUsersURL, query)
+      Search.getMatchingQuery(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {

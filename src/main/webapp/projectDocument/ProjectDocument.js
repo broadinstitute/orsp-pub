@@ -31,7 +31,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
-    DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
+    DocumentHandler.attachedDocuments(component.projectKey).then(resp => {
       User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
@@ -48,7 +48,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   approveDocument = (uuid) => {
-    DocumentHandler.approveDocument(component.approveDocumentUrl, uuid).then(resp => {
+    DocumentHandler.approveDocument(uuid).then(resp => {
         this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});

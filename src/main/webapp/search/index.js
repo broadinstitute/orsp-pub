@@ -7,8 +7,6 @@ import ErrorHandler from "../components/ErrorHandler";
 ReactDOM.render(
   <ErrorHandler>
     <Search
-      searchUrl = {component.searchUrl}
-      userNameSearchUrl = {component.userNameSearchUrl}
       issueTypes = {component.issueTypes}
       issueStatuses = {component.issueStatuses}
       irbs = {component.irbs}

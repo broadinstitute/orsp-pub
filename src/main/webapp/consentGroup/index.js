@@ -7,7 +7,6 @@ import ErrorHandler from '../components/ErrorHandler';
 ReactDOM.render(
   <ErrorHandler>
     <NewConsentGroup
-      searchUsersURL = {component.searchUsersURL}
       serverURL = {component.serverURL}
       projectKey = {component.projectKey}
       loadingImage = {component.loadingImage}
