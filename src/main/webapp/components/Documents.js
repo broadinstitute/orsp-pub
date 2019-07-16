@@ -163,13 +163,13 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-    DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
-      then(resp => {
-        this.closeRemoveModal();
-        this.props.handleLoadDocuments();
-      }).catch(error => {
-        this.setState(() => { throw error; });
-      });
+   DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
+    then(resp => {
+      this.closeRemoveModal();
+      this.props.handleLoadDocuments();
+    }).catch(error => {
+      this.setState(() => { throw error; });
+    });   
   }
 
   findDul = () => {
@@ -298,37 +298,37 @@ export const Documents = hh(class Documents extends Component {
           title: "Data Use Restrictions",
           isRendered: (component.isAdmin || component.isViewer) && this.findDul()
         }, [
-            h3({
-              style: { 'marginTop': '10px' },
-              isRendered: this.props.restrictionId !== null
-            }, ["Summary"]),
-            div({
-              isRendered: restriction.length > 1
-            }, [
-                restriction.map((elem, index) => {
-                  return h(Fragment, { key: index }, [
-                    div({ style: { 'marginBottom': '10px' } }, [
-                      div({ style: { 'marginTop': '10px' }, className: index === 0 ? 'first' : 'indented' }, [elem])
-                    ]),
-                  ]);
-                }),
-              ]),
-            div({}, [
-              button({
+          h3({
+            style: {'marginTop': '10px'},
+            isRendered: this.props.restrictionId !== null
+          }, ["Summary"]),
+          div({
+            isRendered: restriction.length > 1
+          }, [
+            restriction.map((elem, index) => {
+              return h(Fragment, {key: index}, [
+                div({style: {'marginBottom': '10px'}}, [
+                  div({style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented'}, [elem])
+                ]),
+              ]);
+            }),
+          ]),
+          div({}, [
+            button({
                 className: "btn buttonSecondary",
                 style: { 'marginRight': '15px' },
                 onClick: this.newRestriction,
                 isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer,
               },
-                ["Create Restriction"]),
-              button({
+              ["Create Restriction"]),
+            button({
                 className: "btn buttonSecondary",
                 style: { 'marginRight': '15px' },
                 onClick: this.editRestriction,
                 isRendered: this.props.restrictionId !== null && !component.isViewer,
               },
-                ["Edit Restrictions"]),
-              button({
+              ["Edit Restrictions"]),
+            button({
                 className: "btn buttonSecondary",
                 onClick: this.showRestriction,
                 isRendered: this.props.restrictionId !== null,
