@@ -7,6 +7,13 @@ import { handleRedirectToProject } from "../util/Utils";
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import './reviewCategories.css';
 
+const styles = { 
+  projectWidth: '18',
+  summaryWidth: '150',
+  statusWidth: '20',
+  reviewWidth: '30'
+};
+
 const headers =
   [
     { name: 'Project', value: 'projectKey' },
@@ -48,6 +55,14 @@ class ReviewCategories extends Component {
     }, [row.projectKey])
   };
 
+  formatTooltip = (cell, row) => {
+    return span ({
+      title: cell
+    },
+    [cell]
+    );
+  };
+
    render() {
     return(
       div({className: "review-category-container"},[
@@ -72,18 +87,23 @@ class ReviewCategories extends Component {
               isKey
               dataSort={true}
               dataFormat={this.redirectToProject}
+              width={styles.projectWidth}
             >
               Project
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField="summary"
+              dataFormat={this.formatTooltip}
               dataSort={true}
+              width={styles.summaryWidth}
             >
               Summary
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField="status"
+              dataFormat={this.formatTooltip}
               dataSort={true}
+              width={styles.statusWidth}
             >
               Status
             </TableHeaderColumn>
@@ -91,6 +111,7 @@ class ReviewCategories extends Component {
               csvHeader="Review Category"
               dataField="reviewCategory"
               dataSort={true}
+              width={styles.reviewWidth}
             >
               Review Category
             </TableHeaderColumn>

@@ -7,6 +7,7 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 
 @Slf4j
@@ -136,7 +137,7 @@ final class IssueUtils {
             def output = [:]
             output['projectKey'] = it.projectKey
             output['summary'] = it.summary
-            output['status'] = it.status
+            output['status'] = it.status == IssueStatus.Legacy.name ? it.approvalStatus : it.status
             output['reviewCategory'] = reviewCategory
             return output
         }
