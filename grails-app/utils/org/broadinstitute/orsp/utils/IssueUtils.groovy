@@ -3,7 +3,9 @@ package org.broadinstitute.orsp.utils
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 
@@ -125,11 +127,17 @@ final class IssueUtils {
 
     static void generateResult() {
         JSON.registerObjectMarshaller(Issue) {
+            String reviewCategory = it.getReviewCategory()
+            if (StringUtils.isEmpty(reviewCategory) && StringUtils.isNotEmpty(it.getInitialReviewType())) {
+                def jsonSlurper = new JsonSlurper()
+                Map<String, String> initialReview = jsonSlurper.parseText(it.getInitialReviewType()) as Map
+                reviewCategory = initialReview.get('value')
+            }
             def output = [:]
             output['projectKey'] = it.projectKey
             output['summary'] = it.summary
             output['status'] = it.status
-            output['reviewCategory'] = it.getReviewCategory()
+            output['reviewCategory'] = reviewCategory
             return output
         }
     }
