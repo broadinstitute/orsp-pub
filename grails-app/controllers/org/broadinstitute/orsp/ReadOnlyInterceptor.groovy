@@ -12,7 +12,6 @@ class ReadOnlyInterceptor implements UserInfo {
     ReadOnlyInterceptor() {
         // Controllers under API folder
         match controller: 'clarification', action: 'addClarificationRequest'
-        match controller: 'dataUseLetter', action: ~/(create|update|createPdf|uploadDataUseLetter|createSdul)/
         match controller: 'dulNotify', action: 'sendNotifications'
         match controller: 'fileHelper', action: ~/(attachDocument|rejectDocument|approveDocument|updateDocumentsVersion|deleteDocument)/
         match controller: 'issueReview', action: ~/(save|update|delete)/
