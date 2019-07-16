@@ -1,9 +1,10 @@
-import { Component } from 'react';
-import { h, div, h1 } from 'react-hyperscript-helpers';
+import React, { Component } from 'react';
+import { h, h1,h2,  div, a } from 'react-hyperscript-helpers';
 import { Reports, User } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableAsync } from "../components/TableAsync";
+import { handleRedirectToProject } from "../util/Utils";
 
 const SORT_NAME_INDEX = {
   'type': 0,
@@ -37,16 +38,28 @@ const columns = [
   }, {
     dataField: 'projectKey',
     text: 'Project Key',
-    sort: true
+    sort: true,
+    formatter: (cell, row, rowIndex, colIndex) =>
+      div({},[
+        a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
+      ]),
+    headerStyle: (colum, colIndex) => {
+      return { width: '70px', textAlign: 'left' };
+    }
   }, {
   dataField: 'summary',
     text: 'Title',
     sort: true,
-    style: {'table-layout': 'auto'}
+    headerStyle: (colum, colIndex) => {
+      return { width: '300px', textAlign: 'left' };
+    }
   }, {
     dataField: 'status',
     text: 'Status',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: '90px', textAlign: 'left' };
+    }
   }, {
     dataField: 'protocol',
     text: 'Protocol',
@@ -64,19 +77,10 @@ const columns = [
     text: 'Funding Name',
     sort: true
   }, {
-  dataField: 'awardNumber',
-  text: 'Award Number',
-  sort: true
-}
-// , {
-//   dataField: 'comment',
-//   text: 'Comment',
-//   sort: true,
-//   formatter: (cell, row, rowIndex, colIndex) =>
-//     div({dangerouslySetInnerHTML: { __html: cell } },[]),
-//   csvFormatter: (cell, row, rowIndex, colIndex) =>
-//     cell.replace(/<[^>]*>?/gm, '')
-// }
+    dataField: 'awardNumber',
+    text: 'Award Number',
+    sort: true
+  }
 ];
 
 class FundingsSourceReport extends Component {
@@ -84,7 +88,7 @@ class FundingsSourceReport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sizePerPage: 15,
+      sizePerPage: 10,
       search: null,
       sort: {
         sortDirection: 'asc',
@@ -115,7 +119,7 @@ class FundingsSourceReport extends Component {
       sortDirection: sort.sortDirection,
       searchValue: search,
     };
-
+    spinnerService.showAll();
     Reports.getFundingsReports(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
       this.setState(prev => {
@@ -134,6 +138,7 @@ class FundingsSourceReport extends Component {
         return prev;
       }, () => spinnerService.hideAll())
     }).catch(error => {
+      spinnerService.hideAll();
       this.setState(() => { throw error });
     });
   };
@@ -185,11 +190,34 @@ class FundingsSourceReport extends Component {
         break;
       }
     }
-
   };
+
+  getData() {
+    console.log("ALGOOOOOOOOOOOO")
+      this.tableHandler(0, null, this.state.search, this.state.sort, 1);
+    }
+
+
+  handleClick = (props) => {
+    props.onExport();
+  };
+
+  customExportCsv = (props) => {
+    return (
+      <div>
+        <button className="btn pull-right"  onClick={ ()=> this.handleClick(props) }>
+          <span>
+            <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV
+          </span>
+        </button>
+      </div>
+    );
+  };
+
   render() {
     return(
       div({},[
+        h1({}, ["Funding Source Report"]),
         TableAsync({
           onTableChange: this.onTableChange,
           data: this.state.fundings,
@@ -201,7 +229,10 @@ class FundingsSourceReport extends Component {
           printComments: () => { console.log("HOLIS") },
           defaultSorted: defaultSorted,
           page: this.state.currentPage,
-          totalSize: this.state.recordsFiltered
+          totalSize: this.state.recordsFiltered,
+          isCustomExportCsv: true,
+          customExportCsv: this.customExportCsv,
+          getData: this.getData
         }),
         h(Spinner, {
           name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
