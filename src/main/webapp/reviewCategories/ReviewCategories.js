@@ -8,8 +8,8 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import './reviewCategories.css';
 
 const styles = { 
-  projectWidth: '20',
-  summaryWidth: '100',
+  projectWidth: '18',
+  summaryWidth: '150',
   statusWidth: '20',
   reviewWidth: '30'
 };
@@ -57,9 +57,9 @@ class ReviewCategories extends Component {
 
   formatTooltip = (cell, row) => {
     return span ({
-      title: row.summary
+      title: cell
     },
-    [row.summary]
+    [cell]
     );
   };
 
@@ -101,6 +101,7 @@ class ReviewCategories extends Component {
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField="status"
+              dataFormat={this.formatTooltip}
               dataSort={true}
               width={styles.statusWidth}
             >
