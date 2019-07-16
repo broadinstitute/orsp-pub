@@ -242,7 +242,7 @@ export const Review = {
   },
 
   addComments(id, comment) {
-    return axios.post(component.serverURL + '/api/addComment?id=' + id + '&comment=' + comment)
+    return axios.post(component.serverURL + '/api/addComment?id=' + id, { comment:comment })
   },
 
   getComments(id) {

@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
@@ -22,7 +23,7 @@ class CommentsController extends AuthenticatedController {
 
     def saveNewComment() {
         try {
-            Comment savedComment = commentsService.addComment(params.id, params.comment)
+            Comment savedComment = commentsService.addComment(params.id, request.JSON.getAt('comment').toString())
             response.status = 200
             render savedComment as JSON
         } catch (IllegalArgumentException e) {
