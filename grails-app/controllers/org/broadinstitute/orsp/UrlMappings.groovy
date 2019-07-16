@@ -17,7 +17,10 @@ class UrlMappings {
         '/api/project'(resource: 'project')
         '/api/project'(controller:'project', action: 'save', method: 'POST')
         '/api/project/get-type'(controller: 'project', action: 'getProjectType', method: 'GET')
-        '/api/project/delete'(controller: 'project', action: 'delete', method: 'DELETE')
+        '/api/project/reject'(controller: 'project', action: 'delete', method: 'DELETE')
+        '/api/project/update'(controller: 'project', action: 'update', method: 'PUT')
+        '/api/project/extra-properties'(controller: 'project', action: 'modifyExtraProperties', method: 'POST')
+        '/api/project/update-properties'(controller: 'project', action: 'update')
 
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')

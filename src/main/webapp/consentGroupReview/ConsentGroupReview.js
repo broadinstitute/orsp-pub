@@ -219,7 +219,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   getReviewSuggestions = () => {
-    Review.getSuggestions(component.serverURL, component.consentKey).then(data => {
+    Review.getSuggestions(component.consentKey).then(data => {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
@@ -429,7 +429,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           newFormData.editCreator = resp.data.userName;
           data.suggestions = JSON.stringify(newFormData);
           if (this.state.reviewSuggestion) {
-            Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
+            Review.updateReview(component.consentKey, data).then(() => {
               this.getReviewSuggestions();
               this.props.updateContent();
             }).catch(error => {
@@ -442,7 +442,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               });
             });
           } else {
-            Review.submitReview(component.serverURL, data).then(() => {
+            Review.submitReview(data).then(() => {
               this.getReviewSuggestions();
               this.props.updateContent();
             }).catch(error => {
@@ -558,7 +558,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   removeEdits = (type) => {
-    Review.deleteSuggestions(component.discardReviewUrl, component.consentKey, type).then(
+    Review.deleteSuggestions(component.consentKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();
@@ -751,7 +751,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           user: component.user,
           emailUrl: component.emailUrl,
           userName: component.userName,
-          clarificationUrl: component.clarificationUrl,
           successClarification: this.successClarification
         }),
         ConfirmationDialog({

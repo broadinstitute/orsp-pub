@@ -156,7 +156,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       }
     );
 
-    SampleCollections.getSampleCollections(component.unlinkedSampleCollectionsUrl, consentKey).then(
+    SampleCollections.getSampleCollections(consentKey).then(
       resp => {
 
         const label = "Link New Sample Collections to Sample Data/Cohort: ";

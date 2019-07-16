@@ -65,7 +65,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     })
     if (this.validateClarification()) {
       spinnerService.showAll();
-      ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey, this.state.pm[0].key, this.props.consentKey).
+      ClarificationRequest.sendNewClarification(this.state.clarification, this.props.issueKey, this.state.pm[0].key, this.props.consentKey).
       then(resp => {
         spinnerService.hideAll();
         this.props.successClarification('showSuccessClarification', 'Request clarification sent.', 5000);

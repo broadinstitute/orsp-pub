@@ -95,13 +95,13 @@ export const ConsentGroup = {
 
 export const ClarificationRequest = {
 
-  sendNewClarification(url, comment, issueId, pm, consentKey) {
+  sendNewClarification(comment, issueId, pm, consentKey) {
     let data= new FormData();
     data.append('comment', comment);
     data.append('id', issueId);
-    data.append('pm', pm)
-    data.append('consentKey', consentKey)
-    return axios.post(url, data);
+    data.append('pm', pm);
+    data.append('consentKey', consentKey);
+    return axios.post(UrlConstants.clarificationUrl, data);
   }
 };
 
@@ -156,16 +156,16 @@ export const Project = {
     return axios.get(url + '?id=' + projectkey);
   },
 
-  addExtraProperties(url, projectKey, data) {
-    return axios.post(url + '/project/modifyExtraProperties?id=' + projectKey, data);
+  addExtraProperties(projectKey, data) {
+    return axios.post(UrlConstants.addExtraPropertiesUrl + '?id=' + projectKey, data);
   },
 
-  rejectProject(url, projectKey) {
-    return axios.delete(url + '?projectKey=' + projectKey);
+  rejectProject(projectKey) {
+    return axios.delete(UrlConstants.rejectProjectUrl + '?projectKey=' + projectKey);
   },
 
-  updateProject(url, data, projectKey) {
-    return axios.put(url + '?projectKey=' + projectKey, data);
+  updateProject(data, projectKey) {
+    return axios.put(UrlConstants.updateProjectUrl + '?projectKey=' + projectKey, data);
   },
 
   updateAdminOnlyProps(url, data, projectKey) {
@@ -226,20 +226,20 @@ export const User = {
 
 export const Review = {
 
-  deleteSuggestions(url, projectKey, type) {
-    return axios.delete(url + '?projectKey=' + projectKey + '&type=' + type);
+  deleteSuggestions(projectKey, type) {
+    return axios.delete(UrlConstants.issueReviewUrl + '?projectKey=' + projectKey + '&type=' + type);
   },
 
-  getSuggestions(serverURL, projectKey) {
-    return axios.get(serverURL + '/api/issue-review?id=' + projectKey);
+  getSuggestions(projectKey) {
+    return axios.get( UrlConstants.issueReviewUrl +'?id=' + projectKey);
   },
 
-  submitReview(serverURL, data) {
-    return axios.post(serverURL + '/api/issue-review', data);
+  submitReview(data) {
+    return axios.post(UrlConstants.issueReviewUrl, data);
   },
 
-  updateReview(serverURL, projectKey, data) {
-    return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
+  updateReview(projectKey, data) {
+    return axios.put(UrlConstants.issueReviewUrl + '?projectKey=' + projectKey, data);
   }
 
 };
