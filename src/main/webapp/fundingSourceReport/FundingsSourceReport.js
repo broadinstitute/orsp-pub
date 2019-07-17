@@ -3,45 +3,18 @@ import { h, h1, div, a } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
-import { TableAsync } from "../components/TableAsync";
+import { TableComponent } from "../components/TableComponent";
 import { handleRedirectToProject, printData } from "../util/Utils";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { SORT_NAME_INDEX, STYLES } from "../util/FundingsSourceReportConstants";
+import { TABLE_ACTIONS } from "../util/TableConstants";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-const SORT_NAME_INDEX = {
-  'type': 0,
-  'projectKey': 1,
-  'summary': 2,
-  'status': 3,
-  'protocol': 4, // Not implemented
-  'pis': 5, // Not implemented
-  'source': 6,
-  'name': 7,
-  'awardNumber': 8
-};
-
-const TABLE_ACTIONS = {
-  SEARCH : "search",
-  FILTER: "filter",
-  PAGINATION: "pagination",
-  SORT: "sort"
-};
 
 const defaultSorted = [{
   dataField: 'projectKey',
   order: 'desc'
 }];
-
-const styles = {
-  issueTypeWidth: '108px',
-  projectKeyWidth: '129px',
-  titleWidth: '160px',
-  statusWidth: '160px',
-  pisWidth: '80px',
-  protocolWidth: '90px',
-  generalWidth: '136px'
-};
 
 const columns = [
   {
@@ -49,7 +22,7 @@ const columns = [
     text: 'Issue Type',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.issueTypeWidth};
+      return { width: STYLES.issueTypeWidth};
     } 
   }, {
     dataField: 'projectKey',
@@ -60,56 +33,56 @@ const columns = [
         a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
       ]),
     headerStyle: (colum, colIndex) => {
-      return { width: styles.projectKeyWidth };
+      return { width: STYLES.projectKeyWidth };
     }
   }, {
   dataField: 'summary',
     text: 'Title',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.titleWidth };
+      return { width: STYLES.titleWidth };
     }
   }, {
     dataField: 'status',
     text: 'Status',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.projectKeyWidth };
+      return { width: STYLES.projectKeyWidth };
     }
   }, {
     dataField: 'protocol',
     text: 'Protocol',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.protocolWidth };
+      return { width: STYLES.protocolWidth };
     }
   }, {
     dataField: 'pis',
     text: 'PIs',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.pisWidth };
+      return { width: STYLES.pisWidth };
     }
   }, {
     dataField: 'source',
     text: 'Funding Source',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.generalWidth };
+      return { width: STYLES.generalWidth };
     }
   }, {
     dataField: 'name',
     text: 'Funding Name',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.generalWidth };
+      return { width: STYLES.generalWidth };
     }
   }, {
     dataField: 'awardNumber',
     text: 'Award Number',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.generalWidth };
+      return { width: STYLES.generalWidth };
     }
   }
 ];
@@ -228,7 +201,7 @@ class FundingsSourceReport extends Component {
     fundingsArray.push(columns.map(el => el.text));
 
     this.state.fundings.forEach(funding => {
-      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, funding.protocol ? funding.protocol : '','' /*funding.pis*/,
+      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, funding.protocol ? funding.protocol : '', funding.pis,
         funding.source, funding.name, funding.awardNumber ? funding.awardNumber : ''])
     });
     const tableColumnsWidth = ['*','*','*','*','*','*','*','*','*'];
@@ -240,7 +213,7 @@ class FundingsSourceReport extends Component {
     return(
       div({},[
         h1({}, ["Funding Source Report"]),
-        TableAsync({
+        TableComponent({
           onTableChange: this.onTableChange,
           data: this.state.fundings,
           columns: columns,

@@ -7,16 +7,18 @@ import { h, div, hh } from 'react-hyperscript-helpers';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
+import './TableComponent.css'
 
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 
-export const TableAsync = hh(class TableAsync extends Component {
+export const TableComponent = hh(class TableComponent extends Component {
 
   render() {
     return(
       h(Fragment, {}, [
-        <ToolkitProvider
+        <div className={"table-containter"}>
+          <ToolkitProvider
           keyField= {this.props.keyField}
           data= { this.props.data }
           columns= { this.props.columns }
@@ -50,6 +52,7 @@ export const TableAsync = hh(class TableAsync extends Component {
             </div>
           }
         </ToolkitProvider>
+        </div>
       ])
     )
   }
