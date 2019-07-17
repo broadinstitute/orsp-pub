@@ -132,7 +132,7 @@ final class IssueUtils {
             if (StringUtils.isEmpty(reviewCategory) && StringUtils.isNotEmpty(it.getInitialReviewType())) {
                 def jsonSlurper = new JsonSlurper()
                 Map<String, String> initialReview = jsonSlurper.parseText(it.getInitialReviewType()) as Map
-                reviewCategory = initialReview.get('value')
+                reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : ''
             }
             def output = [:]
             output['projectKey'] = it.projectKey
