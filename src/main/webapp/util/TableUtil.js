@@ -4,3 +4,7 @@ export const TABLE_ACTIONS = {
   PAGINATION: "pagination",
   SORT: "sort"
 };
+
+export const formatNullCell = (cell)  => {
+  return cell === null ? '' : cell
+};

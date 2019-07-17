@@ -8,7 +8,7 @@ import { handleRedirectToProject, printData } from "../util/Utils";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { SORT_NAME_INDEX, STYLES } from "../util/FundingsSourceReportConstants";
-import { TABLE_ACTIONS } from "../util/TableConstants";
+import { formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const defaultSorted = [{
@@ -55,14 +55,18 @@ const columns = [
     sort: true,
     headerStyle: (colum, colIndex) => {
       return { width: STYLES.protocolWidth };
-    }
+    },
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      formatNullCell(cell)
   }, {
     dataField: 'pis',
     text: 'PIs',
     sort: true,
     headerStyle: (colum, colIndex) => {
       return { width: STYLES.pisWidth };
-    }
+    },
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      cell.join(', ')
   }, {
     dataField: 'source',
     text: 'Funding Source',
@@ -83,7 +87,9 @@ const columns = [
     sort: true,
     headerStyle: (colum, colIndex) => {
       return { width: STYLES.generalWidth };
-    }
+    },
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      formatNullCell(cell)
   }
 ];
 
@@ -199,7 +205,7 @@ class FundingsSourceReport extends Component {
     fundingsArray.push(columns.map(el => el.text));
 
     this.state.fundings.forEach(funding => {
-      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, funding.protocol ? funding.protocol : '', funding.pis,
+      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, (funding.protocol ? funding.protocol : ''), funding.pis.join(', '),
         funding.source, funding.name, funding.awardNumber ? funding.awardNumber : ''])
     });
     const tableColumnsWidth = ['*','*','*','*','*','*','*','*','*'];
