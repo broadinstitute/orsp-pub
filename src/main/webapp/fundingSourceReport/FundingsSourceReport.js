@@ -33,11 +33,24 @@ const defaultSorted = [{
   order: 'desc'
 }];
 
+const styles = {
+  issueTypeWidth: '120px',
+  projectKeyWidth: '140px',
+  titleWidth: '160px',
+  statusWidth: '160px',
+  pisWidth: '80px'
+
+
+};
+
 const columns = [
   {
     dataField: 'type',
     text: 'Issue Type',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: styles.issueTypeWidth};
+    } 
   }, {
     dataField: 'projectKey',
     text: 'Project Key',
@@ -47,42 +60,57 @@ const columns = [
         a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
       ]),
     headerStyle: (colum, colIndex) => {
-      return { width: '70px', textAlign: 'left' };
+      return { width: styles.projectKeyWidth };
     }
   }, {
   dataField: 'summary',
     text: 'Title',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: '300px', textAlign: 'left' };
+      return { width: styles.titleWidth };
     }
   }, {
     dataField: 'status',
     text: 'Status',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: '90px', textAlign: 'left' };
+      return { width: styles.projectKeyWidth };
     }
   }, {
     dataField: 'protocol',
     text: 'Protocol',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: styles.projectKeyWidth };
+    }
   }, {
     dataField: 'pis',
     text: 'PIs',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: styles.pisWidth };
+    }
   }, {
     dataField: 'source',
     text: 'Funding Source',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: styles.projectKeyWidth };
+    }
   }, {
     dataField: 'name',
     text: 'Funding Name',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: styles.projectKeyWidth };
+    }
   }, {
     dataField: 'awardNumber',
     text: 'Award Number',
-    sort: true
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: styles.projectKeyWidth };
+    }
   }
 ];
 
