@@ -237,7 +237,7 @@ class Search extends React.Component {
                 ref={el => {
                   this.userAutocomplete = el;
                 }}
-                userNameSearchUrl={UrlConstants.searchUsersURL}
+                userNameSearchUrl={UrlConstants.userNameSearchUrl}
                 onChange={selected => {
                   if (
                     selected[0] != null &&

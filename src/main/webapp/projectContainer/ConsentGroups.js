@@ -48,7 +48,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   getConsentGroups() {
-    ProjectMigration.getConsentGroups(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getConsentGroups(component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
@@ -147,7 +147,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         user: component.user,
         emailUrl: component.emailUrl,
         userName: component.userName,
-        clarificationUrl: component.requestLinkClarificationUrl,
         successClarification: this.successClarification,
         linkClarification: true
       }),

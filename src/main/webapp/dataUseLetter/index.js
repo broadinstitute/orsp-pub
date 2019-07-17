@@ -13,7 +13,6 @@ function DUL(props) {
     return <ErrorHandler>
       <DataUseLetter
         serverUrl = {component.serverURL}
-        projectUrl = {component.projectUrl}
         loadingImage = {component.loadingImage}
       />
     </ErrorHandler>;

@@ -43,23 +43,27 @@ class UrlMappings {
         '/api/consent-group/find-by-uuid'(controller: 'newConsentGroup', action: 'findByUUID')
         '/api/consent-group/create'(controller:'newConsentGroup', action: 'save', method: 'POST')
         '/api/consent-group/get-fillable-pdf'(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')
+        '/aip/consent-group/use-restriction'(controller:'newConsentGroup', action: 'getDataUseRestriction')
         '/api/consent-group/sample-collections'(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')
         '/consent-group/name-search'(controller: 'consentGroup', action: 'consentGroupSummaries')
-        '/consent-group/sample-search/'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
+        '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
+        '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
+        '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
+        '/api/consent-group'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
 
         // Issue review end points
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
-        '/api/infoLink'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
+        '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
 
         // Data use letter end points
-        '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
-        '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
-        '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
-        '/api/dataUseLetter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
-        '/api/dataUseLetter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
+        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
+        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
+        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
+        '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
+        '/api/data-use-letter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
 
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
@@ -68,6 +72,7 @@ class UrlMappings {
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
         '/api/user/authenticated'(controller: 'authenticated', action: 'getSessionUser')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
+        '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
 
         // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')
@@ -81,6 +86,7 @@ class UrlMappings {
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
+        '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
 
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')

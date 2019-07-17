@@ -218,7 +218,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       this.changeSubmitState();
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
-      ConsentCollectionLink.create(component.serverURL, consentCollectionData, documents).then(resp => {
+      ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
         window.location.href  = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
       }).catch(error => {
         console.error(error);

@@ -57,7 +57,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   rejectDocument = (uuid) => {
-    DocumentHandler.rejectDocument(component.serverURL, uuid).then(resp => {
+    DocumentHandler.rejectDocument(uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});

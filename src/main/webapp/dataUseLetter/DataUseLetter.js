@@ -377,9 +377,9 @@ class DataUseLetter extends Component {
       spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
-      DUL.updateDUL(form, this.props.serverUrl).then(resp => {
+      DUL.updateDUL(form).then(resp => {
         this.createRestriction();
-        DUL.createDulPdf({ uid: id }, this.props.serverUrl).then(() => {
+        DUL.createDulPdf({ uid: id }).then(() => {
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
@@ -559,7 +559,7 @@ class DataUseLetter extends Component {
 
   createRestriction() {
     let restriction = this.getRestriction();
-    DataUse.createRestriction(this.props.serverUrl, restriction);
+    DataUse.createRestriction(restriction);
   }
 
   getDiseases(diseases) {

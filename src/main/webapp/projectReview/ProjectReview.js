@@ -291,7 +291,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(component.projectKey, data).then(
+    Project.addExtraProperties(data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {

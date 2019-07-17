@@ -5,7 +5,7 @@ import  { UrlConstants }  from './UrlConstants';
 export const Search = {
 
   getMatchingQuery(query) {
-    return axios.get(UrlConstants.searchUsersURL + '?term=' + query);
+    return axios.get(UrlConstants.userNameSearchUrl + '?term=' + query);
   },
 
   getSourceDiseases(query) {
@@ -50,50 +50,50 @@ export const ConsentGroup = {
     return axios.post(UrlConstants.createConsentGroupURL, data, config);
   },
 
-  getConsentGroup(url, consentKey) {
-    return axios.get(url+ '?id=' + consentKey);
+  getConsentGroup(consentKey) {
+    return axios.get(UrlConstants.getConsentGroup + '?id=' + consentKey);
   },
 
-  approve(url, consentKey, data) {
-    return axios.post(url+ '?id=' + consentKey, data);
+  approve(consentKey, data) {
+    return axios.post(UrlConstants.approveConsentGroupUrl + '?id=' + consentKey, data);
   },
   
-  rejectConsent(url, consentKey) {
-    return axios.delete(url + '?consentKey=' + consentKey);
+  rejectConsent(consentKey) {
+    return axios.delete(UrlConstants.rejectConsentUrl + '?consentKey=' + consentKey);
   },
 
-  updateConsent(url, data, projectKey) {
-    return axios.put(url + '?consentKey=' + projectKey, data);
+  updateConsent(data, projectKey) {
+    return axios.put(UrlConstants.updateConsentGroupUrl + '?consentKey=' + projectKey, data);
   },
 
   getConsentGroupByUUID(uuid) {
     return axios.get(UrlConstants.getConsentGroupByUUID + '?uuid=' + uuid);
   },
 
-  sendEmailDul(url, consentKey, userName, recipients) {
-   return axios.post(url + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
+  sendEmailDul(consentKey, userName, recipients) {
+   return axios.post(UrlConstants.emailDulUrl + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
 
   rollbackConsentGroup(urlRollback, consentKey) {
     return axios({url: urlRollback + '?consentKey=' + consentKey, method: 'DELETE'})
   },
 
-  getUseRestriction(url, consentKey) {
-    return axios.get(url + '?consentKey=' + consentKey);
+  getUseRestriction(consentKey) {
+    return axios.get(UrlConstants.useRestrictionUrl + '?consentKey=' + consentKey);
   },
 
-  getConsentCollectionLinks(url, consentKey) {
-    return axios.get(url + '/api/consent-group/associatedProjects?consentKey=' + consentKey);
+  getConsentCollectionLinks(consentKey) {
+    return axios.get(UrlConstants.associatedProjects + '?consentKey=' + consentKey);
   },
 
-  unlinkProject(url, consentKey, projectKey) {
+  unlinkProject(consentKey, projectKey) {
     const data = { projectKey: projectKey };
-    return axios.put(url + '/api/consent-group/unlinkAssociatedProjects?consentKey=' + consentKey, data);
+    return axios.put(UrlConstants.unlinkAssociatedProjects + '?consentKey=' + consentKey, data);
   },
 
-  unlinkSampleCollection(url, consentCollectionId) {
+  unlinkSampleCollection(consentCollectionId) {
     const data = { consentCollectionId };
-    return axios.put(url + '/api/consent-group/unlinkAssociatedSampleCollection', data);
+    return axios.put(UrlConstants.unlinkAssociatedSampleCollection, data);
   }
 };
 
@@ -111,7 +111,7 @@ export const ClarificationRequest = {
 
 export const Files = {
 
-  upload(url, files, projectKey, displayName, userName, newIssue = false) {
+  upload(files, projectKey, displayName, userName, newIssue = false) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -129,7 +129,7 @@ export const Files = {
       headers: { 'content-type': 'multipart/form-data' }
     };
 
-    return axios.post(url + UrlConstants.attachDocuments, data, config);
+    return axios.post(UrlConstants.attachDocuments, data, config);
   },
 
   downloadFillable() {
@@ -176,9 +176,9 @@ export const Project = {
     return axios.put(UrlConstants.updateAdminOnlyPropsUrl + '?projectKey=' + projectKey, data);
   },
 
-  async getProjectType(url, projectKey) {
+  async getProjectType(projectKey) {
     let type = '';
-    await axios.get(url + '/api/project/get-type?id=' + projectKey)
+    await axios.get(UrlConstants.projectTypeUrl + '?id=' + projectKey)
       .then(resp => type = resp.data.projectType)
       .catch(err => console.error(err));
     return type;
@@ -194,7 +194,7 @@ export const DocumentHandler = {
     return axios.put(`${UrlConstants.rejectDocumentUrl}?uuid=${uuid}`);
   },
 
-   attachedDocuments(url, issueKey) {
+   attachedDocuments(issueKey) {
     return axios.get(`${UrlConstants.attachedDocumentsUrl}?issueKey=${issueKey}`);
   },
 
@@ -209,8 +209,8 @@ export const User = {
     return axios.get(UrlConstants.getUserUrl)
   },
 
-  getAllUsers(serverUrl, query) {
-    return axios.get(serverUrl + '/api/get-users', {
+  getAllUsers(query) {
+    return axios.get(UrlConstants.getAllUsersUrl, {
       params: {
         draw: 1,
         start: query.start,
@@ -222,8 +222,8 @@ export const User = {
     })
   },
 
-  editUserRole(serverUrl, userId, roles) {
-    return axios.put(`${serverUrl}/api/edit-user-role`, {userId: userId, roles: roles});
+  editUserRole(userId, roles) {
+    return axios.put(UrlConstants.editUserRoleUrl, {userId: userId, roles: roles});
   }
 
 };
@@ -247,7 +247,7 @@ export const Review = {
   },
 
   addComments(id, comment) {
-    return axios.post(component.serverURL + '/api/addComment?id=' + id, { comment:comment })
+    return axios.post(UrlConstants.saveCommentUrl + '?id=' + id, { comment:comment })
   },
 
   getComments(id) {
@@ -256,28 +256,28 @@ export const Review = {
 };
 
 export const DUL = {
-  generateRedirectLink(data, serverURL) {
-    return axios.post(serverURL + '/api/dataUseLetter', data);
+  generateRedirectLink(data) {
+    return axios.post(UrlConstants.dataUseLetterUrl, data);
   },
 
-  updateDUL(data, serverURL) {
-    return axios.put(serverURL + '/api/dataUseLetter', data);
+  updateDUL(data) {
+    return axios.put(UrlConstants.dataUseLetterUrl, data);
   },
 
-  createDulPdf(uid, serverURL) {
-    return axios.post(serverURL + '/api/dataUseLetter/pdf', uid)
+  createDulPdf(uid) {
+    return axios.post(UrlConstants.dataUseLetterUrl, uid)
   }
 };
 
 export const DataUse = {
-  createRestriction(serverURL, restriction) {
-    return axios.post(serverURL + '/api/dataUseLetter/restriction', restriction);
+  createRestriction(restriction) {
+    return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
   }  
 };
 
 export const ProjectInfoLink = {
-  getProjectSampleCollections(cclId, serverURL) {
-    return axios.get(serverURL + '/api/infoLink?cclId=' + cclId);
+  getProjectSampleCollections(cclId) {
+    return axios.get(UrlConstants.infoLinkUrl + '?cclId=' + cclId);
   }
 };
 
@@ -290,33 +290,33 @@ export const ConsentCollectionLink = {
         data.append(file.fileKey, file.file, file.file.name);
       }
     });
-    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection))
+    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection));
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };
-    return axios.post(serverUrl + '/api/sample-consent-link', data, config);
+    return axios.post(UrlConstants.sampleConsentLinkUrl, data, config);
   },
 
   breakLink(projectKey, consentKey, actionKey) {
-    return axios.post(component.serverURL + '/api/break-link?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
+    return axios.post(UrlConstants.sampleBreakLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
   },
 
   approveLink(projectKey, consentKey) {
-    return axios.put(component.serverURL + '/api/approve-link?projectKey='+ projectKey +"&consentKey=" + consentKey);
+    return axios.put(UrlConstants.sampleApproveLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey);
   }
 };
 
 export const ProjectMigration = {
 
-  getConsentGroups(url, id) {
-    return axios.get(url + "/api/consent-groups?id=" + id);
+  getConsentGroups(id) {
+    return axios.get(UrlConstants.allConsentGroupsUrl + '?id=' + id);
   },
 
-  getHistory(url, id) {
-    return axios.get(url + "/api/history?id=" + id);
+  getHistory(id) {
+    return axios.get(UrlConstants.historyUrl + '?id=' + id);
   },
 
-  getSubmissions(url, id) {
-    return axios.get(url + "/api/submissions?id=" + id);
+  getSubmissions(id) {
+    return axios.get(UrlConstants.submissionsUrl + '?id='+ id);
   }
 };

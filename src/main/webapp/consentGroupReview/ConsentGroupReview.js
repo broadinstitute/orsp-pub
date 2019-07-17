@@ -14,6 +14,7 @@ import { Table } from "../components/Table";
 import { isEmpty } from "../util/Utils";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { InputFieldRadio } from "../components/InputFieldRadio";
+import {UrlConstants} from "../util/UrlConstants";
 
 const headers =
   [
@@ -132,7 +133,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     let formData = {};
     let sampleCollectionList = [];
 
-    ConsentGroup.getConsentGroup(component.consentGroupReviewUrl, component.consentKey).then(
+    ConsentGroup.getConsentGroup(component.consentKey).then(
       element => {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
@@ -300,11 +301,11 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true });
     const data = { approvalStatus: "Approved" };
-    ConsentGroup.approve(component.approveConsentGroupUrl, component.consentKey, data).then(
+    ConsentGroup.approve(component.consentKey, data).then(
       () => {
         if (this.state.reviewSuggestion) {
           let consentGroup = this.getConsentGroup();
-          ConsentGroup.updateConsent(component.updateConsentUrl, consentGroup, component.consentKey).then(resp => {
+          ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
             this.removeEdits();
           }).catch(error => {
             console.error(error);
@@ -324,7 +325,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   rejectConsentGroup() {
     spinnerService.showAll();
 
-    ConsentGroup.rejectConsent(component.rejectConsentUrl, component.consentKey).then(resp => {
+    ConsentGroup.rejectConsent(component.consentKey).then(resp => {
       window.location.href = this.getRedirectUrl(component.projectKey);
       spinnerService.hideAll();
     }).catch(error => {
@@ -343,7 +344,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     spinnerService.showAll();
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
-    ConsentGroup.updateConsent(component.updateConsentUrl, consentGroup, component.consentKey).then(resp => {
+    ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.approveDialog = false;
         return prev;
@@ -748,9 +749,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: component.consentKey,
-          user: component.user,
-          emailUrl: component.emailUrl,
-          userName: component.userName,
           successClarification: this.successClarification
         }),
         ConfirmationDialog({
