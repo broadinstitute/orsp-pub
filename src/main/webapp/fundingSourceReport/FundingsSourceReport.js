@@ -34,13 +34,13 @@ const defaultSorted = [{
 }];
 
 const styles = {
-  issueTypeWidth: '120px',
-  projectKeyWidth: '140px',
+  issueTypeWidth: '108px',
+  projectKeyWidth: '129px',
   titleWidth: '160px',
   statusWidth: '160px',
-  pisWidth: '80px'
-
-
+  pisWidth: '80px',
+  protocolWidth: '90px',
+  generalWidth: '136px'
 };
 
 const columns = [
@@ -81,7 +81,7 @@ const columns = [
     text: 'Protocol',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.projectKeyWidth };
+      return { width: styles.protocolWidth };
     }
   }, {
     dataField: 'pis',
@@ -95,21 +95,21 @@ const columns = [
     text: 'Funding Source',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.projectKeyWidth };
+      return { width: styles.generalWidth };
     }
   }, {
     dataField: 'name',
     text: 'Funding Name',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.projectKeyWidth };
+      return { width: styles.generalWidth };
     }
   }, {
     dataField: 'awardNumber',
     text: 'Award Number',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: styles.projectKeyWidth };
+      return { width: styles.generalWidth };
     }
   }
 ];
