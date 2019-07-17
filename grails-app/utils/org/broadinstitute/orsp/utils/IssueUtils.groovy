@@ -128,17 +128,17 @@ final class IssueUtils {
 
     static void generateResult() {
         JSON.registerObjectMarshaller(Issue) {
-            String reviewCategory = it.getReviewCategory()
-            if (StringUtils.isEmpty(reviewCategory) && StringUtils.isNotEmpty(it.getInitialReviewType())) {
+           String reviewCategory = it.getReviewCategory()
+           if (StringUtils.isNotEmpty(it.getInitialReviewType())) {
                 def jsonSlurper = new JsonSlurper()
                 Map<String, String> initialReview = jsonSlurper.parseText(it.getInitialReviewType()) as Map
-                reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : ''
+                reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
             }
             def output = [:]
             output['projectKey'] = it.projectKey
             output['summary'] = it.summary
             output['status'] = it.status == IssueStatus.Legacy.name ? it.approvalStatus : it.status
-            output['reviewCategory'] = reviewCategory
+            output['reviewCategory'] = StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
             return output
         }
     }
