@@ -15,6 +15,7 @@ const { SearchBar } = Search;
 export const TableComponent = hh(class TableComponent extends Component {
 
   render() {
+    const { remoteProp }= this.props;
     return(
       h(Fragment, {}, [
         <div className={"table-containter"}>
@@ -30,18 +31,18 @@ export const TableComponent = hh(class TableComponent extends Component {
               <SearchBar { ...props.searchProps } />
               <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                 <span>
-                  <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV
+                  <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
                 </span>
               </ExportCSVButton>
               <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
-                <i style={{marginRight:'5px'}} className= { "fa fa-print" }></i> Print All
+                <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print All
               </button>
               <hr/>
               <BootstrapTable
                 remote= {{
-                  filter: true,
-                  pagination: true,
-                  sort: true,
+                  filter: remoteProp,
+                  pagination: remoteProp,
+                  sort: remoteProp,
                   cellEdit: false
                 }}
                 pagination={ paginationFactory({ page: this.props.page, totalSize: this.props.totalSize })}

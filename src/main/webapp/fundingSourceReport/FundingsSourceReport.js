@@ -180,6 +180,7 @@ class FundingsSourceReport extends Component {
         break
       }
       case TABLE_ACTIONS.FILTER: {
+        // Not implemented here
         break;
       }
       case TABLE_ACTIONS.PAGINATION: {
@@ -188,9 +189,6 @@ class FundingsSourceReport extends Component {
       }
       case TABLE_ACTIONS.SORT: {
         this.onSortChange(newState.sortName, newState.sortOrder);
-        break;
-      }
-      default: {
         break;
       }
     }
@@ -214,6 +212,7 @@ class FundingsSourceReport extends Component {
       div({},[
         h1({}, ["Funding Source Report"]),
         TableComponent({
+          remoteProp: true,
           onTableChange: this.onTableChange,
           data: this.state.fundings,
           columns: columns,
