@@ -8,10 +8,10 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import './reviewCategories.css';
 
 const styles = { 
-  projectWidth: '18',
-  summaryWidth: '150',
-  statusWidth: '20',
-  reviewWidth: '30'
+  projectWidth: '22',
+  summaryWidth: '130',
+  statusWidth: '30',
+  reviewWidth: '42'
 };
 
 const headers =
@@ -111,6 +111,7 @@ class ReviewCategories extends Component {
               csvHeader="Review Category"
               dataField="reviewCategory"
               dataSort={true}
+              dataFormat={this.formatTooltip}
               width={styles.reviewWidth}
             >
               Review Category
