@@ -12,7 +12,7 @@ export const UrlConstants = {
   allConsentGroupsUrl: context + '/api/consent-groups',
   createProjectUrl: context + '/api/project',
   fillablePdfURL: context + '/api/consent-group/get-fillable-pdf',
-  getUserUrl: context + '/api/user/authenticated',
+  getUserUrl: context + '/api/user/authenticated/user-data',
   projectKeySearchUrl: context + '/search/project-key/autocomplete',
   sampleSearchUrl: context + '/consent-group/sample-search',
   rejectProjectUrl: context + '/api/project/reject',

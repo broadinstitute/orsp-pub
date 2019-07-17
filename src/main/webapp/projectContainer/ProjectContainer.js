@@ -50,7 +50,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getHistory(component.projectKey).then(resp => {
       this.setState(prev => {
         prev.historyContent = resp.data;
         return prev;

@@ -70,7 +70,7 @@ class UrlMappings {
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
-        '/api/user/authenticated'(controller: 'authenticated', action: 'getSessionUser')
+        '/api/user/authenticated/user-data'(controller: 'authenticated', action: 'getSessionUser')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
 
