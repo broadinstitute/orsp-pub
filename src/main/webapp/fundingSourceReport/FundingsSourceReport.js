@@ -4,7 +4,7 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableAsync } from "../components/TableAsync";
-import { handleRedirectToProject } from "../util/Utils";
+import { handleRedirectToProject, printData } from "../util/Utils";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -228,68 +228,12 @@ class FundingsSourceReport extends Component {
     fundingsArray.push(columns.map(el => el.text));
 
     this.state.fundings.forEach(funding => {
-      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, funding.protocol, funding.pis,
-        funding.source, funding.name, funding.awardNumber])
+      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, funding.protocol ? funding.protocol : '','' /*funding.pis*/,
+        funding.source, funding.name, funding.awardNumber ? funding.awardNumber : ''])
     });
+    const tableColumnsWidth = ['*','*','*','*','*','*','*','*','*'];
     const titleText = "Funding Source Report";
-
-    let dd = {
-      footer: function(currentPage, pageCount) {
-        return {
-          text: "Page " + currentPage.toString() + ' of ' + pageCount,
-          alignment: 'center'
-        }
-      },
-      header: function(currentPage, pageCount, pageSize) {
-        return [
-          {
-            canvas: [{
-              type: 'rect',
-              x: 170,
-              y: 32,
-              w: pageSize.width - 170,
-              h: 40
-            }]
-          }
-        ]
-      },
-      content: [
-        {
-          text: new Date().toLocaleDateString(),
-          alignment: 'left'
-        },
-        {text: [titleText
-          ], fontSize: 14},
-        {
-          style: 'tableExample',
-          table: {
-            widths: [100, '*', 200],
-            body: fundingsArray
-          }
-        }
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 5, 0, 0]
-        },
-        subheader: {
-          fontSize: 16,
-          bold: true,
-          margin: [0, 0, 0, 5]
-        },
-        tableExample: {
-          margin: [0, 20, 0, 15]
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 13,
-          color: 'black'
-        }
-      }
-    };
-    pdfMake.createPdf(dd).print();
+    printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   render() {

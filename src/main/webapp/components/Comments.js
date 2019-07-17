@@ -11,6 +11,7 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import './Btn.css';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { printData } from "../util/Utils";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const { ExportCSVButton } = CSVExport;
@@ -70,65 +71,8 @@ export const Comments = hh(class Comments extends Component {
     });
     const titleText = (component.issueType === "project" ? ("Project ID: "+ component.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
-
-    let dd = {
-      footer: function(currentPage, pageCount) {
-        return {
-          text: "Page " + currentPage.toString() + ' of ' + pageCount,
-          alignment: 'center'
-        }
-      },
-      header: function(currentPage, pageCount, pageSize) {
-        return [
-          {
-            canvas: [{
-              type: 'rect',
-              x: 170,
-              y: 32,
-              w: pageSize.width - 170,
-              h: 40
-            }]
-          }
-        ]
-      },
-      content: [
-        {
-          text: new Date().toLocaleDateString(),
-          alignment: 'left'
-        },
-        {text: ['ORSP Comments'], style: 'header'},
-        {text: [titleText
-          ], fontSize: 14},
-      {
-        style: 'tableExample',
-        table: {
-          widths: [100, '*', 200],
-          body: commentsArray
-        }
-      }
-    ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 5, 0, 0]
-        },
-        subheader: {
-          fontSize: 16,
-          bold: true,
-          margin: [0, 0, 0, 5]
-        },
-        tableExample: {
-          margin: [0, 20, 0, 15]
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 13,
-          color: 'black'
-        }
-      }
-    };
-    pdfMake.createPdf(dd).print();
+    const columnsWidths = [100, '*', 200];
+    printData(commentsArray, titleText, 'ORSP Comments', columnsWidths);
   };
 
   render() {
