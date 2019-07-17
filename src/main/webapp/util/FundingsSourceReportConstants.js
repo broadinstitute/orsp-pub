@@ -16,7 +16,7 @@ export const STYLES = {
   titleWidth: '160px',
   statusWidth: '160px',
   pisWidth: '80px',
-  protocolWidth: '90px',
+  protocolWidth: '94px',
   generalWidth: '136px'
 };
 
