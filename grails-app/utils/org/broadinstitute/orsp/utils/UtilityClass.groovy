@@ -1,7 +1,11 @@
 package org.broadinstitute.orsp.utils
 
 import grails.converters.JSON
+import groovy.json.JsonSlurper
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.Comment
+import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.User
 
 class UtilityClass {
@@ -35,6 +39,28 @@ class UtilityClass {
             output['lastLoginDate'] = it.lastLoginDate
             output['roles'] = it.roles.collect{r -> r.getRole()}
             return output
+        }
+    }
+
+    /**
+     * Register Issue's object JSON mapping for Review Category Report
+     */
+    static void registerIssueMarshaller() {
+        JSON.createNamedConfig('issue') {
+            it.registerObjectMarshaller( Issue ) { Issue issue ->
+                String reviewCategory = issue.getReviewCategory()
+                if (StringUtils.isNotEmpty(issue.getInitialReviewType())) {
+                    def jsonSlurper = new JsonSlurper()
+                    Map<String, String> initialReview = jsonSlurper.parseText(issue.getInitialReviewType()) as Map
+                    reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
+                }
+                return [
+                        projectKey: issue.projectKey,
+                        summary: issue.summary,
+                        status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
+                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
+                ]
+            }
         }
     }
 }

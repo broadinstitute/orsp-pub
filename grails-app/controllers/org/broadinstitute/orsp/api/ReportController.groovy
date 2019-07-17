@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ReportService
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
 @Slf4j
@@ -43,10 +44,11 @@ class ReportController extends AuthenticatedController {
     }
 
     def findReviewCategories() {
-        def response = []
+        UtilityClass.registerIssueMarshaller()
         List<Issue> issues = queryService.findIssueByProjectType(IssueType.IRB.name)
-        IssueUtils.generateResult()
-        render issues as JSON
+        JSON.use('issue') {
+            render issues as JSON
+        }
     }
 
 }
