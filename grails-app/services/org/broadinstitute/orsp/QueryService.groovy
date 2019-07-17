@@ -246,6 +246,18 @@ class QueryService implements Status {
         )
     }
 
+    Collection<Funding> getAllFundings() {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from funding '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Funding)
+            list()
+        }
+        results as Collection<Funding>
+    }
+
     private Map<String, SampleCollection> getCollectionIdMap(Collection<ConsentCollectionLink> links) {
         Collection<String> sampleCollectionIds = links.collect { it.sampleCollectionId }.findAll { it && !it.isEmpty()}
         Map<String, SampleCollection> collectionMap = new HashMap<>()

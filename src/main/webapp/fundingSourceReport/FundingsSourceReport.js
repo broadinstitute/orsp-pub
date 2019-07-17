@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { h, h1,h2,  div, a } from 'react-hyperscript-helpers';
-import { Reports, User } from "../util/ajax";
+import { h, h1, div, a } from 'react-hyperscript-helpers';
+import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableAsync } from "../components/TableAsync";
 import { handleRedirectToProject } from "../util/Utils";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const SORT_NAME_INDEX = {
   'type': 0,
@@ -192,26 +195,73 @@ class FundingsSourceReport extends Component {
     }
   };
 
-  getData() {
-    console.log("ALGOOOOOOOOOOOO")
-      this.tableHandler(0, null, this.state.search, this.state.sort, 1);
-    }
+  printContent = () => {
+    let fundingsArray = [];
+    fundingsArray.push(columns.map(el => el.text));
 
+    this.state.fundings.forEach(funding => {
+      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, funding.protocol, funding.pis,
+        funding.source, funding.name, funding.awardNumber])
+    });
+    const titleText = "Funding Source Report";
 
-  handleClick = (props) => {
-    props.onExport();
-  };
-
-  customExportCsv = (props) => {
-    return (
-      <div>
-        <button className="btn pull-right"  onClick={ ()=> this.handleClick(props) }>
-          <span>
-            <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV
-          </span>
-        </button>
-      </div>
-    );
+    let dd = {
+      footer: function(currentPage, pageCount) {
+        return {
+          text: "Page " + currentPage.toString() + ' of ' + pageCount,
+          alignment: 'center'
+        }
+      },
+      header: function(currentPage, pageCount, pageSize) {
+        return [
+          {
+            canvas: [{
+              type: 'rect',
+              x: 170,
+              y: 32,
+              w: pageSize.width - 170,
+              h: 40
+            }]
+          }
+        ]
+      },
+      content: [
+        {
+          text: new Date().toLocaleDateString(),
+          alignment: 'left'
+        },
+        {text: [titleText
+          ], fontSize: 14},
+        {
+          style: 'tableExample',
+          table: {
+            widths: [100, '*', 200],
+            body: fundingsArray
+          }
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 5, 0, 0]
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 0, 0, 5]
+        },
+        tableExample: {
+          margin: [0, 20, 0, 15]
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'black'
+        }
+      }
+    };
+    pdfMake.createPdf(dd).print();
   };
 
   render() {
@@ -225,14 +275,12 @@ class FundingsSourceReport extends Component {
           keyField: 'id',
           search: true,
           csvFileName: 'FundingsReport.csv',
+          excelFileName: 'FundingsReport.xlsx',
           showPrintButton: false,
-          printComments: () => { console.log("HOLIS") },
+          printComments: this.printContent,
           defaultSorted: defaultSorted,
           page: this.state.currentPage,
-          totalSize: this.state.recordsFiltered,
-          isCustomExportCsv: true,
-          customExportCsv: this.customExportCsv,
-          getData: this.getData
+          totalSize: this.state.recordsFiltered
         }),
         h(Spinner, {
           name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage

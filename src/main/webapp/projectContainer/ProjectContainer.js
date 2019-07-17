@@ -68,7 +68,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     if (!$.fn.dataTable.isDataTable("#comments-table")) {
       $("#comments-table").DataTable({
         dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-        buttons: ['excelHtml5', 'csvHtml5', 'print'],
+        buttons: ['excelHtml5', 'csvHtml5', 'printContent'],
         language: { search: 'Filter:' },
         pagingType: "full_numbers",
         order: [1, "desc"]
@@ -105,7 +105,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     if (!$.fn.dataTable.isDataTable("#history-table")) {
       $("#history-table").DataTable({
         dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-        buttons: ['excelHtml5', 'csvHtml5', 'print'],
+        buttons: ['excelHtml5', 'csvHtml5', 'printContent'],
         language: { search: 'Filter:' },
         pagingType: "full_numbers",
         order: [1, "desc"]

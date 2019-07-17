@@ -11,34 +11,7 @@ import './Btn.css';
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 
-const MySearch = (props) => {
-  let input;
-  const handleClick = () => {
-    props.onSearch(input.value);
-  };
-  return (
-    <div>
-      <button className="btn btn-warning" onClick={ handleClick }>Click to Search!!</button>
-    </div>
-  );
-};
-
 export const TableAsync = hh(class TableAsync extends Component {
-
-
-  csv = (props) => {
-    let button;
-    if (this.props.isCustomExportCsv === undefined) {
-      button = <ExportCSVButton className={"pull-right"} { ...props }>
-        <span>
-          <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV
-        </span>
-      </ExportCSVButton>
-    } else {
-      button = this.props.customExportCsv(props)
-    }
-    return button;
-  };
 
   render() {
     return(
@@ -51,23 +24,16 @@ export const TableAsync = hh(class TableAsync extends Component {
           exportCSV= {{ fileName: this.props.csvFileName, exportAll: true }}
         >
           { props =>
-            // COSOSOSOS
             <div>
               <SearchBar { ...props.searchProps } />
-              <this.csv {...props.csvProps}/>
-
-                {/*<ExportCSVButton className={"pull-right"} { ...props.csvProps }>*/}
-                {/*  <span>*/}
-                {/*    <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV*/}
-                {/*  </span>*/}
-                {/*</ExportCSVButton>*/}
-
-
-
+              <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
+                <span>
+                  <i style={{marginRight:'5px'}} className= { "fa fa-download" }></i> Download CSV
+                </span>
+              </ExportCSVButton>
               <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
                 <i style={{marginRight:'5px'}} className= { "fa fa-print" }></i> Print All
               </button>
-
               <hr/>
               <BootstrapTable
                 remote= {{

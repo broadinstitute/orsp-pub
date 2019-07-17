@@ -50,6 +50,11 @@ class ReportController extends AuthenticatedController {
         render(queryService.queryFundingReport(pagination) as JSON)
     }
 
+    def getAllFundings() {
+        Collection<Funding> fundings = queryService.getAllFundings()
+        render(fundings as JSON)
+    }
+
     def aahrppMetrics() {
         Collection<AAHRPPMetrics> metrics = queryService.findAllAAHRPPMetrics()
         String content = reportService.createReport(metrics.toList())
