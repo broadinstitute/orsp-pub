@@ -9,7 +9,7 @@ export const Search = {
   },
 
   getSourceDiseases(query) {
-    return axios.get(UrlConstants.matchingDiseasesOntologiesUrl + '?term=' + query);
+    return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query);
   }
 
 };
@@ -244,8 +244,15 @@ export const Review = {
 
   updateReview(projectKey, data) {
     return axios.put(UrlConstants.issueReviewUrl + '?projectKey=' + projectKey, data);
-  }
+  },
 
+  addComments(id, comment) {
+    return axios.post(component.serverURL + '/api/addComment?id=' + id, { comment:comment })
+  },
+
+  getComments(id) {
+    return axios.get(UrlConstants.getCommentsUrl + '?id=' + id)
+  }
 };
 
 export const DUL = {
@@ -307,10 +314,6 @@ export const ProjectMigration = {
 
   getHistory(url, id) {
     return axios.get(url + "/api/history?id=" + id);
-  },
-
-  getComments(url, id) {
-    return axios.get(url + "/api/comments?id=" + id);
   },
 
   getSubmissions(url, id) {

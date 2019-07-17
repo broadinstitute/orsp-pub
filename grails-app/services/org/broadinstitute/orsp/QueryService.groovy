@@ -11,6 +11,9 @@ import org.broadinstitute.orsp.webservice.PaginationParams
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
+import org.hibernate.HibernateException
+import org.hibernate.MappingException
+import org.hibernate.NonUniqueResultException
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
 import org.hibernate.transform.Transformers
@@ -1375,5 +1378,31 @@ class QueryService implements Status {
                 error: ""
         )
 
+    }
+    /**
+     * @param issueId
+     * @return A collection of Comments for a given IssueId if an error occurs it is logged and an empty list is returned.
+     */
+    Collection<Comment> getCommentsByIssueId(String issueId) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from comment where project_key = :issueId'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        Collection<Comment> results = Collections.emptyList()
+        try {
+            results = sqlQuery.with {
+                addEntity(Comment)
+                setString('issueId', issueId)
+                list()
+            }
+        } catch(NonUniqueResultException e) {
+            log.error("There is more than one matching result when trying to get comments for IssueId: ${issueId}.", e)
+        } catch(MappingException e) {
+            log.error("The given entity name could not be resolved, when trying to get comments for issueId: ${issueId}.", e)
+        } catch(HibernateException e) {
+            log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
+        }
+        results
     }
 }

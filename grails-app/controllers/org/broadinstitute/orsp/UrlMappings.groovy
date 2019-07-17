@@ -14,6 +14,8 @@ class UrlMappings {
         "/api/report/funding"(controller: 'report', action: "funding")
         "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
+
+        // Project end points
         '/api/project'(resource: 'project')
         '/api/project'(controller:'project', action: 'save', method: 'POST')
         '/api/project/get-info'(controller: 'project', action: 'getProject', method: 'GET')
@@ -24,12 +26,14 @@ class UrlMappings {
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
 
+        // File related end points
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
+
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')
         '/api/consent-group/delete'(controller: 'newConsentGroup', action: 'delete', method: 'DELETE')
@@ -43,17 +47,20 @@ class UrlMappings {
         '/consent-group/name-search'(controller: 'consentGroup', action: 'consentGroupSummaries')
         '/consent-group/sample-search/'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
 
+        // Issue review end points
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
         '/api/infoLink'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
 
+        // Data use letter end points
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
         '/api/dataUseLetter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
         '/api/dataUseLetter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
         '/api/dataUseLetter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
+
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
@@ -61,13 +68,16 @@ class UrlMappings {
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
         '/api/user/authenticated'(controller: 'authenticated', action: 'getSessionUser')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
+
+        // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')
         '/search/project-key/autocomplete'(controller: 'search', action: 'projectKeyAutocomplete')
         '/search/matching-diseases-ontologies'(controller: 'search', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
 
+        '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
+        '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
-        '/api/comments'(controller: 'comments', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')

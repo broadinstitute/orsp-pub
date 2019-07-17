@@ -54,6 +54,7 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
+    @Override
     def show() {
         String uid = request.parameterMap["id"]?.first()
         DataUseLetter dul = DataUseLetter.findByUid(uid)

@@ -17,7 +17,7 @@ export const UrlConstants = {
   updateExtraPropertiesUrl: context + '/api/project/update-properties',
   clarificationUrl: context + '/api/clarification-request',
   searchUsersURL: context + '/search/matching-users',
-  matchingDiseasesOntologiesUrl: context + '/search/matching-diseases-ontologies',
+  sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
   projectInfoURl: context + '/api/project/get-info',
   searchUrl: context + '/search/general-table-json',
   linkedSampleCollectionsUrl: context + '/api/consent-group/sample-collections',
@@ -27,5 +27,8 @@ export const UrlConstants = {
   removeDocumentUrl: context + '/api/files-helper/delete',
   downloadDocumentUrl: context + '/api/user/authenticated/download-document',
   updateAdminOnlyPropsUrl: context + '/api/project/update-admin-props',
+  saveCommentUrl: context + '/api/comments/save',
+  getCommentsUrl: context + '/api/comments/list',
+
 };
 
