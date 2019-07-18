@@ -5,7 +5,7 @@ import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { Spinner } from "../components/Spinner";
-import { UrlConstants } from "../util/UrlConstants";
+import { UrlConstants} from "../util/UrlConstants";
 
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
@@ -79,8 +79,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
     $(".modal-add-button").on('click', function () {
       $("#add-consent-document-modal").load(
-        component.serverURL + UrlConstants.uploadModalUrl + "?"
-        + $.param({
+        UrlConstants.uploadModalUrl + "?" + $.param({
           issueKey: $(this).data("issue"),
           consentKey: $(this).data("consent")
         }),
