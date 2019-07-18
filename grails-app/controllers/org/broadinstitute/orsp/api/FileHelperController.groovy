@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
 import org.springframework.web.multipart.MultipartFile
 
@@ -37,6 +38,7 @@ class FileHelperController extends AuthenticatedController{
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                     persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Document Added", EventType.UPLOAD_DOCUMENT)
+                    transitionService.handleIntake(issue, ["Office of Research Subject Protection"], null)
                 }
             }
             render(['id': issue.projectKey, 'files': names] as JSON)
@@ -72,6 +74,7 @@ class FileHelperController extends AuthenticatedController{
 
     def approveDocument() {
         StorageDocument document = StorageDocument.findByUuid(params.uuid)
+        Issue issue = queryService.findByKey(document.projectKey)
         try {
             if (document != null) {
                 document.setStatus(DocumentStatus.APPROVED.status)
@@ -82,10 +85,12 @@ class FileHelperController extends AuthenticatedController{
                 response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
+            removeOrspActor(issue)
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
         }
+
     }
 
     def attachedDocuments() {

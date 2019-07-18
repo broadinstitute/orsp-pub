@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.StringUtils
 
 /**
  * This class handles transitions from state to state and the maintenance of Flags.
@@ -96,14 +97,16 @@ class TransitionService {
      * NE/NHSR projects go into Submitting to ORSP
      */
     @Transactional
-    handleIntake(Issue issue, Collection<String> actors, String status, String author) throws DomainException {
+    handleIntake(Issue issue, Collection<String> actors, String status) throws DomainException {
         def deletableProperties = [IssueExtraProperty.ACTOR]
         deleteProps(issue, deletableProperties)
 
         actors.each {
             saveProp(issue, IssueExtraProperty.ACTOR, it)
         }
-        issue.setStatus(status)
+        if (StringUtils.isNotEmpty(status)) {
+            issue.setStatus(status)
+        }
         issue.save(flush: true)
         if (issue.hasErrors()) { throw new DomainException(issue.getErrors().allErrors) }
     }

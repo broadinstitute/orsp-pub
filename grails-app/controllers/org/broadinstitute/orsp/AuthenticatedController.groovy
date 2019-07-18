@@ -315,6 +315,16 @@ class AuthenticatedController implements Interceptor, UserInfo {
         errors
     }
 
+    protected void removeOrspActor(Issue issue) {
+        if (issue.type != IssueType.CONSENT_GROUP.name) {
+            if (issue.attachmentsApproved()) {
+                Collection<String> actors = issue.getActorUsernames()
+                actors.remove("Office of Research Subject Protection")
+                transitionService.handleIntake(issue, actors, null)
+            }
+        }
+    }
+
     /**
      * Utility function to arrange the submissions into a tabb-able view
      *

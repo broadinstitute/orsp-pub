@@ -8,8 +8,10 @@ import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
+import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.NotifyArguments
+import org.broadinstitute.orsp.User
 
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -61,6 +63,9 @@ class ClarificationController extends AuthenticatedController {
                                 user: getUser(),
                                 issue: issue))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
+                if (issue.type != IssueType.CONSENT_GROUP.name) {
+                    transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName, null)
+                }
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
@@ -91,6 +96,7 @@ class ClarificationController extends AuthenticatedController {
                                 issue: issue,
                                 values: values))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
+                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName, null)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
