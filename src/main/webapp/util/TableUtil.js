@@ -56,3 +56,18 @@ export const formatExcelData = (data, columns) => {
   dataArray.push({ columns: columnValues, data:values });
   return dataArray;
 };
+
+export const formatExcelData2 = (data, columns) => {
+  let headers = {};
+  let array= [];
+  if (!isEmpty(data) && !isEmpty(columns)) {
+    headers.id = 'noid';
+    columns.forEach(el => {
+    headers[el.dataField] = el.text
+    });
+    // array.push(headers);
+    array = data;
+    array.unshift(headers);
+  }
+  return array;
+};

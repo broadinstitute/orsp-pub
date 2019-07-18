@@ -9,9 +9,8 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import './Btn.css';
 import './TableComponent.css'
 import ExportExcel from "../search/ExportExcel";
-import { formatData, formatExcelData } from "../util/TableUtil";
+import { formatExcelData2 } from "../util/TableUtil";
 import { Export } from "./Export";
-
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 
@@ -19,6 +18,7 @@ export const TableComponent = hh(class TableComponent extends Component {
 
   render() {
     const { remoteProp }= this.props;
+
     return(
       h(Fragment, {}, [
         <div className={"table-containter"}>
@@ -32,7 +32,7 @@ export const TableComponent = hh(class TableComponent extends Component {
           { props =>
             <div>
               <SearchBar { ...props.searchProps } />
-              <Export csvData={this.props.data} headers={this.props.columns.map(el => el.text)} fileName={this.props.excelFileName} />
+              <Export csvData={formatExcelData2(this.props.data, this.props.columns)} headers={this.props.columns.map(el => el.text)} fileName={this.props.excelFileName} />
 
               {/*<ExportExcel*/}
               {/*  filename={this.props.excelFileName}*/}
