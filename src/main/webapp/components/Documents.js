@@ -150,7 +150,9 @@ export const Documents = hh(class Documents extends Component {
         })
       ]),
 
-      Panel({ title: "Data Use Letter" }, [
+      Panel({ 
+        title: "Data Use Letter", 
+        isRendered: this.props.isConsentGroup === true }, [
         DataUseLetter({
           userName: this.props.userName,
           projectKey: this.props.projectKey,
