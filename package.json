@@ -50,6 +50,7 @@
     "lodash-fp": "0.10.4",
     "pdfmake": "0.1.57",
     "prop-types": "15.6.2",
+    "rc-collapse": "1.11.3",
     "react": "16.6.3",
     "react-bootstrap": "0.32.4",
     "react-bootstrap-table": "4.3.1",
@@ -60,8 +61,8 @@
     "react-data-export": "0.4.2",
     "react-datepicker": "2.0.0",
     "react-dom": "16.6.3",
-    "react-router-dom" : "5.0.1",
     "react-hyperscript-helpers": "2.0.0",
+    "react-router-dom": "5.0.1",
     "react-select": "2.1.2",
     "regenerator-runtime": "0.13.2"
   }
