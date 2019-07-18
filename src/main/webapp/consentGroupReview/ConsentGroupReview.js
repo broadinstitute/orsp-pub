@@ -701,7 +701,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   unlinkSampleCollection = () => {
-    ConsentGroup.unlinkSampleCollection(component.serverURL, this.state.unlinkDataRow.id).then(
+    ConsentGroup.unlinkSampleCollection(this.state.unlinkDataRow.id).then(
       () => {
         this.toggleUnlinkDialog();
         this.init()

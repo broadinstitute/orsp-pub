@@ -26,20 +26,12 @@ class UrlMappings {
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
 
-        // File related end points
-        '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
-        '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
-        '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
-        '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
-        '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
-        '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
-
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')
         '/api/consent-group/delete'(controller: 'newConsentGroup', action: 'delete', method: 'DELETE')
-        '/api/consent-group/associatedProjects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
-        '/api/consent-group/unlinkAssociatedProjects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
-        '/api/consent-group/unlinkAssociatedSampleCollection'(controller: 'newConsentGroup', action: 'unlinkAssociatedSampleCollection', method: 'PUT')
+        '/api/consent-group/associated-projects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
+        '/api/consent-group/unlink-associated-projects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
+        '/api/consent-group/unlink-associated-sample-collection'(controller: 'newConsentGroup', action: 'unlinkAssociatedSampleCollection', method: 'PUT')
         '/api/consent-group/find-by-uuid'(controller: 'newConsentGroup', action: 'findByUUID')
         '/api/consent-group/create'(controller:'newConsentGroup', action: 'save', method: 'POST')
         '/api/consent-group/get-fillable-pdf'(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')
@@ -50,13 +42,23 @@ class UrlMappings {
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
         '/api/consent-group/review'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
+        '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
+        '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
+
+        // File related end points
+        '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
+        '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
+        '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
+        '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
+        '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
+        '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
 
         // Issue review end points
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
-        '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
+
 
         // Data use letter end points
         '/api/data-use-letter/save-dul'(controller: 'dataUseLetter', action: 'create', method: 'POST')
@@ -84,10 +86,8 @@ class UrlMappings {
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
-        '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
-        '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
-
+        '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
 

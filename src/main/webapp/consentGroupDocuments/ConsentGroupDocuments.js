@@ -82,6 +82,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   handleUnlinkProject = (target) => () => {
+    console.log('handleUnlinkProject', target, component.consentKey);
     ConsentGroup.unlinkProject(component.consentKey, target).then(result => {
       this.getAssociatedProjects()
     }).catch(error => {
