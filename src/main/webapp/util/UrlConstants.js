@@ -7,7 +7,7 @@ export const UrlConstants = {
   consentNamesSearchURL: context + '/consent-group/name-search',
   approveConsentGroupUrl: context + '/api/consent-group/approve',
   updateConsentGroupUrl: context + '/api/consent-group',
-  getConsentGroup: context + '/api/consent-group',
+  getConsentGroup: context + '/api/consent-group/review',
   rejectConsentUrl: context + '/api/consent-group/delete',
   createConsentGroupURL: context + '/api/consent-group/create',
   allConsentGroupsUrl: context + '/api/consent-groups',
@@ -46,7 +46,8 @@ export const UrlConstants = {
   projectTypeUrl: context + '/api/project/get-type',
   editUserRoleUrl: context + '/api/edit-user-role',
   getAllUsersUrl: context + '/api/get-users',
-  dataUseLetterUrl: context + '/api/data-use-letter',
+  dataUseLetterUrl: context + '/api/data-use-letter/',
+  saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
   dataUseLetterRestrictionUrl: context + '/api/data-use-letter/restriction',
   infoLinkUrl: context + '/api/info-link',
 

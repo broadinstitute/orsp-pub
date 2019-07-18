@@ -35,7 +35,6 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)) {
       this.setState({ alertMessage: '', collaboratorEmail: '', showAlert: false });
-      console.log(this.props.userName);
       ConsentGroup.sendEmailDul(this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then(resp => {
         setTimeout(this.removeAlertMessage, 5000, null);
         this.setState(prev => {

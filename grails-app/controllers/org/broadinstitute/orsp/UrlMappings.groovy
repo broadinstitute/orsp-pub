@@ -49,7 +49,7 @@ class UrlMappings {
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
-        '/api/consent-group'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
+        '/api/consent-group/review'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
 
         // Issue review end points
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
@@ -59,7 +59,7 @@ class UrlMappings {
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
 
         // Data use letter end points
-        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
+        '/api/data-use-letter/save-dul'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
         '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')

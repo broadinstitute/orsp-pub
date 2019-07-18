@@ -265,7 +265,7 @@ export const DUL = {
   },
 
   createDulPdf(uid) {
-    return axios.post(UrlConstants.dataUseLetterUrl, uid)
+    return axios.post(UrlConstants.saveDataUseLetterUrl, uid)
   }
 };
 
