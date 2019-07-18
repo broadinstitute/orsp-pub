@@ -94,6 +94,7 @@
         searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         serverURL: "${webRequest.baseUrl}",
+        contextPath: "${request.contextPath}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
@@ -202,20 +203,9 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $(".chosen-select").chosen({width: "100%"});
-    initializeEditor();
+
     $('[data-toggle="tooltip"]').tooltip();
   });
-
-  function initializeEditor() {
-    tinymce.init({
-      selector:'textarea.editor',
-      width: '100%',
-      menubar: false,
-      statusbar: false,
-      plugins: "paste",
-      paste_data_images: false
-    });
-  }
 
   function loadComments(url) {
     $("#comments").load(

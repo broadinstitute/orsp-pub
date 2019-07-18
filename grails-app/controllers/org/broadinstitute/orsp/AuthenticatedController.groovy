@@ -143,54 +143,6 @@ class AuthenticatedController implements Interceptor, UserInfo {
         redirect([controller: issue.controller, action: "show", id: issue.projectKey])
     }
 
-    def addComment() {
-        Issue issue = queryService.findByKey(params.id)
-        Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(issue.type, params.id, "comments")
-        if (params.comment) {
-            Comment comment = persistenceService.saveComment(issue.projectKey, getUser()?.displayName, params.comment)
-            if (comment == null) {
-                flash.error = "Error saving comment"
-                log.error("Error saving comment for issue '" + params.id + "': null")
-                redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
-            }
-            if (comment.hasErrors()) {
-                flash.error = "Error saving comment"
-                comment.errors.getAllErrors().each {
-                    log.error("Error saving comment for issue '" + params.id + "': " + it)
-                }
-                redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
-            }
-
-            // By default, comments should go to ORSP
-            List<String> toAddresses = new ArrayList<>()
-            toAddresses.addAll(notifyService.getOrspSpecialRecipients())
-            String fromAddress = (String) getUser()?.emailAddress
-
-            // If the user is ORSP/Admin, and there are PMs available, send the comment to the PMs.
-            if (isAdmin() && !issue.getPMs().isEmpty()) {
-                toAddresses?.clear()
-                toAddresses.addAll(userService.findUsers(issue.getPMs())?.collect {it.emailAddress})
-                fromAddress = notifyService.ORSP_ADDRESS
-            }
-
-            // Extra check to cover error condition of empty PMs
-            if (toAddresses.isEmpty()) {
-                log.error("Issue " + issue.projectKey + " has empty PMs.")
-                toAddresses.addAll(notifyService.getOrspSpecialRecipients())
-            }
-
-            notifyService.sendComment(
-                    new NotifyArguments(
-                            toAddresses: toAddresses,
-                            fromAddress: fromAddress,
-                            subject: "Comment Entered: " + issue.projectKey,
-                            comment: comment.description,
-                            user: getUser(),
-                            issue: issue))
-        }
-        redirect([action: arguments.get("action"), controller: arguments.get("controller"), params: arguments.get("params")])
-    }
-
     /**
      * Remove an attachment from an issue.
      *

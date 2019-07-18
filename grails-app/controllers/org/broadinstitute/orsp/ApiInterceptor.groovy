@@ -26,7 +26,6 @@ class ApiInterceptor implements UserInfo  {
         match controller: 'ne'
         match controller: 'nhsr'
         match controller: 'search'
-        match controller: 'status'
         match controller: 'submission'
         match controller: 'user'
     }

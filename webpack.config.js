@@ -13,10 +13,6 @@ module.exports = {
     infoLink: './src/main/webapp/infoLink/index.js',
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js',
-    project: './src/main/webapp/project/index.js',
-    projectDocument: './src/main/webapp/projectDocument/ProjectDocument.js',
-    projectReview: './src/main/webapp/projectReview/index.js',
-    rolesManagement: './src/main/webapp/rolesManagement/index.js',
     search: './src/main/webapp/search/index.js',
   },
   output: {
