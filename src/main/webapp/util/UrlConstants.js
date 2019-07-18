@@ -1,6 +1,7 @@
 const context = component.contextPath;
 
 export const UrlConstants = {
+  // Consent Group
   getConsentGroupByUUID: context + '/api/consent-group/find-by-uuid',
   attachDocuments: context + '/api/files-helper/attach-document',
   consentNamesSearchURL: context + '/consent-group/name-search',
@@ -10,11 +11,16 @@ export const UrlConstants = {
   rejectConsentUrl: context + '/api/consent-group/delete',
   createConsentGroupURL: context + '/api/consent-group/create',
   allConsentGroupsUrl: context + '/api/consent-groups',
-  createProjectUrl: context + '/api/project',
+  sampleSearchUrl: context + '/consent-group/sample-search',
+  useRestrictionUrl: context + '/aip/consent-group/use-restriction',
+  associatedProjects: context + '/api/consent-group/associatedProjects',
+  unlinkAssociatedProjects: context + '/api/consent-group/unlinkAssociatedProjects',
+  unlinkAssociatedSampleCollection: context + '/api/consent-group/unlinkAssociatedSampleCollection',
   fillablePdfURL: context + '/api/consent-group/get-fillable-pdf',
+
+  createProjectUrl: context + '/api/project',
   getUserUrl: context + '/api/user/authenticated/user-data',
   projectKeySearchUrl: context + '/search/project-key/autocomplete',
-  sampleSearchUrl: context + '/consent-group/sample-search',
   rejectProjectUrl: context + '/api/project/reject',
   updateProjectUrl: context + '/api/project/update',
   issueReviewUrl: context + '/api/issue-review',
@@ -25,7 +31,7 @@ export const UrlConstants = {
   sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
   projectInfoURl: context + '/api/project/get-info',
   searchUrl: context + '/search/general-table-json',
-  linkedSampleCollectionsUrl: context + '/api/consent-group/sample-collections',
+
   attachedDocumentsUrl : context + '/api/files-helper/attached-documents',
   rejectDocumentUrl: context + '/api/files-helper/reject-document',
   approveDocumentUrl: context + '/api/files-helper/approve-document',
@@ -37,16 +43,14 @@ export const UrlConstants = {
   saveExtraPropsUrl: context + '/api/project/extra-properties',
   // sessionUserUrl: context + '/api/user/authenticated',
   emailDulUrl: context + '/api/dul-email-notification',
-  useRestrictionUrl: context + '/aip/consent-group/use-restriction',
-  associatedProjects: context + '/api/consent-group/associatedProjects',
-  unlinkAssociatedProjects: context + '/api/consent-group/unlinkAssociatedProjects',
-  unlinkAssociatedSampleCollection: context + '/api/consent-group/unlinkAssociatedSampleCollection',
   projectTypeUrl: context + '/api/project/get-type',
   editUserRoleUrl: context + '/api/edit-user-role',
   getAllUsersUrl: context + '/api/get-users',
   dataUseLetterUrl: context + '/api/data-use-letter',
   dataUseLetterRestrictionUrl: context + '/api/data-use-letter/restriction',
   infoLinkUrl: context + '/api/info-link',
+
+  linkedSampleCollectionsUrl: context + '/api/consent-group/sample-collections',
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
