@@ -8,6 +8,9 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
 import './TableComponent.css'
+import ExportExcel from "../search/ExportExcel";
+import { formatData, formatExcelData } from "../util/TableUtil";
+import { Export } from "./Export";
 
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
@@ -24,11 +27,22 @@ export const TableComponent = hh(class TableComponent extends Component {
           data= { this.props.data }
           columns= { this.props.columns }
           search= { this.props.search }
-          exportCSV= {{ fileName: this.props.csvFileName, exportAll: true }}
+          exportCSV= {{ fileName: this.props.csvFileName }}
         >
           { props =>
             <div>
               <SearchBar { ...props.searchProps } />
+              <Export csvData={this.props.data} headers={this.props.columns.map(el => el.text)} fileName={this.props.excelFileName} />
+
+              {/*<ExportExcel*/}
+              {/*  filename={this.props.excelFileName}*/}
+              {/*  buttonClassName={"btn buttonSecondary pull-right"}*/}
+              {/*  // style= {{ marginRight:'15px' }}*/}
+              {/*  spanClassName="fa fa-download"*/}
+              {/*  excelDataSet={formatExcelData(this.props.data, this.props.columns)}*/}
+              {/*  sheetName={"search-result"}*/}
+              {/*>*/}
+              {/*</ExportExcel>*/}
               <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                 <span>
                   <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV

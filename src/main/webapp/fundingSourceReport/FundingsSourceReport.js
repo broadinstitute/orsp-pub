@@ -4,11 +4,11 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { handleRedirectToProject, printData } from "../util/Utils";
+import { handleRedirectToProject, isEmpty, printData } from "../util/Utils";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { SORT_NAME_INDEX, STYLES } from "../util/FundingsSourceReportConstants";
-import { formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
+import { formatData, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const defaultSorted = [{
@@ -201,14 +201,8 @@ class FundingsSourceReport extends Component {
   };
 
   printContent = () => {
-    let fundingsArray = [];
-    fundingsArray.push(columns.map(el => el.text));
-
-    this.state.fundings.forEach(funding => {
-      fundingsArray.push([funding.type, funding.projectKey, funding.summary, funding.status, (funding.protocol ? funding.protocol : ''), funding.pis.join(', '),
-        funding.source, funding.name, funding.awardNumber ? funding.awardNumber : ''])
-    });
-    const tableColumnsWidth = ['*','*','*','*','*','*','*','*','*'];
+    let fundingsArray = formatData(this.state.fundings, columns);
+    const tableColumnsWidth = [100, 100,'*','*','*','*','*','*','*'];
     const titleText = "Funding Source Report";
     printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
@@ -225,7 +219,7 @@ class FundingsSourceReport extends Component {
           keyField: 'id',
           search: true,
           csvFileName: 'FundingsReport.csv',
-          excelFileName: 'FundingsReport.xlsx',
+          excelFileName: 'FundingsReport',
           showPrintButton: false,
           printComments: this.printContent,
           defaultSorted: defaultSorted,
