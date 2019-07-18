@@ -271,7 +271,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
         if (issue.type != IssueType.CONSENT_GROUP.name) {
             if (issue.attachmentsApproved()) {
                 Collection<String> actors = issue.getActorUsernames()
-                actors.remove("Office of Research Subject Protection")
+                actors.remove(SupplementalRole.ORSP.capitalize())
                 transitionService.handleIntake(issue, actors, null)
             }
         }

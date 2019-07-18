@@ -9,6 +9,7 @@ import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
+import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.User
 
 @Slf4j
@@ -56,7 +57,7 @@ class IssueReviewController extends AuthenticatedController {
             persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         }
         Collection<String> actors = issue.getActorUsernames()
-        actors.remove("Office of Research Subject Protection")
+        actors.remove(SupplementalRole.ORSP.capitalize())
         transitionService.handleIntake(issue, actors, null)
         response.status = 200
         response
