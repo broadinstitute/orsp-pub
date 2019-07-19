@@ -280,6 +280,31 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.formatTooltip}
                 key={header.value}
                 width={styles.collectionNameWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value==='comments') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataSort={ true }
+                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value==='createDate') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataFormat={this.parseDate}
+                dataSort={ true }
+                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value==='number') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataSort={ true }
+                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value==='documents') {
+              return <TableHeaderColumn
+                key={header.value}
+                dataField={header.value}
+                dataSort={ true }
+                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

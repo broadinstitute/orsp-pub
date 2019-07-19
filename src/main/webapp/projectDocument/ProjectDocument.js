@@ -34,6 +34,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
     DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
       User.getUserSession(component.getUserUrl).then(user => {
         this.setState(prev => {
+          console.log(JSON.parse(resp.data.documents));
             prev.documents = JSON.parse(resp.data.documents);
             prev.user = user.data;
             return prev;

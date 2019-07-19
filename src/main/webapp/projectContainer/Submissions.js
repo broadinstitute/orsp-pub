@@ -1,18 +1,39 @@
-import { Component } from 'react';
-import { div, hh } from 'react-hyperscript-helpers';
+import { Component, Fragment } from 'react';
+import { div, hh, h, button, h1 } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
+import { Panel } from '../components/Panel';
+import { MultiTab } from "../components/MultiTab";
+import { Table } from "../components/Table";
+
+const headers =
+  [
+    { name: 'Number', value: 'number' },
+    { name: 'Description', value: 'description' },
+    { name: 'Documents', value: 'documents' },
+    { name: 'Created', value: 'creationDate' },
+    { name: '', value: 'remove' }
+  ];
+
+const dummyData = [
+  [
+    { name: 'number', }
+  ]
+];
 
 export const Submissions = hh(class Submissions extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      content: ''
+      content: '',
+      amendments:[],
+      others: []
     };
   }
 
   componentDidMount() {
     this.getSubmissions();
+    this.getDisplaySubmissions();
   }
 
   getSubmissions() {
@@ -25,6 +46,19 @@ export const Submissions = hh(class Submissions extends Component {
       })
     });
   };
+
+  getDisplaySubmissions() {
+    ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
+      console.log(resp.data.groupedSubmissions);
+      this.setState(prev => {
+        prev.amendments = resp.Amendment;
+        console.log(prev.amendments);
+        prev.others = resp.Other;
+        return prev;
+      });
+      console.log(this.state.amendments);
+    });
+  }
 
   loadSubmissions() {
     $(".submissionTable").DataTable({
@@ -41,7 +75,37 @@ export const Submissions = hh(class Submissions extends Component {
 
   render() {
     return (
-      div({dangerouslySetInnerHTML: { __html: this.state.content } },[])
+      div({}, [
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: '',
+          isRendered: this.state.readOnly === true && !component.isViewer
+        }, ["Edit Information"]),
+        Panel({title: "Submissions"}, [
+
+            div({ className: "containerBox" }, [
+              MultiTab({ defaultActive: "amendment"}, [
+                div({ key: "amendment", title: "Amendment"},[
+                  h(Fragment, {}, [
+                    Table({
+                      headers: headers,
+                      // data: this.state.amendments,
+                    })
+                  ])
+                ]),
+                div({ key: "other", title: "Other"},[
+                  h(Fragment, {}, [
+                    Table({
+                      headers: headers,
+                    }),
+                  ])
+                ]),
+              ])
+            ])
+          ]),
+        div({dangerouslySetInnerHTML: { __html: this.state.content } },[])
+      ])
     )
   }
 });

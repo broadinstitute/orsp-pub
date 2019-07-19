@@ -6,8 +6,6 @@ import { AddDocumentDialog } from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { DocumentHandler } from '../util/ajax';
-import { AlertMessage } from './AlertMessage';
-import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
 import { DataUseLetter } from './DataUseLetterLink';
 import './Documents.css';
@@ -19,7 +17,7 @@ const headers =
     { name: 'Author', value: 'creator' },
     { name: 'Version', value: 'docVersion' },
     { name: 'Status', value: 'status' },
-    { name: 'Created', value: 'creationDate' },
+    { name: 'Created', value: 'createDate' },
     { name: '', value: 'remove' }
   ];
 

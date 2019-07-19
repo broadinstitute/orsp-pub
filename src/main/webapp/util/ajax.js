@@ -313,6 +313,10 @@ export const ProjectMigration = {
 
   getSubmissions(url, id) {
     return axios.get(url + "/api/submissions?id=" + id);
+  },
+
+  getDisplaySubmissions(url, id) {
+    return axios.get(url + "/api/submissions/display?id=" + id);
   }
 };
 
