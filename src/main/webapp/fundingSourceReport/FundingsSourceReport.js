@@ -47,7 +47,7 @@ const columns = [
     text: 'Status',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: STYLES.projectKeyWidth };
+      return { width: STYLES.statusWidth };
     }
   }, {
     dataField: 'protocol',

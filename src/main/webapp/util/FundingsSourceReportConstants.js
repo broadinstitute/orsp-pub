@@ -11,10 +11,10 @@ export const SORT_NAME_INDEX = {
 };
 
 export const STYLES = {
-  issueTypeWidth: '90px',
-  projectKeyWidth: '129px',
-  titleWidth: '160px',
-  statusWidth: '130px',
+  issueTypeWidth: '96px',
+  projectKeyWidth: '109px',
+  titleWidth: '280px',
+  statusWidth: '98px',
   pisWidth: '80px',
   protocolWidth: '94px',
   fundingNameWidth: '124px',
