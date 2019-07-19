@@ -4,7 +4,11 @@ import grails.converters.JSON
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ReportService
+import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
 @Slf4j
@@ -33,6 +37,18 @@ class ReportController extends AuthenticatedController {
         String content = reportService.createReport(metrics.toList())
         response.setHeader("Content-disposition", "attachment; filename=AAHRPPMetrics.csv")
         response.outputStream << content
+    }
+
+    def reviewCategories() {
+        render(view: "/mainContainer/index")
+    }
+
+    def findReviewCategories() {
+        UtilityClass.registerIssueMarshaller()
+        List<Issue> issues = queryService.findIssueByProjectType(IssueType.IRB.name)
+        JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
+            render issues as JSON
+        }
     }
 
 }

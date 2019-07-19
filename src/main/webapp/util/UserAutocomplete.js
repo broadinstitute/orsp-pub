@@ -47,7 +47,7 @@ class UserAutocomplete extends React.Component {
                     onChange={this.state.onChange}
                     onSearch={query => {
                         this.setState(() => ({isLoading: true}));
-                        fetch(this.state.userNameSearchUrl + "?term=" + query)
+                        fetch(this.state.userNameSearchUrl + "?term=" + query, { credentials: 'include' })
                             .then(resp => resp.json())
                             .then(json => this.setState(() => ({
                                 isLoading: false,
