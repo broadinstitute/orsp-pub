@@ -5,7 +5,7 @@ import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { Spinner } from "../components/Spinner";
-import { UrlConstants} from "../util/UrlConstants";
+import { UrlConstants } from "../util/UrlConstants";
 
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 

@@ -48,7 +48,7 @@ class ProjectAutocomplete extends React.Component {
                     onChange={this.state.onChange}
                     onSearch={query => {
                         this.setState(() => ({isLoading: true}));
-                        fetch(UrlConstants.projectKeySearchUrl + "?term=" + query)
+                        fetch(UrlConstants.projectKeySearchUrl + "?term=" + query, { credentials: 'include' })
                             .then(resp => resp.json())
                             .then(json => this.setState(() => ({
                                 isLoading: false,

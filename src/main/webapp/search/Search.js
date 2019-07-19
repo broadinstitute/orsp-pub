@@ -5,7 +5,7 @@ import axios from "axios";
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
-import {UrlConstants} from "../util/UrlConstants";
+import { UrlConstants } from "../util/UrlConstants";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
 

@@ -14,7 +14,6 @@ import { Table } from "../components/Table";
 import { isEmpty } from "../util/Utils";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import {UrlConstants} from "../util/UrlConstants";
 
 const headers =
   [

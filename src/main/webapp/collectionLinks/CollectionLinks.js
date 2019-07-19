@@ -6,7 +6,7 @@ import CollectionTable from './CollectionTable'
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import ResponseView from './ResponseView'
 import SampleCollectionAutocomplete from "../util/SampleCollectionAutocomplete";
-import {UrlConstants} from "../util/UrlConstants";
+import { UrlConstants } from "../util/UrlConstants";
 
 export default class CollectionLinks extends React.Component {
   constructor(props) {

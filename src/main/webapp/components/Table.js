@@ -7,7 +7,7 @@ import { Btn } from './Btn';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
 import { formatRoleName } from "../util/roles";
-import {UrlConstants} from "../util/UrlConstants";
+import { UrlConstants } from "../util/UrlConstants";
 
 const styles = { 
   statusWidth: '140',
