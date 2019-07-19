@@ -39,7 +39,7 @@ class FileHelperController extends AuthenticatedController{
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                     persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Document Added", EventType.UPLOAD_DOCUMENT)
-                    transitionService.handleIntake(queryService.findByKey(params.id), issue.getActorUsernames())
+                    transitionService.handleIntake(queryService.findByKey(params.id), [])
                 }
             }
             render(['id': issue.projectKey, 'files': names] as JSON)

@@ -28,9 +28,7 @@ class IssueReviewController extends AuthenticatedController {
         } else {
             issueReviewService.create(issueReview)
             persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
-            Set<String> actors = issue.getActorUsernames()
-            actors.addAll(getProjectManagersForIssue(issue)*.userName)
-            transitionService.handleIntake(issue, actors)
+            transitionService.handleIntake(issue, [])
             response.status = 201
             render([issueReview] as JSON)
         }
