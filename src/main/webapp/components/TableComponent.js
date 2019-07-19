@@ -8,7 +8,6 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
 import './TableComponent.css'
-import ExportExcel from "../search/ExportExcel";
 import { formatExcelData2 } from "../util/TableUtil";
 import { Export } from "./Export";
 const { ExportCSVButton } = CSVExport;
@@ -32,17 +31,10 @@ export const TableComponent = hh(class TableComponent extends Component {
           { props =>
             <div>
               <SearchBar { ...props.searchProps } />
-              <Export csvData={formatExcelData2(this.props.data, this.props.columns)} headers={this.props.columns.map(el => el.text)} fileName={this.props.excelFileName} />
-
-              {/*<ExportExcel*/}
-              {/*  filename={this.props.excelFileName}*/}
-              {/*  buttonClassName={"btn buttonSecondary pull-right"}*/}
-              {/*  // style= {{ marginRight:'15px' }}*/}
-              {/*  spanClassName="fa fa-download"*/}
-              {/*  excelDataSet={formatExcelData(this.props.data, this.props.columns)}*/}
-              {/*  sheetName={"search-result"}*/}
-              {/*>*/}
-              {/*</ExportExcel>*/}
+              <Export
+                csvData={formatExcelData2(this.props.data, this.props.columns)}
+                fileName={this.props.excelFileName}
+              />
               <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                 <span>
                   <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
@@ -59,8 +51,8 @@ export const TableComponent = hh(class TableComponent extends Component {
                   sort: remoteProp,
                   cellEdit: false
                 }}
-                pagination={ paginationFactory({ page: this.props.page, totalSize: this.props.totalSize })}
-                defaultSorted= { this.props.defaultSorted}
+                pagination={ paginationFactory({ page: this.props.page, totalSize: this.props.totalSize, sizePerPageList: this.props.sizePerPageList  })}
+                defaultSorted= { this.props.defaultSorted }
                 onTableChange= { this.props.onTableChange }
                 {...props.baseProps }
               />

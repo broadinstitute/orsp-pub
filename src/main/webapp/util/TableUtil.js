@@ -1,4 +1,4 @@
-import { isEmpty } from "./Utils";
+import { createObjectCopy, isEmpty } from "./Utils";
 
 export const TABLE_ACTIONS = {
   SEARCH : "search",
@@ -11,20 +11,20 @@ export const formatNullCell = (cell)  => {
   return cell === null ? '' : cell
 };
 
-// method used to transform data format into a single array to be used for table printing and/or excel file creation
+// method used to transform data format into a single array to be used for table printing
 export const formatData = (data, columns) => {
   let dataArray = [];
   if (!isEmpty(data) && !isEmpty(columns)) {
     dataArray.push(columns.map(el => el.text));
-    data.forEach(funding => {
+    data.forEach(it => {
       dataArray.push(columns.map(
         column => {
-          if (isEmpty(funding[column.dataField])) {
-            return funding[column.dataField];
-          } else if (typeof (funding[column.dataField]) !== "object") {
-            return funding[column.dataField].replace();
-          } else if (typeof (funding[column.dataField]) === "object") {
-            return funding[column.dataField].join(', ');
+          if (isEmpty(it[column.dataField])) {
+            return it[column.dataField];
+          } else if (typeof (it[column.dataField]) === "string") {
+            return it[column.dataField].replace(/<[^>]*>?/gm, '');
+          } else if (typeof (it[column.dataField]) === "object") {
+            return it[column.dataField].join(', ');
           }
         }
       ))
@@ -34,40 +34,16 @@ export const formatData = (data, columns) => {
 };
 
 export const formatExcelData = (data, columns) => {
-  let dataArray = [];
-  let values = [];
-  let columnValues = [];
-  if (!isEmpty(data) && !isEmpty(columns)) {
-    columnValues = columns.map(el => el.text);
-    data.forEach(funding => {
-      values.push(columns.map(
-        column => {
-          if (isEmpty(funding[column.dataField])) {
-            return {value: '', style: { font: { sz: "10" } }};
-          } else if (typeof (funding[column.dataField]) !== "object") {
-            return {value: funding[column.dataField].replace(), style: { font: { sz: "10" } }} ;
-          } else if (typeof (funding[column.dataField]) === "object") {
-            return {value: funding[column.dataField].join(', '), style: { font: { sz: "10" } } };
-          }
-        }
-      ))
-    });
-  }
-  dataArray.push({ columns: columnValues, data:values });
-  return dataArray;
-};
-
-export const formatExcelData2 = (data, columns) => {
   let headers = {};
   let array= [];
-  if (!isEmpty(data) && !isEmpty(columns)) {
-    headers.id = 'noid';
-    columns.forEach(el => {
+  columns.forEach(el => {
     headers[el.dataField] = el.text
-    });
-    // array.push(headers);
-    array = data;
+  });
+  if (!isEmpty(data) && !isEmpty(columns)) {
+    array = createObjectCopy(data);
     array.unshift(headers);
+  } else {
+    array.push(headers);
   }
   return array;
 };

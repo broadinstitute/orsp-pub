@@ -35,7 +35,6 @@ class ReportController extends AuthenticatedController {
             output['source'] = it.source
             output['name'] = it.name
             output['awardNumber'] = it.awardNumber
-            output['created'] = it.created
             output['pis'] = getPIsDisplayName((Issue) it.issue)//it.issue.getPIs().collect{r -> getUser(r).displayName}
             return output
         }
@@ -44,8 +43,8 @@ class ReportController extends AuthenticatedController {
                 draw: params.getInt("draw") ?: 1,
                 start: params.getInt("start")?: 0,
                 length: params.getInt("length")?: 10,
-                orderColumn: params.getInt("orderColumn")? params.getInt("orderColumn"): 0,
-                sortDirection: params.get("sortDirection")? params.get("sortDirection").toString() : "asc",
+                orderColumn: params.getInt("orderColumn")? params.getInt("orderColumn"): 1,
+                sortDirection: params.get("sortDirection")? params.get("sortDirection").toString() : "desc",
                 searchValue: params.get("searchValue")? params.get("searchValue").toString() : null)
         render(queryService.queryFundingReport(pagination) as JSON)
     }

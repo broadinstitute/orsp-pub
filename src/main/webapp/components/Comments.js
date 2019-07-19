@@ -16,21 +16,26 @@ const defaultSorted = [{
 }];
 
 const columns = [{
-  dataField: 'author',
-  text: 'Author',
-  sort: true
-}, {
-  dataField: 'date',
-  text: 'Date',
-  sort: true
-}, {
-  dataField: 'comment',
-  text: 'Comment',
-  sort: true,
-  formatter: (cell, row, rowIndex, colIndex) =>
-    div({dangerouslySetInnerHTML: { __html: cell } },[]),
-  csvFormatter: (cell, row, rowIndex, colIndex) =>
-    cell.replace(/<[^>]*>?/gm, '')
+    dataField: 'id',
+    text: 'Id',
+    hidden: true,
+    csvExport : false
+  }, {
+    dataField: 'author',
+    text: 'Author',
+    sort: true
+  }, {
+    dataField: 'date',
+    text: 'Date',
+    sort: true
+  }, {
+    dataField: 'comment',
+    text: 'Comment',
+    sort: true,
+    formatter: (cell, row, rowIndex, colIndex) =>
+      div({dangerouslySetInnerHTML: { __html: cell } },[]),
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      cell.replace(/<[^>]*>?/gm, '')
 }];
 
 export const Comments = hh(class Comments extends Component {
@@ -79,7 +84,7 @@ export const Comments = hh(class Comments extends Component {
           keyField: 'id',
           search: true,
           csvFileName: 'ORSP.csv',
-          excelFileName: 'FundingsReport.xlsx',
+          excelFileName: 'ORSP',
           showPrintButton: false,
           printComments: this.printComments,
           defaultSorted: defaultSorted

@@ -11,13 +11,18 @@ import { SORT_NAME_INDEX, STYLES } from "../util/FundingsSourceReportConstants";
 import { formatData, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const defaultSorted = [{
-  dataField: 'projectKey',
-  order: 'desc'
-}];
+const SIZE_PER_PAGE_LIST = [
+  { text: '50', value: 50 },
+  { text: '100', value: 100 },
+  { text: '500', value: 500 }];
 
 const columns = [
   {
+    dataField: 'id',
+    text: 'Id',
+    hidden: true,
+    csvExport : false
+  } , {
     dataField: 'type',
     text: 'Issue Type',
     sort: true,
@@ -98,7 +103,7 @@ class FundingsSourceReport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sizePerPage: 10,
+      sizePerPage: 50,
       search: null,
       sort: {
         sortDirection: 'asc',
@@ -222,7 +227,7 @@ class FundingsSourceReport extends Component {
           excelFileName: 'FundingsReport',
           showPrintButton: false,
           printComments: this.printContent,
-          defaultSorted: defaultSorted,
+          sizePerPageList: SIZE_PER_PAGE_LIST,
           page: this.state.currentPage,
           totalSize: this.state.recordsFiltered
         }),
