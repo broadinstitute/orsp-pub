@@ -1077,7 +1077,7 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(Issue)
-            setParameterList('projectType', type)
+            setString('projectType', type)
             list()
         }
         results

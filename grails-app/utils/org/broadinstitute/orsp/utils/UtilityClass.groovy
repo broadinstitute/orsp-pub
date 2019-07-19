@@ -10,6 +10,8 @@ import org.broadinstitute.orsp.User
 
 class UtilityClass {
 
+    public static final String ISSUE_RENDERER_CONFIG = 'issue'
+
     /**
      * Register Comment's object JSON mapping for Project's and Sample Data Cohort's Comments
      */
@@ -46,7 +48,7 @@ class UtilityClass {
      * Register Issue's object JSON mapping for Review Category Report
      */
     static void registerIssueMarshaller() {
-        JSON.createNamedConfig('issue') {
+        JSON.createNamedConfig(ISSUE_RENDERER_CONFIG) {
             it.registerObjectMarshaller( Issue ) { Issue issue ->
                 String reviewCategory = issue.getReviewCategory()
                 if (StringUtils.isNotEmpty(issue.getInitialReviewType())) {

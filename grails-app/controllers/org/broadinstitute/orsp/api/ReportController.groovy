@@ -46,7 +46,7 @@ class ReportController extends AuthenticatedController {
     def findReviewCategories() {
         UtilityClass.registerIssueMarshaller()
         List<Issue> issues = queryService.findIssueByProjectType(IssueType.IRB.name)
-        JSON.use('issue') {
+        JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
             render issues as JSON
         }
     }
