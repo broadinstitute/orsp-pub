@@ -57,7 +57,7 @@ class IssueReviewController extends AuthenticatedController {
             persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         }
         Collection<String> actors = issue.getActorUsernames()
-        actors.remove(SupplementalRole.ORSP.capitalize())
+        actors.remove(SupplementalRole.ORSP)
         transitionService.handleIntake(issue, actors, null)
         response.status = 200
         response

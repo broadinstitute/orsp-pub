@@ -269,9 +269,10 @@ class AuthenticatedController implements Interceptor, UserInfo {
 
     protected void removeOrspActor(Issue issue) {
         if (issue.type != IssueType.CONSENT_GROUP.name) {
-            if (issue.attachmentsApproved()) {
+            // there is not documents to approve and no edits
+            if (issue.attachmentsApproved() && IssueReview.findByProjectKey(issue.projectKey) == null) {
                 Collection<String> actors = issue.getActorUsernames()
-                actors.remove(SupplementalRole.ORSP.capitalize())
+                actors.remove(SupplementalRole.ORSP)
                 transitionService.handleIntake(issue, actors, null)
             }
         }

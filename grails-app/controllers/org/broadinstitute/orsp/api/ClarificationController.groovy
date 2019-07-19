@@ -63,9 +63,7 @@ class ClarificationController extends AuthenticatedController {
                                 user: getUser(),
                                 issue: issue))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
-                if (issue.type != IssueType.CONSENT_GROUP.name) {
-                    transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName, null)
-                }
+                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName, null)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500

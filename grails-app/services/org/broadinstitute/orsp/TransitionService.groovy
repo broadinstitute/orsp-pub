@@ -98,17 +98,24 @@ class TransitionService {
      */
     @Transactional
     handleIntake(Issue issue, Collection<String> actors, String status) throws DomainException {
-        def deletableProperties = [IssueExtraProperty.ACTOR]
-        deleteProps(issue, deletableProperties)
-
-        actors.each {
-            saveProp(issue, IssueExtraProperty.ACTOR, it)
+        if (issue.type != IssueType.CONSENT_GROUP) {
+            def deletableProperties = [IssueExtraProperty.ACTOR]
+            deleteProps(issue, deletableProperties)
+            // if pending documents or edits exists ORSP actor should be present
+            if (!issue.attachmentsApproved() || IssueReview.findByProjectKey(issue.projectKey) != null) {
+                if (!actors.contains(SupplementalRole.ORSP)) actors.add(SupplementalRole.ORSP)
+            } else {
+                actors.remove(SupplementalRole.ORSP)
+            }
+            actors.each {
+                saveProp(issue, IssueExtraProperty.ACTOR, it)
+            }
+            if (StringUtils.isNotEmpty(status)) {
+                issue.setStatus(status)
+            }
+            issue.save(flush: true)
+            if (issue.hasErrors()) { throw new DomainException(issue.getErrors().allErrors) }
         }
-        if (StringUtils.isNotEmpty(status)) {
-            issue.setStatus(status)
-        }
-        issue.save(flush: true)
-        if (issue.hasErrors()) { throw new DomainException(issue.getErrors().allErrors) }
     }
 
     /**
@@ -510,7 +517,7 @@ class TransitionService {
             propNames.contains(it.name)
         }.each {
             issue.removeFromExtraProperties(it)
-            it.delete()
+            it.delete(hard: true, flush: true)
         }
     }
 

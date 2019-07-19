@@ -13,6 +13,7 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
+import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
@@ -147,7 +148,7 @@ class ProjectController extends AuthenticatedController {
 
     def handleIntake(String key) {
         Issue issue = queryService.findByKey(key)
-        transitionService.handleIntake(issue, ["Office of Research Subject Protection"], IssueStatus.PreparingApplication.name)
+        transitionService.handleIntake(issue, [SupplementalRole.ORSP], IssueStatus.PreparingApplication.name)
     }
 
     String getProjectType() {
