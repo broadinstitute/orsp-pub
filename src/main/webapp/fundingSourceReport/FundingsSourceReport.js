@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h, h1, div, a } from 'react-hyperscript-helpers';
+import { h, h1, div, a, span } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
@@ -52,7 +52,7 @@ const columns = [
     text: 'Status',
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: STYLES.projectKeyWidth };
+      return { width: STYLES.statusWidth };
     }
   }, {
     dataField: 'protocol',
@@ -67,6 +67,11 @@ const columns = [
     dataField: 'pis',
     text: 'PIs',
     sort: true,
+    classes: 'ellipsis-column',
+    formatter: (cell, row, rowIndex, colIndex) =>
+      span({title: [row.name]},[
+        [row.name]
+    ]),
     headerStyle: (colum, colIndex) => {
       return { width: STYLES.pisWidth };
     },
@@ -83,8 +88,13 @@ const columns = [
     dataField: 'name',
     text: 'Funding Name',
     sort: true,
+    classes: 'ellipsis-column',
+    formatter: (cell, row, rowIndex, colIndex) =>
+      span({title: [row.name]},[
+        [row.name]
+    ]),
     headerStyle: (colum, colIndex) => {
-      return { width: STYLES.generalWidth };
+      return { width: STYLES.fundingNameWidth };
     }
   }, {
     dataField: 'awardNumber',
