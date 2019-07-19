@@ -221,6 +221,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   getReviewSuggestions() {
+    this.init();
     Review.getSuggestions(component.serverURL, component.projectKey).then(
       data => {
         if (data.data !== '') {

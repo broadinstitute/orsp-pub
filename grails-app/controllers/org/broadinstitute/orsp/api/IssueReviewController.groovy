@@ -28,9 +28,9 @@ class IssueReviewController extends AuthenticatedController {
         } else {
             issueReviewService.create(issueReview)
             persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
-            List<String> actors = issue.getActorUsernames()
+            Set<String> actors = issue.getActorUsernames()
             actors.addAll(getProjectManagersForIssue(issue)*.userName)
-            transitionService.handleIntake(issue, actors, null)
+            transitionService.handleIntake(issue, actors)
             response.status = 201
             render([issueReview] as JSON)
         }
@@ -56,9 +56,8 @@ class IssueReviewController extends AuthenticatedController {
         if (params.type == 'reject') {
             persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         }
-        Collection<String> actors = issue.getActorUsernames()
-        actors.remove(SupplementalRole.ORSP)
-        transitionService.handleIntake(issue, actors, null)
+        Issue issue = queryService.findByKey(params.projectKey)
+        transitionService.handleIntake(issue, issue.getActorUsernames())
         response.status = 200
         response
     }

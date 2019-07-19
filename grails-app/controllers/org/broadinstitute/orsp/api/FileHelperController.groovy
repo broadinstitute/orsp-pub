@@ -39,7 +39,7 @@ class FileHelperController extends AuthenticatedController{
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                     persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Document Added", EventType.UPLOAD_DOCUMENT)
-                    transitionService.handleIntake(issue, issue.getActorUsernames(), null)
+                    transitionService.handleIntake(queryService.findByKey(params.id), issue.getActorUsernames())
                 }
             }
             render(['id': issue.projectKey, 'files': names] as JSON)
@@ -68,7 +68,7 @@ class FileHelperController extends AuthenticatedController{
                 response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
-            transitionService.handleIntake(issue, issue.getActorUsernames(), null)
+            transitionService.handleIntake(issue, issue.getActorUsernames())
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
@@ -88,7 +88,7 @@ class FileHelperController extends AuthenticatedController{
                 response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
-            transitionService.handleIntake(issue, issue.getActorUsernames(), null)
+            transitionService.handleIntake(issue, issue.getActorUsernames())
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)

@@ -97,7 +97,7 @@ class TransitionService {
      * NE/NHSR projects go into Submitting to ORSP
      */
     @Transactional
-    handleIntake(Issue issue, Collection<String> actors, String status) throws DomainException {
+    handleIntake(Issue issue, Collection<String> actors) throws DomainException {
         if (issue.type != IssueType.CONSENT_GROUP) {
             def deletableProperties = [IssueExtraProperty.ACTOR]
             deleteProps(issue, deletableProperties)
@@ -110,9 +110,24 @@ class TransitionService {
             actors.each {
                 saveProp(issue, IssueExtraProperty.ACTOR, it)
             }
-            if (StringUtils.isNotEmpty(status)) {
-                issue.setStatus(status)
+            issue.save(flush: true)
+            if (issue.hasErrors()) { throw new DomainException(issue.getErrors().allErrors) }
+        }
+    }
+
+
+    /**
+     *
+     * Handle the initial status setup for the project.
+     *
+     */
+    @Transactional
+    handleIntake(Issue issue, Collection<String> actors, String status) throws DomainException {
+        if (issue.type != IssueType.CONSENT_GROUP) {
+            actors.each {
+                saveProp(issue, IssueExtraProperty.ACTOR, it)
             }
+            issue.setStatus(status)
             issue.save(flush: true)
             if (issue.hasErrors()) { throw new DomainException(issue.getErrors().allErrors) }
         }

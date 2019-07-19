@@ -63,7 +63,7 @@ class ClarificationController extends AuthenticatedController {
                                 user: getUser(),
                                 issue: issue))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
-                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName, null)
+                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
@@ -94,7 +94,7 @@ class ClarificationController extends AuthenticatedController {
                                 issue: issue,
                                 values: values))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
-                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName, null)
+                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
