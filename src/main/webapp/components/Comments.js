@@ -6,7 +6,7 @@ import { Review } from "../util/ajax";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
-import { printData } from "../util/Utils";
+import { createObjectCopy, printData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatData } from "../util/TableUtil";
 
@@ -63,7 +63,8 @@ export const Comments = hh(class Comments extends Component {
   };
 
   printComments = () => {
-    let commentsArray = formatData(this.state.comments, columns);
+    let cols = columns.filter(el => el.dataField !== 'id');
+    let commentsArray = formatData(this.state.comments, cols);
     const titleText = (component.issueType === "project" ? ("Project ID: "+ component.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];

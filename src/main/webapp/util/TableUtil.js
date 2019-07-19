@@ -1,4 +1,4 @@
-import { createObjectCopy, isEmpty } from "./Utils";
+import { isEmpty } from "./Utils";
 
 export const TABLE_ACTIONS = {
   SEARCH : "search",
@@ -36,11 +36,16 @@ export const formatData = (data, columns) => {
 export const formatExcelData = (data, columns) => {
   let headers = {};
   let array= [];
-  columns.forEach(el => {
-    headers[el.dataField] = el.text
-  });
+  columns.forEach(el => headers[el.dataField] = el.text);
   if (!isEmpty(data) && !isEmpty(columns)) {
-    array = createObjectCopy(data);
+    array = [];
+    data.forEach(el => {
+      let newEl = {};
+      Object.keys(el).forEach(key => {
+        newEl[key] = typeof el[key] === 'string' ? el[key].replace(/<[^>]*>?/gm, '') : el[key];
+      });
+      array.push(newEl);
+    });
     array.unshift(headers);
   } else {
     array.push(headers);

@@ -4,7 +4,7 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { handleRedirectToProject, isEmpty, printData } from "../util/Utils";
+import { createObjectCopy, handleRedirectToProject, printData } from "../util/Utils";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { SORT_NAME_INDEX, STYLES } from "../util/FundingsSourceReportConstants";
@@ -216,8 +216,9 @@ class FundingsSourceReport extends Component {
   };
 
   printContent = () => {
-    let fundingsArray = formatData(this.state.fundings, columns);
-    const tableColumnsWidth = [100, 100,'*','*','*','*','*','*','*'];
+    let cols = columns.filter(el => el.dataField !== 'id');
+    let fundingsArray = formatData(this.state.fundings, cols);
+    const tableColumnsWidth = [100, 100,'*',80 ,'*','*','*','*','*'];
     const titleText = "Funding Source Report";
     printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
