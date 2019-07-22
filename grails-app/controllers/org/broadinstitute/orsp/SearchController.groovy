@@ -152,13 +152,12 @@ class SearchController implements UserInfo {
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                String link = applicationTagLib.createLink([controller: arguments.get("controller"), 
-                action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+                String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
                 [
-                        link        : link,
-                        key         : it.projectKey,
-                        reporter    : it.reporter,
-                        linkDisabled: permissionService.issueIsForbidden(it, userName, isAdmin, isViewer),
+                        link: link,
+                        key: it.projectKey,
+                        reporter: it.reporter,
+                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
                         title: it.summary,
                         type: it.type,
                         status: it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,

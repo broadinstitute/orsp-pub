@@ -239,8 +239,15 @@ export const Review = {
 
   updateReview(serverURL, projectKey, data) {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
-  }
+  },
 
+  addComments(id, comment) {
+    return axios.post(component.serverURL + '/api/addComment?id=' + id, { comment:comment })
+  },
+
+  getComments(id) {
+    return axios.get(component.serverURL + '/api/commentsList?id=' + id)
+  }
 };
 
 export const DUL = {
@@ -304,11 +311,13 @@ export const ProjectMigration = {
     return axios.get(url + "/api/history?id=" + id);
   },
 
-  getComments(url, id) {
-    return axios.get(url + "/api/comments?id=" + id);
-  },
-
   getSubmissions(url, id) {
     return axios.get(url + "/api/submissions?id=" + id);
+  }
+};
+
+export const Report = {
+  getReviewCategory(id) {
+    return axios.get(component.serverURL + "/api/report/review-categories");
   }
 };

@@ -212,7 +212,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 prev.isAdmin = component.isAdmin;
                 return prev;
               });
-              this.props.changeInfoStatus(true);
             }
           });
       }).catch(error => {

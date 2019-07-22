@@ -12,7 +12,9 @@ import org.broadinstitute.orsp.webservice.PaginationParams
 import org.grails.plugins.web.taglib.ApplicationTagLib
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
-import org.hibernate.Query
+import org.hibernate.HibernateException
+import org.hibernate.MappingException
+import org.hibernate.NonUniqueResultException
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
 import org.hibernate.transform.Transformers
@@ -745,7 +747,7 @@ class QueryService implements Status {
      * Much faster than the hibernate criteria approach in 'QueryService.findByQueryOptions'
      *
      * @param queryOptions A QueryOptions object that has desired fields populated.
-     * @return List of JiraIssues that match the query
+     * @return List of Issues that match the query
      */
     Set<Issue> findIssues(QueryOptions options) {
         // TODO: double check that prepared statements will really sanitize the input
@@ -817,13 +819,9 @@ class QueryService implements Status {
 /**
  * Find issues and create DTOs to narrow the amount of data used in the search process
  * @param issueIds
- * @return
+ * @return Set of issues DTO that match the query, suitable to be shown in SearchResults.js
  */
     Set<IssueSearchItemDTO> findIssuesSearchItemsDTO(ArrayList<Integer> issueIds) {
-
-        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
-        IssueSearchItemDTO issueSearchItemDTO
-        String currentProjectKey = ""
 
         final String query = "SELECT i.id id, " +
                 "i.project_key, " +
@@ -845,11 +843,7 @@ class QueryService implements Status {
                 "LEFT JOIN user u ON (u.user_name = iep.value) " +
                 "LEFT JOIN user ur ON (ur.user_name = i.reporter) " +
                 "WHERE i.id IN (:issueIds) " +
-                "AND i.deleted = 0 " +
-                "AND iep.name is NOT NULL " +
-                "AND iep.deleted = 0 "+
-                "AND iep.value != '' " +
-                "AND iep.value IS NOT NULL"
+                "AND i.deleted != 1"
 
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
@@ -859,46 +853,7 @@ class QueryService implements Status {
             setParameterList('issueIds', issueIds)
             list()
         }
-
-        def rows = results.collect { resultRow ->
-            [
-                id            : resultRow[0],
-                projectKey    : resultRow[1],
-                type          : resultRow[2],
-                status        : resultRow[3],
-                summary       : resultRow[4],
-                reporter      : resultRow[5],
-                reporterName  : resultRow[6],
-                approvalStatus: resultRow[7],
-                updated       : resultRow[8],
-                expirationDate: resultRow[9],
-                name          : resultRow[10],
-                value         : resultRow[11],
-                displayName   : resultRow[12]
-            ]
-        }
-
-        rows.each { 
-            if (it.projectKey == currentProjectKey) {
-                if (it.type != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
-                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
-                }
-            } else {
-                if (currentProjectKey != "") {
-                    resultDTO.add(issueSearchItemDTO)
-                }
-                currentProjectKey = it.projectKey
-                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
-
-                if (it.type != IssueType.CONSENT_GROUP.name) {
-                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
-                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
-                }
-            }
-            resultDTO.add(issueSearchItemDTO)
-        }
-        resultDTO
+        IssueSearchItemDTO.processResults(results);
     }
 
     /**
@@ -1136,6 +1091,23 @@ class QueryService implements Status {
             return results.take(options.max - 1)
         }
 
+        results
+    }
+
+    List<Issue> findIssueByProjectType(String type) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * ' +
+                        ' from issue ' +
+                        ' where type = :projectType ' +
+                        ' and deleted = 0 '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setString('projectType', type)
+            list()
+        }
         results
     }
 
@@ -1453,5 +1425,31 @@ class QueryService implements Status {
                 error: ""
         )
 
+    }
+    /**
+     * @param issueId
+     * @return A collection of Comments for a given IssueId if an error occurs it is logged and an empty list is returned.
+     */
+    Collection<Comment> getCommentsByIssueId(String issueId) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from comment where project_key = :issueId'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        Collection<Comment> results = Collections.emptyList()
+        try {
+            results = sqlQuery.with {
+                addEntity(Comment)
+                setString('issueId', issueId)
+                list()
+            }
+        } catch(NonUniqueResultException e) {
+            log.error("There is more than one matching result when trying to get comments for IssueId: ${issueId}.", e)
+        } catch(MappingException e) {
+            log.error("The given entity name could not be resolved, when trying to get comments for issueId: ${issueId}.", e)
+        } catch(HibernateException e) {
+            log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
+        }
+        results
     }
 }

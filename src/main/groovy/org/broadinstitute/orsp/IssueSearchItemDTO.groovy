@@ -48,13 +48,13 @@ class IssueSearchItemDTO {
  * @param value
  */
     void setExtraProperty(String name, String value) {
-        Set<String> extraProp = this.extraProperties.get(name) != null ? this.extraProperties.get(name) : []
+        Set<String> extraProp = this.extraProperties.get(name) != null ? this.extraProperties.get(name) : new ArrayList<String>()
         extraProp.add(value)
         this.extraProperties.put(name, extraProp)
     }
 
     void setAccessContacts(String name, String value) {
-        Set<String> access  = this.contactNames.get(name) != null ? this.contactNames.get(name) : []
+        Set<String> access  = this.contactNames.get(name) != null ? this.contactNames.get(name) :  new ArrayList<String>()
         access.add(value)
         this.contactNames.put(name, access)
     }
@@ -64,5 +64,52 @@ class IssueSearchItemDTO {
         accessContacts = accessContacts.isEmpty() ? this.contactNames.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
         accessContacts = accessContacts.isEmpty() ? Collections.singleton(this.reporterName) : accessContacts
         accessContacts.sort()
+    }
+
+    static Set<IssueSearchItemDTO> processResults(List<Object[]> results) {
+
+        Set<IssueSearchItemDTO> resultDTO = new HashSet<IssueSearchItemDTO>()
+        IssueSearchItemDTO issueSearchItemDTO
+        String currentProjectKey = ""
+
+        def rows = results.collect { resultRow ->
+            [
+                id            : resultRow[0],
+                projectKey    : resultRow[1],
+                type          : resultRow[2],
+                status        : resultRow[3],
+                summary       : resultRow[4],
+                reporter      : resultRow[5],
+                reporterName  : resultRow[6],
+                approvalStatus: resultRow[7],
+                updated       : resultRow[8],
+                expirationDate: resultRow[9],
+                name          : resultRow[10],
+                value         : resultRow[11],
+                displayName   : resultRow[12]
+            ]
+        }
+
+        rows.each { 
+            if (it.projectKey == currentProjectKey) {
+                if (it.type != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
+                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
+                }
+            } else {
+                if (currentProjectKey != "") {
+                    resultDTO.add(issueSearchItemDTO)
+                }
+                currentProjectKey = it.projectKey
+                issueSearchItemDTO = new IssueSearchItemDTO(it.toSorted())
+
+                if (it.type != IssueType.CONSENT_GROUP.name) {
+                    issueSearchItemDTO.setExtraProperty(it.name.toString(), it.value.toString())
+                    issueSearchItemDTO.setAccessContacts(it.name.toString(), it.displayName.toString())
+                }
+            }
+            resultDTO.add(issueSearchItemDTO)
+        }
+        resultDTO
     }
 }

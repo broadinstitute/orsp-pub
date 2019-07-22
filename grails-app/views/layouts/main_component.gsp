@@ -46,48 +46,8 @@
 
     <script>
       if (location.protocol !== "https:") location.protocol = "https:";
-      function onSignIn(googleUser) {
-        // show spinner while the page is re-loading
-        document.getElementById("login_spinner").setAttribute("class", "visible");
-        let profile = googleUser.getBasicProfile();
-        let token = googleUser.getAuthResponse().id_token;
-        let auth2 = gapi.auth2.getAuthInstance();
-        auth2.then(function() {
-          let xhttp = new XMLHttpRequest();
-
-          %{--
-              This is here so that after a Broad user signs in, their page is refreshed with valid content
-              Overwrites previous onreadystatechange
-          --}%
-          <auth:isNotAuthenticated>
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              location.reload();
-            }
-          };
-          </auth:isNotAuthenticated>
-          let url = "${raw(createLink(controller: "auth", action: "authUser"))}";
-          let postData = "token=" + token;
-          xhttp.open("POST", url, true);
-          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          xhttp.send(postData);
-        });
-      }
-      function signOut() {
-        let auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function (){
-          let xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              window.location = "${request.contextPath}";
-            }
-          };
-          let url = "${raw(createLink(controller: "logout", action: "logout"))}";
-          xhttp.open("POST", url, true);
-          xhttp.send();
-        });
-      }
     </script>
+    <g:render template="/layouts/signin"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
 
     %{--
@@ -134,10 +94,11 @@
         searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
         searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         serverURL: "${grailsApplication.config.grails.serverURL}",
+        contextPath: "${request.contextPath}",
         userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
         sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
-        isAdmin: ${session.isAdmin},
-        isViewer: ${session.isViewer},
+        isAdmin: ${session.isAdmin ? session.isAdmin : false},
+        isViewer: ${session.isViewer ? session.isViewer : false},
         rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
         updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
         discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
@@ -198,7 +159,7 @@
         <div id="login_spinner" class="hidden">
             <div class="alert alert-success alert-dismissable" style="display: block">
                 Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-            </div>
+             </div>
         </div>
         <h3>About the ORSP Portal</h3>
         <g:render template="/index/aboutBlurb"/>
@@ -242,20 +203,9 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $(".chosen-select").chosen({width: "100%"});
-    initializeEditor();
+
     $('[data-toggle="tooltip"]').tooltip();
   });
-
-  function initializeEditor() {
-    tinymce.init({
-      selector:'textarea.editor',
-      width: '100%',
-      menubar: false,
-      statusbar: false,
-      plugins: "paste",
-      paste_data_images: false
-    });
-  }
 
   function loadComments(url) {
     $("#comments").load(

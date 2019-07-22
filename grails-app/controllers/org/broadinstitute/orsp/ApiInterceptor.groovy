@@ -10,7 +10,24 @@ import grails.converters.JSON
 class ApiInterceptor implements UserInfo  {
 
     ApiInterceptor() {
-        match controller: 'report', action: 'funding'
+        match controller: 'clarification'
+        match controller: 'dulNotify'
+        match controller: 'fileHelper'
+        match controller: 'infoLink'
+        match controller: 'issueReview'
+        match controller: 'project'
+        match controller: 'report'
+        match controller: 'sampleConsentLink'
+        match controller: 'consentGroup'
+        match controller: 'dataUse'
+        match controller: 'issueList'
+        match controller: 'history'
+        match controller: 'irb'
+        match controller: 'ne'
+        match controller: 'nhsr'
+        match controller: 'search'
+        match controller: 'submission'
+        match controller: 'user'
     }
 
     @Override

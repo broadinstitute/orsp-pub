@@ -48,20 +48,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(".chosen-select").chosen({width: "100%"});
-        initializeEditor();
         $('[data-toggle="tooltip"]').tooltip();
     });
-
-    function initializeEditor() {
-        tinymce.init({
-            selector:'textarea.editor',
-            width: '100%',
-            menubar: false,
-            statusbar: false,
-            plugins: "paste",
-            paste_data_images: false
-        });
-    }
 
     function loadComments(url) {
         $("#comments").load(
@@ -75,7 +63,6 @@
                         pagingType: "full_numbers",
                         order: [1, "desc"]
                     });
-                    initializeEditor();
                 }
         );
     }
