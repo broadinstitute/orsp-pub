@@ -6,9 +6,11 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Funding
-import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.ReportService
 import org.broadinstitute.orsp.User
+import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.ReportService
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
 @Slf4j
@@ -60,12 +62,25 @@ class ReportController extends AuthenticatedController {
         response.setHeader("Content-disposition", "attachment; filename=AAHRPPMetrics.csv")
         response.outputStream << content
     }
-List<String> getPIsDisplayName(Issue issue) {
-    List<String> piUserNames = issue*.getPIs().flatten().unique()
-    List<String> piDisplayNames = new ArrayList<String>()
-    if (!piUserNames.isEmpty()) {
-        piDisplayNames = User.findAllByUserNameInList(piUserNames).collect { it.displayName } // replace to mysql query
+
+    static List<String> getPIsDisplayName(Issue issue) {
+        List<String> piUserNames = issue*.getPIs().flatten().unique()
+        List<String> piDisplayNames = new ArrayList<String>()
+        if (!piUserNames.isEmpty()) {
+            piDisplayNames = User.findAllByUserNameInList(piUserNames).collect { it.displayName }
+        }
+        piDisplayNames
     }
-    piDisplayNames
+
+    def reviewCategories() {
+        render(view: "/mainContainer/index")
+    }
+
+    def findReviewCategories() {
+        UtilityClass.registerIssueMarshaller()
+        List<Issue> issues = queryService.findIssueByProjectType(IssueType.IRB.name)
+        JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
+            render issues as JSON
+        }
     }
 }
