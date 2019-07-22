@@ -94,11 +94,12 @@ export const ConsentGroup = {
 
 export const ClarificationRequest = {
 
-  sendNewClarification(url, comment, issueId) {
+  sendNewClarification(url, comment, issueId, pm, consentKey) {
     let data= new FormData();
     data.append('comment', comment);
     data.append('id', issueId);
-
+    data.append('pm', pm)
+    data.append('consentKey', consentKey)
     return axios.post(url, data);
   }
 };
@@ -238,8 +239,15 @@ export const Review = {
 
   updateReview(serverURL, projectKey, data) {
     return axios.put(serverURL + '/api/issue-review?projectKey=' + projectKey, data);
-  }
+  },
 
+  addComments(id, comment) {
+    return axios.post(component.serverURL + '/api/addComment?id=' + id, { comment:comment })
+  },
+
+  getComments(id) {
+    return axios.get(component.serverURL + '/api/commentsList?id=' + id)
+  }
 };
 
 export const DUL = {
@@ -282,6 +290,14 @@ export const ConsentCollectionLink = {
       headers: { 'content-type': 'multipart/form-data' }
     };
     return axios.post(serverUrl + '/api/sample-consent-link', data, config);
+  },
+
+  breakLink(projectKey, consentKey, actionKey) {
+    return axios.post(component.serverURL + '/api/break-link?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
+  },
+
+  approveLink(projectKey, consentKey) {
+    return axios.put(component.serverURL + '/api/approve-link?projectKey='+ projectKey +"&consentKey=" + consentKey);
   }
 };
 
@@ -295,11 +311,13 @@ export const ProjectMigration = {
     return axios.get(url + "/api/history?id=" + id);
   },
 
-  getComments(url, id) {
-    return axios.get(url + "/api/comments?id=" + id);
-  },
-
   getSubmissions(url, id) {
     return axios.get(url + "/api/submissions?id=" + id);
+  }
+};
+
+export const Report = {
+  getReviewCategory(id) {
+    return axios.get(component.serverURL + "/api/report/review-categories");
   }
 };

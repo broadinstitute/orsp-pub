@@ -36,7 +36,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="${createLink(controller: 'admin', action: 'collectionLinks')}">Consent Collection Links</a></li>
                                 <li><a href="${createLink(controller: 'dataUse', action: 'list')}">Data Use Restrictions</a></li>
-                                <li><a href="${createLink(controller: 'admin', action: 'reviewCategories')}">Review Category Report</a></li>
+                                <li><a href="${createLink(controller: 'report', action: 'reviewCategories')}">Review Category Report</a></li>
                                 <li><a href="${createLink(controller: 'statusEvent', action: 'index')}">QA Event Report</a></li>
                                 <li><a href="${createLink(controller: 'admin', action: 'fundingReport')}">Funding Source Report</a></li>
                                 <li><a href="${createLink(controller: 'report', action: 'aahrppMetrics')}">AAHRPP Metrics Report (CSV)</a></li>
@@ -86,9 +86,36 @@
                     }
                 },
                 select: function (event, ui) {
-                    window.location = ui.item.url;
+                    if (ui.item.linkDisabled === true){
+                        event.preventDefault();
+                    } else {
+                        window.location = ui.item.url;
+                    }
                 }
-            });
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                var listItem = $("<li></li>")
+
+                if (item.linkDisabled === true && item.pm.length > 0) {
+                    listItem
+                    .addClass("disabled")
+                    .append("<p> Please contact "+ item.pm + " for access</p>")
+                } else if (item.linkDisabled === true && item.actor.length > 0){
+                    listItem
+                    .addClass("disabled")
+                    .append("<p> Please contact "+ item.actor + " for access</p>")
+                } else if (item.linkDisabled === true){
+                    listItem
+                    .addClass("disabled")
+                    .append("<p> Please contact "+ item.reporter + " for access</p>")
+                }
+
+                listItem
+                .data("item.autocomplete", item)
+                .append("<a>" + item.label + "</a>")
+                .appendTo(ul);
+
+                return listItem;
+            };
         });
     </asset:script>
 </auth:isAuthenticated>

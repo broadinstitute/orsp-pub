@@ -27,6 +27,6 @@
 </p>
 <p>
     Details regarding this submission can be accessed at:
-    <a href="${issueLink}">${issueLink}</a>
+    <a href="${issueLink}">this link</a>.
 </p>
 

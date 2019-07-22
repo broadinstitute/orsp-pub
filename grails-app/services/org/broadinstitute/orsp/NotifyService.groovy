@@ -115,6 +115,20 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     /**
+     * Generate a direct link to the consent group tab view
+     *
+     * @param issue The issue
+     * @return The full url for the consent groups tab
+     */
+    private getCollectionLink(Issue issue) {
+        return  grailsLinkGenerator.link(
+                controller: "project",
+                action: "main",
+                params: [projectKey: issue.projectKey, tab: "consent-groups"],
+                absolute: true)
+    }
+
+    /**
      * Primary method to create a message populated with addresses and subject
      *
      * @return MimeMessage
@@ -154,7 +168,7 @@ class NotifyService implements SendgridSupport, Status {
                 arguments.view ?: "/notify/transition",
                 arguments.issue,
                 arguments.user,
-                getShowIssueLink(arguments.issue),
+                arguments.values?.containsKey("isLink") ? getCollectionLink(arguments.issue) : getShowIssueLink(arguments.issue),
                 arguments.comment,
                 arguments.details,
                 recipients,
@@ -657,12 +671,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsApprovedNotification(Issue issue) {
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
                         user: user,
@@ -673,12 +688,13 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue) {
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
                         subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
                         user: user,

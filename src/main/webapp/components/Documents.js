@@ -1,11 +1,16 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, h3, div, p, hr, small, button, ul, li } from 'react-hyperscript-helpers';
+import { input, hh, h, h3, div, p, hr, small, button, ul, li, br, span } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { DocumentHandler } from  '../util/ajax';
+import { DocumentHandler } from '../util/ajax';
+import { AlertMessage } from './AlertMessage';
+import { spinnerService } from "../util/spinner-service";
+import { Spinner } from '../components/Spinner';
+import { DataUseLetter } from './DataUseLetterLink';
+import './Documents.css';
 
 const headers =
   [
@@ -35,7 +40,8 @@ export const Documents = hh(class Documents extends Component {
       showAddKeyDocuments: false,
       showAddAdditionalDocuments: false,
       showRemoveDocuments: false,
-      documentToRemove: null
+      documentToRemove: null,
+      error: false
     }
     this.removeDocument = this.removeDocument.bind(this);
   }
@@ -51,11 +57,11 @@ export const Documents = hh(class Documents extends Component {
   };
 
   editRestriction = () => {
-    window.location.href =  component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
+    window.location.href = component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
   };
 
   showRestriction = () => {
-    window.location.href =  component.serverURL + "/dataUse/show/" + this.props.restrictionId;
+    window.location.href = component.serverURL + "/dataUse/show/" + this.props.restrictionId;
   };
 
   closeRemoveModal = () => {
@@ -63,14 +69,14 @@ export const Documents = hh(class Documents extends Component {
   };
 
   closeModal = () => {
-    this.setState({showAddKeyDocuments: !this.state.showAddKeyDocuments});
+    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
   };
   closeAdditionalModal = () => {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
   remove = (row) => (e) => {
-    this.setState({ 
+    this.setState({
       showRemoveDocuments: !this.state.showRemoveDocuments,
       documentToRemove: row
     });
@@ -99,8 +105,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   render() {
-    const {restriction = []} = this.props;
-
+    const { restriction = [] } = this.props;
     return div({}, [
       AddDocumentDialog({
         closeModal: this.closeModal,
@@ -122,8 +127,9 @@ export const Documents = hh(class Documents extends Component {
         bodyText: 'Are you sure you want to remove this document?',
         actionLabel: 'Yes'
       }, []),
-      Panel({title: "Documents"}, [
-        p({ isRendered: this.props.docsClarification },[this.props.docsClarification]),
+
+      Panel({ title: "Documents" }, [
+        p({ isRendered: this.props.docsClarification }, [this.props.docsClarification]),
         button({
           className: "btn buttonSecondary",
           style: addDocumentBtn,
@@ -144,10 +150,17 @@ export const Documents = hh(class Documents extends Component {
         })
       ]),
 
+      Panel({ 
+        title: "Data Use Letter", 
+        isRendered: this.props.isConsentGroup === true }, [
+        DataUseLetter({
+          userName: this.props.userName,
+          projectKey: this.props.projectKey,
+          emailUrl: this.props.emailUrl
+        })
+      ]),
 
-      div({
-        isRendered: this.props.restriction !== undefined
-      }, [
+      div({ isRendered: this.props.restriction !== undefined }, [
         Panel({
           title: "Data Use Restrictions",
           isRendered: (component.isAdmin || component.isViewer) && this.findDul()
@@ -170,14 +183,14 @@ export const Documents = hh(class Documents extends Component {
           div({}, [
             button({
                 className: "btn buttonSecondary",
-                style: {'marginRight': '15px'},
+                style: { 'marginRight': '15px' },
                 onClick: this.newRestriction,
                 isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer,
               },
               ["Create Restriction"]),
             button({
                 className: "btn buttonSecondary",
-                style: {'marginRight': '15px'},
+                style: { 'marginRight': '15px' },
                 onClick: this.editRestriction,
                 isRendered: this.props.restrictionId !== null && !component.isViewer,
               },
@@ -187,25 +200,31 @@ export const Documents = hh(class Documents extends Component {
                 onClick: this.showRestriction,
                 isRendered: this.props.restrictionId !== null,
               },
-              ["View Restrictions"])
-          ]),
-        ]),
-        div({isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0}, [
-          Panel({title: "Associated Projects"}, [
-            Table({
-              serverURL: this.props.serverURL,
-              headers: associatedProjectsHeaders,
-              data: this.props.associatedProjects,
-              sizePerPage: 10,
-              paginationSize: 10,
-              unlinkProject: this.props.handleUnlinkProject,
-              handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
-              isAdmin: component.isAdmin,
-              isViewer: component.isViewer
-            })
+                ["View Restrictions"])
+            ]),
           ])
+      ]),
+
+      div({ isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0 }, [
+        Panel({ title: "Associated Projects" }, [
+          Table({
+            serverURL: this.props.serverURL,
+            headers: associatedProjectsHeaders,
+            data: this.props.associatedProjects,
+            sizePerPage: 10,
+            paginationSize: 10,
+            unlinkProject: this.props.handleUnlinkProject,
+            handleRedirectToInfoLink: this.props.handleRedirectToInfoLink,
+            isAdmin: component.isAdmin,
+            isViewer: component.isViewer
+          })
         ])
-      ])
+      ]),
+
+      h(Spinner, {
+        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+      })
+
     ])
   }
 });

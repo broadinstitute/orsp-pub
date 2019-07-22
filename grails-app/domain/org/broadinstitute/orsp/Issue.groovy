@@ -83,12 +83,6 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Collection<String> getPMs() { getExtraProperties().findAll { it.name == IssueExtraProperty.PM }.collect { it.value } }
 
-    transient String getStartDate() { getExtraProperties().find { it.name == IssueExtraProperty.START_DATE }?.value }
-
-    transient String getEndDate() { getExtraProperties().find { it.name == IssueExtraProperty.END_DATE }?.value }
-
-    transient String getOnGoingProcess() { getExtraProperties().find { it.name == IssueExtraProperty.ON_GOING_PROCESS }?.value }
-
     transient String getSource() { getExtraProperties().find { it.name == IssueExtraProperty.SOURCE }?.value }
 
     transient String getCollInst() { getExtraProperties().find { it.name == IssueExtraProperty.COLL_INST }?.value }
@@ -98,8 +92,6 @@ class Issue implements LogicalDelete<Issue> {
     transient String getConsent() { getExtraProperties().find { it.name == IssueExtraProperty.CONSENT }?.value }
 
     transient String getInstitutionalSources() { getExtraProperties().find { it.name == IssueExtraProperty.INSTITUTIONAL_SOURCES }?.value }
-
-    transient String getDescribeConsentGroup() { getExtraProperties().find { it.name == IssueExtraProperty.DESCRIBE_CONSENT }?.value }
 
     transient String getUploadConsent() { getExtraProperties().find { it.name == IssueExtraProperty.UPLOAD_CONSENT_GROUP }?.value }
 

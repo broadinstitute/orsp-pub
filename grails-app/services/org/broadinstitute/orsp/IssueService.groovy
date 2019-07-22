@@ -18,6 +18,7 @@ class IssueService implements UserInfo {
     QueryService queryService
     PersistenceService persistenceService
     NotifyService notifyService
+    IssueReviewService issueReviewService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -59,11 +60,7 @@ class IssueService implements UserInfo {
             IssueExtraProperty.PROJECT_AVAILABILITY,
             IssueExtraProperty.EDIT_DESCRIPTION,
             IssueExtraProperty.DESCRIBE_EDIT_TYPE,
-            IssueExtraProperty.ON_GOING_PROCESS,
             IssueExtraProperty.INSTITUTIONAL_SOURCES,
-            IssueExtraProperty.DESCRIBE_CONSENT,
-            IssueExtraProperty.END_DATE,
-            IssueExtraProperty.START_DATE,
             IssueExtraProperty.UPLOAD_CONSENT_GROUP,
             IssueExtraProperty.NOT_UPLOAD_CONSENT_GROUP_SPECIFY,
             IssueExtraProperty.IRB_REFERRAL,
@@ -182,9 +179,6 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.FEE_FOR_SERVICE_WORK)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.FEE_FOR_SERVICE_WORK})
         }
-        if (!input.containsKey(IssueExtraProperty.END_DATE)) {
-            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.END_DATE})
-        }
         if (!input.containsKey(IssueExtraProperty.SAMPLES)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SAMPLES})
         }
@@ -234,7 +228,7 @@ class IssueService implements UserInfo {
             issue.save(flush: true)
         }
         if (input.get("editsApproved")) {
-            notifyService.sendEditsApprovedNotification(issue)
+            notifyService.sendEditsApprovedNotification(issue, issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName())
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
         issue
@@ -305,7 +299,7 @@ class IssueService implements UserInfo {
                 type = EventType.ABANDON_PROJECT
                 break
 
-            case IssueStatus.ProjectApproved.getName():
+            case IssueStatus.Approved.getName():
                 type = EventType.APPROVE_PROJECT
                 break
 
@@ -489,4 +483,9 @@ class IssueService implements UserInfo {
         IssueType.valueOfName(issue?.getType())?.prefix?.toLowerCase()
     }
 
+    static Collection<String> getAccessContacts(Map<String, List<String>> extraProperties) {
+        Collection<String> accessContacts = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
+        accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
+        accessContacts
+    }
 }
