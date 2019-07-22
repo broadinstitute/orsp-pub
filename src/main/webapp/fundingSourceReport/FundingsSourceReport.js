@@ -4,12 +4,9 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { createObjectCopy, handleRedirectToProject, printData } from "../util/Utils";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import { handleRedirectToProject, printData } from "../util/Utils";
 import { SORT_NAME_INDEX, STYLES } from "../util/FundingsSourceReportConstants";
 import { formatData, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -22,14 +19,16 @@ const columns = [
     text: 'Id',
     hidden: true,
     csvExport : false
-  } , {
+  } ,
+  {
     dataField: 'type',
     text: 'Issue Type',
     sort: true,
     headerStyle: (colum, colIndex) => {
       return { width: STYLES.issueTypeWidth};
     } 
-  }, {
+  },
+  {
     dataField: 'projectKey',
     text: 'Project Key',
     sort: true,
@@ -69,8 +68,8 @@ const columns = [
     sort: true,
     classes: 'ellipsis-column',
     formatter: (cell, row, rowIndex, colIndex) =>
-      span({title: [row.name]},[
-        [row.name]
+      span({title: [row.pis]},[
+        [row.pis]
     ]),
     headerStyle: (colum, colIndex) => {
       return { width: STYLES.pisWidth };
@@ -201,7 +200,7 @@ class FundingsSourceReport extends Component {
         break
       }
       case TABLE_ACTIONS.FILTER: {
-        // Not implemented here
+        // Not implemented
         break;
       }
       case TABLE_ACTIONS.PAGINATION: {

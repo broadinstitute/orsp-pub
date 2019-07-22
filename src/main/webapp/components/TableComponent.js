@@ -8,7 +8,6 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
 import './TableComponent.css'
-import { formatExcelData } from "../util/TableUtil";
 import { Export } from "./Export";
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
@@ -16,7 +15,7 @@ const { SearchBar } = Search;
 export const TableComponent = hh(class TableComponent extends Component {
 
   render() {
-    const { remoteProp }= this.props;
+    const { remoteProp } = this.props;
 
     return(
       h(Fragment, {}, [
@@ -32,7 +31,8 @@ export const TableComponent = hh(class TableComponent extends Component {
             <div>
               <SearchBar { ...props.searchProps } />
               <Export
-                csvData={formatExcelData(this.props.data, this.props.columns)}
+                csvData={this.props.data}
+                columns={this.props.columns}
                 fileName={this.props.excelFileName}
               />
               <ExportCSVButton className={"pull-right"} { ...props.csvProps }>

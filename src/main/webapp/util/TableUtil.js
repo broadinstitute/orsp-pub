@@ -19,13 +19,7 @@ export const formatData = (data, columns) => {
     data.forEach(it => {
       dataArray.push(columns.map(
         column => {
-          if (isEmpty(it[column.dataField])) {
-            return it[column.dataField];
-          } else if (typeof (it[column.dataField]) === "string") {
-            return it[column.dataField].replace(/<[^>]*>?/gm, '');
-          } else if (typeof (it[column.dataField]) === "object") {
-            return it[column.dataField].join(', ');
-          }
+          return parseDataElements(it, column.dataField);
         }
       ))
     });
@@ -35,20 +29,29 @@ export const formatData = (data, columns) => {
 
 export const formatExcelData = (data, columns) => {
   let headers = {};
-  let array= [];
-  columns.forEach(el => headers[el.dataField] = el.text);
+  let rows= [];
+  columns.filter(el => el.dataField !== 'id').forEach(el => headers[el.dataField] = el.text);
+  rows.push(headers);
   if (!isEmpty(data) && !isEmpty(columns)) {
-    array = [];
     data.forEach(el => {
       let newEl = {};
-      Object.keys(el).forEach(key => {
-        newEl[key] = typeof el[key] === 'string' ? el[key].replace(/<[^>]*>?/gm, '') : el[key];
+      Object.keys(el).filter(elem => elem !== 'id').forEach(key => {
+        newEl[key] = parseDataElements(el, key);
       });
-      array.push(newEl);
+      rows.push(newEl);
     });
-    array.unshift(headers);
-  } else {
-    array.push(headers);
   }
-  return array;
+  return rows;
 };
+
+function parseDataElements(el, key) {
+  let result = '';
+  if (typeof el[key] === 'string') {
+    result = el[key].replace(/<[^>]*>?/gm, '')
+  } else if (Array.isArray(el[key])) {
+    result = el[key].join(', ')
+  } else {
+    result = el[key];
+  }
+  return result;
+}
