@@ -6,7 +6,7 @@ import { Review } from "../util/ajax";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
-import { createObjectCopy, printData } from "../util/Utils";
+import { printData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatData } from "../util/TableUtil";
 
