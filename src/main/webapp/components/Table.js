@@ -18,7 +18,10 @@ const styles = {
   creationDateWidth: '140',
   removeWidth: '45',
   unlinkSampleCollectionWidth: '80',
-  collectionNameWidth: '270'
+  collectionNameWidth: '270',
+  numberWidth: '26',
+  createDateWidth: '26',
+  submissionDocumentsWidth: '90'
 };
 
 export const Table = hh(class Table extends Component {
@@ -296,27 +299,30 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataSort={ true }
                 width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value==='createDate') {
+            } 
+            
+            else if (header.value==='createDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
-                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
+                width={styles.createDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value==='number') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 dataSort={ true }
-                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
+                width={styles.numberWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value==='documents') {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
                 dataFormat={this.submissionDocuments}
                 dataSort={ true }
-                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
+                width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
             } else {
+
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
