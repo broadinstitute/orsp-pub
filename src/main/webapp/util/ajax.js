@@ -129,6 +129,10 @@ export const Files = {
 
   downloadFillable(pdfUrl) {
     return axios({ url: pdfUrl, method: 'GET', responseType: 'blob' });
+  },
+
+  getDocument(uuid) {
+    return axios(component.serverURL + '/api/documents/get-document?uuid=' + uuid);
   }
 
 };

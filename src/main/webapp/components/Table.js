@@ -36,6 +36,13 @@ export const Table = hh(class Table extends Component {
     }
   };
 
+  parseCreateDate = (date) => {
+    if (date !== null) {
+      const simpleDate = new Date(date);
+      return format(simpleDate, 'MM/DD/YY')
+    }
+  };
+
   parseDate = (date) => {
     if (date !== null) {
       const simpleDate = new Date(date);
@@ -90,7 +97,7 @@ export const Table = hh(class Table extends Component {
   };
 
   formatRemoveBtn = (cell, row) => {
-    let btn = this.props.isViewer ? null : 
+    let btn = this.props.isViewer ? null :
      Btn({
       action: {
         labelClass: "glyphicon glyphicon-remove",
@@ -163,6 +170,9 @@ export const Table = hh(class Table extends Component {
 
   unlinkSampleCollection = (data) => (e) => {
     this.props.unlinkSampleCollection(data);
+  };
+
+  submissionDocuments = (data) => {
   };
 
   render() {
@@ -290,7 +300,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
-                dataFormat={this.parseDate}
+                dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value==='number') {
@@ -303,6 +313,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
+                dataFormat={this.submissionDocuments}
                 dataSort={ true }
                 width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else {

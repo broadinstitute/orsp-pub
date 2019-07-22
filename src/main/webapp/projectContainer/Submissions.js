@@ -4,21 +4,16 @@ import { ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
+import { Files } from "../util/ajax";
 
 const headers =
   [
     { name: 'Number', value: 'number' },
-    { name: 'Description', value: 'description' },
+    { name: 'Description', value: 'comments' },
     { name: 'Documents', value: 'documents' },
-    { name: 'Created', value: 'creationDate' },
-    { name: '', value: 'remove' }
+    { name: 'Created', value: 'createDate' },
   ];
 
-const dummyData = [
-  [
-    { name: 'number', }
-  ]
-];
 
 export const Submissions = hh(class Submissions extends Component {
 
@@ -27,7 +22,9 @@ export const Submissions = hh(class Submissions extends Component {
     this.state = {
       content: '',
       amendments:[],
-      others: []
+      others: [],
+      amendmentDocuments: [],
+      otherDocuments: [],
     };
   }
 
@@ -49,16 +46,20 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDisplaySubmissions() {
     ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
-      console.log(resp.data.groupedSubmissions);
       this.setState(prev => {
-        prev.amendments = resp.Amendment;
-        console.log(prev.amendments);
-        prev.others = resp.Other;
+        prev.amendments = resp.data.groupedSubmissions.Amendment;
+        prev.others = resp.data.groupedSubmissions.Other;
         return prev;
       });
-      console.log(this.state.amendments);
+
+
+      // Files.getDocument()
     });
   }
+
+  remove = (row) => {
+    console.log('remove row', row);
+  };
 
   loadSubmissions() {
     $(".submissionTable").DataTable({
@@ -72,6 +73,12 @@ export const Submissions = hh(class Submissions extends Component {
     });
     $("#submission-tabs").tabs();
   }
+
+  getDocument = (uuid) => {
+    Files.getDocument(uuid).then(resp => {
+      console.log(resp);
+    });
+  };
 
   render() {
     return (
@@ -90,7 +97,11 @@ export const Submissions = hh(class Submissions extends Component {
                   h(Fragment, {}, [
                     Table({
                       headers: headers,
-                      // data: this.state.amendments,
+                      data: this.state.amendments,
+                      sizePerPage: 10,
+                      paginationSize: 10,
+                      isAdmin: true,
+                      remove: this.remove,
                     })
                   ])
                 ]),

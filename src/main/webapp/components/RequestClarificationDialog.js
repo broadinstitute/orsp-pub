@@ -20,7 +20,6 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       clarification: '',
       showAlert: false,
       pm: [{key:''}],
-      submit: false
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
   }
