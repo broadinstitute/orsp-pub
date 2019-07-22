@@ -9,8 +9,6 @@ import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
-import org.broadinstitute.orsp.SupplementalRole
-import org.broadinstitute.orsp.User
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
@@ -20,17 +18,22 @@ class IssueReviewController extends AuthenticatedController {
 
     def save() {
         Gson gson = new Gson()
-        IssueReview issueReview = parseIssueReview(gson.toJson(request.JSON))
-        Issue issue = queryService.findByKey(issueReview.projectKey)
-        if (issue == null) {
-            response.status = 404
-            render([message: "Project key does not exist"] as JSON)
-        } else {
-            issueReviewService.create(issueReview)
-            persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
-            transitionService.handleIntake(issue, [])
-            response.status = 201
-            render([issueReview] as JSON)
+        try {
+            IssueReview issueReview = parseIssueReview(gson.toJson(request.JSON))
+            Issue issue = queryService.findByKey(issueReview.projectKey)
+            if (issue == null) {
+                response.status = 404
+                render([message: "Project key does not exist"] as JSON)
+            } else {
+                issueReviewService.create(issueReview)
+                persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
+                transitionService.handleIntake(issue, [])
+                response.status = 201
+                render([issueReview] as JSON)
+            }
+        } catch (Exception e) {
+            response.status = 500
+            render([error: e.getMessage()] as JSON)
         }
     }
 

@@ -6,12 +6,9 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
-import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.NotifyArguments
-import org.broadinstitute.orsp.User
 
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])

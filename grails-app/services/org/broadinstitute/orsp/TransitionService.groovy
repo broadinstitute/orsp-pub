@@ -2,7 +2,6 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang.StringUtils
 
 /**
  * This class handles transitions from state to state and the maintenance of Flags.
