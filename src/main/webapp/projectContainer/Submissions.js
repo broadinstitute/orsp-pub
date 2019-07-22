@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { div, hh, h, button, h1 } from 'react-hyperscript-helpers';
+import { div, hh, h, button } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { MultiTab } from "../components/MultiTab";
@@ -46,16 +46,31 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDisplaySubmissions() {
     ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
+      let amendments = resp.data.groupedSubmissions.Amendment;
+      amendments.forEach(amendment => {
+        amendment.documents = this.getDocuments(amendment.documents);
+      });
+      console.log();
+
+      // console.log(resp.data.groupedSubmissions.Amendment);
       this.setState(prev => {
         prev.amendments = resp.data.groupedSubmissions.Amendment;
         prev.others = resp.data.groupedSubmissions.Other;
         return prev;
       });
 
-
-      // Files.getDocument()
     });
   }
+
+  getDocuments = (documentsIds) => {
+    let documents = [];
+    documentsIds.forEach(uuid => {
+      Files.getDocument(uuid.id).then(resp => {
+
+        console.log(resp);
+      });
+    })
+  };
 
   remove = (row) => {
     console.log('remove row', row);
@@ -73,12 +88,6 @@ export const Submissions = hh(class Submissions extends Component {
     });
     $("#submission-tabs").tabs();
   }
-
-  getDocument = (uuid) => {
-    Files.getDocument(uuid).then(resp => {
-      console.log(resp);
-    });
-  };
 
   render() {
     return (
@@ -101,7 +110,6 @@ export const Submissions = hh(class Submissions extends Component {
                       sizePerPage: 10,
                       paginationSize: 10,
                       isAdmin: true,
-                      remove: this.remove,
                     })
                   ])
                 ]),

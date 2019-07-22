@@ -132,7 +132,7 @@ export const Files = {
   },
 
   getDocument(uuid) {
-    return axios(component.serverURL + '/api/documents/get-document?uuid=' + uuid);
+    return axios({ url: component.serverURL + '/api/documents/get-document?uuid=' + uuid, method: 'GET', responseType: 'blob' });
   }
 
 };
