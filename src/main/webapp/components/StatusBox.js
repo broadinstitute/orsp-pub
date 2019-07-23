@@ -26,9 +26,9 @@ export const StatusBox = hh(class StatusBox extends Component {
           "Status: ",
           span({}, [status])
         ]),
-        p({isRendered: component.issueType === 'project' && actor != "" && actor.length > 0, className: "headerLabel"}, [
+        p({isRendered: component.issueType === 'project', className: "headerLabel"}, [
           "Awaiting action from: ",
-          span({}, [actor.join(", ")])
+          span({}, [actor != "" && actor.length > 0 ? actor.join(", ") : ''])
         ]),
         p({className: "headerBoxStatus"}, [
           span({className: "bold"}, ["Information Sub-Status: "]),
