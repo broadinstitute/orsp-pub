@@ -96,7 +96,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(ProjectDocument, {
                     statusBoxHandler: this.props.statusBoxHandler,
-                    updateDocumentsStatus: this.updateDocumentsStatus
+                    updateDocumentsStatus: this.updateDocumentsStatus,
+                    initStatusBoxInfo: this.props.initStatusBoxInfo
                   })
                 ]),
               div({
@@ -136,7 +137,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(AdminOnly, {
                     statusBoxHandler: this.props.statusBoxHandler,
-                    updateAdminOnlyStatus: this.updateAdminOnlyStatus
+                    updateAdminOnlyStatus: this.updateAdminOnlyStatus,
+                    initStatusBoxInfo: this.props.initStatusBoxInfo
                   })
                 ])
             ])

@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from '../components/Documents'
-import { DocumentHandler, User } from "../util/ajax";
+import { DocumentHandler, User, Project } from "../util/ajax";
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
@@ -31,8 +31,12 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
-    DocumentHandler.attachedDocuments(component.projectKey).then(resp => {
-      User.getUserSession().then(user => {
+    Project.getProject(component.projectUrl, component.projectKey).then(
+      issue => {
+      this.props.initStatusBoxInfo(issue.data);
+    });
+        DocumentHandler.attachedDocuments(component.projectKey).then(resp => {
+          User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
             prev.user = user.data;

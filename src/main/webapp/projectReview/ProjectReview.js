@@ -221,7 +221,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   getReviewSuggestions() {
-    Review.getSuggestions(component.projectKey).then(
+    this.init();
+      Review.getSuggestions(component.projectKey).then(
       data => {
         if (data.data !== '') {
           this.setState(prev => {
@@ -731,6 +732,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   successNotification = (type, message, time) => {
     setTimeout(this.clearAlertMessage(type), time, null);
     this.props.updateContent();
+    this.init();
     this.setState(prev => {
       prev[type] = true;
       prev.alertMessage = message;
