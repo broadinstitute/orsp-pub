@@ -157,7 +157,7 @@ export const Project = {
   },
 
   getProject(projectKey) {
-    return axios.get(UrlConstants.projectInfoURl + '?id=' + projectKey);
+    return axios.get(UrlConstants.projectInfoUrl + '?id=' + projectKey);
   },
 
   addExtraProperties(projectKey, data) {

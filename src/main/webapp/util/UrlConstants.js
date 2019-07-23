@@ -3,7 +3,7 @@ const context = component.contextPath;
 export const UrlConstants = {
   // Project
   createProjectUrl: context + '/api/project',
-  projectInfoURl: context + '/api/project/get-info',
+  projectInfoUrl: context + '/api/project/get-info',
   projectTypeUrl: context + '/api/project/get-type',
   rejectProjectUrl: context + '/api/project/reject',
   updateProjectUrl: context + '/api/project/update',
