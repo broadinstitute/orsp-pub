@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
-import { a, button, div, hh, span } from 'react-hyperscript-helpers';
+import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Btn } from './Btn';
@@ -19,9 +19,10 @@ const styles = {
   removeWidth: '45',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '26',
+  numberWidth: '16',
   createDateWidth: '26',
-  submissionDocumentsWidth: '90'
+  submissionDocumentsWidth: '90',
+  submissionComments: '25',
 };
 
 export const Table = hh(class Table extends Component {
@@ -139,13 +140,30 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToDocumentLink = (cell, row) => {
-    const documents = cell.map(data => {
+    let documents = [];
+    cell.forEach(data => {
       if (data.document !== undefined) {
-        return data.document.fileName;
+        documents.push([
+          div({key: data.document.id}, [
+            a({
+              href: `${component.downloadDocumentUrl}?uuid=${data.document.uuid}`,
+              target: '_blank',
+              title: data.document.fileType
+            }, [
+              span({className: 'glyphicon glyphicon-download'}, [' ']),
+              data.document.fileName
+            ])
+          ])
+        ]);
       }
     });
-    console.log(documents);
-    return documents.join(', ');
+    return h(Fragment, {} , [...documents]) ;
+  };
+
+  submissionEdit = (cell, row) => {
+    // TODO add edit or view button for admin or viewer
+    console.log(row);
+    return cell;
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
@@ -300,27 +318,19 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.formatTooltip}
                 key={header.value}
                 width={styles.collectionNameWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value==='comments') {
-              return <TableHeaderColumn isKey={isKey}
-                key={header.value}
-                dataField={header.value}
-                dataSort={ true }
-                width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
-            } 
-            
-            else if (header.value==='createDate') {
-              return <TableHeaderColumn isKey={isKey}
-                key={header.value}
-                dataField={header.value}
-                dataFormat={this.parseCreateDate}
-                dataSort={ true }
-                width={styles.createDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value==='number') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 dataSort={ true }
                 width={styles.numberWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value==='comments') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataFormat={this.submissionEdit}
+                dataSort={ true }
+                width={styles.submissionComments}>{header.name}</TableHeaderColumn>
             } else if (header.value==='documents') {
               return <TableHeaderColumn
                 key={header.value}
@@ -328,8 +338,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.redirectToDocumentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value==='createDate') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataFormat={this.parseCreateDate}
+                dataSort={ true }
+                width={styles.createDateWidth}>{header.name}</TableHeaderColumn>
             } else {
-
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
