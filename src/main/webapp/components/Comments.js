@@ -35,7 +35,7 @@ const columns = [{
     formatter: (cell, row, rowIndex, colIndex) =>
       div({dangerouslySetInnerHTML: { __html: cell } },[]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
-      cell.replace(/<[^>]*>?/gm, '')
+      cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
 }];
 
 export const Comments = hh(class Comments extends Component {

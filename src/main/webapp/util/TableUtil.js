@@ -52,7 +52,7 @@ export const formatExcelData = (data, columns) => {
 function parseDataElements(el, key) {
   let result = '';
   if (typeof el[key] === 'string') {
-    result = el[key].replace(/<[^>]*>?/gm, '')
+    result = el[key].replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
   } else if (Array.isArray(el[key])) {
     result = el[key].join(', ')
   } else {
