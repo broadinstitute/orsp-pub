@@ -162,7 +162,6 @@ class QueryService implements Status {
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"]) // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
-        ApplicationTagLib applicationTagLib = (ApplicationTagLib) grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
         Integer count = Funding.count()
 
         String orderField
@@ -222,22 +221,6 @@ class QueryService implements Status {
         Map<String, String> userMap = new HashMap<>()
         if (!piUserNames.isEmpty()) {
             User.findAllByUserNameInList(piUserNames).each { userMap.put(it.userName, it.displayName) }
-        }
-
-        // Order is important, see `fundingReport.gsp` for how the UI will represent this data.
-        def data = fundings.collect { funding ->
-            String url = funding.issue.controller == IssueType.CONSENT_GROUP.name ?
-                    applicationTagLib.createLink([controller: "newConsentGroup", action: 'main', absolute: true]) + "?consentKey=" + funding.issue.projectKey :
-                    applicationTagLib.createLink([controller: "project", action: 'main', absolute: true]) + "?projectKey=" + funding.issue.projectKey
-            [funding.issue.type,
-             "<a href=\"" + url + "\">" + funding.issue.projectKey + "</a>",
-             funding.issue.summary,
-             funding.issue.status,
-             funding.issue.protocol,
-             userMap.findAll{ funding.issue.getPIs().contains(it.key) }.values().join(", "),
-             funding.source,
-             funding.name,
-             funding.awardNumber]
         }
 
         new PaginatedResponse(
