@@ -282,7 +282,7 @@ export const ProjectInfoLink = {
 };
 
 export const ConsentCollectionLink = {
-  create(serverUrl, dataConsentCollection, files) {
+  create(dataConsentCollection, files) {
     let data = new FormData();
 
     files.forEach(file => {

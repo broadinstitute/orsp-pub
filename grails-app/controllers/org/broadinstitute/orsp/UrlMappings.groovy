@@ -38,7 +38,7 @@ class UrlMappings {
         '/api/consent-group/get-fillable-pdf'(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')
         '/aip/consent-group/use-restriction'(controller:'newConsentGroup', action: 'getDataUseRestriction')
         '/api/consent-group/sample-collections'(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')
-        '/consent-group/name-search'(controller: 'consentGroup', action: 'consentGroupSummaries')
+        '/consent-group/name-search'(controller: 'consentGroup', action: 'getConsentGroups')
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
@@ -69,7 +69,7 @@ class UrlMappings {
         '/api/data-use-letter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
 
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
-        '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
+        '/api/clarification-request'(controller: 'clarification', action: 'collectionRequestClarification', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
