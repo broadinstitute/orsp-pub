@@ -1,5 +1,10 @@
 import { isEmpty } from "./Utils";
 
+export const EXPORT_FILE = {
+  XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+          extension: 'xlsx' }
+};
+
 export const TABLE_ACTIONS = {
   SEARCH : "search",
   FILTER: "filter",
@@ -12,7 +17,7 @@ export const formatNullCell = (cell)  => {
 };
 
 // method used to transform data format into a single array to be used for table printing
-export const formatData = (data, columns) => {
+export const formatDataPrintableFormat = (data, columns) => {
   let dataArray = [];
   if (!isEmpty(data) && !isEmpty(columns)) {
     dataArray.push(columns.map(el => el.text));

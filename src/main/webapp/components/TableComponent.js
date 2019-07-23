@@ -9,6 +9,7 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import './Btn.css';
 import './TableComponent.css'
 import { Export } from "./Export";
+import { EXPORT_FILE } from "../util/TableUtil";
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 
@@ -34,6 +35,8 @@ export const TableComponent = hh(class TableComponent extends Component {
                 csvData={this.props.data}
                 columns={this.props.columns}
                 fileName={this.props.excelFileName}
+                fileType={EXPORT_FILE.XLSX.mimeType}
+                fileExtension={EXPORT_FILE.XLSX.extension}
               />
               <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                 <span>

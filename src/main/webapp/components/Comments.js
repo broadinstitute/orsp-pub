@@ -8,7 +8,7 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import './Btn.css';
 import { printData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
-import { formatData } from "../util/TableUtil";
+import { formatDataPrintableFormat } from "../util/TableUtil";
 
 const defaultSorted = [{
   dataField: 'date',
@@ -64,7 +64,7 @@ export const Comments = hh(class Comments extends Component {
 
   printComments = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
-    let commentsArray = formatData(this.state.comments, cols);
+    let commentsArray = formatDataPrintableFormat(this.state.comments, cols);
     const titleText = (component.issueType === "project" ? ("Project ID: "+ component.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];

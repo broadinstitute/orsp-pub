@@ -50,7 +50,9 @@ export const handleRedirectToProject = (serverURL, projectKey) => {
 }
 
 // columns headers should be included in the first row in data array.
-// Eg of data : [['header1', 'header2', 'header3'], ['row1value1', 'row1value2', 'row1value3'], ['row2value1', 'row2value2', 'row2value3']]
+// Eg of data : [['header1', 'header2', 'header3'],
+//               ['row1value1', 'row1value2', 'row1value3'],
+//               ['row2value1', 'row2value2', 'row2value3']]
 export const printData = (data, titleText= '', headerText = '', columnsWidths, pageSize = 'A4', pageOrientation = 'portrait') => {
   let documentTemplate = {
     pageSize: pageSize,

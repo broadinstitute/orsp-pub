@@ -43,7 +43,7 @@ class UserController extends AuthenticatedController {
     }
 
     def getOrspUsers() {
-//        UtilityClass.registerUserRolesMarshaller()
+        UtilityClass.registerUserRolesMarshaller()
 
         PaginationParams pagination = new PaginationParams(
                 draw: params.getInt("draw") ?: 1,

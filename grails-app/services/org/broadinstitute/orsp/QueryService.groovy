@@ -251,8 +251,7 @@ class QueryService implements Status {
 
     Collection<Funding> getAllFundings() {
         final session = sessionFactory.currentSession
-        final String query =
-                ' select * from funding '
+        final String query = ' select * from funding '
         final sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(Funding)
@@ -1358,6 +1357,23 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("userId", userId)
         sqlQuery.executeUpdate()
+    }
+
+    List<User> findUsersInUserNameList(List<String> usersList) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from user where user_name in :usersList '
+        final sqlQuery = session.createSQLQuery(query)
+        List<User> results = Collections.emptyList()
+        try {
+            results = sqlQuery.with {
+                addEntity(User)
+                setParameterList('usersList', usersList)
+                list()
+            }
+        } catch(Exception e) {
+            log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
+        }
+        results
     }
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])

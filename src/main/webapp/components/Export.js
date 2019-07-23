@@ -1,20 +1,17 @@
 import React from 'react'
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { utils, write } from 'xlsx';
 import { formatExcelData } from "../util/TableUtil";
 
-export const Export = ({csvData, columns, fileName}) => {
-
-  const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-  const fileExtension = '.xlsx';
+export const Export = ({csvData, columns, fileName, fileType, fileExtension}) => {
 
   const exportToExcel = (csvData, columns, fileName) => {
     let formatedCsvData = formatExcelData(csvData, columns);
-    let ws = XLSX.utils.json_to_sheet(formatedCsvData,{skipHeader:true});
+    let ws = utils.json_to_sheet(formatedCsvData,{skipHeader:true});
     const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const excelBuffer = write(wb, { bookType: fileExtension, type: 'array' });
     const excelData = new Blob([excelBuffer], {type: fileType});
-    FileSaver.saveAs(excelData, fileName + fileExtension);
+    saveAs(excelData, fileName + '.' + fileExtension);
   };
 
   return (
