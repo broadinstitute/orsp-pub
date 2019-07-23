@@ -22,7 +22,6 @@ class Profile extends Component {
     spinnerService.showAll();
     User.getUserSession(component.getUserUrl).then(resp => {
       this.setState( prev => { 
-        console.log(JSON.stringify(resp.data));
         prev.user = resp.data;
         prev.user.lastLoginDate = format(new Date(resp.data.lastLoginDate), 'MM/DD/YYYY HH:MM');
         return prev;
