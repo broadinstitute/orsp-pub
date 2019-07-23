@@ -1,34 +1,34 @@
-.collaborator-email-container {
-    margin-top: 20px;
-}
-.collaborator-email-container .inputFieldText {
-    width:calc(100% - 70px);
-    float: left;
-}
-
-.collaborator-email-container .buttonPrimary {
-    float: right;
-    margin: 0;
-    height: 38px;
-}
-
-.shareable-link .btn {
-    height: 38px;
-    font-size: 16px;
-    padding: 6px 30px; 
-    margin: 23px 0 0 90px;
-    float: none;
-}
-
 .data-use-clarification {
     display: block;
     font-size: 14px;
     font-weight: 400;
 }
 
-.collaborator-email-container .errorMessage {
-    display: block;
-    width: 100%;
-    position: absolute;
-    bottom: -62px;
+/* Data Use Letter */
+.yesNo-container .radioOptions  {
+    float: left;
+}
+
+.yesNo-container .radioContainer {
+    min-height: 60px;
+}
+
+.col-padding {
+    padding-right: 30px;
+}
+
+.checkbox .checkboxLabel {
+    margin-top: 20px;
+}
+
+.alertMessage.alert-success {
+    margin: 20px 0 10px 0;
+}
+
+.getShareable {
+    margin-top: 20px;
+}
+
+.getShareable .glyphicon {
+    margin-right: 5px;
 }
