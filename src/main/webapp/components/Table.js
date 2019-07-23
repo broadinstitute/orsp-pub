@@ -138,6 +138,17 @@ export const Table = hh(class Table extends Component {
     }, ["Info Link"])
   };
 
+  redirectToDocumentLink = (cell, row) => {
+    console.log('cell', cell);
+    return cell.forEach(data => {
+      if (data.document !== undefined) {
+        console.log('data', data.document.fileName);
+        return data.document.fileName;
+      }
+    }).join(', ');
+    // const url = this.props.getDocumentLink()
+  };
+
   redirectToSampleCollectionLinkedProject = (cell, row) => {
     const url = handleRedirectToProject(component.serverURL, row.linkedProjectKey);
     return a({
@@ -173,9 +184,6 @@ export const Table = hh(class Table extends Component {
 
   unlinkSampleCollection = (data) => (e) => {
     this.props.unlinkSampleCollection(data);
-  };
-
-  submissionDocuments = (data) => {
   };
 
   render() {
@@ -318,7 +326,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
-                dataFormat={this.submissionDocuments}
+                dataFormat={this.redirectToDocumentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
             } else {

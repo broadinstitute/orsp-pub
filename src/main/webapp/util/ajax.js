@@ -131,8 +131,8 @@ export const Files = {
     return axios({ url: pdfUrl, method: 'GET', responseType: 'blob' });
   },
 
-  getDocument(uuid) {
-    return axios({ url: component.serverURL + '/api/documents/get-document?uuid=' + uuid, method: 'GET', responseType: 'blob' });
+  getDocument(id) {
+    return axios(component.serverURL + '/api/files-helper/get-document?id=' + id)
   }
 
 };

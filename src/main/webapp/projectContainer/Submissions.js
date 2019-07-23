@@ -44,36 +44,45 @@ export const Submissions = hh(class Submissions extends Component {
     });
   };
 
-  getDisplaySubmissions() {
+  getDisplaySubmissions = () => {
+    let amendments = {};
+    let others = {};
     ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
-      let amendments = resp.data.groupedSubmissions.Amendment;
-      amendments.forEach(amendment => {
-        amendment.documents = this.getDocuments(amendment.documents);
-      });
-      console.log();
+      amendments = resp.data.groupedSubmissions.Amendment;
+      others = resp.data.groupedSubmissions.Amendment;
 
-      // console.log(resp.data.groupedSubmissions.Amendment);
+      amendments.forEach(amendment => {
+        amendment.documents.forEach(document => {
+          Files.getDocument(document.id).then(resp => {
+            document.document = resp.data.document;
+          });
+        });
+      });
+
+      others.forEach(other=> {
+        other.documents.forEach(document => {
+          Files.getDocument(document.id).then(resp => {
+            document.document = resp.data.document;
+          });
+        });
+      });
+
       this.setState(prev => {
-        prev.amendments = resp.data.groupedSubmissions.Amendment;
-        prev.others = resp.data.groupedSubmissions.Other;
+        prev.amendments = amendments;
+        prev.others = others;
         return prev;
       });
-
     });
-  }
+  };
 
-  getDocuments = (documentsIds) => {
-    let documents = [];
-    documentsIds.forEach(uuid => {
-      Files.getDocument(uuid.id).then(resp => {
 
-        console.log(resp);
-      });
-    })
+  getDocumentLink = (data) => {
+    // console.log('getDocumentLink', data);
+    return 'url';
   };
 
   remove = (row) => {
-    console.log('remove row', row);
+    // console.log('remove row', row);
   };
 
   loadSubmissions() {
@@ -90,6 +99,7 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   render() {
+    console.log(this.state.amendments);
     return (
       div({}, [
         button({
@@ -110,6 +120,7 @@ export const Submissions = hh(class Submissions extends Component {
                       sizePerPage: 10,
                       paginationSize: 10,
                       isAdmin: true,
+                      getDocumentLink: this.getDocumentLink,
                     })
                   ])
                 ]),

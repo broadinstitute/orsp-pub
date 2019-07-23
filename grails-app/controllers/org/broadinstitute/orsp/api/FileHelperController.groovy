@@ -10,6 +10,8 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.StorageDocument
 import org.springframework.web.multipart.MultipartFile
 
+import javax.swing.text.Document
+
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
@@ -108,6 +110,11 @@ class FileHelperController extends AuthenticatedController{
         storageProviderService.deleteDocument(Long.valueOf(params.documentId))
         response.status = 200
         render (['message': 'document deleted'] as JSON)
+    }
+
+    def getDocument() {
+        StorageDocument document = StorageDocument.findById(params.id)
+        render (['document': document] as JSON)
     }
 
 
