@@ -6,7 +6,6 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueReview
 import org.broadinstitute.orsp.IssueReviewService
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.NotifyArguments
@@ -61,6 +60,7 @@ class ClarificationController extends AuthenticatedController {
                                 user: getUser(),
                                 issue: issue))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
+                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
@@ -91,6 +91,7 @@ class ClarificationController extends AuthenticatedController {
                                 issue: issue,
                                 values: values))
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Clarification Requested", EventType.REQUEST_CLARIFICATION)
+                transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
                 response.status = 500
