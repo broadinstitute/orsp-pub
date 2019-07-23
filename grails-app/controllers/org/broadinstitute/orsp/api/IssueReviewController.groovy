@@ -18,16 +18,22 @@ class IssueReviewController extends AuthenticatedController {
 
     def save() {
         Gson gson = new Gson()
-        IssueReview issueReview = parseIssueReview(gson.toJson(request.JSON))
-        Issue issue = queryService.findByKey(issueReview.projectKey)
-        if (issue == null) {
-            response.status = 404
-            render([message: "Project key does not exist"] as JSON)
-        } else {
-            issueReviewService.create(issueReview)
-            persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
-            response.status = 201
-            render([issueReview] as JSON)
+        try {
+            IssueReview issueReview = parseIssueReview(gson.toJson(request.JSON))
+            Issue issue = queryService.findByKey(issueReview.projectKey)
+            if (issue == null) {
+                response.status = 404
+                render([message: "Project key does not exist"] as JSON)
+            } else {
+                issueReviewService.create(issueReview)
+                persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
+                transitionService.handleIntake(issue, [])
+                response.status = 201
+                render([issueReview] as JSON)
+            }
+        } catch (Exception e) {
+            response.status = 500
+            render([error: e.getMessage()] as JSON)
         }
     }
 
@@ -51,6 +57,8 @@ class IssueReviewController extends AuthenticatedController {
         if (params.type == 'reject') {
             persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         }
+        Issue issue = queryService.findByKey(params.projectKey)
+        transitionService.handleIntake(issue, issue.getActorUsernames())
         response.status = 200
         response
     }

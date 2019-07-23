@@ -36,7 +36,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="${createLink(controller: 'admin', action: 'collectionLinks')}">Consent Collection Links</a></li>
                                 <li><a href="${createLink(controller: 'dataUse', action: 'list')}">Data Use Restrictions</a></li>
-                                <li><a href="${createLink(controller: 'admin', action: 'reviewCategories')}">Review Category Report</a></li>
+                                <li><a href="${createLink(controller: 'report', action: 'reviewCategories')}">Review Category Report</a></li>
                                 <li><a href="${createLink(controller: 'statusEvent', action: 'index')}">QA Event Report</a></li>
                                 <li><a href="${createLink(controller: 'admin', action: 'fundingReport')}">Funding Source Report</a></li>
                                 <li><a href="${createLink(controller: 'report', action: 'aahrppMetrics')}">AAHRPP Metrics Report (CSV)</a></li>
@@ -99,10 +99,6 @@
                     listItem
                     .addClass("disabled")
                     .append("<p> Please contact "+ item.pm + " for access</p>")
-                } else if (item.linkDisabled === true && item.actor.length > 0){
-                    listItem
-                    .addClass("disabled")
-                    .append("<p> Please contact "+ item.actor + " for access</p>")
                 } else if (item.linkDisabled === true){
                     listItem
                     .addClass("disabled")
