@@ -77,6 +77,7 @@ export const Submissions = hh(class Submissions extends Component {
 
 
   getDocumentLink = (data) => {
+    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + component.consentKey].join("/");
     // console.log('getDocumentLink', data);
     return 'url';
   };

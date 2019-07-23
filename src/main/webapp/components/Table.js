@@ -139,14 +139,13 @@ export const Table = hh(class Table extends Component {
   };
 
   redirectToDocumentLink = (cell, row) => {
-    console.log('cell', cell);
-    return cell.forEach(data => {
+    const documents = cell.map(data => {
       if (data.document !== undefined) {
-        console.log('data', data.document.fileName);
         return data.document.fileName;
       }
-    }).join(', ');
-    // const url = this.props.getDocumentLink()
+    });
+    console.log(documents);
+    return documents.join(', ');
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
