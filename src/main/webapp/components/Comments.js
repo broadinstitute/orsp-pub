@@ -84,8 +84,7 @@ export const Comments = hh(class Comments extends Component {
           columns: columns,
           keyField: 'id',
           search: true,
-          csvFileName: 'ORSP.csv',
-          excelFileName: 'ORSP',
+          fileName: 'ORSP',
           showPrintButton: false,
           printComments: this.printComments,
           defaultSorted: defaultSorted

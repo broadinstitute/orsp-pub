@@ -26,7 +26,7 @@ export const TableComponent = hh(class TableComponent extends Component {
           data= { this.props.data }
           columns= { this.props.columns }
           search= { this.props.search }
-          exportCSV= {{ fileName: this.props.csvFileName }}
+          exportCSV= {{ fileName: this.props.fileName.concat('.csv') }}
         >
           { props =>
             <div>
@@ -34,7 +34,7 @@ export const TableComponent = hh(class TableComponent extends Component {
               <Export
                 csvData={this.props.data}
                 columns={this.props.columns}
-                fileName={this.props.excelFileName}
+                fileName={this.props.fileName}
                 fileType={EXPORT_FILE.XLSX.mimeType}
                 fileExtension={EXPORT_FILE.XLSX.extension}
               />
