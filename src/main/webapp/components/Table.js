@@ -19,10 +19,10 @@ const styles = {
   removeWidth: '45',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '16',
-  createDateWidth: '26',
-  submissionDocumentsWidth: '90',
-  submissionComments: '25',
+  numberWidth: '10',
+  createDateWidth: '15',
+  submissionDocumentsWidth: '40',
+  submissionComments: '75',
 };
 
 export const Table = hh(class Table extends Component {
@@ -161,12 +161,7 @@ export const Table = hh(class Table extends Component {
   };
 
   submissionEdit = (cell, row) => {
-    const indexButton = a({
-      className: 'btn btn-default btn-xs pull-left link-btn',
-      href: `${component.contextPath}/submission/index?projectKey=${component.projectKey}&sumissionId=${row.id}`
-    }, [component.isAdmin === true ? 'Edit': 'View']);
-    const submissionComment = span({className: 'submission-comment'}, [row.comments]);
-    return h(Fragment, {}, [indexButton, submissionComment]);
+    return this.props.submissionEdit(row);
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {

@@ -1,10 +1,11 @@
 import { Component, Fragment } from 'react';
-import { div, hh, h, button } from 'react-hyperscript-helpers';
+import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
+import './submissions.css';
 
 const headers =
   [
@@ -49,7 +50,7 @@ export const Submissions = hh(class Submissions extends Component {
     let others = {};
     ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
       amendments = resp.data.groupedSubmissions.Amendment;
-      others = resp.data.groupedSubmissions.Amendment;
+      others = resp.data.groupedSubmissions.Other;
 
       amendments.forEach(amendment => {
         amendment.documents.forEach(document => {
@@ -97,7 +98,26 @@ export const Submissions = hh(class Submissions extends Component {
     $("#submission-tabs").tabs();
   }
 
+  submissionEdit = (data) => {
+    const indexButton = a({
+      className: 'btn btn-default btn-xs pull-left link-btn',
+      href: `${component.contextPath}/submission/index?projectKey=${component.projectKey}&submissionId=${data.id}`
+    }, [component.isAdmin === true ? 'Edit': 'View']);
+    const submissionComment = span({className: 'submission-comment'}, [data.comments]);
+    return h(Fragment, {}, [indexButton, submissionComment]);
+  };
+
   render() {
+    const amendmentTitle = h(Fragment, {}, [
+      "Amendment",
+      span({className: "badge badge-dark submission-counter"}, [this.state.amendments.length])
+    ]);
+
+    const othersTitle = h(Fragment, {}, [
+      "Others",
+      span({className: "badge badge-dark submission-counter"}, [this.state.others.length])
+    ]);
+
     return (
       div({}, [
         button({
@@ -106,26 +126,37 @@ export const Submissions = hh(class Submissions extends Component {
           onClick: '',
           isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Edit Information"]),
-        Panel({title: "Submissions", submissionsCount: this.state.amendments.length}, [
+        Panel({title: "Submissions"}, [
 
             div({ className: "containerBox" }, [
               MultiTab({ defaultActive: "amendment"}, [
-                div({ key: "amendment", title: "Amendment"},[
+                div({ key: "amendment", title: amendmentTitle },[
                   h(Fragment, {}, [
                     Table({
                       headers: headers,
                       data: this.state.amendments,
                       sizePerPage: 10,
                       paginationSize: 10,
-                      isAdmin: true,
+                      isAdmin: component.isAdmin,
                       getDocumentLink: this.getDocumentLink,
+                      pagination: true,
+                      reviewFlow: true,
+                      submissionEdit: this.submissionEdit,
                     })
                   ])
                 ]),
-                div({ key: "other", title: "Other"},[
+                div({ key: "other", title: othersTitle},[
                   h(Fragment, {}, [
                     Table({
                       headers: headers,
+                      data: this.state.others,
+                      sizePerPage: 10,
+                      paginationSize: 10,
+                      isAdmin: component.isAdmin,
+                      getDocumentLink: this.getDocumentLink,
+                      pagination: true,
+                      reviewFlow: true,
+                      submissionEdit: this.submissionEdit,
                     }),
                   ])
                 ]),

@@ -41,9 +41,7 @@ export const Panel = hh(class Panel extends Component {
         div({ className: "panelHeader" }, [
           h3({ className: 'panelTitle' }, [
             this.props.title,
-            span({ className: this.props.submissionsCount !== undefined ? "badge badge-dark" : "panelTitleMoreInfo" }, [
-              this.props.submissionsCount !== undefined ? this.props.moreInfo : this.props.submissionsCount
-            ]),
+            span({ className: "panelTitleMoreInfo" }, [this.props.moreInfo]),
             Btn({ isRendered: this.props.tooltipLabel !== undefined, action: { label: this.props.tooltipLabel, handler: this.tooltipBtnHandler } })
           ]),
           AlertMessage({
