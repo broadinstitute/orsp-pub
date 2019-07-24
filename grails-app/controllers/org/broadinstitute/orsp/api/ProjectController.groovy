@@ -13,6 +13,7 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
+import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
@@ -147,12 +148,7 @@ class ProjectController extends AuthenticatedController {
 
     def handleIntake(String key) {
         Issue issue = queryService.findByKey(key)
-        Collection<User> actors = getProjectManagersForIssue(issue)
-        if(issue.getType() == IssueType.IRB.name) {
-            transitionService.handleIntake(issue, actors*.userName, IssueStatus.PreparingApplication.name, getUser()?.displayName)
-        } else {
-            transitionService.handleIntake(issue, actors*.userName, IssueStatus.SubmittingToORSP.name, getUser()?.displayName)
-        }
+        transitionService.handleIntake(issue, [SupplementalRole.ORSP], IssueStatus.PreparingApplication.name)
     }
 
     String getProjectType() {

@@ -15,7 +15,7 @@ class Main extends Component {
         projectKey: '',
         summary: '',
         status: '',
-        actor: '',
+        actor: [],
         projectReviewApproved: '',
         attachmentsApproved: ''
       }
