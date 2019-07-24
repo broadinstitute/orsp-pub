@@ -50,7 +50,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getHistory(component.serverURL, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.history = resp.data.history;
         return prev;
