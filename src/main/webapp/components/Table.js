@@ -148,9 +148,9 @@ export const Table = hh(class Table extends Component {
             a({
               href: `${component.downloadDocumentUrl}?uuid=${data.document.uuid}`,
               target: '_blank',
-              title: data.document.fileType
+              title: data.document.fileType,
             }, [
-              span({className: 'glyphicon glyphicon-download'}, [' ']),
+              span({className: 'glyphicon glyphicon-download submission-download' }, []),
               data.document.fileName
             ])
           ])
@@ -161,9 +161,12 @@ export const Table = hh(class Table extends Component {
   };
 
   submissionEdit = (cell, row) => {
-    // TODO add edit or view button for admin or viewer
-    console.log(row);
-    return cell;
+    const indexButton = a({
+      className: 'btn btn-default btn-xs pull-left link-btn',
+      href: `${component.contextPath}/submission/index?projectKey=${component.projectKey}&sumissionId=${row.id}`
+    }, [component.isAdmin === true ? 'Edit': 'View']);
+    const submissionComment = span({className: 'submission-comment'}, [row.comments]);
+    return h(Fragment, {}, [indexButton, submissionComment]);
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
