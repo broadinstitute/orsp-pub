@@ -26,7 +26,7 @@ class Profile extends Component {
         role = 'Admin';
       } 
       else if (resp.data.isViewer) {
-        role =  "Read Only";
+        role =  "Read Only Access";
       }
       this.setState(prev => { 
         prev.user = resp.data;
