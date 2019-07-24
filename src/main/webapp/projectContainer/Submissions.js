@@ -106,7 +106,7 @@ export const Submissions = hh(class Submissions extends Component {
           onClick: '',
           isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Edit Information"]),
-        Panel({title: "Submissions"}, [
+        Panel({title: "Submissions", submissionsCount: this.state.amendments.length}, [
 
             div({ className: "containerBox" }, [
               MultiTab({ defaultActive: "amendment"}, [
