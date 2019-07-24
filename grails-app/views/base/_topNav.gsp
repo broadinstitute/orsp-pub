@@ -99,10 +99,6 @@
                     listItem
                     .addClass("disabled")
                     .append("<p> Please contact "+ item.pm + " for access</p>")
-                } else if (item.linkDisabled === true && item.actor.length > 0){
-                    listItem
-                    .addClass("disabled")
-                    .append("<p> Please contact "+ item.actor + " for access</p>")
                 } else if (item.linkDisabled === true){
                     listItem
                     .addClass("disabled")

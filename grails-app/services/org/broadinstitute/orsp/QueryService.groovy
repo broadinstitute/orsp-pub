@@ -162,7 +162,6 @@ class QueryService implements Status {
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"]) // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
-        ApplicationTagLib applicationTagLib = (ApplicationTagLib) grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
         Integer count = Funding.count()
 
         String orderField
@@ -224,29 +223,24 @@ class QueryService implements Status {
             User.findAllByUserNameInList(piUserNames).each { userMap.put(it.userName, it.displayName) }
         }
 
-        // Order is important, see `fundingReport.gsp` for how the UI will represent this data.
-        def data = fundings.collect { funding ->
-            String url = funding.issue.controller == IssueType.CONSENT_GROUP.name ?
-                    applicationTagLib.createLink([controller: "newConsentGroup", action: 'main', absolute: true]) + "?consentKey=" + funding.issue.projectKey :
-                    applicationTagLib.createLink([controller: "project", action: 'main', absolute: true]) + "?projectKey=" + funding.issue.projectKey
-            [funding.issue.type,
-             "<a href=\"" + url + "\">" + funding.issue.projectKey + "</a>",
-             funding.issue.summary,
-             funding.issue.status,
-             funding.issue.protocol,
-             userMap.findAll{ funding.issue.getPIs().contains(it.key) }.values().join(", "),
-             funding.source,
-             funding.name,
-             funding.awardNumber]
-        }
-
         new PaginatedResponse(
                 draw: pagination.draw,
                 recordsTotal: count,
                 recordsFiltered: fundingResults.getTotalCount(),
-                data: data,
+                data: fundings,
                 error: ""
         )
+    }
+
+    Collection<Funding> getAllFundings() {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from funding '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Funding)
+            list()
+        }
+        results as Collection<Funding>
     }
 
     private Map<String, SampleCollection> getCollectionIdMap(Collection<ConsentCollectionLink> links) {
@@ -1346,6 +1340,23 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("userId", userId)
         sqlQuery.executeUpdate()
+    }
+
+    List<User> findUsersInUserNameList(List<String> usersList) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from user where user_name in :usersList '
+        final sqlQuery = session.createSQLQuery(query)
+        List<User> results = Collections.emptyList()
+        try {
+            results = sqlQuery.with {
+                addEntity(User)
+                setParameterList('usersList', usersList)
+                list()
+            }
+        } catch(Exception e) {
+            log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
+        }
+        results
     }
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])
