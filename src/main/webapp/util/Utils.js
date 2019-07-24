@@ -1,4 +1,7 @@
 import _ from 'lodash';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
 
 export const validateEmail = (email) => {
   let valid = false;
@@ -44,4 +47,58 @@ export const scrollToTop = () => {
 
 export const handleRedirectToProject = (serverURL, projectKey) => {
   return [serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
+}
+
+// columns headers should be included in the first row in data array.
+// Eg of data : [['header1', 'header2', 'header3'],
+//               ['row1value1', 'row1value2', 'row1value3'],
+//               ['row2value1', 'row2value2', 'row2value3']]
+export const printData = (data, titleText= '', headerText = '', columnsWidths, pageSize = 'A4', pageOrientation = 'portrait') => {
+  let documentTemplate = {
+    pageSize: pageSize,
+    pageOrientation: pageOrientation,
+
+    footer: function(currentPage, pageCount) {
+      return {
+        text: "Page " + currentPage.toString() + ' of ' + pageCount,
+        alignment: 'center'
+      }
+    },
+    content: [
+      {
+        text: new Date().toLocaleDateString(),
+        alignment: 'left'
+      },
+      {text: [ headerText ], style: 'header'},
+      {text: [ titleText ], fontSize: 14},
+      {
+        style: 'tableExample',
+        table: {
+          widths: columnsWidths,
+          body: data
+        }
+      }
+    ],
+    styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+        margin: [0, 5, 0, 0]
+      },
+      subheader: {
+        fontSize: 16,
+        bold: true,
+        margin: [0, 0, 0, 5]
+      },
+      tableExample: {
+        widths: [0, 20, 0, 15]
+      },
+      tableHeader: {
+        bold: true,
+        fontSize: 13,
+        color: 'black'
+      }
+    }
+  };
+  pdfMake.createPdf(documentTemplate).print();
 }

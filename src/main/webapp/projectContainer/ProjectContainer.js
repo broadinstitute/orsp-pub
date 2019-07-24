@@ -48,6 +48,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.getHistory();
   };
 
+
   // history
   getHistory() {
     ProjectMigration.getHistory(component.serverURL, component.projectKey).then(resp => {
