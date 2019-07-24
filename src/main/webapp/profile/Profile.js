@@ -21,11 +21,19 @@ class Profile extends Component {
   init = () => {
     spinnerService.showAll();
     User.getUserSession(component.getUserUrl).then(resp => {
-      this.setState( prev => { 
+      let role = 'Standard Access';
+      if (resp.data.isAdmin || resp.data.isORSP || resp.data.isComplianceOffice) {
+        role = 'Admin';
+      } 
+      else if (resp.data.isViewer) {
+        role =  "Read Only";
+      }
+      this.setState(prev => { 
         prev.user = resp.data;
         prev.user.lastLoginDate = format(new Date(resp.data.lastLoginDate), 'MM/DD/YYYY HH:MM');
+        prev.user.role = role;
         return prev;
-      })
+      });
     });
   };
 
@@ -67,7 +75,7 @@ class Profile extends Component {
               p({ className: "inputFieldLabel" }, [
                 "Roles:",
                 span({ className: "inputDetail" }, [
-                  this.state.user.isAdmin || this.state.user.isORSP || this.state.user.isComplianceOffice ? 'Admin' : "Read Only"
+                  this.state.user.role
                 ])
               ])
             ])
