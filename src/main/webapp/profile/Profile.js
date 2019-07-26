@@ -21,7 +21,6 @@ class Profile extends Component {
   init = () => {
     spinnerService.showAll();
     User.getUserSession(component.getUserUrl).then(resp => {
-
       this.setState(prev => { 
         prev.user = resp.data;
         return prev;
