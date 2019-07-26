@@ -11,12 +11,7 @@ class IndexController {
     def about() {}
 
     def profile() {
-        if (session["user"]) {
-            User user = (User) session["user"]
-            [user: user]
-        } else {
-            render(view: "/index")
-        }
+        render(view: "/mainContainer/index")
     }
 
 }
