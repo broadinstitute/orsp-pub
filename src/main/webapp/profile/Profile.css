@@ -1,0 +1,11 @@
+.rowProfile {
+  display: block;
+  color: #000000;
+  margin-top: 30px;
+}
+
+.inputFieldLabel .inputDetail {
+  display: block;
+  color: #000000;
+  margin-bottom: 20px;
+}
