@@ -73,7 +73,6 @@
       const component = {
         error: "${error}",
         issueTypes: issueTypes,
-        consentGroupsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroups')}",
         issueStatuses: issueStatuses,
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
