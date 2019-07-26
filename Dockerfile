@@ -46,7 +46,7 @@ RUN webpack --mode=development --config webpack.config.js
 
 #RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; env; gradle webpackProd"
 
-RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; grails -Dgrails.env=prod war"
+RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; grails -Dgrails.env=dev war"
 
 FROM openjdk:8-alpine
 WORKDIR /
