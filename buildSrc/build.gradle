@@ -1,0 +1,13 @@
+
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
+    compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-core', version: '1.0.3'
+}
