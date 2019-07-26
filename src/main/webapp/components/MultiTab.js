@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hh, h, span } from 'react-hyperscript-helpers';
+import { hh, h } from 'react-hyperscript-helpers';
 import { Tabs, Tab } from 'react-bootstrap';
 
 

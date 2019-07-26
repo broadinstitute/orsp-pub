@@ -51,6 +51,7 @@ class UrlMappings {
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
+        '/api/submissions/add-new'(controller: 'submission', action: 'index')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
         '/api/files-helper/get-document'(controller: 'fileHelper', action: 'getDocument')

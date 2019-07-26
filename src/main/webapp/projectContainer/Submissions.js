@@ -59,16 +59,16 @@ export const Submissions = hh(class Submissions extends Component {
   getDisplaySubmissions = () => {
     let amendments = {};
     let others = {};
-    let submissions = {};
     ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
-      submissions = resp.data.groupedSubmissions;
       amendments = resp.data.groupedSubmissions.Amendment;
       others = resp.data.groupedSubmissions.Other;
 
-      console.log(submissions);
-
-      submissions.forEach(submissionType => {
-        this.getDocumentsData(submissionType)
+      amendments.forEach(other=> {
+        other.documents.forEach(document => {
+          Files.getDocument(document.id).then(resp => {
+            document.document = resp.data.document;
+          });
+        });
       });
 
       others.forEach(other=> {
@@ -90,10 +90,6 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDocumentLink = (data) => {
     return [component.serverURL, 'api/files-helper/get-document?id=' + data].join("/");
-  };
-
-  remove = (row) => {
-    // console.log('remove row', row);
   };
 
   loadSubmissions() {
@@ -118,6 +114,11 @@ export const Submissions = hh(class Submissions extends Component {
     return h(Fragment, {}, [indexButton, submissionComment]);
   };
 
+  redirectNewSubmission() {
+    window.location.href=`${component.serverURL}/submissions/add-new&projectKey=${component.projectKey}&type=Amendment`;
+  }
+
+
   render() {
     const amendmentTitle = h(Fragment, {}, [
       "Amendment",
@@ -141,6 +142,7 @@ export const Submissions = hh(class Submissions extends Component {
         Panel({title: "Submissions"}, [
           div({className: "pull-right"}, [
             a({
+              onClick: this.redirectNewSubmission,
               className: "btn btn-default link-btn"
             }, ["Add Submission"])
             ]
