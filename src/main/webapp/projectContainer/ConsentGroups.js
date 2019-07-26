@@ -131,17 +131,15 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         history.pushState({}, null, window.location.href.split('&')[0]);
       });
     }
-  }
+  };
 
   getProjectConsentGroups = () => {
-    let i = 0;
     ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
-      console.log("Results => ", result);
         this.setState(prev => {
           prev.consentGroups = result.data.consentGroups;
           prev.issue = result.data.issue;
           return prev;
-        }, ()=> console.log("STATE?! ", this.state));
+        }, ()=> {}/*console.log("STATE?! ", this.state)*/);
       }
     )
   };
@@ -154,7 +152,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       CollapsibleElements({
         divisions: 3,
         body: Panel,
-        // panel: PANALELES,
+        header: h1,
         accordion: false,
         data: isEmpty(this.state.consentGroups) ? [] : this.state.consentGroups
       }),

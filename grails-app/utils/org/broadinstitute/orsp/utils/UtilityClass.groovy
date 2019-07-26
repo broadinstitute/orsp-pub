@@ -88,7 +88,7 @@ class UtilityClass {
                         attachments: issue.attachments,
                         extraProperties: issue.extraPropertiesMap,
                         fundings: issue.fundings,
-                        title: issue.id
+                        title: issue.summary
                 ]
             }
         }
