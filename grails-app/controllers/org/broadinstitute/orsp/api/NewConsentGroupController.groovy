@@ -8,7 +8,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
-
+import org.broadinstitute.orsp.ConsentException
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction
@@ -20,6 +20,7 @@ import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.springframework.web.multipart.MultipartFile
 
 import javax.ws.rs.core.Response
@@ -166,6 +167,20 @@ class NewConsentGroupController extends AuthenticatedController {
         Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
         render([collectionLinks: collectionLinks.linkedProject] as JSON)
         collectionLinks
+    }
+
+    def getProjectConsentGroups() {
+        UtilityClass.registerCompleteIssueMarshaller()
+        try {
+            LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
+            response.status = 200
+            JSON.use(UtilityClass.ISSUE_COMPLETE) {
+                render( consentGroups as JSON)
+            }
+        } catch(ConsentException e) {
+            response.status = 400
+            render([message: 'Error while trying to get project\'s Consent Groups. ' + e as JSON])
+        }
     }
 
     /**

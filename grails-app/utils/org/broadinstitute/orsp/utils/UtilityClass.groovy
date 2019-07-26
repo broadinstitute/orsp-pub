@@ -11,6 +11,7 @@ import org.broadinstitute.orsp.User
 class UtilityClass {
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
+    public static final String ISSUE_COMPLETE = 'completeIssue'
 
     /**
      * Register Comment's object JSON mapping for Project's and Sample Data Cohort's Comments
@@ -61,6 +62,33 @@ class UtilityClass {
                         summary: issue.summary,
                         status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
                         reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
+                ]
+            }
+        }
+    }
+
+    /**
+     * Register Issue's JSON mapping to return its transient properties
+    */
+    static void registerCompleteIssueMarshaller() {
+        JSON.createNamedConfig(ISSUE_COMPLETE) {
+            it.registerObjectMarshaller( Issue ) { Issue issue ->
+                return [
+                        id: issue.id,
+                        projectKey: issue.projectKey,
+                        type: issue.type,
+                        status: issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
+                        summary: issue.summary,
+                        description:issue.description,
+                        reporter:issue.reporter,
+                        approvalStatus:issue.approvalStatus,
+                        requestDate:issue.requestDate,
+                        updateDate:issue.updateDate,
+                        expirationDate:issue.expirationDate,
+                        attachments: issue.attachments,
+                        extraProperties: issue.extraPropertiesMap,
+                        fundings: issue.fundings,
+                        title: issue.id
                 ]
             }
         }

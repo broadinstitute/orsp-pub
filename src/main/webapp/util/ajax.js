@@ -89,6 +89,10 @@ export const ConsentGroup = {
   unlinkSampleCollection(url, consentCollectionId) {
     const data = { consentCollectionId };
     return axios.put(url + '/api/consent-group/unlinkAssociatedSampleCollection', data);
+  },
+
+  getProjectConsentGroups(projectKey) {
+    return axios.get(component.serverURL + '/api/consent-group/getProjectConsentGroups?projectKey=' + projectKey);
   }
 };
 

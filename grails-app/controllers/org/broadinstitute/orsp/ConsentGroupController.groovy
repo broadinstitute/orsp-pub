@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -216,65 +217,21 @@ class ConsentGroupController extends AuthenticatedController {
 //         checklistAnswers: checklistAnswers
         ]
     }
-
-    def projectConsentGroups() {
-        Issue issue = queryService.findByKey(params.id)
-        Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
-        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
-        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
-        render(
-                view: "/consentGroup/list",
-                model: [
-                        issue: issue,
-                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()},
-                        attachmentTypes: PROJECT_DOC_TYPES,
-                        controller: IssueType.CONSENT_GROUP.controller
-                ]
-        )
-    }
-
-    /**
-     * TODO: Move to transaction
-     */
-//    def updateChecklist() {
-//        def issue = queryService.findByKey(params.id)
-//        Collection<ChecklistAnswer> checklistAnswers = ChecklistAnswer.findAllByProjectKey(issue.projectKey)
-//        // Need to keep this list of ids in sync with the question IDs in the UI.
-//        def questionIds = ["q1", "q1_comment", "q2", "q2_comment", "q3", "q3_comment",
-//                           "q4A", "q4A_comment", "q4B", "q4B_comment", "q5", "q5_comment",
-//                           "q6A", "q6A_comment", "q6B", "q6B_comment", "q6C", "q6C_comment",
-//                           "q7_comment"]
-//        try {
-//            questionIds.each {
-//                questionId ->
-//                    if (params.get(questionId)) {
-//                        saveOrUpdateAnswer(questionId, (String) params.get(questionId), checklistAnswers, issue.projectKey)
-//                    }
-//            }
-//        } catch (Exception e) {
-//            flash.error = e.message
-//        }
-//        redirect(controller: 'consentGroup', action: "show", params: [id: params.get("id"), tab: 'checklist'])
-//    }
-
-//    private void saveOrUpdateAnswer(String questionId, String answerValue, Collection<ChecklistAnswer> checklistAnswers, String issueKey) {
-//        // look for answer in current checklist:
-//        def answer = checklistAnswers?.find { it.questionId?.equals(questionId) }
-//        Date now = new Date()
-//        if (answer) {
-//            answer.setValue(answerValue)
-//            answer.setUpdateDate(now)
-//            answer.setReviewer(getUser()?.displayName)
-//            answer.save()
-//        } else {
-//            new ChecklistAnswer(
-//                    questionId: questionId,
-//                    projectKey: issueKey,
-//                    value: answerValue,
-//                    updateDate: now,
-//                    reviewer: getUser()?.displayName
-//            ).save(failOnError: true)
-//        }
+//    //move projectconsetgroups to newconsentgroup controller
+//    def projectConsentGroups() {
+//        Issue issue = queryService.findByKey(params.id)
+//        Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
+//        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
+//        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
+//        render(
+//                view: "/consentGroup/list",
+//                model: [
+//                        issue: issue,
+//                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()},
+//                        attachmentTypes: PROJECT_DOC_TYPES,
+//                        controller: IssueType.CONSENT_GROUP.controller
+//                ]
+//        )
 //    }
 
     def attachDocument() {

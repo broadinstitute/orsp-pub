@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpEncoders
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
@@ -496,4 +497,19 @@ class ConsentService implements Status {
         summary
     }
 
+    LinkedHashMap findProjectConsentGroups(String projectKey) throws ConsentException {
+        if (StringUtils.isNotEmpty(projectKey)) {
+            Issue issue = queryService.findByKey(projectKey) //<- convertir a sql y manejar sus excepciones, por ej projectkey = null
+            Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
+            Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
+            Collection consentGroups = queryService.findByKeys(collectionLinksMap)
+            [
+                    issue        : issue,
+                    consentGroups: consentGroups?.sort { a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase() }
+            ]
+        } else {
+            throwConsentException("Error trying to get Project's Consent groups: Empty projectKey")
+            []
+        }
+    }
 }
