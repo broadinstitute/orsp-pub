@@ -306,6 +306,21 @@ export const ConsentCollectionLink = {
   }
 };
 
+export const Reports = {
+  getFundingsReports(query) {
+    return axios.get(component.serverURL + '/api/report/get-funding', {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  }
+};
+
 export const ProjectMigration = {
 
   getConsentGroups(id) {
