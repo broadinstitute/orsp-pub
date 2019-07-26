@@ -1,8 +1,8 @@
-FROM redwolfgang20/grails as builder
+FROM oredwolfgang20/grails:3.3.0
 COPY . /app
 WORKDIR /app
 
-RUN ./gradlew webpackProd
+RUN ./gradlew webpackProd --stacktrace --debug
 RUN grails -Dgrails.env=dev war
 
 FROM openjdk:8-alpine
