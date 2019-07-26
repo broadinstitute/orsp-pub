@@ -8,7 +8,33 @@ import { Spinner } from "../components/Spinner";
 import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
 import { isEmpty } from "../util/Utils";
 import { Panel } from "../components/Panel";
+import { TableComponent } from "../components/TableComponent";
 
+const columns = [{
+  dataField: 'id',
+  text: 'Id',
+  hidden: true,
+  csvExport : false
+}, {
+  dataField: 'projectKey',
+  text: 'Project Key',
+  sort: true
+}, {
+  dataField: 'summary',
+  text: 'Summary',
+  sort: true
+},
+{
+  dataField: 'reporter',
+  text: 'Reporter',
+  sort: true
+}
+];
+
+const defaultSorted = [{
+  dataField: 'projectKey',
+  order: 'desc'
+}];
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   constructor(props) {
@@ -136,12 +162,34 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   getProjectConsentGroups = () => {
     ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
         this.setState(prev => {
-          prev.consentGroups = result.data.consentGroups;
+          prev.consentGroups = this.parseData(result.data.consentGroups);
           prev.issue = result.data.issue;
           return prev;
         }, ()=> {}/*console.log("STATE?! ", this.state)*/);
       }
     )
+  };
+
+  parseData = (consents) => {
+    let parsedArray = [];
+    let parsedData = {};
+
+    if (!isEmpty(consents)) {
+      consents.forEach(consent => {
+        parsedData.consents = consents;
+        parsedData.search = false;
+        parsedData.remoteProp = false;
+        parsedData.data= consent.attachments;
+        parsedData.columns= columns;
+        parsedData.keyField= 'id';
+        parsedData.search= false;
+        parsedData.defaultSorted= defaultSorted;
+        parsedData.fileName= '_';
+        parsedData.showButtons = false;
+        parsedArray.push(parsedData)
+      });
+    }
+    return parsedArray;
   };
 
   render() {
@@ -151,7 +199,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
       CollapsibleElements({
         divisions: 3,
-        body: Panel,
+        body: TableComponent,
         header: h1,
         accordion: false,
         data: isEmpty(this.state.consentGroups) ? [] : this.state.consentGroups

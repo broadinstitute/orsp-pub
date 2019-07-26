@@ -45,9 +45,9 @@ export const CollapsibleElements = hh(class CollapsibleElements extends Componen
         }, [
           this.props.data.map((element, idx) => {
             return  h(Panel, { key: idx,
-              header: this.props.header({},[element.projectKey])
+              header: this.props.header({},[element.data.projectKey])
             }, [
-              this.props.body(element,["Summary => " + element.summary])
+              this.props.body(element,["Summary => " + element.data.summary])
             ])
           })
         ])
@@ -55,7 +55,19 @@ export const CollapsibleElements = hh(class CollapsibleElements extends Componen
     );
   }
 });
-
+/*
+* TableComponent({
+          remoteProp: false,
+          data: this.state.comments,
+          columns: columns,
+          keyField: 'id',
+          search: true,
+          fileName: 'ORSP',
+          showPrintButton: false,
+          printComments: this.printComments,
+          defaultSorted: defaultSorted
+        })
+* */
 
 // ,h(Panel,{ header: `This is panel header `}, [
 //   p({},[text])
