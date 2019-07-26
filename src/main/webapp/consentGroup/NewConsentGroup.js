@@ -508,7 +508,6 @@ class NewConsentGroup extends Component {
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage
       }, [
           NewConsentGroupGeneralData({
             title: "Sample/Data Cohort Info",

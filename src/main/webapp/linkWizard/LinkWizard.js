@@ -335,7 +335,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         submitHandler: this.submitLink,
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: component.loadingImage,
       }, [
         SelectSampleConsent({
           title: "Sample/Data Cohort Info",

@@ -82,7 +82,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   handleUnlinkProject = (target) => () => {
-    console.log('handleUnlinkProject', target, component.consentKey);
     ConsentGroup.unlinkProject(component.consentKey, target).then(result => {
       this.getAssociatedProjects()
     }).catch(error => {
@@ -156,7 +155,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         projectKey: component.consentKey,
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
-        serverURL: component.serverURL,
         userName: this.state.user.userName,
         restriction: this.state.restriction,
         restrictionId: this.state.restrictionId,

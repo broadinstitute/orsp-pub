@@ -89,7 +89,7 @@ class NewProject extends Component {
         this.state.user.displayName,
         this.state.user.userName
         ).then(resp => {
-           window.location.href = [this.props.serverURL, "project", "main","?projectKey=" + resp.data.message.projectKey + "&tab=review&new"].join("/");
+           window.location.href = [component.serverURL, "project", "main","?projectKey=" + resp.data.message.projectKey + "&tab=review&new"].join("/");
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
@@ -388,7 +388,6 @@ class NewProject extends Component {
         submitHandler: this.submitNewProject,
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage,
       }, [
           NewProjectGeneralData({
             title: "Project Details",
