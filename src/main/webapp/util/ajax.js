@@ -337,7 +337,7 @@ export const ProjectMigration = {
 };
 
 export const Report = {
-  getReviewCategory(id) {
-    return axios.get(component.serverURL + "/api/report/review-categories");
+  getReviewCategory() {
+    return axios.get(UrlConstants.reviewCategoriesUrl);
   }
 };

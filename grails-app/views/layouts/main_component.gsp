@@ -88,12 +88,6 @@
         isViewer: ${session.isViewer},
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
         isViewer: ${session.isViewer ? session.isViewer : false},
-        // rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
-        // updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
-        // approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",
-        // consentGroupReviewUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-        // createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}",
-        requestLinkClarificationUrl: "${createLink(controller: 'clarification', action:'collectionRequestClarification')}"
       };
     </script>
 
