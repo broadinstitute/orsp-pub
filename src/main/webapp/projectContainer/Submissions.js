@@ -115,7 +115,7 @@ export const Submissions = hh(class Submissions extends Component {
   };
 
   redirectNewSubmission() {
-    window.location.href=`${component.serverURL}/submissions/add-new&projectKey=${component.projectKey}&type=Amendment`;
+    window.location.href=`${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=Amendment`;
   }
 
 
