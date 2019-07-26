@@ -52,9 +52,7 @@ export const formatExcelData = (data, columns) => {
 
 function parseDataElements(el, key) {
   let result = '';
-  if (new Date(el[key]) instanceof Date  && !isNaN(new Date(el[key]).valueOf())) {
-    result = format(new Date(el[key]), 'MM/DD/YYYY HH:MM');
-  } else if (typeof el[key] === 'string') {
+  if (typeof el[key] === 'string') {
     result = el[key].replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
   } else if (Array.isArray(el[key])) {
     result = el[key].join(', ')

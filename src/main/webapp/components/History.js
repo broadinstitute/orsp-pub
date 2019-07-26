@@ -28,11 +28,7 @@ const columns = [{
   }, {
     dataField: 'created',
     text: 'Date',
-    sort: true,
-    formatter: (cell, row, rowIndex, colIndex) =>
-    format(new Date(cell), 'MM/DD/YYYY HH:MM'),
-    csvFormatter: (cell, row, rowIndex, colIndex) =>
-    format(new Date(cell), 'MM/DD/YYYY HH:MM')
+    sort: true
   }, {
     dataField: 'summary',
     text: 'Summary',
