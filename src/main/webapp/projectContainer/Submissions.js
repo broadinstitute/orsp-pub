@@ -45,19 +45,30 @@ export const Submissions = hh(class Submissions extends Component {
     });
   };
 
+  getDocumentsData = (submissionData) => {
+    submissionData.forEach(data  => {
+      data.documents.forEach(document => {
+        Files.getDocument(document.id).then(resp => {
+          document.document = resp.data.document;
+        });
+      });
+    });
+    return submissionData;
+  };
+
   getDisplaySubmissions = () => {
     let amendments = {};
     let others = {};
+    let submissions = {};
     ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
+      submissions = resp.data.groupedSubmissions;
       amendments = resp.data.groupedSubmissions.Amendment;
       others = resp.data.groupedSubmissions.Other;
 
-      amendments.forEach(amendment => {
-        amendment.documents.forEach(document => {
-          Files.getDocument(document.id).then(resp => {
-            document.document = resp.data.document;
-          });
-        });
+      console.log(submissions);
+
+      submissions.forEach(submissionType => {
+        this.getDocumentsData(submissionType)
       });
 
       others.forEach(other=> {
@@ -126,8 +137,14 @@ export const Submissions = hh(class Submissions extends Component {
           onClick: '',
           isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Edit Information"]),
-        Panel({title: "Submissions"}, [
 
+        Panel({title: "Submissions"}, [
+          div({className: "pull-right"}, [
+            a({
+              className: "btn btn-default link-btn"
+            }, ["Add Submission"])
+            ]
+          ),
             div({ className: "containerBox" }, [
               MultiTab({ defaultActive: "amendment"}, [
                 div({ key: "amendment", title: amendmentTitle },[
