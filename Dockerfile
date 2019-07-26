@@ -1,4 +1,4 @@
-FROM oredwolfgang20/grails:3.3.0
+FROM redwolfgang20/grails:3.3.0
 COPY . /app
 WORKDIR /app
 
