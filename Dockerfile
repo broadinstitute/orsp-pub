@@ -2,7 +2,7 @@ FROM redwolfgang20/grails as builder
 COPY . /app
 WORKDIR /app
 
-RUN ./gradlew webpackProd --stacktrace --debug
+RUN ./gradlew webpackProd 
 RUN grails -Dgrails.env=dev war
 
 FROM openjdk:8-alpine
