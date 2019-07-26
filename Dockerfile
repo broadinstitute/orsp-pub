@@ -42,7 +42,7 @@ COPY . /app
 WORKDIR /app
 
 RUN npm install 
-RUN webpack --mode=production --config webpack.config.js
+RUN webpack --mode=development --config webpack.config.js
 
 #RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; env; gradle webpackProd"
 
