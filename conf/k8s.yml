@@ -3,18 +3,18 @@ kind: Deployment
 metadata:
   annotations: {}
   labels:
-    app: ${REPO_NAME}
-  name: ${REPO_NAME}
+    app: orsp
+  name: orsp
   namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${REPO_NAME}
+      app: orsp
   template:
     metadata:
       labels:
-        app: ${REPO_NAME}
+        app: orsp
     spec:
       containers:
       - env:
@@ -32,18 +32,18 @@ spec:
             secretKeyRef:
               key: password
               name: cloudsql-db-credentials
-        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
+        image: gcr.io/${GOOGLE_PROJECT}/orsp:${COMMIT}
         imagePullPolicy: Always
-        name: ${REPO_NAME}
+        name: orsp
         ports:
         - containerPort: 8080
         volumeMounts:
         - mountPath: "/orsp-config"
           name: orsp-config
       - command:
-        - "/cloud_sql_proxy"
-        - "-instances="${MYSQL_INSTANCE}
-        - "-credential_file=/secrets/cloudsql/credentials.json"
+        - /cloud_sql_proxy
+        - -instances=${MYSQL_INSTANCE}
+        - -credential_file=/secrets/cloudsql/credentials.json
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
         securityContext:
