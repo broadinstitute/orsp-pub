@@ -22,7 +22,7 @@ commands:
         default: ${CIRCLE_BRANCH}
       google_project:
         type: string
-        default: "orsp"
+        default: "orspsamples"
     steps:
       - run:
           name: Export env vars for substitution. $BASH_ENV is sourced before each step
@@ -74,13 +74,13 @@ commands:
         default: "wildcard.dsp-orsp-dev.broadinstitute.org"
       orsp_config_map:
         type: string
-        default: "orsp-config-dev"       
+        default: "orsp-config"       
       repo_name:
         type: string
         default: "orsp-pub"
       google_project:
         type: string
-        default: "orsp"
+        default: "orspsamples"
       google_zone:
         type: string
         default: "us-central1-a"
@@ -135,21 +135,21 @@ jobs:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "dev"
           repo_name: "orsp-pub"
-          google_project: "orsp"
+          google_project: "orspsamples"
 
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "dev"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orsp"
+          google_project: "orspsamples"
           google_zone: "us-central1-a"
           google_cluster: "orsp-dev"
           commit: ${COMMIT}
           host_name: "dev.dsp-orsp-dev.broadinstitute.org"
           host_ip: "orsp-dev-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
-          orsp_config_map: "orsp-config-dev"
+          orsp_config_map: "orsp-config"
   deploy-staging:
     executor: cloud-sdk
     steps:
@@ -158,21 +158,21 @@ jobs:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           repo_name: "orsp-pub"
-          google_project: "orsp"
+          google_project: "orspsamples"
           
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orsp"
+          google_project: "orspsamples"
           google_zone: "us-central1-a"
           google_cluster: "orsp-staging"
           commit: ${COMMIT}
           host_name: "staging.dsp-orsp-dev.broadinstitute.org"
           host_ip: "orsp-staging-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
-          orsp_config_map: "orsp-config-dev"
+          orsp_config_map: "orsp-config"
   deploy-prod:
     executor: cloud-sdk
     steps:
@@ -181,21 +181,21 @@ jobs:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           repo_name: "orsp-pub"
-          google_project: "orsp"
+          google_project: "orspsamples"
           
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orsp"
+          google_project: "orspsamples"
           google_zone: "us-central1-a"
           google_cluster: "orsp-prod"
           commit: ${COMMIT}
           host_name: "prod.dsp-orsp-dev.broadinstitute.org"
           host_ip: "orsp-prod-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
-          orsp_config_map: "orsp-config-dev"
+          orsp_config_map: "orsp-config"
 
 
 
