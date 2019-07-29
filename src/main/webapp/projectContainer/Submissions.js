@@ -5,7 +5,7 @@ import { Panel } from '../components/Panel';
 import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
-import './submissions.css';
+import './Submissions.css';
 
 const headers =
   [
@@ -143,7 +143,7 @@ export const Submissions = hh(class Submissions extends Component {
           div({className: "pull-right"}, [
             a({
               onClick: this.redirectNewSubmission,
-              className: "btn btn-default link-btn"
+              className: "btn btn-primary add-submission"
             }, ["Add Submission"])
             ]
           ),
