@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { div, hh, h, h1, p } from 'react-hyperscript-helpers';
+import { div, hh, h, a } from 'react-hyperscript-helpers';
 import { ConsentGroup, ProjectMigration } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
@@ -7,8 +7,9 @@ import { RequestClarificationDialog } from "../components/RequestClarificationDi
 import { Spinner } from "../components/Spinner";
 import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
 import { isEmpty } from "../util/Utils";
-import { Panel } from "../components/Panel";
 import { TableComponent } from "../components/TableComponent";
+import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
+import { formatUrlDocument } from "../util/TableUtil";
 
 const columns = [{
   dataField: 'id',
@@ -16,18 +17,22 @@ const columns = [{
   hidden: true,
   csvExport : false
 }, {
-  dataField: 'projectKey',
-  text: 'Project Key',
-  sort: true
+  dataField: 'fileType',
+  text: 'Attachment Type'
 }, {
-  dataField: 'summary',
-  text: 'Summary',
-  sort: true
+  dataField: 'fileName',
+  text: 'File Name',
+  style: { pointerEvents: 'auto' },
+  formatter: (cell, row, rowIndex, colIndex) =>
+    a(formatUrlDocument(row), [row.fileName])
 },
 {
-  dataField: 'reporter',
-  text: 'Reporter',
-  sort: true
+  dataField: 'creator',
+  text: 'Author'
+},
+{
+  dataField: 'creationDate',
+  text: 'Created'
 }
 ];
 
@@ -35,6 +40,7 @@ const defaultSorted = [{
   dataField: 'projectKey',
   order: 'desc'
 }];
+
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   constructor(props) {
@@ -48,7 +54,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       showRequestClarification: false,
       title: 0
     };
-    this.loadConsentGroups = this.loadConsentGroups.bind(this);
+    // this.loadConsentGroups = this.loadConsentGroups.bind(this);
   }
 
   componentDidMount() {
@@ -64,15 +70,19 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     this.setState({showRequestClarification: false});
   };
 
-  handleOkConfirmation = () => {
+  handleOkConfirmation = (e) => {
+
+    console.log(this.state.issue.projectKey," y ", e)
     if(this.state.action === "unlink" || this.state.action === "reject") {
-      ConsentCollectionLink.breakLink(this.state.issueKey, this.state.consentKey, this.state.action).then(resp => {
+      ConsentCollectionLink.breakLink(this.state.issue.projectKey, this.state.consentKey, this.state.action).then(resp => {
         this.getConsentGroups();
+        this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
     } else {
       ConsentCollectionLink.approveLink(this.state.issueKey, this.state.consentKey).then(resp => {
         this.getConsentGroups();
+        this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
     }
@@ -94,70 +104,70 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     this.closeRequestClarification();
   };
 
-  loadConsentGroups = (rThis) => {
-    $('.consent-group-panel-body').hide();
-    $('.consent-accordion-toggle').on('click', function () {
-      var icon = $(this).children().first();
-      var body = $(this).parent().parent().next();
-      if (icon.hasClass("glyphicon-chevron-up")) {
-        icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-        body.slideUp();
-      } else {
-        icon.removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-        body.show("slow");
-      }
-    });
-    $(".modal-add-button").on('click', function () {
-      $("#add-consent-document-modal").load(
-        component.serverURL + "/api/consent-group/upload-modal?"
-        + $.param({
-          issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent")
-        }),
-        function () {
-          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-          $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
-        }
-      ).dialog({
-        modal: true,
-        minWidth: 1000,
-        minHeight: 500,
-        closeOnEscape: true,
-        hide: { effect: "fadeOut", duration: 300 },
-        show: { effect: "fadeIn", duration: 300 },
-        dialogClass: "no-titlebar"
-      }).parent().removeClass("ui-widget-content");
-      $(".ui-dialog-titlebar").hide();
-    });
-
-    $(".confirmationModal").on('click', function () {
-      rThis.setState(prev => {
-        prev.showConfirmationModal = true;
-        prev.action = $(this).data("handler");
-        prev.issueKey = $(this).data("issue");
-        prev.consentKey = $(this).data("consent");
-        return prev;
-      });
-    });
-    $(".request-clarification").on('click', function () {
-      rThis.setState(prev => {
-        prev.showRequestClarification = true;
-        prev.issueKey = $(this).data("issue");
-        prev.consentKey = $(this).data("consent");
-        return prev;
-      });
-    });
-    // Display for 8 seconds a message indicating the submission of a new consent group. 
-    // This is temporary until this page is moved to react.
-    // https://broadinstitute.atlassian.net/browse/BTRX-628
-    var url = new URLSearchParams(window.location.search);
-    if (url.get('tab') === 'consent-groups' && url.has('new')) {
-      $('#alert').fadeIn('slow', function () {
-        $('#alert').delay(15000).fadeOut();
-        history.pushState({}, null, window.location.href.split('&')[0]);
-      });
-    }
-  };
+  // loadConsentGroups = (rThis) => {
+  //   $('.consent-group-panel-body').hide();
+  //   $('.consent-accordion-toggle').on('click', function () {
+  //     var icon = $(this).children().first();
+  //     var body = $(this).parent().parent().next();
+  //     if (icon.hasClass("glyphicon-chevron-up")) {
+  //       icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+  //       body.slideUp();
+  //     } else {
+  //       icon.removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+  //       body.show("slow");
+  //     }
+  //   });
+  //   $(".modal-add-button").on('click', function () {
+  //     $("#add-consent-document-modal").load(
+  //       component.serverURL + "/api/consent-group/upload-modal?"
+  //       + $.param({
+  //         issueKey: $(this).data("issue"),
+  //         consentKey: $(this).data("consent")
+  //       }),
+  //       function () {
+  //         $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+  //         $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
+  //       }
+  //     ).dialog({
+  //       modal: true,
+  //       minWidth: 1000,
+  //       minHeight: 500,
+  //       closeOnEscape: true,
+  //       hide: { effect: "fadeOut", duration: 300 },
+  //       show: { effect: "fadeIn", duration: 300 },
+  //       dialogClass: "no-titlebar"
+  //     }).parent().removeClass("ui-widget-content");
+  //     $(".ui-dialog-titlebar").hide();
+  //   });
+  //
+  //   $(".loadConsentGroups").on('click', function () {
+  //     rThis.setState(prev => {
+  //       prev.showConfirmationModal = true;
+  //       prev.action = $(this).data("handler");
+  //       prev.issueKey = $(this).data("issue");
+  //       prev.consentKey = $(this).data("consent");
+  //       return prev;
+  //     });
+  //   });
+  //   $(".request-clarification").on('click', function () {
+  //     rThis.setState(prev => {
+  //       prev.showRequestClarification = true;
+  //       prev.issueKey = $(this).data("issue");
+  //       prev.consentKey = $(this).data("consent");
+  //       return prev;
+  //     });
+  //   });
+  //   // Display for 8 seconds a message indicating the submission of a new consent group.
+  //   // This is temporary until this page is moved to react.
+  //   // https://broadinstitute.atlassian.net/browse/BTRX-628
+  //   var url = new URLSearchParams(window.location.search);
+  //   if (url.get('tab') === 'consent-groups' && url.has('new')) {
+  //     $('#alert').fadeIn('slow', function () {
+  //       $('#alert').delay(15000).fadeOut();
+  //       history.pushState({}, null, window.location.href.split('&')[0]);
+  //     });
+  //   }
+  // };
 
   getProjectConsentGroups = () => {
     ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
@@ -165,27 +175,66 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           prev.consentGroups = this.parseData(result.data.consentGroups);
           prev.issue = result.data.issue;
           return prev;
-        }, ()=> {}/*console.log("STATE?! ", this.state)*/);
+        });
       }
     )
   };
 
+  approve = (e) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'approve';
+      prev.showConfirmationModal = true;
+      return prev;
+    });
+  };
+
+  reject = (e) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'reject';
+      prev.showConfirmationModal = true;
+      return prev;
+    });
+  };
+
+  unlink = (e) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'unlink';
+      prev.showConfirmationModal = true;
+      return prev;
+    });
+  };
+
+  requestClarification = (e) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.showRequestClarification = true;
+      return prev;
+    });
+  };
+
   parseData = (consents) => {
     let parsedArray = [];
-    let parsedData = {};
-
     if (!isEmpty(consents)) {
       consents.forEach(consent => {
-        parsedData.consents = consents;
+        let parsedData = {};
+        parsedData.consent = consent;
         parsedData.search = false;
         parsedData.remoteProp = false;
         parsedData.data= consent.attachments;
         parsedData.columns= columns;
         parsedData.keyField= 'id';
-        parsedData.search= false;
         parsedData.defaultSorted= defaultSorted;
         parsedData.fileName= '_';
+        parsedData.pagination= false;
         parsedData.showButtons = false;
+        parsedData.customHandlers = {
+          approve: this.approve,
+          reject: this.reject,
+          requestClarification: this.requestClarification
+        };
         parsedArray.push(parsedData)
       });
     }
@@ -193,14 +242,17 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   render() {
+    // console.log("state? ", this.state);
     return (
       h(Fragment, {}, [
-       div({ dangerouslySetInnerHTML: { __html: this.state.content } }, []),
-
+       // div({ dangerouslySetInnerHTML: { __html: this.state.content } }, []),
       CollapsibleElements({
-        divisions: 3,
+        customHandlers: {
+          approve: this.approve,
+          reject: this.reject
+        },
         body: TableComponent,
-        header: h1,
+        header: SampleDataCohortsCollapsibleHeader,
         accordion: false,
         data: isEmpty(this.state.consentGroups) ? [] : this.state.consentGroups
       }),

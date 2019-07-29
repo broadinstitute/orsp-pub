@@ -60,3 +60,11 @@ function parseDataElements(el, key) {
   }
   return result;
 }
+
+export const formatUrlDocument = (file) => {
+  return {
+    href: `${component.downloadDocumentUrl}?uuid=${file.uuid}`,
+    target: '_blank',
+    title: file.fileName
+  }
+};

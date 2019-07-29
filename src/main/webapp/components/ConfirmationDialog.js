@@ -12,8 +12,8 @@ import './ConfirmationDialog.css';
     this.props.closeModal();
   };
 
-   handleOkAction = () => {
-    this.props.handleOkAction();
+   handleOkAction = (e) => {
+    this.props.handleOkAction(e);
   };
 
    render() {

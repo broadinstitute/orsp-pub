@@ -239,7 +239,8 @@ class FundingsSourceReport extends Component {
           printComments: this.printContent,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           page: this.state.currentPage,
-          totalSize: this.state.recordsFiltered
+          totalSize: this.state.recordsFiltered,
+          pagination: true
         }),
         h(Spinner, {
           name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage

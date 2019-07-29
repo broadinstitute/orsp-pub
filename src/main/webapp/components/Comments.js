@@ -88,7 +88,8 @@ export const Comments = hh(class Comments extends Component {
           fileName: 'ORSP',
           showPrintButton: false,
           printComments: this.printComments,
-          defaultSorted: defaultSorted
+          defaultSorted: defaultSorted,
+          pagination: true
         })
       ])
     )
