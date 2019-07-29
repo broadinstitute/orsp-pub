@@ -2,7 +2,6 @@ import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
 import { TextEditor } from "../main/TextEditor";
-import { Review } from "../util/ajax";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
@@ -42,29 +41,11 @@ export const Comments = hh(class Comments extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      comments: []
-    }
   }
-
-  componentDidMount() {
-    this.loadComments();
-  }
-
-  loadComments = () => {
-    Review.getComments(this.props.id).then(result => {
-      this.setState(prev => {
-        prev.comments = result.data;
-        return prev;
-      })
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    })
-  };
 
   printComments = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
-    let commentsArray = formatDataPrintableFormat(this.state.comments, cols);
+    let commentsArray = formatDataPrintableFormat(this.props.comments, cols);
     const titleText = (component.issueType === "project" ? ("Project ID: "+ component.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];
@@ -76,11 +57,11 @@ export const Comments = hh(class Comments extends Component {
       h(Fragment, {}, [
         TextEditor({
           id: this.props.id,
-          loadComments: this.loadComments
+          loadComments: this.props.updateContent
         }),
         TableComponent({
           remoteProp: false,
-          data: this.state.comments,
+          data: this.props.comments,
           columns: columns,
           keyField: 'id',
           search: true,
