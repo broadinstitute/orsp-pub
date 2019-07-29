@@ -124,7 +124,7 @@ commands:
             kubectl apply -f ${HOME}/patched_k8s.yml
             kubectl apply -f ${HOME}/patched_service.yml
             kubectl apply -f ${HOME}/patched_ingress.yml
-            kubectl rollout status deployment/${REPO_NAME}
+            kubectl rollout status deployment/orsp
 
 jobs:
   deploy-dev:
