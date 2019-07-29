@@ -332,6 +332,7 @@ export const Table = hh(class Table extends Component {
             } else if (header.value==='documents') {
               return <TableHeaderColumn
                 key={header.value}
+                className={'documentsSubmissions'}
                 dataField={header.value}
                 dataFormat={this.redirectToDocumentLink}
                 dataSort={ true }

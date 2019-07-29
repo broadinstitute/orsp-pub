@@ -30,7 +30,7 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   componentDidMount() {
-    this.getSubmissions();
+    // this.getSubmissions();
     this.getDisplaySubmissions();
   }
 
@@ -114,8 +114,8 @@ export const Submissions = hh(class Submissions extends Component {
     return h(Fragment, {}, [indexButton, submissionComment]);
   };
 
-  redirectNewSubmission() {
-    window.location.href=`${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=Amendment`;
+  redirectNewSubmission(e) {
+    window.location.href=`${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
   }
 
 
@@ -140,17 +140,18 @@ export const Submissions = hh(class Submissions extends Component {
         }, ["Edit Information"]),
 
         Panel({title: "Submissions"}, [
-          div({className: "pull-right"}, [
-            a({
-              onClick: this.redirectNewSubmission,
-              className: "btn btn-primary add-submission"
-            }, ["Add Submission"])
-            ]
-          ),
             div({ className: "containerBox" }, [
               MultiTab({ defaultActive: "amendment"}, [
                 div({ key: "amendment", title: amendmentTitle },[
                   h(Fragment, {}, [
+                    div({className: "pull-right"}, [
+                        a({
+                          onClick: this.redirectNewSubmission,
+                          className: "btn btn-primary add-submission",
+                          id: "Amendment"
+                        }, ["Add Submission"])
+                      ]
+                    ),
                     Table({
                       headers: headers,
                       data: this.state.amendments,
@@ -166,6 +167,14 @@ export const Submissions = hh(class Submissions extends Component {
                 ]),
                 div({ key: "other", title: othersTitle},[
                   h(Fragment, {}, [
+                    div({className: "pull-right"}, [
+                        a({
+                          onClick: this.redirectNewSubmission,
+                          className: "btn btn-primary add-submission",
+                          id: "Other"
+                        }, ["Add Submission"])
+                      ]
+                    ),
                     Table({
                       headers: headers,
                       data: this.state.others,
