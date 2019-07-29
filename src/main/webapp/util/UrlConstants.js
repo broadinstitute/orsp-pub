@@ -66,5 +66,6 @@ export const UrlConstants = {
   submissionsUrl: context + '/api/submissions',
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
+  fundingReportsUrl: context + '/api/report/get-funding',
 };
 

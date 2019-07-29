@@ -308,7 +308,7 @@ export const ConsentCollectionLink = {
 
 export const Reports = {
   getFundingsReports(query) {
-    return axios.get(component.serverURL + '/api/report/get-funding', {
+    return axios.get(UrlConstants.fundingReportsUrl, {
       params: {
         draw: 1,
         start: query.start,
