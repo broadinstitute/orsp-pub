@@ -4,19 +4,19 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ${HOST_IP}
   labels:
-    app: orsp
-  name: orsp-ingress
+    app: ${REPO_NAME}
+  name: ${REPO_NAME}-ingress
   namespace: ${NAMESPACE}
 spec:
   backend:
-    serviceName: orsp-service
+    serviceName: ${REPO_NAME}-service
     servicePort: http
   rules:
   - host: ${HOST_NAME}
     http:
       paths:
       - backend:
-          serviceName: orsp-service
+          serviceName: ${REPO_NAME}-service
           servicePort: http
   tls:
   - hosts:

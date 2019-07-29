@@ -3,18 +3,18 @@ kind: Deployment
 metadata:
   annotations: {}
   labels:
-    app: orsp
-  name: orsp
+    app: ${REPO_NAME}
+  name: ${REPO_NAME}
   namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orsp
+      app: ${REPO_NAME}
   template:
     metadata:
       labels:
-        app: orsp
+        app: ${REPO_NAME}
     spec:
       containers:
       - env:
@@ -32,9 +32,9 @@ spec:
             secretKeyRef:
               key: password
               name: cloudsql-db-credentials
-        image: gcr.io/${GOOGLE_PROJECT}/orsp:${COMMIT}
+        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
         imagePullPolicy: Always
-        name: orsp
+        name: ${REPO_NAME}
         ports:
         - containerPort: 8080
         volumeMounts:
