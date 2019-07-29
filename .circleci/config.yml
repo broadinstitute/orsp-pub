@@ -65,10 +65,10 @@ commands:
         default: "orsp"
       host_name:
         type: string
-        default: ${env}".dsp-orsp-dev.broadinstitute.org"
+        default: "dev.dsp-orsp-dev.broadinstitute.org"
       host_ip:
         type: string
-        default: "orsp-"${env}"-ip"
+        default: "orsp-dev-ip"
       tls_cert_secret:
         type: string
         default: "wildcard.dsp-orsp-dev.broadinstitute.org"
@@ -86,7 +86,7 @@ commands:
         default: "us-central1-a"
       google_cluster:
         type: string
-        default: "orsp-"${env}
+        default: "orsp-dev"
       commit:
         type: string
         default: ""
