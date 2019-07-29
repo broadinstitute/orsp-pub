@@ -19,7 +19,7 @@ spec:
       containers:
       - env:
         - name: MYSQL_INSTANCE
-          value: orsp-dev:us-east1:bricc-mysql-dev=tcp:3306
+          value: orspsamples:us-central1:orsp-prod
         - name: MYSQL_DB_HOST
           value: 127.0.0.1:3306
         - name: MYSQL_DB_USERNAME
