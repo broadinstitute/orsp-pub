@@ -10,7 +10,7 @@ commands:
     parameters:
       sa_key_name:
         type: string
-        default: "GCLOUD_ORSP_DEV"
+        default: "GCLOUD_ORSP_CIRCLECI"
       env:
         type: string
         default: "dev"
@@ -22,7 +22,7 @@ commands:
         default: ${CIRCLE_BRANCH}
       google_project:
         type: string
-        default: "orsp-dev"
+        default: "orspsamples"
     steps:
       - run:
           name: Export env vars for substitution. $BASH_ENV is sourced before each step
@@ -56,7 +56,7 @@ commands:
     parameters:
       sa_key_name:
         type: string
-        default: "GCLOUD_ORSP_DEV"
+        default: "GCLOUD_ORSP_CIRCLECI"
       env:
         type: string
         default: "dev"
@@ -65,10 +65,10 @@ commands:
         default: "orsp"
       host_name:
         type: string
-        default: "ui.dsp-orsp-dev.broadinstitute.org"
+        default: ${env}".dsp-orsp-dev.broadinstitute.org"
       host_ip:
         type: string
-        default: "orsp-pub-dev-ip"
+        default: "orsp-"${env}"-ip"
       tls_cert_secret:
         type: string
         default: "wildcard.dsp-orsp-dev.broadinstitute.org"
@@ -80,13 +80,13 @@ commands:
         default: "orsp-pub"
       google_project:
         type: string
-        default: "orsp-dev"
+        default: "orspsamples"
       google_zone:
         type: string
         default: "us-central1-a"
       google_cluster:
         type: string
-        default: "orsp-pub-dev"
+        default: "orsp-"${env}
       commit:
         type: string
         default: ""
@@ -132,23 +132,71 @@ jobs:
     steps:
       - checkout
       - build-env:
-          sa_key_name: "GCLOUD_ORSP_DEV"
+          sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "dev"
           repo_name: "orsp-pub"
-          google_project: "orsp-dev"
+          google_project: "orspsamples"
+
       - deploy-env:
-          sa_key_name: "GCLOUD_ORSP_DEV"
+          sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "dev"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orsp-dev"
+          google_project: "orspsamples"
           google_zone: "us-central1-a"
-          google_cluster: "orsp-pub-dev"
+          google_cluster: "orsp-dev"
           commit: ${COMMIT}
-          host_name: "ui.dsp-orsp-dev.broadinstitute.org"
-          host_ip: "orsp-pub-dev-ip"
+          host_name: "dev.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-dev-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
           orsp_config_map: "orsp-config-dev"
+  deploy-staging:
+    executor: cloud-sdk
+    steps:
+      - checkout
+      - build-env:
+          sa_key_name: "GCLOUD_ORSP_CIRCLECI"
+          env: "prod"
+          repo_name: "orsp-pub"
+          google_project: "orspsamples"
+          
+      - deploy-env:
+          sa_key_name: "GCLOUD_ORSP_CIRCLECI"
+          env: "prod"
+          namespace: "orsp"
+          repo_name: "orsp-pub"
+          google_project: "orspsamples"
+          google_zone: "us-central1-a"
+          google_cluster: "orsp-staging"
+          commit: ${COMMIT}
+          host_name: "staging.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-staging-ip"
+          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
+          orsp_config_map: "orsp-config-dev"
+  deploy-prod:
+    executor: cloud-sdk
+    steps:
+      - checkout
+      - build-env:
+          sa_key_name: "GCLOUD_ORSP_CIRCLECI"
+          env: "prod"
+          repo_name: "orsp-pub"
+          google_project: "orspsamples"
+          
+      - deploy-env:
+          sa_key_name: "GCLOUD_ORSP_CIRCLECI"
+          env: "prod"
+          namespace: "orsp"
+          repo_name: "orsp-pub"
+          google_project: "orspsamples"
+          google_zone: "us-central1-a"
+          google_cluster: "orsp-prod"
+          commit: ${COMMIT}
+          host_name: "prod.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-prod-ip"
+          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
+          orsp_config_map: "orsp-config-dev"
+
 
 
 workflows:
@@ -158,4 +206,12 @@ workflows:
       - deploy-dev:
           filters:
             branches:
-              only: alternative-cloud-build
+              only: develop
+      - deploy-staging:
+          filters:
+            branches:
+              only: staging
+      - deploy-prod:
+          filters:
+            branches:
+              only: BTRX-666-dgil
