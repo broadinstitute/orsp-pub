@@ -19,7 +19,7 @@ spec:
       containers:
       - env:
         - name: MYSQL_INSTANCE
-          value: orspsamples:us-central1:orsp-prod=tcp=3306
+          value: orspsamples:us-central1:orsp-prod=tcp:3306
         - name: MYSQL_DB_HOST
           value: 127.0.0.1:3306
         - name: MYSQL_DB_USERNAME
@@ -42,8 +42,8 @@ spec:
           name: orsp-config
       - command:
         - "/cloud_sql_proxy"
-        - "-instances=orspsamples:us-central1:orsp-prod=tcp:3306"
-        - "-credential_file=/secrets/cloudsql/credentials.json"
+        - " -instances=orspsamples:us-central1:orsp-prod=tcp:3306"
+        - " -credential_file=/secrets/cloudsql/credentials.json"
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
         securityContext:
@@ -62,7 +62,8 @@ spec:
       - name: cloudsql-instance-credentials
         secret:
           secretName: cloudsql-instance-credentials
-      - configMap:
+      - name: orsp-config 
+        configMap:
           name: ${ORSP_CONFIG_MAP}
-        name: orsp-config
+        
 
