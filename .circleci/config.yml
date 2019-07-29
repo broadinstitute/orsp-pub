@@ -214,4 +214,4 @@ workflows:
       - deploy-prod:
           filters:
             branches:
-              only: BTRX-666-dgil
+              only: alternative-cloud-build
