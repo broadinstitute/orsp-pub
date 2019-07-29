@@ -1,5 +1,8 @@
 package org.broadinstitute.orsp
 
+import grails.converters.JSON
+import org.broadinstitute.orsp.utils.UtilityClass
+
 class HistoryController extends AuthenticatedController {
 
     def index() {
@@ -7,8 +10,10 @@ class HistoryController extends AuthenticatedController {
     }
 
     def list() {
-        def Collection<Event> events = queryService.getEventsForProject(params.id)
-        render (view: "/history/list", model: [events: events])
+        UtilityClass.registerEventMarshaller()
+        JSON.use(UtilityClass.HISTORY) {
+            render queryService.getEventsForProject(params.id) as JSON
+        }
     }
 
 }
