@@ -22,7 +22,7 @@ commands:
         default: ${CIRCLE_BRANCH}
       google_project:
         type: string
-        default: "orspsamples"
+        default: "orsp"
     steps:
       - run:
           name: Export env vars for substitution. $BASH_ENV is sourced before each step
@@ -80,7 +80,7 @@ commands:
         default: "orsp-pub"
       google_project:
         type: string
-        default: "orspsamples"
+        default: "orsp"
       google_zone:
         type: string
         default: "us-central1-a"
@@ -135,14 +135,14 @@ jobs:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "dev"
           repo_name: "orsp-pub"
-          google_project: "orspsamples"
+          google_project: "orsp"
 
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "dev"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orspsamples"
+          google_project: "orsp"
           google_zone: "us-central1-a"
           google_cluster: "orsp-dev"
           commit: ${COMMIT}
@@ -158,14 +158,14 @@ jobs:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           repo_name: "orsp-pub"
-          google_project: "orspsamples"
+          google_project: "orsp"
           
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orspsamples"
+          google_project: "orsp"
           google_zone: "us-central1-a"
           google_cluster: "orsp-staging"
           commit: ${COMMIT}
@@ -181,14 +181,14 @@ jobs:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           repo_name: "orsp-pub"
-          google_project: "orspsamples"
+          google_project: "orsp"
           
       - deploy-env:
           sa_key_name: "GCLOUD_ORSP_CIRCLECI"
           env: "prod"
           namespace: "orsp"
           repo_name: "orsp-pub"
-          google_project: "orspsamples"
+          google_project: "orsp"
           google_zone: "us-central1-a"
           google_cluster: "orsp-prod"
           commit: ${COMMIT}
