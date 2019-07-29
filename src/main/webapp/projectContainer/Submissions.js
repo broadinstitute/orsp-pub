@@ -144,14 +144,11 @@ export const Submissions = hh(class Submissions extends Component {
               MultiTab({ defaultActive: "amendment"}, [
                 div({ key: "amendment", title: amendmentTitle },[
                   h(Fragment, {}, [
-                    div({className: "pull-right"}, [
                         a({
                           onClick: this.redirectNewSubmission,
                           className: "btn btn-primary add-submission",
                           id: "Amendment"
-                        }, ["Add Submission"])
-                      ]
-                    ),
+                        }, ["Add Submission"]),
                     Table({
                       headers: headers,
                       data: this.state.amendments,
@@ -167,14 +164,11 @@ export const Submissions = hh(class Submissions extends Component {
                 ]),
                 div({ key: "other", title: othersTitle},[
                   h(Fragment, {}, [
-                    div({className: "pull-right"}, [
                         a({
                           onClick: this.redirectNewSubmission,
                           className: "btn btn-primary add-submission",
                           id: "Other"
-                        }, ["Add Submission"])
-                      ]
-                    ),
+                        }, ["Add Submission"]),
                     Table({
                       headers: headers,
                       data: this.state.others,
