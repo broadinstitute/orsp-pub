@@ -22,4 +22,3 @@ spec:
   - hosts:
     - ${HOST_NAME}
     secretName: ${TLS_CERT_SECRET}
-

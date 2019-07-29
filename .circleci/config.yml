@@ -197,8 +197,6 @@ jobs:
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
           orsp_config_map: "orsp-config"
 
-
-
 workflows:
   version: 2
   build-deploy:
