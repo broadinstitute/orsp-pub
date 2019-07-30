@@ -1,4 +1,5 @@
 import { isEmpty } from "./Utils";
+import { format } from 'date-fns';
 
 export const EXPORT_FILE = {
   XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
@@ -66,5 +67,12 @@ export const formatUrlDocument = (file) => {
     href: `${component.downloadDocumentUrl}?uuid=${file.uuid}`,
     target: '_blank',
     title: file.fileName
+  }
+};
+
+export const parseDate = (date) => {
+  if (date !== null) {
+    const simpleDate = new Date(date);
+    return format(simpleDate, 'M/D/YY h:m A')
   }
 };

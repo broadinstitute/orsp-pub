@@ -1,79 +1,82 @@
-import React, { Component, Fragment } from 'react';
-import { button, hh, h, h3, span, div, i, a } from 'react-hyperscript-helpers';
-import BootstrapTable from 'react-bootstrap-table-next';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import { handleRedirectToProject } from "../util/Utils";
+import React, { Component } from 'react';
+import { button, hh, span, div, i, a } from 'react-hyperscript-helpers';
+import { handleRedirectToConsentGroup } from '../util/Utils';
 
 const POINTER = { auto: { pointerEvents: 'auto' } };
 
 export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isAdmin: false
+    };
+  }
+
+  componentDidMount() {
+    this.setState( prev => {
+      prev.isAdmin = component.isAdmin;
+      return prev;
+    })
   }
 
   render() {
-    // console.log("attachments de ",this.props.element.consent.projectKey, " => ", this.props.element.consent.attachments);
-    // console.log(" => ", this.props.element.consent);
+    const { unlinkHandler, rejectHandler, approveHandler, requestClarificationHandler } = this.props.element.customHandlers;
+    const { projectKey, summary, status } = this.props.element.consent;
     return(
-      div({name: 'container'}, [
-        div({name: 'actionButtons'}, [
+      div({ name: 'container' }, [
+        div({ name: 'actionButtons' }, [
           button({
-            className: "btn btn-default btn-sm confirmationModal",
+            isRendered: status === 'Pending' && this.state.isAdmin,
+            className: 'btn btn-default btn-sm confirmationModal',
             style: POINTER.auto,
-            onClick: this.props.element.customHandlers.approve
-          },["Approve"]),
+            onClick: (e) => approveHandler(e, projectKey)
+          },['Approve']),
           button({
-            className: "btn btn-default btn-sm confirmationModal",
+            isRendered: status === 'Pending' && this.state.isAdmin,
+            className: 'btn btn-default btn-sm confirmationModal',
             style: POINTER.auto,
-            onClick: this.props.element.customHandlers.reject
-          },["Reject"]),
-          // h(BootstrapTable,{keyField:'id', data:[], columns: columns}),
+            onClick: (e) => rejectHandler(e, projectKey)
+          },['Reject']),
+          button({
+            isRendered: status === 'Approved' && this.state.isAdmin,
+            className: 'btn btn-default btn-sm confirmationModal',
+            style: POINTER.auto,
+            onClick: (e) => unlinkHandler(e, projectKey)
+          },['Unlink']),
         ]),
-        // handleRedirectToProject
-        // a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
-        div({name: 'consentInfo'}, [
+
+        div({ name: 'consentInfo' }, [
           a({
             style: POINTER.auto,
-            href: handleRedirectToProject(component.serverURL, this.props.element.consent.projectKey)
+            href: handleRedirectToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
           },[
-            this.props.element.consent.projectKey+ ': ' + this.props.element.consent.summary
+            projectKey + ': ' + summary
           ])
         ]),
-        div({name: 'requestClarification'}, [
+
+        div({ name: 'requestClarification' }, [
           button({
-            className:"request-clarification",
+            className:'request-clarification',
             style: POINTER.auto,
-            onClick: this.props.element.customHandlers.requestClarification
+            onClick:(e) =>  requestClarificationHandler(e, projectKey)
           },[
-            span({ className: "req-tooltip" },[ 'Request Clarification']),
-            span({ className: "arrow-down" },[])
+            span({ className: 'req-tooltip' },[ 'Request Clarification']),
+            span({ className: 'arrow-down' },[])
           ])
         ]),
-        // console.log("STATUS de ",this.props.element.consent.projectKey, " => ", this.props.element.consent.status),
+
         div({ name: 'status' }, [
-          span({ className:"status " + (this.props.element.consent.status === "Approved" ? "approved" : 'pending')},[this.props.element.consent.status === "Approved" ? 'Approved' : "Pending"])
+          span({ className:'status ' + (status === 'Approved' ? 'approved' : 'pending')},
+            [ status === 'Approved' ? 'Approved' : 'Pending' ])
         ]),
-          /*
-          *             <g:if test="${consent.status == 'Approved'}">
-                <span class="status approved">Approved</span>
-              </g:if>
-              <g:if test="${consent.status != 'Approved'}">
-                <span class="status pending">Pending</span>
-              </g:if>
-          * */
 
-
-        div({ name: 'collapseButton'},[
+        div({ name: 'collapseButton' },[
           button({
-            className: "btn buttonSecondary pull-right",
+            className: 'btn buttonSecondary pull-right',
             style: POINTER.auto
-          },[
-              i({className: "glyphicon glyphicon-chevron-down"},[])
-            ]
-          )
+          },[ i({ className: 'glyphicon glyphicon-chevron-down' },[])])
         ])
+
       ])
     )
   }

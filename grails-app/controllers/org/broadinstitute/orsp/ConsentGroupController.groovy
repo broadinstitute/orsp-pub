@@ -217,22 +217,22 @@ class ConsentGroupController extends AuthenticatedController {
 //         checklistAnswers: checklistAnswers
         ]
     }
-//    //move projectconsetgroups to newconsentgroup controller
-//    def projectConsentGroups() {
-//        Issue issue = queryService.findByKey(params.id)
-//        Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
-//        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
-//        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
-//        render(
-//                view: "/consentGroup/list",
-//                model: [
-//                        issue: issue,
-//                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()},
-//                        attachmentTypes: PROJECT_DOC_TYPES,
-//                        controller: IssueType.CONSENT_GROUP.controller
-//                ]
-//        )
-//    }
+    //move projectconsetgroups to newconsentgroup controller
+    def projectConsentGroups() {
+        Issue issue = queryService.findByKey(params.id)
+        Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
+        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
+        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
+        render(
+                view: "/consentGroup/list",
+                model: [
+                        issue: issue,
+                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()},
+                        attachmentTypes: PROJECT_DOC_TYPES,
+                        controller: IssueType.CONSENT_GROUP.controller
+                ]
+        )
+    }
 
     def attachDocument() {
         def issue = queryService.findByKey(params.id)

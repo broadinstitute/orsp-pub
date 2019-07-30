@@ -85,18 +85,12 @@ class UtilityClass {
                         id             : issue.id,
                         projectKey     : issue.projectKey,
                         type           : issue.type,
-                        status         : issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
+                        status         : issue.status,
                         summary        : issue.summary,
-                        description    : issue.description,
                         reporter       : issue.reporter,
-                        approvalStatus : issue.approvalStatus,
                         requestDate    : issue.requestDate,
-                        updateDate     : issue.updateDate,
-                        expirationDate : issue.expirationDate,
                         attachments    : issue.attachments,
-                        extraProperties: issue.extraPropertiesMap,
-                        fundings       : issue.fundings,
-                        title          : issue.summary
+                        title          : issue.summary,
                 ]
             }
         }
