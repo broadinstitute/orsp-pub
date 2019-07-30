@@ -4,6 +4,7 @@ import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
+import { isEmpty } from "../util/Utils";
 import './Main.css';
 
 class Main extends Component {
@@ -44,9 +45,9 @@ class Main extends Component {
 
   updateDetailsStatus = (status) => {
     this.setState(prev => {
-      prev.status.projectReviewApproved = status.extraProperties.projectReviewApproved;
+      prev.status.projectReviewApproved = status.extraProperties !== null && isEmpty(status.extraProperties.projectReviewApproved) ? status.extraProperties.projectReviewApproved : false;
       prev.status.summary = status.issue.summary;
-      prev.status.actor = status.extraProperties.actor;
+      prev.status.actor = status.extraProperties !== null && isEmpty(status.extraProperties.actor) ? status.extraProperties.actor : '';
       return prev;
     })
   };
