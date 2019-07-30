@@ -16,6 +16,7 @@
     overflow: visible;
     white-space: normal;
     text-overflow: initial;
+    word-break: break-word;
 }
 
 .linkOverflowEllipsis {
