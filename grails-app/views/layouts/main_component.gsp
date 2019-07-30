@@ -126,9 +126,6 @@
         createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}",
         requestLinkClarificationUrl: "${createLink(controller: 'clarification', action:'collectionRequestClarification')}"
       };
-      console.log("${grailsApplication.config.dataSource.username}");
-      console.log("${grailsApplication.config.dataSource.password}");
-
     </script>
 
     %{-- Set context path for all scripts to use --}%
