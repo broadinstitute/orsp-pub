@@ -56,7 +56,7 @@ const columns = [
   }, {
     dataField: 'protocol',
     text: 'Protocol',
-    sort: true,
+    sort: false,
     headerStyle: (column, colIndex) => {
       return { width: STYLES_FUNDING_REPORTS.protocolWidth };
     },
@@ -65,7 +65,7 @@ const columns = [
   }, {
     dataField: 'pis',
     text: 'PIs',
-    sort: true,
+    sort: false,
     classes: 'ellipsis-column',
     formatter: (cell, row, rowIndex, colIndex) =>
       span({title: [row.pis]},[
