@@ -93,7 +93,7 @@ class AdminController extends AuthenticatedController {
     }
 
     def fundingReport() {
-        render(view: "/admin/fundingReport")
+        render(view: "/mainContainer/index")
     }
 
     def close() {

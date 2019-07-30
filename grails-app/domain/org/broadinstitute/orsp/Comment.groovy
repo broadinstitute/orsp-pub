@@ -22,13 +22,13 @@ class Comment  implements LogicalDelete<Comment> {
      *
      * @return Formatted comment string
      */
-    def String formattedActionBody() {
+    String formattedActionBody() {
         def list = []
         Splitter.fixedLength(75).split(description).each {
             list.add(it)
             if (it.matches(/^\S*$/)) { list.add("\n") }
         }
-        return list.join("")
+        list.join("")
     }
 
 }

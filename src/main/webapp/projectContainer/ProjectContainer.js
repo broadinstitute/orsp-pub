@@ -9,7 +9,7 @@ import '../components/Wizard.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 import { MultiTab } from "../components/MultiTab";
-import { ProjectMigration } from '../util/ajax';
+import { ProjectMigration, Review } from '../util/ajax';
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -18,8 +18,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     this.state = {
       loading: false,
       currentStepIndex: 0,
-      historyContent: '',
-      commentsContent: '',
+      history: [],
+      comments: [],
       dialogContent: '',
       defaultActive: 'review'
     };
@@ -27,10 +27,12 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   componentDidMount() {
     this.getHistory();
+    this.getComments();
   }
 
   updateDetailsStatus = (status) => {
     this.getHistory();
+    this.getComments();
     this.props.updateDetailsStatus(status);
   };
 
@@ -46,31 +48,28 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   updateContent = () => {
     this.getHistory();
+    this.getComments();
   };
+
 
   // history
   getHistory() {
     ProjectMigration.getHistory(component.serverURL, component.projectKey).then(resp => {
       this.setState(prev => {
-        prev.historyContent = resp.data;
+        prev.history = resp.data;
         return prev;
-      }, () => {
-        this.initializeHistory();
-      });
-    })
+      })
+    });
   };
 
-  initializeHistory() {
-    $.fn.dataTable.moment('MM/DD/YYYY hh:mm:ss');
-    if (!$.fn.dataTable.isDataTable("#history-table")) {
-      $("#history-table").DataTable({
-        dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-        buttons: ['excelHtml5', 'csvHtml5', 'print'],
-        language: { search: 'Filter:' },
-        pagingType: "full_numbers",
-        order: [1, "desc"]
-      });
-    }
+  //comments
+  getComments() {
+    Review.getComments(component.projectKey).then(result => {
+      this.setState(prev => {
+        prev.comments = result.data;
+        return prev;
+      })
+    });
   }
 
   render() {
@@ -119,7 +118,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Comments",
               }, [
                   h(Fragment, {}, [Comments({
-                    id: component.projectKey
+                    comments: this.state.comments,
+                    id: component.projectKey,
+                    updateContent: this.updateContent
                   })]),
                 ]),
               div({
@@ -127,7 +128,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "History",
               }, [
                   h(Fragment, {}, [History({
-                    historyContent: this.state.historyContent
+                    history: this.state.history
                   }
                   )]),
                 ]),

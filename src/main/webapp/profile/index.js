@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import '../main/Main.css';
 import '../index.css';
+
 import ErrorHandler from '../components/ErrorHandler';
-import RolesManagement from "./RolesManagement";
+import Profile from "./Profile";
 
 ReactDOM.render(
   <ErrorHandler>
-    <RolesManagement/>
+    <Profile/>
   </ErrorHandler>,
-  document.getElementById('rolesManagement')
+  document.getElementById('profile')
 );
