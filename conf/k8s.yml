@@ -42,8 +42,8 @@ spec:
           name: orsp-config
       - command:
         - "/cloud_sql_proxy"
-        - " -instances=orspsamples:us-central1:orsp-prod=tcp:3306"
-        - " -credential_file=/secrets/cloudsql/credentials.json"
+        - "-instances=orspsamples:us-central1:orsp-prod=tcp:3306"
+        - "-credential_file=/secrets/cloudsql/credentials.json"
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
         securityContext:
