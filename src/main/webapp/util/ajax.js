@@ -199,7 +199,7 @@ export const DocumentHandler = {
   },
 
   delete(documentId) {
-    return axios.delete(`${UrlConstants.rejectDocumentUrl}?documentId=${documentId}`);
+    return axios.delete(`${UrlConstants.removeDocumentUrl}?documentId=${documentId}`);
   }
 };
 
