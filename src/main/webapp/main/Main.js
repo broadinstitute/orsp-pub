@@ -45,9 +45,9 @@ class Main extends Component {
 
   updateDetailsStatus = (status) => {
     this.setState(prev => {
-      prev.status.projectReviewApproved = status.extraProperties !== null && isEmpty(status.extraProperties.projectReviewApproved) ? status.extraProperties.projectReviewApproved : false;
+      prev.status.projectReviewApproved = status.extraProperties !== null && !isEmpty(status.extraProperties.projectReviewApproved) ? status.extraProperties.projectReviewApproved : false;
       prev.status.summary = status.issue.summary;
-      prev.status.actor = status.extraProperties !== null && isEmpty(status.extraProperties.actor) ? status.extraProperties.actor : '';
+      prev.status.actor = status.extraProperties !== null && !isEmpty(status.extraProperties.actor) ? status.extraProperties.actor : '';
       return prev;
     })
   };
