@@ -60,6 +60,9 @@ export const Submissions = hh(class Submissions extends Component {
         prev.others = others;
         return prev;
       });
+    }).catch(error => {
+      // TODO: redirect to index
+      this.setState(() => { throw error; });
     });
   };
 

@@ -25,7 +25,8 @@ class SubmissionController extends AuthenticatedController {
     def getSubmissions() {
         Issue issue = queryService.findByKey(params.id)
         if (issueIsForbidden(issue)) {
-            redirect(controller: 'Index', action: 'index')
+            response.status = 403
+            render([error: "Issue is forbidden."] as JSON)
         }
         Collection<Submission> submissions = queryService.getSubmissionsByProject(issue.projectKey)
         Map<String, List<Submission>> groupedSubmissions = groupSubmissions(issue, submissions)
