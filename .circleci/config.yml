@@ -45,7 +45,7 @@ commands:
       - run:
           name: Docker build/push to GCR
           command: |
-            docker build --quiet -t ${REPO_NAME} .
+            docker build --quiet -t ${REPO_NAME} --build-arg build_env=${ENV} .
             docker tag ${REPO_NAME} gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
             docker push gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}

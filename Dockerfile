@@ -14,6 +14,7 @@ RUN apt-get -qq -y install \
 RUN mkdir /root/.nvm
 ENV NVM_DIR /root/.nvm
 ENV NODE_VERSION 10.16.0
+ARG build_env "dev"
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 RUN chmod +x $HOME/.nvm/nvm.sh
@@ -44,7 +45,7 @@ WORKDIR /app
 RUN npm install 
 RUN webpack --mode=development --config webpack.config.js
 
-RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; grails -Dgrails.env=dev war"
+RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; grails -Dgrails.env=$build_env war"
 
 FROM openjdk:8-alpine
 WORKDIR /
