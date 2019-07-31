@@ -144,7 +144,7 @@ export const Table = hh(class Table extends Component {
     cell.forEach(data => {
       if (data.document !== undefined) {
         documents.push([
-          div({key: data.document.id}, [
+          div({className: "linkOverflowEllipsis", key: data.document.id}, [
             a({
               href: `${component.downloadDocumentUrl}?uuid=${data.document.uuid}`,
               target: '_blank',
@@ -332,7 +332,6 @@ export const Table = hh(class Table extends Component {
             } else if (header.value==='documents') {
               return <TableHeaderColumn
                 key={header.value}
-                className={'documentsSubmissions'}
                 dataField={header.value}
                 dataFormat={this.redirectToDocumentLink}
                 dataSort={ true }

@@ -13,10 +13,15 @@
     padding-left: 20px;
     width: calc(100% - 60px);
     display: inline-block;
-}
-
-.react-bs-table table td {
     overflow: visible;
     white-space: normal;
     text-overflow: initial;
+    word-break: break-word;
+}
+
+.linkOverflowEllipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #337ab7;
 }
