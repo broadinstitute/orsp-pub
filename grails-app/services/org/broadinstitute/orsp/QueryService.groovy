@@ -8,7 +8,8 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
-import org.grails.plugins.web.taglib.ApplicationTagLib
+import liquibase.util.StringUtils
+import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
 import org.hibernate.HibernateException
@@ -1060,21 +1061,73 @@ class QueryService implements Status {
         results
     }
 
-    List<Issue> findIssueByProjectType(String type) {
+    PaginatedResponse findIssueByProjectType(String type, PaginationParams pagination) {
+        String orderColumn = getIssueOrderColumn(pagination.orderColumn)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query =
-                ' select * ' +
-                        ' from issue ' +
-                        ' where type = :projectType ' +
-                        ' and deleted = 0 '
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
+        final StringBuffer query = new StringBuffer(' select distinct i.id from issue i left outer join issue_extra_property ie on ie.issue_id = i.id ')
+        query.append(' where i.type = :type ' +
+                ' and i.deleted = 0 ')
+        if (pagination.searchValue) {
+            query.append("and i.project_key LIKE :term ")
+                    .append("or i.summary LIKE :term ")
+                    .append("or i.status LIKE :term ")
+                    .append("or ((ie.name = :initialReviewType ")
+                    .append("or ie.name = :reviewCategory ) ")
+                    .append("and ie.value LIKE :term ) ")
+        }
+        SQLQuery sqlQuery = session.createSQLQuery(query.toString())
+        sqlQuery.setString('type', type)
+        if (pagination.searchValue) {
+            sqlQuery.setString('term', pagination.getLikeTerm())
+            sqlQuery.setString('initialReviewType', IssueExtraProperty.INITIAL_REVIEW_TYPE)
+            sqlQuery.setString('reviewCategory', IssueExtraProperty.REVIEW_CATEGORY)
+        }
+        // total rows
+        List<Long> ids = sqlQuery.list()
+        List<Issue> results = new ArrayList<>()
+        if (CollectionUtils.isNotEmpty(ids)) {
+            results = findPaginatedIssuesByIds(ids, orderColumn, pagination)
+        }
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: ids.size(),
+                recordsFiltered: ids.size(),
+                data: results,
+                error: ""
+        )
+    }
+
+    private List<Issue> findPaginatedIssuesByIds(List<Long> ids, String orderColumn, PaginationParams pagination) {
+        String query = 'select * from issue where id in :ids '
+        if (orderColumn) {
+            query = query + " order by " + orderColumn + pagination.sortDirection
+        }
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<Issue> results = sqlQuery.with {
             addEntity(Issue)
-            setString('projectType', type)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            setParameterList("ids", ids)
             list()
         }
         results
+    }
+
+    private String getIssueOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " project_key "
+                break
+            case 1:
+                orderField = " summary "
+                break
+            case 2:
+                orderField = " status "
+                break
+        }
+        orderField
     }
 
     Collection<Submission> getSubmissionsByProject(String projectKey) {

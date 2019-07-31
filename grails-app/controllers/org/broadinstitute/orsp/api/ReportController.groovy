@@ -54,10 +54,16 @@ class ReportController extends AuthenticatedController {
     }
 
     def findReviewCategories() {
-        UtilityClass.registerIssueMarshaller()
-        List<Issue> issues = queryService.findIssueByProjectType(IssueType.IRB.name)
+        UtilityClass.registerIssueMarshaller();
+        PaginationParams pagination = new PaginationParams(
+                draw: params.getInt("draw") ?: 1,
+                start: params.getInt("start") ?: 0,
+                length: params.getInt("length") ?: 50,
+                orderColumn: params.getInt("orderColumn") ?: 0,
+                sortDirection: params.get("sortDirection")?.toString() ?: "asc",
+                searchValue: params.get("searchValue")?.toString() ?: null)
         JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
-            render issues as JSON
+            render queryService.findIssueByProjectType(IssueType.IRB.name, pagination) as JSON
         }
     }
 }
