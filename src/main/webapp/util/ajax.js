@@ -317,6 +317,18 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+  getReviewCategory(query) {
+    return axios.get(component.serverURL + "/api/report/review-categories", {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
   }
 };
 
@@ -332,11 +344,5 @@ export const ProjectMigration = {
 
   getSubmissions(url, id) {
     return axios.get(url + "/api/submissions?id=" + id);
-  }
-};
-
-export const Report = {
-  getReviewCategory(id) {
-    return axios.get(component.serverURL + "/api/report/review-categories");
   }
 };

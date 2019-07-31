@@ -70,7 +70,9 @@ export const Comments = hh(class Comments extends Component {
           showPrintButton: false,
           printComments: this.printComments,
           defaultSorted: defaultSorted,
-          pagination: true
+          pagination: true,
+          showExportButtons: true,
+          showSearchBar: true
         })
       ])
     )

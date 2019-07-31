@@ -66,7 +66,8 @@ export const History = hh(class History extends Component {
           fileName: 'ORSP',
           showPrintButton: false,
           printComments: this.printHistory,
-          defaultSorted: defaultSorted
+          defaultSorted: defaultSorted,
+          showSearchBar: true
         })
       ])
     )

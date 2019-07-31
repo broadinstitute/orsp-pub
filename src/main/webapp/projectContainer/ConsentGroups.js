@@ -236,7 +236,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         parsedData.defaultSorted= defaultSorted;
         parsedData.fileName= '_';
         parsedData.pagination= false;
-        parsedData.showButtons = false;
+        parsedData.showExportButtons = false;
+        parsedData.showSearchBar = false;
         parsedData.customHandlers = {
           approveHandler: this.approve,
           rejectHandler: this.reject,
