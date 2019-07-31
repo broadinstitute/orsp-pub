@@ -34,15 +34,15 @@ spec:
           valueFrom:
             secretKeyRef:
               key: password
-              name: cloudsqYXNkZjQzMjEh
-        image: gcr.io/${GOOYXNkZjQzMjEh
-        imagePullPolicy: AlYXNkZjQzMjEh
+              name: cloudsql-db-credentials
+        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
+        imagePullPolicy: Always
         name: ${REPO_NAME}
         ports:
-        - containerPort: 80YXNkZjQzMjEh
+        - containerPort: 8080
         volumeMounts:
-        - mountPath: "/orspYXNkZjQzMjEh
-          name: orsp-configYXNkZjQzMjEh
+        - mountPath: "/orsp-config"
+          name: orsp-config
       - command:
         - "/cloud_sql_proxy"
         - "-instances=$(MYSQL_INSTANCE)"
