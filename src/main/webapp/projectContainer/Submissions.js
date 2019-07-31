@@ -21,7 +21,6 @@ export const Submissions = hh(class Submissions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: '',
       amendments:[],
       others: [],
       amendmentDocuments: [],
@@ -30,31 +29,8 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   componentDidMount() {
-    // this.getSubmissions();
     this.getDisplaySubmissions();
   }
-
-  getSubmissions() {
-    ProjectMigration.getSubmissions(component.serverURL, component.projectKey).then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        this.loadSubmissions();
-      })
-    });
-  };
-
-  getDocumentsData = (submissionData) => {
-    submissionData.forEach(data  => {
-      data.documents.forEach(document => {
-        Files.getDocument(document.id).then(resp => {
-          document.document = resp.data.document;
-        });
-      });
-    });
-    return submissionData;
-  };
 
   getDisplaySubmissions = () => {
     let amendments = {};
@@ -92,19 +68,6 @@ export const Submissions = hh(class Submissions extends Component {
     return [component.serverURL, 'api/files-helper/get-document?id=' + data].join("/");
   };
 
-  loadSubmissions() {
-    $(".submissionTable").DataTable({
-      dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-      buttons: [],
-      language: { search: 'Filter:' },
-      pagingType: "full_numbers",
-      pageLength: 50,
-      columnDefs: [{ targets: [1, 2], orderable: false }],
-      order: [0, "desc"]
-    });
-    $("#submission-tabs").tabs();
-  }
-
   submissionEdit = (data) => {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
@@ -117,7 +80,6 @@ export const Submissions = hh(class Submissions extends Component {
   redirectNewSubmission(e) {
     window.location.href=`${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
   }
-
 
   render() {
     const amendmentTitle = h(Fragment, {}, [
@@ -140,52 +102,51 @@ export const Submissions = hh(class Submissions extends Component {
         }, ["Edit Information"]),
 
         Panel({title: "Submissions"}, [
-            div({ className: "containerBox" }, [
-              MultiTab({ defaultActive: "amendment"}, [
-                div({ key: "amendment", title: amendmentTitle },[
-                  h(Fragment, {}, [
-                        a({
-                          onClick: this.redirectNewSubmission,
-                          className: "btn btn-primary add-submission",
-                          id: "Amendment"
-                        }, ["Add Submission"]),
-                    Table({
-                      headers: headers,
-                      data: this.state.amendments,
-                      sizePerPage: 10,
-                      paginationSize: 10,
-                      isAdmin: component.isAdmin,
-                      getDocumentLink: this.getDocumentLink,
-                      pagination: true,
-                      reviewFlow: true,
-                      submissionEdit: this.submissionEdit,
-                    })
-                  ])
-                ]),
-                div({ key: "other", title: othersTitle},[
-                  h(Fragment, {}, [
-                        a({
-                          onClick: this.redirectNewSubmission,
-                          className: "btn btn-primary add-submission",
-                          id: "Other"
-                        }, ["Add Submission"]),
-                    Table({
-                      headers: headers,
-                      data: this.state.others,
-                      sizePerPage: 10,
-                      paginationSize: 10,
-                      isAdmin: component.isAdmin,
-                      getDocumentLink: this.getDocumentLink,
-                      pagination: true,
-                      reviewFlow: true,
-                      submissionEdit: this.submissionEdit,
-                    }),
-                  ])
-                ]),
-              ])
+          div({ className: "containerBox" }, [
+            MultiTab({ defaultActive: "amendment"}, [
+              div({ key: "amendment", title: amendmentTitle },[
+                h(Fragment, {}, [
+                  a({
+                    onClick: this.redirectNewSubmission,
+                    className: "btn btn-primary add-submission",
+                    id: "Amendment"
+                  }, ["Add Submission"]),
+                  Table({
+                    headers: headers,
+                    data: this.state.amendments,
+                    sizePerPage: 10,
+                    paginationSize: 10,
+                    isAdmin: component.isAdmin,
+                    getDocumentLink: this.getDocumentLink,
+                    pagination: true,
+                    reviewFlow: true,
+                    submissionEdit: this.submissionEdit,
+                  })
+                ])
+              ]),
+              div({ key: "other", title: othersTitle},[
+                h(Fragment, {}, [
+                  a({
+                    onClick: this.redirectNewSubmission,
+                    className: "btn btn-primary add-submission",
+                    id: "Other"
+                  }, ["Add Submission"]),
+                  Table({
+                    headers: headers,
+                    data: this.state.others,
+                    sizePerPage: 10,
+                    paginationSize: 10,
+                    isAdmin: component.isAdmin,
+                    getDocumentLink: this.getDocumentLink,
+                    pagination: true,
+                    reviewFlow: true,
+                    submissionEdit: this.submissionEdit,
+                  }),
+                ])
+              ]),
             ])
-          ]),
-        div({dangerouslySetInnerHTML: { __html: this.state.content } },[])
+          ])
+        ]),
       ])
     )
   }
