@@ -4,7 +4,7 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { CATEGORY_SORT_NAME_INDEX, STYLES_REVIEW_CATEGORIES } from "../util/ReportConstants";
+import { CATEGORY_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
 import { handleRedirectToProject } from "../util/Utils";
 
@@ -25,7 +25,7 @@ const columns = [
     text: 'Project',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_REVIEW_CATEGORIES.projectKeyWidth};
+      return { width: styles.reviewCategories.projectKeyWidth};
     },
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
@@ -37,7 +37,7 @@ const columns = [
     text: 'Summary',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_REVIEW_CATEGORIES.summaryWidth};
+      return { width: styles.reviewCategories.summaryWidth};
     },
     formatter: (cell, row, rowIndex, colIndex) =>
     span({title: row.summary},[row.summary])
@@ -46,7 +46,7 @@ const columns = [
     text: 'Status',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_REVIEW_CATEGORIES.statusWidth};
+      return { width: styles.reviewCategories.statusWidth};
     },
     formatter: (cell, row, rowIndex, colIndex) =>
     span({title: row.status},[row.status]) 
@@ -55,7 +55,7 @@ const columns = [
     text: 'Review Category',
     sort: false,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_REVIEW_CATEGORIES.reviewCategoryWidth};
+      return { width: styles.reviewCategories.reviewCategoryWidth};
     } ,
     formatter: (cell, row, rowIndex, colIndex) =>
     span({title: row.reviewCategory},[row.reviewCategory]) 
@@ -74,8 +74,7 @@ class ReviewCategories extends Component {
         orderColumn: null
       },
       currentPage: 1,
-      categories: [],
-      isAdmin: true
+      categories: []
     };
   }
 
@@ -85,7 +84,6 @@ class ReviewCategories extends Component {
 
   init = () => {
     spinnerService.showAll();
-    this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
@@ -104,7 +102,6 @@ class ReviewCategories extends Component {
       this.setState(prev => {
         prev.lastPage = lastPage;
         prev.currentPage = page;
-        prev.isAdmin = this.state.isAdmin;
         prev.categories = result.data.data;
         prev.recordsTotal = result.data.recordsTotal;
         prev.recordsFiltered = result.data.recordsFiltered;

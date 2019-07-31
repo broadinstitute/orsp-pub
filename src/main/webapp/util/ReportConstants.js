@@ -16,20 +16,21 @@ export const CATEGORY_SORT_NAME_INDEX = {
   "status": 2
 };
 
-export const STYLES_FUNDING_REPORTS = {
-  issueTypeWidth: '96px',
-  projectKeyWidth: '109px',
-  titleWidth: '280px',
-  statusWidth: '98px',
-  pisWidth: '80px',
-  protocolWidth: '94px',
-  fundingNameWidth: '124px',
-  generalWidth: '136px',
-};
-
-export const STYLES_REVIEW_CATEGORIES = {
-  projectKeyWidth: '120px',
-  summaryWidth: '600px',
-  statusWidth: '180px',
-  reviewCategoryWidth: '180'
-};
+export const styles = {
+  fundingReport: { 
+    issueTypeWidth: '96px',
+    projectKeyWidth: '109px',
+    titleWidth: '280px',
+    statusWidth: '98px',
+    pisWidth: '80px',
+    protocolWidth: '94px',
+    fundingNameWidth: '124px',
+    generalWidth: '136px'
+  },
+  reviewCategories: { 
+    projectKeyWidth: '120px',
+    summaryWidth: '600px',
+    statusWidth: '180px',
+    reviewCategoryWidth: '180'
+  }
+}

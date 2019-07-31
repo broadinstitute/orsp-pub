@@ -5,7 +5,7 @@ import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { handleRedirectToProject, printData } from "../util/Utils";
-import { FUNDING_SORT_NAME_INDEX, STYLES_FUNDING_REPORTS } from "../util/ReportConstants";
+import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 
 const SIZE_PER_PAGE_LIST = [
@@ -25,7 +25,7 @@ const columns = [
     text: 'Issue Type',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.issueTypeWidth};
+      return { width: styles.fundingReport.issueTypeWidth};
     } 
   },
   {
@@ -37,28 +37,28 @@ const columns = [
         a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
       ]),
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.projectKeyWidth };
+      return { width: styles.fundingReport.projectKeyWidth };
     }
   }, {
   dataField: 'summary',
     text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.titleWidth };
+      return { width: styles.fundingReport.titleWidth };
     }
   }, {
     dataField: 'status',
     text: 'Status',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.statusWidth };
+      return { width: styles.fundingReport.statusWidth };
     }
   }, {
     dataField: 'protocol',
     text: 'Protocol',
     sort: false,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.protocolWidth };
+      return { width: styles.fundingReport.protocolWidth };
     },
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       formatNullCell(cell)
@@ -72,7 +72,7 @@ const columns = [
         [row.pis]
     ]),
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.pisWidth };
+      return { width: styles.fundingReport.pisWidth };
     },
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       cell.join(', ')
@@ -81,7 +81,7 @@ const columns = [
     text: 'Funding Source',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.generalWidth };
+      return { width: styles.fundingReport.generalWidth };
     }
   }, {
     dataField: 'name',
@@ -93,14 +93,14 @@ const columns = [
         [row.name]
     ]),
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.fundingNameWidth };
+      return { width: styles.fundingReport.fundingNameWidth };
     }
   }, {
     dataField: 'awardNumber',
     text: 'Award Number',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: STYLES_FUNDING_REPORTS.generalWidth };
+      return { width: styles.fundingReport.generalWidth };
     },
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       formatNullCell(cell)
@@ -188,7 +188,7 @@ class FundingsSourceReport extends Component {
   onSortChange = (sortName, sortOrder) => {
     const sort = {
       sortDirection: sortOrder,
-      orderColumn: SORT_NAME_INDEX[sortName]
+      orderColumn: FUNDING_SORT_NAME_INDEX[sortName]
     };
     this.tableHandler(0, this.state.sizePerPage, null, sort)
   };
