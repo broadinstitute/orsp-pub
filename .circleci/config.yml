@@ -149,7 +149,7 @@ jobs:
           host_name: "ui.dsp-orsp-dev.broadinstitute.org"
           host_ip: "orsp-pub-dev-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
-          orsp_config_map: "orsp-config"
+          orsp_config_map: "orsp-config-dev"
   deploy-staging:
     executor: cloud-sdk
     steps:
