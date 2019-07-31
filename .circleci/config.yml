@@ -115,6 +115,7 @@ commands:
             gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER}
       - run:
           name: Deploy to Kubernetes
+          no_output_timeout: 30m
           command: |
             envsubst < ${HOME}/project/conf/k8s.yml > ${HOME}/patched_k8s.yml
             envsubst < ${HOME}/project/conf/service.yaml > ${HOME}/patched_service.yml
@@ -124,7 +125,7 @@ commands:
             kubectl apply -f ${HOME}/patched_k8s.yml
             kubectl apply -f ${HOME}/patched_service.yml
             kubectl apply -f ${HOME}/patched_ingress.yml
-            kubectl rollout status deployment/${REPO_NAME}
+            kubectl rollout status deployment/${REPO_NAME} 
 
 jobs:
   deploy-dev:
