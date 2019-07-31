@@ -316,7 +316,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.approveInfoDialog = false;
           return prev;
         }, () => {      
-          Project.getProject(component.projectUrl, component.consentKey).then(
+          Project.getProject(component.consentKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
             })
@@ -897,7 +897,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             isAdmin: this.state.isAdmin,
             data: this.state.current.sampleCollectionLinks,
             handleRedirectToInfoLink: this.handleRedirectToInfoLink,
-            serverURL: component.serverURL,
             unlinkSampleCollection: this.toggleUnlinkDialog,
             sizePerPage: 10,
             paginationSize: 10

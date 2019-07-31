@@ -300,7 +300,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           return prev;
         }, 
         () => {
-          Project.getProject(component.projectUrl, component.projectKey).then(
+          Project.getProject(component.projectKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
             })
