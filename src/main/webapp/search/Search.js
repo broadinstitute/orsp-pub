@@ -150,7 +150,6 @@ class Search extends React.Component {
     this.state.irb.map(function(irb, index) {
       params.append("irb", irb.id);
     });
-
     axios.post(this.state.searchUrl, params).then(response => {
       const results = response.data;
       this.setState(() => ({

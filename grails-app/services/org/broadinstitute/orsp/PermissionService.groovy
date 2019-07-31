@@ -46,3 +46,4 @@ class PermissionService implements UserInfo {
         !userHasAccess
     }
 }
+
