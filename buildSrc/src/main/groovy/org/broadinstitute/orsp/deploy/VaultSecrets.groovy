@@ -8,8 +8,9 @@ class VaultSecrets {
 
     static Map<String, String> getParsedSecret(String token, String vaultAddress, String secretPath) {
         HttpBuilder http = HttpBuilder.configure {
+            
             request.uri = "${vaultAddress}/v1/${secretPath}"
-            request.contentType = "application/json"
+            request.headers['Content-Type'] = "application/json"
             request.headers['X-Vault-Token'] = token
         }
         http.get(Map){}.get("data")
