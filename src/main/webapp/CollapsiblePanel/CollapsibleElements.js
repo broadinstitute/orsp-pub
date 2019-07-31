@@ -33,6 +33,7 @@ export const CollapsibleElements = hh(class CollapsibleElements extends Componen
             onItemClick: false
           }, [
             h(Panel, {
+              className: 'collapsible',
               style: { pointerEvents: 'none' },
               header: this.props.header({
                 extraData: this.props.extraData,
