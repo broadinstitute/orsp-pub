@@ -32,49 +32,49 @@ class CrowdServiceSpec extends Specification {
     def cleanup() {
     }
 
-    // void stubCrowdResource() {
-    //     crowdService.crowdConfiguration.url = "http://localhost:${wireMockRule.port()}/crowd"
-    //     wireMockRule.resetAll()
-    //     URL url = Resources.getResource("test_crowd_users.json")
-    //     String mockCrowdJson = Resources.toString(url, Charsets.UTF_8)
-    //     stubFor(get(anyUrl()) //"/crowd/rest/usermanagement/latest/search*"
-    //             .willReturn(aResponse()
-    //             .withStatus(200)
-    //             .withHeader("Content-Type", "application/json")
-    //             .withBody(mockCrowdJson)))
-    // }
+    void stubCrowdResource() {
+        crowdService.crowdConfiguration.url = "http://localhost:${wireMockRule.port()}/crowd"
+        wireMockRule.resetAll()
+        URL url = Resources.getResource("test_crowd_users.json")
+        String mockCrowdJson = Resources.toString(url, Charsets.UTF_8)
+        stubFor(get(anyUrl()) //"/crowd/rest/usermanagement/latest/search*"
+                .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(mockCrowdJson)))
+    }
 
-    // void "Crowd Service finds all users in test user file"() {
-    //     given:
-    //     stubCrowdResource()
+    void "Crowd Service finds all users in test user file"() {
+        given:
+        stubCrowdResource()
 
-    //     when:
-    //     def missingUsers = crowdService.findMissingUsers()
+        when:
+        def missingUsers = crowdService.findMissingUsers()
 
-    //     then: "Crowd User Details Exist"
-    //     missingUsers != null
-    //     !missingUsers.isEmpty()
-    //     missingUsers.size() == 10
-    // }
+        then: "Crowd User Details Exist"
+        missingUsers != null
+        !missingUsers.isEmpty()
+        missingUsers.size() == 10
+    }
 
-    // void "Crowd Service finds missing users in test user file"() {
-    //     given:
-    //     User user = userService.findOrCreateUser(
-    //             "testuser1",
-    //             "testuser1@broadinstitute.org",
-    //             "Test User 1")
-    //     stubCrowdResource()
-    //     Collection<String> existingUserNames = userService.findAllUserNames()
+    void "Crowd Service finds missing users in test user file"() {
+        given:
+        User user = userService.findOrCreateUser(
+                "testuser1",
+                "testuser1@broadinstitute.org",
+                "Test User 1")
+        stubCrowdResource()
+        Collection<String> existingUserNames = userService.findAllUserNames()
 
-    //     when:
-    //     def missingUsers = crowdService.findMissingUsers()
+        when:
+        def missingUsers = crowdService.findMissingUsers()
 
-    //     then:"Crowd User Details Exist"
-    //     existingUserNames.size() == 1
-    //     user != null
-    //     missingUsers != null
-    //     !missingUsers.isEmpty()
-    //     missingUsers.size() < 10
-    // }
+        then:"Crowd User Details Exist"
+        existingUserNames.size() == 1
+        user != null
+        missingUsers != null
+        !missingUsers.isEmpty()
+        missingUsers.size() < 10
+    }
 
 }

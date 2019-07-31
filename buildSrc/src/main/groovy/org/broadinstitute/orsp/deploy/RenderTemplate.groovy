@@ -26,8 +26,7 @@ class RenderTemplate {
                 dropRight(1).       // Drop the last line which ends the consul variables
                 join("\n")          // Turn it back into a string.
         // TODO: This should be an input
-        new File("/etc/config/application.yml").withWriter { w ->
-        //new File("${projectHome}/grails-app/conf/application.yml").withWriter { w ->
+        new File("${projectHome}/grails-app/conf/application.yml").withWriter { w ->
             parsedSecrets.each {
                 config = config.replace('{{$orsp.Data.' + it.key + '}}', it.value)
                 if (local) {
