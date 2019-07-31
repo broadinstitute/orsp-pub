@@ -318,6 +318,18 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+  getReviewCategory(query) {
+    return axios.get(UrlConstants.reviewCategoriesUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
   }
 };
 
@@ -333,11 +345,5 @@ export const ProjectMigration = {
 
   getSubmissions(id) {
     return axios.get(UrlConstants.submissionsUrl + '?id='+ id);
-  }
-};
-
-export const Report = {
-  getReviewCategory() {
-    return axios.get(UrlConstants.reviewCategoriesUrl);
   }
 };
