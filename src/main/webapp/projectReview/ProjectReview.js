@@ -298,8 +298,14 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(prev => {
           prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
-        }, () => this.props.updateDetailsStatus(this.getProject()))
-      }
+        }, 
+        () => {
+          Project.getProject(component.projectUrl, component.projectKey).then(
+            issue => {
+              this.props.updateDetailsStatus(issue.data);
+            })
+          });
+        }
     ).catch(error => {
       this.setState(() => { throw error; });
     });
