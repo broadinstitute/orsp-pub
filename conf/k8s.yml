@@ -18,6 +18,11 @@ spec:
     spec:
       containers:
       - env:
+        - name: MYSQL_INSTANCE
+          valueFrom:
+            secretKeyRef:
+              key: instance
+              name: cloudsql-db-credentials
         - name: MYSQL_DB_HOST
           value: 127.0.0.1:3306
         - name: MYSQL_DB_USERNAME
@@ -29,18 +34,18 @@ spec:
           valueFrom:
             secretKeyRef:
               key: password
-              name: cloudsql-db-credentials
-        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
-        imagePullPolicy: Always
+              name: cloudsqYXNkZjQzMjEh
+        image: gcr.io/${GOOYXNkZjQzMjEh
+        imagePullPolicy: AlYXNkZjQzMjEh
         name: ${REPO_NAME}
         ports:
-        - containerPort: 8080
+        - containerPort: 80YXNkZjQzMjEh
         volumeMounts:
-        - mountPath: "/orsp-config"
-          name: orsp-config
+        - mountPath: "/orspYXNkZjQzMjEh
+          name: orsp-configYXNkZjQzMjEh
       - command:
         - "/cloud_sql_proxy"
-        - "-instances=orsp-dev:us-east1:bricc-mysql-dev=tcp:3306"
+        - "-instances=$(MYSQL_INSTANCE)"
         - "-credential_file=/secrets/cloudsql/credentials.json"
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
@@ -60,7 +65,8 @@ spec:
       - name: cloudsql-instance-credentials
         secret:
           secretName: cloudsql-instance-credentials
-      - configMap:
+      - name: orsp-config 
+        configMap:
           name: ${ORSP_CONFIG_MAP}
-        name: orsp-config
+        
 
