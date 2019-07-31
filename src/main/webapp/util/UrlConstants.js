@@ -55,7 +55,7 @@ export const UrlConstants = {
   emailDulUrl: context + '/api/dul-email-notification',
   editUserRoleUrl: context + '/api/edit-user-role',
   getAllUsersUrl: context + '/api/get-users',
-  dataUseLetterUrl: context + '/api/data-use-letter/',
+  dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
   dataUseLetterRestrictionUrl: context + '/api/data-use-letter/restriction',
   infoLinkUrl: context + '/api/info-link',
