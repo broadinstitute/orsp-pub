@@ -213,16 +213,6 @@ task ('cleanTest') {
     dependsOn clean, test, integrationTest
 }
 
-/**
- * See /docs/DEPLOY.md for configuration management
- */
-task renderConfigs(type: RenderConfigs) {
-    local = false
-    projectHome = projectDir
-    vaultAddr = System.getenv('VAULT_ADDR')
-}
-
-
 // See https://github.com/bmuschko/gradle-clover-plugin for configuration options
 clover {
     licenseLocation = File.createTempFile('clover', '.license').absolutePath
