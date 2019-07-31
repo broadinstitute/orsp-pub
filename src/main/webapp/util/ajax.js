@@ -105,7 +105,11 @@ export const ClarificationRequest = {
     data.append('id', issueId);
     data.append('pm', pm);
     data.append('consentKey', consentKey);
-    return axios.post(UrlConstants.clarificationUrl, data);
+    if (consentKey !== undefined) {
+      return axios.post(UrlConstants.clarificationCollectionUrl, data);
+    } else {
+      return axios.post(UrlConstants.clarificationUrl, data);
+    }
   }
 };
 

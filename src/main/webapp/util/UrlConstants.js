@@ -42,6 +42,7 @@ export const UrlConstants = {
   getUserUrl: context + '/api/user/authenticated/user-data',
   projectKeySearchUrl: context + '/search/project-key/autocomplete',
   clarificationUrl: context + '/api/clarification-request',
+  clarificationCollectionUrl: context + '/api/clarification-request/collection',
   userNameSearchUrl: context + '/search/matching-users',
   sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
   searchUrl: context + '/search/general-table-json',
