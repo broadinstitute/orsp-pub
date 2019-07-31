@@ -4,11 +4,14 @@ import grails.converters.JSON
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.Comment
+import org.broadinstitute.orsp.Event
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.User
+
+import java.text.SimpleDateFormat
 import java.util.concurrent.atomic.AtomicInteger
 
 class UtilityClass {
@@ -16,6 +19,7 @@ class UtilityClass {
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
+    public static final String HISTORY = 'history'
 
     UtilityClass(QueryService queryService) {
         this.queryService = queryService
@@ -90,6 +94,20 @@ class UtilityClass {
                         name: funding.name,
                         awardNumber: funding.awardNumber,
                         pis: getPIsDisplayName((Issue) funding.issue)
+                ]
+            }
+        }
+    }
+
+    static void registerEventMarshaller() {
+        JSON.createNamedConfig(HISTORY) {
+            SimpleDateFormat  sd = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            it.registerObjectMarshaller( Event ) { Event event ->
+                return [
+                        id: event.id,
+                        summary: event.summary,
+                        author: event.author,
+                        created: sd.format(event.created)
                 ]
             }
         }

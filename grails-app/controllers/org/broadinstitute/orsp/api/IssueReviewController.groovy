@@ -58,7 +58,7 @@ class IssueReviewController extends AuthenticatedController {
             persistenceService.saveEvent(params.projectKey, getUser()?.displayName, "Edits Rejected", EventType.REJECT_EDITS)
         }
         Issue issue = queryService.findByKey(params.projectKey)
-        transitionService.handleIntake(issue, issue.getActorUsernames())
+        transitionService.handleIntake(issue, [])
         response.status = 200
         response
     }
