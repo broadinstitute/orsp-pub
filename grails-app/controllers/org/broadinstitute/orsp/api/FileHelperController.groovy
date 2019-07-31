@@ -68,7 +68,7 @@ class FileHelperController extends AuthenticatedController{
                 response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
-            transitionService.handleIntake(issue, issue.getActorUsernames())
+            transitionService.handleIntake(issue, [])
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
@@ -88,7 +88,7 @@ class FileHelperController extends AuthenticatedController{
                 response.status = 404
                 render([error: 'Document not found'] as JSON)
             }
-            transitionService.handleIntake(issue, issue.getActorUsernames())
+            transitionService.handleIntake(issue, [])
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
