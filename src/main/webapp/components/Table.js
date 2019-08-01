@@ -310,33 +310,33 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.roleSelection}
                 >{header.name}</TableHeaderColumn>
-            } else if (header.value==='collectionName') {
+            } else if (header.value ==='collectionName') {
                 return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}
                 dataFormat={this.formatTooltip}
                 key={header.value}
                 width={styles.collectionNameWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value==='number') {
+            } else if (header.value ==='number') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 dataSort={ true }
                 width={styles.numberWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value==='comments') {
+            } else if (header.value === 'comments') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 dataFormat={this.submissionEdit}
                 dataSort={ true }
                 width={styles.submissionComments}>{header.name}</TableHeaderColumn>
-            } else if (header.value==='documents') {
+            } else if (header.value === 'documents') {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
                 dataFormat={this.redirectToDocumentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value==='createDate') {
+            } else if (header.value === 'createDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
