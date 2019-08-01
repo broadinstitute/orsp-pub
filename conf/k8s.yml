@@ -18,7 +18,7 @@ spec:
         app: ${REPO_NAME}
     spec:
       containers:
-      - env:
+        env:
         - name: MYSQL_INSTANCE
           valueFrom:
             secretKeyRef:
