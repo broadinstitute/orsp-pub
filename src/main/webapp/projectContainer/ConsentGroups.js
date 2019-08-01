@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { div, hh, h, hr, h3, a, button } from 'react-hyperscript-helpers';
-import { ConsentGroup, ProjectMigration } from '../util/ajax';
+import { ConsentGroup, DocumentHandler, ProjectMigration } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
@@ -10,13 +10,32 @@ import { isEmpty } from "../util/Utils";
 import { TableComponent } from "../components/TableComponent";
 import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
 import { formatUrlDocument, parseDate } from "../util/TableUtil";
+import { AlertMessage } from "../components/AlertMessage";
+import { styles } from "../util/ReportConstants";
 
-const columns = [{
+const columns = (cThis) => [{
   dataField: 'id',
   text: 'Id',
   hidden: true,
   csvExport : false
-}, {
+},
+{
+  dataField: 'uuid',
+  text: '',
+  style: { pointerEvents: 'auto' },
+  headerStyle: (column, colIndex) => {
+    return {
+      width: '65px',
+    };
+  },
+  formatter: (cell, row, rowIndex, colIndex) =>
+    button({
+      isRendered: component.isAdmin,
+      className: 'btn btn-default btn-xs link-btn',
+      onClick: () => cThis.removeAttachedDocument(row)
+    },["Delete"])
+},
+{
   dataField: 'fileType',
   text: 'Attachment Type'
 }, {
@@ -56,13 +75,15 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       showRequestClarification: false,
       title: 0,
       actionConsentKey: '',
-      issue: {}
+      fileIdToRemove: '',
+      issue: {},
+      alertMessage: '',
+      alertType: 'success',
+      showSuccessClarification: false
     };
-    this.loadConsentGroups = this.loadConsentGroups.bind(this);
   }
 
   componentDidMount() {
-    this.getConsentGroups();
     this.getProjectConsentGroups();
   }
 
@@ -77,27 +98,43 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   handleOkConfirmation = () => {
     if(this.state.action === "unlink" || this.state.action === "reject") {
       ConsentCollectionLink.breakLink(this.state.issue.projectKey, this.state.actionConsentKey, this.state.action).then(resp => {
-        this.getConsentGroups();
         this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
+    } else if (this.state.action === 'removeAttachment') {
+      DocumentHandler.deleteAttachmentByUuid(this.state.fileIdToRemove).
+      then(resp => {
+        this.getProjectConsentGroups();
+        this.closeConfirmationModal();
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
     } else {
       ConsentCollectionLink.approveLink(this.state.issue.projectKey, this.state.actionConsentKey).then(resp => {
-        this.getConsentGroups();
         this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
     }
   };
 
-  getConsentGroups() {
-    ProjectMigration.getConsentGroups(component.serverURL, component.projectKey).then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        this.loadConsentGroups(this);
-      });
+  successNotification = (type, message, time) => {
+    setTimeout(this.clearAlertMessage(type), time, null);
+    this.props.updateContent();
+    this.closeRequestClarification();
+    this.setState(prev => {
+      prev.showSuccessClarification = true;
+      prev.alertMessage = message;
+      prev.alertType = 'success';
+      return prev;
+    });
+  };
+
+  clearAlertMessage = (type) => () => {
+    this.setState(prev => {
+      prev.showSuccessClarification = false;
+      prev.alertMessage = '';
+      prev.alertType = '';
+      return prev;
     });
   };
 
@@ -106,11 +143,28 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     this.closeRequestClarification();
   };
 
-  loadConsentGroups = (rThis) => {
-    $('.consent-group-panel-body').hide();
+  getProjectConsentGroups = () => {
+    ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('new') && urlParams.get('tab') === 'review') {
+        history.pushState({}, null, window.location.href.split('&')[0]);
+        this.successNotification('showSuccessClarification', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
+      }
+        this.setState(prev => {
+          prev.consentGroups = result.data.consentGroups;
+          prev.issue = result.data.issue;
+          return prev;
+        },() => {
+          this.collapseBtnAnimationListener();
+        });
+      }
+    );
+  };
+
+  collapseBtnAnimationListener() {
     $('.consent-accordion-toggle').on('click', function () {
-      var icon = $(this).children().first();
-      var body = $(this).parent().parent().next();
+      let icon = $(this).children().first();
+      let body = $(this).parent().parent().next();
       if (icon.hasClass("glyphicon-chevron-up")) {
         icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
         body.slideUp();
@@ -119,68 +173,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         body.show("slow");
       }
     });
-    $(".modal-add-button").on('click', function () {
-      $("#add-consent-document-modal").load(
-        component.serverURL + "/api/consent-group/upload-modal?"
-        + $.param({
-          issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent")
-        }),
-        function () {
-          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-          $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
-        }
-      ).dialog({
-        modal: true,
-        minWidth: 1000,
-        minHeight: 500,
-        closeOnEscape: true,
-        hide: { effect: "fadeOut", duration: 300 },
-        show: { effect: "fadeIn", duration: 300 },
-        dialogClass: "no-titlebar"
-      }).parent().removeClass("ui-widget-content");
-      $(".ui-dialog-titlebar").hide();
-    });
-
-    $(".loadConsentGroups").on('click', function () {
-      rThis.setState(prev => {
-        prev.showConfirmationModal = true;
-        prev.action = $(this).data("handler");
-        prev.issueKey = $(this).data("issue");
-        prev.consentKey = $(this).data("consent");
-        return prev;
-      });
-    });
-    $(".request-clarification").on('click', function () {
-      rThis.setState(prev => {
-        prev.showRequestClarification = true;
-        prev.issueKey = $(this).data("issue");
-        prev.consentKey = $(this).data("consent");
-        return prev;
-      });
-    });
-    // Display for 8 seconds a message indicating the submission of a new consent group.
-    // This is temporary until this page is moved to react.
-    // https://broadinstitute.atlassian.net/browse/BTRX-628
-    var url = new URLSearchParams(window.location.search);
-    if (url.get('tab') === 'consent-groups' && url.has('new')) {
-      $('#alert').fadeIn('slow', function () {
-        $('#alert').delay(15000).fadeOut();
-        history.pushState({}, null, window.location.href.split('&')[0]);
-      });
-    }
-  };
-
-  getProjectConsentGroups = () => {
-    ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
-        this.setState(prev => {
-          prev.consentGroups = result.data.consentGroups;
-          prev.issue = result.data.issue;
-          return prev;
-        });
-      }
-    )
-  };
+  }
 
   approve = (e, consentKey) => {
     e.stopPropagation();
@@ -213,6 +206,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   requestClarification = (e, consentKey) => {
+    console.log("request clarification");
     e.stopPropagation();
     this.setState(prev => {
       prev.showRequestClarification = true;
@@ -230,8 +224,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         parsedData.search = false;
         parsedData.remoteProp = false;
         parsedData.data= consent.attachments;
-        // parsedData.data= isEmpty(consent.attachments) ? null : consent.attachments;
-        parsedData.columns= columns;
+        parsedData.columns= columns(this);
         parsedData.keyField= 'id';
         parsedData.defaultSorted= defaultSorted;
         parsedData.fileName= '_';
@@ -250,18 +243,40 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     return parsedArray;
   };
 
+  redirect = (action) => {
+    const path = action === 'new' ? '/consent-group/new' : '/consent-group/use-existing';
+    this.props.history.push(path)
+  };
+
+  removeAttachedDocument(file) {
+    console.log("file to remove", file);
+    this.setState(prev => {
+      prev.fileIdToRemove = file.uuid;
+      prev.action = 'removeAttachment';
+      prev.showConfirmationModal = true;
+      return prev;
+    });
+  }
+
   render() {
     return (
       h(Fragment, {}, [
-        div({ dangerouslySetInnerHTML: { __html: this.state.content } }, []),
-        button({ className: "btn btn-default", style: { marginRight:'5px' } }, ['New Sample/Data Cohort']),
-        button({ className:"btn btn-default" }, ['New Sample/Data Cohort'] ),
+        AlertMessage({
+          msg: 'Please complete all required fields',
+          show: this.state.showSuccessClarification,
+          type: this.state.alertType
+        }),
+        button({
+          className: "btn btn-default",
+          style: { marginRight:'5px' },
+          onClick:() => this.redirect('new')
+        }, ['Add New Sample/Data Cohort']),
+        button({
+          className:"btn btn-default",
+          onClick: () => this.redirect('useExisting')
+        }, ['Use Existing Sample/Data Cohort'] ),
         h3({},['Sample/Data Cohort']),
         CollapsibleElements({
-          customHandlers: {
-            approve: this.approve,
-            reject: this.reject
-          },
           body: TableComponent,
           header: SampleDataCohortsCollapsibleHeader,
           accordion: false,

@@ -70,10 +70,10 @@ class NewConsentGroup extends Component {
   componentDidMount() {
     this.initDocuments();
     this.getUserSession();
-    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
+    ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
       resp => this.setState({ existingGroupNames: resp.data }));
 
-    SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
+    SampleCollections.getSampleCollections(component.sampleSearchUrl).then(
       resp => {
         const sampleCollections = resp.data.map(item => {
           return {
@@ -88,7 +88,7 @@ class NewConsentGroup extends Component {
   }
 
   getUserSession() {
-    User.getUserSession(this.props.getUserUrl).then(
+    User.getUserSession(component.getUserUrl).then(
       resp => this.setState({ user: resp.data })
     )
   }
@@ -103,7 +103,7 @@ class NewConsentGroup extends Component {
       this.changeSubmitState();
       let consentGroup = this.getConsentGroup();
       ConsentGroup.create(
-        this.props.createConsentGroupURL,
+        component.createConsentGroupURL,
         consentGroup,
         this.getConsentCollectionData(consentGroup.samples),
         this.state.files,
@@ -112,7 +112,7 @@ class NewConsentGroup extends Component {
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
           // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups&new"].join("/");
+          window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
           spinnerService.hideAll();
         }).catch(error => {
         console.error(error);
@@ -153,7 +153,7 @@ class NewConsentGroup extends Component {
     let consentCollectionLink = {};
     // consent collection link info
     consentCollectionLink.sampleCollectionId = sampleCollectionId;
-    consentCollectionLink.projectKey = this.props.projectKey;
+    consentCollectionLink.projectKey = component.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     consentCollectionLink.startDate = this.parseDate(this.state.generalDataFormData.startDate);
     consentCollectionLink.onGoingProcess = this.state.generalDataFormData.onGoingProcess ;
@@ -189,7 +189,7 @@ class NewConsentGroup extends Component {
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
    
-    extraProperties.push({ name: 'source', value: this.props.projectKey });
+    extraProperties.push({ name: 'source', value: component.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
     extraProperties.push({ name: 'consent', value: this.state.generalDataFormData.investigatorLastName });
@@ -468,7 +468,7 @@ class NewConsentGroup extends Component {
   }
 
   downloadFillablePDF = () => {
-    Files.downloadFillable(this.props.fillablePdfURL).then(response => {
+    Files.downloadFillable(component.fillablePdfURL).then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -509,22 +509,22 @@ class NewConsentGroup extends Component {
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage
+        loadingImage: component.loadingImage
       }, [
           NewConsentGroupGeneralData({
             title: "Sample/Data Cohort Info",
             currentStep: currentStep,
             user: this.state.user,
-            sampleSearchUrl: this.props.sampleSearchUrl,
+            sampleSearchUrl: component.sampleSearchUrl,
             updateForm: this.updateGeneralDataFormData,
             errors: this.state.errors,
             removeErrorMessage: this.removeErrorMessage,
-            projectKey: this.props.projectKey,
+            projectKey: component.projectKey,
             sampleCollectionList: this.state.sampleCollectionList,
             fileHandler: this.fileHandler,
             projectType: projectType,
             options: this.state.documentOptions,
-            fillablePdfURL: this.props.fillablePdfURL,
+            fillablePdfURL: component.fillablePdfURL,
             files: this.state.files,
             isConsentFormPresent: this.state.isConsentFormPresent
           }),
@@ -538,7 +538,7 @@ class NewConsentGroup extends Component {
             requireMta: this.state.linkFormData.requireMta,
             errors: this.state.errors,
             user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
+            searchUsersURL: component.searchUsersURL,
             updateInfoSecurityFormData: this.updateInfoSecurityFormData,
             showErrorInfoSecurity: this.state.showErrorInfoSecurity,
             generalError: this.state.generalError,

@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.Event
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
+import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.User
 

@@ -127,4 +127,13 @@ class FileHelperController extends AuthenticatedController{
             }
         }
     }
+
+    def deleteDocumentByUuid() {
+        if (params.uuid) {
+            StorageDocument document = queryService.findAttachmentByUuid(params.uuid)
+            storageProviderService.removeStorageDocument(document, getUser()?.displayName)
+        }
+        response.status = 200
+        render(['message': 'document deleted'] as JSON)
+    }
 }

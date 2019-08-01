@@ -21,15 +21,12 @@ export const CollapsibleElements = hh(class CollapsibleElements extends Componen
   };
 
   render() {
-    const activeKey = this.state.activeKey;
     return(
       div({},[
         this.props.data.map((element, idx) => {
           return h(Collapse,{
             key: idx,
             accordion: this.props.accordion,
-            onChange: this.onChange,
-            activeKey: activeKey,
             onItemClick: false
           }, [
             h(Panel, {

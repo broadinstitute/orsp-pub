@@ -3,21 +3,16 @@ import { button, hh, span, div, i, a } from 'react-hyperscript-helpers';
 import { handleRedirectToConsentGroup } from '../util/Utils';
 import '../components/Btn.css';
 
-const POINTER = { auto: { pointerEvents: 'auto' } };
+const POINTER = {
+  auto: { pointerEvents: 'auto' },
+  none: { pointerEvents: 'auto' }
+};
 
 export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isAdmin: false
     };
-  }
-
-  componentDidMount() {
-    this.setState( prev => {
-      prev.isAdmin = component.isAdmin;
-      return prev;
-    })
   }
 
   render() {
@@ -41,19 +36,19 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
         div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
-              isRendered: status === 'Pending' && this.state.isAdmin,
+              isRendered: status.toLowerCase() === 'pending' && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: POINTER.auto,
               onClick: (e) => approveHandler(e, projectKey)
             },['Approve']),
             button({
-              isRendered: status === 'Pending' && this.state.isAdmin,
+              isRendered: status.toLowerCase() === 'pending' && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: POINTER.auto,
               onClick: (e) => rejectHandler(e, projectKey)
             },['Reject']),
             button({
-              isRendered: status === 'Approved' && this.state.isAdmin,
+              isRendered: status.toLowerCase() === 'approved' && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: POINTER.auto,
               onClick: (e) => unlinkHandler(e, projectKey)
@@ -72,7 +67,7 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
 
             a({ 
               className: 'data-name',
-              style: POINTER.auto,
+              style: POINTER.none,
               href: handleRedirectToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
             },[
               projectKey + ': ' + summary

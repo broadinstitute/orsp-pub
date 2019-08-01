@@ -23,6 +23,7 @@ class UrlMappings {
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
+        '/api/files-helper/remove-attachment'(controller: 'fileHelper', action: 'deleteDocumentByUuid', method: 'DELETE')
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
         '/api/consent-group'(resource: 'newConsentGroup')
@@ -44,6 +45,10 @@ class UrlMappings {
         '/api/clarification-request/'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
+
+        '/consent-group/use-existing'(controller: 'authenticated', action: 'routeRedirect')
+        '/consent-group/new'(controller: 'authenticated', action: 'routeRedirect')
+
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
         '/api/addComment'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/commentsList'(controller: 'comments', action: 'getComments', method: 'GET')

@@ -199,6 +199,10 @@ export const DocumentHandler = {
 
   delete(url, documentId) {
     return axios.delete(`${url}?documentId=${documentId}`);
+  },
+
+  deleteAttachmentByUuid(fileUuid) {
+    return axios.delete(`${component.serverURL}/api/files-helper/remove-attachment?uuid=${fileUuid}`)
   }
 };
 
