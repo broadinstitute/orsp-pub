@@ -51,7 +51,6 @@ export const UrlConstants = {
   saveCommentUrl: context + '/api/comments/save',
   getCommentsUrl: context + '/api/comments/list',
   saveExtraPropsUrl: context + '/api/project/extra-properties',
-  // sessionUserUrl: context + '/api/user/authenticated',
   emailDulUrl: context + '/api/dul-email-notification',
   editUserRoleUrl: context + '/api/edit-user-role',
   getAllUsersUrl: context + '/api/get-users',
