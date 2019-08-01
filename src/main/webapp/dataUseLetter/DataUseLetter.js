@@ -110,7 +110,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   initFormData = () => {
     const uuid = window.location.href.split('id=')[1];
-    ConsentGroup.getConsentGroupByUUID(component.consentGroupUrl, uuid).then(consentGroup => {
+    ConsentGroup.getConsentGroupByUUID(uuid).then(consentGroup => {
       this.setState(prev => {
         prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
         prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
@@ -164,7 +164,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(component.sourceDiseases, query)
+      Search.getSourceDiseases(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
@@ -382,10 +382,10 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
-      DUL.updateDUL(form, component.serverURL).then(resp => {
+      DUL.updateDUL(form).then(resp => {
         this.createRestriction();
-        DUL.createDulPdf({ uid: id }, component.serverURL).then(() => {
-          window.location.href = component.serverURL + "/dataUseLetter/show?id=" + id;
+        DUL.createDulPdf({ uid: id }).then(() => {
+          window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
         })
@@ -557,7 +557,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   createRestriction() {
     let restriction = this.getRestriction();
-    DataUse.createRestriction(component.serverURL, restriction);
+    DataUse.createRestriction(restriction);
   }
 
   getDiseases(diseases) {

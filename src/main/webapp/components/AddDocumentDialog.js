@@ -66,7 +66,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let files = [file];
         if(this.props.projectKey !== undefined) {
           spinnerService.showAll();
-          Files.upload(component.serverURL, files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
+          Files.upload(files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
             spinnerService.hideAll();
             this.setState(prev => {

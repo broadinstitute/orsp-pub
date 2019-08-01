@@ -25,3 +25,6 @@ See [Dev Notes](docs/DEVNOTES.md)
 
 ### Deployment
 See [Deployment](docs/DEPLOY.md)
+
+### Cloud Deployment
+See [Deployment](docs/CLOUD_DEPLOY.md)
