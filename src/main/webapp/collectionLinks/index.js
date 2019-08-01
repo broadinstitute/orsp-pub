@@ -11,7 +11,6 @@ ReactDOM.render(
       cclSummariesUrl = {component.cclSummariesUrl}
       consentKeySearchUrl = {component.consentKeySearchUrl}
       projectKeySearchUrl = {component.projectKeySearchUrl}
-      sampleSearchUrl = {component.sampleSearchUrl}
     />,
   </ErrorHandler>,
   document.getElementById('app')

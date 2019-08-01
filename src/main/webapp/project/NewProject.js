@@ -62,7 +62,7 @@ class NewProject extends Component {
   }
 
   componentDidMount() {
-    User.getUserSession(this.props.getUserUrl).then(resp =>
+    User.getUserSession().then(resp =>
       this.setState({ user: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -84,13 +84,12 @@ class NewProject extends Component {
     if (this.validateForm()) {
       this.changeStateSubmitButton();
       Project.createProject(
-        this.props.createProjectURL, 
         this.getProject(),
         this.state.files,
         this.state.user.displayName,
         this.state.user.userName
         ).then(resp => {
-           window.location.href = [this.props.serverURL, "project", "main","?projectKey=" + resp.data.message.projectKey + "&tab=review&new"].join("/");
+           window.location.href = [component.serverURL, "project", "main","?projectKey=" + resp.data.message.projectKey + "&tab=review&new"].join("/");
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
@@ -389,13 +388,11 @@ class NewProject extends Component {
         submitHandler: this.submitNewProject,
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage,
       }, [
           NewProjectGeneralData({
             title: "Project Details",
             currentStep: currentStep,
             user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
             updateForm: this.updateGeneralDataFormData,
             errors: this.state.errors,
             removeErrorMessage: this.removeErrorMessage

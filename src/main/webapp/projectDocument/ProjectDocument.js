@@ -31,12 +31,12 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
-    Project.getProject(component.projectUrl, component.projectKey).then(
+    Project.getProject(component.projectKey).then(
       issue => {
       this.props.initStatusBoxInfo(issue.data);
     });
-    DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
-      User.getUserSession(component.getUserUrl).then(user => {
+        DocumentHandler.attachedDocuments(component.projectKey).then(resp => {
+          User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
             prev.user = user.data;
@@ -52,7 +52,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   approveDocument = (uuid) => {
-    DocumentHandler.approveDocument(component.approveDocumentUrl, uuid).then(resp => {
+    DocumentHandler.approveDocument(uuid).then(resp => {
         this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
@@ -61,7 +61,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   rejectDocument = (uuid) => {
-    DocumentHandler.rejectDocument(component.serverURL, uuid).then(resp => {
+    DocumentHandler.rejectDocument(uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});

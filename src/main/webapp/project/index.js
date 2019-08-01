@@ -6,14 +6,7 @@ import ErrorHandler from '../components/ErrorHandler';
 
 ReactDOM.render(
   <ErrorHandler>
-    <NewProject
-        getUserUrl = {component.getUserUrl}
-        searchUsersURL = {component.searchUsersURL}
-        attachDocumentsURL = {component.attachDocumentsURL}
-        createProjectURL = {component.createProjectURL}
-        serverURL = {component.serverURL}
-        loadingImage = {component.loadingImage}
-     />
+    <NewProject/>
   </ErrorHandler>,    
     document.getElementById('project')
 );

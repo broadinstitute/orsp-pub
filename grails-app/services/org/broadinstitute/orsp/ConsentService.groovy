@@ -499,7 +499,7 @@ class ConsentService implements Status {
 
     LinkedHashMap findProjectConsentGroups(String projectKey) throws ConsentException {
         if (StringUtils.isNotEmpty(projectKey)) {
-            Issue issue = queryService.findByKey(projectKey) //<- convertir a sql y manejar sus excepciones, por ej projectkey = null
+            Issue issue = queryService.findByKey(projectKey)
             Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
             Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
             Collection consentGroups = queryService.findByKeys(collectionLinksMap)

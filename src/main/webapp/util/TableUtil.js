@@ -1,5 +1,6 @@
 import { isEmpty } from "./Utils";
 import { format } from 'date-fns';
+import { UrlConstants } from "./UrlConstants";
 
 export const EXPORT_FILE = {
   XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
@@ -64,7 +65,7 @@ function parseDataElements(el, key) {
 
 export const formatUrlDocument = (file) => {
   return {
-    href: `${component.downloadDocumentUrl}?uuid=${file.uuid}`,
+    href: `${UrlConstants.downloadDocumentUrl}?uuid=${file.uuid}`,
     target: '_blank',
     title: file.fileName
   }

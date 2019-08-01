@@ -1,50 +1,213 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# See https://github.com/grails-guides/grails-on-circleci-basics/blob/master/complete/.circleci/config.yml
+version: 2.1
 
-version: 2
+executors:
+  cloud-sdk:
+    docker:
+      - image: google/cloud-sdk
+commands:
+  build-env:
+    description: "Build/push image to GCR"
+    parameters:
+      sa_key_name:
+        type: string
+        default: "GCLOUD_ORSP_DEV"
+      env:
+        type: string
+        default: "dev"
+      repo_name:
+        type: string
+        default: ${CIRCLE_PROJECT_REPONAME}
+      repo_branch:
+        type: string
+        default: ${CIRCLE_BRANCH}
+      google_project:
+        type: string
+        default: "orsp-dev"
+    steps:
+      - run:
+          name: Export env vars for substitution. $BASH_ENV is sourced before each step
+          command: |
+            echo 'export COMMIT="`git rev-parse --short HEAD`"' >> $BASH_ENV
+            echo 'export ENV="<< parameters.env >>"' >> $BASH_ENV
+            echo 'export REPO_NAME="<< parameters.repo_name >>"' >> $BASH_ENV
+            echo 'export REPO_BRANCH="<< parameters.repo_branch >>"' >> $BASH_ENV
+            echo 'export GOOGLE_PROJECT="<< parameters.google_project >>"' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo "$<< parameters.sa_key_name >>" > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project ${GOOGLE_PROJECT}
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Docker build/push to GCR
+          command: |
+            docker build --quiet -t ${REPO_NAME} --build-arg build_env=${ENV} .
+            docker tag ${REPO_NAME} gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+            docker push gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
+            gcloud container images add-tag gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT} gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${ENV} -q
+            gcloud container images add-tag gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT} gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:latest -q
+  deploy-env:
+    description: "Deploy commit to GCR"
+    parameters:
+      sa_key_name:
+        type: string
+        default: "GCLOUD_ORSP_DEV"
+      env:
+        type: string
+        default: "dev"
+      namespace:
+        type: string
+        default: "orsp"
+      host_name:
+        type: string
+        default: "ui.dsp-orsp-dev.broadinstitute.org"
+      host_ip:
+        type: string
+        default: "orsp-pub-dev-ip"
+      tls_cert_secret:
+        type: string
+        default: "wildcard.dsp-orsp-dev.broadinstitute.org"
+      orsp_config_map:
+        type: string
+        default: "orsp-config-dev"       
+      repo_name:
+        type: string
+        default: "orsp-pub"
+      google_project:
+        type: string
+        default: "orsp-dev"
+      google_zone:
+        type: string
+        default: "us-central1-a"
+      google_cluster:
+        type: string
+        default: "orsp-pub-dev"
+      commit:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Export env vars for substitution. $BASH_ENV is sourced before each step
+          command: |
+            echo 'export NAMESPACE="<< parameters.namespace >>"' >> $BASH_ENV
+            echo 'export HOST_NAME="<< parameters.host_name >>"' >> $BASH_ENV
+            echo 'export HOST_IP="<< parameters.host_ip >>"' >> $BASH_ENV
+            echo 'export TLS_CERT_SECRET="<< parameters.tls_cert_secret >>"' >> $BASH_ENV
+            echo 'export ORSP_CONFIG_MAP="<< parameters.orsp_config_map >>"' >> $BASH_ENV
+            echo 'export REPO_NAME="<< parameters.repo_name >>"' >> $BASH_ENV
+            echo 'export GOOGLE_PROJECT="<< parameters.google_project >>"' >> $BASH_ENV
+            echo 'export GOOGLE_ZONE="<< parameters.google_zone >>"' >> $BASH_ENV
+            echo 'export GOOGLE_CLUSTER="<< parameters.google_cluster >>"' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo "$<< parameters.sa_key_name >>" > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project ${GOOGLE_PROJECT}
+            gcloud --quiet config set compute/zone ${GOOGLE_ZONE}
+            gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER}
+      - run:
+          name: Deploy to Kubernetes
+          no_output_timeout: 30m
+          command: |
+            envsubst < ${HOME}/project/conf/k8s.yml > ${HOME}/patched_k8s.yml
+            envsubst < ${HOME}/project/conf/service.yaml > ${HOME}/patched_service.yml
+            envsubst < ${HOME}/project/conf/ingress.yaml > ${HOME}/patched_ingress.yml
+            cat ${HOME}/patched_k8s.yml
+            kubectl config set-context --current --namespace=${NAMESPACE}
+            kubectl apply -f ${HOME}/patched_k8s.yml
+            kubectl apply -f ${HOME}/patched_service.yml
+            kubectl apply -f ${HOME}/patched_ingress.yml
+            kubectl rollout status deployment/${REPO_NAME} 
+
 jobs:
-  gradle_test:
-    working_directory: ~/repo
-    docker:
-    - image: circleci/openjdk:8-jdk
-    environment:
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+  deploy-dev:
+    executor: cloud-sdk
     steps:
       - checkout
-      - restore_cache:
-                key: grailsapp-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}
-      - run: chmod +x gradlew
-      - run: ./gradlew --console=plain testClasses
-      - run: ./gradlew --console=plain integrationTestClasses
-      - save_cache:
-                paths:
-                  - ~/.gradle
-                key: grailsapp-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}
-      # generate test configs
-      - run: ./scripts/test_ci_config.sh
-      # run tests!
-      - run: ./gradlew clean cloverGenerateReport
-      - store_artifacts:
-          path: build/reports
-          destination: reports
-      - store_test_results:
-          path: build/test-results
-  ui_test:
-    working_directory: ~/repo
-    docker:
-    - image: circleci/node:10
-    environment:
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+      - build-env:
+          sa_key_name: "GCLOUD_ORSP_DEV"
+          env: "dev"
+          repo_name: "orsp-pub"
+          google_project: "orsp-dev"
+      - deploy-env:
+          sa_key_name: "GCLOUD_ORSP_DEV"
+          env: "dev"
+          namespace: "orsp"
+          repo_name: "orsp-pub"
+          google_project: "orsp-dev"
+          google_zone: "us-central1-a"
+          google_cluster: "orsp-pub-dev"
+          commit: ${COMMIT}
+          host_name: "ui.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-pub-dev-ip"
+          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
+          orsp_config_map: "orsp-config-dev"
+  deploy-staging:
+    executor: cloud-sdk
     steps:
       - checkout
-      - run: npm install
-      - run: npm test
+      - build-env:
+          sa_key_name: "GCLOUD_ORSP_DEV"
+          env: "prod"
+          repo_name: "orsp-pub"
+          google_project: "orsp-dev"
+      - deploy-env:
+          sa_key_name: "GCLOUD_ORSP_DEV"
+          env: "prod"
+          namespace: "orsp"
+          repo_name: "orsp-pub"
+          google_project: "orsp-dev"
+          google_zone: "us-central1-a"
+          google_cluster: "orsp-pub-staging"
+          commit: ${COMMIT}
+          host_name: "staging.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-pub-staging-ip"
+          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
+          orsp_config_map: "orsp-config"
+  deploy-prod:
+    executor: cloud-sdk
+    steps:
+      - checkout
+      - build-env:
+          sa_key_name: "GCLOUD_ORSP_DEV"
+          env: "prod"
+          repo_name: "orsp-pub"
+          google_project: "orsp-dev"
+      - deploy-env:
+          sa_key_name: "GCLOUD_ORSP_DEV"
+          env: "prod"
+          namespace: "orsp"
+          repo_name: "orsp-pub"
+          google_project: "orsp-dev"
+          google_zone: "us-central1-a"
+          google_cluster: "orsp-pub-prod"
+          commit: ${COMMIT}
+          host_name: "prod.dsp-orsp-dev.broadinstitute.org"
+          host_ip: "orsp-pub-prod-ip"
+          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
+          orsp_config_map: "orsp-config"
+
 workflows:
-    version: 2
-    gradle_and_ui_test:
-        jobs:
-        - gradle_test
-        - ui_test
+  version: 2
+  build-deploy:
+    jobs:
+      - deploy-dev:
+          filters:
+            branches:
+              only: feature
+      - deploy-staging:
+          filters:
+            branches:
+              only: staging
+      - deploy-prod:
+          filters:
+            branches:
+              only: master

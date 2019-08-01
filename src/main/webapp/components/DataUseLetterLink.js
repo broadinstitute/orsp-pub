@@ -35,7 +35,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)) {
       this.setState({ alertMessage: '', collaboratorEmail: '', showAlert: false });
-      ConsentGroup.sendEmailDul(this.props.emailUrl, this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then(resp => {
+      ConsentGroup.sendEmailDul(this.props.projectKey, this.props.userName, this.state.collaboratorEmail).then(resp => {
         setTimeout(this.removeAlertMessage, 5000, null);
         this.setState(prev => {
           prev.alertType = 'success';
@@ -62,7 +62,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       consentGroupKey: this.props.projectKey,
       creator: this.props.userName
     };
-    DUL.generateRedirectLink(data, component.serverURL).then(resp => {
+    DUL.generateRedirectLink(data).then(resp => {
       navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
       this.successTimeAlert();
     }).catch(error => {

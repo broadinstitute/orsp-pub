@@ -1,5 +1,3 @@
-import org.broadinstitute.orsp.deploy.Deploy
-import org.broadinstitute.orsp.deploy.RenderConfigs
 
 buildscript {
     repositories {
@@ -62,7 +60,7 @@ dependencies {
     }
 
     // When running as a standalone jar, this dependency needs to be `compile`.
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.springframework.boot:spring-boot-starter-tomcat"
     // compile "org.springframework.boot:spring-boot-starter-tomcat"
 
     compile "org.grails:grails-web-boot"
@@ -117,6 +115,9 @@ dependencies {
 
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
+    // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json
+    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.4.15'
+
     compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
     compile 'org.grails.plugins:gorm-logical-delete:2.0.0.M2'
@@ -185,9 +186,10 @@ task jest(type: YarnTask, dependsOn: 'yarn') {
 }
 
 // Turning off minify. See https://github.com/bertramdev/asset-pipeline/issues/147
+// 
 assets {
-    minifyJs = false
-    minifyCss = true
+  minifyJs = false
+  minifyCss = true
 }
 
 war {
@@ -209,38 +211,6 @@ integrationTest {
 
 task ('cleanTest') {
     dependsOn clean, test, integrationTest
-}
-
-/**
- * See /docs/DEPLOY.md for configuration management
- */
-task renderConfigs(type: RenderConfigs) {
-    local = false
-    projectHome = projectDir
-    vault = System.getenv('VAULT_ADDR')
-}
-
-/**
- * See /docs/DEPLOY.md for documentation
- */
-task deploy(type: Deploy) {
-    projectHome = projectDir
-    env = System.getProperty("grails.env") ?: Deploy.DeployEnv.dev.name()
-    if (env.equalsIgnoreCase("development")) { env = Deploy.DeployEnv.dev.name()}
-    if (!Deploy.DeployEnv.values()*.name().contains(env.toLowerCase())) {
-        throw new InvalidUserDataException("Only 'dev' or 'prod' environments are supported. Provided value: $env")
-    }
-    // all applications are deployed to the same host at present so each env
-    // is deployed as a separate war in its own application path context
-    appPath = env.equals(Deploy.DeployEnv.prod.name()) ? '/' : "/${env}"
-    host = 'https://orsp.broadinstitute.org' // Overrideable option
-    user = ''   // Required option
-    pass = ''   // Required option
-    dependsOn renderConfigs
-    dependsOn webpackProd
-    dependsOn war
-    tasks.findByName('war').mustRunAfter webpackProd
-    tasks.findByName('war').mustRunAfter renderConfigs
 }
 
 // See https://github.com/bmuschko/gradle-clover-plugin for configuration options

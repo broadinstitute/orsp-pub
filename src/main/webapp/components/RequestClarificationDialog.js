@@ -20,7 +20,6 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       clarification: '',
       showAlert: false,
       pm: [{key:''}],
-      submit: false
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
   }
@@ -65,7 +64,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     })
     if (this.validateClarification()) {
       spinnerService.showAll();
-      ClarificationRequest.sendNewClarification(this.props.clarificationUrl, this.state.clarification, this.props.issueKey, this.state.pm[0].key, this.props.consentKey).
+      ClarificationRequest.sendNewClarification(this.state.clarification, this.props.issueKey, this.state.pm[0].key, this.props.consentKey).
       then(resp => {
         spinnerService.hideAll();
         this.props.successClarification('showSuccessClarification', 'Request clarification sent.', 5000);
@@ -103,7 +102,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(component.searchUsersURL, query)
+      Search.getMatchingQuery(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {

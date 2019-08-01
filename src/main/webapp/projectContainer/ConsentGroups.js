@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { div, hh, h, hr, h3, a, button } from 'react-hyperscript-helpers';
-import { ConsentGroup, DocumentHandler, ProjectMigration } from '../util/ajax';
+import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
+import { ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
@@ -87,16 +87,15 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   getProjectConsentGroups = () => {
     ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
-        this.handleSuccessNotification();
-        this.setState(prev => {
-          prev.consentGroups = result.data.consentGroups;
-          prev.issue = result.data.issue;
-          return prev;
-        },() => {
-          this.collapseBtnAnimationListener();
-        });
-      }
-    );
+      this.handleSuccessNotification();
+      this.setState(prev => {
+        prev.consentGroups = result.data.consentGroups;
+        prev.issue = result.data.issue;
+        return prev;
+      },() => {
+        this.collapseBtnAnimationListener();
+      });
+    });
   };
 
   closeConfirmationModal = () => {
@@ -113,7 +112,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
-    } else if (this.state.action === 'removeAttachment') {
+    } else if (this.state.action === 'remove') {
       DocumentHandler.deleteAttachmentByUuid(this.state.fileIdToRemove).
       then(resp => {
         this.getProjectConsentGroups();
@@ -244,7 +243,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   removeAttachedDocument(file) {
     this.setState(prev => {
       prev.fileIdToRemove = file.uuid;
-      prev.action = 'removeAttachment';
+      prev.action = 'remove';
       prev.showConfirmationModal = true;
       return prev;
     });

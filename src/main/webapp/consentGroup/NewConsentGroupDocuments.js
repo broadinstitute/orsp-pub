@@ -120,7 +120,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
-              downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
               reviewFlow: false,
               pagination: false
