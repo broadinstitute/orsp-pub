@@ -93,6 +93,7 @@ class UrlMappings {
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
         '/api/submissions/add-new'(controller: 'submission', action: 'index')
+        '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
