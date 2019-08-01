@@ -1,12 +1,12 @@
 import React from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { UrlConstants } from "./UrlConstants";
 
 class ProjectAutocomplete extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             onChange: props.onChange,
-            searchUrl: props.searchUrl,
             allowNew: false,
             isLoading: false,
             multiple: false,
@@ -48,7 +48,7 @@ class ProjectAutocomplete extends React.Component {
                     onChange={this.state.onChange}
                     onSearch={query => {
                         this.setState(() => ({isLoading: true}));
-                        fetch(this.state.searchUrl + "?term=" + query, { credentials: 'include' })
+                        fetch(UrlConstants.projectKeySearchUrl + "?term=" + query, { credentials: 'include' })
                             .then(resp => resp.json())
                             .then(json => this.setState(() => ({
                                 isLoading: false,

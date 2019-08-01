@@ -92,7 +92,7 @@ export const Wizard = hh(class Wizard extends Component {
             button({ className: "btn buttonPrimary floatRight", onClick: this.submitHandler, isRendered: this.state.readyToSubmit, disabled: this.props.disabledSubmit}, ["Submit to ORSP"]),
           ]),
           h(Spinner, {
-            name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+            name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
           })
         ])
       ])

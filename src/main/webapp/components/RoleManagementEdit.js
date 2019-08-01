@@ -61,7 +61,7 @@ export const RoleManagementEdit = hh(class RoleManagementEdit extends Component 
   submit = () => {
     this.setState({ disableClearButton: true, disableSubmitButton: true });
     const rolesList = Object.keys(this.state.roles).filter(it => { return this.state.roles[it] });
-    User.editUserRole(component.serverURL, this.props.userData.id, rolesList).then( () => {
+    User.editUserRole(this.props.userData.id, rolesList).then( () => {
       let response = createObjectCopy(this.state.userData);
       response.roles = rolesList;
       this.props.closeOnSubmit(response);

@@ -202,7 +202,7 @@ workflows:
       - deploy-dev:
           filters:
             branches:
-              only: BTRX-666-dgil
+              only: feature
       - deploy-staging:
           filters:
             branches:

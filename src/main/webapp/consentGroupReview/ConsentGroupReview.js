@@ -115,7 +115,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   componentDidMount() {
     spinnerService.showAll();
-    ConsentGroup.getConsentGroupNames(component.consentNamesSearchURL).then(
+    ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -132,10 +132,10 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     let formData = {};
     let sampleCollectionList = [];
 
-    ConsentGroup.getConsentGroup(component.consentGroupReviewUrl, component.consentKey).then(
+    ConsentGroup.getConsentGroup(component.consentKey).then(
       element => {
         let sampleCollections = [];
-        SampleCollections.getSampleCollections(component.sampleSearchUrl).then(
+        SampleCollections.getSampleCollections().then(
           resp => {
             sampleCollections = resp.data.map(item => {
               return {
@@ -219,7 +219,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   getReviewSuggestions = () => {
-    Review.getSuggestions(component.serverURL, component.consentKey).then(data => {
+    Review.getSuggestions(component.consentKey).then(data => {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
@@ -300,11 +300,11 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true });
     const data = { approvalStatus: "Approved" };
-    ConsentGroup.approve(component.approveConsentGroupUrl, component.consentKey, data).then(
+    ConsentGroup.approve(component.consentKey, data).then(
       () => {
         if (this.state.reviewSuggestion) {
           let consentGroup = this.getConsentGroup();
-          ConsentGroup.updateConsent(component.updateConsentUrl, consentGroup, component.consentKey).then(resp => {
+          ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
             this.removeEdits();
           }).catch(error => {
             console.error(error);
@@ -316,7 +316,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.approveInfoDialog = false;
           return prev;
         }, () => {      
-          Project.getProject(component.projectUrl, component.consentKey).then(
+          Project.getProject(component.consentKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
             })
@@ -327,7 +327,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   rejectConsentGroup() {
     spinnerService.showAll();
 
-    ConsentGroup.rejectConsent(component.rejectConsentUrl, component.consentKey).then(resp => {
+    ConsentGroup.rejectConsent(component.consentKey).then(resp => {
       window.location.href = this.getRedirectUrl(component.projectKey);
       spinnerService.hideAll();
     }).catch(error => {
@@ -346,7 +346,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     spinnerService.showAll();
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
-    ConsentGroup.updateConsent(component.updateConsentUrl, consentGroup, component.consentKey).then(resp => {
+    ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
       this.setState(prev => {
         prev.approveDialog = false;
         return prev;
@@ -427,12 +427,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         let institutionalSourceArray = this.state.formData.instSources;
         let newFormData = Object.assign({}, this.state.formData);
         newFormData.instSources = institutionalSourceArray;
-        User.getUserSession(component.getUserUrl).then(resp => {
+        User.getUserSession().then(resp => {
           data.projectKey = component.consentKey;
           newFormData.editCreator = resp.data.userName;
           data.suggestions = JSON.stringify(newFormData);
           if (this.state.reviewSuggestion) {
-            Review.updateReview(component.serverURL, component.consentKey, data).then(() => {
+            Review.updateReview(component.consentKey, data).then(() => {
               this.getReviewSuggestions();
               this.props.updateContent();
             }).catch(error => {
@@ -445,7 +445,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               });
             });
           } else {
-            Review.submitReview(component.serverURL, data).then(() => {
+            Review.submitReview(data).then(() => {
               this.getReviewSuggestions();
               this.props.updateContent();
             }).catch(error => {
@@ -561,7 +561,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   removeEdits = (type) => {
-    Review.deleteSuggestions(component.discardReviewUrl, component.consentKey, type).then(
+    Review.deleteSuggestions(component.consentKey, type).then(
       resp => {
         this.init();
         spinnerService.hideAll();
@@ -703,7 +703,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   unlinkSampleCollection = () => {
-    ConsentGroup.unlinkSampleCollection(component.serverURL, this.state.unlinkDataRow.id).then(
+    ConsentGroup.unlinkSampleCollection(this.state.unlinkDataRow.id).then(
       () => {
         this.toggleUnlinkDialog();
         this.init()
@@ -751,10 +751,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: component.consentKey,
-          user: component.user,
-          emailUrl: component.emailUrl,
-          userName: component.userName,
-          clarificationUrl: component.clarificationUrl,
           successClarification: this.successClarification
         }),
         ConfirmationDialog({
@@ -901,7 +897,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             isAdmin: this.state.isAdmin,
             data: this.state.current.sampleCollectionLinks,
             handleRedirectToInfoLink: this.handleRedirectToInfoLink,
-            serverURL: component.serverURL,
             unlinkSampleCollection: this.toggleUnlinkDialog,
             sizePerPage: 10,
             paginationSize: 10

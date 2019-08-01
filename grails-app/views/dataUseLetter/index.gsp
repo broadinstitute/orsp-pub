@@ -11,7 +11,8 @@
             serverURL: "${webRequest.baseUrl}",
             consentGroupUrl:  "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
             projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-            sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}"
+            sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
+            contextPath: "${request.contextPath}"
         };
     </script>
 
