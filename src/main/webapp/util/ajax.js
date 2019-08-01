@@ -261,6 +261,10 @@ export const DUL = {
 
   createDulPdf(uid, serverURL) {
     return axios.post(serverURL + '/api/dataUseLetter/pdf', uid)
+  },
+
+  getDULInfo(uid) {
+    return axios.get(component.serverURL + '/api/dataUseLetter?id=' + uid)
   }
 };
 

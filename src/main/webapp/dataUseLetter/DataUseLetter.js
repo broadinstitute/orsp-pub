@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
+import { hh, h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
 
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -16,9 +16,9 @@ import { MultiSelect } from "../components/MultiSelect";
 import { Search } from "../util/ajax";
 import { DataUse } from "../util/ajax";
 import _ from 'lodash';
+import { isEmpty } from "../util/Utils";
 
-
-class DataUseLetter extends Component {
+export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   constructor(props) {
     super(props);
@@ -110,7 +110,7 @@ class DataUseLetter extends Component {
 
   initFormData = () => {
     const uuid = window.location.href.split('id=')[1];
-    ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
+    ConsentGroup.getConsentGroupByUUID(component.consentGroupUrl, uuid).then(consentGroup => {
       this.setState(prev => {
         prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
         prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
@@ -119,6 +119,13 @@ class DataUseLetter extends Component {
         prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
         prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
         prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
+        if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
+          let dulInfo = JSON.parse(this.props.dul.dulInfo);
+          prev.formData.onGoingProcess = dulInfo.onGoingProcess;
+          prev.formData.startDate = this.parseDate(dulInfo.startDate);
+          prev.formData.endDate = this.parseDate(dulInfo.endDate);
+          prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
+        }        
         return prev;
       });
     }).catch(error => {
@@ -157,7 +164,7 @@ class DataUseLetter extends Component {
 
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(this.props.sourceDiseases, query)
+      Search.getMatchingQuery(component.sourceDiseases, query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
@@ -224,8 +231,6 @@ class DataUseLetter extends Component {
       prev.formData[name] = checked;
       if (name === 'ethnic' && checked === false) {
         prev.formData['ethnicSpecify'] = '';
-      } else if (name === 'onGoingProcess' && checked === true) {
-        prev.formData['endDate'] = null;
       }
       return prev;
     }, () => {
@@ -377,10 +382,10 @@ class DataUseLetter extends Component {
       spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
-      DUL.updateDUL(form, this.props.serverUrl).then(resp => {
+      DUL.updateDUL(form, component.serverUrl).then(resp => {
         this.createRestriction();
-        DUL.createDulPdf({ uid: id }, this.props.serverUrl).then(() => {
-          window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
+        DUL.createDulPdf({ uid: id }, component.serverUrl).then(() => {
+          window.location.href = component.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
         })
@@ -423,13 +428,6 @@ class DataUseLetter extends Component {
     if (this.isEmpty(this.state.formData.principalInvestigator)) {
       errorForm = true;
       errorPi = true;
-    }
-
-    // Date Range Validations
-    if (this.state.formData.startDate === null
-      || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) {
-      errorForm = true;
-      errorSampleCollectionDateRange = true;
     }
 
     // Primary Restrictions validations
@@ -559,7 +557,7 @@ class DataUseLetter extends Component {
 
   createRestriction() {
     let restriction = this.getRestriction();
-    DataUse.createRestriction(this.props.serverUrl, restriction);
+    DataUse.createRestriction(component.serverUrl, restriction);
   }
 
   getDiseases(diseases) {
@@ -714,21 +712,17 @@ class DataUseLetter extends Component {
                   label: "Start Date",
                   onChange: this.handleDatePickerChange,
                   placeholder: "Enter Start Date",
-                  maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null,
-                  error: this.state.errors.errorSampleCollectionDateRange,
-                  errorMessage: 'Required Fields'
+                  disabled: true
                 })
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 InputFieldDatePicker({
-                  startDate: this.state.formData.startDate,
                   name: "endDate",
                   label: "End Date",
                   selected: this.state.formData.endDate,
                   onChange: this.handleDatePickerChange,
                   placeholder: "Enter End Date",
-                  disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
-                  minDate: this.state.formData.startDate
+                  disabled: true
                 })
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
@@ -737,7 +731,8 @@ class DataUseLetter extends Component {
                   name: "onGoingProcess",
                   onChange: this.handleCheck,
                   label: "Ongoing Process",
-                  defaultChecked: this.state.formData.onGoingProcess
+                  checked: this.state.formData.onGoingProcess,
+                  readOnly: true
                 })
               ])
             ])
@@ -962,12 +957,6 @@ class DataUseLetter extends Component {
               "Information required for data sharing via a repository"
             ]),
 
-            // If SC Date Range still not answered (OK)
-            AlertMessage({
-              msg: "Please enter sample collection date range above before proceeding.",
-              show: this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)
-            }),
-
             // If SC Date Range starts before 1/25/2015 (OK)
             div({ isRendered: !(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) }, [
               div({ isRendered: this.startsBefore("1/25/2015") }, [
@@ -1171,11 +1160,10 @@ class DataUseLetter extends Component {
           ])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: this.props.loadingImage
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
   }
-}
-
+});
 export default DataUseLetter;

@@ -10,6 +10,7 @@ import { validateEmail } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from './Spinner';
 import './Documents.css';
+import { isEmpty } from '../util/Utils';
 
 export const DataUseLetter = hh(class DataUseLetter extends Component {
 
@@ -22,10 +23,13 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       alertType: 'success',
       invalidEmail: false,
       collaboratorEmail: '',
-      repositoryDeposition: '',
-      startDate: null,
-      endDate: null,
-      onGoingProcess: false
+      disableShareableLink: true,
+      formData: {
+        repositoryDeposition: '',
+        startDate: null,
+        endDate: null,
+        onGoingProcess: false
+      }      
     };
   }
 
@@ -67,7 +71,8 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   getShareableLink = () => {
     let data = {
       consentGroupKey: this.props.projectKey,
-      creator: this.props.userName
+      creator: this.props.userName,
+      dulInfo: JSON.stringify(this.state.formData)
     };
     DUL.generateRedirectLink(data, component.serverURL).then(resp => {
       navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
@@ -119,69 +124,44 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     if (value === 'true') {
       value = true;
     } else if (value === 'false') {
-      if (field === 'repositoryDeposition') {
-        this.setState(prev => {
-          prev.formData['GSRAvailability'] = '';
-          prev.formData['dataSubmissionProhibition'] = '';
-          prev.formData['repositoryType'] = '';
-          prev.formData['dataDepositionDescribed'] = '';
-          prev.formData['dataUseConsent'] = '';
-          return prev;
-        });
-      } else if (field == 'dataUseConsent' || field == 'dataDepositionDescribed' || field == 'repositoryType') {
-        this.setState(prev => {
-          if (field === 'dataUseConsent') {
-            prev.formData['dataDepositionDescribed'] = '';
-            prev.formData['repositoryType'] = '';
-          } else if (field === 'dataDepositionDescribed') {
-            prev.formData['repositoryType'] = '';
-          }
-          return prev;
-        });
-      }
+      value = false;
     }
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
-    }, () => {
-      if (this.state.submit) {
-        this.validateForm();
-      }
-    });
+    }, () => { this.showShareableLink() });
   };
 
   handleCheck = (e) => {
     const { name = '', checked = '' } = e.target;
     this.setState(prev => {
       prev.formData[name] = checked;
-      if (name === 'ethnic' && checked === false) {
-        prev.formData['ethnicSpecify'] = '';
-      } else if (name === 'onGoingProcess' && checked === true) {
+      if (checked) {
         prev.formData['endDate'] = null;
       }
       return prev;
-    }, () => {
-      if (this.state.submit) {
-        this.validateForm();
-      }
-    });
+    }, () => { this.showShareableLink() });
   };
 
   handleDatePickerChange = (id) => (date) => {
     this.setState(prev => {
-      prev[id] = date;
+      prev.formData[id] = date;
       return prev;
-    }, () => {
-      if (this.state.submit) {
-        this.validateForm();
-      }
-    });
+    }, () => { this.showShareableLink() });
   };
 
-  parseDate(date) {
-    if (date !== null) {
-      return (new Date(date)).toLocaleDateString('en-US');
+  showShareableLink() {
+    // Date Range Validations
+    let disableShareableLink = false;
+    if (this.state.formData.startDate === null
+      || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)
+      || isEmpty(this.state.formData.repositoryDeposition)) {
+        disableShareableLink = true;
     }
+    this.setState(prev => {
+      prev.disableShareableLink = disableShareableLink;
+      return prev;
+    });
   }
 
   render(){
@@ -200,9 +180,9 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
             InputYesNo({
               id: "radioRepositoryDeposition",
               name: "repositoryDeposition",
-              value: this.state.repositoryDeposition,
-              label: "Data is intended for repository deposition?",
-              readOnly: this.state.readOnly,
+              value: this.state.formData.repositoryDeposition,
+              label: "Data is intended for repository deposition?*",
+              readOnly: false,
               onChange: this.handleRadioChange,
             }), 
           ])
@@ -210,25 +190,24 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
         div({ className: "row" }, [
           div({ className: "col-xs-12 col-sm-4 col-padding" }, [
             InputFieldDatePicker({
-              selected: this.state.startDate,
+              selected: this.state.formData.startDate,
               name: "startDate",
               label: "Sample Collection Start Date*",
               onChange: this.handleDatePickerChange,
               placeholder: "Enter Start Date",
-              maxDate: this.state.endDate !== null ? this.state.endDate : null,
-              errorMessage: 'Required Fields'
+              maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
             })
           ]),
           div({ className: "col-xs-12 col-sm-4 col-padding" }, [
             InputFieldDatePicker({
-              startDate: this.state.startDate,
+              startDate: this.state.formData.startDate,
               name: "endDate",
               label: "Sample Collection End Date*",
-              selected: this.state.endDate,
+              selected: this.state.formData.endDate,
               onChange: this.handleDatePickerChange,
               placeholder: "Enter End Date",
-              disabled: (this.state.onGoingProcess === true) || (this.state.startDate === null),
-              minDate: this.state.startDate
+              disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
+              minDate: this.state.formData.startDate
             })
           ]),
 
@@ -238,7 +217,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
               name: "onGoingProcess",
               onChange: this.handleCheck,
               label: "Ongoing Process",
-              defaultChecked: this.state.onGoingProcess
+              defaultChecked: this.state.formData.onGoingProcess
             })
           ])
         ]),
@@ -248,7 +227,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
               className: "btn buttonPrimary getShareable",
               onClick: this.getShareableLink,
               name: "getLink",
-              disabled: false,
+              disabled: this.state.disableShareableLink,
               id: 'shareable-link'
               }, [
                 span({ className: "glyphicon glyphicon-link" }, []),

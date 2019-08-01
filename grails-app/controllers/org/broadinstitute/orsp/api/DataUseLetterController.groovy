@@ -56,15 +56,7 @@ class DataUseLetterController extends AuthenticatedController {
 
     @Override
     def show() {
-        String uid = request.parameterMap["id"]?.first()
-        DataUseLetter dul = DataUseLetter.findByUid(uid)
-        if(dul == null) {
-            render(view: "/dataUseLetter/index", model: [error: 'notFound'])
-        } else if(dul.submitted) {
-            render(view: "/dataUseLetter/index", model: [error: 'submitted'])
-        } else {
-            render(view: "/dataUseLetter/index")
-        }
+        render(view: "/mainContainer/index")
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
@@ -142,4 +134,17 @@ class DataUseLetterController extends AuthenticatedController {
             render([error: e.message] as JSON)
         }
     }
+
+    def getDul() {
+        String uid = request.parameterMap["id"]?.first()
+        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        if(dul == null) {
+            render([error: 'notFound'] as JSON)
+        } else if(dul.submitted) {
+            render([error: 'submitted'] as JSON)
+        } else {
+            render([dul: dul] as JSON)
+        }
+    }
+
 }
