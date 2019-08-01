@@ -23,13 +23,13 @@ export const CollapsibleElements = hh(class CollapsibleElements extends Componen
   render() {
     return(
       div({},[
-        this.props.data.map((element, idx) => {
-          return h(Collapse,{
-            key: idx,
-            accordion: this.props.accordion,
-            onItemClick: false
-          }, [
-            h(Panel, {
+        h(Collapse,{
+          accordion: this.props.accordion,
+          onItemClick: false
+        }, [
+          this.props.data.map((element, idx) => {
+            return h(Panel, {
+              key: idx,
               className: 'collapsible',
               style: { pointerEvents: 'none' },
               header: this.props.header({
@@ -40,8 +40,8 @@ export const CollapsibleElements = hh(class CollapsibleElements extends Componen
             }, [
               this.props.body(element ,[])
             ])
-          ])
-        })
+          })
+        ])
       ])
     );
   }

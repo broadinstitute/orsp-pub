@@ -5,7 +5,7 @@ import '../components/Btn.css';
 
 const POINTER = {
   auto: { pointerEvents: 'auto' },
-  none: { pointerEvents: 'auto' }
+  none: { pointerEvents: 'none' }
 };
 
 export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
@@ -14,6 +14,17 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
     this.state = {
     };
   }
+
+  linkToConsentGroup = (projectKey, summary) => {
+    return a({
+      onClick : (e) => e.stopPropagation(),
+      className: 'data-name',
+      style: POINTER.auto,
+      href: handleRedirectToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
+    },[
+      projectKey + ': ' + summary
+    ])
+  };
 
   render() {
     const { unlinkHandler, rejectHandler, approveHandler, requestClarificationHandler } = this.props.element.customHandlers;
@@ -64,14 +75,7 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
               span({ className: 'req-tooltip' },[ 'Request Clarification']),
               span({ className: 'arrow-down' },[])
             ]),
-
-            a({ 
-              className: 'data-name',
-              style: POINTER.none,
-              href: handleRedirectToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
-            },[
-              projectKey + ': ' + summary
-            ])
+            this.linkToConsentGroup(projectKey, summary)
           ])
         ])
       ])

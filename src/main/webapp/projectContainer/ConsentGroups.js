@@ -11,7 +11,6 @@ import { TableComponent } from "../components/TableComponent";
 import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
 import { formatUrlDocument, parseDate } from "../util/TableUtil";
 import { AlertMessage } from "../components/AlertMessage";
-import { styles } from "../util/ReportConstants";
 
 const columns = (cThis) => [{
   dataField: 'id',
@@ -78,7 +77,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       fileIdToRemove: '',
       issue: {},
       alertMessage: '',
-      alertType: 'success',
       showSuccessClarification: false
     };
   }
@@ -86,6 +84,20 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   componentDidMount() {
     this.getProjectConsentGroups();
   }
+
+  getProjectConsentGroups = () => {
+    ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
+        this.handleSuccessNotification();
+        this.setState(prev => {
+          prev.consentGroups = result.data.consentGroups;
+          prev.issue = result.data.issue;
+          return prev;
+        },() => {
+          this.collapseBtnAnimationListener();
+        });
+      }
+    );
+  };
 
   closeConfirmationModal = () => {
     this.setState({showConfirmationModal: !this.state.showConfirmationModal});
@@ -117,23 +129,23 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     }
   };
 
-  successNotification = (type, message, time) => {
-    setTimeout(this.clearAlertMessage(type), time, null);
-    this.props.updateContent();
-    this.closeRequestClarification();
-    this.setState(prev => {
-      prev.showSuccessClarification = true;
-      prev.alertMessage = message;
-      prev.alertType = 'success';
-      return prev;
-    });
+  handleSuccessNotification = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('new') && urlParams.get('tab') === 'consent-groups') {
+      history.pushState({}, null, window.location.href.split('&')[0]);
+      setTimeout(this.clearAlertMessage, 8000, null);
+      this.props.updateContent();
+      this.setState(prev => {
+        prev.showSuccessClarification = true;
+        prev.alertType = 'success';
+        return prev;
+      });
+    }
   };
 
-  clearAlertMessage = (type) => () => {
+  clearAlertMessage = () => {
     this.setState(prev => {
       prev.showSuccessClarification = false;
-      prev.alertMessage = '';
-      prev.alertType = '';
       return prev;
     });
   };
@@ -141,24 +153,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   successClarification = () => {
     this.props.updateContent();
     this.closeRequestClarification();
-  };
-
-  getProjectConsentGroups = () => {
-    ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('new') && urlParams.get('tab') === 'review') {
-        history.pushState({}, null, window.location.href.split('&')[0]);
-        this.successNotification('showSuccessClarification', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
-      }
-        this.setState(prev => {
-          prev.consentGroups = result.data.consentGroups;
-          prev.issue = result.data.issue;
-          return prev;
-        },() => {
-          this.collapseBtnAnimationListener();
-        });
-      }
-    );
   };
 
   collapseBtnAnimationListener() {
@@ -206,7 +200,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   requestClarification = (e, consentKey) => {
-    console.log("request clarification");
     e.stopPropagation();
     this.setState(prev => {
       prev.showRequestClarification = true;
@@ -215,29 +208,29 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     });
   };
 
-  parseData = (consents) => {
+  parseCollapsibleElementsData = (consents) => {
     let parsedArray = [];
     if (!isEmpty(consents)) {
-      consents.forEach(consent => {
-        let parsedData = {};
-        parsedData.consent = consent;
-        parsedData.search = false;
-        parsedData.remoteProp = false;
-        parsedData.data= consent.attachments;
-        parsedData.columns= columns(this);
-        parsedData.keyField= 'id';
-        parsedData.defaultSorted= defaultSorted;
-        parsedData.fileName= '_';
-        parsedData.pagination= false;
-        parsedData.showExportButtons = false;
-        parsedData.showSearchBar = false;
-        parsedData.customHandlers = {
-          approveHandler: this.approve,
-          rejectHandler: this.reject,
-          unlinkHandler: this.unlink,
-          requestClarificationHandler: this.requestClarification
-        };
-        parsedArray.push(parsedData)
+      parsedArray = consents.map(consent => {
+        return {
+          consent : consent,
+          search : false,
+          remoteProp : false,
+          data: consent.attachments,
+          columns: columns(this),
+          keyField: 'id',
+          defaultSorted: defaultSorted,
+          fileName: '_',
+          pagination: false,
+          showExportButtons : false,
+          showSearchBar : false,
+          customHandlers : {
+            approveHandler: this.approve,
+            rejectHandler: this.reject,
+            unlinkHandler: this.unlink,
+            requestClarificationHandler: this.requestClarification
+          }
+        }
       });
     }
     return parsedArray;
@@ -249,7 +242,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   removeAttachedDocument(file) {
-    console.log("file to remove", file);
     this.setState(prev => {
       prev.fileIdToRemove = file.uuid;
       prev.action = 'removeAttachment';
@@ -262,9 +254,10 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     return (
       h(Fragment, {}, [
         AlertMessage({
-          msg: 'Please complete all required fields',
+          msg: 'Your Sample/Data Cohort was successfully submitted to the Broad Institute’s Office of Research Subject Protection. ' +
+            'It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
           show: this.state.showSuccessClarification,
-          type: this.state.alertType
+          type: 'success'
         }),
         button({
           className: "btn btn-default",
@@ -276,36 +269,39 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           onClick: () => this.redirect('useExisting')
         }, ['Use Existing Sample/Data Cohort'] ),
         h3({},['Sample/Data Cohort']),
+
         CollapsibleElements({
           body: TableComponent,
           header: SampleDataCohortsCollapsibleHeader,
           accordion: false,
-          data: isEmpty(this.state.consentGroups) ? [] : this.parseData(this.state.consentGroups),
-          extraData: { issue: this.state.issue }
+          data: isEmpty(this.state.consentGroups) ? [] : this.parseCollapsibleElementsData(this.state.consentGroups),
+          extraData: { issue: this.state.issue, history: this.props.history }
         }),
 
-      ConfirmationDialog({
-        closeModal: this.closeConfirmationModal,
-        show: this.state.showConfirmationModal,
-        handleOkAction: this.handleOkConfirmation,
-        bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
-        actionLabel: 'Yes'
-      }, []),
-      RequestClarificationDialog({
-        closeModal: this.closeRequestClarification,
-        show: this.state.showRequestClarification,
-        issueKey: component.projectKey,
-        consentKey: this.state.actionConsentKey,
-        user: component.user,
-        emailUrl: component.emailUrl,
-        userName: component.userName,
-        clarificationUrl: component.requestLinkClarificationUrl,
-        successClarification: this.successClarification,
-        linkClarification: true
-      }),
-      h(Spinner, {
-        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
-      })
-     ]))
-    }
+        ConfirmationDialog({
+          closeModal: this.closeConfirmationModal,
+          show: this.state.showConfirmationModal,
+          handleOkAction: this.handleOkConfirmation,
+          bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
+          actionLabel: 'Yes'
+        }, []),
+
+        RequestClarificationDialog({
+          closeModal: this.closeRequestClarification,
+          show: this.state.showRequestClarification,
+          issueKey: component.projectKey,
+          consentKey: this.state.actionConsentKey,
+          user: component.user,
+          emailUrl: component.emailUrl,
+          userName: component.userName,
+          clarificationUrl: component.requestLinkClarificationUrl,
+          successClarification: this.successClarification,
+          linkClarification: true
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+        })
+      ])
+    )
+  }
 });
