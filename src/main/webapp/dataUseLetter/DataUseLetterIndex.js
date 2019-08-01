@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { div } from 'react-hyperscript-helpers';
+import React, { Fragment } from 'react';
+import { Component } from 'react';
+import { div, h } from 'react-hyperscript-helpers';
 import DataUseLetter from './DataUseLetter';
 import DataUseLetterMessage from './DataUseLetterMessage';
 import '../index.css';
@@ -11,10 +12,9 @@ class DataUseLetterIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: {
-        error: '',
-        dul: {}
-      }
+      isLoading: true,
+      error: '',
+      dul: {}
     };
   }
 
@@ -28,21 +28,39 @@ class DataUseLetterIndex extends Component {
       this.setState(prev => {
         prev.dul = resp.data.dul;
         prev.error = resp.data.error;
+        prev.isLoading = false;
         return prev;
       });
     });
   }
-  render() {
-    return (
-      div({}, [
-        DataUseLetterMessage({
-          isRendered: !isEmpty(this.state.error),
-          error: this.state.error
-        }),
+
+  displayUseLetter = () => {
+    let dul = '';
+    if (isEmpty(this.state.error)) {
+      dul =  h(Fragment, {}, [
         DataUseLetter({
-          isRendered: isEmpty(this.state.error),
           dul: this.state.dul
         })
+      ])
+    }
+    else {
+      dul =  h(Fragment, {}, [
+        DataUseLetterMessage({
+          error: this.state.error
+        })
+      ])      
+    }
+    return dul;
+  };
+
+  render() {
+    let dUL = ''
+    if (!this.state.isLoading) {
+      dUL = this.displayUseLetter();
+    }   
+    return (
+      div({}, [
+        dUL
       ])
     )
   }

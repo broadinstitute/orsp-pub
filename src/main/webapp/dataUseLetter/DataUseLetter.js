@@ -122,8 +122,8 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
         if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
           let dulInfo = JSON.parse(this.props.dul.dulInfo);
           prev.formData.onGoingProcess = dulInfo.onGoingProcess;
-          prev.formData.startDate = this.parseDate(dulInfo.startDate);
-          prev.formData.endDate = this.parseDate(dulInfo.endDate);
+          prev.formData.startDate = dulInfo.startDate;
+          prev.formData.endDate = dulInfo.endDate;
           prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
         }        
         return prev;
@@ -382,10 +382,10 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
-      DUL.updateDUL(form, component.serverUrl).then(resp => {
+      DUL.updateDUL(form, component.serverURL).then(resp => {
         this.createRestriction();
-        DUL.createDulPdf({ uid: id }, component.serverUrl).then(() => {
-          window.location.href = component.serverUrl + "/dataUseLetter/show?id=" + id;
+        DUL.createDulPdf({ uid: id }, component.serverURL).then(() => {
+          window.location.href = component.serverURL + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
         })
@@ -557,7 +557,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   createRestriction() {
     let restriction = this.getRestriction();
-    DataUse.createRestriction(component.serverUrl, restriction);
+    DataUse.createRestriction(component.serverURL, restriction);
   }
 
   getDiseases(diseases) {

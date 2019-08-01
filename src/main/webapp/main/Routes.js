@@ -5,7 +5,7 @@ import ReviewCategories from "../reviewCategories/ReviewCategories";
 import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
-import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex"
+import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 
 const Routes = ( props ) => (
   <Switch>
