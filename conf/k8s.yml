@@ -45,7 +45,7 @@ spec:
         - mountPath: "/orsp-config"
           name: orsp-config
       - command: ["/cloud_sql_proxy"]
-        args: [$MYSQL_INSTANCE, "-credential_file=/secrets/cloudsql/credentials.json"]
+        args: [$(MYSQL_INSTANCE), "-credential_file=/secrets/cloudsql/credentials.json"]
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
         securityContext:
