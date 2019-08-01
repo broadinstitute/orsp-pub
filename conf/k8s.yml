@@ -18,7 +18,7 @@ spec:
         app: ${REPO_NAME}
     spec:
       containers:
-        env:
+      - env:
         - name: MYSQL_INSTANCE
           valueFrom:
             secretKeyRef:
@@ -44,8 +44,8 @@ spec:
         volumeMounts:
         - mountPath: "/orsp-config"
           name: orsp-config
-        command: ["/cloud_sql_proxy"]
-        args: ["$(MYSQL_INSTANCE)", "-credential_file=/secrets/cloudsql/credentials.json"]
+      - command: ["/cloud_sql_proxy"]
+        args: [MYSQL_INSTANCE, "-credential_file=/secrets/cloudsql/credentials.json"]
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
         securityContext:
