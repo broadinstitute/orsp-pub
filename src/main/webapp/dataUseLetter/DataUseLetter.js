@@ -704,8 +704,8 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           ]),
 
           Panel({ title: "Sample Collection Date Range*" }, [
-            div({ className: "row" }, [
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+            div({ className: "row readonly-content" }, [
+              div({ className: "col-xs-12 col-sm-4 col-padding" }, [
                 InputFieldDatePicker({
                   selected: this.state.formData.startDate,
                   name: "startDate",
@@ -715,7 +715,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
                   disabled: true
                 })
               ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+              div({ className: "col-xs-12 col-sm-4 col-padding" }, [
                 InputFieldDatePicker({
                   name: "endDate",
                   label: "End Date",
@@ -725,7 +725,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
                   disabled: true
                 })
               ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+              div({ className: "col-xs-12 col-sm-4 col-padding", style: { 'marginTop': '32px' } }, [
                 InputFieldCheckbox({
                   id: "onGoingProcess",
                   name: "onGoingProcess",
@@ -745,6 +745,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
             label: "Data is intended for repository deposition?",
             readOnly: this.state.readOnly,
             onChange: this.handleRadioChange,
+            readOnly: true,
           }),
 
           div({ className: "boxWrapper" }, [
