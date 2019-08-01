@@ -20,10 +20,7 @@ spec:
       containers:
       - env:
         - name: MYSQL_INSTANCE
-          valueFrom:
-            secretKeyRef:
-              key: instance
-              name: cloudsql-db-credentials
+          value: "-instances=orsp-dev:us-east1:bricc-mysql-dev=tcp:3306"
         - name: MYSQL_DB_HOST
           value: 127.0.0.1:3306
         - name: MYSQL_DB_USERNAME
@@ -45,7 +42,7 @@ spec:
         - mountPath: "/orsp-config"
           name: orsp-config
       - command: ["/cloud_sql_proxy"]
-        args: [MYSQL_INSTANCE, "-credential_file=/secrets/cloudsql/credentials.json"]
+        args: ["$(MYSQL_INSTANCE)", "-credential_file=/secrets/cloudsql/credentials.json"]
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
         name: cloudsql-proxy
         securityContext:
