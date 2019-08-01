@@ -4,15 +4,27 @@ import grails.converters.JSON
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.Comment
+import org.broadinstitute.orsp.Event
+import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
+import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.User
 
+import java.text.SimpleDateFormat
+import java.util.concurrent.atomic.AtomicInteger
+
 class UtilityClass {
+    QueryService queryService
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
+    public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
+    public static final String HISTORY = 'history'
 
-    /**
+    UtilityClass(QueryService queryService) {
+        this.queryService = queryService
+    }
+/**
      * Register Comment's object JSON mapping for Project's and Sample Data Cohort's Comments
      */
     static void registerCommentMarshaller() {
@@ -63,6 +75,50 @@ class UtilityClass {
                         reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
                 ]
             }
+        }
+    }
+
+    void registerFundingsReportMarshaller() {
+        AtomicInteger at = new AtomicInteger(0)
+
+        JSON.createNamedConfig(FUNDING_REPORT_RENDERER_CONFIG) {
+            it.registerObjectMarshaller( Funding ) { Funding funding ->
+                return [
+                        id: at.incrementAndGet(),
+                        type: funding.issue.type,
+                        projectKey: funding.issue.projectKey,
+                        protocol: funding.issue.protocol,
+                        summary: funding.issue.summary,
+                        status: funding.issue.status,
+                        source: funding.source,
+                        name: funding.name,
+                        awardNumber: funding.awardNumber,
+                        pis: getPIsDisplayName((Issue) funding.issue)
+                ]
+            }
+        }
+    }
+
+    static void registerEventMarshaller() {
+        JSON.createNamedConfig(HISTORY) {
+            SimpleDateFormat  sd = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            it.registerObjectMarshaller( Event ) { Event event ->
+                return [
+                        id: event.id,
+                        summary: event.summary,
+                        author: event.author,
+                        created: sd.format(event.created)
+                ]
+            }
+        }
+    }
+
+    private List<String> getPIsDisplayName(Issue issue) {
+        List<String> piUserNames = issue?.getPIs()?.unique()
+        if (!piUserNames?.isEmpty()) {
+            queryService.findUsersInUserNameList(piUserNames).collect { it.displayName }
+        } else {
+            Collections.emptyList()
         }
     }
 }

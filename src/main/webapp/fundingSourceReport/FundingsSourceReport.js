@@ -4,9 +4,9 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { CATEGORY_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
-import { TABLE_ACTIONS } from "../util/TableUtil";
-import { handleRedirectToProject } from "../util/Utils";
+import { handleRedirectToProject, printData } from "../util/Utils";
+import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
+import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -16,53 +16,98 @@ const SIZE_PER_PAGE_LIST = [
 const columns = [
   {
     dataField: 'id',
-    text: 'id',
+    text: 'Id',
     hidden: true,
     csvExport : false
   } ,
   {
-    dataField: 'projectKey',
-    text: 'Project',
+    dataField: 'type',
+    text: 'Issue Type',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.projectKeyWidth};
-    },
-    formatter: (cell, row, rowIndex, colIndex) =>
-    div({},[
-      a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
-    ]),
+      return { width: styles.fundingReport.issueTypeWidth};
+    } 
   },
   {
-    dataField: 'summary',
-    text: 'Summary',
+    dataField: 'projectKey',
+    text: 'Project Key',
+    sort: true,
+    formatter: (cell, row, rowIndex, colIndex) =>
+      div({},[
+        a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
+      ]),
+    headerStyle: (column, colIndex) => {
+      return { width: styles.fundingReport.projectKeyWidth };
+    }
+  }, {
+  dataField: 'summary',
+    text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.summaryWidth};
-    },
-    formatter: (cell, row, rowIndex, colIndex) =>
-    span({title: row.summary},[row.summary])
+      return { width: styles.fundingReport.titleWidth };
+    }
   }, {
-  dataField: 'status',
+    dataField: 'status',
     text: 'Status',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.statusWidth};
-    },
-    formatter: (cell, row, rowIndex, colIndex) =>
-    span({title: row.status},[row.status]) 
+      return { width: styles.fundingReport.statusWidth };
+    }
   }, {
-    dataField: 'reviewCategory',
-    text: 'Review Category',
+    dataField: 'protocol',
+    text: 'Protocol',
     sort: false,
     headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.reviewCategoryWidth};
-    } ,
+      return { width: styles.fundingReport.protocolWidth };
+    },
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      formatNullCell(cell)
+  }, {
+    dataField: 'pis',
+    text: 'PIs',
+    sort: false,
+    classes: 'ellipsis-column',
     formatter: (cell, row, rowIndex, colIndex) =>
-    span({title: row.reviewCategory},[row.reviewCategory]) 
+      span({title: [row.pis]},[
+        [row.pis]
+    ]),
+    headerStyle: (column, colIndex) => {
+      return { width: styles.fundingReport.pisWidth };
+    },
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      cell.join(', ')
+  }, {
+    dataField: 'source',
+    text: 'Funding Source',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: styles.fundingReport.generalWidth };
+    }
+  }, {
+    dataField: 'name',
+    text: 'Funding Name',
+    sort: true,
+    classes: 'ellipsis-column',
+    formatter: (cell, row, rowIndex, colIndex) =>
+      span({title: [row.name]},[
+        [row.name]
+    ]),
+    headerStyle: (column, colIndex) => {
+      return { width: styles.fundingReport.fundingNameWidth };
+    }
+  }, {
+    dataField: 'awardNumber',
+    text: 'Award Number',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: styles.fundingReport.generalWidth };
+    },
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      formatNullCell(cell)
   }
 ];
 
-class ReviewCategories extends Component {
+class FundingsSourceReport extends Component {
 
   constructor(props) {
     super(props);
@@ -74,7 +119,8 @@ class ReviewCategories extends Component {
         orderColumn: null
       },
       currentPage: 1,
-      categories: []
+      fundings: [],
+      isAdmin: true
     };
   }
 
@@ -84,6 +130,7 @@ class ReviewCategories extends Component {
 
   init = () => {
     spinnerService.showAll();
+    this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
@@ -94,15 +141,16 @@ class ReviewCategories extends Component {
       length: limit,
       orderColumn: sort.orderColumn,
       sortDirection: sort.sortDirection,
-      searchValue: search
+      searchValue: search,
     };
     spinnerService.showAll();
-    Reports.getReviewCategory(query).then(result => {
-      const lastPage = Math.ceil(result.data.recordsTotal / query.length);
+    Reports.getFundingsReports(query).then(result => {
+      const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
       this.setState(prev => {
         prev.lastPage = lastPage;
         prev.currentPage = page;
-        prev.categories = result.data.data;
+        prev.isAdmin = this.state.isAdmin;
+        prev.fundings = result.data.data;
         prev.recordsTotal = result.data.recordsTotal;
         prev.recordsFiltered = result.data.recordsFiltered;
         prev.sizePerPage = query.length;
@@ -140,7 +188,7 @@ class ReviewCategories extends Component {
   onSortChange = (sortName, sortOrder) => {
     const sort = {
       sortDirection: sortOrder,
-      orderColumn: CATEGORY_SORT_NAME_INDEX[sortName]
+      orderColumn: FUNDING_SORT_NAME_INDEX[sortName]
     };
     this.tableHandler(0, this.state.sizePerPage, null, sort)
   };
@@ -160,33 +208,38 @@ class ReviewCategories extends Component {
         break;
       }
       case TABLE_ACTIONS.SORT: {
-        this.onSortChange(newState.sortField, newState.sortOrder);
+        this.onSortChange(newState.sortName, newState.sortOrder);
         break;
       }
     }
   };
 
   printContent = () => {
+    let cols = columns.filter(el => el.dataField !== 'id');
+    let fundingsArray = formatDataPrintableFormat(this.state.fundings, cols);
+    const tableColumnsWidth = [100, 100,'*',80 ,'*','*','*','*','*'];
+    const titleText = "Funding Source Report";
+    printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   render() {
     return(
       div({},[
-        h1({}, ["Review Category Report"]),
+        h1({}, ["Funding Source Report"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,
-          data: this.state.categories,
+          data: this.state.fundings,
           columns: columns,
-          keyField: 'projectKey',
+          keyField: 'id',
           search: true,
-          fileName: 'Review Categories Report',
+          fileName: 'Funding Source Report',
           showPrintButton: false,
           printComments: this.printContent,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           page: this.state.currentPage,
           totalSize: this.state.recordsFiltered,
-          showExportButtons: false,
+          showExportButtons: true,
           showSearchBar: true
         }),
         h(Spinner, {
@@ -197,4 +250,5 @@ class ReviewCategories extends Component {
   }
 }
 
-export default ReviewCategories;
+export default FundingsSourceReport;
+

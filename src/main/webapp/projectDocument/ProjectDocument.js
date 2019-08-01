@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from '../components/Documents'
-import { DocumentHandler, User } from "../util/ajax";
+import { DocumentHandler, User, Project } from "../util/ajax";
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
@@ -31,8 +31,12 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
-    DocumentHandler.attachedDocuments(component.attachedDocumentsUrl, component.projectKey).then(resp => {
-      User.getUserSession(component.getUserUrl).then(user => {
+    Project.getProject(component.projectKey).then(
+      issue => {
+      this.props.initStatusBoxInfo(issue.data);
+    });
+        DocumentHandler.attachedDocuments(component.projectKey).then(resp => {
+          User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
             prev.user = user.data;
@@ -48,7 +52,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   approveDocument = (uuid) => {
-    DocumentHandler.approveDocument(component.approveDocumentUrl, uuid).then(resp => {
+    DocumentHandler.approveDocument(uuid).then(resp => {
         this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});
@@ -57,7 +61,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   };
 
   rejectDocument = (uuid) => {
-    DocumentHandler.rejectDocument(component.serverURL, uuid).then(resp => {
+    DocumentHandler.rejectDocument(uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({serverError: true});

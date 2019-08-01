@@ -110,7 +110,7 @@ class DataUseLetter extends Component {
 
   initFormData = () => {
     const uuid = window.location.href.split('id=')[1];
-    ConsentGroup.getConsentGroupByUUID(this.props.consentGroupUrl, uuid).then(consentGroup => {
+    ConsentGroup.getConsentGroupByUUID(uuid).then(consentGroup => {
       this.setState(prev => {
         prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
         prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
@@ -157,7 +157,7 @@ class DataUseLetter extends Component {
 
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(this.props.sourceDiseases, query)
+      Search.getSourceDiseases(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
@@ -377,9 +377,10 @@ class DataUseLetter extends Component {
       spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
-      DUL.updateDUL(form, this.props.serverUrl).then(resp => {
+      console.log('put dul', form);
+      DUL.updateDUL(form).then(resp => {
         this.createRestriction();
-        DUL.createDulPdf({ uid: id }, this.props.serverUrl).then(() => {
+        DUL.createDulPdf({ uid: id }).then(() => {
           window.location.href = this.props.serverUrl + "/dataUseLetter/show?id=" + id;
         }, (reject) => {
           this.showDulError();
@@ -559,7 +560,7 @@ class DataUseLetter extends Component {
 
   createRestriction() {
     let restriction = this.getRestriction();
-    DataUse.createRestriction(this.props.serverUrl, restriction);
+    DataUse.createRestriction(restriction);
   }
 
   getDiseases(diseases) {

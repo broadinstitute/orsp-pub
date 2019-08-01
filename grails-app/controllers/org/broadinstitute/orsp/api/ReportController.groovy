@@ -1,17 +1,19 @@
 package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
+import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ReportService
-import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
 @Slf4j
+@Resource(readOnly = false, formats = ['JSON'])
 class ReportController extends AuthenticatedController {
 
     ReportService reportService
@@ -21,15 +23,23 @@ class ReportController extends AuthenticatedController {
         render([error: "Not Implemented"] as JSON)
     }
 
-    def funding() {
+    def getFunding() {
+        new UtilityClass(queryService).registerFundingsReportMarshaller()
         PaginationParams pagination = new PaginationParams(
-                draw: params.getInt("draw")?: 1,
-                start: params.getInt("start")?: 0,
-                length: params.getInt("length")?: 10,
-                orderColumn: params.getInt("order[0][column]")?: 0,
-                sortDirection: params.get("order[0][dir]")? params.get("order[0][dir]").toString() : "asc",
-                searchValue: params.get("search[value]")? params.get("search[value]").toString() : null)
-        render(queryService.queryFundingReport(pagination) as JSON)
+                draw: params.getInt("draw") ?: 1,
+                start: params.getInt("start") ?: 0,
+                length: params.getInt("length") ?: 10,
+                orderColumn: params.getInt("orderColumn") ?: 1,
+                sortDirection: params.get("sortDirection")?.toString() ?: "desc",
+                searchValue: params.get("searchValue")?.toString() ?: null)
+        JSON.use(UtilityClass.FUNDING_REPORT_RENDERER_CONFIG) {
+            render queryService.queryFundingReport(pagination) as JSON
+        }
+    }
+
+    def getAllFundings() {
+        Collection<Funding> fundings = queryService.getAllFundings()
+        render(fundings as JSON)
     }
 
     def aahrppMetrics() {
@@ -44,11 +54,16 @@ class ReportController extends AuthenticatedController {
     }
 
     def findReviewCategories() {
-        UtilityClass.registerIssueMarshaller()
-        List<Issue> issues = queryService.findIssueByProjectType(IssueType.IRB.name)
+        UtilityClass.registerIssueMarshaller();
+        PaginationParams pagination = new PaginationParams(
+                draw: params.getInt("draw") ?: 1,
+                start: params.getInt("start") ?: 0,
+                length: params.getInt("length") ?: 50,
+                orderColumn: params.getInt("orderColumn") ?: 0,
+                sortDirection: params.get("sortDirection")?.toString() ?: "asc",
+                searchValue: params.get("searchValue")?.toString() ?: null)
         JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
-            render issues as JSON
+            render queryService.findIssueByProjectType(IssueType.IRB.name, pagination) as JSON
         }
     }
-
 }

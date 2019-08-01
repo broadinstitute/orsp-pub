@@ -44,8 +44,8 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   getAttachedDocuments = () => {
-    DocumentHandler.attachedDocuments(component.attachmentsUrl, component.consentKey).then(resp => {
-      User.getUserSession(component.getUserUrl).then(user => {
+    DocumentHandler.attachedDocuments(component.consentKey).then(resp => {
+      User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
             prev.user = user.data;
@@ -62,7 +62,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   getUseRestriction = () => {
-    ConsentGroup.getUseRestriction(component.useRestrictionUrl, component.consentKey).then(resp => {
+    ConsentGroup.getUseRestriction(component.consentKey).then(resp => {
       const newRestrictionId = resp.data.restrictionId ? resp.data.restrictionId : null;
       this.setState(prev => {
         prev.restriction = resp.data.restriction;
@@ -73,7 +73,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   getAssociatedProjects = () => {
-    ConsentGroup.getConsentCollectionLinks(component.serverURL, component.consentKey).then(response => {
+    ConsentGroup.getConsentCollectionLinks(component.consentKey).then(response => {
       this.setState({ associatedProjects: response.data.collectionLinks })
     }).catch(error => {
       this.setState({ serverError: true });
@@ -82,7 +82,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   handleUnlinkProject = (target) => () => {
-    ConsentGroup.unlinkProject(component.serverURL, component.consentKey, target).then(result => {
+    ConsentGroup.unlinkProject(component.consentKey, target).then(result => {
       this.getAssociatedProjects()
     }).catch(error => {
       this.setState({ serverError: true });
@@ -93,7 +93,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
 
 
   approveDocument = (uuid) => {
-    DocumentHandler.approveDocument(component.approveDocumentUrl, uuid).then(resp => {
+    DocumentHandler.approveDocument(uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({ serverError: true });
@@ -102,7 +102,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   rejectDocument = (uuid) => {
-    DocumentHandler.approveDocument(component.rejectDocumentUrl, uuid).then(resp => {
+    DocumentHandler.rejectDocument(uuid).then(resp => {
       this.getAttachedDocuments();
     }).catch(error => {
       this.setState({ serverError: true });
@@ -151,21 +151,15 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         handleDialogConfirm: this.handleDialog,
         isAdmin: this.state.isAdmin,
         user: this.state.user,
-        downloadDocumentUrl: component.downloadDocumentUrl,
         options: this.state.documentOptions,
         projectKey: component.consentKey,
-        attachDocumentsUrl: component.attachDocumentsUrl,
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
-        serverURL: component.serverURL,
-        emailUrl: component.emailDulUrl,
         userName: this.state.user.userName,
         restriction: this.state.restriction,
         restrictionId: this.state.restrictionId,
-        newRestrictionUrl: component.createRestrictionUrl,
         isConsentGroup: true,
         associatedProjects: this.state.associatedProjects,
-        removeDocumentUrl: component.removeDocumentUrl,
         docsClarification: "Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."
       }),
       AlertMessage({

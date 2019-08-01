@@ -9,7 +9,8 @@ import groovy.json.JsonBuilder
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
-import org.grails.plugins.web.taglib.ApplicationTagLib
+import liquibase.util.StringUtils
+import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
 import org.hibernate.HibernateException
@@ -164,7 +165,6 @@ class QueryService implements Status {
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])
     // IJ has some problems here.
     PaginatedResponse queryFundingReport(PaginationParams pagination) {
-        ApplicationTagLib applicationTagLib = (ApplicationTagLib) grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
         Integer count = Funding.count()
 
         String orderField
@@ -226,29 +226,24 @@ class QueryService implements Status {
             User.findAllByUserNameInList(piUserNames).each { userMap.put(it.userName, it.displayName) }
         }
 
-        // Order is important, see `fundingReport.gsp` for how the UI will represent this data.
-        def data = fundings.collect { funding ->
-            String url = funding.issue.controller == IssueType.CONSENT_GROUP.name ?
-                    applicationTagLib.createLink([controller: "newConsentGroup", action: 'main', absolute: true]) + "?consentKey=" + funding.issue.projectKey :
-                    applicationTagLib.createLink([controller: "project", action: 'main', absolute: true]) + "?projectKey=" + funding.issue.projectKey
-            [funding.issue.type,
-             "<a href=\"" + url + "\">" + funding.issue.projectKey + "</a>",
-             funding.issue.summary,
-             funding.issue.status,
-             funding.issue.protocol,
-             userMap.findAll { funding.issue.getPIs().contains(it.key) }.values().join(", "),
-             funding.source,
-             funding.name,
-             funding.awardNumber]
-        }
-
         new PaginatedResponse(
                 draw: pagination.draw,
                 recordsTotal: count,
                 recordsFiltered: fundingResults.getTotalCount(),
-                data: data,
+                data: fundings,
                 error: ""
         )
+    }
+
+    Collection<Funding> getAllFundings() {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from funding '
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Funding)
+            list()
+        }
+        results as Collection<Funding>
     }
 
     private Map<String, SampleCollection> getCollectionIdMap(Collection<ConsentCollectionLink> links) {
@@ -1094,21 +1089,73 @@ class QueryService implements Status {
         results
     }
 
-    List<Issue> findIssueByProjectType(String type) {
+    PaginatedResponse findIssueByProjectType(String type, PaginationParams pagination) {
+        String orderColumn = getIssueOrderColumn(pagination.orderColumn)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query =
-                ' select * ' +
-                        ' from issue ' +
-                        ' where type = :projectType ' +
-                        ' and deleted = 0 '
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
+        final StringBuffer query = new StringBuffer(' select distinct i.id from issue i left outer join issue_extra_property ie on ie.issue_id = i.id ')
+        query.append(' where i.type = :type ' +
+                ' and i.deleted = 0 ')
+        if (pagination.searchValue) {
+            query.append("and i.project_key LIKE :term ")
+                    .append("or i.summary LIKE :term ")
+                    .append("or i.status LIKE :term ")
+                    .append("or ((ie.name = :initialReviewType ")
+                    .append("or ie.name = :reviewCategory ) ")
+                    .append("and ie.value LIKE :term ) ")
+        }
+        SQLQuery sqlQuery = session.createSQLQuery(query.toString())
+        sqlQuery.setString('type', type)
+        if (pagination.searchValue) {
+            sqlQuery.setString('term', pagination.getLikeTerm())
+            sqlQuery.setString('initialReviewType', IssueExtraProperty.INITIAL_REVIEW_TYPE)
+            sqlQuery.setString('reviewCategory', IssueExtraProperty.REVIEW_CATEGORY)
+        }
+        // total rows
+        List<Long> ids = sqlQuery.list()
+        List<Issue> results = new ArrayList<>()
+        if (CollectionUtils.isNotEmpty(ids)) {
+            results = findPaginatedIssuesByIds(ids, orderColumn, pagination)
+        }
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: ids.size(),
+                recordsFiltered: ids.size(),
+                data: results,
+                error: ""
+        )
+    }
+
+    private List<Issue> findPaginatedIssuesByIds(List<Long> ids, String orderColumn, PaginationParams pagination) {
+        String query = 'select * from issue where id in :ids '
+        if (orderColumn) {
+            query = query + " order by " + orderColumn + pagination.sortDirection
+        }
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<Issue> results = sqlQuery.with {
             addEntity(Issue)
-            setString('projectType', type)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            setParameterList("ids", ids)
             list()
         }
         results
+    }
+
+    private String getIssueOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " project_key "
+                break
+            case 1:
+                orderField = " summary "
+                break
+            case 2:
+                orderField = " status "
+                break
+        }
+        orderField
     }
 
     Collection<Submission> getSubmissionsByProject(String projectKey) {
@@ -1376,6 +1423,23 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("userId", userId)
         sqlQuery.executeUpdate()
+    }
+
+    List<User> findUsersInUserNameList(List<String> usersList) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from user where user_name in :usersList '
+        final sqlQuery = session.createSQLQuery(query)
+        List<User> results = Collections.emptyList()
+        try {
+            results = sqlQuery.with {
+                addEntity(User)
+                setParameterList('usersList', usersList)
+                list()
+            }
+        } catch(Exception e) {
+            log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
+        }
+        results
     }
 
     @SuppressWarnings(["GrUnresolvedAccess", "GroovyAssignabilityCheck"])

@@ -271,7 +271,6 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             fileHandler: this.props.fileHandler,
             projectType: this.props.projectType,
             options: this.props.documentOptions,
-            fillablePdfURL: this.props.fillablePdfURL,
             files: this.props.files
           }),
           InputFieldText({

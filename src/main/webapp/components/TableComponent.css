@@ -1,0 +1,19 @@
+.table-containter .table tbody tr:nth-of-type(odd) {
+    background-color: #FAFAFA;
+}
+
+.table-containter .table tbody tr td {
+    word-break: break-word;
+}
+
+.table-containter .table tbody tr td.ellipsis-column {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-containter .table thead tr th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

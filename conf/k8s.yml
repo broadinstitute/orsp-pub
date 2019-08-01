@@ -1,3 +1,4 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -17,7 +18,11 @@ spec:
         app: ${REPO_NAME}
     spec:
       containers:
-      - env:
+
+# orsp app configuration       
+      - name: ${REPO_NAME}
+        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
+        env:
         - name: MYSQL_DB_HOST
           value: 127.0.0.1:3306
         - name: MYSQL_DB_USERNAME
@@ -30,27 +35,33 @@ spec:
             secretKeyRef:
               key: password
               name: cloudsql-db-credentials
-        image: gcr.io/${GOOGLE_PROJECT}/${REPO_NAME}:${COMMIT}
         imagePullPolicy: Always
-        name: ${REPO_NAME}
         ports:
         - containerPort: 8080
         volumeMounts:
         - mountPath: "/orsp-config"
           name: orsp-config
-      - command:
-        - "/cloud_sql_proxy"
-        - "-instances=orsp-dev:us-east1:bricc-mysql-dev=tcp:3306"
-        - "-credential_file=/secrets/cloudsql/credentials.json"
+
+# cloudsql-proxy configuration
+      - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy:1.12
-        name: cloudsql-proxy
+        command: ["/cloud_sql_proxy"]
+        args: ["-instances=$(MYSQL_INSTANCE)", "-credential_file=/secrets/cloudsql/credentials.json"]
+        env:
+        - name: MYSQL_INSTANCE
+          valueFrom:
+            secretKeyRef:
+              key: instance
+              name: cloudsql-db-credentials
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 2
         volumeMounts:
-        - mountPath: /secrets/cloudsql
+        - mountPath: "/secrets/cloudsql"
           name: cloudsql-instance-credentials
           readOnly: true
+
+# common configuration
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -60,7 +71,7 @@ spec:
       - name: cloudsql-instance-credentials
         secret:
           secretName: cloudsql-instance-credentials
-      - configMap:
-          name: ${ORSP_CONFIG_MAP}
-        name: orsp-config
-
+      - name: orsp-config
+        configMap:
+          name:  ${ORSP_CONFIG_MAP}
+        

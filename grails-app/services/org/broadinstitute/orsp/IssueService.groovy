@@ -252,6 +252,7 @@ class IssueService implements UserInfo {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_EXPIRATION_DATE})
         }
         if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS)) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.ACTOR})
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
 

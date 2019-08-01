@@ -119,7 +119,7 @@ class RolesManagement extends Component {
         searchValue: search,
     };
 
-    User.getAllUsers(component.serverURL, query).then(result => {
+    User.getAllUsers(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
       this.setState(prev => {
         prev.lastPage = lastPage;

@@ -61,7 +61,6 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
               step: 1,
               currentStep: this.props.currentStep,
               user: this.props.user,
-              searchUsersURL: this.props.searchUsersURL,
               updateForm: this.props.updateInfoSecurityFormData,
               generalError: this.props.generalError,
               submitError: this.props.submitError,

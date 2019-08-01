@@ -314,6 +314,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
             'displayName': user.displayName,
             'emailAddress': user.emailAddress,
             'userName': user.userName,
+            'lastLoginDate': user.lastLoginDate,
             'isAdmin': isAdmin(),
             'isORSP': isORSP(),
             "isViewer": isViewer(),
