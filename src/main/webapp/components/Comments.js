@@ -60,7 +60,6 @@ export const Comments = hh(class Comments extends Component {
           loadComments: this.props.updateContent
         }),
         TableComponent({
-          showButtons: true,
           remoteProp: false,
           data: this.props.comments,
           columns: columns,

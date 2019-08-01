@@ -80,10 +80,6 @@ class AuthenticatedController implements Interceptor, UserInfo {
         throw new Error("sub-class must implement getType for fully typed issues")
     }
 
-    def routeRedirect() {
-        render(view: "/mainContainer/index")
-    }
-
     def show() {
         Issue issue = queryService.findByKey(params.id)
         if (issueIsForbidden(issue)) {

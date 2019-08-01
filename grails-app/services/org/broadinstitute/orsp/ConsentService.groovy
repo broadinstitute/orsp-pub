@@ -498,18 +498,19 @@ class ConsentService implements Status {
     }
 
     LinkedHashMap findProjectConsentGroups(String projectKey) throws ConsentException {
+        LinkedHashMap result = []
         if (StringUtils.isNotEmpty(projectKey)) {
             Issue issue = queryService.findByKey(projectKey)
             Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
             Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
             Collection consentGroups = queryService.findByKeys(collectionLinksMap)
-            [
+            result = [
                     issue        : issue,
                     consentGroups: consentGroups?.sort { a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase() }
             ]
         } else {
             throwConsentException("Error trying to get Project's Consent groups: Empty projectKey")
-            []
         }
+        result
     }
 }

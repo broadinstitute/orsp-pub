@@ -72,11 +72,9 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       issueKey: '',
       consentKey: '',
       showRequestClarification: false,
-      title: 0,
       actionConsentKey: '',
       fileIdToRemove: '',
       issue: {},
-      alertMessage: '',
       showSuccessClarification: false
     };
   }

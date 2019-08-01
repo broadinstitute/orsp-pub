@@ -59,7 +59,11 @@ export const TableComponent = hh(class TableComponent extends Component {
                   sort: remoteProp,
                   cellEdit: false
                 }}
-                pagination= {this.props.pagination ? paginationFactory({ page: this.props.page, totalSize: this.props.totalSize, sizePerPageList: this.props.sizePerPageList  }) : null }
+                pagination= {
+                  this.props.pagination ?
+                  paginationFactory({ page: this.props.page, totalSize: this.props.totalSize, sizePerPageList: this.props.sizePerPageList  })
+                  : null
+                }
                 defaultSorted= { this.props.defaultSorted }
                 onTableChange= { this.props.onTableChange }
                 {...props.baseProps }

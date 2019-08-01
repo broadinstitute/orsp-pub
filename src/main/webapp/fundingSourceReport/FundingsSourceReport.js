@@ -227,7 +227,6 @@ class FundingsSourceReport extends Component {
       div({},[
         h1({}, ["Funding Source Report"]),
         TableComponent({
-          showButtons: true,
           remoteProp: true,
           onTableChange: this.onTableChange,
           data: this.state.fundings,

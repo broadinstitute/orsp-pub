@@ -19,7 +19,7 @@ class UtilityClass {
     QueryService queryService
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
-    public static final String ISSUE_COMPLETE = 'completeIssue'
+    public static final String ISSUE_COMPLETE = 'issueForSampleDataCohorts'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
     public static final String HISTORY = 'history'
 
@@ -83,7 +83,7 @@ class UtilityClass {
     /**
      * Register Issue's JSON mapping to return its transient properties
     */
-    static void registerCompleteIssueMarshaller() {
+    static void registerIssueForSampleDataCohortsMarshaller() {
         JSON.createNamedConfig(ISSUE_COMPLETE) {
             it.registerObjectMarshaller(Issue) { Issue issue ->
                 return [

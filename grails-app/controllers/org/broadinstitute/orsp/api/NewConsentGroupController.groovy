@@ -15,7 +15,6 @@ import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
-import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.User
@@ -170,7 +169,7 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def getProjectConsentGroups() {
-        UtilityClass.registerCompleteIssueMarshaller()
+        UtilityClass.registerIssueForSampleDataCohortsMarshaller()
         try {
             LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
             response.status = 200

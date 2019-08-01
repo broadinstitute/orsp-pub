@@ -35,6 +35,7 @@ export const Panel = hh(class Panel extends Component {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
     }
+
     return (
       div({ className: "panelContainer" }, [
         div({ className: "panelHeader" }, [

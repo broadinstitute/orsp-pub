@@ -108,7 +108,7 @@ class UrlMappings {
         "404"(controller: "error", action: "error404")
         "403"(controller: "error", action: "error403")
 
-        // Handle observed fishing attempts/api/files-helper/remove-attachment
+        // Handle observed fishing attempts
         "/sdk"                          (controller: "error", action: "error403")
         "/Rapid7"                       (controller: "error", action: "error403")
         "/dyndata.js"                   (controller: "error", action: "error403")
