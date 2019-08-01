@@ -6,6 +6,7 @@ import CollectionTable from './CollectionTable'
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import ResponseView from './ResponseView'
 import SampleCollectionAutocomplete from "../util/SampleCollectionAutocomplete";
+import { UrlConstants } from "../util/UrlConstants";
 
 export default class CollectionLinks extends React.Component {
   constructor(props) {
@@ -123,7 +124,6 @@ export default class CollectionLinks extends React.Component {
               <label htmlFor="projectKey">Project</label>
               <ProjectAutocomplete
                 ref={el => { this.projectAutocomplete = el; }}
-                searchUrl={this.props.projectKeySearchUrl}
                 onChange={ (selected) => {
                   if (selected[0] != null && !(typeof selected[0].projectKey === "undefined")) {
                     this.setState(() => ({ projectKey: selected[0].projectKey}));
@@ -155,7 +155,7 @@ export default class CollectionLinks extends React.Component {
               <label htmlFor="sampleCollectionId">Sample Collection</label>
               <SampleCollectionAutocomplete
                 ref={el => {this.sampleAutocomplete = el}}
-                sampleSearchUrl={this.props.sampleSearchUrl}
+                sampleSearchUrl={UrlConstants.sampleSearchUrl}
                 defaultSelected={[]}
                 onChange={ (selected) => {
                   if (selected[0] != null && !(typeof selected[0].collectionId === "undefined")) {

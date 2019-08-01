@@ -158,7 +158,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     let future = {};
     let futureCopy = {};
     let formData = {};
-    Project.getProject(component.projectUrl, component.projectKey).then(
+    Project.getProject(component.projectKey).then(
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
@@ -178,7 +178,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         futureCopy = JSON.parse(currentStr);
         this.projectType = issue.data.issue.type;
 
-        Review.getSuggestions(component.serverURL, component.projectKey).then(
+        Review.getSuggestions(component.projectKey).then(
           data => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('new') && urlParams.get('tab') === 'review') {
@@ -222,7 +222,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   getReviewSuggestions() {
     this.init();
-    Review.getSuggestions(component.serverURL, component.projectKey).then(
+      Review.getSuggestions(component.projectKey).then(
       data => {
         if (data.data !== '') {
           this.setState(prev => {
@@ -292,7 +292,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(component.serverURL, component.projectKey, data).then(
+    Project.addExtraProperties(component.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
@@ -300,7 +300,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           return prev;
         }, 
         () => {
-          Project.getProject(component.projectUrl, component.projectKey).then(
+          Project.getProject(component.projectKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
             })
@@ -311,7 +311,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     });
     if (this.state.reviewSuggestion) {
       let project = this.getProject();
-      Project.updateProject(component.updateProjectUrl, project, component.projectKey).then(
+      Project.updateProject(project, component.projectKey).then(
         resp => {
           this.removeEdits('approve');
         })
@@ -323,7 +323,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   rejectProject() {
     spinnerService.showAll();
-    Project.rejectProject(component.rejectProjectUrl, component.projectKey).then(resp => {
+    Project.rejectProject(component.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
@@ -346,7 +346,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     spinnerService.showAll();
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(component.updateProjectUrl, project, component.projectKey).then(
+    Project.updateProject(project, component.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
@@ -359,7 +359,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   removeEdits(type) {
-    Review.deleteSuggestions(component.discardReviewUrl, component.projectKey, type).then(
+    Review.deleteSuggestions(component.projectKey, type).then(
       resp => {
         this.props.updateContent();
         this.init();
@@ -496,7 +496,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         return prev;
       });
       let suggestions = this.state.formData;
-      User.getUserSession(component.getUserUrl).then(
+      User.getUserSession().then(
         resp => {
           suggestions.editCreator = resp.data.userName;
           const data = {
@@ -505,7 +505,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           };
 
           if (this.state.reviewSuggestion) {
-            Review.updateReview(component.serverURL, component.projectKey, data).then(() =>
+            Review.updateReview(component.projectKey, data).then(() =>
               this.getReviewSuggestions()
             ).catch(error => {
               this.getReviewSuggestions();
@@ -516,7 +516,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               });
             });
           } else {
-            Review.submitReview(component.serverURL, data).then(() =>
+            Review.submitReview(data).then(() =>
               this.getReviewSuggestions()
             ).catch(error => {
               this.getReviewSuggestions();
@@ -539,7 +539,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   loadUsersOptions = (query, callback) => {
     if (query.length > 2) {
-      Search.getMatchingQuery(component.searchUsersURL, query)
+      Search.getMatchingQuery(query)
         .then(response => {
           let options = response.data.map(function (item) {
             return {
@@ -817,7 +817,6 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           show: this.state.requestClarification,
           issueKey: component.projectKey,
           successClarification: this.successNotification,
-          clarificationUrl: component.clarificationUrl
         }),
 
         button({

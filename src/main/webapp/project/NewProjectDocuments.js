@@ -117,11 +117,9 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.props.options,
-              attachDocumentsUrl: this.props.attachDocumentsUrl,
               projectKey: this.props.projectKey,
               user: this.props.user,
               handleLoadDocuments: this.props.handleLoadDocuments,
-              serverURL: this.props.serverURL,
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload
@@ -139,7 +137,6 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
-              downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
               reviewFlow: false,
               pagination: false

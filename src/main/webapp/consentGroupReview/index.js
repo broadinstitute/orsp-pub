@@ -6,15 +6,7 @@ import ErrorHandler from '../components/ErrorHandler';
 
 ReactDOM.render(
   <ErrorHandler>
-    <ConsentGroupReview
-      consentKey = {consentGroupReviewComponent.consentKey}
-      consentGroupUrl = {consentGroupReviewComponent.consentGroupUrl}
-      approveConsentGroupUrl = {consentGroupReviewComponent.approveConsentGroupUrl}
-      isAdminUrl = {consentGroupReviewComponent.isAdminUrl}
-      rejectConsentUrl = {consentGroupReviewComponent.rejectConsentUrl}
-      updateConsentUrl = {consentGroupReviewComponent.updateConsentUrl}
-      projectKey = {consentGroupReviewComponent.projectKey}
-    />
+    <ConsentGroupReview/>
   </ErrorHandler>,
   document.getElementById('consentGroupReview')
 );

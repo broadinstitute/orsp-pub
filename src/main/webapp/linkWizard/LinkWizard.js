@@ -76,7 +76,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   getUserSession() {
-    User.getUserSession(component.getUserUrl).then(
+    User.getUserSession().then(
       resp => this.setState({ user: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
@@ -218,7 +218,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       this.changeSubmitState();
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
-      ConsentCollectionLink.create(component.serverURL, consentCollectionData, documents).then(resp => {
+      ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
         window.location.href  = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
       }).catch(error => {
         console.error(error);
@@ -335,11 +335,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         submitHandler: this.submitLink,
         showSubmit: this.showSubmit,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: component.loadingImage,
       }, [
         SelectSampleConsent({
           title: "Sample/Data Cohort Info",
-          consentNamesSearchURL: component.consentNamesSearchURL,
           removeErrorMessage: this.removeErrorMessage,
           sampleCollectionList: this.state.sampleCollectionList,
           sampleCollection: this.state.sampleCollection,
