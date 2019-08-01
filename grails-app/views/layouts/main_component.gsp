@@ -71,15 +71,7 @@
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        attachDocumentsURL: "${createLink(uri: '/api/files-helper/attach-document', method: 'POST')}",
-        consentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'findByUUID')}",
-        consentNamesSearchURL: "${createLink(controller: 'consentGroup', action: 'consentGroupSummaries')}",
-        consentGroupsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroups')}",
-        createConsentGroupURL: "${createLink(controller:'newConsentGroup', action: 'save', uri: '/api/consent-group', method: 'POST')}",
-        createProjectURL: "${createLink(controller:'project', action: 'save', uri: '/api/project', method: 'POST')}",
         error: "${error}",
-        fillablePdfURL : "${createLink(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')}",
-        getUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
@@ -89,42 +81,12 @@
         tab: "${params.tab}",
         consentKey: "${consentKey}",
         projectType: '${params.type}',
-        projectKeySearchUrl: "${createLink(controller: 'search', action: 'projectKeyAutocomplete')}",
-        sampleSearchUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
-        searchUrl: "${createLink(controller: 'search', action: 'generalReactTablesJsonSearch')}",
-        searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-        serverURL: "${webRequest.baseUrl}",
+        serverURL: "${grailsApplication.config.grails.serverURL}",
         contextPath: "${request.contextPath}",
-        userNameSearchUrl: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-        sourceDiseases: "${createLink(controller: 'search', action: 'getMatchingDiseaseOntologies')}",
+        isAdmin: ${session.isAdmin},
+        isViewer: ${session.isViewer},
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
         isViewer: ${session.isViewer ? session.isViewer : false},
-        rejectProjectUrl: "${createLink(controller: 'project', action: 'delete')}",
-        updateProjectUrl: "${createLink(controller: 'project', action: 'update')}",
-        discardReviewUrl: "${createLink(controller: 'issueReview', action: 'delete')}",
-        clarificationUrl: "${createLink(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')}",
-        searchUsersURL: "${createLink(controller: 'search', action: 'getMatchingUsers')}",
-        projectUrl: "${createLink(controller: 'project', action: 'getProject')}",
-        saveExtraPropUrl: "${createLink(controller: 'project', action: 'modifyExtraProperties')}",
-        unlinkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'unConsentedSampleCollections')}",
-        linkedSampleCollectionsUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')}",
-        attachedDocumentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
-        rejectDocumentUrl: "${createLink(uri: '/api/files-helper/reject-document', 'PUT')}",
-        approveDocumentUrl: "${createLink(uri: '/api/files-helper/approve-document', method: 'PUT')}",
-        downloadDocumentUrl: "${createLink(controller: 'authenticated', action: 'downloadDocument')}",
-        sessionUserUrl: "${createLink(controller: 'authenticated', action: 'getSessionUser')}",
-        removeDocumentUrl: "${createLink(uri: '/api/files-helper/delete', 'DELETE')}",
-        updateAdminOnlyPropsUrl: "${createLink(controller: 'project', action: 'updateAdminOnlyProps')}",
-        attachmentsUrl: "${createLink(uri: '/api/files-helper/attached-documents', method: 'GET')}",
-        emailDulUrl: "${createLink(uri: '/api/dul-email-notification')}",
-        useRestrictionUrl: "${createLink(controller:'newConsentGroup', action: 'getDataUseRestriction')}",
-        isAdminUrl: "${createLink(controller: 'authenticated', action: 'isCurrentUserAdmin')}",
-        rejectConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'delete')}",
-        updateConsentUrl: "${createLink(controller: 'newConsentGroup', action: 'update')}",
-        approveConsentGroupUrl: "${createLink(controller: 'newConsentGroup', action: 'approveConsentGroup')}",     
-        consentGroupReviewUrl: "${createLink(controller: 'consentGroup', action: 'getConsentGroup')}",
-        createRestrictionUrl: "${createLink(controller: 'dataUse', action: 'create')}",
-        requestLinkClarificationUrl: "${createLink(controller: 'clarification', action:'collectionRequestClarification')}"
       };
     </script>
 
@@ -147,7 +109,7 @@
     <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
-    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=8zknubfnjvv9l3sg0cpxrome1qk6r2wlpdw7j4ebb3gjxige"></script>
+    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=kyknyn3xmeam53u8vyway2oxf18oecyfwkjoym1xcydpyfyh"></script>
 
     <g:layoutHead/>
 </head>

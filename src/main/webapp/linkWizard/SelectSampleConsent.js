@@ -121,7 +121,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   getConsentGroups = () => {
     this.setState({ consentGroupIsLoading: true });
-    ConsentGroup.getConsentGroupNames(component.consentGroupsUrl).then(
+    ConsentGroup.getConsentGroupNames().then(
       resp => {
         const existingConsentGroups = resp.data.map(item => {
           return {
@@ -144,7 +144,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   getAllSampleCollections = (consentKey) => {
     this.setState({ sampleCollectionIsLoading: true });
 
-    SampleCollections.getCollectionsCGLinked(component.linkedSampleCollectionsUrl, consentKey).then(
+    SampleCollections.getCollectionsCGLinked(consentKey).then(
       resp => {
         const label = "Sample Collections Linked to ";
         const sampleCollectionList = this.setOptionsValues(resp.data, consentKey, label);
@@ -156,7 +156,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       }
     );
 
-    SampleCollections.getSampleCollections(component.unlinkedSampleCollectionsUrl, consentKey).then(
+    SampleCollections.getSampleCollections(consentKey).then(
       resp => {
 
         const label = "Link New Sample Collections to Sample Data/Cohort: ";
@@ -332,7 +332,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
-              downloadDocumentUrl: this.props.downloadDocumentUrl,
               remove: this.removeFile,
               reviewFlow: false,
               pagination: false

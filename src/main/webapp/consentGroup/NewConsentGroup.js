@@ -70,10 +70,10 @@ class NewConsentGroup extends Component {
   componentDidMount() {
     this.initDocuments();
     this.getUserSession();
-    ConsentGroup.getConsentGroupNames(this.props.consentNamesSearchURL).then(
+    ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data }));
 
-    SampleCollections.getSampleCollections(this.props.sampleSearchUrl).then(
+    SampleCollections.getSampleCollections().then(
       resp => {
         const sampleCollections = resp.data.map(item => {
           return {
@@ -88,7 +88,7 @@ class NewConsentGroup extends Component {
   }
 
   getUserSession() {
-    User.getUserSession(this.props.getUserUrl).then(
+    User.getUserSession().then(
       resp => this.setState({ user: resp.data })
     )
   }
@@ -103,7 +103,6 @@ class NewConsentGroup extends Component {
       this.changeSubmitState();
       let consentGroup = this.getConsentGroup();
       ConsentGroup.create(
-        this.props.createConsentGroupURL,
         consentGroup,
         this.getConsentCollectionData(consentGroup.samples),
         this.state.files,
@@ -468,7 +467,7 @@ class NewConsentGroup extends Component {
   }
 
   downloadFillablePDF = () => {
-    Files.downloadFillable(this.props.fillablePdfURL).then(response => {
+    Files.downloadFillable().then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -509,13 +508,11 @@ class NewConsentGroup extends Component {
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
         disabledSubmit: this.state.formSubmitted,
-        loadingImage: this.props.loadingImage
       }, [
           NewConsentGroupGeneralData({
             title: "Sample/Data Cohort Info",
             currentStep: currentStep,
             user: this.state.user,
-            sampleSearchUrl: this.props.sampleSearchUrl,
             updateForm: this.updateGeneralDataFormData,
             errors: this.state.errors,
             removeErrorMessage: this.removeErrorMessage,
@@ -524,7 +521,6 @@ class NewConsentGroup extends Component {
             fileHandler: this.fileHandler,
             projectType: projectType,
             options: this.state.documentOptions,
-            fillablePdfURL: this.props.fillablePdfURL,
             files: this.state.files,
             isConsentFormPresent: this.state.isConsentFormPresent
           }),
@@ -538,7 +534,6 @@ class NewConsentGroup extends Component {
             requireMta: this.state.linkFormData.requireMta,
             errors: this.state.errors,
             user: this.state.user,
-            searchUsersURL: this.props.searchUsersURL,
             updateInfoSecurityFormData: this.updateInfoSecurityFormData,
             showErrorInfoSecurity: this.state.showErrorInfoSecurity,
             generalError: this.state.generalError,

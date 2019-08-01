@@ -7,6 +7,7 @@ import { Btn } from './Btn';
 import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
 import { formatRoleName } from "../util/roles";
+import { UrlConstants } from "../util/UrlConstants";
 
 const styles = { 
   statusWidth: '140',
@@ -91,7 +92,7 @@ export const Table = hh(class Table extends Component {
   formatUrlDocument = (cell, row) => {
     if (this.props.reviewFlow) {
       return a({
-        href: `${component.downloadDocumentUrl}?uuid=${row.uuid}`,
+        href: `${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
         target: '_blank',
         title: row.fileName,
       }, [row.fileName])

@@ -37,7 +37,7 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   getSubmissions() {
-    ProjectMigration.getSubmissions(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getSubmissions(component.projectKey).then(resp => {
       this.setState(prev => {
         prev.content = resp.data;
         return prev;
@@ -50,7 +50,7 @@ export const Submissions = hh(class Submissions extends Component {
   getDisplaySubmissions = () => {
     let amendments = {};
     let others = {};
-    ProjectMigration.getDisplaySubmissions(component.serverURL, component.projectKey).then(resp => {
+    ProjectMigration.getDisplaySubmissions(component.projectKey).then(resp => {
       console.log(resp.data.groupedSubmissions);
       _.map(resp.data.groupedSubmissions, (data, title) => {
         console.log('data', data);

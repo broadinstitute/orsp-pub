@@ -40,7 +40,7 @@ class SearchResults extends Component {
   }
 
   componentDidMount() {
-    User.getUserSession(this.props.getUserUrl).then(resp =>
+    User.getUserSession().then(resp =>
       this.setState({ user: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });

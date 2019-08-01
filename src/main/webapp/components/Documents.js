@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, h3, div, p, hr, small, button, ul, li, br, span } from 'react-hyperscript-helpers';
+import { hh, h, h3, div, p, button } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import { AddDocumentDialog } from './AddDocumentDialog'
@@ -9,6 +9,7 @@ import { DocumentHandler } from '../util/ajax';
 import { Spinner } from '../components/Spinner';
 import { DataUseLetter } from './DataUseLetterLink';
 import './Documents.css';
+import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [
@@ -51,7 +52,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   newRestriction = () => {
-    window.location.href = this.props.newRestrictionUrl + '?create=true&id=' + this.props.projectKey;
+    window.location.href = UrlConstants.newRestrictionUrl + '?create=true&id=' + this.props.projectKey;
   };
 
   editRestriction = () => {
@@ -81,7 +82,7 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-   DocumentHandler.delete(component.removeDocumentUrl, this.state.documentToRemove.id).
+   DocumentHandler.delete(this.state.documentToRemove.id).
     then(resp => {
       this.closeRemoveModal();
       this.props.handleLoadDocuments();
@@ -109,11 +110,9 @@ export const Documents = hh(class Documents extends Component {
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
-        attachDocumentsUrl: component.attachDocumentsUrl,
         projectKey: this.props.projectKey,
         user: this.props.user,
         handleLoadDocuments: this.props.handleLoadDocuments,
-        emailUrl: this.props.emailUrl,
         userName: this.props.userName,
         isConsentGroup: this.props.isConsentGroup
       }),
@@ -154,7 +153,6 @@ export const Documents = hh(class Documents extends Component {
         DataUseLetter({
           userName: this.props.userName,
           projectKey: this.props.projectKey,
-          emailUrl: this.props.emailUrl
         })
       ]),
 
@@ -206,7 +204,6 @@ export const Documents = hh(class Documents extends Component {
       div({ isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0 }, [
         Panel({ title: "Associated Projects" }, [
           Table({
-            serverURL: this.props.serverURL,
             headers: associatedProjectsHeaders,
             data: this.props.associatedProjects,
             sizePerPage: 10,
