@@ -8,6 +8,7 @@ import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
 import { formatRoleName } from "../util/roles";
 import { UrlConstants } from "../util/UrlConstants";
+import { isEmpty } from "../util/Utils";
 
 const styles = { 
   statusWidth: '140',
@@ -42,7 +43,7 @@ export const Table = hh(class Table extends Component {
   };
 
   parseCreateDate = (date) => {
-    if (date !== null) {
+    if (!isEmpty(date)) {
       const simpleDate = new Date(date);
       return format(simpleDate, 'MM/DD/YY')
     }

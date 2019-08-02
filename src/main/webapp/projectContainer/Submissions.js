@@ -54,20 +54,8 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   componentDidMount() {
-    this.getSubmissions();
     this.getDisplaySubmissions();
   }
-
-  getSubmissions() {
-    ProjectMigration.getSubmissions(component.projectKey).then(resp => {
-      this.setState(prev => {
-        prev.content = resp.data;
-        return prev;
-      }, () => {
-        this.loadSubmissions();
-      })
-    });
-  };
 
   getDocumentLink = (data) => {
     return [component.serverURL, 'api/files-helper/get-document?id=' + data].join("/");
@@ -83,8 +71,6 @@ export const Submissions = hh(class Submissions extends Component {
   };
 
   getDisplaySubmissions = () => {
-    let amendments = {};
-    let others = {};
     let submissions = {};
     ProjectMigration.getDisplaySubmissions(component.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
@@ -98,28 +84,8 @@ export const Submissions = hh(class Submissions extends Component {
           });
         });
       });
-      amendments = resp.data.groupedSubmissions.Amendment;
-      others = resp.data.groupedSubmissions.Other;
-
-      amendments.forEach(other => {
-        other.documents.forEach(document => {
-          Files.getDocument(document.id).then(resp => {
-            document.document = resp.data.document;
-          });
-        });
-      });
-
-      others.forEach(other => {
-        other.documents.forEach(document => {
-          Files.getDocument(document.id).then(resp => {
-            document.document = resp.data.document;
-          });
-        });
-      });
 
       this.setState(prev => {
-        prev.amendments = amendments;
-        prev.others = others;
         prev.submissions = submissions;
         return prev;
       });
@@ -127,27 +93,6 @@ export const Submissions = hh(class Submissions extends Component {
       this.setState(() => { throw error; });
     });
   };
-
-  getDocuments = (documents) => {
-    documents.forEach(document => {
-      Files.getDocument(document.id).then(resp => {
-        document.document = resp.data.document;
-      });
-    });
-  };
-
-  loadSubmissions() {
-    $(".submissionTable").DataTable({
-      dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-      buttons: [],
-      language: { search: 'Filter:' },
-      pagingType: "full_numbers",
-      pageLength: 50,
-      columnDefs: [{ targets: [1, 2], orderable: false }],
-      order: [0, "desc"]
-    });
-    $("#submission-tabs").tabs();
-  }
 
   redirectNewSubmission(e) {
     window.location.href = `${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
@@ -202,8 +147,6 @@ export const Submissions = hh(class Submissions extends Component {
           ])
         ]),
       ])
-        // ,
-        // div({dangerouslySetInnerHTML: { __html: this.state.content } },[])
     )
   }
 });
