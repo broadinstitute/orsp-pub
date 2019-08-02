@@ -56,7 +56,7 @@ class DataUseLetterController extends AuthenticatedController {
 
     @Override
     def show() {
-        render(view: "/mainContainer/index")
+        render(view: "/mainContainer/index", model: [openUrl: true])
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
