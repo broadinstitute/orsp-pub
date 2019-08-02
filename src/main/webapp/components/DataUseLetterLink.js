@@ -12,6 +12,13 @@ import { Spinner } from './Spinner';
 import './Documents.css';
 import { isEmpty } from '../util/Utils';
 
+const styles = {
+  getShareable: {
+    marginTop: '20px',
+    glyphicon: {marginRight: '5px'}
+  }
+};
+
 export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   constructor(props) {
@@ -224,7 +231,8 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
         div({ className: "row" }, [
           div({ className: "col-xs-12" }, [
             button({
-              className: "btn buttonPrimary getShareable",
+              className: "btn brnPrimary",
+              style: styles.getShareable,
               onClick: this.getShareableLink,
               name: "getLink",
               disabled: this.state.disableShareableLink,
