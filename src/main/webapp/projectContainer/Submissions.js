@@ -6,7 +6,6 @@ import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
-import './Submissions.css';
 
 const headers =
   [
