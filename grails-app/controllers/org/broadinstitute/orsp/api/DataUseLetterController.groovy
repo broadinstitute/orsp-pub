@@ -56,7 +56,7 @@ class DataUseLetterController extends AuthenticatedController {
 
     @Override
     def show() {
-        render(view: "/mainContainer/index", model: [openUrl: true])
+        render(view: "/dataUseLetter/index")
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
@@ -75,8 +75,8 @@ class DataUseLetterController extends AuthenticatedController {
                 new DulPdfParser().fillDulForm(dul, dulDOC.getDocumentCatalog().getAcroForm())
                 dulDOC.save(output)
                 String fileName = JSON.parse(dul.dulInfo)[DataUseLetterFields.PROTOCOL_TITLE.abbreviation].replaceAll(' / ','_').concat("_DataUseLetter.pdf")
-
                 uploadDataUseLetter(dul,new ByteArrayInputStream(output.toByteArray()), fileName)
+
                 dul.setSubmitted(true)
                 dul.setSubmitDate(new Date())
                 dul.save(flush:true)
