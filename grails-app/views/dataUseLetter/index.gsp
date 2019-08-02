@@ -1,8 +1,6 @@
 <html>
   <head>
-    <meta name="layout" content="main">
-    <meta name="layout" content="minimal">
-    <meta name="layout" content="main_component">
+    <meta name="layout" content="unguarded_component"/>
     <title>ORSP</title>
   </head>
 
