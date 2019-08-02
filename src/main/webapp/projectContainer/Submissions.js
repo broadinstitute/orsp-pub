@@ -16,6 +16,28 @@ const headers =
     { name: 'Created', value: 'createDate' },
   ];
 
+const styles = {
+  submissionComment: {
+    margin: '0 10px 10px 0',
+    paddingLeft: '20px',
+    width: 'calc(100% - 60px)',
+    display: 'inline-block',
+    overflow: 'visible',
+    whiteSpace: 'normal',
+    textOverflow: 'initial',
+    wordBreak: 'break-word'
+  },
+
+  addSubmission: {
+    position: 'absolute',
+    right: '30px',
+    top: '46px'
+  },
+
+  submissionCounter: {
+    marginLeft: '1em'
+  }
+};
 
 export const Submissions = hh(class Submissions extends Component {
 
@@ -56,13 +78,9 @@ export const Submissions = hh(class Submissions extends Component {
       className: 'btn btn-default btn-xs pull-left link-btn',
       href: `${component.contextPath}/submission/index?projectKey=${component.projectKey}&submissionId=${data.id}`
     }, [component.isAdmin === true ? 'Edit': 'View']);
-    const submissionComment = span({className: 'submission-comment'}, [data.comments]);
+    const submissionComment = span({style: styles.submissionComment}, [data.comments]);
     return h(Fragment, {}, [indexButton, submissionComment]);
   };
-
-  redirectNewSubmission(e) {
-    window.location.href=`${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
-  }
 
   getDisplaySubmissions = () => {
     let amendments = {};
@@ -106,7 +124,6 @@ export const Submissions = hh(class Submissions extends Component {
         return prev;
       });
     }).catch(error => {
-      // TODO: redirect to index
       this.setState(() => { throw error; });
     });
   };
@@ -137,49 +154,36 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   submissionTab = (data, title) => {
-    return h(Fragment, { key: title },
-      [
-        div({ key: title, title: this.tabTitle(title, data.length) },[
-          h(Fragment, { key: title }, [
-            a({
-              onClick: this.redirectNewSubmission,
-              className: "btn btn-primary add-submission",
-              id: title
-            }, ["Add Submission"]),
-            Table({
-              headers: headers,
-              data: data,
-              sizePerPage: 10,
-              paginationSize: 10,
-              isAdmin: component.isAdmin,
-              getDocumentLink: this.getDocumentLink,
-              pagination: true,
-              reviewFlow: true,
-              submissionEdit: this.submissionEdit,
-            })
-          ])
-        ])
-      ])
+    return div({
+      key: title, title: this.tabTitle(title, data.length) },[
+      a({
+        onClick: this.redirectNewSubmission,
+        className: "btn btn-primary",
+        style: styles.addSubmission,
+        id: title
+      }, ["Add Submission"]),
+      Table({
+        headers: headers,
+        data: data,
+        sizePerPage: 10,
+        paginationSize: 10,
+        isAdmin: component.isAdmin,
+        getDocumentLink: this.getDocumentLink,
+        pagination: true,
+        reviewFlow: true,
+        submissionEdit: this.submissionEdit,
+      })
+    ]);
   };
 
   tabTitle = (title, amount) => {
     return h(Fragment, {}, [
       title,
-      span({className: "badge badge-dark submission-counter"}, [amount])
+      span({className: "badge badge-dark", style: styles.submissionCounter}, [amount])
     ]);
   };
 
   render() {
-
-    const amendmentTitle = h(Fragment, {}, [
-      "Amendment",
-      span({className: "badge badge-dark submission-counter"}, [this.state.amendments.length])
-    ]);
-
-    const othersTitle = h(Fragment, {}, [
-      "Others",
-      span({className: "badge badge-dark submission-counter"}, [this.state.others.length])
-    ]);
     return (
       div({}, [
         button({
@@ -188,33 +192,12 @@ export const Submissions = hh(class Submissions extends Component {
           onClick: '',
           isRendered: this.state.readOnly === true && !component.isViewer
         }, ["Edit Information"]),
-
         Panel({title: "Submissions"}, [
           div({ className: "containerBox" }, [
-            MultiTab({ defaultActive: "amendment"}, [
+            MultiTab({ defaultActive: "Amendment"}, [
               _.map(this.state.submissions, (data, title) => {
                 return this.submissionTab(data, title)
               }),
-              // div({ key: "other", title: othersTitle},[
-              //   h(Fragment, {}, [
-              //     a({
-              //       onClick: this.redirectNewSubmission,
-              //       className: "btn btn-primary add-submission",
-              //       id: "Other"
-              //     }, ["Add Submission"]),
-              //     Table({
-              //       headers: headers,
-              //       data: this.state.others,
-              //       sizePerPage: 10,
-              //       paginationSize: 10,
-              //       isAdmin: component.isAdmin,
-              //       getDocumentLink: this.getDocumentLink,
-              //       pagination: true,
-              //       reviewFlow: true,
-              //       submissionEdit: this.submissionEdit,
-              //     }),
-              //   ])
-              // ]),
             ])
           ])
         ]),

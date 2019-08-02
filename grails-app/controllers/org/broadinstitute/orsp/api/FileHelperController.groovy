@@ -7,12 +7,8 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.StorageDocument
-import org.broadinstitute.orsp.SupplementalRole
 import org.springframework.web.multipart.MultipartFile
-
-import javax.swing.text.Document
 
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])

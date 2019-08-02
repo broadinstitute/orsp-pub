@@ -140,7 +140,7 @@ export const Table = hh(class Table extends Component {
     }, ["Info Link"])
   };
 
-  redirectToDocumentLink = (cell, row) => {
+  documentLink = (cell, row) => {
     let documents = [];
     cell.forEach(data => {
       if (data.document !== undefined) {
@@ -151,7 +151,10 @@ export const Table = hh(class Table extends Component {
               target: '_blank',
               title: data.document.fileType,
             }, [
-              span({className: 'glyphicon glyphicon-download submission-download' }, []),
+              span({
+                className: 'glyphicon glyphicon-download submission-download',
+                styles: "margin-right: 10px;"
+              }, []),
               data.document.fileName
             ])
           ])
@@ -334,7 +337,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
-                dataFormat={this.redirectToDocumentLink}
+                dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'createDate') {
