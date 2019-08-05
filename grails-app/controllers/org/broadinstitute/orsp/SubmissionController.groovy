@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import grails.converters.JSON
 import groovy.util.logging.Slf4j
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.utils.IssueUtils
@@ -19,6 +20,17 @@ class SubmissionController extends AuthenticatedController {
                         groupedSubmissions : groupedSubmissions,
                         attachmentsApproved: issue.attachmentsApproved()
                 ])
+    }
+
+    def getSubmissions() {
+        Issue issue = queryService.findByKey(params.id)
+        if (issueIsForbidden(issue)) {
+            response.status = 403
+            render([error: "Issue is forbidden."] as JSON)
+        }
+        Collection<Submission> submissions = queryService.getSubmissionsByProject(issue.projectKey)
+        Map<String, List<Submission>> groupedSubmissions = groupSubmissions(issue, submissions)
+        render([groupedSubmissions: groupedSubmissions] as JSON)
     }
 
     private static Collection<String> getSubmissionTypesForIssueType(String issueType) {
