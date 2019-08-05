@@ -35,6 +35,7 @@ export const UrlConstants = {
   approveDocumentUrl: context + '/api/files-helper/approve-document',
   rejectDocumentUrl: context + '/api/files-helper/reject-document',
   removeDocumentUrl: context + '/api/files-helper/delete',
+  getDocumentById: context + '/api/files-helper/get-document',
 
   // Issue Review urls
   issueReviewUrl: context + '/api/issue-review',
@@ -64,6 +65,7 @@ export const UrlConstants = {
   sampleApproveLinkUrl: context + '/api/approve-link',
   historyUrl: context + '/api/history',
   submissionsUrl: context + '/api/submissions',
+  submissionDisplayUrl: context + '/api/submissions/display',
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',

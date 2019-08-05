@@ -136,6 +136,10 @@ export const Files = {
     return axios.post(UrlConstants.attachDocuments, data, config);
   },
 
+  getDocument(id) {
+    return axios(UrlConstants.getDocumentById + '?id=' + id)
+  },
+
   downloadFillable() {
     return axios({ url: UrlConstants.fillablePdfURL, method: 'GET', responseType: 'blob' });
   }
@@ -348,6 +352,10 @@ export const ProjectMigration = {
   },
 
   getSubmissions(id) {
-    return axios.get(UrlConstants.submissionsUrl + '?id='+ id);
+    return axios.get(UrlConstants.submissionsUrl + "?id=" + id);
+  },
+
+  getDisplaySubmissions(id) {
+    return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
   }
 };
