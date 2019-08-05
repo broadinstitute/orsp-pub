@@ -58,6 +58,7 @@ class UrlMappings {
         '/api/files-helper/remove-attachment'(controller: 'fileHelper', action: 'deleteDocumentByUuid', method: 'DELETE')
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
+        '/api/files-helper/get-document'(controller: 'fileHelper', action: 'getDocument')
 
         // Issue review end points
         '/api/issue-review'(controller: 'issueReview', action:'delete', method: 'DELETE')
@@ -98,7 +99,11 @@ class UrlMappings {
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+        '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
+        '/api/submissions/add-new'(controller: 'submission', action: 'index')
+        '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
+
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
 
