@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { button, hh, span, div, i, a } from 'react-hyperscript-helpers';
-import { handleRedirectToConsentGroup } from '../util/Utils';
+import { handleRedirectToConsentGroup, isEmpty } from '../util/Utils';
 import '../components/Btn.css';
 
 const POINTER = {
   auto: { pointerEvents: 'auto' },
   none: { pointerEvents: 'none' }
+};
+
+const STATUS = {
+  approved: 'approved',
+  pending: 'pending'
 };
 
 export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
@@ -28,7 +33,9 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
 
   render() {
     const { unlinkHandler, rejectHandler, approveHandler, requestClarificationHandler } = this.props.element.customHandlers;
-    const { projectKey, summary, status } = this.props.element.consent;
+    const { projectKey, summary} = this.props.element.consent;
+    const  status = isEmpty(this.props.element.consent.status) ? '' : this.props.element.consent.status.toLowerCase();
+
     return(
       div({ className: 'sample-dc' }, [
 
@@ -40,26 +47,26 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
           ])
         ]),
 
-        span({ className:'status ' + (status === 'Approved' ? 'approved' : 'pending')},
-          [ status === 'Approved' ? 'Approved' : 'Pending' 
+        span({ className:'status ' + (status === STATUS.approved ? 'approved' : 'pending')},
+          [ status === STATUS.approved ? 'Approved' : 'Pending'
         ]),
 
         div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
-              isRendered: status.toLowerCase() === 'pending' && component.isAdmin,
+              isRendered: status === STATUS.pending && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: POINTER.auto,
               onClick: (e) => approveHandler(e, projectKey)
             },['Approve']),
             button({
-              isRendered: status.toLowerCase() === 'pending' && component.isAdmin,
+              isRendered: status === STATUS.pending && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: POINTER.auto,
               onClick: (e) => rejectHandler(e, projectKey)
             },['Reject']),
             button({
-              isRendered: status.toLowerCase() === 'approved' && component.isAdmin,
+              isRendered: status === STATUS.approved && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: POINTER.auto,
               onClick: (e) => unlinkHandler(e, projectKey)
