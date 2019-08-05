@@ -80,10 +80,6 @@ class UrlMappings {
         '/api/clarification-request'(controller: 'clarification', action: 'addClarificationRequest', method: 'POST')
         '/api/sample-consent-link'(controller: 'sampleConsentLink', action: 'save', method: 'POST')
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
-
-        '/consent-group/use-existing'(controller: 'authenticated', action: 'routeRedirect')
-        '/consent-group/new'(controller: 'authenticated', action: 'routeRedirect')
-
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
         '/api/user/authenticated/user-data'(controller: 'authenticated', action: 'getSessionUser')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
