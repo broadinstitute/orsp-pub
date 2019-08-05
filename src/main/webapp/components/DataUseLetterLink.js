@@ -8,6 +8,8 @@ import { spinnerService } from "../util/spinner-service";
 import { Spinner } from './Spinner';
 import './Documents.css';
 
+const DUL_SPINNER = 'dataUseLetterSpinner';
+
 export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   constructor(props) {
@@ -22,6 +24,10 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     };
   }
 
+  componentWillUnmount() {
+    spinnerService._unregister(DUL_SPINNER);
+  }
+
   validEmail = (email) => {
     if (validateEmail(email)) {
       return true;
@@ -31,7 +37,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   };
 
   send = () => {
-    spinnerService.showAll();
+    spinnerService.show(DUL_SPINNER);
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)) {
       this.setState({ alertMessage: '', collaboratorEmail: '', showAlert: false });
@@ -43,9 +49,9 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           prev.showAlert = true;
           prev.collaboratorEmail = '';
           return prev;
-        }, () => spinnerService.hideAll());
+        }, () => spinnerService.hide(DUL_SPINNER));
       }).catch(error => {
-        spinnerService.hideAll();
+        spinnerService.hide(DUL_SPINNER);
         this.setState(prev => {
           prev.alertType = 'danger';
           prev.alertMessage = 'Error sending email to: ' + collaboratorEmail + '. Please try again later.';
@@ -54,7 +60,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           return prev;
         });
       });
-    } else spinnerService.hideAll();
+    } else spinnerService.hide(DUL_SPINNER);
   };
 
   getShareableLink = () => {
@@ -157,7 +163,10 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
               }),
             ])
           ])
-        ])
+        ]),
+        h(Spinner, {
+          name: "dataUseLetterSpinner", group: "orsp", loadingImage: component.loadingImage
+        })
       ])
     );
   }

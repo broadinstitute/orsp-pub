@@ -377,7 +377,6 @@ class DataUseLetter extends Component {
       spinnerService.showAll();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
-      console.log('put dul', form);
       DUL.updateDUL(form).then(resp => {
         this.createRestriction();
         DUL.createDulPdf({ uid: id }).then(() => {

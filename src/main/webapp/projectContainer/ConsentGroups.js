@@ -11,6 +11,9 @@ import { TableComponent } from "../components/TableComponent";
 import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
 import { formatUrlDocument, parseDate } from "../util/TableUtil";
 import { AlertMessage } from "../components/AlertMessage";
+import { spinnerService } from "../util/spinner-service";
+
+const CONSENT_GROUPS_SPINNER = 'consentGroupsSpinner';
 
 const columns = (cThis) => [{
   dataField: 'id',
@@ -81,6 +84,10 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   componentDidMount() {
     this.getProjectConsentGroups();
+  }
+
+  componentWillUnmount() {
+    spinnerService._unregister(CONSENT_GROUPS_SPINNER);
   }
 
   getProjectConsentGroups = () => {
@@ -265,8 +272,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           className:"btn btn-default",
           onClick: () => this.redirect('useExisting')
         }, ['Use Existing Sample/Data Cohort'] ),
-        h3({},['Sample/Data Cohort']),
-
+        h3({ isRendered: !isEmpty(this.state.consentGroups) },['Sample/Data Cohort']),
         CollapsibleElements({
           body: TableComponent,
           header: SampleDataCohortsCollapsibleHeader,
@@ -296,7 +302,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           linkClarification: true
         }),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: CONSENT_GROUPS_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
