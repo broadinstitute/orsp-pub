@@ -35,8 +35,7 @@ class BQService {
     /**
      * Return a List of BroadUser objects from a single search query
      *
-     * @param filterUsers Collection of userNames to filter on
-     * @return List of BroadUser objects that do NOT exists on filterUsers
+     * @return List of BroadUser from BigQuery
      */
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
