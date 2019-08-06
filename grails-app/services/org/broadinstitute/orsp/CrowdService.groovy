@@ -44,7 +44,7 @@ class CrowdService implements Status {
      * Return a List of CrowdUserDetail objects from a single search query
      *
      * @param filterUsers Collection of userNames to filter on
-     * @return List of CrowdUserDetail objects that do NOT exists on filterUsers
+     * @return List of users that do NOT exist in the collection of filterUsers
      */
     private List<CrowdUserDetail> getCrowdQueryUserDetails(Collection<String> filterUsers) {
         List<CrowdUserDetail> crowdUsers = new ArrayList<>()
