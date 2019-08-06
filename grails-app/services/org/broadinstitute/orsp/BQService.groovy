@@ -30,7 +30,7 @@ class BQService {
     @SuppressWarnings("GroovyAssignabilityCheck")
     List<BroadUser> findMissingUsers() {
         Collection<String> filterUsers = userService.findAllUserNames()
-        getNewBroadUsers(filterUsers)
+        getNewOrspUsers(filterUsers, getBroadUserDetails())
     }
 
     /**
@@ -39,8 +39,8 @@ class BQService {
      * @param filterUsers Collection of userNames to filter on
      * @return List of BroadUser objects that do NOT exists on filterUsers
      */
-    private List<BroadUser> getNewBroadUsers(Collection<String> filterUsers) {
-        List<BroadUser> broadUsers = new ArrayList<>()
+    private List<BroadUser> getBroadUserDetails() {
+        List broadUsers = new ArrayList()
 
         // Instantiate a client.
         BigQuery bigquery =
@@ -50,7 +50,7 @@ class BQService {
                         .getService()
 
         QueryJobConfiguration queryConfig = QueryJobConfiguration
-                .newBuilder("SELECT * FROM `broad-bits.data_warehouse.people`")
+                .newBuilder("SELECT username, broad_email, first_name, last_name FROM `broad-bits.data_warehouse.people`")
                 .setUseLegacySql(false).build()
 
         // Create a job ID .
@@ -68,22 +68,21 @@ class BQService {
         } else {
             // Get the results.
             TableResult result = queryJob.getQueryResults()
-            // iterate over results to find out missing users
+            // iterate over results to build find out missing users
             for (FieldValueList row : result.iterateAll()) {
                 String email = row.get("broad_email").getStringValue()
                 String userName = row.get("username").getStringValue()
-                if (email && !filterUsers.contains(userName)) {
-                    String firstName = row.get("first_name").getStringValue()
-                    String lastName = row.get("last_name").getStringValue()
-                    String displayName = firstName + " " + lastName
-                    broadUsers.add(new BroadUser(userName: userName,
-                        firstName: firstName, 
-                        lastName: lastName,
-                        displayName: displayName, email: email))
-                }
+                String firstName = row.get("first_name").getStringValue()
+                String lastName = row.get("last_name").getStringValue()
+                String displayName = firstName + " " + lastName
+                broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
             }
         }
         broadUsers
+    }
+
+    private List<BroadUser> getNewOrspUsers (Collection<String> orspUsers, List<BroadUser> biqQueryUsers) {
+        bigQueryUsers.filter(!orspUsers.contains(it.userName))
     }
 
     /**
