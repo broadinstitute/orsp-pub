@@ -29,7 +29,7 @@ class CrowdService implements Status {
     }
 
     /**
-     * Find all valid users that exist in Crowd, but not in ORSP 
+     * Find all valid users that exist in Broad's users (BigQuery) but not in ORSP 
      * as a List of CrowdUserDetail objects
      *
      * @return List of CrowdUserDetail objects
@@ -52,15 +52,15 @@ class CrowdService implements Status {
         // Instantiate a client.
         BigQuery bigquery =
                 BigQueryOptions.newBuilder()
-                        .setCredentials(getCredentials())
+                        .setCredentials(getCredential())
                         .build()
-                        .getService();
+                        .getService()
 
         QueryJobConfiguration queryConfig = QueryJobConfiguration
                 .newBuilder("SELECT * FROM `broad-bits.data_warehouse.people`")
                 .setUseLegacySql(false).build()
 
-        // Create a job ID so that we can safely retry.
+        // Create a job ID .
         JobId jobId = JobId.of(UUID.randomUUID().toString());
         Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
@@ -72,11 +72,10 @@ class CrowdService implements Status {
             log.error("Job no longer exists")
         } else if (queryJob.getStatus().getError() != null) {
             log.error(queryJob.getStatus().getError().toString())
-
+        } else {
             // Get the results.
             TableResult result = queryJob.getQueryResults()
-
-            // Print all pages of the results.
+            // iterate over results to find out missing users
             for (FieldValueList row : result.iterateAll()) {
                 String email = row.get("broad_email").getStringValue()
                 String userName = row.get("username").getStringValue()
@@ -85,16 +84,13 @@ class CrowdService implements Status {
                     String lastName = row.get("last_name").getStringValue()
                     String displayName = firstName + " " + lastName
                     crowdUsers.add(new CrowdUserDetail(userName: userName,
-                            firstName: firstName, lastName: lastName,
-                            displayName: displayName, email: email))
-
-                    System.out.printf("NEW : %s, %s\n", userName, email)
-                } else {
-                    System.out.printf("OLD : %s, %s\n", userName, email)
+                        firstName: firstName, 
+                        lastName: lastName,
+                        displayName: displayName, email: email))
                 }
             }
-            crowdUsers
         }
+        crowdUsers
     }
 
     /**
@@ -102,7 +98,6 @@ class CrowdService implements Status {
      * @return A GoogleCredentials from json secrets.
      */
     private GoogleCredentials getCredential() {
-
         if (!credential) {
             File credentialsPath = new File(crowdConfiguration.config);
             FileInputStream serviceAccountStream = new FileInputStream(credentialsPath);
