@@ -65,6 +65,32 @@ class SubmissionController extends AuthenticatedController {
                 ])
     }
 
+    def indexNew() {
+        Issue issue = queryService.findByKey(params.projectKey)
+        Collection<Submission> submissions = queryService.getSubmissionsByProject(issue.projectKey)
+        Collection<String> submissionTypes = getSubmissionTypesForIssueType(issue.getType())
+        Submission submission = params?.submissionId ? Submission.findById(params?.submissionId) : null
+        Map<String, Integer> submissionNumberMaximums = new HashMap<>()
+        submissions.each {
+            if (submissionNumberMaximums.containsKey(it.type)) {
+                if (it.number > submissionNumberMaximums.get(it.type)) {
+                    submissionNumberMaximums.put(it.type, it.number)
+                }
+            } else {
+                submissionNumberMaximums.put(it.type, it.number)
+            }
+        }
+        SubmissionType defaultType = SubmissionType.getForLabel(params.get("type").toString()) ?: SubmissionType.Amendment.label
+        render( [issue:                      issue,
+                 typeLabel:                  issue.typeLabel,
+                 submission:                 submission,
+                 docTypes:                   PROJECT_DOC_TYPES,
+                 submissionTypes:            submissionTypes,
+                 submissionNumberMaximums:   submissionNumberMaximums,
+                 defaultType:                defaultType
+        ] as JSON)
+    }
+
     def save() {
         Issue issue = queryService.findByKey(params.projectKey)
         Submission submission

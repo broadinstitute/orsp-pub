@@ -92,7 +92,9 @@ class UrlMappings {
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
-        '/api/submissions/add-new'(controller: 'submission', action: 'index')
+        '/api/submissions/add-new'(controller: 'submission', action: 'indexNew', method: 'GET')
+        '/api/submissions/add-new-old'(controller: 'submission', action: 'index', method: 'GET')
+        '/api/submissions/add-new-old'(controller: 'submission', action: 'save', method: 'POST')
         '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
 

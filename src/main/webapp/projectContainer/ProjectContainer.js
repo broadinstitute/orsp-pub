@@ -111,7 +111,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "submissions",
                 title: "Submissions",
               }, [
-                  h(Fragment, {}, [Submissions({})]),
+                  h(Fragment, {}, [Submissions({
+                    history: this.props.history
+                  })]),
                 ]),
               div({
                 key: "comments",

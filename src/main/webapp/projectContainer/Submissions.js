@@ -93,9 +93,15 @@ export const Submissions = hh(class Submissions extends Component {
     });
   };
 
-  redirectNewSubmission(e) {
-    window.location.href = `${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
-  }
+  redirectNewSubmission = (e) => {
+    this.props.history.push(`/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`);
+    // window.location.href = `${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
+  };
+
+  redirectOldSubmission = (e) => {
+    // this.props.history.push(`/submission/add-new?projectKey=${component.projectKey}&type=${e.target.id}`);
+    window.location.href = `${component.serverURL}/api/submissions/add-new-old?projectKey=${component.projectKey}&type=${e.target.id}`;
+  };
 
   submissionTab = (data, title) => {
     return div({
@@ -116,7 +122,12 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
-      })
+      }),
+      a({
+        onClick: this.redirectOldSubmission,
+        className: "btn btn-primary",
+        id: title
+      }, ["Old Submission"]),
     ]);
   };
 

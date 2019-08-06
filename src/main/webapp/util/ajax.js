@@ -357,5 +357,9 @@ export const ProjectMigration = {
 
   getDisplaySubmissions(id) {
     return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
-  }
+  },
+
+  getSubmissionFormInfo(projectKey, type) {
+    return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+  },
 };

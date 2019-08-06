@@ -65,6 +65,7 @@ export const UrlConstants = {
   sampleApproveLinkUrl: context + '/api/approve-link',
   historyUrl: context + '/api/history',
   submissionsUrl: context + '/api/submissions',
+  submissionInfoAddUrl: context + '/api/submissions/add-new',
   submissionDisplayUrl: context + '/api/submissions/display',
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',

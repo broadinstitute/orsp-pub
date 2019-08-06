@@ -79,7 +79,8 @@ class Main extends Component {
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
           updateAdminOnlyStatus: this.updateAdminOnlyStatus,
-          statusBoxHandler: this.statusBoxHandler
+          statusBoxHandler: this.statusBoxHandler,
+          history: this.props.history
         }),
         ConsentGroupContainer({
           isRendered: component.issueType === 'consent-group',
