@@ -86,7 +86,7 @@
         isAdmin: ${session.isAdmin},
         isViewer: ${session.isViewer},
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
-        isViewer: ${session.isViewer ? session.isViewer : false},
+        isViewer: ${session.isViewer ? session.isViewer : false}
       };
     </script>
 

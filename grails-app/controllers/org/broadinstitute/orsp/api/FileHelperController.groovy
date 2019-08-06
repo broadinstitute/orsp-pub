@@ -133,10 +133,26 @@ class FileHelperController extends AuthenticatedController{
 
     def deleteDocumentByUuid() {
         if (params.uuid) {
-            StorageDocument document = queryService.findAttachmentByUuid(params.uuid)
-            storageProviderService.removeStorageDocument(document, getUser()?.displayName)
+            try {
+                StorageDocument document = queryService.findAttachmentByUuid(params.uuid)
+                if (document) {
+                    storageProviderService.removeStorageDocument(document, getUser()?.displayName)
+                    response.status = 200
+                    render(['message': 'document deleted'] as JSON)
+                } else {
+                    log.error("Error trying to delete File. Document with Uuid: ${params.uuid} not found.")
+                    response.status = 404
+                    render(['message': 'File to delete not found.'] as JSON)
+                }
+            } catch(Exception e) {
+                response.status = 500
+                log.error("Error trying to delete file with Uuid: ${params.uuid}.", e.getMessage())
+                render(['message': 'An error has occurred trying to delete File.'] as JSON)
+            }
+        } else {
+            log.error("Error, document to delete has an empty UuId.")
+            response.status = 400
+            render(['message': 'Unable to delete a file with no Id.'] as JSON)
         }
-        response.status = 200
-        render(['message': 'document deleted'] as JSON)
     }
 }

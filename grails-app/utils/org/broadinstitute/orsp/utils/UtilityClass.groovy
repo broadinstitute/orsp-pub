@@ -8,7 +8,6 @@ import org.broadinstitute.orsp.Event
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
-import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.User
 
@@ -94,8 +93,7 @@ class UtilityClass {
                         summary        : issue.summary,
                         reporter       : issue.reporter,
                         requestDate    : issue.requestDate,
-                        attachments    : issue.attachments,
-                        title          : issue.summary,
+                        attachments    : issue.attachments
                 ]
             }
         }

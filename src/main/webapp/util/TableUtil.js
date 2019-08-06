@@ -72,8 +72,10 @@ export const formatUrlDocument = (file) => {
 };
 
 export const parseDate = (date) => {
-  if (date !== null) {
+  let parsedDate = '';
+  if (!isEmpty(date)) {
     const simpleDate = new Date(date);
-    return format(simpleDate, 'M/D/YY h:m A')
+    parsedDate = format(simpleDate, 'M/D/YY h:m A');
   }
+  return parsedDate;
 };

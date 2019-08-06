@@ -507,44 +507,42 @@ class NewConsentGroup extends Component {
         isValid: this.isValid,
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
-        disabledSubmit: this.state.formSubmitted,
-
+        disabledSubmit: this.state.formSubmitted
       }, [
-          NewConsentGroupGeneralData({
-            title: "Sample/Data Cohort Info",
-            currentStep: currentStep,
-            user: this.state.user,
-
-            updateForm: this.updateGeneralDataFormData,
-            errors: this.state.errors,
-            removeErrorMessage: this.removeErrorMessage,
-            projectKey: component.projectKey,
-            sampleCollectionList: this.state.sampleCollectionList,
-            fileHandler: this.fileHandler,
-            projectType: projectType,
-            options: this.state.documentOptions,
-            files: this.state.files,
-            isConsentFormPresent: this.state.isConsentFormPresent
-          }),
-          NewLinkCohortData({
-            title: "Security/MTA/International Info",
-            currentStep: currentStep,
-            handler: this.determinationHandler,
-            determination: this.state.determination,
-            showErrorIntCohorts: this.state.showInternationalCohortsError,
-            origin: 'consentGroup',
-            requireMta: this.state.linkFormData.requireMta,
-            errors: this.state.errors,
-            user: this.state.user,
-            updateInfoSecurityFormData: this.updateInfoSecurityFormData,
-            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-            generalError: this.state.generalError,
-            submitError: this.state.submitError,
-            handleInfoSecurityValidity: this.handleInfoSecurityValidity,
-            securityInfoData: this.state.securityInfoFormData,
-            updateMTA: this.updateMTA
-          })
-        ])
+        NewConsentGroupGeneralData({
+          title: "Sample/Data Cohort Info",
+          currentStep: currentStep,
+          user: this.state.user,
+          updateForm: this.updateGeneralDataFormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          projectKey: component.projectKey,
+          sampleCollectionList: this.state.sampleCollectionList,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          options: this.state.documentOptions,
+          files: this.state.files,
+          isConsentFormPresent: this.state.isConsentFormPresent
+        }),
+        NewLinkCohortData({
+          title: "Security/MTA/International Info",
+          currentStep: currentStep,
+          handler: this.determinationHandler,
+          determination: this.state.determination,
+          showErrorIntCohorts: this.state.showInternationalCohortsError,
+          origin: 'consentGroup',
+          requireMta: this.state.linkFormData.requireMta,
+          errors: this.state.errors,
+          user: this.state.user,
+          updateInfoSecurityFormData: this.updateInfoSecurityFormData,
+          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError,
+          handleInfoSecurityValidity: this.handleInfoSecurityValidity,
+          securityInfoData: this.state.securityInfoFormData,
+          updateMTA: this.updateMTA
+        })
+      ])
     );
   }
 }

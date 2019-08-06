@@ -12,6 +12,7 @@ import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDa
 import { formatUrlDocument, parseDate } from "../util/TableUtil";
 import { AlertMessage } from "../components/AlertMessage";
 import { spinnerService } from "../util/spinner-service";
+import { UrlConstants } from "../util/UrlConstants";
 
 const CONSENT_GROUPS_SPINNER = 'consentGroupsSpinner';
 
@@ -161,8 +162,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   collapseBtnAnimationListener() {
     $('.consent-accordion-toggle').on('click', function () {
-      let icon = $(this).children().first();
-      let body = $(this).parent().parent().next();
+      const icon = $(this).children().first();
+      const body = $(this).parent().parent().next();
       if (icon.hasClass("glyphicon-chevron-up")) {
         icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
         body.slideUp();
@@ -241,7 +242,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   redirect = (action) => {
-    const path = action === 'new' ? '/consent-group/new?projectKey='+ component.projectKey : '/consent-group/use-existing';
+    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ component.projectKey : UrlConstants.useExistingConsentGroupUrl;
     this.props.history.push(path)
   };
 

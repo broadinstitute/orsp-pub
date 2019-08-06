@@ -180,9 +180,13 @@ class NewConsentGroupController extends AuthenticatedController {
             JSON.use(UtilityClass.ISSUE_COMPLETE) {
                 render( consentGroups as JSON)
             }
-        } catch(ConsentException e) {
+        } catch(IllegalArgumentException e) {
             response.status = 400
             render([message: 'Error while trying to get project\'s Consent Groups. ' + e as JSON])
+        } catch(Exception e) {
+            log.error("Error while trying to get Consent Groups for ProjectKey: ${params.projectKey}. ", e.getMessage())
+            response.status = 500
+            render([message: 'Error while trying to get project\'s Consent Groups.' as JSON])
         }
     }
 

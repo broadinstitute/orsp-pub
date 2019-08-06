@@ -61,8 +61,11 @@ export const TableComponent = hh(class TableComponent extends Component {
                 }}
                 pagination= {
                   this.props.pagination ?
-                  paginationFactory({ page: this.props.page, totalSize: this.props.totalSize, sizePerPageList: this.props.sizePerPageList  })
-                  : null
+                  paginationFactory({
+                    page: this.props.page,
+                    totalSize: this.props.totalSize,
+                    sizePerPageList: this.props.sizePerPageList
+                  }) : null
                 }
                 defaultSorted= { this.props.defaultSorted }
                 onTableChange= { this.props.onTableChange }
