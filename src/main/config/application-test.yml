@@ -8,6 +8,7 @@ hibernate:
 environments:
   test:
     crowd:
+      config: /orsp-config/big-query.json
       url: http://localhost/crowd
       username: username
       password: password

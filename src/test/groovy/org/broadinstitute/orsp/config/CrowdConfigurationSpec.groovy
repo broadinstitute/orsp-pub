@@ -15,7 +15,7 @@ class CrowdConfigurationSpec extends Specification implements ServiceUnitTest<Cr
         CrowdConfiguration config = service.crowdConfiguration
 
         expect:
-        !config.url.config()
+        !config.config.isEmpty()
     }
 
 }
