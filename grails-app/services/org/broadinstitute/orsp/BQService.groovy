@@ -1,7 +1,7 @@
 package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.config.CrowdConfiguration
+import org.broadinstitute.orsp.config.BQConfiguration
 import com.google.cloud.bigquery.BigQuery
 import com.google.cloud.bigquery.BigQueryOptions
 import com.google.cloud.bigquery.FieldValueList
@@ -14,40 +14,33 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 
 @Slf4j
-class CrowdService implements Status {
+class BQService {
 
     UserService userService
-    CrowdConfiguration crowdConfiguration
+    BQConfiguration bqConfiguration
 
     private GoogleCredentials credential
 
-    SubsystemStatus getStatus() {
-        // TODO: implement big query status 
-        SubsystemStatus status = new SubsystemStatus()
-        status.ok = true
-        status
-    }
-
     /**
      * Find all valid users that exist in Broad's users (BigQuery) but not in ORSP 
-     * as a List of CrowdUserDetail objects
+     * as a List of BroadUser objects
      *
-     * @return List of CrowdUserDetail objects
+     * @return List of BroadUser objects
      */
     @SuppressWarnings("GroovyAssignabilityCheck")
-    List<CrowdUserDetail> findMissingUsers() {
+    List<BroadUser> findMissingUsers() {
         Collection<String> filterUsers = userService.findAllUserNames()
-        getCrowdQueryUserDetails(filterUsers)
+        getNewBroadUsers(filterUsers)
     }
 
     /**
-     * Return a List of CrowdUserDetail objects from a single search query
+     * Return a List of BroadUser objects from a single search query
      *
      * @param filterUsers Collection of userNames to filter on
-     * @return List of CrowdUserDetail objects that do NOT exists on filterUsers
+     * @return List of BroadUser objects that do NOT exists on filterUsers
      */
-    private List<CrowdUserDetail> getCrowdQueryUserDetails(Collection<String> filterUsers) {
-        List<CrowdUserDetail> crowdUsers = new ArrayList<>()
+    private List<BroadUser> getNewBroadUsers(Collection<String> filterUsers) {
+        List<BroadUser> broadUsers = new ArrayList<>()
 
         // Instantiate a client.
         BigQuery bigquery =
@@ -83,14 +76,14 @@ class CrowdService implements Status {
                     String firstName = row.get("first_name").getStringValue()
                     String lastName = row.get("last_name").getStringValue()
                     String displayName = firstName + " " + lastName
-                    crowdUsers.add(new CrowdUserDetail(userName: userName,
+                    broadUsers.add(new BroadUser(userName: userName,
                         firstName: firstName, 
                         lastName: lastName,
                         displayName: displayName, email: email))
                 }
             }
         }
-        crowdUsers
+        broadUsers
     }
 
     /**
@@ -99,7 +92,7 @@ class CrowdService implements Status {
      */
     private GoogleCredentials getCredential() {
         if (!credential) {
-            File credentialsPath = new File(crowdConfiguration.config);
+            File credentialsPath = new File(bqConfiguration.config);
             FileInputStream serviceAccountStream = new FileInputStream(credentialsPath);
             setCredential(ServiceAccountCredentials.fromStream(serviceAccountStream))
         }

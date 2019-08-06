@@ -7,13 +7,8 @@ hibernate:
 
 environments:
   test:
-    crowd:
+    bigQuery:
       config: /orsp-config/big-query.json
-      url: http://localhost/crowd
-      username: username
-      password: password
-      interval: 500
-      range: 10
     grails.serverURL: http://localhost/test
     googleSignInClientId: testing
     server:
