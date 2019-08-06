@@ -22,8 +22,7 @@ class BQService {
     private GoogleCredentials credential
 
     /**
-     * Find all valid users that exist in Broad's users (BigQuery) but not in ORSP 
-     * as a List of BroadUser objects
+     * Find all users that exist in Broad's users (BigQuery) 
      *
      * @return List of BroadUser objects
      */
@@ -68,7 +67,7 @@ class BQService {
         } else {
             // Get the results.
             TableResult result = queryJob.getQueryResults()
-            // iterate over results to build find out missing users
+            // iterate over results to build BroadUser list
             for (FieldValueList row : result.iterateAll()) {
                 String email = row.get("broad_email").getStringValue()
                 String userName = row.get("username").getStringValue()
@@ -81,8 +80,15 @@ class BQService {
         broadUsers
     }
 
-    private List<BroadUser> getNewOrspUsers (Collection<String> orspUsers, List<BroadUser> biqQueryUsers) {
-        bigQueryUsers.filter(!orspUsers.contains(it.userName))
+    /**
+     * Return a List of BroadUser objects from a single search query
+     *
+     * @param orspUsers Collection of userNames to filter on
+     * @param bigQueryUsers Collection of BroadUser from BigQuery
+     * @return List of BroadUser objects that do NOT exists on orspUsers
+     */
+    private List<BroadUser> getNewOrspUsers(Collection<String> orspUsers, List<BroadUser> bigQueryUsers) {
+        bigQueryUsers.findAll { !orspUsers.contains( it.userName) }
     }
 
     /**
