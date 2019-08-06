@@ -50,21 +50,22 @@
                 Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
             </div>
         </div>
-        <h3>About the ORSP Portal</h3>
-        <g:render template="/index/aboutBlurb"/>
-    </div>
 </auth:isNotAuthenticated>
 
 <auth:nonBroadSession>
     <div class="container">
+
         <div class="alert alert-danger alert-dismissable" style="display: block">
             You must be a Broad Institute User for further access. Please sign out and log in with
             a "broadinstitute.org" email account.
         </div>
-        <h3>About the ORSP Portal</h3>
-        <g:render template="/index/aboutBlurb"/>
     </div>
 </auth:nonBroadSession>
+
+    <div class="container">
+        <div id="about"></div>
+        <asset:javascript src="build/about.js"/>
+    </div>
 
 <auth:broadSession>
     <div class="container">
