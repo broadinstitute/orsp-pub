@@ -18,7 +18,7 @@ const headers =
     { name: 'Author', value: 'creator' },
     { name: 'Version', value: 'docVersion' },
     { name: 'Status', value: 'status' },
-    { name: 'Created', value: 'creationDate' },
+    { name: 'Created', value: 'createDate' },
     { name: '', value: 'remove' }
   ];
 
@@ -148,7 +148,7 @@ export const Documents = hh(class Documents extends Component {
       ]),
 
       Panel({ 
-        title: "Data Use Letter", 
+        title: "Data Use Limitation Record Request", 
         isRendered: this.props.isConsentGroup === true }, [
         DataUseLetter({
           userName: this.props.userName,

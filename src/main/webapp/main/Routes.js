@@ -5,7 +5,8 @@ import ReviewCategories from "../reviewCategories/ReviewCategories";
 import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
-import DataUseIndex from "../dataUse/DataUseIndex";
+import DataUseRestrictionIndex from "../dataUse/DataUseRestrictionIndex";
+import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 
 const Routes = ( props ) => (
   <Switch>
@@ -15,7 +16,8 @@ const Routes = ( props ) => (
     <Route path={"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/dataUseRestriction/list"} render = {(routeProps) =>  <DataUseIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseRestriction/list"} render = {(routeProps) =>  <DataUseRestrictionIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
   </Switch>
 );
 

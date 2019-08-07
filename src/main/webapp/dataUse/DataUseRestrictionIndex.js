@@ -3,7 +3,7 @@ import { div, h2 } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 
-class DataUseIndex extends Component {
+class DataUseRestrictionIndex extends Component {
 
   constructor(props) {
     super(props);
@@ -18,4 +18,4 @@ class DataUseIndex extends Component {
      )
   }
 }
-export default DataUseIndex;
+export default DataUseRestrictionIndex;

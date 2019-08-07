@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
-import { a, button, div, hh, span } from 'react-hyperscript-helpers';
+import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Btn } from './Btn';
@@ -8,6 +8,7 @@ import './Table.css';
 import { handleRedirectToProject } from "../util/Utils";
 import { formatRoleName } from "../util/roles";
 import { UrlConstants } from "../util/UrlConstants";
+import { isEmpty } from "../util/Utils";
 
 const styles = { 
   statusWidth: '140',
@@ -19,7 +20,11 @@ const styles = {
   creationDateWidth: '140',
   removeWidth: '45',
   unlinkSampleCollectionWidth: '80',
-  collectionNameWidth: '270'
+  collectionNameWidth: '270',
+  numberWidth: '10',
+  createDateWidth: '15',
+  submissionDocumentsWidth: '40',
+  submissionComments: '75',
 };
 
 export const Table = hh(class Table extends Component {
@@ -34,6 +39,13 @@ export const Table = hh(class Table extends Component {
       return this.renderDropdownButton(row.uuid);
     } else {
       return row.status;
+    }
+  };
+
+  parseCreateDate = (date) => {
+    if (!isEmpty(date)) {
+      const simpleDate = new Date(date);
+      return format(simpleDate, 'MM/DD/YY')
     }
   };
 
@@ -91,7 +103,7 @@ export const Table = hh(class Table extends Component {
   };
 
   formatRemoveBtn = (cell, row) => {
-    let btn = this.props.isViewer ? null : 
+    let btn = this.props.isViewer ? null :
      Btn({
       action: {
         labelClass: "glyphicon glyphicon-remove",
@@ -127,6 +139,34 @@ export const Table = hh(class Table extends Component {
       href: url,
       target: '_blank'
     }, ["Info Link"])
+  };
+
+  documentLink = (cell, row) => {
+    let documents = [];
+    cell.forEach(data => {
+      if (data.document !== undefined) {
+        documents.push([
+          div({className: "linkOverflowEllipsis", key: data.document.id}, [
+            a({
+              href: `${component.downloadDocumentUrl}?uuid=${data.document.uuid}`,
+              target: '_blank',
+              title: data.document.fileType,
+            }, [
+              span({
+                className: 'glyphicon glyphicon-download submission-download',
+                styles: "margin-right: 10px;"
+              }, []),
+              data.document.fileName
+            ])
+          ])
+        ]);
+      }
+    });
+    return h(Fragment, {} , [...documents]) ;
+  };
+
+  submissionEdit = (cell, row) => {
+    return this.props.submissionEdit(row);
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
@@ -275,12 +315,39 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.roleSelection}
                 >{header.name}</TableHeaderColumn>
-            } else if (header.value==='collectionName') {
+            } else if (header.value ==='collectionName') {
                 return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}
                 dataFormat={this.formatTooltip}
                 key={header.value}
                 width={styles.collectionNameWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value ==='number') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataSort={ true }
+                width={styles.numberWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'comments') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataFormat={this.submissionEdit}
+                dataSort={ true }
+                width={styles.submissionComments}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'documents') {
+              return <TableHeaderColumn
+                key={header.value}
+                dataField={header.value}
+                dataFormat={this.documentLink}
+                dataSort={ true }
+                width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'createDate') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                dataFormat={this.parseCreateDate}
+                dataSort={ true }
+                width={styles.createDateWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

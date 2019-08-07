@@ -1,7 +1,8 @@
 import { Component } from 'react';
-import { div, h2 } from 'react-hyperscript-helpers';
+import { hh, div, h2 } from 'react-hyperscript-helpers';
 
-class DataUseLetterMessage extends Component {
+
+export const DataUseLetterMessage = hh(class DataUseLetterMessage extends Component {
 
   constructor(props) {
     super(props);
@@ -15,6 +16,5 @@ class DataUseLetterMessage extends Component {
        ])
      )
   }
-}
-
+})
 export default DataUseLetterMessage;
