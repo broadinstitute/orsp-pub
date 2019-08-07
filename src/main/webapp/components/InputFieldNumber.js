@@ -1,5 +1,6 @@
 import React from 'react';
 import { input, div, label, p, span } from 'react-hyperscript-helpers';
+import {isEmpty} from "../util/Utils";
 
 const styles = {
   inputLabel: {
@@ -11,19 +12,28 @@ const styles = {
   }
 };
 
-const InputFieldNumber = (props) => (
-  <div>
-    <p>
-      <label>
-        <span className={styles.inputLabel}>{props.label}</span>
-      </label>
-    </p>
-    <input
-      type={"number"}
-      name={props.name}
-    value={props.value}
-    onChange={props.handleChange} />
-  </div>
-);
+const InputFieldNumber = (props) => {
+  const onChange = event => {
+    props.handleChange(event.target.value)
+  };
+
+  return (
+    <div>
+      <p>
+        <label>
+          <span className={styles.inputLabel}>{props.label}</span>
+        </label>
+      </p>
+      <input
+        type={"number"}
+        name={props.name}
+        value={props.value}
+        onChange={onChange}
+        min={!isEmpty(props.min) ? props.min : ''}
+        max={!isEmpty(props.max) ? props.max : ''}
+      />
+    </div>
+  )
+};
 
 export default InputFieldNumber;
