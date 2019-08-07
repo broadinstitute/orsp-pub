@@ -10,33 +10,10 @@ import org.broadinstitute.orsp.webservice.BspCollection
 import static groovyx.net.http.HttpBuilder.configure
 
 @Slf4j
-class BspWebService implements Status {
+class BspWebService {
 
     BspConfiguration bspConfiguration
     Gson gson = new Gson()
-
-    SubsystemStatus getStatus() {
-        SubsystemStatus status = new SubsystemStatus()
-        String serviceUrl = bspConfiguration.service.statusUrl
-        try {
-            HttpBuilder http = configure {
-                request.uri = serviceUrl
-            }
-            http.head(Boolean) {
-                response.success { status.ok = true }
-                response.failure { FromServer fromServer ->
-                    log.error(fromServer.message)
-                    status.ok = false
-                    status.messages = [fromServer.message]
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error accessing BSP service: ${e.getMessage()}")
-            status.ok = false
-            status.messages = [e.getMessage()]
-        }
-        status
-    }
 
     List<BspCollection> getBspCollections() {
         List<BspCollection> collections = new ArrayList<>()
