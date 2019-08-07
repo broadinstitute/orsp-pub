@@ -35,12 +35,8 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${createLink(controller: 'admin', action: 'collectionLinks')}">Consent Collection Links</a></li>
-                                <li><a href="${createLink(controller: 'dataUse', action: 'list')}">Data Use Restrictions</a></li>
-
-                                <li><a href="${createLink(controller: 'dataUseRestriction', action: 'list')}">Data Use New</a></li>
-
+                                <li><a href="${createLink(controller: 'dataUseRestriction', action: 'list')}">Data Use Restrictions</a></li>
                                 <li><a href="${createLink(controller: 'report', action: 'reviewCategories')}">Review Category Report</a></li>
-
                                 <li><a href="${createLink(controller: 'statusEvent', action: 'index')}">QA Event Report</a></li>
                                 <li><a href="${createLink(controller: 'admin', action: 'fundingReport')}">Funding Source Report</a></li>
                                 <li><a href="${createLink(controller: 'report', action: 'aahrppMetrics')}">AAHRPP Metrics Report (CSV)</a></li>

@@ -6,7 +6,7 @@ import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
-import { handleRedirectToConsentGroup } from "../util/Utils";
+import { handleRedirectToConsentGroup, isEmpty } from "../util/Utils";
 import { format } from 'date-fns';
 
 const SIZE_PER_PAGE_LIST = [
@@ -39,7 +39,7 @@ const columns = [
     sort: true,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      format(new Date(row.vaultExportDate), 'MM/DD/YYYY')
+      !isEmpty(row.vaultExportDate) ? format(new Date(row.vaultExportDate), 'MM/DD/YYYY') : ''
     ])
   }
 ];
