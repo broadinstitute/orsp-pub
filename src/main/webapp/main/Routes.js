@@ -6,16 +6,18 @@ import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
 import SubmissionForm from "../projectContainer/SubmissionForm";
+import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 
 const Routes = ( props ) => (
   <Switch>
-    <Route path={"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
-    <Route path={"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <Route path={"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <Route path={"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
-    <Route path={"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
-    <Route path={"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path={"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
+    <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
+    <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
+    <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
+    <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
+    <Route path= {"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
+    <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
 
   </Switch>
 );

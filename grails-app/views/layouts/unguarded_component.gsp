@@ -43,6 +43,13 @@
   </script>
   <g:render template="/layouts/signin" />
   <g:layoutHead />
+  <script>
+    const component = {
+         serverURL: "${grailsApplication.config.grails.serverURL}",
+         contextPath: "${request.contextPath}",
+         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+       };
+ </script>
 </head>
 
 <body>
@@ -77,5 +84,4 @@
 
   <asset:deferredScripts />
 </body>
-
 </html>
