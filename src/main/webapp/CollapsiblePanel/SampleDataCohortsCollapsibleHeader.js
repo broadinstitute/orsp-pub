@@ -63,7 +63,6 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
   render() {
     const { unlinkHandler, rejectHandler, approveHandler, requestClarificationHandler } = this.props.element.customHandlers;
     const { projectKey, summary} = this.props.element.consent;
-    console.log("consent ", this.props.element.consent);
     const  status = isEmpty(this.props.element.consent.issueStatus) ? '' : this.props.element.consent.issueStatus.toLowerCase();
 
     return(
