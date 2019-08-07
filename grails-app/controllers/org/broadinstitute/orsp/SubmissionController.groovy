@@ -1,5 +1,8 @@
 package org.broadinstitute.orsp
 
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import grails.converters.JSON
 import groovy.util.logging.Slf4j
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
@@ -7,6 +10,11 @@ import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
 class SubmissionController extends AuthenticatedController {
+
+    def renderMainComponent() {
+        render(view: "/mainContainer/index", model: [params.projectKey, params.type])
+    }
+
 
     def show() {
         Issue issue = queryService.findByKey(params.id)
@@ -93,6 +101,18 @@ class SubmissionController extends AuthenticatedController {
 
     def save() {
         Issue issue = queryService.findByKey(params.projectKey)
+        JsonParser parser = new JsonParser()
+        JsonArray dataSubmission = parser.parse(request.parameterMap["submission"].toString())
+
+        try {
+            Submission submissionParsed = getJson(Submission.class, dataSubmission[0])
+            submissionParsed
+        } catch (Exception e) {
+            log.error("There was an error trying to save the submission: " + e.message)
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+
         Submission submission
         if (params?.submissionId) {
             submission = Submission.findById(params?.submissionId)
@@ -104,7 +124,7 @@ class SubmissionController extends AuthenticatedController {
             }
         } else {
             submission = new Submission(
-                    projectKey: params.projectKey,
+                    projectKey: dataSubmission.elements.projectKey,
                     number: Integer.parseInt(params?.submissionNumber),
                     author: getUser()?.displayName,
                     type: params?.submissionType,
@@ -199,4 +219,9 @@ class SubmissionController extends AuthenticatedController {
                         submissionTypes: getSubmissionTypesForIssueType(issue.getType())])
     }
 
+    private static getJson(Class type, Object json) {
+        Gson gson = new Gson()
+        gson.fromJson(gson.toJson(json), type)
+
+    }
 }

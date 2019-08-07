@@ -355,15 +355,27 @@ export const ProjectMigration = {
     return axios.get(UrlConstants.historyUrl + '?id=' + id);
   },
 
-  getSubmissions(id) {
-    return axios.get(UrlConstants.submissionsUrl + "?id=" + id);
-  },
-
   getDisplaySubmissions(id) {
     return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
   },
 
   getSubmissionFormInfo(projectKey, type) {
     return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+  },
+
+  saveSubmission(submissionData, files) {
+    let data = new FormData();
+
+    files.forEach(file => {
+      if (file.file != null) {
+        data.append(file.fileKey, file.file, file.file.name);
+      }
+    });
+    data.append('submission', JSON.stringify(submissionData));
+
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+    return axios.post(UrlConstants.submissionSaveUrl, data, config);
   },
 };

@@ -1,5 +1,5 @@
-import { Component, Fragment } from 'react';
-import { div, a, hh, h1, button, span } from 'react-hyperscript-helpers';
+import { Component } from 'react';
+import { div, h1, button } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import { ProjectMigration } from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -7,6 +7,7 @@ import InputFieldNumber from "../components/InputFieldNumber";
 import { InputFieldText } from "../components/InputFieldText";
 import { Table } from "../components/Table";
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
+import {isEmpty} from "../util/Utils";
 
 const styles = {
   addDocumentContainer: {
@@ -104,6 +105,25 @@ class SubmissionForm extends Component {
       prev.submissionInfo[field] = value;
         return prev;
       });
+  };
+
+  submitSubmission = () => {
+    if(this.validateSubmission()) {
+      console.log(this.state.submissionInfo);
+      const submissionData = {
+        type: this.state.submissionInfo.docTypes.value,
+        number: this.state.submissionInfo.number,
+        comments: this.state.submissionInfo.comments,
+        projectKey: this.state.submissionInfo.projectKey
+      };
+      ProjectMigration.saveSubmission(submissionData, this.state.documents).then(resp => {
+        console.log(resp.data);
+      });
+    }
+  };
+
+  validateSubmission = () => {
+    return !isEmpty(this.state.submissionInfo.comments);
   };
 
   removeFile = (row) => (e) => {
@@ -207,6 +227,9 @@ class SubmissionForm extends Component {
             reviewFlow: false,
             pagination: false
           }),
+          button({
+            onClick: this.submitSubmission,
+          }, ["Submit"])
         ])
       ])
     );
