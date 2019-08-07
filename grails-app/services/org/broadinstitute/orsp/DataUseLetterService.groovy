@@ -15,7 +15,7 @@ class DataUseLetterService {
 
         newDul.setSubmitted(false)
         newDul.setCreationDate(new Date())
-
+        newDul.setDulInfo(input.getProperty("dulInfo"))
         newDul.save(flush: true)
 
         if (newDul.hasErrors()) {
