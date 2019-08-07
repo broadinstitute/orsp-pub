@@ -7,6 +7,7 @@ import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
 import { LinkWizard } from "../linkWizard/LinkWizard";
 import NewConsentGroup from "../consentGroup/NewConsentGroup";
+import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 
 const Routes = ( props ) => (
   <Switch>
@@ -18,6 +19,7 @@ const Routes = ( props ) => (
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
   </Switch>
 );
 

@@ -66,12 +66,11 @@ class UrlMappings {
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
 
-
         // Data use letter end points
         '/api/data-use-letter/save-dul'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
-        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
+        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'getDul', method: 'GET')
         '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
         '/api/data-use-letter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
 
