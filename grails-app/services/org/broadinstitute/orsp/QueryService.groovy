@@ -1486,4 +1486,87 @@ class QueryService implements Status {
         }
         results
     }
+
+
+    PaginatedResponse findDataUseRestrictions(PaginationParams pagination) {
+        String query = 'select count(id) from data_use_restriction '
+        String orderColumn = getRestrictionOrderColumn(pagination.orderColumn)
+        if (pagination.searchValue) {
+            query = query + 'where consent_group_key LIKE :term OR vault_export_date LIKE :term '
+        }
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
+        Long totalRows = sqlQuery.uniqueResult()
+        if (orderColumn) {
+            query = query + " order by " + orderColumn + pagination.sortDirection
+        }
+        sqlQuery = getSessionFactory().currentSession.createSQLQuery(query.replace('count(id)', '*'))
+        List<DataUseRestriction> results = sqlQuery.with {
+            if (pagination.searchValue) setString('term', pagination.getLikeTerm())
+            addEntity(DataUseRestriction)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            list()
+        }
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: totalRows,
+                recordsFiltered: totalRows,
+                data: results,
+                error: ""
+        )
+    }
+
+    Collection findCollectionLinks() {
+        String query = 'select * from consent_collection_link where deleted = 0 '
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<ConsentCollectionLink> links = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            list()
+        }
+        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
+        Collection<DataUseRestriction> durs = findDataUseRestrictionByConsentGroupKeyInList(links.collect {
+            it.consentKey
+        })
+        links.each { link ->
+            if (link) {
+                if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
+                    link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
+                }
+            }
+        }
+        def result = []
+        links.groupBy { it.consentKey }.each { key, scLinks ->
+            DataUseRestriction restriction = durs.find { it?.consentGroupKey == key }
+            result.add([consentGroupKey: key,
+                        collections    : scLinks,
+                        restriction    : restriction
+            ])
+        }
+        result
+    }
+
+
+    List<DataUseRestriction> findDataUseRestrictionByConsentGroupKeyInList(List<String> consentGroupKeys) {
+        String query = 'select * from data_use_restriction where consent_group_key IN :consentGroupKeys '
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        sqlQuery.with {
+            addEntity(DataUseRestriction)
+            setParameterList('consentGroupKeys', consentGroupKeys)
+            list()
+        }
+    }
+
+    private String getRestrictionOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " consent_group_key "
+                break
+            case 1:
+                orderField = " vault_export_date "
+                break
+        }
+        orderField
+    }
 }

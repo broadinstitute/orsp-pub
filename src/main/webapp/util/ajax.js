@@ -276,7 +276,19 @@ export const DUL = {
 export const DataUse = {
   createRestriction(restriction) {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
-  }  
+  },
+  getRestrictions(query) {
+    return axios.get(UrlConstants.restrictionUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
 };
 
 export const ProjectInfoLink = {
@@ -307,6 +319,10 @@ export const ConsentCollectionLink = {
 
   approveLink(projectKey, consentKey) {
     return axios.put(UrlConstants.sampleApproveLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey);
+  },
+
+  findCollectionLinks() {
+    return axios.get(UrlConstants.collectionLinks);
   }
 };
 

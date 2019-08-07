@@ -5,6 +5,7 @@ import ReviewCategories from "../reviewCategories/ReviewCategories";
 import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
+import DataUseIndex from "../dataUse/DataUseIndex";
 
 const Routes = ( props ) => (
   <Switch>
@@ -14,7 +15,7 @@ const Routes = ( props ) => (
     <Route path={"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-
+    <Route path= {"/dataUseRestriction/list"} render = {(routeProps) =>  <DataUseIndex {...routeProps} {...props}/> }/>
   </Switch>
 );
 

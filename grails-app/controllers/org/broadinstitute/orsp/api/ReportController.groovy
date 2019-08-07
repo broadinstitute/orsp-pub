@@ -66,4 +66,13 @@ class ReportController extends AuthenticatedController {
             render queryService.findIssueByProjectType(IssueType.IRB.name, pagination) as JSON
         }
     }
+
+
+    def findCollectionLinks() {
+        UtilityClass.registerConsentCollectionReportMarshaller()
+        JSON.use(UtilityClass.CONSENT_COLLECTION) {
+            render queryService.findCollectionLinks() as JSON
+        }
+    }
+
 }
