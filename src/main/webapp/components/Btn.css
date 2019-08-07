@@ -67,10 +67,6 @@
   min-height: 50px;
 }
 
-.sample-dc {
-  width: 100%;
-}
-
 .rc-collapse .rc-collapse-item.collapsible .rc-collapse-header,
 .rc-collapse .rc-collapse-item.collapsible .rc-collapse-header:focus {
   padding-bottom: 0;

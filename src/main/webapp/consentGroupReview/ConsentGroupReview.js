@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, div, h2, button, hh } from 'react-hyperscript-helpers';
+import { div, h2, button, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InstitutionalSource } from '../components/InstitutionalSource';
@@ -8,14 +8,11 @@ import { RequestClarificationDialog } from "../components/RequestClarificationDi
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
-import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { Table } from "../components/Table";
-import { isEmpty } from "../util/Utils";
+import { isEmpty, MAIN_SPINNER } from "../util/Utils";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-
-const CONSENT_GROUP_REVIEW_SPINNER = "consentGroupReviewSpinner";
 
 const headers =
   [
@@ -116,17 +113,13 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   componentDidMount() {
-    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
+    spinnerService.show(MAIN_SPINNER);
     ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
     });
     this.init();
-  }
-
-  componentWillUnmount() {
-    spinnerService._unregister(CONSENT_GROUP_REVIEW_SPINNER);
   }
 
   init = () => {
@@ -201,12 +194,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               prev.futureCopy = futureCopy;
               prev.isAdmin = component.isAdmin;
               return prev;
-            }, () => spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER));
+            }, () => spinnerService.hide(MAIN_SPINNER));
           }
         );
       }
     ).catch(error => {
-      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+      spinnerService.hide(MAIN_SPINNER);
       this.setState(() => { throw error; });
     });
   };
@@ -331,25 +324,25 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     };
 
   rejectConsentGroup() {
-    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
+    spinnerService.show(MAIN_SPINNER);
 
     ConsentGroup.rejectConsent(component.consentKey).then(resp => {
       window.location.href = this.getRedirectUrl(component.projectKey);
-      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+      spinnerService.hide(MAIN_SPINNER);
     }).catch(error => {
-      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+      spinnerService.hide(MAIN_SPINNER);
       console.error(error);
     });
   }
 
   discardEdits = () => {
-    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
+    spinnerService.show(MAIN_SPINNER);
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   };
 
   approveEdits = () => {
-    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
+    spinnerService.show(MAIN_SPINNER);
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
     ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
@@ -361,7 +354,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       this.props.updateContent();
     })
     .catch(error => {
-      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+      spinnerService.hide(MAIN_SPINNER);
       console.error(error);
     });
   };
@@ -570,12 +563,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     Review.deleteSuggestions(component.consentKey, type).then(
       resp => {
         this.init();
-        spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+        spinnerService.hide(MAIN_SPINNER);
       }, () =>   
         this.props.updateContent()
       )
       .catch(error => {
-        spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+        spinnerService.hide(MAIN_SPINNER);
         console.error(error);
       });
   };
@@ -984,10 +977,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             onClick: this.toggleState('requestClarification'),
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ]),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }

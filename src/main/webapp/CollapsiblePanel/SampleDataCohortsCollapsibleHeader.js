@@ -1,12 +1,39 @@
 import React, { Component } from 'react';
 import { button, hh, span, div, i, a } from 'react-hyperscript-helpers';
-import { handleRedirectToConsentGroup, isEmpty } from '../util/Utils';
+import { buildUrlToConsentGroup, isEmpty } from '../util/Utils';
 import '../components/Btn.css';
 
-const POINTER = {
-  auto: { pointerEvents: 'auto' },
-  none: { pointerEvents: 'none' }
+const styles = {
+  pointer: {
+    auto: { pointerEvents: 'auto' },
+    none: { pointerEvents: 'none' }
+  },
+  statusBase: {
+    float: 'right',
+    padding: '5px 18px',
+    borderRadius: '4px',
+    marginRight: '15px',
+    cursor: 'default'
+  },
+  statusApproved: {
+    backgroundColor: '#DFF0D8',
+    color: '#3C763D'
+  },
+  statusPending: {
+    backgroundColor: '#F0E5A9',
+    color: '#333333'
+  },
+  link: {
+      textDecoration: "none",
+      display: "inline-block",
+      height: "30px",
+      lineHeight: "30px",
+      color:"#000000",
+  }
 };
+
+const approved = { ...styles.statusBase, ...styles.statusApproved};
+const pending = { ...styles.statusBase, ...styles.statusPending};
 
 const STATUS = {
   approved: 'approved',
@@ -21,11 +48,13 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
   }
 
   linkToConsentGroup = (projectKey, summary) => {
+    let linkStyle = {...styles.pointer.auto, ...styles.link};
     return a({
       onClick : (e) => e.stopPropagation(),
-      className: 'data-name',
-      style: POINTER.auto,
-      href: handleRedirectToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
+      style: linkStyle,
+      onMouseEnter: (e) => e.currentTarget.style.textDecoration = "underline",
+      onMouseLeave: (e) => e.currentTarget.style.textDecoration = "none",
+    href: buildUrlToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
     },[
       projectKey + ': ' + summary
     ])
@@ -37,38 +66,35 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
     const  status = isEmpty(this.props.element.consent.status) ? '' : this.props.element.consent.status.toLowerCase();
 
     return(
-      div({ className: 'sample-dc' }, [
-
+      div({ style: { width: '100%' } }, [
         a({className:'pull-right'}, [
           span({
             className: 'consent-accordion-toggle btn btn-default',
-            style: POINTER.auto
+            style: styles.pointer.auto
             },[ i({ className: 'glyphicon glyphicon-chevron-down' },[])
           ])
         ]),
-
-        span({ className:'status ' + (status === STATUS.approved ? 'approved' : 'pending')},
+        span({ style: status === STATUS.approved ? approved : pending },
           [ status === STATUS.approved ? 'Approved' : 'Pending'
         ]),
-
         div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
               isRendered: status === STATUS.pending && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
-              style: POINTER.auto,
+              style: styles.pointer.auto,
               onClick: (e) => approveHandler(e, projectKey)
             },['Approve']),
             button({
               isRendered: status === STATUS.pending && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
-              style: POINTER.auto,
+              style: styles.pointer.auto,
               onClick: (e) => rejectHandler(e, projectKey)
             },['Reject']),
             button({
               isRendered: status === STATUS.approved && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
-              style: POINTER.auto,
+              style: styles.pointer.auto,
               onClick: (e) => unlinkHandler(e, projectKey)
             },['Unlink']),
           ]),
@@ -76,7 +102,7 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
           div({ className: 'right-container' }, [
             button({
               className:'request-clarification',
-              style: POINTER.auto,
+              style: styles.pointer.auto,
               onClick:(e) =>  requestClarificationHandler(e, projectKey)
             },[
               span({ className: 'req-tooltip' },[ 'Request Clarification']),

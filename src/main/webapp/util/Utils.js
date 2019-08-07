@@ -3,6 +3,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
+export const MAIN_SPINNER = 'appSpinner';
+
 export const validateEmail = (email) => {
   let valid = false;
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -49,7 +51,7 @@ export const handleRedirectToProject = (serverURL, projectKey) => {
   return [serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
 }
 
-export const handleRedirectToConsentGroup = (serverURL, consentKey, projectKey) => {
+export const buildUrlToConsentGroup = (serverURL, consentKey, projectKey) => {
   return [serverURL, "newConsentGroup", "main?consentKey="+ consentKey + "&projectKey=" + projectKey + "&tab=review"].join("/");
 }
 

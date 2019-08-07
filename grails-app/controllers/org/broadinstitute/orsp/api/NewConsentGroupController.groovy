@@ -8,7 +8,6 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
-import org.broadinstitute.orsp.ConsentException
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction

@@ -1,11 +1,10 @@
 import { Component } from 'react';
-import { input, hh, h, h3, div, p, hr, small, button, ul, li, br, span } from 'react-hyperscript-helpers';
+import { hh, div, p, button, span } from 'react-hyperscript-helpers';
 import { DUL, ConsentGroup } from '../util/ajax';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
-import { validateEmail } from "../util/Utils";
+import { MAIN_SPINNER, validateEmail } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
-import { Spinner } from './Spinner';
 import './Documents.css';
 
 const DUL_SPINNER = 'dataUseLetterSpinner';
@@ -24,10 +23,6 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     };
   }
 
-  componentWillUnmount() {
-    spinnerService._unregister(DUL_SPINNER);
-  }
-
   validEmail = (email) => {
     if (validateEmail(email)) {
       return true;
@@ -37,7 +32,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   };
 
   send = () => {
-    spinnerService.show(DUL_SPINNER);
+    spinnerService.show(MAIN_SPINNER);
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)) {
       this.setState({ alertMessage: '', collaboratorEmail: '', showAlert: false });
@@ -49,9 +44,9 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           prev.showAlert = true;
           prev.collaboratorEmail = '';
           return prev;
-        }, () => spinnerService.hide(DUL_SPINNER));
+        }, () => spinnerService.hide(MAIN_SPINNER));
       }).catch(error => {
-        spinnerService.hide(DUL_SPINNER);
+        spinnerService.hide(MAIN_SPINNER);
         this.setState(prev => {
           prev.alertType = 'danger';
           prev.alertMessage = 'Error sending email to: ' + collaboratorEmail + '. Please try again later.';
@@ -60,7 +55,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           return prev;
         });
       });
-    } else spinnerService.hide(DUL_SPINNER);
+    } else spinnerService.hide(MAIN_SPINNER);
   };
 
   getShareableLink = () => {
@@ -163,10 +158,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
               }),
             ])
           ])
-        ]),
-        h(Spinner, {
-          name: "dataUseLetterSpinner", group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     );
   }

@@ -1281,11 +1281,11 @@ class QueryService implements Status {
     @SuppressWarnings("GroovyAssignabilityCheck")
     StorageDocument findAttachmentByUuid(String uuid) {
         final session = sessionFactory.currentSession
-        final String query = ' select * from storage_document where uuid = :uniqueId '
+        final String query = ' select * from storage_document where uuid = :uuid and deleted = 0'
         final sqlQuery = session.createSQLQuery(query)
         sqlQuery.with {
             addEntity(StorageDocument)
-            setParameter("uniqueId", uuid)
+            setParameter("uuid", uuid)
             uniqueResult()
         }
     }
