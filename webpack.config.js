@@ -8,7 +8,6 @@ module.exports = {
     adminOnly: './src/main/webapp/adminOnly/AdminOnly.js',
     collectionLinks: './src/main/webapp/collectionLinks/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
-    dataUseLetter: './src/main/webapp/dataUseLetter/index.js',
     footer: './src/main/webapp/components/footer.js',
     infoLink: './src/main/webapp/infoLink/index.js',
     linkWizard: './src/main/webapp/linkWizard/index.js',

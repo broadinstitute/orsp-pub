@@ -6,6 +6,7 @@ import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
 import AboutPage from "../aboutPage/AboutPage";
+import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 
 const Routes = ( props ) => (
   <Switch>
@@ -16,7 +17,9 @@ const Routes = ( props ) => (
     <Route path= {"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
     <Route path= {"/index/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
+
   </Switch>
 );
 
-export default Routes;
+export default Routes; 

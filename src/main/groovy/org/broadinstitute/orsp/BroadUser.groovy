@@ -2,9 +2,9 @@ package org.broadinstitute.orsp
 
 import grails.converters.JSON
 
-class CrowdUserDetail {
+class BroadUser {
     static {
-        JSON.registerObjectMarshaller(CrowdUserDetail) {
+        JSON.registerObjectMarshaller(BroadUser) {
             return it.properties.findAll {k,v -> k != 'class'}
         }
     }

@@ -9,26 +9,26 @@ import groovy.util.logging.Slf4j
 import java.sql.SQLException
 
 /**
- * Rest-based class to handle synchronizing users from Broad's Crowd instance to Compliance database.
+ * Rest-based class to handle synchronizing users from Broad's BQ instance to Compliance database.
  * TODO: Should be admin linked and auth-ed at some point.
  * TODO: Could use a UI to choose users to import.
  *
- * See {@link CrowdService#findMissingUsers} for preference to use Broad APIs.
+ * See {@link BQService#findMissingUsers} for preference to use Broad APIs.
  */
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON'])
 class UserController extends AuthenticatedController {
 
     UserService userService
-    CrowdService crowdService
+    BQService BQService
     QueryService queryService
 
     def index() {
-        render crowdService.findMissingUsers() as JSON
+        render BQService.findMissingUsers() as JSON
     }
 
     def sync() {
-        List<User> syncedUsers = crowdService.findMissingUsers().collect {
+        List<User> syncedUsers = BQService.findMissingUsers().collect {
             userService.findOrCreateUser(
                     it.userName,
                     it.email,
