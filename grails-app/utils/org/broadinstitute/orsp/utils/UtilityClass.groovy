@@ -70,27 +70,13 @@ class UtilityClass {
                     reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
                 }
                 return [
+                        id: issue.id,
+                        type: issue.type,
                         projectKey: issue.projectKey,
                         summary: issue.summary,
                         status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
-                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
-                ]
-            }
-        }
-    }
-
-    /**
-     * Register Issue's JSON mapping to return its transient properties
-    */
-    static void registerIssueForSampleDataCohortsMarshaller() {
-        JSON.createNamedConfig(ISSUE_COMPLETE) {
-            it.registerObjectMarshaller(Issue) { Issue issue ->
-                return [
-                        id             : issue.id,
-                        projectKey     : issue.projectKey,
-                        type           : issue.type,
-                        status         : issue.status,
-                        summary        : issue.summary,
+                        issueStatus: issue.status,
+                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
                         reporter       : issue.reporter,
                         requestDate    : issue.requestDate,
                         attachments    : issue.attachments

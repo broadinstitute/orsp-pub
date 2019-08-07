@@ -30,28 +30,28 @@ export const TableComponent = hh(class TableComponent extends Component {
         >
           { props =>
             <div>
-              {this.props.showSearch ? <SearchBar { ...props.searchProps } /> : ''}
+              {this.props.showSearchBar ? <SearchBar { ...props.searchProps } /> : ''}
               {this.props.showExportButtons ?
-                  <span name={'exportButtons'}>
-                      <Export
-                        csvData={this.props.data}
-                        columns={this.props.columns}
-                        fileName={this.props.fileName}
-                        fileType={EXPORT_FILE.XLSX.mimeType}
-                        fileExtension={EXPORT_FILE.XLSX.extension}
-                      />
-                      <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
-                        <span>
-                          <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
-                        </span>
-                      </ExportCSVButton>
-                      <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
-                        <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print All
-                      </button>
-                      <hr/>
-                  </span>
-                  : ''
-                }
+                <span name={'exportButtons'}>
+                  <Export
+                    csvData={this.props.data}
+                    columns={this.props.columns}
+                    fileName={this.props.fileName}
+                    fileType={EXPORT_FILE.XLSX.mimeType}
+                    fileExtension={EXPORT_FILE.XLSX.extension}
+                  />
+                  <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
+                    <span>
+                      <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
+                    </span>
+                  </ExportCSVButton>
+                  <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
+                    <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print All
+                  </button>
+                  <hr/>
+                </span>
+                : ''
+              }
               <BootstrapTable
                 remote= {{
                   filter: remoteProp,

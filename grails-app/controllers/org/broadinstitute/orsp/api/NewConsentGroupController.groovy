@@ -38,7 +38,7 @@ class NewConsentGroupController extends AuthenticatedController {
         render(view: "/mainContainer/index", model: [projectKey: params.projectKey, consentKey: params.consentKey, issueType: 'consent-group'])
     }
 
-    def redirect() {
+    def renderMainComponent() {
         render(view: "/mainContainer/index", model: [projectKey: params.projectKey, issueType: 'project'])
     }
 
@@ -172,7 +172,7 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def getProjectConsentGroups() {
-        UtilityClass.registerIssueForSampleDataCohortsMarshaller()
+        UtilityClass.registerIssueMarshaller()
         try {
             LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
             response.status = 200
@@ -181,11 +181,11 @@ class NewConsentGroupController extends AuthenticatedController {
             }
         } catch(IllegalArgumentException e) {
             response.status = 400
-            render([message: 'Error while trying to get project\'s Consent Groups. ' + e as JSON])
+            render([message: "Error while trying to get project's Consent Groups. " + e as JSON])
         } catch(Exception e) {
             log.error("Error while trying to get Consent Groups for ProjectKey: ${params.projectKey}. ", e.getMessage())
             response.status = 500
-            render([message: 'Error while trying to get project\'s Consent Groups.' as JSON])
+            render([message: "Error while trying to get project's Consent Groups." as JSON])
         }
     }
 

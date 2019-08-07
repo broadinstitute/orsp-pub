@@ -67,7 +67,8 @@ export const History = hh(class History extends Component {
           showPrintButton: false,
           printComments: this.printHistory,
           defaultSorted: defaultSorted,
-          showSearchBar: true
+          showSearchBar: true,
+          pagination: true
         })
       ])
     )
