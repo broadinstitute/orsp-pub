@@ -14,7 +14,7 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review, User } from "../util/ajax";
 import get from 'lodash/get';
-import { isEmpty, MAIN_SPINNER } from '../util/Utils';
+import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
@@ -147,7 +147,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     this.init();
   }
 
@@ -187,7 +187,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-              spinnerService.hide(MAIN_SPINNER);
+              spinnerService.hideMain();
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -200,7 +200,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               });
               this.props.changeInfoStatus(false);
             } else {
-              spinnerService.hide(MAIN_SPINNER);
+              spinnerService.hideMain();
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -214,7 +214,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         this.setState(() => { throw error; });
       });
   }
@@ -321,28 +321,28 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   rejectProject() {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     Project.rejectProject(component.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
       window.location.href = [component.serverURL, "index"].join("/");
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
     }).catch(error => {
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
       this.setState(() => { throw error; });
     });
   }
 
   discardEdits() {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   }
 
   approveEdits = () => {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     let project = this.getProject();
     project.editsApproved = true;
     Project.updateProject(project, component.projectKey).then(
@@ -352,7 +352,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           return { approveDialog: !state.approveDialog }
         });
       }).catch(error => {
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
       this.setState(() => { throw error; });
       });
   };
@@ -362,10 +362,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       resp => {
         this.props.updateContent();
         this.init();
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
       })
       .catch(error => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         this.setState(() => { throw error; });
       });
   }

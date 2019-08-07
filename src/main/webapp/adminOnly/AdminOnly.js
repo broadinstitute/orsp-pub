@@ -5,7 +5,7 @@ import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty, createObjectCopy, compareNotEmptyObjects, MAIN_SPINNER } from "../util/Utils";
+import { isEmpty, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
 import { format } from 'date-fns';
 import "regenerator-runtime/runtime";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -135,11 +135,11 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   submit = () => {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     const parsedForm = this.getParsedForm();
     Project.updateAdminOnlyProps(parsedForm , component.projectKey).then(
       response => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         this.setState(prev => {
           prev.initial = createObjectCopy(this.state.formData);
           prev.showSubmissionError = false;
@@ -149,7 +149,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         this.init();
         this.setState(prev => {
           prev.showSubmissionError = true;

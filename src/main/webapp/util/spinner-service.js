@@ -1,3 +1,5 @@
+export const MAIN_SPINNER = 'appSpinner';
+
 export class SpinnerService {
 
   constructor() {
@@ -37,9 +39,25 @@ export class SpinnerService {
     });
   }
 
+  showMain() {
+    this.spinnerCache.forEach(spinner => {
+      if (spinner.name === MAIN_SPINNER) {
+        spinner.show = true;
+      }
+    });
+  };
+
   hide(spinnerName) {
     this.spinnerCache.forEach(spinner => {
       if (spinner.name === spinnerName) {
+        spinner.show = false;
+      }
+    });
+  }
+
+  hideMain() {
+    this.spinnerCache.forEach(spinner => {
+      if (spinner.name === MAIN_SPINNER) {
         spinner.show = false;
       }
     });

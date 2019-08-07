@@ -3,11 +3,10 @@ import { hh, div, p, button, span } from 'react-hyperscript-helpers';
 import { DUL, ConsentGroup } from '../util/ajax';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
-import { MAIN_SPINNER, validateEmail } from "../util/Utils";
+import { validateEmail } from "../util/Utils";
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { validateEmail } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
 import './Documents.css';
 import { isEmpty } from '../util/Utils';
@@ -49,7 +48,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   };
 
   send = () => {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     const collaboratorEmail = this.state.collaboratorEmail;
     if (this.validEmail(collaboratorEmail)) {
       this.setState({ alertMessage: '', collaboratorEmail: '', showAlert: false });
@@ -61,9 +60,9 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           prev.showAlert = true;
           prev.collaboratorEmail = '';
           return prev;
-        }, () => spinnerService.hide(MAIN_SPINNER));
+        }, () => spinnerService.hideMain());
       }).catch(error => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         this.setState(prev => {
           prev.alertType = 'danger';
           prev.alertMessage = 'Error sending email to: ' + collaboratorEmail + '. Please try again later.';
@@ -72,7 +71,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           return prev;
         });
       });
-    } else spinnerService.hide(MAIN_SPINNER);
+    } else spinnerService.hideMain();
   };
 
   getShareableLink = () => {

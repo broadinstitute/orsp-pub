@@ -7,7 +7,7 @@ import { Review } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
 import '../components/Btn.css';
-import { isEmpty, MAIN_SPINNER } from "../util/Utils";
+import { isEmpty } from "../util/Utils";
 
 export const TextEditor = hh(class TextEditor extends Component {
 
@@ -28,10 +28,10 @@ export const TextEditor = hh(class TextEditor extends Component {
   };
 
   addComment = () => {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     Review.addComments(this.props.id, this.state.comment).then(
       response => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         this.setState(prev => {
           prev.comment = '';
           return prev;
@@ -41,7 +41,7 @@ export const TextEditor = hh(class TextEditor extends Component {
     ).catch(error =>
       this.setState(prev => {
         prev.showError = true;
-      },()=> spinnerService.hide(MAIN_SPINNER))
+      },()=> spinnerService.hideMain())
     )
   };
 

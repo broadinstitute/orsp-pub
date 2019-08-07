@@ -10,7 +10,7 @@ import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
 import get from 'lodash/get';
 import { Table } from "../components/Table";
-import { isEmpty, MAIN_SPINNER } from "../util/Utils";
+import { isEmpty } from "../util/Utils";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { InputFieldRadio } from "../components/InputFieldRadio";
 
@@ -113,7 +113,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   componentDidMount() {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
@@ -194,12 +194,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               prev.futureCopy = futureCopy;
               prev.isAdmin = component.isAdmin;
               return prev;
-            }, () => spinnerService.hide(MAIN_SPINNER));
+            }, () => spinnerService.hideMain());
           }
         );
       }
     ).catch(error => {
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
       this.setState(() => { throw error; });
     });
   };
@@ -324,25 +324,25 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     };
 
   rejectConsentGroup() {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
 
     ConsentGroup.rejectConsent(component.consentKey).then(resp => {
       window.location.href = this.getRedirectUrl(component.projectKey);
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
     }).catch(error => {
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
       console.error(error);
     });
   }
 
   discardEdits = () => {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   };
 
   approveEdits = () => {
-    spinnerService.show(MAIN_SPINNER);
+    spinnerService.showMain();
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
     ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
@@ -354,7 +354,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       this.props.updateContent();
     })
     .catch(error => {
-      spinnerService.hide(MAIN_SPINNER);
+      spinnerService.hideMain();
       console.error(error);
     });
   };
@@ -563,12 +563,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     Review.deleteSuggestions(component.consentKey, type).then(
       resp => {
         this.init();
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
       }, () =>   
         this.props.updateContent()
       )
       .catch(error => {
-        spinnerService.hide(MAIN_SPINNER);
+        spinnerService.hideMain();
         console.error(error);
       });
   };
