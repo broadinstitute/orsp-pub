@@ -15,10 +15,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 
 @Integration
-class CrowdServiceSpec extends Specification {
+class BQServiceSpec extends Specification {
 
     @Autowired
-    CrowdService crowdService
+    BQService BQService
 
     @Autowired
     UserService userService
@@ -32,44 +32,44 @@ class CrowdServiceSpec extends Specification {
     def cleanup() {
     }
 
-    void stubCrowdResource() {
-        crowdService.crowdConfiguration.url = "http://localhost:${wireMockRule.port()}/crowd"
+    void stubBQResource() {
+        BQService.bqConfiguration.url = "http://localhost:${wireMockRule.port()}/BQ"
         wireMockRule.resetAll()
-        URL url = Resources.getResource("test_crowd_users.json")
-        String mockCrowdJson = Resources.toString(url, Charsets.UTF_8)
-        stubFor(get(anyUrl()) //"/crowd/rest/usermanagement/latest/search*"
+        URL url = Resources.getResource("test_broad_users.json")
+        String mockBQJson = Resources.toString(url, Charsets.UTF_8)
+        stubFor(get(anyUrl()) 
                 .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(mockCrowdJson)))
+                .withBody(mockBQJson)))
     }
 
-    void "Crowd Service finds all users in test user file"() {
+    void "BQ Service finds all users in test user file"() {
         given:
-        stubCrowdResource()
+        stubBQResource()
 
         when:
-        def missingUsers = crowdService.findMissingUsers()
+        def missingUsers = BQService.findMissingUsers()
 
-        then: "Crowd User Details Exist"
+        then: "BQ User Details Exist"
         missingUsers != null
         !missingUsers.isEmpty()
         missingUsers.size() == 10
     }
 
-    void "Crowd Service finds missing users in test user file"() {
+    void "BQ Service finds missing users in test user file"() {
         given:
         User user = userService.findOrCreateUser(
                 "testuser1",
                 "testuser1@broadinstitute.org",
                 "Test User 1")
-        stubCrowdResource()
+        stubBQResource()
         Collection<String> existingUserNames = userService.findAllUserNames()
 
         when:
-        def missingUsers = crowdService.findMissingUsers()
+        def missingUsers = BQService.findMissingUsers()
 
-        then:"Crowd User Details Exist"
+        then:"BQ User Details Exist"
         existingUserNames.size() == 1
         user != null
         missingUsers != null
