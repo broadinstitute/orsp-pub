@@ -9,20 +9,11 @@ import { handleRedirectToProject, printData } from "../util/Utils";
 import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 
-class DataUseRestrictions extends Component {
+class DataUseRestrictionSummary extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      sizePerPage: 50,
-      search: null,
-      sort: {
-        sortDirection: 'asc',
-        orderColumn: null
-      },
-      currentPage: 1,
-      fundings: [],
-      isAdmin: true
     };
   }
 
@@ -45,4 +36,4 @@ class DataUseRestrictions extends Component {
   }
 }
 
-export default DataUseRestrictions;
+export default DataUseRestrictionSummary;

@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import RolesManagement from "../rolesManagement/RolesManagement";
 import ReviewCategories from "../reviewCategories/ReviewCategories";
-import Profile from "../profile/Profile";
+import DataUseRestrictionSummary from "../dataUseRestrictions/DataUseRestrictionSummary";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
 
@@ -13,7 +13,7 @@ const Routes = ( props ) => (
     <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
     <Route path={"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
-    <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
+    <Route path= {"/index/profile"} render = {(routeProps) =>  <DataUseRestrictionSummary {...routeProps} {...props}/> }/>
 
   </Switch>
 );
