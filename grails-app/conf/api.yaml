@@ -187,7 +187,7 @@ definitions:
         example:
           BSP:
             ok: true
-          Crowd:
+          BQ:
             ok: true
           Database:
             ok: true
