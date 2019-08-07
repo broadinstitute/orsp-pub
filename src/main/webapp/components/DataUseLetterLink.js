@@ -3,10 +3,21 @@ import { input, hh, h, h3, div, p, hr, small, button, ul, li, br, span } from 'r
 import { DUL, ConsentGroup } from '../util/ajax';
 import { AlertMessage } from './AlertMessage';
 import { InputFieldText } from './InputFieldText';
+import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
+import { InputYesNo } from '../components/InputYesNo';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { validateEmail } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from './Spinner';
 import './Documents.css';
+import { isEmpty } from '../util/Utils';
+
+const styles = {
+  getShareable: {
+    marginTop: '20px',
+    glyphicon: {marginRight: '5px'}
+  }
+};
 
 export const DataUseLetter = hh(class DataUseLetter extends Component {
 
@@ -18,7 +29,14 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       error: false,
       alertType: 'success',
       invalidEmail: false,
-      collaboratorEmail: ''
+      collaboratorEmail: '',
+      disableShareableLink: true,
+      formData: {
+        repositoryDeposition: '',
+        startDate: null,
+        endDate: null,
+        onGoingProcess: false
+      }      
     };
   }
 
@@ -60,7 +78,8 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   getShareableLink = () => {
     let data = {
       consentGroupKey: this.props.projectKey,
-      creator: this.props.userName
+      creator: this.props.userName,
+      dulInfo: JSON.stringify(this.state.formData)
     };
     DUL.generateRedirectLink(data).then(resp => {
       navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
@@ -108,48 +127,125 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     })
   };
 
+  handleRadioChange = (e, field, value) => {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, () => { this.showShareableLink() });
+  };
+
+  handleCheck = (e) => {
+    const { name = '', checked = '' } = e.target;
+    this.setState(prev => {
+      prev.formData[name] = checked;
+      if (checked) {
+        prev.formData['endDate'] = null;
+      }
+      return prev;
+    }, () => { this.showShareableLink() });
+  };
+
+  handleDatePickerChange = (id) => (date) => {
+    this.setState(prev => {
+      prev.formData[id] = date;
+      return prev;
+    }, () => { this.showShareableLink() });
+  };
+
+  showShareableLink() {
+    // Date Range Validations
+    let disableShareableLink = false;
+    if (this.state.formData.startDate === null
+      || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)
+      || isEmpty(this.state.formData.repositoryDeposition)) {
+        disableShareableLink = true;
+    }
+    this.setState(prev => {
+      prev.disableShareableLink = disableShareableLink;
+      return prev;
+    });
+  }
+
   render(){
 
     return(
 
       div({ style: { 'marginTop': '10px' } }, [
         p({ className: "bold" }, [
-          "Do you want to send a Data Use Letter form directly to your Collaborator for their IRB's completion?",
-          span({ className: "data-use-clarification" }, ["You can either insert the email below and a link will be sent to them directly or click to get a shareable link."])
-        ]),
-        div({ className: "collaborator-email-container row" }, [
-          div({ className: "col-xs-12 col-sm-6 col-md-8" }, [
-            InputFieldText({
-              id: "inputCollaboratorEmail",
-              name: "collaboratorEmail",
-              label: "Collaborator Email",
-              value: this.state.collaboratorEmail,
-              disabled: false,
-              required: false,
-              placeholder: "Enter email address...",
-              onChange: this.handleInputChange,
-              error: this.state.invalidEmail,
-              errorMessage: 'Invalid email address'
-            }),
-            button({ className: "btn buttonPrimary", disabled: this.state.collaboratorEmail === '', onClick: this.send }, ["Send"])
-          ]),
-          div({ className: "col-xs-12 col-sm-6 col-md-4 shareable-link" }, [
-            button({
-              className: "btn buttonPrimary",
-              onClick: this.getShareableLink,
-              name: "getLink",
-              disabled: false,
-              id: 'shareable-link'
-            }, [
-                span({ className: "glyphicon glyphicon-link", style: { 'marginRight': '5px' } }, []),
-                "Get shareable link"
-              ]),
+          "If you would like a shareable link to the Broad's Data Use Limitation Record request form to provide to your collaborator for their IRB's completion,",
+          span({style: { 'display': 'block' }}, [
+            "please complete the fields below."
           ])
         ]),
+        div({ className: "row yesNo-container" }, [
+          div({ className: "col-xs-12" }, [
+            InputYesNo({
+              id: "radioRepositoryDeposition",
+              name: "repositoryDeposition",
+              value: this.state.formData.repositoryDeposition,
+              label: "Data is intended for repository deposition?*",
+              readOnly: false,
+              onChange: this.handleRadioChange,
+            }), 
+          ])
+        ]),
+        div({ className: "row" }, [
+          div({ className: "col-xs-12 col-sm-4 col-padding" }, [
+            InputFieldDatePicker({
+              selected: this.state.formData.startDate,
+              name: "startDate",
+              label: "Sample Collection Start Date*",
+              onChange: this.handleDatePickerChange,
+              placeholder: "Enter Start Date",
+              maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
+            })
+          ]),
+          div({ className: "col-xs-12 col-sm-4 col-padding" }, [
+            InputFieldDatePicker({
+              startDate: this.state.formData.startDate,
+              name: "endDate",
+              label: "Sample Collection End Date*",
+              selected: this.state.formData.endDate,
+              onChange: this.handleDatePickerChange,
+              placeholder: "Enter End Date",
+              disabled: (this.state.formData.onGoingProcess === true) || (this.state.formData.startDate === null),
+              minDate: this.state.formData.startDate
+            })
+          ]),
 
+          div({ className: "col-xs-12 col-sm-4 col-padding checkbox" }, [
+            InputFieldCheckbox({
+              id: "onGoingProcess",
+              name: "onGoingProcess",
+              onChange: this.handleCheck,
+              label: "Ongoing Process",
+              defaultChecked: this.state.formData.onGoingProcess
+            })
+          ])
+        ]),
         div({ className: "row" }, [
           div({ className: "col-xs-12" }, [
-            div({ style: { 'marginTop': '30px' } }, [
+            button({
+              className: "btn brnPrimary",
+              style: styles.getShareable,
+              onClick: this.getShareableLink,
+              name: "getLink",
+              disabled: this.state.disableShareableLink,
+              id: 'shareable-link'
+              }, [
+                span({ className: "glyphicon glyphicon-link" }, []),
+                "Get shareable link"
+            ])
+          ])
+        ]),
+        div({ className: "row" }, [
+          div({ className: "col-xs-12" }, [
+            div({}, [
               AlertMessage({
                 type: this.state.alertType,
                 msg: this.state.alertMessage,
@@ -162,4 +258,3 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     );
   }
 });
-
