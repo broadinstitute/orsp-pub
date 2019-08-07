@@ -176,7 +176,7 @@ class NewConsentGroupController extends AuthenticatedController {
         try {
             LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
             response.status = 200
-            JSON.use(UtilityClass.ISSUE_COMPLETE) {
+            JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
                 render( consentGroups as JSON)
             }
         } catch(IllegalArgumentException e) {
