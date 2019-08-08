@@ -186,7 +186,7 @@ class SubmissionForm extends Component {
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload
         }),
-        h1({}, ["Submission for " + `${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`]),
+        h1({style: {'marginBottom':'20px'}}, ["Submission for " + `${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`]),
         Panel({
           title: "Add new submission",
         }, [
@@ -239,6 +239,7 @@ class SubmissionForm extends Component {
             pagination: false
           }),
           button({
+            className: "btn buttonPrimary", style: {'marginTop':'20px'},
             onClick: this.submitSubmission,
           }, ["Submit"])
         ])
