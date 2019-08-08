@@ -280,7 +280,10 @@ export const DUL = {
 export const DataUse = {
   createRestriction(restriction) {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
-  }  
+  },
+  getRestriction() {
+    return axios.get(UrlConstants.restrictionUrl + '?id=' + component.restrictionId);
+  }
 };
 
 export const ProjectInfoLink = {
