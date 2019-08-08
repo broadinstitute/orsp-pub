@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import '../index.css';
 import ErrorHandler from '../components/ErrorHandler';
 import { BrowserRouter } from 'react-router-dom';
-import App from "./App";
+import Routes from "./Routes";
 
 ReactDOM.render(
   <ErrorHandler>
     <BrowserRouter basename= {component.contextPath}>
-      <App props={{}}/>
+      <Routes props={{}}/>
     </BrowserRouter>
   </ErrorHandler>,
 
