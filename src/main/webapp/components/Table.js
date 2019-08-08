@@ -148,7 +148,7 @@ export const Table = hh(class Table extends Component {
         documents.push([
           div({className: "linkOverflowEllipsis", key: data.document.id}, [
             a({
-              href: `${component.downloadDocumentUrl}?uuid=${data.document.uuid}`,
+              href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
               target: '_blank',
               title: data.document.fileType,
             }, [

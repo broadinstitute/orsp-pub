@@ -7,6 +7,7 @@ import grails.converters.JSON
 import groovy.util.logging.Slf4j
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.springframework.web.multipart.MultipartFile
 
 @Slf4j
 class SubmissionController extends AuthenticatedController {
@@ -100,49 +101,42 @@ class SubmissionController extends AuthenticatedController {
     }
 
     def save() {
-        Issue issue = queryService.findByKey(params.projectKey)
         JsonParser parser = new JsonParser()
         JsonArray dataSubmission = parser.parse(request.parameterMap["submission"].toString())
+        List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+        User user = getUser()
 
         try {
-            Submission submissionParsed = getJson(Submission.class, dataSubmission[0])
-            submissionParsed
+            Submission submission
+            if (params?.submissionId) {
+                submission = Submission.findById(params?.submissionId)
+            } else {
+                submission = getJson(Submission.class, dataSubmission[0])
+            }
+            submission.createDate = new Date()
+            submission.author = getUser()?.displayName
+            submission.documents = new ArrayList<StorageDocument>()
+
+            if(!files?.isEmpty()) {
+                files.forEach {
+                    StorageDocument document = storageProviderService.saveMultipartFile(user.displayName, user.userName, submission.projectKey, it.name , it, null)
+                    submission.documents.add(document)
+                }
+            }
+
+            if (!submission.save(flush: true)) {
+                response.status = 500
+                render([error: submission.errors.allErrors] as JSON)
+            }
+
+            response.status = 201
+            render([message: submission] as JSON)
+
         } catch (Exception e) {
             log.error("There was an error trying to save the submission: " + e.message)
             response.status = 500
             render([error: e.message] as JSON)
         }
-
-        Submission submission
-        if (params?.submissionId) {
-            submission = Submission.findById(params?.submissionId)
-            submission.number = Integer.parseInt(params?.submissionNumber)
-            submission.type = params?.submissionType
-            submission.comments = params?.comments
-            if (!submission.save(flush: true)) {
-                flash.message = submission.errors.allErrors.collect { it }.join("<br/>")
-            }
-        } else {
-            submission = new Submission(
-                    projectKey: dataSubmission.elements.projectKey,
-                    number: Integer.parseInt(params?.submissionNumber),
-                    author: getUser()?.displayName,
-                    type: params?.submissionType,
-                    comments: params.comments,
-                    createDate: new Date(),
-                    documents: new ArrayList<StorageDocument>())
-            if (!submission.save(flush: true)) {
-                flash.message = submission.errors.allErrors.collect { it }.join("<br/>")
-            }
-
-        }
-        def number = params?.submissionNumber ?: 0  // Helpful in the error case
-        render(view: '/submission/submission',
-                model: [issue     : issue,
-                        submission: submission,
-                        minNumber : number,
-                        docTypes  : PROJECT_DOC_TYPES,
-                        submissionTypes: getSubmissionTypesForIssueType(issue.getType())])
     }
 
     def delete() {

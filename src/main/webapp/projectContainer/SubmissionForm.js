@@ -39,15 +39,29 @@ class SubmissionForm extends Component {
       },
       showAddDocuments: false,
       documents: [],
+      params: {
+        projectKey: '',
+        type: ''
+      }
     };
   }
 
   componentDidMount() {
     const params = new URLSearchParams(this.props.location.search);
     this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'));
+    this.setState(prev => {
+      prev.params.projectKey = params.get('projectKey');
+      prev.params.type = params.get('type');
+      return prev;
+    });
   }
 
-  formatSubmissionType = (submissionTypes) => {
+  getTypeSelected() {
+    const params = new URLSearchParams(this.props.location.search);
+    return { label: params.get('type'), value: params.get('type') };
+  }
+
+  formatSubmissionType(submissionTypes) {
     return submissionTypes.map(type => {
       return {
         label: type,
@@ -56,23 +70,17 @@ class SubmissionForm extends Component {
     });
   };
 
-  formatSelectedType = (selected) => {
-    return {
-      label: selected.name,
-      value: selected.name
-    }
-  };
-
   getSubmissionFormInfo = (projectKey, type) => {
     ProjectMigration.getSubmissionFormInfo(projectKey, type).then(resp => {
       const submissionInfo = resp.data;
-      console.log(submissionInfo);
       this.setState(prev => {
         prev.submissionInfo.typeLabel = submissionInfo.typeLabel;
         prev.submissionInfo.projectKey = submissionInfo.issue.projectKey;
-        prev.submissionInfo.selectedType = this.formatSelectedType(submissionInfo.defaultType);
+        prev.submissionInfo.selectedType = this.getTypeSelected();
         prev.submissionInfo.submissionTypes = this.formatSubmissionType(submissionInfo.submissionTypes);
         prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission : '';
+        prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums + 1;
+        prev.submissionInfo.number = submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
         prev.docTypes = this.loadOptions(submissionInfo.docTypes);
         return prev;
       });
@@ -111,7 +119,7 @@ class SubmissionForm extends Component {
     if(this.validateSubmission()) {
       console.log(this.state.submissionInfo);
       const submissionData = {
-        type: this.state.submissionInfo.docTypes.value,
+        type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
         comments: this.state.submissionInfo.comments,
         projectKey: this.state.submissionInfo.projectKey
@@ -162,6 +170,9 @@ class SubmissionForm extends Component {
       return h1({}, ["Something went wrong."]);
     }
 
+    const type = this.state.submissionInfo.selectedType;
+    const minimunNumber = this.state.submissionInfo.submissionNumberMaximums[type.label];
+
     return (
       div({}, [
         AddDocumentDialog({
@@ -195,7 +206,7 @@ class SubmissionForm extends Component {
             handleChange: this.handleUpdate,
             value: this.state.submissionInfo.number,
             label: "Submission Number",
-            min: 0,
+            min: minimunNumber,
             showLabel: true
           }),
           InputFieldText({
