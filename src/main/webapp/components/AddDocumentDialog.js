@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import { hh, div, h, p, small, button } from 'react-hyperscript-helpers';
+import { hh, h, button } from 'react-hyperscript-helpers';
 import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
-import { AlertMessage } from './AlertMessage';
 import { Files } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import './ConfirmationDialog.css';
@@ -65,10 +64,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         if(this.props.projectKey !== undefined) {
-          spinnerService.showAll();
+          spinnerService.show(this.props.spinner);
           Files.upload(files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
-            spinnerService.hideAll();
+            spinnerService.hide(this.props.spinner);
             this.setState(prev => {
               prev.submit = false;
               prev.disableBtn = false;
@@ -79,7 +78,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
-            spinnerService.hideAll();
+            spinnerService.hide(this.props.spinner);
             this.setState(prev => {
               prev.alertType = 'danger';
               prev.alertMessage = 'Something went wrong. Please try again.';

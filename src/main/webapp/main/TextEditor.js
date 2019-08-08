@@ -10,6 +10,8 @@ import { AlertMessage } from "../components/AlertMessage";
 import '../components/Btn.css';
 import { isEmpty } from "../util/Utils";
 
+const TEXT_EDITOR_SPINNER = 'textEditorSpinner';
+
 export const TextEditor = hh(class TextEditor extends Component {
 
   constructor(props) {
@@ -21,6 +23,10 @@ export const TextEditor = hh(class TextEditor extends Component {
     this.handleEditorChange = this.handleEditorChange.bind(this);
   }
 
+  componentWillUnmount() {
+    spinnerService._unregister(TEXT_EDITOR_SPINNER);
+  }
+
   handleEditorChange = (comment, editor) => {
     this.setState(prev => {
       prev.comment =  comment;
@@ -29,10 +35,10 @@ export const TextEditor = hh(class TextEditor extends Component {
   };
 
   addComment = () => {
-    spinnerService.showAll();
+    spinnerService.show(TEXT_EDITOR_SPINNER);
     Review.addComments(this.props.id, this.state.comment).then(
       response => {
-        spinnerService.hideAll();
+        spinnerService.hide(TEXT_EDITOR_SPINNER);
         this.setState(prev => {
           prev.comment = '';
           return prev;
@@ -42,7 +48,7 @@ export const TextEditor = hh(class TextEditor extends Component {
     ).catch(error =>
       this.setState(prev => {
         prev.showError = true;
-      },()=> spinnerService.hideAll())
+      },()=> spinnerService.hide(TEXT_EDITOR_SPINNER))
     )
   };
 
@@ -87,7 +93,7 @@ export const TextEditor = hh(class TextEditor extends Component {
           })
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: TEXT_EDITOR_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );

@@ -111,7 +111,7 @@ class NewConsentGroup extends Component {
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
           // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups&new"].join("/");
+          window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
           spinnerService.hideAll();
         }).catch(error => {
         console.error(error);
@@ -152,7 +152,7 @@ class NewConsentGroup extends Component {
     let consentCollectionLink = {};
     // consent collection link info
     consentCollectionLink.sampleCollectionId = sampleCollectionId;
-    consentCollectionLink.projectKey = this.props.projectKey;
+    consentCollectionLink.projectKey = component.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     consentCollectionLink.startDate = this.parseDate(this.state.generalDataFormData.startDate);
     consentCollectionLink.onGoingProcess = this.state.generalDataFormData.onGoingProcess ;
@@ -188,7 +188,7 @@ class NewConsentGroup extends Component {
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
    
-    extraProperties.push({ name: 'source', value: this.props.projectKey });
+    extraProperties.push({ name: 'source', value: component.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
     extraProperties.push({ name: 'consent', value: this.state.generalDataFormData.investigatorLastName });
@@ -507,42 +507,42 @@ class NewConsentGroup extends Component {
         isValid: this.isValid,
         showSubmit: this.showSubmit,
         submitHandler: this.submitNewConsentGroup,
-        disabledSubmit: this.state.formSubmitted,
+        disabledSubmit: this.state.formSubmitted
       }, [
-          NewConsentGroupGeneralData({
-            title: "Sample/Data Cohort Info",
-            currentStep: currentStep,
-            user: this.state.user,
-            updateForm: this.updateGeneralDataFormData,
-            errors: this.state.errors,
-            removeErrorMessage: this.removeErrorMessage,
-            projectKey: this.props.projectKey,
-            sampleCollectionList: this.state.sampleCollectionList,
-            fileHandler: this.fileHandler,
-            projectType: projectType,
-            options: this.state.documentOptions,
-            files: this.state.files,
-            isConsentFormPresent: this.state.isConsentFormPresent
-          }),
-          NewLinkCohortData({
-            title: "Security/MTA/International Info",
-            currentStep: currentStep,
-            handler: this.determinationHandler,
-            determination: this.state.determination,
-            showErrorIntCohorts: this.state.showInternationalCohortsError,
-            origin: 'consentGroup',
-            requireMta: this.state.linkFormData.requireMta,
-            errors: this.state.errors,
-            user: this.state.user,
-            updateInfoSecurityFormData: this.updateInfoSecurityFormData,
-            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-            generalError: this.state.generalError,
-            submitError: this.state.submitError,
-            handleInfoSecurityValidity: this.handleInfoSecurityValidity,
-            securityInfoData: this.state.securityInfoFormData,
-            updateMTA: this.updateMTA
-          })
-        ])
+        NewConsentGroupGeneralData({
+          title: "Sample/Data Cohort Info",
+          currentStep: currentStep,
+          user: this.state.user,
+          updateForm: this.updateGeneralDataFormData,
+          errors: this.state.errors,
+          removeErrorMessage: this.removeErrorMessage,
+          projectKey: component.projectKey,
+          sampleCollectionList: this.state.sampleCollectionList,
+          fileHandler: this.fileHandler,
+          projectType: projectType,
+          options: this.state.documentOptions,
+          files: this.state.files,
+          isConsentFormPresent: this.state.isConsentFormPresent
+        }),
+        NewLinkCohortData({
+          title: "Security/MTA/International Info",
+          currentStep: currentStep,
+          handler: this.determinationHandler,
+          determination: this.state.determination,
+          showErrorIntCohorts: this.state.showInternationalCohortsError,
+          origin: 'consentGroup',
+          requireMta: this.state.linkFormData.requireMta,
+          errors: this.state.errors,
+          user: this.state.user,
+          updateInfoSecurityFormData: this.updateInfoSecurityFormData,
+          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+          generalError: this.state.generalError,
+          submitError: this.state.submitError,
+          handleInfoSecurityValidity: this.handleInfoSecurityValidity,
+          securityInfoData: this.state.securityInfoFormData,
+          updateMTA: this.updateMTA
+        })
+      ])
     );
   }
 }
