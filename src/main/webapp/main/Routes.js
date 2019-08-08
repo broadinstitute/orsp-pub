@@ -18,8 +18,7 @@ const Routes = ( props ) => (
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
     <Route path= {"/index/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
-
   </Switch>
 );
 
-export default Routes; 
+export default Routes;

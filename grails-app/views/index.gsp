@@ -7,11 +7,9 @@
 <body>
 
 <div class="col-md-12">
-    <!--<h3>About the ORSP Portal</h3>-->
-    <!--<g:render template="/index/aboutBlurb"/>-->
-    <!--<p></p>-->
-    <div id="about"></div>
-    <asset:javascript src="build/about.js"/>
+    <h3>About the ORSP Portal</h3>
+    <g:render template="/index/aboutBlurb"/>
+    <p></p>
 
     <auth:isAuthenticated>
         <div>

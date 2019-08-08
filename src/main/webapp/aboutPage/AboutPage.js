@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import { h3, p, a, br, div } from 'react-hyperscript-helpers';
+import './AboutPage.css';
+
+const styles = {
+  titleSize: '24px',
+  fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
+  textFontSize: '14px'
+};
 
 class AboutPage extends Component {
 
@@ -8,17 +15,22 @@ class AboutPage extends Component {
     this.state = {}
   }
 
+  componentDidMount() {
+    console.log("ABOUT REACT")
+  }
+
   render() {
     return (
       div({ className: "col-md-10" }, [
-        h3({},["About the ORSP Portal"]),
-        p({}, [
+        h3({ style: { fontSize: styles.titleSize }
+        },["About the ORSP Portal"]),
+        p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
           a({
             href:"https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection"}, [
               "ORSP on the Broad Intranet"
           ]),
         ]),
-        p({}, [
+        p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
           "The Broad's Office of Research Subject Protection (ORSP) is committed to helping our community adhere to " +
           "federal regulations and institutional policies governing the protection of human subjects who make our" +
           "research possible. To fulfill that mission, the Broad must ensure appropriate regulatory oversight and" +
@@ -29,8 +41,8 @@ class AboutPage extends Component {
             href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]
           ), " for assistance."
         ]),
-        h3({}, ["User Guide"]),
-        p({},[
+        h3({ style: { fontSize: styles.titleSize }}, ["User Guide"]),
+        p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }},[
           "To access detailed instructions about how to use the ORSP portal, please visit:",
           br({}),
           a({
