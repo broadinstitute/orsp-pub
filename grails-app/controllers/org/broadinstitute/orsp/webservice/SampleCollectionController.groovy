@@ -3,22 +3,34 @@ package org.broadinstitute.orsp.webservice
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
+import grails.rest.RestfulController
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.SampleCollection
 import org.springframework.web.multipart.MultipartFile
 
 import groovyx.net.http.HttpBuilder
 import org.broadinstitute.orsp.webservice.BspCollection
+import org.broadinstitute.orsp.config.SampleCollectionConfiguration
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'CSV'])
-class SampleCollectionController {
+class SampleCollectionController extends RestfulController<SampleCollection> {
 
     Gson gson = new Gson()
+    SampleCollectionConfiguration sampleCollectionConfiguration
+
+    SampleCollectionController() {
+       super(SampleCollection)
+    }
 
     def index() {
         def json = gson.toJson("Unimplemented")
         render(text: json, contentType: "application/json")
+    }
+
+    boolean before() {
+        log.info(request.getHeader("Authorization"));
+        true
     }
 
     def sampleCollections() {
@@ -36,6 +48,11 @@ class SampleCollectionController {
      * @return List of added sample collections
      */
     def save() {
+
+        if (sampleCollectionConfiguration.token != request.getHeader('TOKEN')) {
+            log.info("Unauthorized BSP Sync request at: ${new Date().getDateTimeString()}")
+            return false
+        } 
         List<BspCollection> collections = new ArrayList<>()
         request.reader.text.splitEachLine('\t') {
             elements -> 
@@ -48,7 +65,6 @@ class SampleCollectionController {
                         archived: elements[4]
                     )
                 )
-            
         }
         // The first one is the header. Remove it before returning full list, if there is one.
         if (!collections.isEmpty()) {
@@ -71,7 +87,7 @@ class SampleCollectionController {
             }
         }
         log.info("Synchronized ${syncedCollections.size()} sample collections at: ${new Date().getDateTimeString()}")
-        syncedCollections
+        true
     }
 
     /**
