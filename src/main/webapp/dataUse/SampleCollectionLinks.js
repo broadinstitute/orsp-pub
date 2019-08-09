@@ -5,8 +5,10 @@ import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { styles } from "../util/ReportConstants";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+
+const SPINNER_NAME = 'sampleCollectionLink';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -81,19 +83,18 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
     this.init();
   }
   init = () => {
-    spinnerService.showAll();
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
   tableHandler = (offset, limit, search, sort, page) => {
-    spinnerService.showAll();
     ConsentCollectionLink.findCollectionLinks().then(result => {
+      spinnerService.show(SPINNER_NAME);
       this.setState(prev => {       
         prev.links = result.data;
         return prev;
-      }, () => spinnerService.hideAll())
+      }, () => spinnerService.hide(SPINNER_NAME))
     }).catch(error => {
-      spinnerService.hideAll();
+      spinnerService.hide(SPINNER_NAME);
       this.setState(() => { throw error });
     });
   };
@@ -117,10 +118,11 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
           printComments: this.printComments,
           showExportButtons: false,
           showSearchBar: true,
-          sizePerPageList: SIZE_PER_PAGE_LIST
+          sizePerPageList: SIZE_PER_PAGE_LIST,
+          pagination: true
         }),
         h(Spinner, {
-          name: "sampleCollectionLink", group: "orsp", loadingImage: component.loadingImage
+          name: SPINNER_NAME, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

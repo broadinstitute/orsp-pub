@@ -31,7 +31,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      h(Link, {to: {pathname:'/dataUse/show/' + row.id}}, ['View Restriction'])
+      a({href: component.serverURL + '/dataUse/show/' + row.id}, ['View Restriction'])
     ])
   },
   {
@@ -168,7 +168,8 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
           page: this.state.currentPage,
           totalSize: this.state.recordsFiltered,
           showExportButtons: false,
-          showSearchBar: true
+          showSearchBar: true,
+          pagination: true
         }),
         h(Spinner, {
           name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage

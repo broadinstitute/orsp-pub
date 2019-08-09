@@ -10,7 +10,6 @@ import './Main.css';
 class Main extends Component {
   constructor(props) {
     super(props);
-    console.log('ver',props);
     this.state = {
       status: {
         type: '',
