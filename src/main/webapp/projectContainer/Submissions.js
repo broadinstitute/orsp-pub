@@ -6,8 +6,7 @@ import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
-import {isEmpty} from "../util/Utils";
-import {UrlConstants} from "../util/UrlConstants";
+import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [

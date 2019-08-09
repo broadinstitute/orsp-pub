@@ -89,7 +89,9 @@ class UrlMappings {
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
+
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+        '/api/submissions'(controller: 'submission', action: 'delete', method: 'DELETE')
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
         '/api/submissions/info'(controller: 'submission', action: 'indexNew', method: 'GET')
         '/submissions/add-new'(controller: 'submission', action: 'renderMainComponent', method: 'GET')
@@ -97,6 +99,7 @@ class UrlMappings {
         '/api/submissions/save-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/submission/remove-file'(controller: 'submission', action: 'removeFileNew', method: 'DELETE')
+
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')

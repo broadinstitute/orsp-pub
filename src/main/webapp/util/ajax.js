@@ -372,7 +372,7 @@ export const ProjectMigration = {
 
     files.forEach(file => {
       if (file.file != null) {
-        data.append(file.fileKey, file.file, file.file.name);
+        data.append(file.fileType, file.file, file.file.name);
       }
     });
     data.append('submission', JSON.stringify(submissionData));
@@ -389,5 +389,9 @@ export const ProjectMigration = {
 
   removeSubmissionFile(sumissionId, uuid) {
     return axios.delete(UrlConstants.submissionRemoveFileUrl + '?submissionId=' + sumissionId + "&uuid=" + uuid);
+  },
+
+  deleteSubmission(submissionId) {
+    return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
   }
 };

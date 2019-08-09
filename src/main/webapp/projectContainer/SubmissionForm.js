@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, h1, button } from 'react-hyperscript-helpers';
+import { div, h1, button, h } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import {Files, ProjectMigration} from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -10,6 +10,8 @@ import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { Spinner } from "../components/Spinner";
+import { AlertMessage } from "../components/AlertMessage";
 
 const styles = {
   addDocumentContainer: {
@@ -47,6 +49,10 @@ class SubmissionForm extends Component {
       },
       showDialog: false,
       fileToRemove: {},
+      errors: {
+        comment: false,
+        serverError: false
+      },
     };
   }
 
@@ -78,17 +84,19 @@ class SubmissionForm extends Component {
   getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
     ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
       const submissionInfo = resp.data;
-      console.log(submissionInfo.documents);
+      console.log(submissionInfo);
       this.setState(prev => {
         prev.submissionInfo.typeLabel = submissionInfo.typeLabel;
         prev.submissionInfo.projectKey = submissionInfo.issue.projectKey;
         prev.submissionInfo.selectedType = this.getTypeSelected();
         prev.submissionInfo.submissionTypes = this.formatSubmissionType(submissionInfo.submissionTypes);
         prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission.comments : '';
-        prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums + 1;
-        prev.submissionInfo.number = submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
+        prev.submissionInfo.submissionNumberMaximums =
+          isEmpty(submissionInfo.submissionNumberMaximums[prev.params.type]) ? {[prev.params.type]: 1}: submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
+        prev.submissionInfo.number =
+          isEmpty(submissionInfo.submissionNumberMaximums[prev.params.type]) ? 1 : submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
         prev.docTypes = this.loadOptions(submissionInfo.docTypes);
-        prev.documents = submissionInfo.documents;
+        prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
         return prev;
       });
     });
@@ -104,6 +112,7 @@ class SubmissionForm extends Component {
     const value = e.target.value;
     this.setState(prev => {
       prev.submissionInfo[field] = value;
+      prev.errors.comment = false;
       return prev;
     });
   };
@@ -124,6 +133,7 @@ class SubmissionForm extends Component {
 
   submitSubmission = () => {
     if(this.validateSubmission()) {
+      spinnerService.showAll();
       const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
@@ -132,35 +142,29 @@ class SubmissionForm extends Component {
       };
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
-        console.log(resp.data);
-        spinnerService.showAll();
-        console.log(this.props.history);
         this.props.history.goBack();
       });
     }
   };
 
   handleAction = () => {
-    console.log('remove action');
-    switch (this.state.action) {
-      case 'Approve':
-        console.log('approve action (?)');
-        // this.approveDocument(this.state.uuid);
-        break;
-      case 'Reject':
-        console.log('reject action (?)');
-        // this.rejectDocument(this.state.uuid);
-        break;
-    }
-    this.closeModal();
+    spinnerService.showAll();
+    this.closeModal("showDialog");
+    this.removeFile();
   };
 
   validateSubmission = () => {
-    return !isEmpty(this.state.submissionInfo.comments);
+    if (isEmpty(this.state.submissionInfo.comments)) {
+      this.setState(prev => {
+        prev.errors.comment = true;
+        return prev;
+      });
+      return false;
+    }
+    return true;
   };
 
   removeFileDialog = (data) => {
-    console.log('removeFileDialog', data);
     this.setState(prev => {
       prev.showDialog = true;
       prev.fileToRemove = data;
@@ -169,8 +173,6 @@ class SubmissionForm extends Component {
   };
 
   removeFile = () => {
-    spinnerService.showAll();
-    console.log(row, e);
     ProjectMigration.removeSubmissionFile(this.state.params.submissionId, this.state.fileToRemove.uuid).then(prev => {
       const documentsToUpdate = this.state.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
       this.setState(prev => {
@@ -182,16 +184,14 @@ class SubmissionForm extends Component {
   };
 
   setFilesToUpload = (doc) => {
-    console.log(doc);
     this.setState(prev => {
       let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
       let documents = prev.documents;
       documents.push(document);
-      console.log(documents);
       prev.documents = documents;
       return prev;
     }, () => {
-      this.closeModal();
+      this.closeModal("showAddDocuments");
     });
   };
 
@@ -201,16 +201,25 @@ class SubmissionForm extends Component {
     });
   };
 
-  closeModal = () => {
-    this.setState({ showAddDocuments: !this.state.showAddDocuments });
+  closeModal = (type) => {
+    this.setState(prev => {
+      prev[type] = !this.state[type];
+      return prev;
+    });
   };
 
-
-  handleDialog = (uuid, action) => {
-    this.setState({
-      showDialog: !this.state.showDialog,
-      action: action,
-      uuid: uuid
+  deleteSubmission = () => {
+    spinnerService.showAll();
+    ProjectMigration.deleteSubmission(this.state.params.submissionId).then(prev => {
+      this.props.history.goBack();
+      spinnerService.hideAll();
+    }).catch(error => {
+      spinnerService.hideAll();
+      console.error(error);
+      this.setState(prev => {
+        prev.errors.serverError = true;
+        return prev;
+      });
     });
   };
 
@@ -226,7 +235,7 @@ class SubmissionForm extends Component {
     return (
       div({}, [
         ConfirmationDialog({
-          closeModal: this.closeModal,
+          closeModal: () => this.closeModal("showDialog"),
           show: this.state.showDialog,
           handleOkAction: this.handleAction,
           title: 'Delete Confirmation',
@@ -234,7 +243,7 @@ class SubmissionForm extends Component {
           actionLabel: 'Yes'
         }),
         AddDocumentDialog({
-          closeModal: this.closeModal,
+          closeModal: () => this.closeModal("showAddDocuments"),
           show: this.state.showAddDocuments,
           options: this.state.docTypes,
           projectKey: this.props.projectKey,
@@ -274,7 +283,9 @@ class SubmissionForm extends Component {
             value: this.state.submissionInfo.comments,
             required: false,
             onChange: this.handleInputChange,
-            edit: true
+            edit: true,
+            error: this.state.errors.comment,
+            errorMessage: "Required field"
           }),
         ]),
         Panel({
@@ -300,8 +311,20 @@ class SubmissionForm extends Component {
           button({
             className: "btn buttonPrimary", style: {'marginTop':'20px'},
             onClick: this.submitSubmission,
-          }, ["Submit"])
-        ])
+          }, ["Submit"]),
+          button({
+            isRendered: component.isAdmin,
+            className: "btn buttonPrimary", style: {'marginTop':'20px'},
+            onClick: this.deleteSubmission,
+          }, ["Delete"])
+        ]),
+        AlertMessage({
+          msg: 'Something went wrong in the server. Please try again later.',
+          show: this.state.errors.serverError
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+        })
       ])
     );
   }

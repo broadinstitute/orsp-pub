@@ -111,16 +111,22 @@ class SubmissionController extends AuthenticatedController {
             Submission submission
             if (params?.submissionId) {
                 submission = Submission.findById(params?.submissionId)
+                submission.comments = dataSubmission[0].comments.value
             } else {
                 submission = getJson(Submission.class, dataSubmission[0])
+                submission.createDate = new Date()
+                submission.author = getUser()?.displayName
+                submission.documents = new ArrayList<StorageDocument>()
             }
-            submission.createDate = new Date()
-            submission.author = getUser()?.displayName
-            submission.documents = new ArrayList<StorageDocument>()
-
             if(!files?.isEmpty()) {
                 files.forEach {
-                    StorageDocument document = storageProviderService.saveMultipartFile(user.displayName, user.userName, submission.projectKey, it.fileType, it, null)
+                    StorageDocument document = storageProviderService.saveMultipartFile(
+                            user.displayName,
+                            user.userName,
+                            submission.projectKey,
+                            it.part.fileItem.fieldName,
+                            it,
+                            null)
                     submission.documents.add(document)
                 }
             }
@@ -152,9 +158,14 @@ class SubmissionController extends AuthenticatedController {
                 StorageDocument doc = StorageDocument.findById(it)
                 storageProviderService.removeStorageDocument(doc, getUser()?.displayName)
             }
-            flash.message = message
         }
-        redirect(controller: 'project', action: 'main', params: [projectKey: params.projectKey, tab: "submissions"])
+        if (submission.hasErrors()) {
+            response.status = 500
+            render([error: submission.getErrors() ] as JSON)
+        } else {
+            response.status = 200
+            render([message: 'Submission was deleted'] as JSON)
+        }
     }
 
     def addFile() {
