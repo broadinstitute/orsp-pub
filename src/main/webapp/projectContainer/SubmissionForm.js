@@ -1,13 +1,15 @@
 import { Component } from 'react';
 import { div, h1, button } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
-import { ProjectMigration } from "../util/ajax";
+import {Files, ProjectMigration} from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import InputFieldNumber from "../components/InputFieldNumber";
 import { InputFieldText } from "../components/InputFieldText";
 import { Table } from "../components/Table";
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import {isEmpty} from "../util/Utils";
+import { isEmpty } from "../util/Utils";
+import { spinnerService } from "../util/spinner-service";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
 
 const styles = {
   addDocumentContainer: {
@@ -19,9 +21,9 @@ const styles = {
 };
 const headers =
   [
-    { name: 'Document Type', value: 'fileKey' },
+    { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
-    { name: '', value: 'remove' }
+    { name: 'Remove', value: 'remove' }
   ];
 
 class SubmissionForm extends Component {
@@ -42,16 +44,19 @@ class SubmissionForm extends Component {
       params: {
         projectKey: '',
         type: ''
-      }
+      },
+      showDialog: false,
+      fileToRemove: {},
     };
   }
 
   componentDidMount() {
     const params = new URLSearchParams(this.props.location.search);
-    this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'));
+    this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'), params.get('submissionId'));
     this.setState(prev => {
       prev.params.projectKey = params.get('projectKey');
       prev.params.type = params.get('type');
+      prev.params.submissionId = params.get('submissionId');
       return prev;
     });
   }
@@ -70,18 +75,20 @@ class SubmissionForm extends Component {
     });
   };
 
-  getSubmissionFormInfo = (projectKey, type) => {
-    ProjectMigration.getSubmissionFormInfo(projectKey, type).then(resp => {
+  getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
+    ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
       const submissionInfo = resp.data;
+      console.log(submissionInfo.documents);
       this.setState(prev => {
         prev.submissionInfo.typeLabel = submissionInfo.typeLabel;
         prev.submissionInfo.projectKey = submissionInfo.issue.projectKey;
         prev.submissionInfo.selectedType = this.getTypeSelected();
         prev.submissionInfo.submissionTypes = this.formatSubmissionType(submissionInfo.submissionTypes);
-        prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission : '';
+        prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission.comments : '';
         prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums + 1;
         prev.submissionInfo.number = submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
         prev.docTypes = this.loadOptions(submissionInfo.docTypes);
+        prev.documents = submissionInfo.documents;
         return prev;
       });
     });
@@ -117,36 +124,70 @@ class SubmissionForm extends Component {
 
   submitSubmission = () => {
     if(this.validateSubmission()) {
-      console.log(this.state.submissionInfo);
       const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
         comments: this.state.submissionInfo.comments,
         projectKey: this.state.submissionInfo.projectKey
       };
-      ProjectMigration.saveSubmission(submissionData, this.state.documents).then(resp => {
+
+      ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
         console.log(resp.data);
+        spinnerService.showAll();
+        console.log(this.props.history);
+        this.props.history.goBack();
       });
     }
+  };
+
+  handleAction = () => {
+    console.log('remove action');
+    switch (this.state.action) {
+      case 'Approve':
+        console.log('approve action (?)');
+        // this.approveDocument(this.state.uuid);
+        break;
+      case 'Reject':
+        console.log('reject action (?)');
+        // this.rejectDocument(this.state.uuid);
+        break;
+    }
+    this.closeModal();
   };
 
   validateSubmission = () => {
     return !isEmpty(this.state.submissionInfo.comments);
   };
 
-  removeFile = (row) => (e) => {
-    const documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
+  removeFileDialog = (data) => {
+    console.log('removeFileDialog', data);
     this.setState(prev => {
-      prev.documents = documentsToUpdate;
+      prev.showDialog = true;
+      prev.fileToRemove = data;
       return prev;
     });
   };
 
+  removeFile = () => {
+    spinnerService.showAll();
+    console.log(row, e);
+    ProjectMigration.removeSubmissionFile(this.state.params.submissionId, this.state.fileToRemove.uuid).then(prev => {
+      const documentsToUpdate = this.state.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
+      this.setState(prev => {
+        prev.documents = documentsToUpdate;
+        return prev;
+      });
+      spinnerService.hideAll();
+    });
+  };
+
   setFilesToUpload = (doc) => {
+    console.log(doc);
     this.setState(prev => {
-      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
+      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
       let documents = prev.documents;
       documents.push(document);
+      console.log(documents);
       prev.documents = documents;
       return prev;
     }, () => {
@@ -164,6 +205,15 @@ class SubmissionForm extends Component {
     this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
 
+
+  handleDialog = (uuid, action) => {
+    this.setState({
+      showDialog: !this.state.showDialog,
+      action: action,
+      uuid: uuid
+    });
+  };
+
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -175,6 +225,14 @@ class SubmissionForm extends Component {
 
     return (
       div({}, [
+        ConfirmationDialog({
+          closeModal: this.closeModal,
+          show: this.state.showDialog,
+          handleOkAction: this.handleAction,
+          title: 'Delete Confirmation',
+          bodyText: 'Are you sure you want to delete this document?',
+          actionLabel: 'Yes'
+        }),
         AddDocumentDialog({
           closeModal: this.closeModal,
           show: this.state.showAddDocuments,
@@ -234,9 +292,10 @@ class SubmissionForm extends Component {
             data: this.state.documents,
             sizePerPage: 10,
             paginationSize: 10,
-            remove: this.removeFile,
+            remove: this.removeFileDialog,
             reviewFlow: false,
-            pagination: false
+            pagination: false,
+
           }),
           button({
             onClick: this.submitSubmission,

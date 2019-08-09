@@ -96,6 +96,7 @@ class UrlMappings {
         '/api/submissions/add-new-old'(controller: 'submission', action: 'index', method: 'GET')
         '/api/submissions/save-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
+        '/api/submission/remove-file'(controller: 'submission', action: 'removeFileNew', method: 'DELETE')
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')

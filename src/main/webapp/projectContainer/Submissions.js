@@ -6,6 +6,8 @@ import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
+import {isEmpty} from "../util/Utils";
+import {UrlConstants} from "../util/UrlConstants";
 
 const headers =
   [
@@ -56,14 +58,10 @@ export const Submissions = hh(class Submissions extends Component {
     this.getDisplaySubmissions();
   }
 
-  getDocumentLink = (data) => {
-    return [component.serverURL, 'api/files-helper/get-document?id=' + data].join("/");
-  };
-
   submissionEdit = (data) => {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
-      href: `${component.contextPath}/submission/index?projectKey=${component.projectKey}&submissionId=${data.id}`
+      onClick: () => this.redirectEditSubmission(data)
     }, [component.isAdmin === true ? 'Edit': 'View']);
     const submissionComment = span({style: styles.submissionComment}, [data.comments]);
     return h(Fragment, {}, [indexButton, submissionComment]);
@@ -93,13 +91,15 @@ export const Submissions = hh(class Submissions extends Component {
     });
   };
 
+  redirectEditSubmission = (data) => {
+    this.props.history.push(`${UrlConstants.submissionsAddNewUrl}?projectKey=${component.projectKey}&type=${data.type}&submissionId=${data.id}`);
+  };
+
   redirectNewSubmission = (e) => {
     this.props.history.push(`/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`);
-    // window.location.href = `${component.serverURL}/api/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`;
   };
 
   redirectOldSubmission = (e) => {
-    // this.props.history.push(`/submission/add-new?projectKey=${component.projectKey}&type=${e.target.id}`);
     window.location.href = `${component.serverURL}/api/submissions/add-new-old?projectKey=${component.projectKey}&type=${e.target.id}`;
   };
 
@@ -118,7 +118,6 @@ export const Submissions = hh(class Submissions extends Component {
         sizePerPage: 10,
         paginationSize: 10,
         isAdmin: component.isAdmin,
-        getDocumentLink: this.getDocumentLink,
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,

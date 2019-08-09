@@ -108,7 +108,7 @@ export const Table = hh(class Table extends Component {
      Btn({
       action: {
         labelClass: "glyphicon glyphicon-remove",
-        handler: this.props.remove(row)
+        handler: () => this.props.remove(row)
       },
     });
 

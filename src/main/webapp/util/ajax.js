@@ -359,11 +359,15 @@ export const ProjectMigration = {
     return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
   },
 
-  getSubmissionFormInfo(projectKey, type) {
-    return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+  getSubmissionFormInfo(projectKey, type, submissionId) {
+    if (submissionId === null) {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+    } else {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&type=" + type + "&submissionId=" + submissionId);
+    }
   },
 
-  saveSubmission(submissionData, files) {
+  saveSubmission(submissionData, files, submissionId) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -376,6 +380,14 @@ export const ProjectMigration = {
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };
-    return axios.post(UrlConstants.submissionSaveUrl, data, config);
+    if (submissionId === null) {
+      return axios.post(UrlConstants.submissionSaveUrl, data, config);
+    } else {
+      return axios.post(UrlConstants.submissionSaveUrl + '?submissionId=' + submissionId, data, config);
+    }
   },
+
+  removeSubmissionFile(sumissionId, uuid) {
+    return axios.delete(UrlConstants.submissionRemoveFileUrl + '?submissionId=' + sumissionId + "&uuid=" + uuid);
+  }
 };

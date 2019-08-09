@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile
 class SubmissionController extends AuthenticatedController {
 
     def renderMainComponent() {
-        render(view: "/mainContainer/index", model: [params.projectKey, params.type])
+        render(view: "/mainContainer/index", model: [params.projectKey, params.type, params.submissionId])
     }
 
 
@@ -93,6 +93,7 @@ class SubmissionController extends AuthenticatedController {
         render( [issue:                      issue,
                  typeLabel:                  issue.typeLabel,
                  submission:                 submission,
+                 documents:                  submission?.documents,
                  docTypes:                   PROJECT_DOC_TYPES,
                  submissionTypes:            submissionTypes,
                  submissionNumberMaximums:   submissionNumberMaximums,
@@ -119,7 +120,7 @@ class SubmissionController extends AuthenticatedController {
 
             if(!files?.isEmpty()) {
                 files.forEach {
-                    StorageDocument document = storageProviderService.saveMultipartFile(user.displayName, user.userName, submission.projectKey, it.name , it, null)
+                    StorageDocument document = storageProviderService.saveMultipartFile(user.displayName, user.userName, submission.projectKey, it.fileType, it, null)
                     submission.documents.add(document)
                 }
             }
@@ -211,6 +212,23 @@ class SubmissionController extends AuthenticatedController {
                         minNumber : submission.number,
                         docTypes  : PROJECT_DOC_TYPES,
                         submissionTypes: getSubmissionTypesForIssueType(issue.getType())])
+    }
+
+    def removeFileNew() {
+        def submission = Submission.findById(params?.submissionId)
+        def document = StorageDocument.findByUuid(params?.uuid)
+        submission?.getDocuments()?.remove(document)
+        submission?.save(flush: true)
+        if (document) {
+            storageProviderService.removeStorageDocument(document, getUser()?.getDisplayName())
+        }
+        if (StorageDocument.findByUuid(params?.uuid)?.id) {
+            response.status = 500
+            render([error: "Unable to delete file"] as JSON)
+        }
+
+        response.status = 200
+        render (['message': 'document deleted'] as JSON)
     }
 
     private static getJson(Class type, Object json) {
