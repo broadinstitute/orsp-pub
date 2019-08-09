@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { h3, p, a, br, div } from 'react-hyperscript-helpers';
-import './AboutPage.css';
 
 const styles = {
   titleSize: '24px',
@@ -13,10 +12,6 @@ class AboutPage extends Component {
   constructor(props) {
     super(props);
     this.state = {}
-  }
-
-  componentDidMount() {
-    console.log("ABOUT REACT")
   }
 
   render() {
