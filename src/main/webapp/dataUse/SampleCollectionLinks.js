@@ -7,6 +7,7 @@ import { TableComponent } from "../components/TableComponent";
 import { styles } from "../util/ReportConstants";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { isEmpty } from "../util/Utils";
 
 const SPINNER_NAME = 'sampleCollectionLink';
 
@@ -55,7 +56,7 @@ function getValue(row) {
   let lis = [];
   row.collections.map(collection => {
     let value = collection.sampleCollectionId + ': ' + collection.sampleCollectionName + '(associated on ' + format(collection.creationDate, 'MM/DD/YYYY')  + ')'
-    if (row.restriction !== null && new Date(row.restriction.vaultExportDate) < new Date(collection.creationDate)) {
+    if (row.restriction !== null && !isEmpty(row.restriction.vaultExportDate) && new Date(row.restriction.vaultExportDate) < new Date(collection.creationDate)) {
       lis.push(li({style:{'color': 'red'}, key: collection.id}, [value]))
     } else {
       lis.push(li({key: collection.id}, [value]))
