@@ -8,7 +8,7 @@ import Routes from "./Routes";
 ReactDOM.render(
   <ErrorHandler>
     <BrowserRouter basename= {component.contextPath}>
-      <Routes props={{}} />
+      <Routes props={{}}/>
     </BrowserRouter>
   </ErrorHandler>,
 

@@ -239,6 +239,7 @@ class FundingsSourceReport extends Component {
           sizePerPageList: SIZE_PER_PAGE_LIST,
           page: this.state.currentPage,
           totalSize: this.state.recordsFiltered,
+          pagination: true,
           showExportButtons: true,
           showSearchBar: true
         }),

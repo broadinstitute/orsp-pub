@@ -94,6 +94,10 @@ export const ConsentGroup = {
   unlinkSampleCollection(consentCollectionId) {
     const data = { consentCollectionId };
     return axios.put(UrlConstants.unlinkAssociatedSampleCollection, data);
+  },
+
+  getProjectConsentGroups(projectKey) {
+    return axios.get(UrlConstants.getProjectConsentGroupsUrl + '?projectKey=' + projectKey);
   }
 };
 
@@ -208,6 +212,10 @@ export const DocumentHandler = {
 
   delete(documentId) {
     return axios.delete(`${UrlConstants.removeDocumentUrl}?documentId=${documentId}`);
+  },
+
+  deleteAttachmentByUuid(fileUuid) {
+    return axios.delete(`${UrlConstants.removeAttachmentByUuidUrl}?uuid=${fileUuid}`);
   }
 };
 

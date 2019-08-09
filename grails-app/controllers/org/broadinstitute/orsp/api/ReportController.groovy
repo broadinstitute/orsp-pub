@@ -5,6 +5,8 @@ import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
@@ -70,8 +72,18 @@ class ReportController extends AuthenticatedController {
 
     def findCollectionLinks() {
         UtilityClass.registerConsentCollectionReportMarshaller()
+        List<ConsentCollectionLink> links = queryService.findCollectionLinks()
+        def result = []
+        Collection<DataUseRestriction> durs = queryService.findDataUseRestrictionByConsentGroupKeyInList(links.collect {it.consentKey})
+        links.groupBy { it.consentKey }.each { key, scLinks ->
+            DataUseRestriction restriction = durs.find { it?.consentGroupKey == key }
+            result.add([consentGroupKey: key,
+                        collections    : scLinks,
+                        restriction    : restriction
+            ])
+        }
         JSON.use(UtilityClass.CONSENT_COLLECTION) {
-            render queryService.findCollectionLinks() as JSON
+            render result as JSON
         }
     }
 

@@ -299,22 +299,6 @@ class QueryService implements Status {
         links
     }
 
-    Collection<ConsentCollectionLink> findAllCollectionLinks() {
-        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAll()
-        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
-        Collection<Issue> projects = Issue.findAllByProjectKeyInList(links.collect { it.projectKey })
-        Collection<DataUseRestriction> durs = DataUseRestriction.findAllByConsentGroupKeyInList(links.collect { it.consentKey })
-        links.each { link ->
-            if (link) {
-                if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
-                    link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
-                }
-                link.setLinkedProject(projects.find { it?.projectKey == link?.projectKey })
-                link.setRestriction(durs.find { it?.consentGroupKey == link?.consentKey })
-            }
-        }
-        links
-    }
 
     Collection<Object> getCCLSummaries() {
         final String query =
@@ -1279,6 +1263,18 @@ class QueryService implements Status {
     }
 
     @SuppressWarnings("GroovyAssignabilityCheck")
+    StorageDocument findAttachmentByUuid(String uuid) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from storage_document where uuid = :uuid and deleted = 0'
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameter("uuid", uuid)
+            uniqueResult()
+        }
+    }
+
+    @SuppressWarnings("GroovyAssignabilityCheck")
     Map<String, String> getIssueKeysWithType() {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
@@ -1489,19 +1485,18 @@ class QueryService implements Status {
 
 
     PaginatedResponse findDataUseRestrictions(PaginationParams pagination) {
-        String query = 'select count(id) from data_use_restriction '
+        // get total rows
+        String query = 'select count(id) from data_use_restriction ' + getDURWhereClause(pagination)
         String orderColumn = getRestrictionOrderColumn(pagination.orderColumn)
-        if (pagination.searchValue) {
-            query = query + 'where consent_group_key LIKE :term OR vault_export_date LIKE :term '
-        }
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
         Long totalRows = sqlQuery.uniqueResult()
-        if (orderColumn) {
-            query = query + " order by " + orderColumn + pagination.sortDirection
-        }
-        sqlQuery = getSessionFactory().currentSession.createSQLQuery(query.replace('count(id)', '*'))
-        List<DataUseRestriction> results = sqlQuery.with {
+
+        // get DUR paginated
+        String durQuery =  'select * from data_use_restriction ' + getDURWhereClause(pagination) + " order by " + orderColumn + pagination.sortDirection
+        SQLQuery sqlDURQuery = getSessionFactory().currentSession.createSQLQuery(durQuery)
+
+        List<DataUseRestriction> results = sqlDURQuery.with {
             if (pagination.searchValue) setString('term', pagination.getLikeTerm())
             addEntity(DataUseRestriction)
             setFirstResult(pagination.start)
@@ -1517,7 +1512,15 @@ class QueryService implements Status {
         )
     }
 
-    Collection findCollectionLinks() {
+    private String getDURWhereClause(PaginationParams pagination) {
+        String where = ''
+        if (pagination.searchValue) {
+            where = ' where consent_group_key LIKE :term OR vault_export_date LIKE :term '
+        }
+        where
+    }
+
+    List<ConsentCollectionLink> findCollectionLinks() {
         String query = 'select * from consent_collection_link where deleted = 0 '
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<ConsentCollectionLink> links = sqlQuery.with {
@@ -1525,25 +1528,14 @@ class QueryService implements Status {
             list()
         }
         Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
-        Collection<DataUseRestriction> durs = findDataUseRestrictionByConsentGroupKeyInList(links.collect {
-            it.consentKey
-        })
-        links.each { link ->
+        (links as Collection<ConsentCollectionLink>).each { link ->
             if (link) {
-                if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
+                if (link?.sampleCollectionId && collectionMap.containsKey(link?.sampleCollectionId)) {
                     link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
                 }
             }
         }
-        def result = []
-        links.groupBy { it.consentKey }.each { key, scLinks ->
-            DataUseRestriction restriction = durs.find { it?.consentGroupKey == key }
-            result.add([consentGroupKey: key,
-                        collections    : scLinks,
-                        restriction    : restriction
-            ])
-        }
-        result
+        links
     }
 
 

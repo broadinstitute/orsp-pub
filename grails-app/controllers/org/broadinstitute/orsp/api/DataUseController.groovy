@@ -6,7 +6,7 @@ import org.broadinstitute.orsp.webservice.PaginationParams;
 
 @Slf4j
 @Resource
-class DataUseRestrictionController extends AuthenticatedController {
+class DataUseController extends AuthenticatedController {
 
     def list() {
         render(view: "/mainContainer/index")

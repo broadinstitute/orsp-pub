@@ -17,6 +17,9 @@ export const UrlConstants = {
   associatedProjects: context + '/api/consent-group/associated-projects',
   unlinkAssociatedProjects: context + '/api/consent-group/unlink-associated-projects',
   unlinkAssociatedSampleCollection: context + '/api/consent-group/unlink-associated-sample-collection',
+  getProjectConsentGroupsUrl: context + '/api/consent-group/get-project-consent-groups',
+  newConsentGroupUrl: '/consent-group/new',
+  useExistingConsentGroupUrl: '/consent-group/use-existing',
   getConsentGroupByUUID: context + '/api/consent-group/find-by-uuid',
   createConsentGroupURL: context + '/api/consent-group/create',
   fillablePdfURL: context + '/api/consent-group/get-fillable-pdf',
@@ -35,6 +38,7 @@ export const UrlConstants = {
   approveDocumentUrl: context + '/api/files-helper/approve-document',
   rejectDocumentUrl: context + '/api/files-helper/reject-document',
   removeDocumentUrl: context + '/api/files-helper/delete',
+  removeAttachmentByUuidUrl: context + '/api/files-helper/remove-attachment',
   getDocumentById: context + '/api/files-helper/get-document',
 
   // Issue Review urls

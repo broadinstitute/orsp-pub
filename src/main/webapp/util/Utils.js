@@ -49,9 +49,10 @@ export const handleRedirectToProject = (serverURL, projectKey) => {
   return [serverURL, "project", "main?projectKey=" + projectKey + "&tab=review"].join("/");
 }
 
-export const handleRedirectToConsentGroup = (serverURL, projectKey) => {
-  return [serverURL, "newConsentGroup", "main?consentKey=" + projectKey + "&tab=documents"].join("/");
+export const buildUrlToConsentGroup = (serverURL, consentKey, projectKey) => {
+  return [serverURL, "newConsentGroup", "main?consentKey="+ consentKey + "&projectKey=" + projectKey + "&tab=review"].join("/");
 }
+
 // columns headers should be included in the first row in data array.
 // Eg of data : [['header1', 'header2', 'header3'],
 //               ['row1value1', 'row1value2', 'row1value3'],

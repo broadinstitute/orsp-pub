@@ -67,6 +67,16 @@
   min-height: 50px;
 }
 
+.rc-collapse .rc-collapse-item.collapsible .rc-collapse-header,
+.rc-collapse .rc-collapse-item.collapsible .rc-collapse-header:focus {
+  padding-bottom: 0;
+  outline: none;
+}
+
+.rc-collapse {
+  margin-bottom: 6px;
+}
+
 .request-clarification .req-tooltip {
   display: none;
   position: absolute;
@@ -125,6 +135,7 @@
   display: inline-block;
   height: 30px;
   line-height: 30px;
+  color:#000000;
 }
 
 .sample-dc .data-name:hover {

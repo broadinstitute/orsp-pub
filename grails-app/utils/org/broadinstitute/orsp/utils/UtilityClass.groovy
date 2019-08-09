@@ -19,6 +19,7 @@ class UtilityClass {
     QueryService queryService
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
+    public static final String ISSUE_COMPLETE = 'issueForSampleDataCohorts'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
     public static final String HISTORY = 'history'
     public static final String CONSENT_COLLECTION = 'consentCollectionReport'
@@ -71,10 +72,16 @@ class UtilityClass {
                     reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
                 }
                 return [
+                        id: issue.id,
+                        type: issue.type,
                         projectKey: issue.projectKey,
                         summary: issue.summary,
                         status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
-                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
+                        issueStatus: issue.status,
+                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
+                        reporter       : issue.reporter,
+                        requestDate    : issue.requestDate,
+                        attachments    : issue.attachments
                 ]
             }
         }
@@ -122,7 +129,7 @@ class UtilityClass {
                         id: link.id,
                         projectKey: link.projectKey,
                         consentKey: link.consentKey,
-                        sampleCollectionId: link.sampleCollectionId ? link.sampleCollectionId : '',
+                        sampleCollectionId: link.sampleCollectionId ?: '',
                         creationDate: link.creationDate,
                         sampleCollectionName: link.sampleCollection ? link.sampleCollection.name : ''
                 ]

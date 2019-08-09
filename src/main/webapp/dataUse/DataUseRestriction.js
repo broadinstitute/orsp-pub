@@ -6,7 +6,8 @@ import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
-import { handleRedirectToConsentGroup, isEmpty } from "../util/Utils";
+import { isEmpty } from "../util/Utils";
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 const SIZE_PER_PAGE_LIST = [
@@ -21,7 +22,7 @@ const columns = [
     sort: true,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      a({ href: handleRedirectToConsentGroup(component.serverURL, row.consentGroupKey) },[row.consentGroupKey])
+      h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.consentGroupKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.consentGroupKey}}}, [row.consentGroupKey])
     ])
   },
   {
@@ -30,7 +31,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      a({ href: component.serverURL + '/dataUse/show/' + row.id },['View Restriction'])
+      h(Link, {to: {pathname:'/dataUse/show/' + row.id}}, ['View Restriction'])
     ])
   },
   {
