@@ -21,10 +21,11 @@ const styles = {
   removeWidth: '45',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '10',
+  numberWidth: '30',
   createDateWidth: '15',
-  submissionDocumentsWidth: '40',
+  submissionDocumentsWidth: '100',
   submissionComments: '75',
+  createdWidth: '140'
 };
 
 export const Table = hh(class Table extends Component {
@@ -347,7 +348,7 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
-                width={styles.createDateWidth}>{header.name}</TableHeaderColumn>
+                width={styles.createdWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

@@ -8,18 +8,17 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
-
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
-import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.utils.UtilityClass
 import org.springframework.web.multipart.MultipartFile
 
 import javax.ws.rs.core.Response
@@ -37,6 +36,10 @@ class NewConsentGroupController extends AuthenticatedController {
 
     def main() {
         render(view: "/mainContainer/index", model: [projectKey: params.projectKey, consentKey: params.consentKey, issueType: 'consent-group'])
+    }
+
+    def renderMainComponent() {
+        render(view: "/mainContainer/index", model: [projectKey: params.projectKey, issueType: 'project'])
     }
 
     def downloadFillablePDF () {
@@ -166,6 +169,24 @@ class NewConsentGroupController extends AuthenticatedController {
         Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
         render([collectionLinks: collectionLinks.linkedProject] as JSON)
         collectionLinks
+    }
+
+    def getProjectConsentGroups() {
+        UtilityClass.registerIssueMarshaller()
+        try {
+            LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
+            response.status = 200
+            JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
+                render( consentGroups as JSON)
+            }
+        } catch(IllegalArgumentException e) {
+            response.status = 400
+            render([message: "Error while trying to get project's Consent Groups. " + e as JSON])
+        } catch(Exception e) {
+            log.error("Error while trying to get Consent Groups for ProjectKey: ${params.projectKey}. ", e.getMessage())
+            response.status = 500
+            render([message: "Error while trying to get project's Consent Groups." as JSON])
+        }
     }
 
     /**

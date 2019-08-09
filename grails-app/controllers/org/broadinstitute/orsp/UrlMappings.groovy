@@ -41,17 +41,21 @@ class UrlMappings {
         '/api/consent-group/sample-collections'(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')
         '/consent-group/name-search'(controller: 'consentGroup', action: 'getConsentGroups')
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
+        '/consent-group/use-existing'(controller:'newConsentGroup', action:'renderMainComponent')
+        '/consent-group/new'(controller:'newConsentGroup', action:'renderMainComponent')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
         '/api/consent-group/review'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
+        '/api/consent-group/get-project-consent-groups'(controller:'newConsentGroup', action:'getProjectConsentGroups', method: 'GET')
 
         // File related end points
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
+        '/api/files-helper/remove-attachment'(controller: 'fileHelper', action: 'deleteDocumentByUuid', method: 'DELETE')
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
         '/api/files-helper/get-document'(controller: 'fileHelper', action: 'getDocument')
@@ -62,12 +66,11 @@ class UrlMappings {
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
 
-
         // Data use letter end points
         '/api/data-use-letter/save-dul'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'update', method: 'PUT')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
-        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'show', method: 'GET')
+        '/api/data-use-letter'(controller: 'dataUseLetter', action: 'getDul', method: 'GET')
         '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
         '/api/data-use-letter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
 
@@ -100,6 +103,7 @@ class UrlMappings {
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
+
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')

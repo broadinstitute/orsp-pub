@@ -30,28 +30,28 @@ export const TableComponent = hh(class TableComponent extends Component {
         >
           { props =>
             <div>
-              <SearchBar { ...props.searchProps } />
+              {this.props.showSearchBar ? <SearchBar { ...props.searchProps } /> : ''}
               {this.props.showExportButtons ?
-                  <span name={'exportButtons'}>
-                      <Export
-                        csvData={this.props.data}
-                        columns={this.props.columns}
-                        fileName={this.props.fileName}
-                        fileType={EXPORT_FILE.XLSX.mimeType}
-                        fileExtension={EXPORT_FILE.XLSX.extension}
-                      />
-                      <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
-                        <span>
-                          <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
-                        </span>
-                      </ExportCSVButton>
-                      <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
-                        <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print All
-                      </button>
-                      <hr/>
-                  </span>
-                  : ''
-                }           
+                <span name={'exportButtons'}>
+                  <Export
+                    csvData={this.props.data}
+                    columns={this.props.columns}
+                    fileName={this.props.fileName}
+                    fileType={EXPORT_FILE.XLSX.mimeType}
+                    fileExtension={EXPORT_FILE.XLSX.extension}
+                  />
+                  <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
+                    <span>
+                      <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
+                    </span>
+                  </ExportCSVButton>
+                  <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
+                    <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print All
+                  </button>
+                  <hr/>
+                </span>
+                : ''
+              }
               <BootstrapTable
                 remote= {{
                   filter: remoteProp,
@@ -59,7 +59,14 @@ export const TableComponent = hh(class TableComponent extends Component {
                   sort: remoteProp,
                   cellEdit: false
                 }}
-                pagination={ paginationFactory({ page: this.props.page, totalSize: this.props.totalSize, sizePerPageList: this.props.sizePerPageList  })}
+                pagination= {
+                  this.props.pagination ?
+                  paginationFactory({
+                    page: this.props.page,
+                    totalSize: this.props.totalSize,
+                    sizePerPageList: this.props.sizePerPageList
+                  }) : null
+                }
                 defaultSorted= { this.props.defaultSorted }
                 onTableChange= { this.props.onTableChange }
                 {...props.baseProps }

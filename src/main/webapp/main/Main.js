@@ -73,6 +73,7 @@ class Main extends Component {
           status: this.state.status
         }),
         ProjectContainer({
+          history: this.props.history,
           isRendered: component.issueType === 'project',
           initStatusBoxInfo: this.initStatusBoxInfo,
           changeInfoStatus: this.changeInfoStatus,

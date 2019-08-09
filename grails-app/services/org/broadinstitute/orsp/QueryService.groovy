@@ -1279,6 +1279,18 @@ class QueryService implements Status {
     }
 
     @SuppressWarnings("GroovyAssignabilityCheck")
+    StorageDocument findAttachmentByUuid(String uuid) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from storage_document where uuid = :uuid and deleted = 0'
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameter("uuid", uuid)
+            uniqueResult()
+        }
+    }
+
+    @SuppressWarnings("GroovyAssignabilityCheck")
     Map<String, String> getIssueKeysWithType() {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
