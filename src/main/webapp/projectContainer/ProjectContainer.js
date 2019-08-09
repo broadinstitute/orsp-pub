@@ -104,6 +104,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Sample/Data Cohorts",
               }, [
                   h(Fragment, {}, [ConsentGroups({
+                    history: this.props.history,
                     updateContent: this.updateContent
                   })]),
                 ]),

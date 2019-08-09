@@ -11,7 +11,7 @@ export class SpinnerService {
 
   _unregister(spinnerToRemove) {
     this.spinnerCache.forEach(spinner => {
-      if (spinner === spinnerToRemove) {
+      if (spinner.name === spinnerToRemove) {
         this.spinnerCache.delete(spinner);
       }
     });
