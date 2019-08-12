@@ -10,6 +10,7 @@ import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 import { MultiTab } from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
+import { spinnerService } from "../util/spinner-service";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -26,6 +27,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   }
 
   componentDidMount() {
+    spinnerService.hideAll();
+    spinnerService._unregisterAll();
     this.getHistory();
     this.getComments();
   }

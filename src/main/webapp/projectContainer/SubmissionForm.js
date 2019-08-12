@@ -67,6 +67,11 @@ class SubmissionForm extends Component {
     });
   }
 
+  componentWillUnmount() {
+    spinnerService.hideAll();
+    spinnerService._unregisterAll();
+  }
+
   getTypeSelected() {
     const params = new URLSearchParams(this.props.location.search);
     return { label: params.get('type'), value: params.get('type') };
@@ -84,17 +89,15 @@ class SubmissionForm extends Component {
   getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
     ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
       const submissionInfo = resp.data;
-      console.log(submissionInfo);
       this.setState(prev => {
         prev.submissionInfo.typeLabel = submissionInfo.typeLabel;
         prev.submissionInfo.projectKey = submissionInfo.issue.projectKey;
         prev.submissionInfo.selectedType = this.getTypeSelected();
         prev.submissionInfo.submissionTypes = this.formatSubmissionType(submissionInfo.submissionTypes);
         prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission.comments : '';
-        prev.submissionInfo.submissionNumberMaximums =
-          isEmpty(submissionInfo.submissionNumberMaximums[prev.params.type]) ? {[prev.params.type]: 1}: submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
-        prev.submissionInfo.number =
-          isEmpty(submissionInfo.submissionNumberMaximums[prev.params.type]) ? 1 : submissionInfo.submissionNumberMaximums[prev.params.type] + 1;
+        prev.submissionInfo.submissionNumber = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
+        prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums;
+        prev.submissionInfo.number = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
         prev.docTypes = this.loadOptions(submissionInfo.docTypes);
         prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
         return prev;
@@ -102,9 +105,18 @@ class SubmissionForm extends Component {
     });
   };
 
+  maximumNumber(submissionMax, type, submissionId) {
+    if (isEmpty(submissionMax[type])) {
+      return 1;
+    } else if (isEmpty(submissionId) && !isEmpty(submissionMax[type])) {
+      return submissionMax[type] + 1;
+    } else {
+      return submissionMax[type];
+    }
+  }
+
   loadOptions(docTypes) {
     return  docTypes.map(type => { return { value: type, label: type } });
-
   };
 
   handleInputChange = (e) => {
@@ -126,9 +138,14 @@ class SubmissionForm extends Component {
 
   handleSelectChange = (field) => () => (value) => {
     this.setState(prev => {
+      if (field === "selectedType") {
+        const maxNumber = this.maximumNumber(prev.submissionInfo.submissionNumberMaximums, value.value, this.state.params.submissionId);
+        prev.submissionInfo.number =  maxNumber;
+        prev.submissionInfo.submissionNumber = maxNumber;
+      }
       prev.submissionInfo[field] = value;
-        return prev;
-      });
+      return prev;
+    });
   };
 
   submitSubmission = () => {
@@ -229,8 +246,8 @@ class SubmissionForm extends Component {
       return h1({}, ["Something went wrong."]);
     }
 
-    const type = this.state.submissionInfo.selectedType;
-    const minimunNumber = this.state.submissionInfo.submissionNumberMaximums[type.label];
+    const minimunNumber = this.state.submissionInfo.submissionNumber;
+    const edit = !isEmpty(this.state.params.submissionId);
 
     return (
       div({}, [
@@ -311,12 +328,12 @@ class SubmissionForm extends Component {
           button({
             className: "btn buttonPrimary", style: {'marginTop':'20px'},
             onClick: this.submitSubmission,
-          }, ["Submit"]),
+          }, [edit ? "Save" : "Submit"]),
           button({
-            isRendered: component.isAdmin,
+            isRendered: component.isAdmin && edit,
             className: "btn buttonPrimary", style: {'marginTop':'20px'},
             onClick: this.deleteSubmission,
-          }, ["Delete"])
+          }, ["Delete"]) // TODO add dialog to confirm delete
         ]),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',

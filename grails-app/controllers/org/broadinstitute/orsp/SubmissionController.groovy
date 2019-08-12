@@ -112,6 +112,7 @@ class SubmissionController extends AuthenticatedController {
             if (params?.submissionId) {
                 submission = Submission.findById(params?.submissionId)
                 submission.comments = dataSubmission[0].comments.value
+                submission.type = dataSubmission[0].type.value
             } else {
                 submission = getJson(Submission.class, dataSubmission[0])
                 submission.createDate = new Date()
