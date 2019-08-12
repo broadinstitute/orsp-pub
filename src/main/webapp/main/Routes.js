@@ -5,6 +5,7 @@ import ReviewCategories from "../reviewCategories/ReviewCategories";
 import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
+import DataUseRestrictionIndex from "../dataUse/DataUseRestrictionIndex";
 import { LinkWizard } from "../linkWizard/LinkWizard";
 import NewConsentGroup from "../consentGroup/NewConsentGroup";
 import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
@@ -17,6 +18,7 @@ const Routes = ( props ) => (
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUse/list"} render = {(routeProps) =>  <DataUseRestrictionIndex {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>

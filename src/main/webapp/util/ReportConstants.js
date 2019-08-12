@@ -16,6 +16,11 @@ export const CATEGORY_SORT_NAME_INDEX = {
   "status": 2
 };
 
+export const RESTRICTION_SORT_NAME_INDEX = {
+  "consentGroupKey": 0,
+  "vaultExportDate": 1
+};
+
 export const styles = {
   fundingReport: { 
     issueTypeWidth: '96px',
@@ -32,5 +37,9 @@ export const styles = {
     summaryWidth: '600px',
     statusWidth: '180px',
     reviewCategoryWidth: '180'
+  },
+  consentCollection: { 
+    consentKeyWidth: '140px',
+    collectionsWidth: '750px'
   }
 }
