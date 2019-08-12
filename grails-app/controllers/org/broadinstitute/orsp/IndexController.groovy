@@ -8,7 +8,9 @@ class IndexController {
         render(view: "/index")
     }
 
-    def about() {}
+    def about() {
+        render(view: "/mainContainer/index")
+    }
 
     def profile() {
         render(view: "/mainContainer/index")
