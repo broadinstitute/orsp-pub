@@ -125,9 +125,6 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',
           show: this.state.serverError
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )}

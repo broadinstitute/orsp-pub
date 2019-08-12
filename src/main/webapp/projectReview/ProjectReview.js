@@ -21,6 +21,7 @@ import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+const PROJECT_REVIEW_SPINNER = "projectReviewSpinner";
 
 export const ProjectReview = hh(class ProjectReview extends Component {
 
@@ -148,8 +149,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     this.init();
+  }
+
+  componentWillUnmount() {
+    spinnerService._unregister(PROJECT_REVIEW_SPINNER);
   }
 
   init() {
@@ -188,7 +193,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-              spinnerService.hideAll();
+              spinnerService.hide(PROJECT_REVIEW_SPINNER);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -201,7 +206,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               });
               this.props.changeInfoStatus(false);
             } else {
-              spinnerService.hideAll();
+              spinnerService.hide(PROJECT_REVIEW_SPINNER);
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -215,7 +220,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
-        spinnerService.hideAll();
+        spinnerService.hide(PROJECT_REVIEW_SPINNER);
         this.setState(() => { throw error; });
       });
   }
@@ -322,28 +327,28 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   rejectProject() {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     Project.rejectProject(component.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
       window.location.href = [component.serverURL, "index"].join("/");
-      spinnerService.hideAll();
+      spinnerService.hide(PROJECT_REVIEW_SPINNER);
     }).catch(error => {
-      spinnerService.hideAll();
+      spinnerService.hide(PROJECT_REVIEW_SPINNER);
       this.setState(() => { throw error; });
     });
   }
 
   discardEdits() {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   }
 
   approveEdits = () => {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     let project = this.getProject();
     project.editsApproved = true;
     Project.updateProject(project, component.projectKey).then(
@@ -353,8 +358,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           return { approveDialog: !state.approveDialog }
         });
       }).catch(error => {
-        spinnerService.hideAll();
-        this.setState(() => { throw error; });
+      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.setState(() => { throw error; });
       });
   };
 
@@ -363,10 +368,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       resp => {
         this.props.updateContent();
         this.init();
-        spinnerService.hideAll();
+        spinnerService.hide(PROJECT_REVIEW_SPINNER);
       })
       .catch(error => {
-        spinnerService.hideAll();
+        spinnerService.hide(PROJECT_REVIEW_SPINNER);
         this.setState(() => { throw error; });
       });
   }
@@ -1210,7 +1215,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }, ["Request Clarification"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: PROJECT_REVIEW_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

@@ -64,13 +64,6 @@ class DataUseController extends AuthenticatedController {
         }
     }
 
-    def list() {
-        def links = queryService.findAllCollectionLinks()
-        [restrictions      : DataUseRestriction.findAll(),
-         consentCollections: links,
-         consentMap        : links.groupBy { it.consentKey }]
-    }
-
     def exportConsent() {
         DataUseRestriction restriction = DataUseRestriction.findById(params.id)
         Collection<String> sampleCollectionIds = queryService.findAllSampleCollectionIdsForConsent(restriction.getConsentGroupKey())

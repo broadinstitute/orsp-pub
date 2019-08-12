@@ -16,6 +16,6 @@ export const Export = ({csvData, columns, fileName, fileType, fileExtension}) =>
 
   return (
     <button className= { "btn buttonSecondary pull-right" } style= {{ marginLeft:'15px' }} onClick={(e) => exportToExcel(csvData, columns, fileName)}>
-      <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download Excel</button>
+      <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Excel</button>
   )
 };
