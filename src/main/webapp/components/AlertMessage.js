@@ -10,7 +10,7 @@ export const AlertMessage = hh(class AlertMessage extends Component {
   handleDismiss = (e) => {
     this.props.dismissHandler();
   }
-
+//          style: isEmpty(this.props.style) ? '' : this.props.style,
   render() {
     if (this.props.show) {
       if (this.props.dismissHandler != null) {

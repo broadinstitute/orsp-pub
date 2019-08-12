@@ -1,11 +1,12 @@
 import { Component } from 'react';
-import { h1, hh } from 'react-hyperscript-helpers';
+import { h, h1, hh } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
 import { LinkQuestions } from "./LinkQuestions";
 import { User } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
+import { Spinner } from "../components/Spinner";
 import '../index.css';
 import { ConsentCollectionLink, Project } from "../util/ajax";
 
@@ -369,6 +370,9 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           securityInfoData: this.state.securityInfoFormData,
           updateMTA: this.updateMTA,
           removeErrorMessage: this.removeErrorMessage,
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );

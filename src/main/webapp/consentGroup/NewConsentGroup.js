@@ -1,8 +1,10 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
+import { h } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User} from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
+import { Spinner } from "../components/Spinner";
 import { isEmpty } from "../util/Utils";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
@@ -541,6 +543,9 @@ class NewConsentGroup extends Component {
           handleInfoSecurityValidity: this.handleInfoSecurityValidity,
           securityInfoData: this.state.securityInfoFormData,
           updateMTA: this.updateMTA
+        }),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );
