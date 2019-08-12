@@ -50,7 +50,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(component.consentKey).then(resp => {
+    ProjectMigration.getHistory(this.props.consentKey).then(resp => {
       this.setState(prev => {
         prev.history = resp.data;
         return prev;
@@ -60,7 +60,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   // comments
   getComments() {
-    Review.getComments(component.consentKey).then(result => {
+    Review.getComments(this.props.consentKey).then(result => {
       this.setState(prev => {
         prev.comments = result.data;
         return prev;
@@ -72,7 +72,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: component.tab === "" ? this.state.defaultActive : component.tab },
+          MultiTab({ defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab },
             [
               div({
                 key: "review",
@@ -82,7 +82,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     changeInfoStatus: this.props.changeInfoStatus,
                     updateDetailsStatus: this.updateDetailsStatus,
-                    updateContent: this.updateContent
+                    updateContent: this.updateContent,
+                    consentKey: this.props.consentKey
                   })
                 ]),
               div({
@@ -90,7 +91,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Documents",
               }, [
                   h(ConsentGroupDocuments, {
-                    updateDocumentsStatus: this.updateDocumentsStatus
+                    updateDocumentsStatus: this.updateDocumentsStatus,
+                    consentKey: this.props.consentKey
                   })
                 ]),
               div({
@@ -99,7 +101,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
               }, [
                   h(Fragment, {}, [Comments({
                     comments: this.state.comments,
-                    id: component.consentKey,
+                    id: this.props.consentKey,
                     updateContent: this.updateContent
                   })]),
                 ]),

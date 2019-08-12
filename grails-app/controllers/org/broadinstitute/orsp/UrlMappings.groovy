@@ -90,6 +90,9 @@ class UrlMappings {
         '/search/matching-diseases-ontologies'(controller: 'search', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
 
+        '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
+        '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
+
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')

@@ -44,7 +44,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   getAttachedDocuments = () => {
-    DocumentHandler.attachedDocuments(component.consentKey).then(resp => {
+    DocumentHandler.attachedDocuments(this.props.consentKey).then(resp => {
       User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
@@ -62,7 +62,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   getUseRestriction = () => {
-    ConsentGroup.getUseRestriction(component.consentKey).then(resp => {
+    ConsentGroup.getUseRestriction(this.props.consentKey).then(resp => {
       const newRestrictionId = resp.data.restrictionId ? resp.data.restrictionId : null;
       this.setState(prev => {
         prev.restriction = resp.data.restriction;
@@ -73,7 +73,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   getAssociatedProjects = () => {
-    ConsentGroup.getConsentCollectionLinks(component.consentKey).then(response => {
+    ConsentGroup.getConsentCollectionLinks(this.props.consentKey).then(response => {
       this.setState({ associatedProjects: response.data.collectionLinks })
     }).catch(error => {
       this.setState({ serverError: true });
@@ -82,7 +82,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   };
 
   handleUnlinkProject = (target) => () => {
-    ConsentGroup.unlinkProject(component.consentKey, target).then(result => {
+    ConsentGroup.unlinkProject(this.props.consentKey, target).then(result => {
       this.getAssociatedProjects()
     }).catch(error => {
       this.setState({ serverError: true });
@@ -152,7 +152,7 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         isAdmin: this.state.isAdmin,
         user: this.state.user,
         options: this.state.documentOptions,
-        projectKey: component.consentKey,
+        projectKey: this.props.consentKey,
         handleLoadDocuments: this.getAttachedDocuments,
         handleUnlinkProject: this.handleUnlinkProject,
         userName: this.state.user.userName,
