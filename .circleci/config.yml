@@ -156,7 +156,7 @@ jobs:
       - checkout
       - build-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
-          env: "prod"
+          env: "staging"
           repo_name: "orsp-pub"
           google_project: "orsp-dev"
       - deploy-env:
