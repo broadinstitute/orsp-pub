@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import { div, h1, button, h } from 'react-hyperscript-helpers';
+import { Component, Fragment } from 'react';
+import { div, h1, a, button, h } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import {Files, ProjectMigration} from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -289,7 +289,15 @@ class SubmissionForm extends Component {
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload
         }),
-        h1({style: {'marginBottom':'20px'}}, ["Submission for " + `${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`]),
+        h(Fragment, {}, [
+          h1({
+            style: {'marginBottom':'20px'}
+          }, [
+            "Submission for ", a({onClick: () => this.props.history.goBack(), styles: {'cursor': 'pointer'}}, [
+              `${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`
+            ])
+          ]),
+        ]),
         Panel({
           title: "Add new submission",
         }, [
@@ -348,10 +356,6 @@ class SubmissionForm extends Component {
             pagination: false,
 
           }),
-          button({
-            className: "btn buttonPrimary", style: {'marginTop':'20px'},
-            onClick: () => this.props.history.goBack(),
-          }, ["Back"]),
           button({
             isRendered: component.isAdmin,
             className: "btn buttonPrimary", style: {'marginTop':'20px'},
