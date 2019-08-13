@@ -76,6 +76,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     this.getUserSession();
   }
 
+  componentWillUnmount() {
+    spinnerService._unregisterAll();
+  }
+
   getUserSession() {
     User.getUserSession().then(
       resp => this.setState({ user: resp.data })
