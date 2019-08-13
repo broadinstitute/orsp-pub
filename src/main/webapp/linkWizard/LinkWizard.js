@@ -11,12 +11,12 @@ import '../index.css';
 import { ConsentCollectionLink, Project } from "../util/ajax";
 
 const LAST_STEP = 1;
-const LINK_WIZARD_SPINNER = 'linkWizardSpinner';
 
 export const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
 
-  constructor(props) {    super(props);
+  constructor(props) {
+    super(props);
     this.state = {
       files: [],
       startDate: null,
@@ -74,10 +74,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   componentDidMount() {
     this.getUserSession();
-  }
-
-  componentWillUnmount() {
-    spinnerService._unregisterAll();
   }
 
   getUserSession() {
@@ -379,7 +375,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           })
         ]),
         h(Spinner, {
-          name: LINK_WIZARD_SPINNER, group: "orsp", loadingImage: component.loadingImage
+          name: linkWizardSpinner, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

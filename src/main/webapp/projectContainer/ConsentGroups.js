@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { hh, h, h3, a, button, div } from 'react-hyperscript-helpers';
+import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
 import { ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
