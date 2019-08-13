@@ -57,7 +57,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   // history
   getHistory() {
-    ProjectMigration.getHistory(component.projectKey).then(resp => {
+    ProjectMigration.getHistory(this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.history = resp.data;
         return prev;
@@ -67,7 +67,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   //comments
   getComments() {
-    Review.getComments(component.projectKey).then(result => {
+    Review.getComments(this.props.projectKey).then(result => {
       this.setState(prev => {
         prev.comments = result.data;
         return prev;
@@ -89,7 +89,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     updateDetailsStatus: this.updateDetailsStatus,
                     changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    updateContent: this.updateContent
+                    updateContent: this.updateContent,
+                    projectKey: this.props.projectKey,
                   })
                 ]),
               div({
@@ -99,7 +100,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   h(ProjectDocument, {
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateDocumentsStatus: this.updateDocumentsStatus,
-                    initStatusBoxInfo: this.props.initStatusBoxInfo
+                    initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    projectKey: this.props.projectKey,
                   })
                 ]),
               div({
@@ -108,7 +110,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(Fragment, {}, [ConsentGroups({
                     history: this.props.history,
-                    updateContent: this.updateContent
+                    updateContent: this.updateContent,
+                    projectKey: this.props.projectKey,
                   })]),
                 ]),
               div({
@@ -116,7 +119,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Submissions",
               }, [
                   h(Fragment, {}, [Submissions({
-                    history: this.props.history
+                    history: this.props.history,
+                    projectKey: this.props.projectKey,
                   })]),
                 ]),
               div({
@@ -125,8 +129,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               }, [
                   h(Fragment, {}, [Comments({
                     comments: this.state.comments,
-                    id: component.projectKey,
-                    updateContent: this.updateContent
+                    id: this.props.projectKey,
+                    updateContent: this.updateContent,
+                    projectKey: this.props.projectKey,
                   })]),
                 ]),
               div({
@@ -134,7 +139,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "History",
               }, [
                   h(Fragment, {}, [History({
-                    history: this.state.history
+                    history: this.state.history,
+                    projectKey: this.props.projectKey,
                   }
                   )]),
                 ]),
@@ -145,7 +151,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                   h(AdminOnly, {
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
-                    initStatusBoxInfo: this.props.initStatusBoxInfo
+                    initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    projectKey: this.props.projectKey,
                   })
                 ])
             ])

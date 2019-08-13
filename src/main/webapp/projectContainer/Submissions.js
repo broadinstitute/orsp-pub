@@ -68,7 +68,7 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDisplaySubmissions = () => {
     let submissions = {};
-    ProjectMigration.getDisplaySubmissions(component.projectKey).then(resp => {
+    ProjectMigration.getDisplaySubmissions(this.props.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
 
       _.map(submissions, (data, title) => {
@@ -91,21 +91,22 @@ export const Submissions = hh(class Submissions extends Component {
   };
 
   redirectEditSubmission = (data) => {
-    this.props.history.push(`${UrlConstants.submissionsAddNewUrl}?projectKey=${component.projectKey}&type=${data.type}&submissionId=${data.id}`);
+    this.props.history.push(`${UrlConstants.submissionsAddNewUrl}?projectKey=${this.props.projectKey}&type=${data.type}&submissionId=${data.id}`);
   };
 
   redirectNewSubmission = (e) => {
-    this.props.history.push(`/submissions/add-new?projectKey=${component.projectKey}&type=${e.target.id}`);
+    this.props.history.push(`/submissions/add-new?projectKey=${this.props.projectKey}&type=${e.target.id}`);
   };
 
   redirectOldSubmission = (e) => {
-    window.location.href = `${component.serverURL}/api/submissions/add-new-old?projectKey=${component.projectKey}&type=${e.target.id}`;
+    window.location.href = `${component.serverURL}/api/submissions/add-new-old?projectKey=${this.props.projectKey}&type=${e.target.id}`;
   };
 
   submissionTab = (data, title) => {
     return div({
       key: title, title: this.tabTitle(title, data.length) },[
       a({
+        isRendered: component.isAdmin,
         onClick: this.redirectNewSubmission,
         className: "btn btn-primary",
         style: styles.addSubmission,

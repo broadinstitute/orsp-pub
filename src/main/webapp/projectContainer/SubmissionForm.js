@@ -19,7 +19,12 @@ const styles = {
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
-  }
+  },
+  deleteSubmission: {
+    position: 'absolute',
+    right: '30px',
+    top: '46px'
+  },
 };
 const headers =
   [
@@ -49,6 +54,7 @@ class SubmissionForm extends Component {
       },
       showDialog: false,
       fileToRemove: {},
+      action: '',
       errors: {
         comment: false,
         serverError: false
@@ -166,8 +172,12 @@ class SubmissionForm extends Component {
 
   handleAction = () => {
     spinnerService.showAll();
-    this.closeModal("showDialog");
-    this.removeFile();
+    this.closeModal('showDialog');
+    if (this.state.action === 'document') {
+      this.removeFile();
+    } else {
+      this.deleteSubmission();
+    }
   };
 
   validateSubmission = () => {
@@ -185,6 +195,15 @@ class SubmissionForm extends Component {
     this.setState(prev => {
       prev.showDialog = true;
       prev.fileToRemove = data;
+      prev.action = 'document';
+      return prev;
+    });
+  };
+
+  removeSubmissionDialog = () => {
+    this.setState(prev => {
+      prev.showDialog = true;
+      prev.action = 'submission';
       return prev;
     });
   };
@@ -256,7 +275,7 @@ class SubmissionForm extends Component {
           show: this.state.showDialog,
           handleOkAction: this.handleAction,
           title: 'Delete Confirmation',
-          bodyText: 'Are you sure you want to delete this document?',
+          bodyText: `Are you sure you want to delete this ${this.state.action}?`,
           actionLabel: 'Yes'
         }),
         AddDocumentDialog({
@@ -282,7 +301,7 @@ class SubmissionForm extends Component {
             value: this.state.submissionInfo.selectedType,
             onChange: this.handleSelectChange("selectedType"),
             placeholder: this.state.submissionInfo.selectedType,
-            readOnly: false,
+            readOnly: !component.isAdmin,
             edit: false
           }),
           InputFieldNumber({
@@ -291,7 +310,9 @@ class SubmissionForm extends Component {
             value: this.state.submissionInfo.number,
             label: "Submission Number",
             min: minimunNumber,
-            showLabel: true
+            showLabel: true,
+            readOnly: !component.isAdmin,
+            edit: false
           }),
           InputFieldText({
             id: "submission-comment",
@@ -300,9 +321,10 @@ class SubmissionForm extends Component {
             value: this.state.submissionInfo.comments,
             required: false,
             onChange: this.handleInputChange,
-            edit: true,
+            edit: component.isAdmin,
             error: this.state.errors.comment,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            readOnly: !component.isAdmin,
           }),
         ]),
         Panel({
@@ -310,6 +332,7 @@ class SubmissionForm extends Component {
         },[
           div({ style: styles.addDocumentContainer }, [
             button({
+              isRendered: component.isAdmin && !component.isViewer,
               className: "btn buttonSecondary",
               style: styles.addDocumentBtn,
               onClick: this.addDocuments
@@ -327,13 +350,18 @@ class SubmissionForm extends Component {
           }),
           button({
             className: "btn buttonPrimary", style: {'marginTop':'20px'},
+            onClick: () => this.props.history.goBack(),
+          }, ["Back"]),
+          button({
+            isRendered: component.isAdmin,
+            className: "btn buttonPrimary", style: {'marginTop':'20px'},
             onClick: this.submitSubmission,
           }, [edit ? "Save" : "Submit"]),
           button({
             isRendered: component.isAdmin && edit,
-            className: "btn buttonPrimary", style: {'marginTop':'20px'},
-            onClick: this.deleteSubmission,
-          }, ["Delete"]) // TODO add dialog to confirm delete
+            className: "btn buttonPrimary floatRight", style: {'marginTop':'20px'},
+            onClick: this.removeSubmissionDialog
+          }, ["Delete"])
         ]),
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',

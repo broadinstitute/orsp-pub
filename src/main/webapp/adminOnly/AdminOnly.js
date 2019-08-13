@@ -56,12 +56,12 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   init = () => {
-    Project.getProject(component.projectKey).then(
+    Project.getProject(this.props.projectKey).then(
       issue => {
         let formData = {};
         let initial = {};
         this.props.initStatusBoxInfo(issue.data);
-        formData.projectKey = component.projectKey;
+        formData.projectKey = this.props.projectKey;
         formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
         formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
         formData.degrees = issue.data.extraProperties.degrees;
@@ -144,7 +144,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   submit = () => {
     spinnerService.show(ADMIN_ONLY_SPINNER);
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(parsedForm , component.projectKey).then(
+    Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
       response => {
         spinnerService.hide(ADMIN_ONLY_SPINNER);
         this.setState(prev => {
