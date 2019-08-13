@@ -28,7 +28,3 @@
 .readonly-content .react-datepicker__close-icon {
     display: none;
 }
-
-.alertMessage.alert-success {
-    margin: 20px 0 10px 0;
-}

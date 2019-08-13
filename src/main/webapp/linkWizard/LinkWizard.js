@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, h1, hh } from 'react-hyperscript-helpers';
+import { h, h1, hh, div } from 'react-hyperscript-helpers';
 import { Wizard } from "../components/Wizard";
 import { SelectSampleConsent } from "./SelectSampleConsent";
 import { LinkQuestions } from "./LinkQuestions";
@@ -11,12 +11,12 @@ import '../index.css';
 import { ConsentCollectionLink, Project } from "../util/ajax";
 
 const LAST_STEP = 1;
+const LINK_WIZARD_SPINNER = 'linkWizardSpinner';
 
 export const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
 
-  constructor(props) {
-    super(props);
+  constructor(props) {    super(props);
     this.state = {
       files: [],
       startDate: null,
@@ -74,6 +74,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   componentDidMount() {
     this.getUserSession();
+  }
+
+  componentWillUnmount() {
+    spinnerService._unregisterAll();
   }
 
   getUserSession() {
@@ -328,54 +332,56 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       return h1({}, ["Something went wrong."]);
     }
     return (
-      Wizard({
-        title: "Add Existing Sample/Data Cohort",
-        note: "",
-        stepChanged: this.stepChanged,
-        isValid: this.isValid,
-        submitHandler: this.submitLink,
-        showSubmit: this.showSubmit,
-        disabledSubmit: this.state.formSubmitted,
-      }, [
-        SelectSampleConsent({
-          title: "Sample/Data Cohort Info",
-          removeErrorMessage: this.removeErrorMessage,
-          sampleCollectionList: this.state.sampleCollectionList,
-          sampleCollection: this.state.sampleCollection,
-          errors: this.state.errors,
-          fileHandler: this.fileHandler,
-          files: this.state.files,
-          currentStep: currentStep,
-          consentGroup: this.state.consentGroup,
-          updateForm: this.updateGeneralForm,
-          consentGroupIsLoading: this.state.consentGroupIsLoading,
-          updateDateRange: this.updateDateRange,
-          generalError: this.state.generalError
-        }),
-        LinkQuestions({
-          title: "Security/MTA/International Info",
-          currentStep: currentStep,
-          handler: this.determinationHandler,
-          determination: this.state.determination,
-          showErrorIntCohorts: this.state.showInternationalCohortsError,
-          origin: 'consentGroup',
-          requireMta: this.state.linkFormData.requireMta,
-          errors: this.state.errors,
-          user: this.state.user,
-          updateInfoSecurityFormData: this.updateInfoSecurityFormData,
-          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          handleInfoSecurityValidity: this.handleInfoSecurityValidity,
-          securityInfoData: this.state.securityInfoFormData,
-          updateMTA: this.updateMTA,
-          removeErrorMessage: this.removeErrorMessage,
-        }),
+      div({ name: 'wizardContainer' },[
+        Wizard({
+          title: "Add Existing Sample/Data Cohort",
+          note: "",
+          stepChanged: this.stepChanged,
+          isValid: this.isValid,
+          submitHandler: this.submitLink,
+          showSubmit: this.showSubmit,
+          disabledSubmit: this.state.formSubmitted,
+        }, [
+          SelectSampleConsent({
+            title: "Sample/Data Cohort Info",
+            removeErrorMessage: this.removeErrorMessage,
+            sampleCollectionList: this.state.sampleCollectionList,
+            sampleCollection: this.state.sampleCollection,
+            errors: this.state.errors,
+            fileHandler: this.fileHandler,
+            files: this.state.files,
+            currentStep: currentStep,
+            consentGroup: this.state.consentGroup,
+            updateForm: this.updateGeneralForm,
+            consentGroupIsLoading: this.state.consentGroupIsLoading,
+            updateDateRange: this.updateDateRange,
+            generalError: this.state.generalError
+          }),
+          LinkQuestions({
+            title: "Security/MTA/International Info",
+            currentStep: currentStep,
+            handler: this.determinationHandler,
+            determination: this.state.determination,
+            showErrorIntCohorts: this.state.showInternationalCohortsError,
+            origin: 'consentGroup',
+            requireMta: this.state.linkFormData.requireMta,
+            errors: this.state.errors,
+            user: this.state.user,
+            updateInfoSecurityFormData: this.updateInfoSecurityFormData,
+            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            handleInfoSecurityValidity: this.handleInfoSecurityValidity,
+            securityInfoData: this.state.securityInfoFormData,
+            updateMTA: this.updateMTA,
+            removeErrorMessage: this.removeErrorMessage,
+          })
+        ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: LINK_WIZARD_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
-    );
+    )
   }
 });
 

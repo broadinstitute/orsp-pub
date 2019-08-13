@@ -258,16 +258,12 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   render() {
     return (
       h(Fragment, {}, [
-        div({
-          style: { margin: '0 0 30px 0' },
-        }, [
-          AlertMessage({
-            msg: 'Your Sample/Data Cohort was successfully submitted to the Broad Institute’s Office of Research Subject Protection. ' +
-              'It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
-            show: this.state.showSuccessClarification,
-            type: 'success'
-          })
-        ]),
+        AlertMessage({
+          msg: 'Your Sample/Data Cohort was successfully submitted to the Broad Institute’s Office of Research Subject Protection. ' +
+            'It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
+          show: this.state.showSuccessClarification,
+          type: 'success'
+        }),
         button({
           className: "btn btn-default",
           style: { marginRight:'5px' },
