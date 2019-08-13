@@ -15,6 +15,8 @@ import { isEmpty } from "../util/Utils";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { InputFieldRadio } from "../components/InputFieldRadio";
 
+const CONSENT_GROUP_REVIEW_SPINNER = "consentGroupReviewSpinner";
+
 const headers =
   [
     { name: 'ID', value: 'sampleCollectionId' },
@@ -114,13 +116,17 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   componentDidMount() {
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
     ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
     ).catch(error => {
       this.setState(() => { throw error; });
     });
     this.init();
+  }
+
+  componentWillUnmount() {
+    spinnerService._unregister(CONSENT_GROUP_REVIEW_SPINNER);
   }
 
   init = () => {
@@ -132,7 +138,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     let formData = {};
     let sampleCollectionList = [];
 
-    ConsentGroup.getConsentGroup(component.consentKey).then(
+    ConsentGroup.getConsentGroup(this.props.consentKey).then(
       element => {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
@@ -195,12 +201,12 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               prev.futureCopy = futureCopy;
               prev.isAdmin = component.isAdmin;
               return prev;
-            }, () => spinnerService.hideAll());
+            }, () => spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER));
           }
         );
       }
     ).catch(error => {
-      spinnerService.hideAll();
+      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
       this.setState(() => { throw error; });
     });
   };
@@ -219,7 +225,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   getReviewSuggestions = () => {
-    Review.getSuggestions(component.consentKey).then(data => {
+    Review.getSuggestions(this.props.consentKey).then(data => {
       if (data.data !== '') {
         this.setState(prev => {
           prev.formData = JSON.parse(data.data.suggestions);
@@ -300,11 +306,11 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   approveConsentGroup = () => {
     this.setState({ disableApproveButton: true });
     const data = { approvalStatus: "Approved" };
-    ConsentGroup.approve(component.consentKey, data).then(
+    ConsentGroup.approve(this.props.consentKey, data).then(
       () => {
         if (this.state.reviewSuggestion) {
           let consentGroup = this.getConsentGroup();
-          ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
+          ConsentGroup.updateConsent(consentGroup, this.props.consentKey).then(resp => {
             this.removeEdits();
           }).catch(error => {
             console.error(error);
@@ -316,7 +322,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           prev.approveInfoDialog = false;
           return prev;
         }, () => {      
-          Project.getProject(component.consentKey).then(
+          Project.getProject(this.props.consentKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
             })
@@ -325,28 +331,28 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     };
 
   rejectConsentGroup() {
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
 
-    ConsentGroup.rejectConsent(component.consentKey).then(resp => {
-      window.location.href = this.getRedirectUrl(component.projectKey);
-      spinnerService.hideAll();
+    ConsentGroup.rejectConsent(this.props.consentKey).then(resp => {
+      window.location.href = this.getRedirectUrl(this.props.projectKey);
+      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
     }).catch(error => {
-      spinnerService.hideAll();
+      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
       console.error(error);
     });
   }
 
   discardEdits = () => {
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   };
 
   approveEdits = () => {
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
-    ConsentGroup.updateConsent(consentGroup, component.consentKey).then(resp => {
+    ConsentGroup.updateConsent(consentGroup, this.props.consentKey).then(resp => {
       this.setState(prev => {
         prev.approveDialog = false;
         return prev;
@@ -355,7 +361,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       this.props.updateContent();
     })
     .catch(error => {
-      spinnerService.hideAll();
+      spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
       console.error(error);
     });
   };
@@ -428,11 +434,11 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         let newFormData = Object.assign({}, this.state.formData);
         newFormData.instSources = institutionalSourceArray;
         User.getUserSession().then(resp => {
-          data.projectKey = component.consentKey;
+          data.projectKey = this.props.consentKey;
           newFormData.editCreator = resp.data.userName;
           data.suggestions = JSON.stringify(newFormData);
           if (this.state.reviewSuggestion) {
-            Review.updateReview(component.consentKey, data).then(() => {
+            Review.updateReview(this.props.consentKey, data).then(() => {
               this.getReviewSuggestions();
               this.props.updateContent();
             }).catch(error => {
@@ -561,15 +567,15 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   removeEdits = (type) => {
-    Review.deleteSuggestions(component.consentKey, type).then(
+    Review.deleteSuggestions(this.props.consentKey, type).then(
       resp => {
         this.init();
-        spinnerService.hideAll();
-      }, () =>   
-        this.props.updateContent()
+        spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
+      }, () =>
+        spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER)
       )
       .catch(error => {
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
         console.error(error);
       });
   };
@@ -713,7 +719,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
-    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + component.consentKey].join("/");
+    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
 
   toggleUnlinkDialog = (data) => {
@@ -738,7 +744,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
     return (
       div({}, [
-        h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + component.consentKey]),
+        h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + this.props.consentKey]),
         ConfirmationDialog({
           closeModal: this.toggleState('unlinkDialog'),
           show: this.state.unlinkDialog,
@@ -750,7 +756,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
-          issueKey: component.consentKey,
+          issueKey: this.props.consentKey,
           successClarification: this.successClarification
         }),
         ConfirmationDialog({

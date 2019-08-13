@@ -1,5 +1,6 @@
 import { isEmpty } from "./Utils";
 import { format } from 'date-fns';
+import { UrlConstants } from "./UrlConstants";
 
 export const EXPORT_FILE = {
   XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
@@ -61,3 +62,20 @@ function parseDataElements(el, key) {
   }
   return result;
 }
+
+export const formatUrlDocument = (file) => {
+  return {
+    href: `${UrlConstants.downloadDocumentUrl}?uuid=${file.uuid}`,
+    target: '_blank',
+    title: file.fileName
+  }
+};
+
+export const parseDate = (date) => {
+  let parsedDate = '';
+  if (!isEmpty(date)) {
+    const simpleDate = new Date(date);
+    parsedDate = format(simpleDate, 'M/D/YY h:m A');
+  }
+  return parsedDate;
+};

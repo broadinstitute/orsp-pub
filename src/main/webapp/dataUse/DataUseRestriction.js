@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, span } from 'react-hyperscript-helpers';
-import { Reports } from "../util/ajax";
+import { h, h1, div, a, hh } from 'react-hyperscript-helpers';
+import { DataUse } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { CATEGORY_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
+import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
-import { handleRedirectToProject } from "../util/Utils";
+import { isEmpty } from "../util/Utils";
+import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -15,55 +17,34 @@ const SIZE_PER_PAGE_LIST = [
 
 const columns = [
   {
-    dataField: 'id',
-    text: 'id',
-    hidden: true,
-    csvExport : false
-  } ,
-  {
-    dataField: 'projectKey',
-    text: 'Project',
+    dataField: 'consentGroupKey',
+    text: 'Consent Group',
     sort: true,
-    headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.projectKeyWidth};
-    },
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
-    ]),
+      h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.consentGroupKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.consentGroupKey}}}, [row.consentGroupKey])
+    ])
   },
   {
-    dataField: 'summary',
-    text: 'Summary',
-    sort: true,
-    headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.summaryWidth};
-    },
-    formatter: (cell, row, rowIndex, colIndex) =>
-    span({title: row.summary},[row.summary])
-  }, {
-  dataField: 'status',
-    text: 'Status',
-    sort: true,
-    headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.statusWidth};
-    },
-    formatter: (cell, row, rowIndex, colIndex) =>
-    span({title: row.status},[row.status]) 
-  }, {
-    dataField: 'reviewCategory',
-    text: 'Review Category',
+    dataField: 'id',
+    text: 'View Restrictions',
     sort: false,
-    headerStyle: (column, colIndex) => {
-      return { width: styles.reviewCategories.reviewCategoryWidth};
-    } ,
     formatter: (cell, row, rowIndex, colIndex) =>
-    span({title: row.reviewCategory},[row.reviewCategory]) 
+    div({},[
+      a({href: component.serverURL + '/dataUse/show/' + row.id}, ['View Restriction'])
+    ])
+  },
+  {
+    dataField: 'vaultExportDate',
+    text: 'DUOS Export',
+    sort: true,
+    formatter: (cell, row, rowIndex, colIndex) =>
+    div({},[
+      !isEmpty(row.vaultExportDate) ? format(new Date(row.vaultExportDate), 'MM/DD/YYYY') : ''
+    ])
   }
 ];
-
-class ReviewCategories extends Component {
-
+export const DataUseRestriction = hh(class DataUseRestriction extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -97,7 +78,7 @@ class ReviewCategories extends Component {
       searchValue: search
     };
     spinnerService.showAll();
-    Reports.getReviewCategory(query).then(result => {
+    DataUse.getRestrictions(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsTotal / query.length);
       this.setState(prev => {
         prev.lastPage = lastPage;
@@ -140,7 +121,7 @@ class ReviewCategories extends Component {
   onSortChange = (sortName, sortOrder) => {
     const sort = {
       sortDirection: sortOrder,
-      orderColumn: CATEGORY_SORT_NAME_INDEX[sortName]
+      orderColumn: RESTRICTION_SORT_NAME_INDEX[sortName]
     };
     this.tableHandler(0, this.state.sizePerPage, null, sort)
   };
@@ -172,15 +153,15 @@ class ReviewCategories extends Component {
   render() {
     return(
       div({},[
-        h1({}, ["Review Category Report"]),
+        h1({}, ["Data Use Restrictions"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,
           data: this.state.categories,
           columns: columns,
-          keyField: 'projectKey',
+          keyField: 'consentGroupKey',
           search: true,
-          fileName: 'Review Categories Report',
+          fileName: 'Data Use Restrictions',
           showPrintButton: false,
           printComments: this.printContent,
           sizePerPageList: SIZE_PER_PAGE_LIST,
@@ -196,6 +177,5 @@ class ReviewCategories extends Component {
       ])
     )
   }
-}
-
-export default ReviewCategories;
+});
+export default DataUseRestriction;

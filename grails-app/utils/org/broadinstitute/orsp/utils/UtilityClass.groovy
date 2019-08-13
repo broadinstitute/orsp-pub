@@ -4,6 +4,7 @@ import grails.converters.JSON
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.Comment
+import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Event
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
@@ -18,8 +19,10 @@ class UtilityClass {
     QueryService queryService
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
+    public static final String ISSUE_COMPLETE = 'issueForSampleDataCohorts'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
     public static final String HISTORY = 'history'
+    public static final String CONSENT_COLLECTION = 'consentCollectionReport'
 
     UtilityClass(QueryService queryService) {
         this.queryService = queryService
@@ -69,10 +72,16 @@ class UtilityClass {
                     reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
                 }
                 return [
+                        id: issue.id,
+                        type: issue.type,
                         projectKey: issue.projectKey,
                         summary: issue.summary,
                         status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
-                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : ''
+                        issueStatus: issue.status,
+                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
+                        reporter       : issue.reporter,
+                        requestDate    : issue.requestDate,
+                        attachments    : issue.attachments
                 ]
             }
         }
@@ -113,6 +122,20 @@ class UtilityClass {
         }
     }
 
+    static void registerConsentCollectionReportMarshaller() {
+        JSON.createNamedConfig(CONSENT_COLLECTION) {
+            it.registerObjectMarshaller( ConsentCollectionLink ) { ConsentCollectionLink link ->
+                return [
+                        id: link.id,
+                        projectKey: link.projectKey,
+                        consentKey: link.consentKey,
+                        sampleCollectionId: link.sampleCollectionId ?: '',
+                        creationDate: link.creationDate,
+                        sampleCollectionName: link.sampleCollection ? link.sampleCollection.name : ''
+                ]
+            }
+        }
+    }
     private List<String> getPIsDisplayName(Issue issue) {
         List<String> piUserNames = issue?.getPIs()?.unique()
         if (!piUserNames?.isEmpty()) {

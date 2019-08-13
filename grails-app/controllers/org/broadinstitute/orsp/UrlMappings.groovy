@@ -41,17 +41,21 @@ class UrlMappings {
         '/api/consent-group/sample-collections'(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')
         '/consent-group/name-search'(controller: 'consentGroup', action: 'getConsentGroups')
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
+        '/consent-group/use-existing'(controller:'newConsentGroup', action:'renderMainComponent')
+        '/consent-group/new'(controller:'newConsentGroup', action:'renderMainComponent')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
         '/api/consent-group/review'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
+        '/api/consent-group/get-project-consent-groups'(controller:'newConsentGroup', action:'getProjectConsentGroups', method: 'GET')
 
         // File related end points
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
         '/api/files-helper/attached-documents'(controller: 'fileHelper', action: 'attachedDocuments', method: 'GET')
         '/api/files-helper/approve-document'(controller: 'fileHelper', action: 'approveDocument', method: 'PUT')
         '/api/files-helper/reject-document'(controller: 'fileHelper', action: 'rejectDocument', method: 'PUT')
+        '/api/files-helper/remove-attachment'(controller: 'fileHelper', action: 'deleteDocumentByUuid', method: 'DELETE')
         '/api/files-helper/update'(controller: 'fileHelper', action: 'updateDocumentsVersion', method: 'PUT')
         '/api/files-helper/delete'(controller: 'fileHelper', action: 'deleteDocument', method: 'DELETE')
         '/api/files-helper/get-document'(controller: 'fileHelper', action: 'getDocument')
@@ -86,6 +90,9 @@ class UrlMappings {
         '/search/matching-diseases-ontologies'(controller: 'search', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
 
+        '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
+        '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
+
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
@@ -104,6 +111,7 @@ class UrlMappings {
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
+
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
