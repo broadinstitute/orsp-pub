@@ -5,6 +5,7 @@ import { IntCohortsReview } from "./IntCohortsReview";
 import { isEmpty } from "../util/Utils";
 import { Documents } from "./Documents";
 import { Table } from "./Table";
+import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [
@@ -86,13 +87,19 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     }
   };
 
+  getDocumentLink = (data) => {
+    return [component.serverURL, UrlConstants.getDocumentById + '?id=' + data].join("/");
+  };
+
   buildDocumentsTable = (currentStepIndex, headers) => {
     if (currentStepIndex === 3) {
       return Table({
         headers: headers,
         data: this.parseDocuments(this.props.documents),
         sizePerPage: 10,
-        paginationSize: 10
+        paginationSize: 10,
+        getDocumentLink: this.getDocumentLink,
+        reviewFlow: true,
       })
     } else {
       return "";
