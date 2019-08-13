@@ -12,6 +12,7 @@ import { spinnerService } from "../util/spinner-service";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { Spinner } from "../components/Spinner";
 import { AlertMessage } from "../components/AlertMessage";
+import { Link } from 'react-router-dom';
 
 const styles = {
   addDocumentContainer: {
@@ -289,15 +290,13 @@ class SubmissionForm extends Component {
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload
         }),
-        h(Fragment, {}, [
           h1({
             style: {'marginBottom':'20px'}
           }, [
-            "Submission for ", a({onClick: () => this.props.history.goBack(), styles: {'cursor': 'pointer'}}, [
+            "Submission for ", h(Link, {to: {pathname: '/project/main', search: '?projectKey=' + this.state.params.projectKey + '&tab=submissions'}, state: {projectKey: this.state.params.projectKey, issueType: 'project'}}, [
               `${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`
             ])
           ]),
-        ]),
         Panel({
           title: "Add new submission",
         }, [
