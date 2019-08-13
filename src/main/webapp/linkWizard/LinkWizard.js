@@ -225,6 +225,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       const consentCollectionData = this.getConsentCollectionData();
       ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
         window.location.href  = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
+        spinnerService.hideAll();
       }).catch(error => {
         console.error(error);
         spinnerService.hideAll();
