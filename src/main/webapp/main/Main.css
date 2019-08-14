@@ -56,7 +56,7 @@
   margin: 20px 0 0 0;
   border: 1px solid #e3e3e3;
   border-bottom: 0;
-  height: 44px;
+  height: 64px;
   white-space: nowrap;
   overflow: hidden;
   overflow-x: auto;
@@ -90,7 +90,7 @@
 /* Tab Container */
 .containerBox .tabContent {
   border: 1px solid #e3e3e3;
-  padding: 50px 15px 10px 15px;
+  padding: 10px 15px;
   border-top: 0;
   margin: 0;
 }
