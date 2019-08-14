@@ -1,5 +1,5 @@
-import { Component, Fragment } from 'react';
-import { div, h1, a, button, h } from 'react-hyperscript-helpers';
+import { Component } from 'react';
+import { div, h1, button, h } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import {Files, ProjectMigration} from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -7,7 +7,7 @@ import InputFieldNumber from "../components/InputFieldNumber";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { Table } from "../components/Table";
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import { isEmpty } from "../util/Utils";
+import { isEmpty, scrollToTop } from "../util/Utils";
 import { spinnerService } from "../util/spinner-service";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { Spinner } from "../components/Spinner";
@@ -64,6 +64,7 @@ class SubmissionForm extends Component {
   }
 
   componentDidMount() {
+    scrollToTop();
     const params = new URLSearchParams(this.props.location.search);
     this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'), params.get('submissionId'));
     this.setState(prev => {
