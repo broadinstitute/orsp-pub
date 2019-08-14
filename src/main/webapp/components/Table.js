@@ -19,6 +19,7 @@ const styles = {
   infoLinkWidth: '96',
   creationDateWidth: '140',
   removeWidth: '45',
+  removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
   numberWidth: '30',
@@ -298,6 +299,12 @@ export const Table = hh(class Table extends Component {
                 key={header.value}
                 dataFormat={this.formatRemoveBtn}
                 width={styles.removeWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'removeFile') {
+              return <TableHeaderColumn isKey={isKey}
+                dataField={header.value}
+                key={header.value}
+                dataFormat={this.formatRemoveBtn}
+                width={styles.removeWidthFile}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'unlinkSampleCollection') {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}

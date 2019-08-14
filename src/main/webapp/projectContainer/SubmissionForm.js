@@ -31,7 +31,7 @@ const headers =
   [
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
-    { name: 'Remove', value: 'remove' }
+    { name: 'Remove', value: 'removeFile' }
   ];
 
 class SubmissionForm extends Component {
