@@ -4,7 +4,7 @@ import { Panel } from "../components/Panel";
 import {Files, ProjectMigration} from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import InputFieldNumber from "../components/InputFieldNumber";
-import { InputFieldText } from "../components/InputFieldText";
+import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { Table } from "../components/Table";
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { isEmpty } from "../util/Utils";
@@ -328,7 +328,7 @@ class SubmissionForm extends Component {
             readOnly: !component.isAdmin,
             edit: false
           }),
-          InputFieldText({
+          InputFieldTextArea({
             id: "submission-comment",
             name: "comments",
             label: "Description",
