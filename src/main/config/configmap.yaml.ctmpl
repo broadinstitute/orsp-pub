@@ -2,7 +2,7 @@
 {{with $name := env "NAME"}}
 {{with $orsp := vault (printf "secret/dsde/orsp/all/application-cloud.yml")}}
 {{with $bq := secret (printf "secret/dsde/orsp/all/big-query.json")}}
-{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-client.json" $environment)}}
+{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment)}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
