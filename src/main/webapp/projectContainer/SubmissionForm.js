@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, h1, button, h } from 'react-hyperscript-helpers';
+import { div, h1, button, h, a } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import {Files, ProjectMigration} from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -12,7 +12,6 @@ import { spinnerService } from "../util/spinner-service";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { Spinner } from "../components/Spinner";
 import { AlertMessage } from "../components/AlertMessage";
-import { Link } from 'react-router-dom';
 
 const styles = {
   addDocumentContainer: {
@@ -167,7 +166,7 @@ class SubmissionForm extends Component {
       };
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
-        this.props.history.push('/project/main?projectKey=' + this.state.params.projectKey + '&tab=submissions');
+        this.backToProject();
       }).catch(error => {
         spinnerService.hideAll();
         console.error(error);
@@ -268,6 +267,10 @@ class SubmissionForm extends Component {
     });
   };
 
+  backToProject = () => {
+    this.props.history.push('/project/main?projectKey=' + this.state.params.projectKey + '&tab=submissions', {tab: 'submissions'});
+  };
+
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -301,9 +304,10 @@ class SubmissionForm extends Component {
           h1({
             style: {'marginBottom':'20px'}
           }, [
-            "Submission for ", h(Link, {to: {pathname: '/project/main', search: '?projectKey=' + this.state.params.projectKey + '&tab=submissions'}, state: {projectKey: this.state.params.projectKey, issueType: 'project'}}, [
-              `${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`
-            ])
+            "Submission for ", h(a, {
+              onClick: () => this.backToProject(),
+              style: {'cursor': 'pointer'}
+            }, [`${this.state.submissionInfo.typeLabel}: ${this.state.submissionInfo.projectKey}`]),
           ]),
         Panel({
           title: "Add new submission",

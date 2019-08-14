@@ -10,7 +10,7 @@ import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 import { MultiTab } from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
-import { spinnerService } from "../util/spinner-service";
+import {isEmpty} from "../util/Utils";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -27,8 +27,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   }
 
   componentDidMount() {
-    spinnerService.hideAll();
-    spinnerService._unregisterAll();
     this.getHistory();
     this.getComments();
   }
@@ -75,11 +73,22 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     });
   }
 
+  activeTab = () => {
+    let tab = this.state.defaultActive;
+
+   if (!isEmpty(this.props.tab) && !isEmpty(component.tab)){
+      tab = component.tab;
+    } else if (!isEmpty(this.props.tab)) {
+      tab =  this.props.tab;
+    }
+    return tab;
+  };
+
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: component.tab === "" ? this.state.defaultActive : component.tab },
+          MultiTab({ defaultActive: this.activeTab() },
             [
               div({
                 key: "review",
