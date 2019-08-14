@@ -31,7 +31,8 @@ class SampleConsentLinkController extends AuthenticatedController {
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
             if (!files?.isEmpty()) {
                 files.forEach {
-                    storageProviderService.saveMultipartFile(user.displayName, user.userName, null, it.name, it, consentCollectionLink)
+                    storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink.consentKey, it.name, it, null)
+                   // storageProviderService.saveMultipartFile(user.displayName, user.userName, null, it.name, it, consentCollectionLink)
                 }
             }
             response.status = 201

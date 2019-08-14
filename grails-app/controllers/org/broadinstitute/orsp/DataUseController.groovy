@@ -21,7 +21,8 @@ class DataUseController extends AuthenticatedController {
         List<String> summary = consentService.getSummary(restriction)
         Issue consent = queryService.findByKey(restriction.consentGroupKey)
         String consentGroupName = consent.summary
-        ConsentResource consentResource = consentService.buildConsentResource(restriction, consentGroupName)
+        ConsentResource consentResource1 = consentService.buildConsentResource(restriction, consentGroupName)
+        String consentResource = consentResource1
         Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(restriction.consentGroupKey)
         collectionLinks.retainAll { it.sampleCollectionId != null }
         [restriction    : restriction,
