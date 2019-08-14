@@ -167,6 +167,13 @@ class SubmissionForm extends Component {
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
         this.props.history.goBack();
+      }).catch(error => {
+        spinnerService.hideAll();
+        console.error(error);
+        this.setState(prev => {
+          prev.errors.serverError = true;
+          return prev;
+        });
       });
     }
   };
