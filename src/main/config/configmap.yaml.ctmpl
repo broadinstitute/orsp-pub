@@ -1,8 +1,8 @@
 {{with $environment := env "ENVIRONMENT"}}
 {{with $name := env "NAME"}}
-{{with $orsp := vault (printf "secret/dsde/orsp/all/application-cloud.json")}}
-{{with $bq := secret (printf "secret/dsde/orsp/all/big-query.json")}}
-{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment)}}
+{{with $orsp := secret "secret/dsde/orsp/all/application-cloud.json"}}
+{{with $bq := secret "secret/dsde/orsp/all/big-query.json" }}
+{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -307,11 +307,13 @@ data:
         unique-names: true
 
   big-query.json: |
-    {{$bq.Data}}
-  orsp-client.json: {{$gcs.Data}}
-
-{{end}}
-{{end}}
-{{end}}
-{{end}}
-{{end}}
+    {
+      {{ range $key, $value := $bq.Data }}"{{ $key }}": "{{ $value | replaceAll "\n" "\\n" }}",
+      {{ end }}
+    }
+  orsp-client.json: |
+    {
+      {{ range $key, $value := $gcs.Data }}"{{ $key }}": "{{ $value | replaceAll "\n" "\\n" }}",
+      {{ end }}
+    }
+{{end}}{{end}}{{end}}{{end}}{{end}}
