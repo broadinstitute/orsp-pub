@@ -98,10 +98,6 @@ export const Submissions = hh(class Submissions extends Component {
     this.props.history.push(`/submissions/add-new?projectKey=${this.props.projectKey}&type=${e.target.id}`);
   };
 
-  redirectOldSubmission = (e) => {
-    window.location.href = `${component.serverURL}/api/submissions/add-new-old?projectKey=${this.props.projectKey}&type=${e.target.id}`;
-  };
-
   submissionTab = (data, title) => {
     return div({
       key: title, title: this.tabTitle(title, data.length) },[
@@ -121,12 +117,7 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
-      }),
-      a({
-        onClick: this.redirectOldSubmission,
-        className: "btn btn-primary",
-        id: title
-      }, ["Old Submission"]),
+      })
     ]);
   };
 
