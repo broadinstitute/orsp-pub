@@ -1,12 +1,11 @@
 {{with $environment := env "ENVIRONMENT"}}
-{{with $name := env "NAME"}}
 {{with $orsp := secret "secret/dsde/orsp/all/application-cloud.json"}}
 {{with $bq := secret "secret/dsde/orsp/all/big-query.json" }}
 {{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{$name}}
+  name: orsp-config-{{$environment}}
   namespace: orsp
 data:
   application.yml: |+
@@ -316,4 +315,4 @@ data:
       {{ range $key, $value := $gcs.Data }}"{{ $key }}": "{{ $value | replaceAll "\n" "\\n" }}",
       {{ end }}
     }
-{{end}}{{end}}{{end}}{{end}}{{end}}
+{{end}}{{end}}{{end}}{{end}}
