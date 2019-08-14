@@ -205,10 +205,13 @@ workflows:
               only: feature
       - deploy-staging:
           filters:
-            tags:
-              only: /^staging.*/
+#            TODO: This should ignore all branches and only work from staging tag when fully tested
+#            tags:
+#              only: /^staging.*/
+#            branches:
+#              ignore: /.*/
             branches:
-              ignore: /.*/
+              only: DUOS-412
       - deploy-prod:
           filters:
             branches:
