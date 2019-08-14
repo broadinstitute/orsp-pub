@@ -297,8 +297,8 @@ export const DataUse = {
   createRestriction(restriction) {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
   },
-  getRestriction() {
-    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + component.restrictionId);
+  getRestriction(restrictionId) {
+    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
   },
   getRestrictions(query) {
     return axios.get(UrlConstants.restrictionUrl, {

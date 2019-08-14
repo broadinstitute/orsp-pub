@@ -63,9 +63,11 @@ class DataUseRestrictionDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      restrictionId: this.props.location.state !== undefined && this.props.location.state.restrictionId !== undefined  ? this.props.location.state.restrictionId : component.restrictionId,
       summary: [],
       restrictionUrl: '',
-      error: null,
+      message: null,
+      messageType: null,
       restriction: {
         vaultConsentId: null,
         diseaseRestrictions: []
@@ -84,7 +86,7 @@ class DataUseRestrictionDetails extends Component {
     this.init();
   }
   init() {   
-    DataUse.getRestriction().then(result => {
+    DataUse.getRestriction(this.state.restrictionId).then(result => {
       this.setState(prev => {
         prev.summary = result.data.summary;
         prev.restriction = result.data.restriction;
@@ -93,7 +95,10 @@ class DataUseRestrictionDetails extends Component {
         prev.samples = result.data.collectionLinks;
         prev.restrictionUrl = result.data.restrictionUrl;
         return prev;
-      }, () => spinnerService.hide(DUR_SPINNER));
+      }, () => {
+        spinnerService.hide(DUR_SPINNER);
+        this.scrollTop();
+      });
     });
   }
 
@@ -147,26 +152,27 @@ class DataUseRestrictionDetails extends Component {
     spinnerService.showAll();
     ConsentGroup.exportConsent(this.state.restriction.id).then(resp => {
       this.setState(prev => {
-        prev.error = null;
+        prev.message = resp.data.message;
+        prev.messageType = 'success';
         return prev;
       }, () => {
-        $('html, body').animate({ scrollTop: top }, 'fast')
+        this.scrollTop();
         spinnerService.hideAll();
       });
     }).catch(error => {
-      console.log(error);
       this.setState(prev => {
-        prev.error = error.response.data.message;
+        prev.message = error.response.data.message;
+        prev.messageType = 'danger';
         return prev;
       }, () => {
-        $('html, body').animate({ scrollTop: top }, 'fast')
+        this.scrollTop();
         spinnerService.hideAll();
       });
     });
   }
 
   scrollTop() {
-    $('html body').animate({ scrollTop: top }, 500);
+    $('html, body').animate({ scrollTop: top }, 'fast');
   }
 
   getExportContent() {
@@ -185,12 +191,12 @@ class DataUseRestrictionDetails extends Component {
         h(Spinner, {
           name: DUR_SPINNER, group: "orsp", loadingImage: component.loadingImage
         }),
-        AlertMessage({
-          msg: this.state.error,
-          show: this.state.error !== null,
-          type: 'danger'
-        }),
         h1({ style: { 'margin': '20px 0', 'fontWeight': '700', 'fontSize': '35px' } }, ["Data Use Restrictions for Consent Group: " + this.state.consent.projectKey]),
+        AlertMessage({
+          msg: this.state.message,
+          show: this.state.error !== null,
+          type: this.state.messageType
+        }),
         Panel({ title: "Data Use Restriction Summary" }, [
           p({}, [
             this.state.summary.map((rd, idx) => {
