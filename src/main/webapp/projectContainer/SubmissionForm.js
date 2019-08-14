@@ -166,7 +166,6 @@ class SubmissionForm extends Component {
       };
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
-        HTMLElement.click
         this.props.history.goBack();
       }).catch(error => {
         spinnerService.hideAll();
