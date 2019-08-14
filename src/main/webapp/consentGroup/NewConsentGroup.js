@@ -10,6 +10,7 @@ import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 
 const LAST_STEP = 1;
+const CONSENT_SPINNER = 'consentSpinner';
 
 class NewConsentGroup extends Component {
 
@@ -89,7 +90,7 @@ class NewConsentGroup extends Component {
     );
   }
   componentWillUnmount() {
-    spinnerService._unregisterAll();
+    spinnerService._unregister(CONSENT_SPINNER);
   }
 
   getUserSession() {
@@ -100,7 +101,7 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = async () => {
 
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_SPINNER);
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
@@ -117,10 +118,10 @@ class NewConsentGroup extends Component {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
           // transitioning from old gsps style is solved.
           window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
-          spinnerService.hideAll();
+          spinnerService.hide(CONSENT_SPINNER);
         }).catch(error => {
         console.error(error);
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_SPINNER);
         this.toggleSubmitError();
         this.changeSubmitState();
       });
@@ -129,7 +130,7 @@ class NewConsentGroup extends Component {
         prev.generalError = true;
         return prev;
       }, () => {
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_SPINNER);
       });
     }
   };
@@ -550,7 +551,7 @@ class NewConsentGroup extends Component {
           })
         ]),
         h(Spinner, {
-          name: 'consentSpinner', group: "orsp", loadingImage: component.loadingImage
+          name: CONSENT_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );

@@ -8,9 +8,10 @@ import { isEmpty } from "../util/Utils";
 import { spinnerService } from '../util/spinner-service';
 import { Spinner } from "../components/Spinner";
 import '../index.css';
-import { ConsentCollectionLink, Project } from "../util/ajax";
+import { ConsentCollectionLink } from "../util/ajax";
 
 const LAST_STEP = 1;
+const LINK_WIZARD_SPINNER = 'linkWizardSpinner';
 
 export const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
@@ -77,7 +78,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 
   componentWillUnmount() {
-    spinnerService._unregisterAll();
+    spinnerService._unregister(LINK_WIZARD_SPINNER);
   }
 
   getUserSession() {
@@ -216,7 +217,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   submitLink = async () => {
     this.setState({ submitError: false });
-    spinnerService.showAll();
+    spinnerService.show(LINK_WIZARD_SPINNER);
 
     if (this.validateForm()) {
       this.removeErrorMessage();
@@ -225,10 +226,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
       const consentCollectionData = this.getConsentCollectionData();
       ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
         window.location.href  = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
-        spinnerService.hideAll();
+        spinnerService.hide(LINK_WIZARD_SPINNER);
       }).catch(error => {
         console.error(error);
-        spinnerService.hideAll();
+        spinnerService.hide(LINK_WIZARD_SPINNER);
         this.toggleSubmitError();
         this.changeSubmitState();
       });
@@ -237,7 +238,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         prev.generalError = true;
         return prev;
       }, () => {
-        spinnerService.hideAll();
+        spinnerService.hide(LINK_WIZARD_SPINNER);
       });
     }
 
@@ -379,7 +380,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           })
         ]),
         h(Spinner, {
-          name: linkWizardSpinner, group: "orsp", loadingImage: component.loadingImage
+          name: LINK_WIZARD_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
