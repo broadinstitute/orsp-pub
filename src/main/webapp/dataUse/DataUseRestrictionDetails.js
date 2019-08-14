@@ -260,5 +260,4 @@ class DataUseRestrictionDetails extends Component {
     )
   }
 }
-
 export default DataUseRestrictionDetails;

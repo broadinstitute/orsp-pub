@@ -47,7 +47,6 @@ class PersistenceService {
 
     ConsentCollectionLink saveConsentCollectionLink(ConsentCollectionLink consentCollectionLink) {
         consentCollectionLink.save(flush: true)
-        consentCollectionLink.hasErrors()
     }
 
     void deleteCollectionLink(ConsentCollectionLink consentCollectionLink) {
