@@ -167,7 +167,7 @@ class SubmissionForm extends Component {
       };
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
-        this.props.history.goBack();
+        this.props.history.push('/project/main?projectKey=' + this.state.params.projectKey + '&tab=submissions');
       }).catch(error => {
         spinnerService.hideAll();
         console.error(error);
