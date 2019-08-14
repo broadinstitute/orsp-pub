@@ -80,13 +80,13 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
         div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
-              isRendered: status === STATUS.pending && component.isAdmin,
+              isRendered: status === STATUS.pending || isEmpty(status) && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => approveHandler(e, projectKey)
             },['Approve']),
             button({
-              isRendered: status === STATUS.pending && component.isAdmin,
+              isRendered: status === STATUS.pending || isEmpty(status) && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => rejectHandler(e, projectKey)
