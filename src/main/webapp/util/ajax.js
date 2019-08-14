@@ -98,6 +98,10 @@ export const ConsentGroup = {
 
   getProjectConsentGroups(projectKey) {
     return axios.get(UrlConstants.getProjectConsentGroupsUrl + '?projectKey=' + projectKey);
+  },
+
+  exportConsent(id) {
+    return axios.post(UrlConstants.exportConsent + '?id=' + id);
   }
 };
 
@@ -294,8 +298,20 @@ export const DataUse = {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
   },
   getRestriction() {
-    return axios.get(UrlConstants.restrictionUrl + '?id=' + component.restrictionId);
-  }
+    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + component.restrictionId);
+  },
+  getRestrictions(query) {
+    return axios.get(UrlConstants.restrictionUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
 };
 
 export const ProjectInfoLink = {
@@ -326,6 +342,10 @@ export const ConsentCollectionLink = {
 
   approveLink(projectKey, consentKey) {
     return axios.put(UrlConstants.sampleApproveLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey);
+  },
+
+  findCollectionLinks() {
+    return axios.get(UrlConstants.collectionLinks);
   }
 };
 

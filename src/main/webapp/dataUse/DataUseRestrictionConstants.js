@@ -54,7 +54,7 @@ export const DUR_QUESTIONS = [
   },
   {
     question: 'Future use of aggregate-level data for general research purposes is prohibited',
-    boolean: false,
+    boolean: true,
     fieldName: 'aggregateResearchResponse',
     id: 9
   },
@@ -139,7 +139,7 @@ export const DUR_QUESTIONS = [
   {
     question: 'Genomic summary',
     boolean: false,
-    fieldName: 'genomicResults',
+    fieldName: 'genomicSummaryResults',
     id: 23
   },
   {

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
+import { h, h1, div, button, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { DataUse } from "../util/ajax";
+import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 import { format } from 'date-fns';
 import { DUR_QUESTIONS } from './DataUseRestrictionConstants';
 import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
+import { Spinner } from '../components/Spinner';
+import { spinnerService } from "../util/spinner-service";
 
+const DUR_SPINNER = 'dusDetail';
 
 const styles = {
   tableList: {
@@ -61,17 +64,26 @@ class DataUseRestrictionDetails extends Component {
     super(props);
     this.state = {
       summary: [],
+      restrictionUrl: '',
+      error: null,
       restriction: {
         vaultConsentId: null,
         diseaseRestrictions: []
       },
-      consent: {},
+      consent: {
+        projectKey: '',
+        summary: ''
+      },
       samples: []
     };
-    this.init();
+    this.exportConsent = this.exportConsent.bind(this);
   }
 
-  init() {
+  componentDidMount() {
+    spinnerService.show(DUR_SPINNER);
+    this.init();
+  }
+  init() {   
     DataUse.getRestriction().then(result => {
       this.setState(prev => {
         prev.summary = result.data.summary;
@@ -79,47 +91,43 @@ class DataUseRestrictionDetails extends Component {
         prev.consent = result.data.consent;
         prev.consentResource = result.data.consentResource;
         prev.samples = result.data.collectionLinks;
+        prev.restrictionUrl = result.data.restrictionUrl;
         return prev;
-      });
+      }, () => spinnerService.hide(DUR_SPINNER));
     });
   }
 
-  createRow(columnLeft, columnRight, index) {
-    let contentRight = p({ style: styles.tableListItem }, [columnRight]);
+  createRow(columnLeft, columnRight, index, raw) {
+    let contentRight = raw !== false ?
+             p({ style: styles.tableListItem, dangerouslySetInnerHTML: { __html: columnRight }}, []) :
+             p({ style: styles.tableListItem }, [columnRight]);
     if (index === 0) {
-      contentRight = h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + this.state.consent.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: this.state.consent.projectKey}}}, [columnRight])
+      contentRight = h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + this.state.consent.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: this.state.consent.projectKey}}}, [columnRight]);
     }
-    if (index % 2 == 0) {
-      return li({ style: styles.tableListRowOdd }, [
+    let style = index % 2 == 0 ? styles.tableListRowOdd : styles.tableListRow;
+    return li({ style: style }, [
         span({ style: styles.tableListColLeft }, [p({ style: styles.tableListItem }, [columnLeft])]),
         span({ style: styles.tableListColRight }, [contentRight])
       ]);
-    } 
-    else {
-      return li({ style: styles.tableListRow }, [
-        span({ style: styles.tableListColLeft }, [p({ style: styles.tableListItem }, [columnLeft])]),
-        span({ style: styles.tableListColRight }, [contentRight])
-      ]);
-    }
   }
-
+ 
   createRowList(columnLeft, data, index) {
     let diseases = '';
     if (data.length > 1) {
       diseases = data.map((rd, idx) => {
-        return span({ style: { 'display': 'block' }, key: idx }, ['• ' + rd])
+        return span({ style: { 'display': 'block' }, key: rd }, ['• ' + rd])
       });
     } else if (data.length == 1) {
       diseases = span({}, [data[0]]);
     }
-    return this.createRow(columnLeft, diseases, index);
+    return this.createRow(columnLeft, diseases, index, false);
   }
 
-  createDuosExportRow(columnLeft) {
+  createDuosExportRow(columnLeft, index) {
     if (this.state.restriction.vaultConsentId) {
-      return this.createRow(columnLeft, this.getExportContent());
+      return this.createRow(columnLeft, this.getExportContent(), index, false);
     } else {
-      return this.createRow(columnLeft, span({}, ['Not exported to DUOS']))
+      return this.createRow(columnLeft, span({}, ['Not exported to DUOS']), index, false)
     }
   }
 
@@ -134,13 +142,39 @@ class DataUseRestrictionDetails extends Component {
     }
     return samples;     
   }
-  
+
+  exportConsent() {
+    spinnerService.showAll();
+    ConsentGroup.exportConsent(this.state.restriction.id).then(resp => {
+      this.setState(prev => {
+        prev.error = null;
+        return prev;
+      }, () => {
+        $('html, body').animate({ scrollTop: top }, 'fast')
+        spinnerService.hideAll();
+      });
+    }).catch(error => {
+      console.log(error);
+      this.setState(prev => {
+        prev.error = error.response.data.message;
+        return prev;
+      }, () => {
+        $('html, body').animate({ scrollTop: top }, 'fast')
+        spinnerService.hideAll();
+      });
+    });
+  }
+
+  scrollTop() {
+    $('html body').animate({ scrollTop: top }, 500);
+  }
+
   getExportContent() {
     let exportContent = span({}, [
-      span({ style: {'display': 'block'}, key: 'exportDate' }, ['• ' + 'Export Date: ' + format(new Date(this.state.restriction.vaultExportDate), 'MM/dd/yyyy')]),
+      span({ style: {'display': 'block'}, key: 'exportDate' }, ['• ' + 'Export Date: ' + format(new Date(this.state.restriction.vaultExportDate), 'MM/DD/YYYY')]),
       span({ style: {'display': 'block'}, key: 'consentId' }, ['• ' + 'Consent ID: ' + this.state.restriction.vaultConsentId]),
-      span({ style: {'display': 'block'}, key: 'consentUrl' }, [a({ href: "${restrictionUrl}" }, ['• ' + 'Consent'])]),
-      span({ style: {'display': 'block'}, key: 'consentAssciation' }, [a({ href: "${restrictionUrl}/association" }, ['• ' + 'Consent Samples'])])
+      span({ style: {'display': 'block'}, key: 'consentUrl' }, [a({ href: this.state.restrictionUrl}, ['• ' + 'Consent'])]),
+      span({ style: {'display': 'block'}, key: 'consentAssciation' }, [a({ href: this.state.restrictionUrl + '/association'}, ['• ' + 'Consent Samples'])])
     ]);
     return exportContent;
   }
@@ -148,9 +182,12 @@ class DataUseRestrictionDetails extends Component {
   render() {
     return (
       div({}, [
+        h(Spinner, {
+          name: DUR_SPINNER, group: "orsp", loadingImage: component.loadingImage
+        }),
         AlertMessage({
-          msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
-          show: false,
+          msg: this.state.error,
+          show: this.state.error !== null,
           type: 'danger'
         }),
         h1({ style: { 'margin': '20px 0', 'fontWeight': '700', 'fontSize': '35px' } }, ["Data Use Restrictions for Consent Group: " + this.state.consent.projectKey]),
@@ -177,7 +214,7 @@ class DataUseRestrictionDetails extends Component {
                 }
                 // date format
                 else if (idx === 14) {
-                  return this.createRow(rd.question, !isEmpty(this.state.restriction[rd.fieldName]) ? format(new Date(this.state.restriction[rd.fieldName])) : '', idx);
+                  return this.createRow(rd.question, !isEmpty(this.state.restriction[rd.fieldName]) ? format(new Date(this.state.restriction[rd.fieldName]), 'MM/DD/YYYY') : '', idx);
                 }
                 else if (idx === 15 || idx === 16) {
                   if (this.state.restriction['recontactingDataSubjects']) {
@@ -195,7 +232,7 @@ class DataUseRestrictionDetails extends Component {
                 }
              })
             ]),
-            a({className: 'btn buttonSecondary', style: {'marginTop':'15px'}, href: component.serverURL + '/dataUse/edit/' + this.state.restriction.id },['Edit'])
+            a({isRendered: !component.isViewer, className: 'btn buttonSecondary', style: {'marginTop':'15px'}, href: component.serverURL + '/dataUse/edit/' + this.state.restriction.id },['Edit'])
           ]),
         
           Panel({ title: "Export Data Use Restrictions to DUOS"},[
@@ -205,9 +242,12 @@ class DataUseRestrictionDetails extends Component {
             ul({},[
               this.getSamples()
             ]),
-            div({className:'well'}, [
+            div({isRendered: !component.isViewer, className:'well'}, [
               p({}, ["Export (or update) this consent to DUOS."]),
-              a({className: 'btn buttonSecondary', href: component.serverURL + '/dataUse/exportConsent?id=' + this.state.restriction.id },[this.state.restriction.vaultConsentId !== null ? 'Update Consent' : 'Export Consent'])
+              button({
+                className: "btn buttonSecondary",
+                onClick: this.exportConsent,
+              }, [this.state.restriction.vaultConsentId !== null ? 'Update Consent' : 'Export Consent'])
             ])
           ])
       ])

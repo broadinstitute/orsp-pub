@@ -31,7 +31,8 @@ export const UrlConstants = {
   getConsentGroup: context + '/api/consent-group/review',
   uploadModalUrl: context + '/api/consent-group/upload-modal',
   allConsentGroupsUrl: context + '/api/consent-groups',
-
+  collectionLinks: context + '/api/collection-links',
+  exportConsent: context + '/api/consent/export',
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',
   attachedDocumentsUrl : context + '/api/files-helper/attached-documents',
@@ -64,6 +65,7 @@ export const UrlConstants = {
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
   dataUseLetterRestrictionUrl: context + '/api/data-use-letter/restriction',
   infoLinkUrl: context + '/api/info-link',
+  restrictionUrl: context + '/api/dur',
 
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
@@ -74,6 +76,6 @@ export const UrlConstants = {
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',
-  restrictionUrl: context + '/api/data-use/restriction'
+  viewRestrictionUrl: context + '/api/data-use/restriction'
 };
 
