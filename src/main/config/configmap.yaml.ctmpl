@@ -1,6 +1,6 @@
 {{with $environment := env "ENVIRONMENT"}}
 {{with $name := env "NAME"}}
-{{with $orsp := vault (printf "secret/dsde/orsp/all/application-cloud.yml")}}
+{{with $orsp := vault (printf "secret/dsde/orsp/all/application-cloud.json")}}
 {{with $bq := secret (printf "secret/dsde/orsp/all/big-query.json")}}
 {{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment)}}
 apiVersion: v1
@@ -57,8 +57,8 @@ data:
         bsp: # TODO: This should be removed once BSP-599 hits
           sync: false
           service:
-            username: {{$orsp.Data.dev_bsp_username}}
-            password: {{$orsp.Data.dev_bsp_password}}
+            username: {{$orsp.Data.bsp_username}}
+            password: {{$orsp.Data.bsp_password}}
             allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
             statusUrl: http://bsp/BSP/
         dataSource:
@@ -123,8 +123,8 @@ data:
         bsp: # TODO: This should be removed once BSP-599 hits
           sync: false
           service:
-            username: {{$orsp.Data.dev_bsp_username}}
-            password: {{$orsp.Data.dev_bsp_password}}
+            username: {{$orsp.Data.bsp_username}}
+            password: {{$orsp.Data.bsp_password}}
             allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
             statusUrl: http://bsp/BSP/
         dataSource:
@@ -195,8 +195,8 @@ data:
         bsp: # TODO: This should be removed once BSP-599 hits
           sync: false
           service:
-            username: {{$orsp.Data.prod_bsp_username}}
-            password: {{$orsp.Data.prod_bsp_password}}
+            username: {{$orsp.Data.bsp_username}}
+            password: {{$orsp.Data.bsp_password}}
             allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
             statusUrl: http://bsp/BSP/
         dataSource:
