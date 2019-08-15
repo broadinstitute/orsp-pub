@@ -397,6 +397,20 @@ class QueryService implements Status {
         results.groupBy { it?.consentCollectionLinkId }
     }
 
+    List <StorageDocument> findAllDocumentsBySampleCollectionIdList(List<Long> consentCollectionId) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from storage_document ' +
+                        ' where consent_collection_link_id in :consentCollectionIds'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameterList('consentCollectionIds', consentCollectionId)
+            list()
+        }
+        results
+    }
+
     List<ConsentCollectionLinkDTO> getCollectionLinksDtoByConsentKey(String consentKey) {
         final session = sessionFactory.currentSession
         final String query =

@@ -3,7 +3,9 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
+import org.apache.commons.collections.CollectionUtils
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
@@ -95,7 +97,13 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def attachedDocuments() {
+        Issue issue = queryService.findByKey(params.consentKey)
+        Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(params.issueKey)
+        List<Integer> collectionIds = collectionLinks?.collect{it.id}
         Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
+        if (CollectionUtils.isNotEmpty(collectionIds)) {
+            documents.addAll(queryService.findAllDocumentsBySampleCollectionIdList(collectionIds))
+        }
         List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
         Boolean attachmentsApproved = queryService.findByKey(params.issueKey).attachmentsApproved()
         Gson gson = new Gson()
