@@ -110,7 +110,7 @@ class DataUseRestrictionDetails extends Component {
       contentRight = h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + this.state.consent.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: this.state.consent.projectKey}}}, [columnRight]);
     }
     let style = index % 2 == 0 ? styles.tableListRowOdd : styles.tableListRow;
-    return li({ style: style }, [
+    return li({ style: style, key: index }, [
         span({ style: styles.tableListColLeft }, [p({ style: styles.tableListItem }, [columnLeft])]),
         span({ style: styles.tableListColRight }, [contentRight])
       ]);
@@ -120,10 +120,10 @@ class DataUseRestrictionDetails extends Component {
     let diseases = '';
     if (data.length > 1) {
       diseases = data.map((rd, idx) => {
-        return span({ style: { 'display': 'block' }, key: rd }, ['• ' + rd])
+        return span({ style: { 'display': 'block' }, key: idx }, ['• ' + rd])
       });
     } else if (data.length == 1) {
-      diseases = span({}, [data[0]]);
+      diseases = span({key:'disease'}, [data[0]]);
     }
     return this.createRow(columnLeft, diseases, index, false);
   }

@@ -101,7 +101,7 @@ export const DUR_QUESTIONS = [
     id: 16
   },
   {
-    question: 'Participants\' genomic and phenotypic data is available for future research and broad sharing ',
+    question: 'Participants genomic and phenotypic data is available for future research and broad sharing ',
     boolean: false,
     fieldName: 'genomicPhenotypicData',
     id: 17
