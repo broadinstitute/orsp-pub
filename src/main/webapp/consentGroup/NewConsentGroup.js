@@ -1,13 +1,16 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
+import { h, div } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User} from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
+import { Spinner } from "../components/Spinner";
 import { isEmpty } from "../util/Utils";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 
 const LAST_STEP = 1;
+const CONSENT_SPINNER = 'consentSpinner';
 
 class NewConsentGroup extends Component {
 
@@ -86,6 +89,9 @@ class NewConsentGroup extends Component {
       }
     );
   }
+  componentWillUnmount() {
+    spinnerService._unregister(CONSENT_SPINNER);
+  }
 
   getUserSession() {
     User.getUserSession().then(
@@ -95,7 +101,7 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = async () => {
 
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_SPINNER);
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
@@ -112,10 +118,10 @@ class NewConsentGroup extends Component {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
           // transitioning from old gsps style is solved.
           window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
-          spinnerService.hideAll();
+          spinnerService.hide(CONSENT_SPINNER);
         }).catch(error => {
         console.error(error);
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_SPINNER);
         this.toggleSubmitError();
         this.changeSubmitState();
       });
@@ -124,7 +130,7 @@ class NewConsentGroup extends Component {
         prev.generalError = true;
         return prev;
       }, () => {
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_SPINNER);
       });
     }
   };
@@ -477,7 +483,7 @@ class NewConsentGroup extends Component {
     }).catch(error => {
       console.error(error);
     });
-  }
+  };
 
   removeErrorMessage() {
     this.setState(prev => {
@@ -500,47 +506,52 @@ class NewConsentGroup extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({
-        title: "New Sample/Data Cohort",
-        note: "Please use this section to provide information about the data and/or samples you will receive.  Also upload any consent forms or associated documents.  If no consent form is available, please explain why this is the case.",
-        stepChanged: this.stepChanged,
-        isValid: this.isValid,
-        showSubmit: this.showSubmit,
-        submitHandler: this.submitNewConsentGroup,
-        disabledSubmit: this.state.formSubmitted
-      }, [
-        NewConsentGroupGeneralData({
-          title: "Sample/Data Cohort Info",
-          currentStep: currentStep,
-          user: this.state.user,
-          updateForm: this.updateGeneralDataFormData,
-          errors: this.state.errors,
-          removeErrorMessage: this.removeErrorMessage,
-          projectKey: component.projectKey,
-          sampleCollectionList: this.state.sampleCollectionList,
-          fileHandler: this.fileHandler,
-          projectType: projectType,
-          options: this.state.documentOptions,
-          files: this.state.files,
-          isConsentFormPresent: this.state.isConsentFormPresent
-        }),
-        NewLinkCohortData({
-          title: "Security/MTA/International Info",
-          currentStep: currentStep,
-          handler: this.determinationHandler,
-          determination: this.state.determination,
-          showErrorIntCohorts: this.state.showInternationalCohortsError,
-          origin: 'consentGroup',
-          requireMta: this.state.linkFormData.requireMta,
-          errors: this.state.errors,
-          user: this.state.user,
-          updateInfoSecurityFormData: this.updateInfoSecurityFormData,
-          showErrorInfoSecurity: this.state.showErrorInfoSecurity,
-          generalError: this.state.generalError,
-          submitError: this.state.submitError,
-          handleInfoSecurityValidity: this.handleInfoSecurityValidity,
-          securityInfoData: this.state.securityInfoFormData,
-          updateMTA: this.updateMTA
+      div({name: 'wizardContainer'},[
+        Wizard({
+          title: "New Sample/Data Cohort",
+          note: "Please use this section to provide information about the data and/or samples you will receive.  Also upload any consent forms or associated documents.  If no consent form is available, please explain why this is the case.",
+          stepChanged: this.stepChanged,
+          isValid: this.isValid,
+          showSubmit: this.showSubmit,
+          submitHandler: this.submitNewConsentGroup,
+          disabledSubmit: this.state.formSubmitted
+        }, [
+          NewConsentGroupGeneralData({
+            title: "Sample/Data Cohort Info",
+            currentStep: currentStep,
+            user: this.state.user,
+            updateForm: this.updateGeneralDataFormData,
+            errors: this.state.errors,
+            removeErrorMessage: this.removeErrorMessage,
+            projectKey: component.projectKey,
+            sampleCollectionList: this.state.sampleCollectionList,
+            fileHandler: this.fileHandler,
+            projectType: projectType,
+            options: this.state.documentOptions,
+            files: this.state.files,
+            isConsentFormPresent: this.state.isConsentFormPresent
+          }),
+          NewLinkCohortData({
+            title: "Security/MTA/International Info",
+            currentStep: currentStep,
+            handler: this.determinationHandler,
+            determination: this.state.determination,
+            showErrorIntCohorts: this.state.showInternationalCohortsError,
+            origin: 'consentGroup',
+            requireMta: this.state.linkFormData.requireMta,
+            errors: this.state.errors,
+            user: this.state.user,
+            updateInfoSecurityFormData: this.updateInfoSecurityFormData,
+            showErrorInfoSecurity: this.state.showErrorInfoSecurity,
+            generalError: this.state.generalError,
+            submitError: this.state.submitError,
+            handleInfoSecurityValidity: this.handleInfoSecurityValidity,
+            securityInfoData: this.state.securityInfoFormData,
+            updateMTA: this.updateMTA
+          })
+        ]),
+        h(Spinner, {
+          name: CONSENT_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );

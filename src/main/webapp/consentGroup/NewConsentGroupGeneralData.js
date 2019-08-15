@@ -222,7 +222,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           moreInfo: "(if data will be deposited to GEO, dbGaP, or other federal repository. Optional)",
         }, [
           div({ className: "row" }, [
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+            div({ className: "col-xs-12 col-sm-4 col-padding" }, [
               InputFieldDatePicker({
                 selected: this.state.formData.startDate,
                 name: "startDate",
@@ -232,7 +232,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 maxDate: this.state.formData.endDate !== null ? this.state.formData.endDate : null
               })
             ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+            div({ className: "col-xs-12 col-sm-4 col-padding" }, [
               InputFieldDatePicker({
                 startDate: this.state.formData.startDate,
                 name: "endDate",
@@ -244,7 +244,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
                 minDate: this.state.formData.startDate
               })
             ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+            div({ className: "col-xs-12 col-sm-4 col-padding checkbox" }, [
               InputFieldCheckbox({
                 id: "onGoingProcess",
                 name: "onGoingProcess",
