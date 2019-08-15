@@ -1,13 +1,23 @@
 package org.broadinstitute.orsp
 
+import grails.converters.JSON
+import grails.rest.Resource
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.utils.UtilityClass
+import org.broadinstitute.orsp.webservice.PaginationParams
 import org.joda.time.Period
 
 import java.text.DateFormat
 import java.text.ParseException
 
 @Slf4j
+@Resource(readOnly = false, formats = ['JSON'])
 class StatusEventController extends AuthenticatedController {
+
+
+    def qaEventReport() {
+        render(view: "/mainContainer/index")
+    }
 
     private Map<IssueType, Collection<Issue>> getGroupedIssues(QueryOptions options) {
         queryService.
@@ -65,6 +75,17 @@ class StatusEventController extends AuthenticatedController {
         // Sort ascending and create DTOs
         List<StatusEventService.StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(params.id)
         [statusEvents: eventDTOs, issue: issue]
+    }
+
+    def findQaEventReport() {
+        PaginationParams pagination = new PaginationParams(
+            draw: params.getInt("draw") ?: 1,
+            start: params.getInt("start") ?: 0,
+            length: params.getInt("length") ?: 20,
+            orderColumn: params.getInt("orderColumn") ?: 0,
+            sortDirection: params.get("sortDirection")?.toString() ?: "asc",
+            searchValue: params.get("searchValue")?.toString() ?: null)
+        render queryService.findIssuesForStatusReport2(pagination, params.get("type").toString()) as JSON
     }
 
 }

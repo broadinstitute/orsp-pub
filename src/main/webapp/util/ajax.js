@@ -366,6 +366,19 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+  getQaEventReport(query, type) {
+    return axios.get(UrlConstants.qaEventReportUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue,
+        type: type
+      }
+    })
   }
 };
 

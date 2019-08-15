@@ -1,0 +1,76 @@
+import { Component } from 'react';
+import { br, h, button, div, p } from 'react-hyperscript-helpers';
+import { Panel } from "../components/Panel";
+import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
+import Select from 'react-select';
+import { InputFieldSelect } from "../components/InputFieldSelect";
+
+const projectTypes = [
+  { value: 'all', label: 'All' },
+  { value: 'irb', label: 'IRB Project' },
+  { value: 'ne', label: "'Not Engaged' Project" },
+  { value: 'nhsr', label: 'NHSR Project' }
+];
+
+const selectWithLabels = {
+  groupHeading: (provided, state) => ({
+    color:'#666666',
+    cursor:'default',
+    display: 'block',
+    fontWeight: '500',
+    marginBottom: '7px',
+    padding: '19px 12px 7px 12px',
+    textTransform: 'uppercase',
+    fontSize: '14px !important',
+    borderBottom: '1px solid #DDDDDD',
+  }),
+};
+
+class FilterPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return(
+      div({
+      },[
+        Panel({ title: "Filter Projects" }, [
+          InputFieldDatePicker({
+            selected: this.props.afterDate,
+            name: "afterDate",
+            label: "Created After",
+            onChange:  (e) => this.props.handleDatePicker(e, name),
+            disabled: false
+          }),
+          InputFieldDatePicker({
+            selected: this.props.beforeDate,
+            name: "beforeDate",
+            label: "Created Before",
+            onChange: (e) => this.props.handleDatePicker(e, name),
+            disabled: false
+          }),
+          p({ style: {color: '#286090', fontWeight: '700', fontSize: '1rem', marginBottom: '3px', marginTop: '6px'} }, [
+            'Project Type'
+          ]),
+          h(Select, {
+            name: 'projectType',
+            value: this.props.projectType,
+            className: "inputFieldSelect",
+            onChange: this.props.handleSelectProjectType,
+            options: projectTypes,
+            isDisabled: false,
+            isMulti: false,
+            isClearable: false,
+            isLoading: false,
+            styles: selectWithLabels,
+          }),
+          button({style: {marginTop: '20px', marginRight: '10px'}, onClick: ()=> console.log("FILTER")},['Filter']),
+          button({onClick: ()=> console.log("CLEAR")},['Clear']),
+        ])
+      ])
+    )
+  }
+}
+export default FilterPanel;

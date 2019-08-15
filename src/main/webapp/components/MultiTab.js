@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hh, h } from 'react-hyperscript-helpers';
 import { Tabs, Tab } from 'react-bootstrap';
+import { isEmpty } from "../util/Utils";
 
 
 export const MultiTab = hh(class MultiTab extends Component {
@@ -17,6 +18,8 @@ export const MultiTab = hh(class MultiTab extends Component {
 
  handleSelect(key) {
     this.setState({ key: key });
+    if (this.props.handleSelect !== undefined)
+      this.props.handleSelect(key);
   }
 
   componentDidMount() {

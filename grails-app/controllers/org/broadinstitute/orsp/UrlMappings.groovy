@@ -92,6 +92,7 @@ class UrlMappings {
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
+        '/api/get-qa-event-report'(controller: 'statusEvent', action: 'findQaEventReport', method: 'GET')
 
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
