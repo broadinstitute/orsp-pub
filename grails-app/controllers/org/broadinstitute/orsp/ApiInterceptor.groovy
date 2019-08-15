@@ -42,7 +42,7 @@ class ApiInterceptor implements UserInfo  {
 
     def forbidden() {
         response.status = 403
-        render([error: 'access denied'] as JSON)
+        render(view: "/index")
     }
 
     def exception(Exception e) {
