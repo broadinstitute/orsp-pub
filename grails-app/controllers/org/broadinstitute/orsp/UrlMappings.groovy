@@ -100,12 +100,12 @@ class UrlMappings {
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'delete', method: 'DELETE')
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
-        '/api/submissions/info'(controller: 'submission', action: 'indexNew', method: 'GET')
+        '/api/submissions/info'(controller: 'submission', action: 'index', method: 'GET')
         '/submissions/add-new'(controller: 'submission', action: 'renderMainComponent', method: 'GET')
         '/api/submissions/add-new-old'(controller: 'submission', action: 'index', method: 'GET')
         '/api/submissions/save-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
-        '/api/submission/remove-file'(controller: 'submission', action: 'removeFileNew', method: 'DELETE')
+        '/api/submission/remove-file'(controller: 'submission', action: 'removeFile', method: 'DELETE')
 
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
 
