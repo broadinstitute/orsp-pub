@@ -369,12 +369,12 @@ class SubmissionForm extends Component {
           }),
           button({
             isRendered: component.isAdmin,
-            className: "btn buttonPrimary pull-right", style: {'marginTop':'30px'},
+            className: "btn buttonPrimary pull-right", style: {'marginTop':'30px', 'marginLeft':'12px'},
             onClick: this.submitSubmission,
           }, [edit ? "Save" : "Submit"]),
           button({
             isRendered: component.isAdmin && edit,
-            className: "btn buttonPrimary floatRight", style: {'marginTop':'20px'},
+            className: "btn buttonPrimary floatRight", style: {'marginTop':'30px'},
             onClick: this.removeSubmissionDialog
           }, ["Delete"])
         ]),

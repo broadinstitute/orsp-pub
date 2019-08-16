@@ -26,7 +26,13 @@ const styles = {
   createDateWidth: '15',
   submissionDocumentsWidth: '100',
   submissionComments: '75',
-  createdWidth: '30'
+  createdWidth: '30',
+  linkOverflowEllipsis: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    color: '#337ab7'
+  }
 };
 
 export const Table = hh(class Table extends Component {
@@ -148,7 +154,7 @@ export const Table = hh(class Table extends Component {
     cell.forEach(data => {
       if (data.document !== undefined) {
         documents.push([
-          div({className: "linkOverflowEllipsis", key: data.document.id}, [
+          div({style: styles.linkOverflowEllipsis, key: data.document.id}, [
             a({
               href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
               target: '_blank',
