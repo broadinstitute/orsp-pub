@@ -26,7 +26,7 @@ const styles = {
   createDateWidth: '15',
   submissionDocumentsWidth: '100',
   submissionComments: '75',
-  createdWidth: '140'
+  createdWidth: '30'
 };
 
 export const Table = hh(class Table extends Component {
@@ -155,9 +155,8 @@ export const Table = hh(class Table extends Component {
               title: data.document.fileType,
             }, [
               span({
-                className: 'glyphicon glyphicon-download submission-download',
-                styles: "margin-right: 10px;"
-              }, []),
+                className: 'glyphicon glyphicon-download submission-download'
+              }, []), " ",
               data.document.fileName
             ])
           ])

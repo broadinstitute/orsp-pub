@@ -369,7 +369,7 @@ class SubmissionForm extends Component {
           }),
           button({
             isRendered: component.isAdmin,
-            className: "btn buttonPrimary", style: {'marginTop':'20px'},
+            className: "btn buttonPrimary pull-right", style: {'marginTop':'30px'},
             onClick: this.submitSubmission,
           }, [edit ? "Save" : "Submit"]),
           button({
