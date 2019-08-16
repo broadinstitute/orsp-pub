@@ -1,7 +1,8 @@
 import { Component } from 'react';
-import { div, h2 } from 'react-hyperscript-helpers';
+import { div } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
-import DataUseRestriction from './DataUseRestriction';
+//import DataUseRestriction from './DataUseRestriction';
+import DataUseRestrictionEdit from './DataUseRestrictionEdit';
 
 class DataUseRestrictionIndex extends Component {
 
@@ -12,8 +13,9 @@ class DataUseRestrictionIndex extends Component {
   render() {
      return (
        div({}, [ 
-        DataUseRestriction(),
-        SampleCollectionLinks()
+        DataUseRestrictionEdit()
+        //DataUseRestriction(),
+        //SampleCollectionLinks()
        ])
      )
   }
