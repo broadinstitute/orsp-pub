@@ -10,6 +10,7 @@ import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
+import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.User
 
 import java.text.SimpleDateFormat
@@ -125,7 +126,7 @@ class UtilityClass {
 
     static void registerSampleCollectionMarshaller() {
         JSON.createNamedConfig(SAMPLES) {
-            it.registerObjectMarshaller( ConsentCollectionLink ) { ConsentCollectionLink sc ->
+            it.registerObjectMarshaller( SampleCollection ) { SampleCollection sc ->
                 return [
                         id: sc.id,
                         name: sc.name

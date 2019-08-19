@@ -1,9 +1,7 @@
 package org.broadinstitute.orsp
 
-import grails.converters.JSON
 import grails.core.GrailsApplication
 import grails.rest.Resource
-import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 
 

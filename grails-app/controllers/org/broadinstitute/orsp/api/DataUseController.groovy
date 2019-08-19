@@ -1,7 +1,8 @@
+package org.broadinstitute.orsp.api
+
 import grails.converters.JSON
-import grails.core.GrailsApplication
-import grails.rest.Resource;
-import groovy.util.logging.Slf4j;
+import grails.rest.Resource
+import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentException
@@ -13,7 +14,7 @@ import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.utils.UtilityClass
-import org.broadinstitute.orsp.webservice.PaginationParams;
+import org.broadinstitute.orsp.webservice.PaginationParams
 
 @Slf4j
 @Resource
@@ -21,15 +22,16 @@ class DataUseController extends AuthenticatedController {
 
     ConsentService consentService
     ConsentExportService consentExportService
-    GrailsApplication grailsApplication
 
     def list() {
         render(view: "/mainContainer/index")
     }
+
     @Override
     def show() {
         render(view: "/mainContainer/index", model:[restrictionId: params.id])
     }
+
     def findDataUseRestrictions() {
         PaginationParams pagination = new PaginationParams(
                 draw: params.getInt("draw") ?: 1,
@@ -56,7 +58,7 @@ class DataUseController extends AuthenticatedController {
                     restrictionUrl : restriction.getConsentUrl(getConsentServiceUrl()),
                     summary        : summary,
                     consent        : consent,
-                    collectionLinks: samples,
+                    samples: samples,
                     consentResource: consentResource.toString()] as JSON)
 
         }

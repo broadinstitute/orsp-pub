@@ -85,6 +85,7 @@ class DataUseRestrictionDetails extends Component {
     spinnerService.show(DUR_SPINNER);
     this.init();
   }
+  
   init() {   
     DataUse.getRestriction(this.state.restrictionId).then(result => {
       this.setState(prev => {
@@ -92,7 +93,7 @@ class DataUseRestrictionDetails extends Component {
         prev.restriction = result.data.restriction;
         prev.consent = result.data.consent;
         prev.consentResource = result.data.consentResource;
-        prev.samples = result.data.collectionLinks;
+        prev.samples = result.data.samples;
         prev.restrictionUrl = result.data.restrictionUrl;
         return prev;
       }, () => {
