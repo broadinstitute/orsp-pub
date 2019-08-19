@@ -621,7 +621,6 @@ class QueryService implements Status {
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    // TODO
     Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
         if (keys && !keys.isEmpty()) {
             List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())

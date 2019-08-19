@@ -455,5 +455,4 @@ class StorageProviderService implements Status {
         this.credential = credential
     }
 
-
 }
