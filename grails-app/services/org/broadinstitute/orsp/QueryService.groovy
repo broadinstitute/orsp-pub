@@ -642,7 +642,50 @@ class QueryService implements Status {
     }
 
 
-    PaginatedResponse findIssuesForStatusReport2(PaginationParams paginationOptions, String type) {
+    PaginatedResponse findIssuesForStatusReport2(PaginationParams paginationOptions, String type, QueryOptions queryOptions) {
+        String orderColumn = statusReportPaginationOrder(paginationOptions)
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+
+        final StringBuffer query = new StringBuffer(' select distinct i.id from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != "Consent Group"')
+
+        if (paginationOptions.searchValue) {
+            query.append("and (i.project_key LIKE :term ")
+                    .append("or i.approval_status LIKE :term ")
+                    .append("or i.request_date LIKE :term )")
+        }
+
+        if (type == IssueType.IRB.getPrefix()) query.append(' and i.type = :filterType ')
+        else query.append(' and i.type != :filterType ')
+
+        if (!queryOptions.issueTypeNames.isEmpty()) query.append('and i.type = :filterType')
+
+
+        SQLQuery sqlQuery = session.createSQLQuery(query.toString())
+
+        if (queryOptions.issueTypeNames.isEmpty())
+        sqlQuery.setString('filterType', IssueType.IRB.getName())
+        else sqlQuery.setString('filterType', queryOptions.issueTypeNames.first())
+
+        if (paginationOptions.searchValue) {
+            sqlQuery.setString('term', paginationOptions.getLikeTerm())
+        }
+        // total rows
+        List<Long> ids = sqlQuery.list()
+        List<Issue> results = new ArrayList<>()
+        if (CollectionUtils.isNotEmpty(ids)) {
+            results = findPaginatedIssuesByIds(ids, orderColumn, paginationOptions)
+        }
+        new PaginatedResponse(
+                draw: paginationOptions.draw,
+                recordsTotal: ids.size(),
+                recordsFiltered: ids.size(),
+                data: results,
+                error: ""
+        )
+    }
+
+    private String statusReportPaginationOrder(PaginationParams paginationOptions) {
         String orderColumn
         switch (paginationOptions.orderColumn) {
             case 0:
@@ -659,45 +702,12 @@ class QueryService implements Status {
                 break
             case 4:
                 orderColumn = " type "
+                break
+            default:
+                orderColumn = " project_key "
+                break
         }
-
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final StringBuffer query = new StringBuffer(' select distinct i.id from issue i left outer join issue_extra_property ie on ie.issue_id = i.id ')
-        query.append(' where i.deleted = 0 and i.type != "Consent Group"')
-
-        if (type == IssueType.IRB.getPrefix()) query.append(' and i.type = :filterType ')//.append(IssueType.IRB.getName())
-        else if (type == 'NO_IRB') query.append(' and i.type != :filterType ')//.append(IssueType.IRB.getName())
-
-        if (paginationOptions.searchValue) {
-            query.append("and i.project_key LIKE :term ")
-                 .append("or i.summary LIKE :term ")
-                 .append("or i.status LIKE :term ")
-//                     .append("or ((ie.name = :initialReviewType ")
-                 .append("or ie.name = :reviewCategory ) ")
-                 .append("and ie.value LIKE :term ) ")
-        }
-        SQLQuery sqlQuery = session.createSQLQuery(query.toString())
-        if(type != 'all')
-        sqlQuery.setString('filterType', IssueType.IRB.getName())
-        if (paginationOptions.searchValue) {
-            sqlQuery.setString('term', paginationOptions.getLikeTerm())
-            sqlQuery.setString('initialReviewType', IssueExtraProperty.INITIAL_REVIEW_TYPE)
-            sqlQuery.setString('reviewCategory', IssueExtraProperty.REVIEW_CATEGORY)
-        }
-        // total rows
-        List<Long> ids = sqlQuery.list()
-        List<Issue> results = new ArrayList<>()
-        if (CollectionUtils.isNotEmpty(ids)) {
-            results = findPaginatedIssuesByIds(ids, orderColumn, paginationOptions)
-        }
-        new PaginatedResponse(
-                draw: paginationOptions.draw,
-                recordsTotal: ids.size(),
-                recordsFiltered: ids.size(),
-                data: results,
-                error: ""
-        )
+        orderColumn
     }
 
     /**

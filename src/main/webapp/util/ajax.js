@@ -367,7 +367,7 @@ export const Reports = {
       }
     })
   },
-  getQaEventReport(query, type) {
+  getQaEventReport(query, type, filter) {
     return axios.get(UrlConstants.qaEventReportUrl, {
       params: {
         draw: 1,
@@ -376,7 +376,10 @@ export const Reports = {
         orderColumn: query.orderColumn,
         sortDirection: query.sortDirection,
         searchValue: query.searchValue,
-        type: type
+        type: type,
+        before: filter.before,
+        after: filter.after,
+        projectType: filter.projectType
       }
     })
   }

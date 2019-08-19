@@ -81,7 +81,8 @@ class UtilityClass {
                         reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
                         reporter       : issue.reporter,
                         requestDate    : issue.requestDate,
-                        attachments    : issue.attachments
+                        attachments    : issue.attachments,
+                        actor          : 'chanchicomula'//issue.getActorUsernames()
                 ]
             }
         }
@@ -144,4 +145,13 @@ class UtilityClass {
             Collections.emptyList()
         }
     }
+
+//    private List<String> getActorDisplayName(Issue issue) {
+//        List<String> actors = issue?.getActorUsernames().unique()?
+//        if (!piUserNames?.isEmpty()) {
+//            queryService.findUsersInUserNameList(piUserNames).collect { it.displayName }
+//        } else {
+//            Collections.emptyList()
+//        }
+//    }
 }

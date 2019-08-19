@@ -66,8 +66,8 @@ class FilterPanel extends Component {
             isLoading: false,
             styles: selectWithLabels,
           }),
-          button({style: {marginTop: '20px', marginRight: '10px'}, onClick: ()=> console.log("FILTER")},['Filter']),
-          button({onClick: ()=> console.log("CLEAR")},['Clear']),
+          button({style: {marginTop: '20px', marginRight: '10px'}, onClick: this.props.applyFilterPanel}, ['Filter']),
+          button({onClick: this.props.clearFilterPanel}, ['Clear']),
         ])
       ])
     )

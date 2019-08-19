@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { h, h1, div, p } from 'react-hyperscript-helpers';
+import { format } from 'date-fns';
 import { Table } from "../components/Table";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { Reports, User } from "../util/ajax";
@@ -12,7 +13,7 @@ import { TABLE_ACTIONS } from "../util/TableUtil";
 import { QA_EVENT_SORT_NAME_INDEX } from "../util/ReportConstants";
 import { MultiTab } from "../components/MultiTab";
 import { Panel } from "../components/Panel";
-import { isEmpty } from "../util/Utils";
+import { datesDiff, isEmpty, parseDate } from "../util/Utils";
 
 const QA_REPORT_SPINNER = "qaReportSpinner";
 const columns = [{
@@ -29,13 +30,19 @@ const columns = [{
   text: 'Type',
   sort: true
 }, {
-  dataField: 'approvalStatus',
+  dataField: 'status',
   text: 'Status',
   sort: true
 }, {
   dataField: 'age',
   text: 'Age',
-  sort: true
+  sort: true,
+  formatter: (cell, row, rowIndex, colIndex) => {
+    const result = datesDiff(new Date(), new Date(row.requestDate));
+    return  (result.years > 0 ? result.years + ' years, ' : '') +
+            (result.months > 0 ? result.months + ' months ' : '') +
+            (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
+  }
 }, {
   dataField: 'actor',
   text: 'Assignees',
@@ -56,7 +63,7 @@ class QaReport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sizePerPage: 15,
+      sizePerPage: 50,
       search: null,
       sort: {
         sortDirection: 'asc',
@@ -65,6 +72,7 @@ class QaReport extends Component {
       currentPage: 1,
       recordsTotal: 0,
       recordsFiltered: 0,
+      activeTab: 'IRB',
 
       // Table data
       irb: [],
@@ -72,10 +80,10 @@ class QaReport extends Component {
       //filter Options
       beforeDate: null,
       afterDate: null,
-      projectType: [{ value: 'all', label: 'All' }],
+      projectType: { value: 'all', label: 'All' },
 
       showError: false,
-      isAdmin: true
+      isAdmin: component.isAdmin
     };
   }
 
@@ -84,11 +92,10 @@ class QaReport extends Component {
   }
 
   async init() {
-    await this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage, 'all');
+    await this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage, this.state.activeTab);
   }
 
   tableHandler = async (offset, limit, search, sort, page, type) => {
-    console.log("type en tableHandler =>  ", type);
     let query = {
       draw: 1,
       start: offset,
@@ -97,15 +104,20 @@ class QaReport extends Component {
       sortDirection: sort.sortDirection,
       searchValue: search,
     };
+
+    let filter = {
+      before: this.state.beforeDate ? this.state.beforeDate.toLocaleDateString('en-US') : this.state.afterDate,
+      after: this.state.afterDate ? this.state.afterDate.toLocaleDateString('en-US') : this.state.afterDate,
+      projectType: this.state.projectType.value
+    };
     spinnerService.show(QA_REPORT_SPINNER);
-    let result = await Reports.getQaEventReport(query, isEmpty(type) ? 'all' : type);
+    let result = await Reports.getQaEventReport(query, type, filter);
       // .then(result => {
-      // console.log("get qa event report result=> ", result);
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
       this.setState(prev => {
+        prev.activeTab = type;
         prev.lastPage = lastPage;
         prev.currentPage = page;
-        prev.isAdmin = this.state.isAdmin;
         prev.irb = result.data.data;
         prev.recordsTotal = result.data.recordsTotal;
         prev.recordsFiltered = result.data.recordsFiltered;
@@ -116,7 +128,9 @@ class QaReport extends Component {
           sortDirection: query.sortDirection
         };
         return prev;
-      }, () => spinnerService.hide(QA_REPORT_SPINNER))
+      }, () => {
+        spinnerService.hide(QA_REPORT_SPINNER)
+      })
     // }).catch(error => {
     //   spinnerService.hide(QA_REPORT_SPINNER);
     //   this.setState(() => { throw error });
@@ -144,27 +158,21 @@ class QaReport extends Component {
     }
   };
 
-  onPageChange = async (page, sizePerPage) => {
-    const offset = (page - 1) * sizePerPage;
-    await this.tableHandler(offset, sizePerPage, this.state.search, this.state.sort, page, 'all');
+  onSearchChange = async (search) => {
+    await this.tableHandler(0, this.state.sizePerPage, search, this.state.sort, 1, this.state.activeTab);
   };
 
-  onSizePerPageListHandler = async (size) => {
-    this.setState(prev => {
-      prev.query.length = size;
-      return prev;
-    }, () =>{
-      this.tableHandler(this.state.query);
-    });
+  onPageChange = async (page, sizePerPage) => {
+    const offset = (page - 1) * sizePerPage;
+    await this.tableHandler(offset, sizePerPage, this.state.search, this.state.sort, page, this.state.activeTab);
   };
 
   onSortChange = async (sortName, sortOrder) => {
-    console.log("Sort name => ", sortName, '\nsort Order => ', sortOrder );
     const sort = {
       sortDirection: sortOrder,
       orderColumn: QA_EVENT_SORT_NAME_INDEX[sortName]
     };
-    this.tableHandler(0, this.state.sizePerPage, null, sort)
+    this.tableHandler(0, this.state.sizePerPage, null, sort, this.state.activeTab)
   };
 
   handleDatePicker = (e) => (date) => {
@@ -181,6 +189,23 @@ class QaReport extends Component {
     }) ;
   };
 
+  tabChange = async (tab) => {
+    await this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, 1, tab)
+  };
+
+  applyFilterPanel = async () => {
+    await this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, 1, this.state.activeTab)
+  };
+
+  clearFilterPanel = async () => {
+    this.setState(prev => {
+      prev.beforeDate = null;
+      prev.afterDate = null;
+      prev.projectType = { value: 'all', label: 'All' };
+    });
+    await this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, 1, 'IRB');
+  };
+
   render() {
     return(
       div({
@@ -191,13 +216,15 @@ class QaReport extends Component {
           handleSelectProjectType: this.handleSelectProjectType,
           beforeDate: this.state.beforeDate,
           afterDate: this.state.afterDate,
-          projectType: this.state.projectType
+          projectType: this.state.projectType,
+          applyFilterPanel: this.applyFilterPanel,
+          clearFilterPanel: this.clearFilterPanel
         }),
         Panel({
           title:
             MultiTab({
               defaultActive: 'IRB',
-              handleSelect:  async (tab) => await this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage, tab) // set state to store type filter tab
+              handleSelect: (tab) => this.tabChange(tab)
             }, [
               div({
                 key: "IRB",
@@ -216,17 +243,17 @@ class QaReport extends Component {
             data: this.state.irb,
             columns: columns,
             keyField: 'id',
-            search: false,
+            search: true,
             fileName: 'ORSP',
             page: this.state.currentPage,
             totalSize: this.state.recordsFiltered,
-            showPrintButton: false,
+            showPrintButton: true,
             sizePerPageList: SIZE_PER_PAGE_LIST,
             printComments: this.printComments,
             defaultSorted: defaultSorted,
             pagination: true,
-            showExportButtons: false,
-            showSearchBar: false
+            showExportButtons: true,
+            showSearchBar: true
           })
         ]),
         h(Spinner, {
