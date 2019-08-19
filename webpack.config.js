@@ -6,7 +6,6 @@ module.exports = {
   },
   entry: {
     adminOnly: './src/main/webapp/adminOnly/AdminOnly.js',
-    collectionLinks: './src/main/webapp/collectionLinks/index.js',
     consentGroup: './src/main/webapp/consentGroup/index.js',
     footer: './src/main/webapp/components/footer.js',
     infoLink: './src/main/webapp/infoLink/index.js',
