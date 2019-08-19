@@ -111,7 +111,7 @@ data:
             username: {{$orsp.Data.staging_consent_username}}
             password: {{$orsp.Data.staging_consent_password}}
             url: https://consent.dsde-staging.broadinstitute.org/basic/consent
-            statusUrl: https://consent.dsde-prod.broadinstitute.org/status
+            statusUrl: https://consent.dsde-staging.broadinstitute.org/status
             ontologyUrl: https://consent-ontology.dsde-staging.broadinstitute.org/
             ontologyStatusUrl: https://consent-ontology.dsde-staging.broadinstitute.org/status
         dataBio:
