@@ -54,4 +54,4 @@ logger("org.apache.http.wire", INFO)
 logger("org.broadinstitute.orsp.NotifyService", DEBUG, ["NOTIFY"], true)
 logger("org.broadinstitute.orsp.sendgrid", DEBUG, ["NOTIFY"], true)
 
-root(INFO, ['STDOUT', 'FILE'])
+root(DEBUG, ['STDOUT', 'FILE'])
