@@ -1,7 +1,5 @@
 package org.broadinstitute.orsp
 
-import grails.async.Promise
-import grails.async.Promises
 import grails.converters.JSON
 import groovy.json.JsonOutput
 
@@ -9,17 +7,6 @@ class AdminController extends AuthenticatedController {
 
     def index() {}
 
-    def cclSummaries() {
-        Promise<Collection> cclPromise = Promises.task {
-            queryService.getCCLSummaries()
-        }
-        Collection data = cclPromise.get()
-        render ([data: data] as JSON)
-    }
-
-    def collectionLinks() {
-        render (view: '/admin/collectionLinks')
-    }
 
     def createConsentCollection() {
         String projectKey = params['projectKey']
@@ -101,57 +88,6 @@ class AdminController extends AuthenticatedController {
         transitionService.close(issue, params.comment, getUser()?.displayName)
         flash.message = "Successfully closed isssue: " + issue.projectKey
         redirect(controller: 'admin', action: 'reviewCategories')
-    }
-
-    /**
-     * See ProjectAutocomplete.js
-     *
-     * @return Consent projects matching term
-     */
-    def getMatchingConsents() {
-        def response = []
-        List<String> typeNames = [IssueType.CONSENT_GROUP.name]
-        queryService.findProjectsBySearchTerm(params.term, typeNames).each {
-            response << [
-                    "projectKey": it.projectKey,
-                    "summary": it.summary + " ( " + it.summary + " )",
-                    "type": it.type
-            ]
-        }
-        render response as JSON
-    }
-
-    /**
-     * See ProjectAutocomplete.js
-     *
-     * @return Non-consent projects matching term
-     */
-    def getMatchingProjects() {
-        def response = []
-        List<String> typeNames = EnumSet.of(IssueType.IRB, IssueType.NHSR, IssueType.NE)*.name
-        queryService.findProjectsBySearchTerm(params.term, typeNames).each {
-            response << [
-                    "projectKey": it.projectKey,
-                    "summary": it.summary,
-                    "type": it.type
-            ]
-        }
-        render response as JSON
-    }
-
-    def getMatchingSampleCollections() {
-        def response = []
-        queryService.findCollectionsBySearchTerm(params.term).each {
-            response << [
-                    "id": it.id,
-                    "label": it.collectionId + " ( " + it.name + ": " + it.category + " )",
-                    "value": it.id,
-                    "group": it.groupName,
-                    "category": it.category,
-                    "collectionId": it.collectionId
-            ]
-        }
-        render response as JSON
     }
 
 }
