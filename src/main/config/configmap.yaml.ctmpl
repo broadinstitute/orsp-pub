@@ -85,7 +85,7 @@ data:
           metrics:
             enabled: true
       staging:
-        grails.serverURL: https://ui.dsp-orsp-staging.broadinstitute.org
+        grails.serverURL: https://staging.dsp-orsp-dev.broadinstitute.org
         gkeServiceName: https://orsp-pub-service
         googleSignInClientId: {{$orsp.Data.google_signin_client_id}}
         server:

@@ -168,7 +168,7 @@ jobs:
           google_zone: "us-central1-a"
           google_cluster: "orsp-pub-staging"
           commit: ${COMMIT}
-          host_name: "ui.dsp-orsp-staging.broadinstitute.org"
+          host_name: "staging.dsp-orsp-dev.broadinstitute.org"
           host_ip: "orsp-pub-staging-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
           orsp_config_map: "orsp-config-staging"
