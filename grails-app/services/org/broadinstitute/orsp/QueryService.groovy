@@ -38,6 +38,7 @@ class QueryService implements Status {
     OntologyService ontologyService
     UserService userService
     SessionFactory sessionFactory
+    ConsentService consentService
 
     public static String PROJECT_KEY_PREFIX
 
@@ -620,13 +621,25 @@ class QueryService implements Status {
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys) {
+    // TODO
+    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
         if (keys && !keys.isEmpty()) {
-            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
-            Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
+            List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())
+            List<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
+
             def docsByProject = documents.groupBy({d -> d.projectKey})
             issues.each { issue ->
-                issue.setAttachments(docsByProject.getOrDefault(issue.projectKey, Collections.emptyList()))
+                List<StorageDocument> docs = new ArrayList<>()
+                List<ConsentCollectionLink> links = findConsentCollectionLinksByProjectKeyAndConsentKey(projectKey, issue.projectKey)
+                List<StorageDocument> collectionDocuments = findAllDocumentsBySampleCollectionIdList(links?.collect{it.id})
+                List<StorageDocument> projectDocuments = docsByProject.get(issue.projectKey)
+                if (CollectionUtils.isNotEmpty(collectionDocuments)) {
+                    docs.addAll(collectionDocuments)
+                }
+                if (CollectionUtils.isNotEmpty(projectDocuments)) {
+                    docs.addAll(projectDocuments)
+                }
+                issue.setAttachments(docs)
                 issue.setStatus(keys.get(issue.projectKey).status)
             }
             issues
@@ -1193,7 +1206,7 @@ class QueryService implements Status {
             extraProperties  : new ConsentGroupExtraProperties(issue),
             collectionLinks  : collectionLinks,
             sampleCollections: sampleCollections,
-            attachmentsApproved: issue.attachmentsApproved()
+            attachmentsApproved: issue.attachmentsApproved() && consentService.collectionDocumentsApproved(collectionLinks.collect{it.id})
         ]
     }
 

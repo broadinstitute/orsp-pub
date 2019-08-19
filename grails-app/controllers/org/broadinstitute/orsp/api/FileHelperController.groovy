@@ -6,6 +6,7 @@ import grails.rest.Resource
 import org.apache.commons.collections.CollectionUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
@@ -15,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
+
+    ConsentService consentService
 
     def attachDocument() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
@@ -97,18 +100,19 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def attachedDocuments() {
-        Issue issue = queryService.findByKey(params.consentKey)
         Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(params.issueKey)
-        List<Integer> collectionIds = collectionLinks?.collect{it.id}
+        List<Long> collectionIds = collectionLinks?.collect{it.id}
         Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
+        Boolean collectionDocsApproved = true
         if (CollectionUtils.isNotEmpty(collectionIds)) {
             documents.addAll(queryService.findAllDocumentsBySampleCollectionIdList(collectionIds))
+            collectionDocsApproved = consentService.collectionDocumentsApproved(collectionIds)
         }
         List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
         Boolean attachmentsApproved = queryService.findByKey(params.issueKey).attachmentsApproved()
         Gson gson = new Gson()
         String doc = gson.toJson(results)
-        render ([documents : doc, attachmentsApproved: attachmentsApproved] as JSON)
+        render ([documents : doc, attachmentsApproved: attachmentsApproved && collectionDocsApproved] as JSON)
     }
 
     def updateDocumentsVersion() {
