@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import groovy.util.logging.Slf4j
@@ -61,8 +62,12 @@ class SubmissionController extends AuthenticatedController {
 
     def save() {
         JsonParser parser = new JsonParser()
-        JsonArray dataSubmission = parser.parse(request.parameterMap["submission"].toString())
-        List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+        JsonElement jsonElement = parser.parse(request.parameterMap["submission"].toString())
+        JsonArray dataSubmission
+        if (jsonElement.jsonArray) {
+            dataSubmission = jsonElement.asJsonArray
+        }
+        List<MultipartFile> files = request.multiFileMap.collect { it?.value }.flatten()
         User user = getUser()
 
         try {
@@ -77,8 +82,8 @@ class SubmissionController extends AuthenticatedController {
                 submission.author = getUser()?.displayName
                 submission.documents = new ArrayList<StorageDocument>()
             }
-            if(!files?.isEmpty()) {
-                files.forEach {
+            if (!request?.parts.isEmpty()) {
+                files.parts.forEach {
                     StorageDocument document = storageProviderService.saveMultipartFile(
                             user.displayName,
                             user.userName,
