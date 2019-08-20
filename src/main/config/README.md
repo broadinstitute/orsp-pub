@@ -10,7 +10,7 @@ docker run -e ENVIRONMENT=dev -e LOG_LEVEL=debug -e VAULT_TOKEN=$(cat ~/.vault-t
 Set up your cluster context and then apply the rendered file:
 
 ```
-kubectl view context
+kubectl config get-contexts
 kubectl config use-context <full cluster name>
 kubectl config set-context --current --namespace=orsp
 kubectl apply -f configmap.yaml

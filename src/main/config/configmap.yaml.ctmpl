@@ -307,12 +307,28 @@ data:
 
   big-query.json: |
     {
-      {{ range $key, $value := $bq.Data }}"{{ $key }}": "{{ $value | replaceAll "\n" "\\n" }}",
-      {{ end }}
+      "type": "{{$bq.Data.type}}",
+      "project_id": "{{$bq.Data.project_id}}",
+      "private_key_id": "{{$bq.Data.private_key_id}}",
+      "private_key": "{{$bq.Data.private_key | replaceAll "\n" "\\n"}}",
+      "client_email": "{{$bq.Data.client_email}}",
+      "client_id": "{{$bq.Data.client_id}}",
+      "auth_uri": "{{$bq.Data.auth_uri}}",
+      "token_uri": "{{$bq.Data.token_uri}}",
+      "auth_provider_x509_cert_url": "{{$bq.Data.auth_provider_x509_cert_url}}",
+      "client_x509_cert_url": "{{$bq.Data.client_x509_cert_url}}"
     }
   orsp-client.json: |
     {
-      {{ range $key, $value := $gcs.Data }}"{{ $key }}": "{{ $value | replaceAll "\n" "\\n" }}",
-      {{ end }}
+      "type": "{{$gcs.Data.type}}",
+      "project_id": "{{$gcs.Data.project_id}}",
+      "private_key_id": "{{$gcs.Data.private_key_id}}",
+      "private_key": "{{$gcs.Data.private_key | replaceAll "\n" "\\n"}}",
+      "client_email": "{{$gcs.Data.client_email}}",
+      "client_id": "{{$gcs.Data.client_id}}",
+      "auth_uri": "{{$gcs.Data.auth_uri}}",
+      "token_uri": "{{$gcs.Data.token_uri}}",
+      "auth_provider_x509_cert_url": "{{$gcs.Data.auth_provider_x509_cert_url}}",
+      "client_x509_cert_url": "{{$gcs.Data.client_x509_cert_url}}"
     }
 {{end}}{{end}}{{end}}{{end}}
