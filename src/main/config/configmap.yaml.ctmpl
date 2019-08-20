@@ -21,7 +21,7 @@ data:
       development:
         grails.serverURL: https://ui.dsp-orsp-dev.broadinstitute.org
         gkeServiceName: https://orsp-pub-service
-        googleSignInClientId: {{$orsp.Data.google_signin_client_id}}
+        googleSignInClientId: {{$orsp.Data.dev_google_signin_client_id}}
         server:
           contextPath: '/'
         notifyService:
@@ -87,7 +87,7 @@ data:
       staging:
         grails.serverURL: https://staging.dsp-orsp-dev.broadinstitute.org
         gkeServiceName: https://orsp-pub-service
-        googleSignInClientId: {{$orsp.Data.google_signin_client_id}}
+        googleSignInClientId: {{$orsp.Data.staging_google_signin_client_id}}
         server:
           contextPath: '/'
         notifyService:
@@ -159,7 +159,7 @@ data:
           range: 10
         grails.serverURL: https://ui.dsp-orsp-prod.broadinstitute.org # https://orsp.broadinstitute.org
         gkeServiceName: https://orsp-pub-service
-        googleSignInClientId: {{$orsp.Data.google_signin_client_id}}
+        googleSignInClientId: {{$orsp.Data.prod_google_signin_client_id}}
         server:
           contextPath: '/'
         notifyService:
