@@ -1,8 +1,4 @@
-{{with $environment := env "ENVIRONMENT"}}
-{{with $orsp := secret "secret/dsde/orsp/all/application-cloud.json"}}
-{{with $bq := secret "secret/dsde/orsp/all/big-query.json" }}
-{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment) }}
-apiVersion: v1
+{{with $environment := env "ENVIRONMENT"}}{{with $orsp := secret "secret/dsde/orsp/all/application-cloud.json"}}{{with $bq := secret "secret/dsde/orsp/all/big-query.json" }}{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment) }}apiVersion: v1
 kind: ConfigMap
 metadata:
   name: orsp-config-{{$environment}}
@@ -10,13 +6,6 @@ metadata:
 data:
   application.yml: |+
     ---
-    hibernate:
-      cache:
-        queries: false
-        use_second_level_cache: false
-        use_query_cache: false
-        format_sql: true
-        show_sql: true
     environments:
       development:
         grails.serverURL: https://ui.dsp-orsp-dev.broadinstitute.org
@@ -60,6 +49,13 @@ data:
             password: {{$orsp.Data.bsp_password}}
             allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
             statusUrl: http://bsp/BSP/
+        hibernate:
+          cache:
+            queries: false
+            use_second_level_cache: false
+            use_query_cache: false
+            format_sql: true
+            show_sql: true
         dataSource:
           pooled: true
           driverClassName: org.mariadb.jdbc.Driver
@@ -126,6 +122,13 @@ data:
             password: {{$orsp.Data.bsp_password}}
             allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
             statusUrl: http://bsp/BSP/
+        hibernate:
+          cache:
+            queries: false
+            use_second_level_cache: false
+            use_query_cache: false
+            format_sql: false
+            show_sql: false
         dataSource:
           pooled: true
           driverClassName: org.mariadb.jdbc.Driver
@@ -198,6 +201,13 @@ data:
             password: {{$orsp.Data.bsp_password}}
             allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
             statusUrl: http://bsp/BSP/
+        hibernate:
+          cache:
+            queries: false
+            use_second_level_cache: false
+            use_query_cache: false
+            format_sql: false
+            show_sql: false
         dataSource:
           pooled: true
           driverClassName: org.mariadb.jdbc.Driver
@@ -222,7 +232,6 @@ data:
             testOnReturn: false
             jdbcInterceptors: ConnectionState
             defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
-
     ---
     grails:
       profile: web
@@ -240,7 +249,6 @@ data:
       groovy:
         template:
           check-template-location: false
-
     ---
     grails:
       mime:
@@ -304,7 +312,6 @@ data:
     endpoints:
       jmx:
         unique-names: true
-
   big-query.json: |
     {
       "type": "{{$bq.Data.type}}",

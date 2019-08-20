@@ -86,3 +86,5 @@ gradle-app.setting
 
 # Compiled Javascript
 grails-app/assets/javascripts/build
+
+**configmap.yaml
