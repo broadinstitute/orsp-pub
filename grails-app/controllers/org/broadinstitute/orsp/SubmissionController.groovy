@@ -8,7 +8,6 @@ import grails.converters.JSON
 import groovy.util.logging.Slf4j
 import org.apache.commons.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.utils.IssueUtils
-import org.springframework.web.multipart.MultipartFile
 
 @Slf4j
 class SubmissionController extends AuthenticatedController {

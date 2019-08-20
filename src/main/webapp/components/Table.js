@@ -57,13 +57,6 @@ export const Table = hh(class Table extends Component {
     }
   };
 
-  parseDate = (date) => {
-    if (date !== null) {
-      const simpleDate = new Date(date);
-      return format(simpleDate, 'M/D/YY h:m A')
-    }
-  };
-
   renderDropdownButton = (uuid) => {
     return (
       <ButtonToolbar>
@@ -295,7 +288,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
-                dataFormat={this.parseDate}
+                dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
