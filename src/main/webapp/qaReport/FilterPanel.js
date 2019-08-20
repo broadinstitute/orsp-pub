@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import { br, h, button, div, p } from 'react-hyperscript-helpers';
+import { h, button, div, p } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
 import Select from 'react-select';
-import { InputFieldSelect } from "../components/InputFieldSelect";
 
 const projectTypes = [
   { value: 'all', label: 'All' },
@@ -66,8 +65,16 @@ class FilterPanel extends Component {
             isLoading: false,
             styles: selectWithLabels,
           }),
-          button({style: {marginTop: '20px', marginRight: '10px'}, onClick: this.props.applyFilterPanel}, ['Filter']),
-          button({onClick: this.props.clearFilterPanel}, ['Clear']),
+          button({
+            className: "btn buttonPrimary",
+            style: { marginTop: '20px', marginRight: '10px' },
+            onClick: this.props.applyFilterPanel
+          }, ['Filter']),
+          button({
+            className: "btn buttonSecondary",
+            style: { marginTop: '20px' },
+            onClick: this.props.clearFilterPanel
+          }, ['Clear'])
         ])
       ])
     )

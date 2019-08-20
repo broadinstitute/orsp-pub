@@ -642,34 +642,30 @@ class QueryService implements Status {
     }
 
 
-    PaginatedResponse findIssuesForStatusReport2(PaginationParams paginationOptions, String type, QueryOptions queryOptions) {
+    PaginatedResponse findIssuesForStatusReport2(PaginationParams paginationOptions, String tab, QueryOptions queryOptions) {
         String orderColumn = statusReportPaginationOrder(paginationOptions)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-
         final StringBuffer query = new StringBuffer(' select distinct i.id from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != "Consent Group"')
 
         if (paginationOptions.searchValue) {
             query.append("and (i.project_key LIKE :term ")
-                    .append("or i.approval_status LIKE :term ")
-                    .append("or i.request_date LIKE :term )")
+                 .append("or i.approval_status LIKE :term ")
+                 .append("or i.request_date LIKE :term )")
         }
+        query.append(' and i.type IN :filterType ')
 
-        if (type == IssueType.IRB.getPrefix()) query.append(' and i.type = :filterType ')
-        else query.append(' and i.type != :filterType ')
-
-        if (!queryOptions.issueTypeNames.isEmpty()) query.append('and i.type = :filterType')
-
+        if (queryOptions.before) query.append(" and i.request_date < :beforeDate ")
+        if (queryOptions.after) query.append(" and i.request_date > :afterDate ")
 
         SQLQuery sqlQuery = session.createSQLQuery(query.toString())
-
-        if (queryOptions.issueTypeNames.isEmpty())
-        sqlQuery.setString('filterType', IssueType.IRB.getName())
-        else sqlQuery.setString('filterType', queryOptions.issueTypeNames.first())
-
+        sqlQuery.setParameterList('filterType', queryOptions.issueTypeNames)
         if (paginationOptions.searchValue) {
             sqlQuery.setString('term', paginationOptions.getLikeTerm())
         }
+        if (queryOptions.before) sqlQuery.setDate('beforeDate', queryOptions.before)
+        if (queryOptions.after) sqlQuery.setDate('afterDate', queryOptions.after)
+
         // total rows
         List<Long> ids = sqlQuery.list()
         List<Issue> results = new ArrayList<>()

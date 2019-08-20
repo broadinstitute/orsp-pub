@@ -81,26 +81,20 @@ class StatusEventController extends AuthenticatedController {
         UtilityClass.registerIssueMarshaller()
         QueryOptions qo = new QueryOptions()
         DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT)
-
-        if (params.before)
-            try {
+        try {
+            if (params.before)
                 qo.before = format.parse(params.before)
-            } catch (ParseException e) {
-                log.error("Parse Exception: " + e)
-                log.error("Unable to parse 'before' date: " + params.before)
+            if (params.after) {
+                qo.after = format.parse(params.after)
             }
-
-        if (params.after) {
-            try {
-                qo.before = format.parse(params.after)
-            } catch (ParseException e) {
-                log.error("Parse Exception: " + e)
-                log.error("Unable to parse 'after' date: " + params.after)
-            }
+        } catch (ParseException e) {
+            log.error("Date Parse Exception: " + e)
         }
 
-        if (params.projectType && params.projectType != "all") {
+        if (params.projectType && params.projectType != 'all') {
             qo.issueTypeNames = [IssueType.valueOfController(params.projectType).name]
+        } else if (params.tab) {
+            qo.issueTypeNames = params.tab == 'NO_IRB' ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
         }
 
         PaginationParams pagination = new PaginationParams(
@@ -112,7 +106,7 @@ class StatusEventController extends AuthenticatedController {
             searchValue: params.get("searchValue")?.toString() ?: null)
 
         JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
-            render queryService.findIssuesForStatusReport2(pagination, params.get("type").toString(), qo) as JSON
+            render queryService.findIssuesForStatusReport2(pagination, params.get("tab").toString(), qo) as JSON
         }
     }
 

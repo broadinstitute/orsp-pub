@@ -3,7 +3,6 @@ import { hh, h } from 'react-hyperscript-helpers';
 import { Tabs, Tab } from 'react-bootstrap';
 import { isEmpty } from "../util/Utils";
 
-
 export const MultiTab = hh(class MultiTab extends Component {
 
   constructor(props) {
@@ -16,7 +15,7 @@ export const MultiTab = hh(class MultiTab extends Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
- handleSelect(key) {
+  handleSelect(key) {
     this.setState({ key: key });
     if (this.props.handleSelect !== undefined)
       this.props.handleSelect(key);
@@ -36,13 +35,15 @@ export const MultiTab = hh(class MultiTab extends Component {
           onSelect: this.handleSelect,
         }, [
           this.props.children.map((child, idx) => {
+            console.log("child.props.isRendered => ", child.props);
             return h(
               Tab,
-              { className: "tabContent", key: idx, eventKey: child.key, title: child.props.title },
+              { className: "tabContent", key: idx, eventKey: child.key, title: child.props.title, isRendered: isEmpty(child.props.hide) ? true : !child.props.hide },
               [child.props.children]
             )
           }),
-        ])
+        ]
+      )
     )
   }
 });
