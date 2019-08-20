@@ -6,6 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import groovy.util.logging.Slf4j
+import org.apache.commons.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
@@ -63,11 +64,19 @@ class SubmissionController extends AuthenticatedController {
     def save() {
         JsonParser parser = new JsonParser()
         JsonElement jsonElement = parser.parse(request.parameterMap["submission"].toString())
+        JsonElement jsonFileTypes = parser.parse(request?.parameterMap["fileTypes"].toString())
         JsonArray dataSubmission
+        JsonArray fileData
+
         if (jsonElement.jsonArray) {
             dataSubmission = jsonElement.asJsonArray
         }
-        List<MultipartFile> files = request.multiFileMap.collect { it?.value }.flatten()
+
+        if (jsonFileTypes.jsonArray) {
+            fileData = jsonFileTypes.asJsonArray
+        }
+
+        List<DiskFileItem> filesItems = params?.files?.part?.fileItem.collect().flatten()
         User user = getUser()
 
         try {
@@ -82,16 +91,15 @@ class SubmissionController extends AuthenticatedController {
                 submission.author = getUser()?.displayName
                 submission.documents = new ArrayList<StorageDocument>()
             }
-            if (!request?.parts.isEmpty()) {
-                files.parts.forEach {
-                    StorageDocument document = storageProviderService.saveMultipartFile(
-                            user.displayName,
-                            user.userName,
-                            submission.projectKey,
-                            it.part.fileItem.fieldName,
-                            it,
-                            null)
-                    submission.documents.add(document)
+            if (!filesItems.isEmpty()) {
+                filesItems.forEach{
+                    StorageDocument submissionDoc = storageProviderService.saveFileItem(
+                            (String) user.displayName,
+                            (String) user.userName,
+                            (String) submission.projectKey,
+                            (String) fileData.find { data -> data.name.value == it.fileName }.fileType.value,
+                            it)
+                    submission.documents.add(submissionDoc)
                 }
             }
 

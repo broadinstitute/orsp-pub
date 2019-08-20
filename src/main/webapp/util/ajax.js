@@ -396,7 +396,12 @@ export const ProjectMigration = {
 
     files.forEach(file => {
       if (file.file != null) {
-        data.append(file.fileType, file.file, file.file.name);
+        const fileData = {
+          fileType: file.fileType,
+          name: file.fileName
+        };
+        data.append('files', file.file, file.fileName);
+        data.append('fileTypes', JSON.stringify(fileData));
       }
     });
     data.append('submission', JSON.stringify(submissionData));
