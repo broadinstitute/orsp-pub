@@ -402,7 +402,8 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                        ' where consent_collection_link_id in :consentCollectionIds'
+                        ' where consent_collection_link_id in :consentCollectionIds' +
+                        ' and deleted = 0'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
