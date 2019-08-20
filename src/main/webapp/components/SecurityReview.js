@@ -50,7 +50,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       return(
         div({}, [
           div({ className: "answerWrapper" }, [
-            label({}, ["As part of this project, will Broad receive either personally identifiable information (PII) or protected health information (PHI)?* ",
+            label({}, ["Will your project make data available to external collaborators over the internet and/or involve personally identifiable information (PII) or protected health information (PHI)?* ",
               span({ className: "normal" }, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."])]),
             div({
             }, [this.stringAnswer(pii)]),
