@@ -9,6 +9,7 @@ import org.joda.time.Period
 
 import java.text.DateFormat
 import java.text.ParseException
+import java.text.SimpleDateFormat
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON'])
@@ -80,12 +81,13 @@ class StatusEventController extends AuthenticatedController {
     def findQaEventReport() {
         UtilityClass.registerIssueMarshaller()
         QueryOptions qo = new QueryOptions()
-        DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT)
+        DateFormat formatter = new SimpleDateFormat("YYYY/MM/DD")
+
         try {
             if (params.before)
-                qo.before = format.parse(params.before)
+                qo.before = (Date)formatter.parse(params.before)
             if (params.after) {
-                qo.after = format.parse(params.after)
+                qo.after = (Date)formatter.parse(params.after)
             }
         } catch (ParseException e) {
             log.error("Date Parse Exception: " + e)

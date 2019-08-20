@@ -71,6 +71,7 @@ class UtilityClass {
                     Map<String, String> initialReview = jsonSlurper.parseText(issue.getInitialReviewType()) as Map
                     reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
                 }
+//                getActor(issue)
                 return [
                         id: issue.id,
                         type: issue.type,
@@ -82,7 +83,7 @@ class UtilityClass {
                         reporter       : issue.reporter,
                         requestDate    : issue.requestDate,
                         attachments    : issue.attachments,
-                        actor          : 'chanchicomula'//issue.getActorUsernames()
+                        actor          : issue.getActorUsernames()
                 ]
             }
         }
@@ -137,6 +138,7 @@ class UtilityClass {
             }
         }
     }
+
     private List<String> getPIsDisplayName(Issue issue) {
         List<String> piUserNames = issue?.getPIs()?.unique()
         if (!piUserNames?.isEmpty()) {
@@ -146,12 +148,4 @@ class UtilityClass {
         }
     }
 
-//    private List<String> getActorDisplayName(Issue issue) {
-//        List<String> actors = issue?.getActorUsernames().unique()?
-//        if (!piUserNames?.isEmpty()) {
-//            queryService.findUsersInUserNameList(piUserNames).collect { it.displayName }
-//        } else {
-//            Collections.emptyList()
-//        }
-//    }
 }
