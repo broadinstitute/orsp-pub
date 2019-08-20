@@ -6,7 +6,7 @@ A full ConfigMap can be rendered with dsde-toolbox:
 docker run -e ENVIRONMENT=dev -e LOG_LEVEL=debug -e VAULT_TOKEN=$(cat ~/.vault-token) -e INPUT_PATH=/working -e OUT_PATH=/working -v ${PWD}:/working broadinstitute/dsde-toolbox:consul-template-20-0.0.1 render-templates.sh
 ```
 
-# Applying Cconfigurations
+# Applying Configurations
 Set up your cluster context and then apply the rendered file:
 
 ```
