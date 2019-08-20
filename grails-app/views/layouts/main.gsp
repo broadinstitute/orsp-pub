@@ -40,7 +40,7 @@
     <g:render template="/layouts/signin"/>
     <g:layoutHead/>
 </head>
-<body>
+<body style="margin-top: 0; padding-top: 70px;">
 <g:render template="/base/topNav" />
 
 <auth:isNotAuthenticated>
