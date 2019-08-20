@@ -4,7 +4,7 @@ metadata:
   name: orsp-config-{{$environment}}
   namespace: orsp
 data:
-  application.yml: |+
+  application.yml: |-
     ---
     environments:
       development:
@@ -42,7 +42,7 @@ data:
           classUrl: http://data.bioontology.org/ontologies
           statusUrl: http://data.bioontology.org/
           apiKey: {{$orsp.Data.data_bio_api}}
-        bsp: # TODO: This should be removed once BSP-599 hits
+        bsp:
           sync: false
           service:
             username: {{$orsp.Data.bsp_username}}
@@ -115,7 +115,7 @@ data:
           classUrl: http://data.bioontology.org/ontologies
           statusUrl: http://data.bioontology.org/
           apiKey: {{$orsp.Data.data_bio_api}}
-        bsp: # TODO: This should be removed once BSP-599 hits
+        bsp:
           sync: false
           service:
             username: {{$orsp.Data.bsp_username}}
@@ -194,7 +194,7 @@ data:
           classUrl: http://data.bioontology.org/ontologies
           statusUrl: http://data.bioontology.org/
           apiKey: {{$orsp.Data.data_bio_api}}
-        bsp: # TODO: This should be removed once BSP-599 hits
+        bsp:
           sync: false
           service:
             username: {{$orsp.Data.bsp_username}}
@@ -337,5 +337,4 @@ data:
       "token_uri": "{{$gcs.Data.token_uri}}",
       "auth_provider_x509_cert_url": "{{$gcs.Data.auth_provider_x509_cert_url}}",
       "client_x509_cert_url": "{{$gcs.Data.client_x509_cert_url}}"
-    }
-{{end}}{{end}}{{end}}{{end}}
+    }{{end}}{{end}}{{end}}{{end}}
