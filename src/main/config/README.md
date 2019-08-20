@@ -17,4 +17,6 @@ kubectl apply -f configmap.yaml
 ```
 
 # TODO
-All of this should be part of the automated deploy. It is described here for future automation work.
+All of this should be part of an automated deploy process. It is described here for future 
+automation work. See [BTRX-766](https://broadinstitute.atlassian.net/browse/BTRX-766) for more 
+details.
