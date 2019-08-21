@@ -58,7 +58,7 @@ class DataUseController extends AuthenticatedController {
                     restrictionUrl : restriction.getConsentUrl(getConsentServiceUrl()),
                     summary        : summary,
                     consent        : consent,
-                    samples: samples,
+                    samples        : samples,
                     consentResource: consentResource.toString()] as JSON)
 
         }
@@ -82,10 +82,8 @@ class DataUseController extends AuthenticatedController {
                     consent.summary)
             response.status = 200
             render([message: "Consent successfully exported to DUOS: $resource.name"] as JSON)
-        } catch (ConsentException e) {
-            response.status = 500
-            render(status: 500, text: e as JSON, contentType: 'application/json')
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             response.status = 500
             render(status: 500, text: e as JSON, contentType: 'application/json')
         }
