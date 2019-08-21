@@ -36,21 +36,27 @@ class FilterPanel extends Component {
       div({
       },[
         Panel({ title: "Filter Projects" }, [
-          InputFieldDatePicker({
-            selected: this.props.afterDate,
-            name: "afterDate",
-            label: "Created After",
-            onChange:  (e) => this.props.handleDatePicker(e, name),
-            disabled: false
-          }),
-          InputFieldDatePicker({
-            selected: this.props.beforeDate,
-            name: "beforeDate",
-            label: "Created Before",
-            onChange: (e) => this.props.handleDatePicker(e, name),
-            disabled: false
-          }),
-          p({ style: {color: '#286090', fontWeight: '700', fontSize: '1rem', marginBottom: '3px', marginTop: '6px'} }, [
+          div({className: "row"}, [
+            div({className: "col-xs-12 col-sm-6"}, [
+              InputFieldDatePicker({
+                selected: this.props.afterDate,
+                name: "afterDate",
+                label: "Created After",
+                onChange:  (e) => this.props.handleDatePicker(e, name),
+                disabled: false
+              })
+            ]),
+            div({className: "col-xs-12 col-sm-6"}, [
+              InputFieldDatePicker({
+                selected: this.props.beforeDate,
+                name: "beforeDate",
+                label: "Created Before",
+                onChange: (e) => this.props.handleDatePicker(e, name),
+                disabled: false
+              })
+            ])
+          ]),
+          p({ style: {color: '#286090', fontWeight: '700', fontSize: '1rem', marginBottom: '3px', marginTop: '20px'} }, [
             'Project Type'
           ]),
           h(Select, {
