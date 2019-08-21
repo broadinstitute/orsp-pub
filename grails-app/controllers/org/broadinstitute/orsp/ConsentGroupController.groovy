@@ -188,40 +188,11 @@ class ConsentGroupController extends AuthenticatedController {
          tab: 'details']
     }
 
-    @Override
-    show() {
-        Issue issue = queryService.findByKey(params.id)
-        Boolean isUserReporter = false
-        if (params.projectKey != null) {
-            isUserReporter = queryService.findByKey(params.projectKey)?.reporter == getUser().userName
-        }
-        if (issueIsForbidden(issue) && !isUserReporter) {
-            redirect(controller: 'Index', action: 'index')
-        }
-        def attachments = issue.attachments?.sort {a,b -> b.createDate <=> a.createDate}
-        def restriction = DataUseRestriction.findByConsentGroupKey(issue.projectKey)
-        Collection<String> duSummary = consentService.getSummary(restriction)
-        def collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
-//        def checklistAnswers = ChecklistAnswer.findAllByProjectKey(issue.projectKey)
-        [issue: issue,
-         collectionLinks: collectionLinks,
-         attachments: attachments,
-         attachmentTypes: PROJECT_DOC_TYPES,
-         restriction: restriction,
-         duSummary: duSummary,
-         tab: params.tab,
-         duLetter: DU_LETTER,
-         attachmentsApproved: issue.attachmentsApproved(),
-         projectReviewApproved: issue.getProjectReviewApproved()
-//         checklistAnswers: checklistAnswers
-        ]
-    }
-
     def projectConsentGroups() {
         Issue issue = queryService.findByKey(params.id)
         Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
         Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
-        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap)
+        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap, params.id)
         render(
                 view: "/consentGroup/list",
                 model: [
@@ -233,49 +204,6 @@ class ConsentGroupController extends AuthenticatedController {
         )
     }
 
-    /**
-     * TODO: Move to transaction
-     */
-//    def updateChecklist() {
-//        def issue = queryService.findByKey(params.id)
-//        Collection<ChecklistAnswer> checklistAnswers = ChecklistAnswer.findAllByProjectKey(issue.projectKey)
-//        // Need to keep this list of ids in sync with the question IDs in the UI.
-//        def questionIds = ["q1", "q1_comment", "q2", "q2_comment", "q3", "q3_comment",
-//                           "q4A", "q4A_comment", "q4B", "q4B_comment", "q5", "q5_comment",
-//                           "q6A", "q6A_comment", "q6B", "q6B_comment", "q6C", "q6C_comment",
-//                           "q7_comment"]
-//        try {
-//            questionIds.each {
-//                questionId ->
-//                    if (params.get(questionId)) {
-//                        saveOrUpdateAnswer(questionId, (String) params.get(questionId), checklistAnswers, issue.projectKey)
-//                    }
-//            }
-//        } catch (Exception e) {
-//            flash.error = e.message
-//        }
-//        redirect(controller: 'consentGroup', action: "show", params: [id: params.get("id"), tab: 'checklist'])
-//    }
-
-//    private void saveOrUpdateAnswer(String questionId, String answerValue, Collection<ChecklistAnswer> checklistAnswers, String issueKey) {
-//        // look for answer in current checklist:
-//        def answer = checklistAnswers?.find { it.questionId?.equals(questionId) }
-//        Date now = new Date()
-//        if (answer) {
-//            answer.setValue(answerValue)
-//            answer.setUpdateDate(now)
-//            answer.setReviewer(getUser()?.displayName)
-//            answer.save()
-//        } else {
-//            new ChecklistAnswer(
-//                    questionId: questionId,
-//                    projectKey: issueKey,
-//                    value: answerValue,
-//                    updateDate: now,
-//                    reviewer: getUser()?.displayName
-//            ).save(failOnError: true)
-//        }
-//    }
 
     def attachDocument() {
         def issue = queryService.findByKey(params.id)

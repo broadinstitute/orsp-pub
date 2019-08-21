@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { h1, div, hh,h2, strong, ul, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
 import { InputFieldText } from "../components/InputFieldText";
+import { InputYesNo } from "../components/InputYesNo";
+
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
+import { DataUse, ConsentGroup } from "../util/ajax";
 import '../components/Btn.css';
 
 const styles = {
@@ -22,25 +25,64 @@ const styles = {
 export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      consent: {
+        projectKey: '',
+        summary: ''
+      },
+      restriction: {
+        consentPIName: '',
+        consentGroupKey: '',
+        noRestriction: ''
+
+      },
+      create: this.props.location.state !== undefined && this.props.location.state.create !== undefined  ? this.props.location.state.create : false,
+      consentKey: ''//this.props.location.state.consentKey
+    }
+  }
+
+  componentWillMount() {
+    this.init();
+    
+  }
+
+  init() {
+// ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
+
+    // })
+  }
+
+  handleRadioChange = (e, field, value) => {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+    this.setState(prev => {
+      prev.restriction[field] = value;
+      return prev;
+    }, () => {
+      this.evaluateAnswer(value);
+    });
   }
 
   render() {
     return(
       div({},[
-        h1({ className: styles.headerTitle }, ["Edit Data Use Restrictions for DEV-CG-4390: Lo Forte / 015"]),
+        h1({ className: styles.headerTitle }, [this.state.create ? 'Create ' : 'Edit ' + 'Data Use Restrictions for ' + this.state.consent.projectKey + ':' + this.state.consent.summary]),
         div({ style: styles.borderedContainer }, [
           InputFieldText({
             label: "Consent Group",
             disabled: true,
-            value: "DEV-CG-4390"
+            value: this.state.restriction.consentGroupKey
           })
         ]),
 
         div({ style: styles.borderedContainer },[
           InputFieldText({
             label: "Principal Investigator listed on the informed consent form",
-            disabled: true,
-            value: "Lo Forte"
+            disabled: this.state.create ? false : true,
+            value: ''
           })
         ]),
 
@@ -48,18 +90,15 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer },[
           div({className: "row"},[
             div({className: "col-sm-7"},[
-              label({}, [
-                "Data is available for future research with no restrictions [", abbr({}, ["NRES"]), "]"
-              ]),
               div({className: "pull-right"}, [
-                label({className: "radio-inline"}, [
-                  input({type: "radio", value: "Yes"}, []),
-                  "Yes"
-                ]),
-                label({className: "radio-inline"}, [
-                  input({type: "radio", value: "No"}, []),
-                  "No"
-                ])
+                InputYesNo({
+                  id: "radioNoRestriction",
+                  name: "noRestriction",
+                  value: this.state.restriction.noRestriction,
+                  label:  "Data is available for future research with no restrictions [NRES]",
+                  readOnly: false,
+                  onChange: this.handleRadioChange
+                })
               ])
             ]),
 
