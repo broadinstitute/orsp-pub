@@ -108,6 +108,8 @@ class UrlMappings {
         '/api/submission/remove-file'(controller: 'submission', action: 'removeFile', method: 'DELETE')
 
         '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
+        '/api/data-use/restriction'(controller: 'dataUse', action: 'findRestriction')
+        '/api/consent/export'(controller: 'dataUse', action: 'exportConsent', method: 'POST')
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')

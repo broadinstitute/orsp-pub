@@ -502,7 +502,7 @@ class ConsentService implements Status {
             Issue issue = queryService.findByKey(projectKey)
             Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
             Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
-            Collection consentGroups = queryService.findByKeys(collectionLinksMap)
+            Collection consentGroups = queryService.findByKeys(collectionLinksMap, projectKey)
             [
                 issue        : issue,
                 consentGroups: consentGroups?.sort { a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase() }
@@ -511,5 +511,13 @@ class ConsentService implements Status {
             log.error("Error trying to get Project's Consent groups: Empty projectKey")
             throw new IllegalArgumentException("Error trying to get Project's Consent groups: Empty projectKey")
         }
+    }
+
+    Boolean collectionDocumentsApproved(List<Long> ids){
+        List<StorageDocument> documents = queryService.findAllDocumentsBySampleCollectionIdList(ids)
+        ArrayList<StorageDocument> pendingDocuments = documents.findAll {
+            it.status == DocumentStatus.PENDING.status
+        }.fileType
+        pendingDocuments?.size() == 0
     }
 }
