@@ -10,6 +10,7 @@ import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
+import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.User
 
 import java.text.SimpleDateFormat
@@ -22,6 +23,7 @@ class UtilityClass {
     public static final String ISSUE_COMPLETE = 'issueForSampleDataCohorts'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
     public static final String HISTORY = 'history'
+    public static final String SAMPLES = 'samples'
     public static final String CONSENT_COLLECTION = 'consentCollectionReport'
 
     UtilityClass(QueryService queryService) {
@@ -119,6 +121,17 @@ class UtilityClass {
                         summary: event.summary,
                         author: event.author,
                         created: sd.format(event.created)
+                ]
+            }
+        }
+    }
+
+    static void registerSampleCollectionMarshaller() {
+        JSON.createNamedConfig(SAMPLES) {
+            it.registerObjectMarshaller( SampleCollection ) { SampleCollection sc ->
+                return [
+                        id: sc.id,
+                        name: sc.name
                 ]
             }
         }

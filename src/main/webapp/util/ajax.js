@@ -98,6 +98,10 @@ export const ConsentGroup = {
 
   getProjectConsentGroups(projectKey) {
     return axios.get(UrlConstants.getProjectConsentGroupsUrl + '?projectKey=' + projectKey);
+  },
+
+  exportConsent(id) {
+    return axios.post(UrlConstants.exportConsent + '?id=' + id);
   }
 };
 
@@ -292,6 +296,9 @@ export const DUL = {
 export const DataUse = {
   createRestriction(restriction) {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
+  },
+  getRestriction(restrictionId) {
+    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
   },
   getRestrictions(query) {
     return axios.get(UrlConstants.restrictionUrl, {

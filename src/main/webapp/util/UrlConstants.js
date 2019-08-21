@@ -32,6 +32,7 @@ export const UrlConstants = {
   uploadModalUrl: context + '/api/consent-group/upload-modal',
   allConsentGroupsUrl: context + '/api/consent-groups',
   collectionLinks: context + '/api/collection-links',
+  exportConsent: context + '/api/consent/export',
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',
   attachedDocumentsUrl : context + '/api/files-helper/attached-documents',
@@ -76,5 +77,6 @@ export const UrlConstants = {
   reviewCategoriesUrl: context + '/api/report/review-categories',
   qaEventReportUrl: context + '/api/get-qa-event-report',
   fundingReportsUrl: context + '/api/report/get-funding',
+  viewRestrictionUrl: context + '/api/data-use/restriction'
 };
 
