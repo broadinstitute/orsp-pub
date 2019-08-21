@@ -71,13 +71,13 @@
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        error: "${error}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
         issueType: "${issueType}",
+        restrictionId: "${restrictionId}",
         tab: "${params.tab}",
         consentKey: "${consentKey}",
         projectType: '${params.type}',
