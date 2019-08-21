@@ -99,6 +99,7 @@ class SubmissionController extends AuthenticatedController {
                             (String) fileData.find { data -> data.name.value == it.fileName }.fileType.value,
                             it)
                     submission.documents.add(submissionDoc)
+                    fileData.remove(fileData.findIndexOf{ data -> data.name.value == it.fileName })
                 }
             }
 
