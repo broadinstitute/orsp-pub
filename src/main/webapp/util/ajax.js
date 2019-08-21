@@ -1,11 +1,17 @@
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 import "regenerator-runtime/runtime";
 import  { UrlConstants }  from './UrlConstants';
+
+export let cancelRequest;
 
 export const Search = {
 
   getMatchingQuery(query) {
-    return axios.get(UrlConstants.userNameSearchUrl + '?term=' + query);
+    return axios.get(UrlConstants.userNameSearchUrl + '?term=' + query, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    });
   },
 
   getSourceDiseases(query) {
@@ -27,7 +33,13 @@ export const SampleCollections = {
 
 export const ConsentGroup = {
   getConsentGroupNames() {
-    return axios.get(UrlConstants.consentNamesSearchURL);
+      return axios.get(UrlConstants.consentNamesSearchURL, {
+        cancelToken: new CancelToken((c) => {
+          cancelRequest = c;
+        })
+      }).catch( err => {
+        console.log('lerror en jax', err);
+      });
   },
 
   create(dataProject, dataConsentCollection, files, displayName, userName) {
