@@ -515,7 +515,7 @@ class ConsentService implements Status {
 
     Boolean collectionDocumentsApproved(List<Long> ids){
         List<StorageDocument> documents = queryService.findAllDocumentsBySampleCollectionIdList(ids)
-        ArrayList pendingDocuments = documents.findAll {
+        ArrayList<StorageDocument> pendingDocuments = documents.findAll {
             it.status == DocumentStatus.PENDING.status
         }.fileType
         pendingDocuments?.size() == 0
