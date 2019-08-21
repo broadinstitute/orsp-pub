@@ -46,7 +46,7 @@ export const Comments = hh(class Comments extends Component {
   printComments = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
     let commentsArray = formatDataPrintableFormat(this.props.comments, cols);
-    const titleText = (component.issueType === "project" ? ("Project ID: "+ component.projectKey)
+    const titleText = (component.issueType === "project" ? ("Project ID: "+ this.props.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];
     printData(commentsArray, titleText, 'ORSP Comments', columnsWidths);

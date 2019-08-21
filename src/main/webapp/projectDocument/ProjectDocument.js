@@ -31,11 +31,11 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
-    Project.getProject(component.projectKey).then(
+    Project.getProject(this.props.projectKey).then(
       issue => {
       this.props.initStatusBoxInfo(issue.data);
     });
-        DocumentHandler.attachedDocuments(component.projectKey).then(resp => {
+        DocumentHandler.attachedDocuments(this.props.projectKey).then(resp => {
           User.getUserSession().then(user => {
         this.setState(prev => {
             prev.documents = JSON.parse(resp.data.documents);
@@ -118,7 +118,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
           handleDialogConfirm: this.handleDialog,
           user: this.state.user,
           options: this.state.documentOptions,
-          projectKey: component.projectKey,
+          projectKey: this.props.projectKey,
           handleLoadDocuments: this.getAttachedDocuments,
           docsClarification: "Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."
         }),

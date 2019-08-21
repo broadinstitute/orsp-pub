@@ -21,6 +21,7 @@ class Main extends Component {
         attachmentsApproved: ''
       },
       consentKey: this.props.location.state !== undefined && this.props.location.state.consentKey !== undefined  ? this.props.location.state.consentKey : component.consentKey,
+      projectKey: this.props.location.state !== undefined && this.props.location.state.projectKey !== undefined  ? this.props.location.state.projectKey : component.projectKey,
       tab: this.props.location.state !== undefined && this.props.location.state.tab !== undefined  ? this.props.location.state.tab : component.tab,
       issueType: this.props.location.state !== undefined && this.props.location.state.issueType !== undefined  ? this.props.location.state.issueType : component.issueType
     };
@@ -83,7 +84,9 @@ class Main extends Component {
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
           updateAdminOnlyStatus: this.updateAdminOnlyStatus,
-          statusBoxHandler: this.statusBoxHandler
+          statusBoxHandler: this.statusBoxHandler,
+          projectKey: this.state.projectKey,
+          tab: this.state.tab
         }),
         ConsentGroupContainer({
           isRendered: this.state.issueType === 'consent-group',

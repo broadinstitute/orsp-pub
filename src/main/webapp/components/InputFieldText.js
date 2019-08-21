@@ -2,7 +2,6 @@ import { Component } from 'react';
 import { input, hh, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import { areSomeTheseThingsTruthy } from '../util/Utils';
-import { isEmpty } from '../util/Utils';
 import './InputField.css';
 
 export const InputFieldText = hh(class InputFieldText extends Component {
