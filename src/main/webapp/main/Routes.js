@@ -2,9 +2,10 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import RolesManagement from "../rolesManagement/RolesManagement";
 import ReviewCategories from "../reviewCategories/ReviewCategories";
-import Profile from "../profile/Profile";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
+import DataUseRestrictionDetails from "../dataUse/DataUseRestrictionDetails";
+import Profile from "../profile/Profile";
 import DataUseRestrictionIndex from "../dataUse/DataUseRestrictionIndex";
 import { LinkWizard } from "../linkWizard/LinkWizard";
 import NewConsentGroup from "../consentGroup/NewConsentGroup";
@@ -24,6 +25,7 @@ const Routes = ( props ) => (
     <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
   </Switch>
 );
 
