@@ -9,7 +9,8 @@ export const MultiTab = hh(class MultiTab extends Component {
     super(props);
 
     this.state = {
-      key: ""
+      key: "",
+      defaultActive: ""
     };
 
     this.handleSelect = this.handleSelect.bind(this);
@@ -17,12 +18,17 @@ export const MultiTab = hh(class MultiTab extends Component {
 
   handleSelect(key) {
     this.setState({ key: key });
-    if (this.props.handleSelect !== undefined)
-      this.props.handleSelect(key);
   }
 
   componentDidMount() {
-    this.setState({key: this.props.defaultActive});
+    this.setState({key: this.props.defaultActive, defaultActive: this.props.defaultActive});
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.defaultActive && nextProps.defaultActive !== prevState.defaultActive){
+      return { key: nextProps.defaultActive, defaultActive: nextProps.defaultActive};
+    }
+    else return null;
   }
 
   render() {
@@ -36,8 +42,12 @@ export const MultiTab = hh(class MultiTab extends Component {
         }, [
           this.props.children.map((child, idx) => {
             return h(
-              Tab,
-              { className: "tabContent", key: idx, eventKey: child.key, title: child.props.title, isRendered: isEmpty(child.props.hide) ? true : !child.props.hide },
+              Tab, {
+                className: "tabContent",
+                key: idx,
+                eventKey: child.key,
+                title: child.props.title,
+                isRendered: isEmpty(child.props.hide) ? true : !child.props.hide },
               [child.props.children]
             )
           }),

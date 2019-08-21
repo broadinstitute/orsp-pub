@@ -651,6 +651,7 @@ class QueryService implements Status {
         if (paginationOptions.searchValue) {
             query.append("and (i.project_key LIKE :term ")
                  .append("or i.approval_status LIKE :term ")
+                 .append("or i.status LIKE :term ")
                  .append("or i.request_date LIKE :term )")
         }
         query.append(' and i.type IN :filterType ')
@@ -663,8 +664,8 @@ class QueryService implements Status {
         if (paginationOptions.searchValue) {
             sqlQuery.setString('term', paginationOptions.getLikeTerm())
         }
-        if (queryOptions.before) sqlQuery.setDate('beforeDate', queryOptions.before)
-        if (queryOptions.after) sqlQuery.setDate('afterDate', queryOptions.after)
+        if (queryOptions.before) sqlQuery.setTimestamp('beforeDate', queryOptions.before)
+        if (queryOptions.after) sqlQuery.setTimestamp('afterDate', queryOptions.after)
 
         // total rows
         List<Long> ids = sqlQuery.list()

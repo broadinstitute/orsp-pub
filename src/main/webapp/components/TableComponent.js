@@ -46,7 +46,10 @@ export const TableComponent = hh(class TableComponent extends Component {
                     </span>
                   </ExportCSVButton>
                   <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
-                    <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print All
+                    <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print
+                  </button>
+                  <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
+                    <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> PDF
                   </button>
                   <hr/>
                 </span>

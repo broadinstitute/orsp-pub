@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 import org.joda.time.Period
 
+import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -14,7 +15,7 @@ import java.text.SimpleDateFormat
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON'])
 class StatusEventController extends AuthenticatedController {
-
+    String NO_IRB = "NO_IRB"
 
     def qaEventReport() {
         render(view: "/mainContainer/index")
@@ -81,13 +82,13 @@ class StatusEventController extends AuthenticatedController {
     def findQaEventReport() {
         UtilityClass.registerIssueMarshaller()
         QueryOptions qo = new QueryOptions()
-        DateFormat formatter = new SimpleDateFormat("YYYY/MM/DD")
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy")
 
         try {
             if (params.before)
-                qo.before = (Date)formatter.parse(params.before)
+                qo.before = new Timestamp(formatter.parse(params.before).getTime())
             if (params.after) {
-                qo.after = (Date)formatter.parse(params.after)
+                qo.after = new Timestamp(formatter.parse(params.after).getTime())
             }
         } catch (ParseException e) {
             log.error("Date Parse Exception: " + e)
@@ -96,7 +97,7 @@ class StatusEventController extends AuthenticatedController {
         if (params.projectType && params.projectType != 'all') {
             qo.issueTypeNames = [IssueType.valueOfController(params.projectType).name]
         } else if (params.tab) {
-            qo.issueTypeNames = params.tab == 'NO_IRB' ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
+            qo.issueTypeNames = params.tab == NO_IRB ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
         }
 
         PaginationParams pagination = new PaginationParams(
