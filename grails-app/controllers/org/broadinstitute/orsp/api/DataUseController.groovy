@@ -88,6 +88,20 @@ class DataUseController extends AuthenticatedController {
             render(status: 500, text: e as JSON, contentType: 'application/json')
         }
     }
+    @Override
+    create() {
+        Issue consent = queryService.findByKey(params.id)
+        DataUseRestriction restriction = new DataUseRestriction()
+        restriction.consentGroupKey = params.id
+        restriction.consentPIName = params.principalInvestigatorName
+        render(view: "edit", model: [consent: consent,
+                                     restriction: restriction,
+                                     create: params.create])
+    }
+    def edit2() {
+        render(view: "/mainContainer/index")
+    }
+
 
     private String getConsentServiceUrl() {
         grailsApplication.config.consent.service.url

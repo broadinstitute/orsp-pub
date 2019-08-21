@@ -12,6 +12,8 @@ import NewConsentGroup from "../consentGroup/NewConsentGroup";
 import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 import AboutPage from "../aboutPage/AboutPage";
 
+import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
+
 const Routes = ( props ) => (
   <Switch>
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
@@ -26,6 +28,10 @@ const Routes = ( props ) => (
     <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
+
+    <Route path= {"/dataUse/edit2"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUse/create"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
+
   </Switch>
 );
 
