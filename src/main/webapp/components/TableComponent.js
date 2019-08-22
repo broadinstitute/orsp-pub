@@ -10,6 +10,7 @@ import './Btn.css';
 import './TableComponent.css'
 import { Export } from "./Export";
 import { EXPORT_FILE } from "../util/TableUtil";
+import { isEmpty } from "../util/Utils";
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 
@@ -39,6 +40,7 @@ export const TableComponent = hh(class TableComponent extends Component {
                     fileName={this.props.fileName}
                     fileType={EXPORT_FILE.XLSX.mimeType}
                     fileExtension={EXPORT_FILE.XLSX.extension}
+                    hide={this.props.hideColumns !== undefined && this.props.hideColumns.length > 0 ? this.props.hideColumns : []}
                   />
                   <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                     <span>
@@ -48,9 +50,11 @@ export const TableComponent = hh(class TableComponent extends Component {
                   <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
                     <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print
                   </button>
-                  <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
-                    <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> PDF
-                  </button>
+                  {this.props.showPdfExport ?
+                    <button onClick= { this.props.downloadPdf } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
+                      <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> PDF
+                    </button>
+                    : ''}
                   <hr/>
                 </span>
                 : ''

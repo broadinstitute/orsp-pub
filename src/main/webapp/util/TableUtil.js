@@ -34,7 +34,7 @@ export const formatDataPrintableFormat = (data, columns) => {
   return dataArray;
 };
 
-export const formatExcelData = (data, columns) => {
+export const formatExcelData = (data, columns, hide) => {
   let headers = {};
   let rows= [];
   columns.filter(el => el.dataField !== 'id').forEach(el => headers[el.dataField] = el.text);
@@ -42,7 +42,7 @@ export const formatExcelData = (data, columns) => {
   if (!isEmpty(data) && !isEmpty(columns)) {
     data.forEach(el => {
       let newEl = {};
-      Object.keys(el).filter(elem => elem !== 'id').forEach(key => {
+      Object.keys(el).filter(elem => (elem !== 'id' && !hide.includes(elem) )).forEach(key => {
         newEl[key] = parseDataElements(el, key);
       });
       rows.push(newEl);

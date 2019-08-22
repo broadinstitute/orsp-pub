@@ -15,18 +15,19 @@ import java.text.SimpleDateFormat
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON'])
 class StatusEventController extends AuthenticatedController {
-    String NO_IRB = "NO_IRB"
+    final static String NO_IRB = "noIrb"
 
     def qaEventReport() {
         render(view: "/mainContainer/index")
     }
 
+// TODO REMOVE THIS
     private Map<IssueType, Collection<Issue>> getGroupedIssues(QueryOptions options) {
         queryService.
                 findIssuesForStatusReport(options).
                 groupBy { IssueType.valueOfName(it.type) }
     }
-
+// TODO REMOVE THIS
     private Map<String, Period> calculateIssuePeriods(Collection<Issue> issues) {
         issues.collectEntries { issue ->
             List<StatusEventService.StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(issue.projectKey)
@@ -39,13 +40,13 @@ class StatusEventController extends AuthenticatedController {
             [issue.projectKey, period]
         }
     }
-
+// TODO REMOVE THIS
     def index() {
         QueryOptions options = new QueryOptions()
         DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT)
         if (params.after) {
             try {
-                options.after = format.parse(params.after)
+                options.after = format.parse(params.after) as Timestamp
             } catch (ParseException e) {
                 log.error("Parse Exception: " + e)
                 log.error("Unable to parse 'after' date: " + params.after)
@@ -54,7 +55,7 @@ class StatusEventController extends AuthenticatedController {
         }
         if (params.before) {
             try {
-                options.before = format.parse(params.before)
+                options.before = format.parse(params.before) as Timestamp
             } catch (ParseException e) {
                 log.error("Parse Exception: " + e)
                 log.error("Unable to parse 'before' date: " + params.before)
@@ -80,7 +81,7 @@ class StatusEventController extends AuthenticatedController {
     }
 
     def findQaEventReport() {
-        UtilityClass.registerIssueMarshaller()
+        UtilityClass.registerQaReportIssueMarshaller()
         QueryOptions qo = new QueryOptions()
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy")
 
@@ -108,7 +109,7 @@ class StatusEventController extends AuthenticatedController {
             sortDirection: params.get("sortDirection")?.toString() ?: "asc",
             searchValue: params.get("searchValue")?.toString() ?: null)
 
-        JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
+        JSON.use(UtilityClass.ISSUE_FOR_QA) {
             render queryService.findIssuesForStatusReport2(pagination, params.get("tab").toString(), qo) as JSON
         }
     }

@@ -1,49 +1,15 @@
 import { Component } from 'react';
 import { TableComponent } from "../components/TableComponent";
-import { datesDiff } from "../util/Utils";
-
-const columns = [{
-  dataField: 'id',
-  text: 'Id',
-  hidden: true,
-  csvExport : false
-}, {
-  dataField: 'projectKey',
-  text: 'Project',
-  sort: true
-}, {
-  dataField: 'type',
-  text: 'Type',
-  sort: true
-}, {
-  dataField: 'status',
-  text: 'Status',
-  sort: true
-}, {
-  dataField: 'age',
-  text: 'Age',
-  sort: true,
-  formatter: (cell, row, rowIndex, colIndex) => {
-    const result = datesDiff(new Date(), new Date(row.requestDate));
-    return  (result.years > 0 ? result.years + ' years, ' : '') +
-      (result.months > 0 ? result.months + ' months ' : '') +
-      (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
-  }
-}, {
-  dataField: 'actor',
-  text: 'Assignees',
-  sort: true
-}];
-
-const SIZE_PER_PAGE_LIST = [
-  { text: '50', value: 50 },
-  { text: '100', value: 100 },
-  { text: '500', value: 500 }];
-
-const defaultSorted = [{
-  dataField: 'date',
-  order: 'desc'
-}];
+import { formatDataPrintableFormat } from "../util/TableUtil";
+import { exportData } from "../util/Utils";
+import {
+  columns,
+  COLUMNS_TO_HIDE_FROM_EXCEL,
+  defaultSorted,
+  IRB,
+  NO_IRB,
+  SIZE_PER_PAGE_LIST
+} from "../util/QaReportConstants";
 
 class NoIrbTable extends Component {
   constructor(props) {
@@ -54,25 +20,32 @@ class NoIrbTable extends Component {
     };
   }
 
+  exportTable = (action) => {
+    this.props.exportTable(action, NO_IRB)
+  };
+
   render() {
     return(
       TableComponent({
         remoteProp: true,
-        onTableChange: (action, newState) => this.props.onTableChange(action, newState, 'NO_IRB'),
-        data: this.props.noIrb.data,
+        onTableChange: (action, newState) => this.props.onTableChange(action, newState, NO_IRB),
+        data: this.props[NO_IRB].data,
         columns: columns,
         keyField: 'id',
         search: true,
         fileName: 'ORSP',
-        page: this.props.noIrb.currentPage,
-        totalSize: this.props.noIrb.recordsFiltered,
+        page: this.props[NO_IRB].currentPage,
+        totalSize: this.props[NO_IRB].recordsFiltered,
         showPrintButton: true,
         sizePerPageList: SIZE_PER_PAGE_LIST,
-        printComments: this.printComments,
+        printComments: ()=> this.exportTable('print'),
+        downloadPdf: () => this.exportTable('download'),
         defaultSorted: defaultSorted,
         pagination: true,
         showExportButtons: true,
-        showSearchBar: true
+        showSearchBar: true,
+        showPdfExport: true,
+        hideColumns: COLUMNS_TO_HIDE_FROM_EXCEL
       })
     );
   }

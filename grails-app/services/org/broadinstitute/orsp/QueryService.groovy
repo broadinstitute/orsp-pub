@@ -654,6 +654,7 @@ class QueryService implements Status {
      *
      * @return Issue that match the query
      */
+    // TODO REMOVE THIS
     @SuppressWarnings(["GroovyAssignabilityCheck", "GrUnresolvedAccess"])
     Collection<Issue> findIssuesForStatusReport(QueryOptions options) {
         List<String> typeList
@@ -679,8 +680,7 @@ class QueryService implements Status {
         if (paginationOptions.searchValue) {
             query.append("and (i.project_key LIKE :term ")
                  .append("or i.approval_status LIKE :term ")
-                 .append("or i.status LIKE :term ")
-                 .append("or i.request_date LIKE :term )")
+                 .append("or i.status LIKE :term )")
         }
         query.append(' and i.type IN :filterType ')
 

@@ -3,23 +3,20 @@ import { h, h1, div } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
-import { TableComponent } from "../components/TableComponent";
 import FilterPanel from "./FilterPanel";
-import { TABLE_ACTIONS } from "../util/TableUtil";
+import { formatDataPrintableFormat, TABLE_ACTIONS } from "../util/TableUtil";
 import { QA_EVENT_SORT_NAME_INDEX } from "../util/ReportConstants";
 import { MultiTab } from "../components/MultiTab";
-import { Panel } from "../components/Panel";
-import { datesDiff } from "../util/Utils";
 import IrbTable from "./IrbTable";
 import NoIrbTable from "./NoIrbTable";
-
-export const QA_REPORT_SPINNER = "qaReportSpinner";
+import { columns, IRB, NO_IRB, QA_REPORT_SPINNER } from "../util/QaReportConstants";
+import { exportData } from "../util/Utils";
 
 class QaReport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      IRB : {
+      irb : {
         sizePerPage: 50,
         search: null,
         sort: {
@@ -29,9 +26,10 @@ class QaReport extends Component {
         currentPage: 1,
         recordsTotal: 0,
         recordsFiltered: 0,
-        data: []
+        data: [],
+        hide: false
       },
-      NO_IRB : {
+      noIrb : {
         sizePerPage: 50,
         search: null,
         sort: {
@@ -41,11 +39,10 @@ class QaReport extends Component {
         currentPage: 1,
         recordsTotal: 0,
         recordsFiltered: 0,
-        data: []
+        data: [],
+        hide: false
       },
-      hideIrb: false,
-      hideNoIrb: false,
-      activeTab: 'IRB',
+      activeTab: IRB,
       applyFilter: false,
       beforeDate: null,
       afterDate: null,
@@ -60,8 +57,8 @@ class QaReport extends Component {
   }
 
   async init() {
-    await this.tableHandler(0, this.state.IRB.sizePerPage, this.state.IRB.search, this.state.IRB.sort, this.state.IRB.currentPage, 'IRB');
-    await this.tableHandler(0, this.state.NO_IRB.sizePerPage, this.state.NO_IRB.search, this.state.NO_IRB.sort, this.state.NO_IRB.currentPage, 'NO_IRB');
+    await this.tableHandler(0, this.state[IRB].sizePerPage, this.state[IRB].search, this.state[IRB].sort, this.state[IRB].currentPage, IRB);
+    await this.tableHandler(0, this.state[NO_IRB].sizePerPage, this.state[NO_IRB].search, this.state[NO_IRB].sort, this.state[NO_IRB].currentPage, NO_IRB);
   }
 
   dateHandler(today) {
@@ -87,29 +84,32 @@ class QaReport extends Component {
     };
 
     spinnerService.show(QA_REPORT_SPINNER);
-    let result = await Reports.getQaEventReport(query, tab, filter);
-
-    const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
-    this.setState(prev => {
-      prev[tab].lastPage = lastPage;
-      prev[tab].currentPage = page;
-      prev[tab].data = result.data.data;
-      prev[tab].recordsTotal = result.data.recordsTotal;
-      prev[tab].recordsFiltered = result.data.recordsFiltered;
-      prev[tab].sizePerPage = query.length;
-      prev[tab].search = query.searchValue;
-      prev[tab].sort = {
-        orderColumn : query.orderColumn,
-        sortDirection: query.sortDirection
-      };
-      return prev;
-    }, () => {
-      spinnerService.hide(QA_REPORT_SPINNER)
-    })
-    // }).catch(error => {
-    //   spinnerService.hide(QA_REPORT_SPINNER);
-    //   this.setState(() => { throw error });
-    // });
+    try {
+      let result = await Reports.getQaEventReport(query, tab, filter);
+      const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
+      this.setState(prev => {
+        prev.query = query;
+        prev[tab].lastPage = lastPage;
+        prev[tab].currentPage = page;
+        prev[tab].data = result.data.data;
+        prev[tab].recordsTotal = result.data.recordsTotal;
+        prev[tab].recordsFiltered = result.data.recordsFiltered;
+        prev[tab].sizePerPage = query.length;
+        prev[tab].search = query.searchValue;
+        prev[tab].sort = {
+          orderColumn : query.orderColumn,
+          sortDirection: query.sortDirection
+        };
+        prev[tab].hide = result.data.data.length === 0;
+        prev.activeTab = prev[IRB].hide ? NO_IRB : IRB;
+        return prev;
+      }, () => {
+        spinnerService.hide(QA_REPORT_SPINNER)
+      })
+    } catch(error) {
+      spinnerService.hide(QA_REPORT_SPINNER);
+      this.setState(() => { throw error });
+    }
   };
 
   onTableChange = async (type, newState, tab) => {
@@ -147,21 +147,7 @@ class QaReport extends Component {
       sortDirection: sortOrder,
       orderColumn: QA_EVENT_SORT_NAME_INDEX[sortName]
     };
-    this.tableHandler(0, this.state[tab].sizePerPage, null, sort, tab)
-  };
-
-  handleDatePicker = (e) => (date) => {
-    this.setState(prev => {
-      prev[e] = date;
-      return prev;
-    }) ;
-  };
-
-  handleSelectProjectType = (e) => {
-    this.setState(prev => {
-      prev.projectType = e;
-      return prev;
-    }) ;
+    this.tableHandler(0, this.state[tab].sizePerPage, null, sort,0 , tab)
   };
 
   handleDatePicker = (e) => (date) => {
@@ -181,28 +167,20 @@ class QaReport extends Component {
   applyFilterPanel = async () => {
     if (this.state.projectType.value === 'irb') {
       this.setState(prev => {
-        prev.hideIrb = false;
-        prev.hideNoIrb = true;
-        prev.activeTab = 'IRB';
+        prev.activeTab = IRB;
+        prev[NO_IRB].hide = true;
         }, async () =>
-        await this.tableHandler(0, this.state.IRB.sizePerPage, this.state.IRB.search, this.state.IRB.sort, this.state.IRB.currentPage, 'IRB')
+        await this.tableHandler(0, this.state[IRB].sizePerPage, this.state[IRB].search, this.state[IRB].sort, this.state[IRB].currentPage, IRB)
       );
     } else if (this.state.projectType.value !== 'all') {
       this.setState(prev => {
-        prev.hideIrb = true;
-        prev.hideNoIrb = false;
-        prev.activeTab = 'NO_IRB';
+        prev.activeTab = NO_IRB;
+        prev[IRB].hide = true;
       }, async () =>
-        await this.tableHandler(0, this.state.NO_IRB.sizePerPage, this.state.NO_IRB.search, this.state.NO_IRB.sort, this.state.NO_IRB.currentPage, 'NO_IRB')
+        await this.tableHandler(0, this.state[NO_IRB].sizePerPage, this.state[NO_IRB].search, this.state[NO_IRB].sort, this.state[NO_IRB].currentPage, NO_IRB)
       );
     } else {
-      this.setState(prev => {
-        prev.hideIrb = false;
-        prev.hideNoIrb = false;
-        prev.activeTab = 'IRB';
-        }, async () =>
        this.init()
-      )
     }
   };
 
@@ -217,6 +195,24 @@ class QaReport extends Component {
     }, () =>
       this.init()
     );
+  };
+
+  exportTable = (action, tab) => {
+
+    const allElementsQuery = {
+      draw: 1,
+      start: 0,
+      length: 0,
+      orderColumn: null,
+      sortDirection: 'desc',
+      searchValue: null,
+    };
+
+    let cols = columns.filter(el => el.dataField !== 'id');
+    let elementsArray = formatDataPrintableFormat(this.state[tab].data, cols);
+    const titleText = 'Quality Assurance Report';
+    const columnsWidths = ['*', '*', '*', '*', '*'];
+    exportData(action,'Quality Assurance Report', elementsArray, titleText, 'Quality Assurance Report', columnsWidths);
   };
 
   render() {
@@ -239,12 +235,14 @@ class QaReport extends Component {
               defaultActive: this.state.activeTab
             }, [
               div({
-                key: "IRB",
+                key: IRB,
                 title: "IRB Projects",
-                hide: this.state.hideIrb
+                hide: this.state[IRB].hide
               }, [
                 h(IrbTable, {
-                  irb: this.state.IRB,
+                  tableHandler: this.tableHandler,
+                  exportTable: this.exportTable,
+                  irb: this.state[IRB],
                   onTableChange: this.onTableChange,
                   beforeDate: this.state.beforeDate,
                   afterDate: this.state.afterDate,
@@ -253,12 +251,14 @@ class QaReport extends Component {
                 })
               ]),
               div({
-                key: "NO_IRB",
+                key: NO_IRB,
                 title: "Non IRB Projects",
-                hide: this.state.hideNoIrb
+                hide: this.state[NO_IRB].hide
               }, [
                 h(NoIrbTable, {
-                  noIrb: this.state.NO_IRB,
+                  tableHandler: this.tableHandler,
+                  exportTable: this.exportTable,
+                  noIrb: this.state[NO_IRB],
                   onTableChange: this.onTableChange,
                   beforeDate: this.state.beforeDate,
                   afterDate: this.state.afterDate,

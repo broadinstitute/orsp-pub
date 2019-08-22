@@ -53,27 +53,11 @@ export const buildUrlToConsentGroup = (serverURL, consentKey, projectKey) => {
   return [serverURL, "newConsentGroup", "main?consentKey="+ consentKey + "&projectKey=" + projectKey + "&tab=review"].join("/");
 }
 
-export const datesDiff = (date1, date2) => {
-  let diff = Math.floor(date1.getTime() - date2.getTime());
-  let secs = Math.floor(diff/1000);
-  let mins = Math.floor(secs/60);
-  let hours = Math.floor(mins/60);
-  let days = Math.floor(hours/24);
-  let months = Math.floor(days/31);
-  let years = Math.floor(months/12);
-  months=Math.floor(months%12);
-  days = Math.floor(days%31);
-  hours = Math.floor(hours%24);
-  mins = Math.floor(mins%60);
-  secs = Math.floor(secs%60);
-  return { days: days, months: months, years: years, hours: hours, mins: mins, secs: secs } ;
-}
-
 // columns headers should be included in the first row in data array.
 // Eg of data : [['header1', 'header2', 'header3'],
 //               ['row1value1', 'row1value2', 'row1value3'],
 //               ['row2value1', 'row2value2', 'row2value3']]
-export const printData = (data, titleText= '', headerText = '', columnsWidths, pageSize = 'A4', pageOrientation = 'portrait') => {
+export const exportData = (action, fileName= '', data, titleText= '', headerText = '', columnsWidths, pageSize = 'A4', pageOrientation = 'portrait') => {
   let documentTemplate = {
     pageSize: pageSize,
     pageOrientation: pageOrientation,
@@ -120,5 +104,9 @@ export const printData = (data, titleText= '', headerText = '', columnsWidths, p
       }
     }
   };
-  pdfMake.createPdf(documentTemplate).print();
+  if (action === 'download') {
+    pdfMake.createPdf(documentTemplate).download(fileName);
+  } else {
+    pdfMake.createPdf(documentTemplate).print();
+  }
 }

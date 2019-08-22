@@ -14,13 +14,17 @@ import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.User
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Period
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 class UtilityClass {
     QueryService queryService
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
-    public static final String ISSUE_COMPLETE = 'issueForSampleDataCohorts'
+    public static final String ISSUE_FOR_QA = 'qaIssue'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
     public static final String HISTORY = 'history'
     public static final String SAMPLES = 'samples'
@@ -73,7 +77,6 @@ class UtilityClass {
                     Map<String, String> initialReview = jsonSlurper.parseText(issue.getInitialReviewType()) as Map
                     reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
                 }
-//                getActor(issue)
                 return [
                         id: issue.id,
                         type: issue.type,
@@ -86,6 +89,37 @@ class UtilityClass {
                         requestDate    : issue.requestDate,
                         attachments    : issue.attachments,
                         actor          : issue.getActorUsernames()
+                ]
+            }
+        }
+    }
+
+    /**
+     * Register Issue's object JSON mapping for QA Report. This is in a separated DTO since it contains a period logic
+     * unnecessary for any other Issue mapping
+     */
+    static void registerQaReportIssueMarshaller() {
+        JSON.createNamedConfig(ISSUE_FOR_QA) {
+            it.registerObjectMarshaller( Issue ) { Issue issue ->
+                String reviewCategory = issue.getReviewCategory()
+                if (StringUtils.isNotEmpty(issue.getInitialReviewType())) {
+                    def jsonSlurper = new JsonSlurper()
+                    Map<String, String> initialReview = jsonSlurper.parseText(issue.getInitialReviewType()) as Map
+                    reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
+                }
+                return [
+                        id: issue.id,
+                        type: issue.type,
+                        projectKey: issue.projectKey,
+                        summary: issue.summary,
+                        status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
+                        issueStatus: issue.status,
+                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
+                        reporter       : issue.reporter,
+                        requestDate    : issue.requestDate,
+                        attachments    : issue.attachments,
+                        actor          : issue.getActorUsernames(),
+                        age            : calculatePeriod(issue.requestDate)
                 ]
             }
         }
@@ -161,4 +195,21 @@ class UtilityClass {
         }
     }
 
+    private static String calculatePeriod(Date date) {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        Period p = Period.between(localDate, LocalDate.now())
+        StringBuffer age = new StringBuffer()
+        if (p.getYears() > 0 ) {
+            age.append(p.getYears() + " years ")
+        }
+        if (p.getMonths() > 0) {
+            age.append(p.getMonths() + " months ")
+        }
+        if (p.getMonths() > 0 || p.getYears() > 0) {
+            age.append(" and ")
+
+        }
+        age.append(p.getDays() + " days")
+        age
+    }
 }
