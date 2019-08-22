@@ -92,7 +92,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   }
 
   getProjectConsentGroups = () => {
-    ConsentGroup.getProjectConsentGroups(component.projectKey).then( result => {
+    ConsentGroup.getProjectConsentGroups(this.props.projectKey).then( result => {
       this.handleSuccessNotification();
       this.setState(prev => {
         prev.consentGroups = result.data.consentGroups;
@@ -242,7 +242,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   redirect = (action) => {
-    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ component.projectKey : UrlConstants.useExistingConsentGroupUrl;
+    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl;
     this.props.history.push(path)
   };
 
@@ -293,7 +293,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         RequestClarificationDialog({
           closeModal: this.closeRequestClarification,
           show: this.state.showRequestClarification,
-          issueKey: component.projectKey,
+          issueKey: this.props.projectKey,
           consentKey: this.state.actionConsentKey,
           user: component.user,
           emailUrl: component.emailUrl,

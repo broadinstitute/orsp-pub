@@ -4,6 +4,7 @@ import RolesManagement from "../rolesManagement/RolesManagement";
 import ReviewCategories from "../reviewCategories/ReviewCategories";
 import Main from "./Main";
 import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
+import SubmissionForm from "../projectContainer/SubmissionForm";
 import DataUseRestrictionDetails from "../dataUse/DataUseRestrictionDetails";
 import Profile from "../profile/Profile";
 import DataUseRestrictionIndex from "../dataUse/DataUseRestrictionIndex";
@@ -27,6 +28,7 @@ const Routes = ( props ) => (
     <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
   </Switch>
 );
