@@ -37,9 +37,7 @@ export const ConsentGroup = {
         cancelToken: new CancelToken((c) => {
           cancelRequest = c;
         })
-      }).catch( err => {
-        console.log('lerror en jax', err);
-      });
+      }).catch( () => {});
   },
 
   create(dataProject, dataConsentCollection, files, displayName, userName) {

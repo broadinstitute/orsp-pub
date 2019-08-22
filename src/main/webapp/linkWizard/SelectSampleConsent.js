@@ -137,7 +137,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           consentGroup: existingConsentGroups[0]
         }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
         this.getAllSampleCollections(existingConsentGroups[0].key);
-      });
+      }).catch(() => {});
   };
 
   componentWillUnmount() {
@@ -156,8 +156,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           sampleCollectionList: sampleCollectionList,
           sampleCollectionIsLoading: false
         })
-      }
-    );
+      }).catch(() => {});
 
     SampleCollections.getSampleCollections(consentKey).then(
       resp => {
