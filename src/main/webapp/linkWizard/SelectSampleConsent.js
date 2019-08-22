@@ -168,8 +168,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           sampleCollectionList: sampleCollectionList,
           sampleCollectionIsLoading: false
         })
-      }
-    );
+      }).catch(() => {});
   };
 
   setOptionsValues = (items, consentKey, label) => {

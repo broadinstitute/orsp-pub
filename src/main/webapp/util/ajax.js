@@ -15,7 +15,11 @@ export const Search = {
   },
 
   getSourceDiseases(query) {
-    return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query);
+    return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    });
   }
 
 };
@@ -23,11 +27,19 @@ export const Search = {
 export const SampleCollections = {
 
   getSampleCollections(query) {
-    return axios.get(UrlConstants.sampleSearchUrl + '?term=' + query);
+    return axios.get(UrlConstants.sampleSearchUrl + '?term=' + query, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    });
   },
 
   getCollectionsCGLinked(consentKey) {
-    return axios.get(UrlConstants.linkedSampleCollectionsUrl + '?consentKey=' + consentKey);
+    return axios.get(UrlConstants.linkedSampleCollectionsUrl + '?consentKey=' + consentKey, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    });
   }
 };
 
@@ -82,10 +94,6 @@ export const ConsentGroup = {
 
   sendEmailDul(consentKey, userName, recipients) {
    return axios.post(UrlConstants.emailDulUrl + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
-  },
-
-  rollbackConsentGroup(urlRollback, consentKey) {
-    return axios({url: urlRollback + '?consentKey=' + consentKey, method: 'DELETE'})
   },
 
   getUseRestriction(consentKey) {
@@ -249,7 +257,11 @@ export const User = {
         sortDirection: query.sortDirection,
         searchValue: query.searchValue
       }
-    })
+    }, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
 
   editUserRole(userId, roles) {
@@ -265,7 +277,11 @@ export const Review = {
   },
 
   getSuggestions(projectKey) {
-    return axios.get( UrlConstants.issueReviewUrl +'?id=' + projectKey);
+    return axios.get( UrlConstants.issueReviewUrl +'?id=' + projectKey , {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
 
   submitReview(data) {
@@ -281,7 +297,11 @@ export const Review = {
   },
 
   getComments(id) {
-    return axios.get(UrlConstants.getCommentsUrl + '?id=' + id)
+    return axios.get(UrlConstants.getCommentsUrl + '?id=' + id, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   }
 };
 
@@ -299,7 +319,11 @@ export const DUL = {
   }, 
 
   getDULInfo(uid) {
-    return axios.get(UrlConstants.dulInfoUrl + '?id=' + uid)
+    return axios.get(UrlConstants.dulInfoUrl + '?id=' + uid, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   }
 };
 
@@ -308,7 +332,11 @@ export const DataUse = {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
   },
   getRestriction(restrictionId) {
-    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
+    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
   getRestrictions(query) {
     return axios.get(UrlConstants.restrictionUrl, {
@@ -320,13 +348,21 @@ export const DataUse = {
         sortDirection: query.sortDirection,
         searchValue: query.searchValue
       }
-    })
+    }, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
 };
 
 export const ProjectInfoLink = {
   getProjectSampleCollections(cclId) {
-    return axios.get(UrlConstants.infoLinkUrl + '?cclId=' + cclId);
+    return axios.get(UrlConstants.infoLinkUrl + '?cclId=' + cclId, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   }
 };
 
@@ -355,7 +391,11 @@ export const ConsentCollectionLink = {
   },
 
   findCollectionLinks() {
-    return axios.get(UrlConstants.collectionLinks);
+    return axios.get(UrlConstants.collectionLinks, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   }
 };
 
@@ -370,7 +410,11 @@ export const Reports = {
         sortDirection: query.sortDirection,
         searchValue: query.searchValue
       }
-    })
+    }, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
   getReviewCategory(query) {
     return axios.get(UrlConstants.reviewCategoriesUrl, {
@@ -380,31 +424,45 @@ export const Reports = {
         length: query.length,
         orderColumn: query.orderColumn,
         sortDirection: query.sortDirection,
-        searchValue: query.searchValue
+        searchValue: query.searchValue,
+        cancelToken: new CancelToken((c) => {
+          cancelRequest = c;
+        })
       }
-    })
+    }).catch( () => {});
   }
 };
 
 export const ProjectMigration = {
-
-  getConsentGroups(id) {
-    return axios.get(UrlConstants.allConsentGroupsUrl + '?id=' + id);
-  },
-
   getHistory(id) {
-    return axios.get(UrlConstants.historyUrl + '?id=' + id);
+    return axios.get(UrlConstants.historyUrl + '?id=' + id, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
 
   getDisplaySubmissions(id) {
-    return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
+    return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
   },
 
   getSubmissionFormInfo(projectKey, type, submissionId) {
     if (submissionId === null) {
-      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
     } else {
-      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&type=" + type + "&submissionId=" + submissionId);
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&type=" + type + "&submissionId=" + submissionId, {
+      cancelToken: new CancelToken((c) => {
+        cancelRequest = c;
+      })
+    }).catch( () => {});
     }
   },
 
