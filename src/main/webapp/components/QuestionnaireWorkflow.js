@@ -192,7 +192,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
     return (
       div({ className: this.props.questionnaireUnwrapped === true ? 'questionnaireContainerLight' : 'questionnaireContainer' }, [
-        div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [
+        div({ className: "questionnaireProgressBar" }, [
             p({}, [(this.state.endState === true ? "100%" : this.state.questions[currentQuestionIndex].progress + "%")]),
             QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
         ]),
@@ -210,7 +210,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
         div({ className: "buttonContainer" }, [
           button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary floatLeft", onClick: this.prevQuestion }, ["Previous Question"]),
-          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary floatRight", onClick: this.nextQuestion }, ["Next Question"])
+          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary", style: {"marginLeft":"15px"}, onClick: this.nextQuestion }, ["Next Question"])
         ])
       ])
     )

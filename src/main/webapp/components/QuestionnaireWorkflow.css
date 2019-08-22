@@ -1,3 +1,20 @@
+.questionnaireProgressBar {
+  position: relative;
+  width: calc(100% + 30px);
+  height: 60px;
+  background: #FFFFFF;
+  margin: -15px 0 15px -15px;
+  -moz-box-shadow:    0 1px 3px 1px #E1E1E1;
+  -webkit-box-shadow: 0 1px 3px 1px #E1E1E1;
+  box-shadow:         0 1px 3px 1px #E1E1E1;
+}
+
+.questionContainer {
+  width: 323px;
+  margin: 0 0 0 15px;
+  padding-top: 20px;
+}
+
 .questionnaireContainer .buttonContainer,
 .questionnaireContainerLight .buttonContainer {
   margin: 25px 0 0 0;
@@ -7,15 +24,8 @@
   margin-top: 10px;
 }
 
-.questionnaireProgressBar {
-  position: absolute;
-  right: 0;
-  top: -65px;
-  padding: 0;
-}
-
 .questionnaireContainerLight .questionnaireProgressBar {
-  top: -55px;
+  top: 0;
 }
 
 .questionnaireContainerLight .radioContainer {
@@ -27,19 +37,44 @@
 }
 
 .questionnaireContainerLight .questionnaireProgressBar p {
-  margin-bottom: 0;
+  position: absolute;
+  display: inline-block;
+  margin: 20px 0 0 0;
+  left: 574px;
+  text-align: left;
+  color: #666666;
+}
+
+.questionnaireContainerLight .questionnaireProgressBar p.questionTitle {
+  position: relative;
+  left: 338px;
+  top: -20px;
+  display: block;
+  margin: 0;
+  color: #000000;
 }
 
 .questionnaireProgressBar .progress {
-  height: 10px;
+  position: relative;
   margin-bottom: 0 !important;
-  border-radius: 2px;
-  background-color: #cccccc;
+  height: 20px;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  background-color: #F1F1F1;
+  border:0;
+  -moz-box-shadow:    0 0 0 0 #FFFFFF;
+  -webkit-box-shadow: 0 0 0 0 #FFFFFF;
+  box-shadow:         0 0 0 0 #FFFFFF;
+  overflow: visible;
 }
 
 .questionnaireProgressBar .progress-bar {
   background-color: #2c3e50;
   background-image: linear-gradient(to bottom,#395266 0,#2c3e50 100%);
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
 }
 
 .questionnaireProgressBar .progress.complete .progress-bar {
