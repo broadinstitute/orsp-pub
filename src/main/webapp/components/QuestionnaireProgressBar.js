@@ -8,7 +8,7 @@ export const QuestionnaireProgressBar = hh(class QuestionnaireProgressBar extend
     return (
       div({className: "questionContainer"}, [
         h(ProgressBar, { now: this.props.progress, className: (this.props.progress === 100 ? 'complete' : '') }, []),
-        p({className: "questionTitle"}, ["International Questions Answered:"])
+        p({className: "questionTitle internationlCohortsTitle"}, ["International Questions Answered:"])
       ])
     )
   }
