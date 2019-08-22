@@ -52,7 +52,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         geographicalRestrictions: '',
         other: '',
         manualReview: '',
-        comments: ''
+        comments: '',
+        populationRestrictions: []
       },
       create: this.props.location.state !== undefined && this.props.location.state.create !== undefined  ? this.props.location.state.create : false,
       consentKey: ''//this.props.location.state.consentKey
@@ -340,11 +341,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           })
         ]),
         div({ style: styles.borderedContainer },[
-          label({}, ["Future use is limited to research involving a specific population [RS-POP] ",
-            span({className: "badge addPopulationRestriction"}, [
-              span({className: "glyphicon glyphicon-plus"}, [])
-            ])
-          ]),
+          MultiSelect({
+            id: "populationRestrictionsSelect",
+            label: "Future use is limited to research involving a specific population [RS-POP] ",
+            name: "populationRestrictions",
+            isDisabled: false,
+            loadOptions: this.loadDOIDOptions,
+            handleChange: this.handleDiseaseChange,
+            value: this.state.restriction.populationRestrictions,
+            placeholder: "",
+            isMulti: true,
+            edit: false,
+            isClearable: true
+          })
         ]),
         h2({}, ['Terms of Use']),
         div({ style: styles.borderedContainer },[
