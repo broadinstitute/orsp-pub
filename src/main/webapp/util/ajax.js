@@ -10,8 +10,11 @@ export const Search = {
 
   getSourceDiseases(query) {
     return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query);
-  }
+  },
 
+  getMatchingPopulationOntologies(query) {
+    return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query);
+  }
 };
 
 export const SampleCollections = {

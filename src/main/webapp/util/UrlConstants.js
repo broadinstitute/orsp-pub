@@ -51,6 +51,7 @@ export const UrlConstants = {
   clarificationCollectionUrl: context + '/api/clarification-request/collection',
   userNameSearchUrl: context + '/search/matching-users',
   sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
+  populationOntologiesUrl: context + '/search/matching-population-ontologies',
   searchUrl: context + '/search/general-table-json',
 
   downloadDocumentUrl: context + '/api/user/authenticated/download-document',
