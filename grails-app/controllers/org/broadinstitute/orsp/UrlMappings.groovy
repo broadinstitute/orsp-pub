@@ -89,6 +89,7 @@ class UrlMappings {
         '/search/project-key/autocomplete'(controller: 'search', action: 'projectKeyAutocomplete')
         '/search/matching-diseases-ontologies'(controller: 'search', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
+        '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')

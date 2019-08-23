@@ -33,31 +33,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         projectKey: '',
         summary: ''
       },
-      restriction: {
-        consentPIName: '',
-        consentGroupKey: '',
-        noRestriction: '',
-        hmbResearch: '',
-        diseaseRestrictions: [],
-        generalUse: '',
-        populationOriginsAncestry: '',
-        commercialUseExcluded: '',
-        methodsResearchExcluded: '',
-        aggregateResearchResponse: '',
-        controlSetOption: '',
-        gender: '',
-        pediatric: '',
-        collaborationInvestigators: '',
-        irb: '',
-        publicationResults: '',
-        genomicResults: '',
-        geographicalRestrictions: '',
-        other: '',
-        manualReview: false,
-        comments: '',
-        populationRestrictions: [],
-        genomicSummaryResults: ''
-      },
+      restriction: this.initRestriction(),
       create: this.props.location.state !== undefined && this.props.location.state.create !== undefined ? this.props.location.state.create : false,
       consentKey: ''//this.props.location.state.consentKey
     }
@@ -65,7 +41,35 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   componentWillMount() {
     this.init();
+  }
 
+  initRestriction() {
+    return {
+      consentPIName: '',
+      consentGroupKey: this.props.location.state.consentKey,
+      noRestriction: '',
+      hmbResearch: '',
+      diseaseRestrictions: [],
+      generalUse: '',
+      populationOriginsAncestry: '',
+      commercialUseExcluded: '',
+      methodsResearchExcluded: '',
+      aggregateResearchResponse: '',
+      controlSetOption: '',
+      gender: '',
+      pediatric: '',
+      collaborationInvestigators: '',
+      irb: '',
+      publicationResults: '',
+      genomicResults: '',
+      geographicalRestrictions: '',
+      other: '',
+      manualReview: false,
+      comments: '',
+      populationRestrictions: [],
+      genomicSummaryResults: '',
+      genomicPhenotypicData: ''
+    };
   }
 
   init() {
@@ -109,6 +113,63 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     }
     this.setState(prev => {
       prev.restriction[field] = value;
+      return prev;
+    });
+  }
+
+  handleControlSetChange= (e) => {
+    let name = e.target.name;
+    this.setState(prev => {
+      if(name === 'controlSetOptionYes') {
+        prev.restriction.controlSetOption = 'Yes';
+      } else if (name === 'controlSetOptionNo') {
+        prev.restriction.controlSetOption = 'No';
+      } else if (name === 'controlSetOptionUnspecified') {
+        prev.restriction.controlSetOption = 'Unspecified';
+      }
+      return prev;
+    });
+  }
+
+  handleResearchChange = (e) => {
+    let name = e.target.name;
+    this.setState(prev => {
+      if(name === 'agregateResearchYes') {
+        prev.restriction.aggregateResearchResponse = 'Yes';
+      } else if (name === 'agregateResearchNo') {
+        prev.restriction.aggregateResearchResponse = 'No';
+      } else if (name === 'agregateResearchUnspecified') {
+        prev.restriction.aggregateResearchResponse = 'Unspecified';
+      }
+      return prev;
+    });
+  }
+
+  handleGenderChange = (e) => {
+    let name = e.target.name;
+    this.setState(prev => {
+      if(name === 'female') {
+        prev.restriction.gender = 'female';
+      } else if (name === 'male') {
+        prev.restriction.gender = 'male';
+      } else if (name === 'na') {
+        prev.restriction.gender = 'na';
+      }
+      return prev;
+    });
+  }
+
+
+  genomicHandlerChange = (e) => {
+    let name = e.target.name;
+    this.setState(prev => {
+      if(name === 'genomicYes') {
+        prev.restriction.genomicPhenotypicData = 'Yes';
+      } else if (name === 'genomicNo') {
+        prev.restriction.genomicPhenotypicData = 'No';
+      } else if (name === 'genomicUnspecified') {
+        prev.restriction.genomicPhenotypicData = 'Unspecified';
+      }
       return prev;
     });
   }
@@ -262,7 +323,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     });
   };
 
-  handleGeographicalRestrictions = (e, field, value) => {
+  handleGeographicalRestrictions = (e) => {
+    const { name = '', value = '' } = e.target;
     this.setState(prev => {
       prev.restriction.geographicalRestrictions = value;
       if (!isEmpty(value)) {
@@ -278,14 +340,29 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       this.setState(prev => {
         prev.restriction.collaborationInvestigators = true;
         prev.restriction.manualReview = true;
+        prev.restriction.irb = true;
         return prev;
       });
     } else {
       this.setFieldValue(field, value);
     }
-
   }
 
+  changeTextHandler = (e) => {
+    const { name = '', value = '' } = e.target;
+    this.setState(prev => {
+      prev.restriction[name] = value;
+      return prev;
+    });
+  };
+  
+  reset = (e) => {
+    let restriction = this.initRestriction();
+    this.setState(prev => {
+      prev.restriction = restriction;
+      return prev;
+    });
+  }
 
   render() {
     return (
@@ -434,7 +511,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             ])
           ])
         ]),
-
+// TODO
         div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioPopulationOriginsAncestry",
@@ -465,42 +542,58 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             onChange: this.handleRadioChange
           })
         ]),
-        div({ style: styles.borderedContainer }, [
-          InputYesNo({
-            id: "radioAggregateResearchResponse",
-            name: "aggregateResearchResponse",
-            value: this.state.restriction.aggregateResearchResponse,
-            label: "Future use of aggregate-level data for general research purposes is prohibited [NAGR]",
-            readOnly: false,
-            onChange: this.handleRadioRelatedMRChange
-          })
-        ]),
-        div({ style: styles.borderedContainer }, [
-          InputYesNo({
-            id: "radioControlSetOption",
-            name: "controlSetOption",
-            value: this.state.restriction.controlSetOption,
-            label: "Future as a control set for diseases other than those specified is prohibited [CTRL]",
-            readOnly: false,
-            onChange: this.handleRadioChange
-          })
+        div({ style: styles.borderedContainer, className: "radioContainer" }, [
+          label({ className: "inputFieldLabel" }, ["Future use of aggregate-level data for general research purposes is prohibited [NAGR]"]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", checked: this.state.restriction.aggregateResearchResponse === 'Yes', onChange: this.handleResearchChange, name: 'agregateResearchYes'}, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Yes"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", checked: this.state.restriction.aggregateResearchResponse === 'No', onChange: this.handleResearchChange, name: 'agregateResearchNo' }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["No"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", checked: this.state.restriction.aggregateResearchResponse === 'Unspecified', onChange: this.handleResearchChange, name: 'agregateResearchUnspecified' }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Unspecified"])
+          ])
         ]),
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
-          label({className: "inputFieldLabel"}, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
+          label({ className: "inputFieldLabel" }, ["Future as a control set for diseases other than those specified is prohibited [CTRL]"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: this.state.restriction.gender }, []),
-            span({className: "radioCheck"}, []),
-            span({className: "radioLabel"}, ["Male"])
+            input({ type: "radio", checked: this.state.restriction.controlSetOption === 'Yes', onChange: this.handleControlSetChange, name: 'controlSetOptionYes'}, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Yes"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: this.state.restriction.gender }, []),
-            span({className: "radioCheck"}, []),
-            span({className: "radioLabel"}, ["Female"])
+            input({ type: "radio", checked: this.state.restriction.controlSetOption === 'No', onChange: this.handleControlSetChange, name: 'controlSetOptionNo' }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["No"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: this.state.restriction.gender }, []),
-            span({className: "radioCheck"}, []),
-            span({className: "radioLabel"}, ["N/A"])
+            input({ type: "radio", checked: this.state.restriction.controlSetOption === 'Unspecified', onChange: this.handleControlSetChange, name: 'controlSetOptionUnspecified' }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Unspecified"])
+          ])
+        ]),
+        div({ style: styles.borderedContainer, className: "radioContainer" }, [
+          label({ className: "inputFieldLabel" }, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", checked: this.state.restriction.gender === 'male', onChange: this.handleGenderChange, name:'male' }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Male"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", checked: this.state.restriction.gender === 'female', onChange: this.handleGenderChange, name:'female' }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Female"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", checked: this.state.restriction.gender === 'na', onChange: this.handleGenderChange, name:"na"}, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["N/A"])
           ])
         ]),
         div({ style: styles.borderedContainer }, [
@@ -531,21 +624,21 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         ]),
         h2({}, ['Terms of Use']),
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
-          label({className: "inputFieldLabel"}, ["Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?"]),
+          label({ className: "inputFieldLabel" }, ["Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: "Yes" }, []),
-            span({className: "radioCheck"}, []),
-            span({className: "radioLabel"}, ["Yes"])
+            input({ type: "radio", value: "Yes", checked: this.state.restriction.genomicPhenotypicData === 'Yes', name:'genomicYes', onChange: this.genomicHandlerChange }, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Yes"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: "No" }, []),
-            span({className: "radioCheck"}, []),
-            span({className: "radioLabel"}, ["No"])
+            input({ type: "radio", value: "No", checked: this.state.restriction.genomicPhenotypicData === 'No', name:'genomicNo', onChange: this.genomicHandlerChange}, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["No"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: "Unspecified" }, []),
-            span({className: "radioCheck"}, []),
-            span({className: "radioLabel"}, ["Unspecified"])
+            input({ type: "radio", value: "Unspecified", checked: this.state.restriction.genomicPhenotypicData === 'Unspecified', name:'genomicUnspecified', onChange: this.genomicHandlerChange}, []),
+            span({ className: "radioCheck" }, []),
+            span({ className: "radioLabel" }, ["Unspecified"])
           ])
         ]),
         div({ style: styles.borderedContainer }, [
@@ -595,7 +688,9 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             label({}, ["If ", i({}, ["Yes"]), ", please explain."]),
             InputFieldTextArea({
               disabled: false,
-              value: this.state.restriction.genomicSummaryResults
+              value: this.state.restriction.genomicSummaryResults,
+              name: 'genomicSummaryResults',
+              onChange: this.changeTextHandler
             })
           ]),
           hr({}, []),
@@ -604,6 +699,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             InputFieldText({
               disabled: false,
               value: this.state.restriction.geographicalRestrictions,
+              name: 'geographicalRestrictions',
               onChange: this.handleGeographicalRestrictions
             })
           ]),
@@ -612,7 +708,9 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             label({}, ["Other terms of use?"]),
             InputFieldTextArea({
               disabled: false,
-              value: this.state.restriction.other
+              value: this.state.restriction.other,
+              name: 'other',
+              onChange: this.changeTextHandler
             })
           ]),
           div({}, [
@@ -630,11 +728,13 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           label({}, ["Comments (ORSP Use Only)"]),
           InputFieldTextArea({
             disabled: false,
-            value: this.state.restriction.comments
+            value: this.state.restriction.comments,
+            name: 'comments',
+            onChange: this.changeTextHandler
           })
         ]),
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
-          button({ className: "btn btn-default" }, ["Reset"]),
+          button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
           button({ className: "btn btn-primary" }, ["Save"])
         ])
       ])

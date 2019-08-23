@@ -11,6 +11,7 @@ import './Documents.css';
 import { UrlConstants } from "../util/UrlConstants";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "./Spinner";
+import { Link } from 'react-router-dom';
 
 const DOCUMENTS_SPINNER = 'documentsSpinner';
 
@@ -58,18 +59,6 @@ export const Documents = hh(class Documents extends Component {
     });
   };
 
-  newRestriction = () => {
-    window.location.href = UrlConstants.newRestrictionUrl + '?create=true&id=' + this.props.projectKey;
-  };
-
-  editRestriction = () => {
-    window.location.href = component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
-  };
-
-  showRestriction = () => {
-    window.location.href = component.serverURL + "/dataUse/show/" + this.props.restrictionId;
-  };
-
   closeRemoveModal = () => {
     this.setState({ showRemoveDocuments: !this.state.showRemoveDocuments });
   };
@@ -89,13 +78,13 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-   DocumentHandler.delete(this.state.documentToRemove.id).
-    then(resp => {
-      this.closeRemoveModal();
-      this.props.handleLoadDocuments();
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });   
+    DocumentHandler.delete(this.state.documentToRemove.id).
+      then(resp => {
+        this.closeRemoveModal();
+        this.props.handleLoadDocuments();
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
   }
 
   findDul = () => {
@@ -155,51 +144,56 @@ export const Documents = hh(class Documents extends Component {
         })
       ]),
 
-      Panel({ 
-        title: "Data Use Limitation Record Request", 
-        isRendered: this.props.isConsentGroup === true }, [
-        DataUseLetter({
-          userName: this.props.userName,
-          projectKey: this.props.projectKey,
-        })
-      ]),
+      Panel({
+        title: "Data Use Limitation Record Request",
+        isRendered: this.props.isConsentGroup === true
+      }, [
+          DataUseLetter({
+            userName: this.props.userName,
+            projectKey: this.props.projectKey,
+          })
+        ]),
 
       div({ isRendered: this.props.restriction !== undefined }, [
         Panel({
           title: "Data Use Restrictions",
           isRendered: (component.isAdmin || component.isViewer) && this.findDul()
         }, [
-          h3({
-            style: {'marginTop': '10px'},
-            isRendered: this.props.restrictionId !== null
-          }, ["Summary"]),
-          div({
-            isRendered: restriction.length > 1
-          }, [
-            restriction.map((elem, index) => {
-              return h(Fragment, {key: index}, [
-                div({style: {'marginBottom': '10px'}}, [
-                  div({style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented'}, [elem])
-                ]),
-              ]);
-            }),
-          ]),
-          div({}, [
-            button({
-                className: "btn buttonSecondary",
-                style: { 'marginRight': '15px' },
-                onClick: this.newRestriction,
-                isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer,
-              },
-              ["Create Restriction"]),
-            button({
-                className: "btn buttonSecondary",
-                style: { 'marginRight': '15px' },
-                onClick: this.editRestriction,
+            h3({
+              style: { 'marginTop': '10px' },
+              isRendered: this.props.restrictionId !== null
+            }, ["Summary"]),
+            div({
+              isRendered: restriction.length > 1
+            }, [
+                restriction.map((elem, index) => {
+                  return h(Fragment, { key: index }, [
+                    div({ style: { 'marginBottom': '10px' } }, [
+                      div({ style: { 'marginTop': '10px' }, className: index === 0 ? 'first' : 'indented' }, [elem])
+                    ]),
+                  ]);
+                }),
+              ]),
+            div({}, [
+              div({ isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer, className: "btn buttonSecondary", style: { 'marginRight': '15px' } }, [
+                h(Link, { to: { pathname: UrlConstants.newRestrictionUrl, search: '?create=true&id=' + this.props.projectKey, state: { consentKey: this.props.projectKey } } },
+                  ["Create Restriction"])
+              ]),
+              div({
                 isRendered: this.props.restrictionId !== null && !component.isViewer,
-              },
-              ["Edit Restrictions"]),
-            button({
+                className: "btn buttonSecondary", style: { 'marginRight': '15px' }
+              }, [
+                  h(Link, { to: { pathname: UrlConstants.editRestrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey } } },
+                    ["Edit Restriction"])
+                ]),
+              div({
+                isRendered: this.props.restrictionId !== null,
+                className: "btn buttonSecondary", style: { 'marginRight': '15px' }
+              }, [
+                  h(Link, { to: { pathname: UrlConstants.showRestrictionUrl + '/' + this.props.restrictionId, state: { restrictionId: this.props.restrictionId } } },
+                    ["Edit Restriction"])
+                ]),
+              button({
                 className: "btn buttonSecondary",
                 onClick: this.showRestriction,
                 isRendered: this.props.restrictionId !== null,
@@ -208,7 +202,6 @@ export const Documents = hh(class Documents extends Component {
             ]),
           ])
       ]),
-
       div({ isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0 }, [
         Panel({ title: "Associated Projects" }, [
           Table({

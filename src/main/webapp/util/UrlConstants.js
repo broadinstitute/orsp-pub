@@ -74,7 +74,9 @@ export const UrlConstants = {
   historyUrl: context + '/api/history',
   submissionsUrl: context + '/api/submissions',
   submissionDisplayUrl: context + '/api/submissions/display',
-  newRestrictionUrl: context + '/api/data-use/new-restriction',
+  newRestrictionUrl: context + '/dataUse/edit2',
+  editRestrictionUrl: context + '/dataUse/edit2',
+  showRestrictionUrl: context + '/dataUse/show',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',
   viewRestrictionUrl: context + '/api/data-use/restriction'
