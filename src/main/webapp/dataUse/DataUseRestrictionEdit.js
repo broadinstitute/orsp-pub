@@ -484,21 +484,22 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             onChange: this.handleRadioChange
           })
         ]),
-        div({ style: styles.borderedContainer }, [
-          label({}, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
-          div({ className: "pull-right" }, [
-            label({ className: "radio-inline" }, [
-              input({ type: "radio", value: this.state.restriction.gender }, []),
-              "Male"
-            ]),
-            label({ className: "radio-inline" }, [
-              input({ type: "radio", value: this.state.restriction.gender }, []),
-              "Female"
-            ]),
-            label({ className: "radio-inline" }, [
-              input({ type: "radio", value: this.state.restriction.gender }, []),
-              "N/A"
-            ])
+        div({ style: styles.borderedContainer, className: "radioContainer" }, [
+          label({className: "inputFieldLabel"}, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", value: this.state.restriction.gender }, []),
+            span({className: "radioCheck"}, []),
+            span({className: "radioLabel"}, ["Male"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", value: this.state.restriction.gender }, []),
+            span({className: "radioCheck"}, []),
+            span({className: "radioLabel"}, ["Female"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", value: this.state.restriction.gender }, []),
+            span({className: "radioCheck"}, []),
+            span({className: "radioLabel"}, ["N/A"])
           ])
         ]),
         div({ style: styles.borderedContainer }, [
@@ -528,21 +529,22 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           })
         ]),
         h2({}, ['Terms of Use']),
-        div({ style: styles.borderedContainer }, [
-          label({}, ["Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?"]),
-          div({ className: "pull-right" }, [
-            label({ className: "radio-inline" }, [
-              input({ type: "radio", value: "Yes" }, []),
-              "Yes"
-            ]),
-            label({ className: "radio-inline" }, [
-              input({ type: "radio", value: "No" }, []),
-              "No"
-            ]),
-            label({ className: "radio-inline" }, [
-              input({ type: "radio", value: "Unspecified" }, []),
-              "Unspecified"
-            ])
+        div({ style: styles.borderedContainer, className: "radioContainer" }, [
+          label({className: "inputFieldLabel"}, ["Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?"]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", value: "Yes" }, []),
+            span({className: "radioCheck"}, []),
+            span({className: "radioLabel"}, ["Yes"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", value: "No" }, []),
+            span({className: "radioCheck"}, []),
+            span({className: "radioLabel"}, ["No"])
+          ]),
+          label({ className: "radioOptions" }, [
+            input({ type: "radio", value: "Unspecified" }, []),
+            span({className: "radioCheck"}, []),
+            span({className: "radioLabel"}, ["Unspecified"])
           ])
         ]),
         div({ style: styles.borderedContainer }, [
