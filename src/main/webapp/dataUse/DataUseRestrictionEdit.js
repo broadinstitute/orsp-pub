@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { h1, div, hh,h2, strong, ul, i, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
+import { h1, div, hh, h2, strong, ul, i, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
 import { InputFieldText } from "../components/InputFieldText";
 import { InputYesNo } from "../components/InputYesNo";
 import { Search } from "../util/ajax";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
-import { MultiSelect } from "../components/MultiSelect"
+import { MultiSelect } from "../components/MultiSelect";
+import { AlertMessage } from '../components/AlertMessage';
 import { DataUse, ConsentGroup } from "../util/ajax";
 import '../components/Btn.css';
+import { isEmpty } from '../util/Utils';
 
 const styles = {
   borderedContainer: {
@@ -42,7 +44,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         commercialUseExcluded: '',
         methodsResearchExcluded: '',
         aggregateResearchResponse: '',
-        controlSetOption: '', 
+        controlSetOption: '',
         gender: '',
         pediatric: '',
         collaborationInvestigators: '',
@@ -51,18 +53,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         genomicResults: '',
         geographicalRestrictions: '',
         other: '',
-        manualReview: '',
+        manualReview: false,
         comments: '',
-        populationRestrictions: []
+        populationRestrictions: [],
+        genomicSummaryResults: ''
       },
-      create: this.props.location.state !== undefined && this.props.location.state.create !== undefined  ? this.props.location.state.create : false,
+      create: this.props.location.state !== undefined && this.props.location.state.create !== undefined ? this.props.location.state.create : false,
       consentKey: ''//this.props.location.state.consentKey
     }
   }
 
   componentWillMount() {
     this.init();
-    
+
   }
 
   init() {
@@ -75,18 +78,123 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     })
   }
 
+  validateForm() {
+    if (this.state.restriction.noRestriction || this.state.restriction.generalUse ||
+      this.state.restriction.hmbResearch || this.state.restriction.diseases.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  submit() {
+    if (this.validateForm()) {
+      // abrir spinner y redireccionar a dde estaba
+
+    } else {
+      this.setState(prev => {
+        prev.showError = true;
+        return prev;
+      })
+    }
+  }
   handleRadioChange = (e, field, value) => {
     if (value === 'true') {
       value = true;
     } else if (value === 'false') {
       value = false;
     }
+    if (field === 'noRestriction' && value) {
+      checkFields(value);
+    }
     this.setState(prev => {
       prev.restriction[field] = value;
       return prev;
-    }, () => {
-      this.evaluateAnswer(value);
     });
+  }
+
+  handleNoRestrictionRadioChange = (e, field, value) => {
+    value = this.getValue();
+    if (value) {
+      this.setState(prev => {
+        prev.restriction.noRestriction = true;
+        prev.restriction.generalUse = false;
+        prev.restriction.hmbResearch = false;
+        prev.restriction.diseaseRestrictions = [];
+        prev.restriction.controlSetOption = false;
+        return prev;
+      });
+    } else {
+      this.setFieldValue(field, value);
+    }
+  }
+
+  setFieldValue(field, value) {
+    this.setState(prev => {
+      prev.restriction[field] = value;
+      return prev;
+    });
+  }
+
+  getValue(value) {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+    return value;
+  }
+
+  /*
+  See https://broadinstitute.atlassian.net/browse/GAWB-3210
+  General Use, HMB, and Disease Restrictions are intertwined and exclusive. One has to
+  choose one of the three.
+ * GRU means HMB == no && no diseases && controlSet == yes
+ * HMB means GRU == no && no diseases && POA == yes
+ * Diseases means GRU == no && HMB == no && POA == yes
+*/
+  handleGeneralUseRadioChange = (e, field, value) => {
+    value = this.getValue(value);
+    if (value) {
+      this.setState(prev => {
+        prev.restriction.hmbResearch = false;
+        prev.restriction.controlSetOption = false;
+        prev.restriction.diseaseRestrictions = [];
+        prev.restriction.generalUse = true;
+        return prev;
+      });
+    } else {
+      this.setFieldValue(field, value);
+    }
+  }
+
+  handleGenomicResultChange = (e, field, value) => {
+    value = this.getValue(value);
+    if (value) {
+      this.setState(prev => {
+        prev.restriction.genomicResults = true;
+        prev.restriction.controlSetOption = false;
+        prev.restriction.diseaseRestrictions = [];
+        prev.restriction.generalUse = true;
+        return prev;
+      });
+    } else {
+      this.setFieldValue(field, value);
+    }
+  }
+
+  handleHmbResearchChange = (e, field, value) => {
+    value = this.getValue(value);
+    if (value) {
+      this.setState(prev => {
+        prev.restriction.generalUse = false;
+        prev.restriction.diseaseRestrictions = [];
+        prev.restriction.populationOriginsAncestry = true;
+        return prev;
+      });
+    } else {
+      this.setFieldValue(field, value);
+    }
   }
 
   loadDOIDOptions = (query, callback) => {
@@ -107,10 +215,33 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     }
   };
 
+  loadPopulationOptions = (query, callback) => {
+    if (query.length > 2) {
+      Search.getMatchingPopulationOntologies(query)
+        .then(response => {
+          let options = response.data.map(function (item) {
+            return {
+              key: item.id,
+              label: item.label,
+              value: item.id
+            };
+          });
+          callback(options);
+        }).catch(error => {
+          this.setState(() => { throw error; });
+        });
+    }
+  };
+
   handleDiseaseChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
         prev.restriction.diseaseRestrictions = data;
+        prev.restriction.noRestriction = false;
+        prev.restriction.generalUse = false;
+        prev.restriction.hmbResearch = false;
+        prev.restriction.populationOriginsAncestry = false;
+        prev.restriction.controlSetOption = true;
       } else {
         prev.restriction.diseaseRestrictions = [];
       }
@@ -118,11 +249,53 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     });
   };
 
+  handlePopulationChange = (data, action) => {
+    this.setState(prev => {
+      if (data !== null) {
+        prev.restriction.populationRestrictions = data;
+        prev.restriction.manualReview = true;
+      } else {
+        prev.restriction.populationRestrictions = [];
+      }
+      return prev;
+    });
+  };
+
+  handleGeographicalRestrictions = (e, field, value) => {
+    this.setState(prev => {
+      prev.restriction.geographicalRestrictions = value;
+      if (!isEmpty(value)) {
+        prev.restriction.manualReview = true;
+      }
+      return prev;
+    });
+  }
+
+  handleRadioRelatedMRChange = (e, field, value) => {
+    value = this.getValue(value);
+    if (value) {
+      this.setState(prev => {
+        prev.restriction.collaborationInvestigators = true;
+        prev.restriction.manualReview = true;
+        return prev;
+      });
+    } else {
+      this.setFieldValue(field, value);
+    }
+
+  }
+
+
   render() {
-    return(
-      div({},[
+    return (
+      div({}, [
         h1({ className: styles.headerTitle }, [this.state.create ? 'Create ' : 'Edit ' + 'Data Use Restrictions for ' + this.state.consent.projectKey + ':' + this.state.consent.summary]),
         div({ style: styles.borderedContainer }, [
+          AlertMessage({
+            msg: 'At least one of NRES, GRU, HMB, or a Disease Restriction must be selected.',
+            show: this.state.showError,
+            type: 'danger'
+          }),
           InputFieldText({
             label: "Consent Group",
             disabled: true,
@@ -130,7 +303,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           })
         ]),
 
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputFieldText({
             label: "Principal Investigator listed on the informed consent form",
             disabled: this.state.create ? false : true,
@@ -139,20 +312,20 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         ]),
 
         h2({}, ['Data Use Limitations']),
-        div({ style: styles.borderedContainer },[
-          div({className: "row"},[
-            div({className: "col-sm-7"},[
-                InputYesNo({
-                  id: "radioNoRestriction",
-                  name: "noRestriction",
-                  value: this.state.restriction.noRestriction,
-                  label:  "Data is available for future research with no restrictions [NRES]",
-                  readOnly: false,
-                  onChange: this.handleRadioChange
-                })
+        div({ style: styles.borderedContainer }, [
+          div({ className: "row" }, [
+            div({ className: "col-sm-7" }, [
+              InputYesNo({
+                id: "radioNoRestriction",
+                name: "noRestriction",
+                value: this.state.restriction.noRestriction,
+                label: "Data is available for future research with no restrictions [NRES]",
+                readOnly: false,
+                onChange: this.handleNoRestrictionRadioChange
+              })
             ]),
-            div({className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding}, [
-              "Selecting No Restriction ", strong({},["[NRES]"]),
+            div({ className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding }, [
+              "Selecting No Restriction ", strong({}, ["[NRES]"]),
               ":",
               ul({}, [
                 li({}, [
@@ -170,20 +343,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
               ])
             ])
           ]),
-
-          div({className: "row"},[
-            div({className: "col-sm-7"},[
+          div({ className: "row" }, [
+            div({ className: "col-sm-7" }, [
               InputYesNo({
                 id: "radioGeneralUse",
                 name: "generalUse",
                 value: this.state.restriction.generalUse,
-                label:  "Data is available for future general research use [GRU]",
+                label: "Data is available for future general research use [GRU]",
                 readOnly: false,
-                onChange: this.handleRadioChange
+                onChange: this.handleGeneralUseRadioChange
               })
             ]),
-            div({className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding}, [
-              "Selecting General Use ", strong({},["[GRU]"]),
+            div({ className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding }, [
+              "Selecting General Use ", strong({}, ["[GRU]"]),
               ":",
               ul({}, [
                 li({}, [
@@ -199,20 +371,20 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             ])
           ]),
 
-          div({className: "row"},[
-            div({className: "col-sm-7"},[
+          div({ className: "row" }, [
+            div({ className: "col-sm-7" }, [
               InputYesNo({
                 id: "radioHmbResearch",
                 name: "hmbResearch",
                 value: this.state.restriction.hmbResearch,
-                label:  "Data is limited for health/medical/biomedical research [HMB]",
+                label: "Data is limited for health/medical/biomedical research [HMB]",
                 readOnly: false,
-                onChange: this.handleRadioChange
+                onChange: this.handleHmbResearchChange
               })
             ]),
 
-            div({className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding}, [
-              "Selecting Health, Medical, Biomedical ", strong({},["[DS]"]),
+            div({ className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding }, [
+              "Selecting Health, Medical, Biomedical ", strong({}, ["[DS]"]),
               ":",
               ul({}, [
                 li({}, [
@@ -228,8 +400,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             ])
           ]),
 
-          div({className: "row"},[
-            div({className: "col-sm-7"},[
+          div({ className: "row" }, [
+            div({ className: "col-sm-7" }, [
               MultiSelect({
                 id: "diseasesSelect",
                 label: "Please select",
@@ -244,8 +416,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
                 isClearable: true
               })
             ]),
-            div({className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding}, [
-              "Choosing a disease restriction ", strong({},["[DS]"]),
+            div({ className: "col-sm-4 alert alert-info col-sm-offset-1", style: styles.alertPadding }, [
+              "Choosing a disease restriction ", strong({}, ["[DS]"]),
               ":",
               ul({}, [
                 li({}, [
@@ -261,93 +433,93 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             ])
           ])
         ]),
-      
-        div({ style: styles.borderedContainer },[
+
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioPopulationOriginsAncestry",
             name: "populationOriginsAncestry",
             value: this.state.restriction.populationOriginsAncestry,
-            label:  "Future use of population origins or ancestry is prohibited [POA]",
+            label: "Future use of population origins or ancestry is prohibited [POA]",
             readOnly: false,
             onChange: this.handleRadioChange
           })
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioCommercialUseExcluded",
             name: "commercialUseExcluded",
             value: this.state.restriction.commercialUseExcluded,
-            label:  "Future commercial use is prohibited [NCU]",
+            label: "Future commercial use is prohibited [NCU]",
             readOnly: false,
             onChange: this.handleRadioChange
           })
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioMethodsResearchExcluded",
             name: "methodsResearchExcluded",
             value: this.state.restriction.methodsResearchExcluded,
-            label:  "Future use for methods research (analytic/software/technology development) is prohibited [NMDS]",
+            label: "Future use for methods research (analytic/software/technology development) is prohibited [NMDS]",
             readOnly: false,
             onChange: this.handleRadioChange
           })
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioAggregateResearchResponse",
             name: "aggregateResearchResponse",
             value: this.state.restriction.aggregateResearchResponse,
-            label:  "Future use of aggregate-level data for general research purposes is prohibited [NAGR]",
+            label: "Future use of aggregate-level data for general research purposes is prohibited [NAGR]",
             readOnly: false,
-            onChange: this.handleRadioChange
+            onChange: this.handleRadioRelatedMRChange
           })
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioControlSetOption",
             name: "controlSetOption",
             value: this.state.restriction.controlSetOption,
-            label:  "Future as a control set for diseases other than those specified is prohibited [CTRL]",
+            label: "Future as a control set for diseases other than those specified is prohibited [CTRL]",
             readOnly: false,
             onChange: this.handleRadioChange
           })
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           label({}, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
-          div({className: "pull-right"}, [
-            label({className: "radio-inline"}, [
-              input({type: "radio", value: this.state.restriction.gender}, []),
+          div({ className: "pull-right" }, [
+            label({ className: "radio-inline" }, [
+              input({ type: "radio", value: this.state.restriction.gender }, []),
               "Male"
             ]),
-            label({className: "radio-inline"}, [
-              input({type: "radio", value: this.state.restriction.gender}, []),
+            label({ className: "radio-inline" }, [
+              input({ type: "radio", value: this.state.restriction.gender }, []),
               "Female"
             ]),
-            label({className: "radio-inline"}, [
-              input({type: "radio", value: this.state.restriction.gender}, []),
+            label({ className: "radio-inline" }, [
+              input({ type: "radio", value: this.state.restriction.gender }, []),
               "N/A"
             ])
           ])
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioPediatric",
             name: "pediatric",
             value: this.state.restriction.pediatric,
-            label:  "Future use is limited to pediatric research [RS-PD]",
+            label: "Future use is limited to pediatric research [RS-PD]",
             readOnly: false,
             onChange: this.handleRadioChange
 
           })
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           MultiSelect({
             id: "populationRestrictionsSelect",
             label: "Future use is limited to research involving a specific population [RS-POP] ",
             name: "populationRestrictions",
             isDisabled: false,
-            loadOptions: this.loadDOIDOptions,
-            handleChange: this.handleDiseaseChange,
+            loadOptions: this.loadPopulationOptions,
+            handleChange: this.handlePopulationChange,
             value: this.state.restriction.populationRestrictions,
             placeholder: "",
             isMulti: true,
@@ -356,46 +528,45 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           })
         ]),
         h2({}, ['Terms of Use']),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           label({}, ["Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?"]),
-          div({className: "pull-right"}, [
-            label({className: "radio-inline"}, [
-              input({type: "radio", value: "Yes"}, []),
+          div({ className: "pull-right" }, [
+            label({ className: "radio-inline" }, [
+              input({ type: "radio", value: "Yes" }, []),
               "Yes"
             ]),
-            label({className: "radio-inline"}, [
-              input({type: "radio", value: "No"}, []),
+            label({ className: "radio-inline" }, [
+              input({ type: "radio", value: "No" }, []),
               "No"
             ]),
-            label({className: "radio-inline"}, [
-              input({type: "radio", value: "Unspecified"}, []),
+            label({ className: "radio-inline" }, [
+              input({ type: "radio", value: "Unspecified" }, []),
               "Unspecified"
             ])
           ])
         ]),
-        div({ style: styles.borderedContainer },[
+        div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioCollaborationInvestigators",
             name: "collaborationInvestigators",
             value: this.state.restriction.collaborationInvestigators,
-            label:  "Collaboration with the primary study investigators required [COL-XX]",
+            label: "Collaboration with the primary study investigators required [COL-XX]",
             readOnly: false,
-            onChange: this.handleRadioChange
-
+            onChange: this.handleRadioRelatedMRChange
           }),
-          hr({},[]),
-          div({style: styles.inputGroup}, [
+          hr({}, []),
+          div({ style: styles.inputGroup }, [
             InputYesNo({
               id: "radioIrb",
               name: "irb",
               value: this.state.restriction.irb,
               label: "Ethics committee approval required?",
               readOnly: false,
-              onChange: this.handleRadioChange
+              onChange: this.handleRadioRelatedMRChange
             })
           ]),
-          hr({},[]),
-          div({style: styles.inputGroup}, [
+          hr({}, []),
+          div({ style: styles.inputGroup }, [
             InputYesNo({
               id: "radioPublicationResults",
               name: "publicationResults",
@@ -405,24 +576,36 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
               onChange: this.handleRadioChange
             })
           ]),
-          hr({},[]),
-          div({style: styles.inputGroup}, [
-            label({}, ["If ", i({},["Yes"]), ", please explain."]),
+          hr({}, []),
+          div({ style: styles.inputGroup }, [
+            InputYesNo({
+              id: "radioGenomicResults",
+              name: "genomicResults",
+              value: this.state.restriction.genomicResults,
+              label: "Are the genomic summary results (GSR) from this study to be made available only through controlled-access?",
+              readOnly: false,
+              onChange: this.handleRadioChange
+            })
+          ]),
+          hr({ isRendered: this.state.restriction.genomicResults }, []),
+          div({ isRendered: this.state.restriction.genomicResults, style: styles.inputGroup }, [
+            label({}, ["If ", i({}, ["Yes"]), ", please explain."]),
             InputFieldTextArea({
               disabled: false,
-              value: this.state.restriction.other
-            }) 
+              value: this.state.restriction.genomicSummaryResults
+            })
           ]),
-          hr({},[]),
-          div({style: styles.inputGroup}, [
+          hr({}, []),
+          div({ style: styles.inputGroup }, [
             label({}, ["Geographical restrictions?"]),
             InputFieldText({
               disabled: false,
-              value: this.state.restriction.geographicalRestrictions
+              value: this.state.restriction.geographicalRestrictions,
+              onChange: this.handleGeographicalRestrictions
             })
           ]),
-          hr({},[]),
-          div({style: styles.inputGroup}, [
+          hr({}, []),
+          div({ style: styles.inputGroup }, [
             label({}, ["Other terms of use?"]),
             InputFieldTextArea({
               disabled: false,
@@ -447,9 +630,9 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             value: this.state.restriction.comments
           })
         ]),
-        div({className: "modal-footer", style: {'marginTop' : '15px'}}, [
-          button({className: "btn btn-default"}, ["Reset"]),
-          button({className: "btn btn-primary"}, ["Save"])
+        div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
+          button({ className: "btn btn-default" }, ["Reset"]),
+          button({ className: "btn btn-primary" }, ["Save"])
         ])
       ])
     )
