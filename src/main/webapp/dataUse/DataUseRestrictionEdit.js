@@ -114,7 +114,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   handleNoRestrictionRadioChange = (e, field, value) => {
-    value = this.getValue();
+    value = this.getValue(value);
     if (value) {
       this.setState(prev => {
         prev.restriction.noRestriction = true;
@@ -190,6 +190,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.generalUse = false;
         prev.restriction.diseaseRestrictions = [];
         prev.restriction.populationOriginsAncestry = true;
+        prev.restriction.hmbResearch = true;
         return prev;
       });
     } else {
