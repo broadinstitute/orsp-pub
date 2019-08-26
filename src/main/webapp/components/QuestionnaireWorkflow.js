@@ -210,7 +210,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
         div({ className: "buttonContainer" }, [
           button({ isRendered: (currentQuestionIndex > 0), className: "btn buttonSecondary floatLeft", onClick: this.prevQuestion }, ["Previous Question"]),
-          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary floatRight", onClick: this.nextQuestion }, ["Next Question"])
+          button({ isRendered: (this.state.endState === false), className: "btn buttonPrimary", style: {"marginLeft":"15px"}, onClick: this.nextQuestion }, ["Next Question"])
         ])
       ])
     )
