@@ -81,6 +81,7 @@ class UrlMappings {
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
         '/api/user/authenticated/user-data'(controller: 'authenticated', action: 'getSessionUser')
+        '/api/user/authenticated/user-session'(controller: 'authenticated', action: 'hasSession')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
 

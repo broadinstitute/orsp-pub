@@ -229,6 +229,10 @@ export const User = {
     return axios.get(UrlConstants.getUserUrl)
   },
 
+  isAuthenticated() {
+    return axios.get(UrlConstants.isAuthenticated)
+  },
+
   getAllUsers(query) {
     return axios.get(UrlConstants.getAllUsersUrl, {
       params: {
