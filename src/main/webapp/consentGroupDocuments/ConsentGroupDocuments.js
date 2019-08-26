@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { Documents } from "../components/Documents";
-import { DocumentHandler, ConsentGroup, User } from "../util/ajax";
+import { DocumentHandler, ConsentGroup, User, requestTokens } from "../util/ajax";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
@@ -33,6 +33,10 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     this.getUseRestriction();
     this.loadOptions();
     this.getAssociatedProjects();
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   loadOptions() {
@@ -69,15 +73,14 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         prev.restrictionId = newRestrictionId;
         return prev;
       })
-    });
+    }).catch( () => {});
   };
 
   getAssociatedProjects = () => {
     ConsentGroup.getConsentCollectionLinks(this.props.consentKey).then(response => {
       this.setState({ associatedProjects: response.data.collectionLinks })
-    }).catch(error => {
+    }).catch(() => {
       this.setState({ serverError: true });
-      console.error(error);
     });
   };
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { h, h1, div, a, li, ul, h2, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, SampleCollections } from "../util/ajax";
+import { ConsentCollectionLink, requestTokens } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
@@ -83,6 +83,11 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
   componentDidMount() {
     this.init();
   }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
+  }
+
   init = () => {
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
@@ -98,9 +103,6 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
       spinnerService.hide(SPINNER_NAME);
       this.setState(() => { throw error });
     });
-  };
-
-  printContent = () => {
   };
 
   render() {

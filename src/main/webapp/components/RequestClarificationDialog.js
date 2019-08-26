@@ -5,7 +5,7 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from './AlertMessage';
 import { spinnerService } from "../util/spinner-service";
-import { ClarificationRequest } from "../util/ajax";
+import { ClarificationRequest, requestTokens } from "../util/ajax";
 import { Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 
@@ -22,6 +22,10 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       pm: [{key:''}],
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   handleClose = () => {

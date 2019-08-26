@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { h, h1, div, a, hh } from 'react-hyperscript-helpers';
-import { DataUse } from "../util/ajax";
+import { DataUse, requestTokens } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
@@ -61,6 +61,10 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
 
   componentDidMount() {
     this.init();
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   init = () => {

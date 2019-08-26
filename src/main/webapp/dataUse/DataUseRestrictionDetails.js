@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { h, h1, div, button, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { DataUse, ConsentGroup } from "../util/ajax";
+import { DataUse, ConsentGroup, requestTokens } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 import { format } from 'date-fns';
 import { DUR_QUESTIONS } from './DataUseRestrictionConstants';
@@ -85,7 +85,11 @@ class DataUseRestrictionDetails extends Component {
     spinnerService.show(DUR_SPINNER);
     this.init();
   }
-  
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
+  }
+
   init() {   
     DataUse.getRestriction(this.state.restrictionId).then(result => {
       this.setState(prev => {

@@ -9,7 +9,7 @@ import '../components/Wizard.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 import { MultiTab } from "../components/MultiTab";
-import { ProjectMigration, Review } from '../util/ajax';
+import { ProjectMigration, Review, requestTokens } from '../util/ajax';
 import {isEmpty} from "../util/Utils";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
@@ -29,6 +29,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   componentDidMount() {
     this.getHistory();
     this.getComments();
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   updateDetailsStatus = (status) => {

@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
 import { h, div } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User} from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User, requestTokens } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { Spinner } from "../components/Spinner";
 import { isEmpty } from "../util/Utils";
@@ -73,8 +73,20 @@ class NewConsentGroup extends Component {
   componentDidMount() {
     this.initDocuments();
     this.getUserSession();
-    ConsentGroup.getConsentGroupNames().then(
-      resp => this.setState({ existingGroupNames: resp.data }));
+    this.initFormSelectData();
+  }
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
+    spinnerService._unregister(CONSENT_SPINNER);
+  }
+
+  initFormSelectData = () => {
+    ConsentGroup.getConsentGroupNames().then(resp => {
+      this.setState(prev => {
+        prev.existingGroupNames = resp.data;
+        return prev;
+      });
+    }).catch(() => {});
 
     SampleCollections.getSampleCollections().then(
       resp => {
@@ -86,17 +98,13 @@ class NewConsentGroup extends Component {
           };
         });
         this.setState({ sampleCollectionList: sampleCollections })
-      }
-    );
-  }
-  componentWillUnmount() {
-    spinnerService._unregister(CONSENT_SPINNER);
-  }
+      }).catch(() => {});
+  };
 
   getUserSession() {
     User.getUserSession().then(
       resp => this.setState({ user: resp.data })
-    )
+    ).catch(() => {})
   }
 
   submitNewConsentGroup = async () => {
@@ -120,7 +128,7 @@ class NewConsentGroup extends Component {
           window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
           spinnerService.hide(CONSENT_SPINNER);
         }).catch(error => {
-        console.error(error);
+        // console.error(error);
         spinnerService.hide(CONSENT_SPINNER);
         this.toggleSubmitError();
         this.changeSubmitState();

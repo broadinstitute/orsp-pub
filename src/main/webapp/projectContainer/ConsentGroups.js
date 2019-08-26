@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
 import { ConsentGroup, DocumentHandler } from '../util/ajax';
-import { ConsentCollectionLink } from '../util/ajax';
+import { ConsentCollectionLink, requestTokens } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { Spinner } from "../components/Spinner";
@@ -89,6 +89,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   componentWillUnmount() {
     spinnerService._unregister(CONSENT_GROUPS_SPINNER);
+    requestTokens.cancelRequests();
   }
 
   getProjectConsentGroups = () => {
@@ -101,7 +102,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       },() => {
         this.collapseBtnAnimationListener();
       });
-    });
+    }).catch(() => {});
   };
 
   closeConfirmationModal = () => {

@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { div, h1, button, h, a } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
-import { Files, ProjectMigration, cancelRequest } from "../util/ajax";
+import { Files, ProjectMigration, requestTokens } from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import InputFieldNumber from "../components/InputFieldNumber";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
@@ -77,7 +77,7 @@ class SubmissionForm extends Component {
   componentWillUnmount() {
     spinnerService.hideAll();
     spinnerService._unregisterAll();
-    cancelRequest();
+    requestTokens.cancelRequests();
   }
 
   getTypeSelected() {

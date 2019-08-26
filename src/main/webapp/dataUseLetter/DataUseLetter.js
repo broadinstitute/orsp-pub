@@ -9,7 +9,7 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { ConsentGroup, DUL } from "../util/ajax";
+import { requestTokens, ConsentGroup, DUL } from "../util/ajax";
 import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
 import { MultiSelect } from "../components/MultiSelect";
@@ -106,6 +106,10 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
 
   componentDidMount() {
     this.initFormData();
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   initFormData = () => {
@@ -745,7 +749,6 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
             label: "Data is intended for repository deposition?",
             readOnly: this.state.readOnly,
             onChange: this.handleRadioChange,
-            readOnly: true,
           }),
 
           div({ className: "boxWrapper" }, [

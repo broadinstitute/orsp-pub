@@ -4,7 +4,7 @@ import { div, h } from 'react-hyperscript-helpers';
 import DataUseLetter from './DataUseLetter';
 import DataUseLetterMessage from './DataUseLetterMessage';
 import '../index.css';
-import { DUL } from "../util/ajax";
+import { DUL, requestTokens } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 
 class DataUseLetterIndex extends Component {
@@ -20,6 +20,10 @@ class DataUseLetterIndex extends Component {
 
   componentDidMount() {
     this.init();
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   init() {

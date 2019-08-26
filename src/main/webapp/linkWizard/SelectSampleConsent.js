@@ -8,7 +8,7 @@ import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { cancelRequest, ConsentGroup, SampleCollections } from "../util/ajax";
+import { ConsentGroup, requestTokens, SampleCollections } from "../util/ajax";
 
 const styles = {
   addDocumentContainer: {
@@ -141,7 +141,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   componentWillUnmount() {
-    cancelRequest();
+    requestTokens.cancelRequests();
   }
 
   getAllSampleCollections = (consentKey) => {

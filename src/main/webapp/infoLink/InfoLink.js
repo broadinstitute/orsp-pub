@@ -1,7 +1,7 @@
 import { Component, Fragment} from 'react';
 import { h, div, h2, h3, span, a, p, b } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { ProjectInfoLink } from "../util/ajax";
+import { ProjectInfoLink, requestTokens } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { isEmpty } from "../util/Utils";
@@ -11,7 +11,7 @@ const styles = {
   dateRange: {
     margin: '5px 0 15px 0', color: '#999999', fontStyle: 'italic', fontSize: '20px'
   }
-}
+};
 
 class InfoLink extends Component {
 
@@ -40,6 +40,10 @@ class InfoLink extends Component {
 
   componentDidMount() {
     this.initData();
+  }
+
+  componentWillUnmount() {
+    requestTokens.cancelRequests();
   }
 
   initData = () => {
