@@ -8,6 +8,7 @@ import './Btn.css';
 import { printData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatDataPrintableFormat } from "../util/TableUtil";
+import { Panel } from '../components/Panel';
 
 const defaultSorted = [{
   dataField: 'date',
@@ -35,6 +36,32 @@ const columns = [{
       div({dangerouslySetInnerHTML: { __html: cell } },[]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
+}];
+
+const columnsCopy = [{
+  dataField: 'project',
+  text: 'Project',
+  sort: true
+}, {
+  dataField: 'title',
+  text: 'Title',
+  sort: true
+}, {
+  dataField: 'status',
+  text: 'Status',
+  sort: true
+}, {
+  dataField: 'type',
+  text: 'Type',
+  sort: true
+}, {
+  dataField: 'updated',
+  text: 'Updated',
+  sort: true
+}, {
+  dataField: 'expiration',
+  text: 'Expiration',
+  sort: true
 }];
 
 export const Comments = hh(class Comments extends Component {
@@ -72,7 +99,25 @@ export const Comments = hh(class Comments extends Component {
           pagination: true,
           showExportButtons: true,
           showSearchBar: true
-        })
+        }),
+
+        Panel({title: "My Task List"}, [
+          TableComponent({
+            remoteProp: false,
+            data: this.props.comments,
+            columns: columnsCopy,
+            keyField: 'id',
+            search: false,
+            fileName: 'XXXXXXX',
+            showPrintButton: false,
+            printComments: this.printComments,
+            defaultSorted: defaultSorted,
+            pagination: false,
+            showExportButtons: false,
+            showSearchBar: false
+          })
+        ]),
+        
       ])
     )
   }
