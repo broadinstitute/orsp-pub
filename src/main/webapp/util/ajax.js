@@ -7,13 +7,11 @@ export const requestTokens = {
 
   add(token) {
     this.tokens.push(token);
-    console.log(this.tokens);
   },
 
   cancelRequests() {
     this.tokens.map(request => {
       request.token();
-      console.log(request.id);
     });
     this.tokens.length = 0;
   }
@@ -190,7 +188,11 @@ export const Files = {
   },
 
   downloadFillable() {
-    return axios({ url: UrlConstants.fillablePdfURL, method: 'GET', responseType: 'blob' });
+    return axios({ url: UrlConstants.fillablePdfURL, method: 'GET', responseType: 'blob' }, {
+      cancelToken: new CancelToken((c) => {
+        requestTokens.add({token: c, id: 'downloadFillable'});
+      })
+    }).catch( () => {});
   }
 
 };
@@ -267,7 +269,11 @@ export const DocumentHandler = {
 export const User = {
 
   getUserSession() {
-    return axios.get(UrlConstants.getUserUrl)
+    return axios.get(UrlConstants.getUserUrl,{
+      cancelToken: new CancelToken((c) => {
+        requestTokens.add({token: c, id: 'getUserSession'});
+      })
+    }).catch( () => {});
   },
 
   getAllUsers(query) {

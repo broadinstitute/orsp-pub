@@ -76,8 +76,8 @@ class NewConsentGroup extends Component {
     this.initFormSelectData();
   }
   componentWillUnmount() {
-    requestTokens.cancelRequests();
     spinnerService._unregister(CONSENT_SPINNER);
+    requestTokens.cancelRequests();
   }
 
   initFormSelectData = () => {
@@ -97,7 +97,10 @@ class NewConsentGroup extends Component {
             label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
           };
         });
-        this.setState({ sampleCollectionList: sampleCollections })
+        this.setState(prev => {
+          prev.sampleCollectionList = sampleCollections;
+          return prev;
+        })
       }).catch(() => {});
   };
 
@@ -488,9 +491,7 @@ class NewConsentGroup extends Component {
       link.setAttribute('download', 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf');
       document.body.appendChild(link);
       link.click();
-    }).catch(error => {
-      console.error(error);
-    });
+    }).catch(() => {});
   };
 
   removeErrorMessage() {
