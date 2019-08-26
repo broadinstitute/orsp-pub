@@ -300,9 +300,11 @@ export const DataUse = {
   createRestriction(restriction) {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
   },
+
   getRestriction(restrictionId) {
     return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
   },
+
   getRestrictions(query) {
     return axios.get(UrlConstants.restrictionUrl, {
       params: {
@@ -315,6 +317,9 @@ export const DataUse = {
       }
     })
   },
+  createDataUseRestriction(restriction) {
+    return axios.post(UrlConstants.saveRestrictionUrl, restriction);
+  }
 };
 
 export const ProjectInfoLink = {

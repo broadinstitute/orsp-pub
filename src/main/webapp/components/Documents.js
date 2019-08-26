@@ -176,14 +176,14 @@ export const Documents = hh(class Documents extends Component {
               ]),
             div({}, [
               div({ isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer, className: "btn buttonSecondary", style: { 'marginRight': '15px' } }, [
-                h(Link, { to: { pathname: UrlConstants.newRestrictionUrl, search: '?create=true&id=' + this.props.projectKey, state: { consentKey: this.props.projectKey } } },
+                h(Link, { to: { pathname: UrlConstants.restrictionUrl, search: '?create=true&id=' + this.props.projectKey, state: { consentKey: this.props.projectKey } } },
                   ["Create Restriction"])
               ]),
               div({
                 isRendered: this.props.restrictionId !== null && !component.isViewer,
                 className: "btn buttonSecondary", style: { 'marginRight': '15px' }
               }, [
-                  h(Link, { to: { pathname: UrlConstants.editRestrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey } } },
+                  h(Link, { to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey } } },
                     ["Edit Restriction"])
                 ]),
               div({
@@ -191,14 +191,8 @@ export const Documents = hh(class Documents extends Component {
                 className: "btn buttonSecondary", style: { 'marginRight': '15px' }
               }, [
                   h(Link, { to: { pathname: UrlConstants.showRestrictionUrl + '/' + this.props.restrictionId, state: { restrictionId: this.props.restrictionId } } },
-                    ["Edit Restriction"])
-                ]),
-              button({
-                className: "btn buttonSecondary",
-                onClick: this.showRestriction,
-                isRendered: this.props.restrictionId !== null,
-              },
-                ["View Restrictions"])
+                    ["Ver Restriction"])
+                ])
             ]),
           ])
       ]),

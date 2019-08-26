@@ -7,8 +7,9 @@ import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { MultiSelect } from "../components/MultiSelect";
 import { AlertMessage } from '../components/AlertMessage';
 import { DataUse, ConsentGroup } from "../util/ajax";
-import '../components/Btn.css';
 import { isEmpty } from '../util/Utils';
+import '../components/Btn.css';
+import { UrlConstants } from '../util/UrlConstants';
 
 const styles = {
   borderedContainer: {
@@ -33,9 +34,10 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         projectKey: '',
         summary: ''
       },
+      showError: false,
       restriction: this.initRestriction(),
       create: this.props.location.state !== undefined && this.props.location.state.create !== undefined ? this.props.location.state.create : false,
-      consentKey: ''//this.props.location.state.consentKey
+      consentKey: this.props.location.state.consentKey
     }
   }
 
@@ -93,8 +95,25 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   submit() {
     if (this.validateForm()) {
-      // abrir spinner y redireccionar a dde estaba
-
+      DataUse.createDataUseRestriction(this.state.restriction).then(resp => {
+        if(this.state.create) {
+          history.push({
+            pathname: '/newConsentGroup/main',
+            search: '?consentKey=' + this.state.consentKey,
+            state: {issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey}
+          })
+        } else {
+          history.push({
+            pathname: '/newConsentGroup/main',
+            search: '?consentKey=' + this.state.consentKey,
+            pathname: UrlConstants.restrictionUrl, 
+            search: '?restrictionId=' + this.props.restrictionId, 
+            state: { consentKey: this.props.projectKey }
+          })
+        }
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
     } else {
       this.setState(prev => {
         prev.showError = true;
@@ -102,6 +121,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       })
     }
   }
+
   handleRadioChange = (e, field, value) => {
     if (value === 'true') {
       value = true;
@@ -511,7 +531,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             ])
           ])
         ]),
-// TODO
         div({ style: styles.borderedContainer }, [
           InputYesNo({
             id: "radioPopulationOriginsAncestry",
@@ -735,7 +754,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         ]),
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
-          button({ className: "btn btn-primary" }, ["Save"])
+          button({ className: "btn btn-primary" , onClick: this.submit}, ["Save"])
         ])
       ])
     )

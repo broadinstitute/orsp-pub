@@ -67,15 +67,18 @@ export const UrlConstants = {
   dataUseLetterRestrictionUrl: context + '/api/data-use-letter/restriction',
   infoLinkUrl: context + '/api/info-link',
   restrictionUrl: context + '/api/dur',
-
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
   historyUrl: context + '/api/history',
   submissionsUrl: context + '/api/submissions',
   submissionDisplayUrl: context + '/api/submissions/display',
-  newRestrictionUrl: context + '/dataUse/edit2',
+  restrictionUrl: context + '/dataUse/restriction',
+
+  saveRestrictionUrl: context + 'api/data-use/save',
+
   editRestrictionUrl: context + '/dataUse/edit2',
+  
   showRestrictionUrl: context + '/dataUse/show',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',

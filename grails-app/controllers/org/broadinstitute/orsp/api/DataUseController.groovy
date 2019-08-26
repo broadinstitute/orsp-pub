@@ -8,11 +8,13 @@ import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentException
 import org.broadinstitute.orsp.ConsentExportService
 import org.broadinstitute.orsp.ConsentService
+import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.consent.ConsentResource
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
@@ -22,6 +24,7 @@ class DataUseController extends AuthenticatedController {
 
     ConsentService consentService
     ConsentExportService consentExportService
+    DataUseLetterService dataUseLetterService
 
     def list() {
         render(view: "/mainContainer/index")
@@ -29,6 +32,10 @@ class DataUseController extends AuthenticatedController {
 
     @Override
     def show() {
+        render(view: "/mainContainer/index", model:[restrictionId: params.id])
+    }
+
+    def restriction() {
         render(view: "/mainContainer/index", model:[restrictionId: params.id])
     }
 
@@ -88,16 +95,45 @@ class DataUseController extends AuthenticatedController {
             render(status: 500, text: e as JSON, contentType: 'application/json')
         }
     }
-    @Override
-    create() {
-        Issue consent = queryService.findByKey(params.id)
-        DataUseRestriction restriction = new DataUseRestriction()
-        restriction.consentGroupKey = params.id
-        restriction.consentPIName = params.principalInvestigatorName
-        render(view: "edit", model: [consent: consent,
-                                     restriction: restriction,
-                                     create: params.create])
+//    @Override
+//    create() {
+//        Issue consent = queryService.findByKey(params.id)
+//        DataUseRestriction restriction = new DataUseRestriction()
+//        restriction.consentGroupKey = params.id
+//        restriction.consentPIName = params.principalInvestigatorName
+//        render(view: "edit", model: [consent: consent,
+//                                     restriction: restriction,
+//                                     create: params.create])
+//    }
+
+//    // TODO: Move db logic to service
+//    def edit() {
+//        DataUseRestriction restriction = DataUseRestriction.findById(params.id)
+//        Issue consent = queryService.findByKey(restriction.consentGroupKey)
+//        [restriction: restriction,
+//         consent    : consent,
+//         create     : params.create]
+//    }
+
+    def save() {
+        try {
+            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
+            restriction = DataUseRestrictionParser.fromParams(restriction, params)
+            restriction = dataUseLetterService.createSdul(restriction, getUser()?.displayName)
+            response.status = 200
+            render([data: restriction] as JSON)
+        } catch (Exception e) {
+            response.status = 500
+            render([data: e.getMessage()] as JSON)
+        }
+
+//        if (params.create) {
+//            redirect(controller: 'newConsentGroup', action: "main", params: [consentKey: restriction.consentGroupKey, tab: 'documents'])
+//        } else {
+//            redirect(controller: 'dataUse', action: "show", params: [id: restriction.id])
+//        }
     }
+
     def edit2() {
         render(view: "/mainContainer/index")
     }

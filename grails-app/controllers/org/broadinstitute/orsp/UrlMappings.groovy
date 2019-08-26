@@ -101,7 +101,9 @@ class UrlMappings {
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
         '/api/submissions/add-new'(controller: 'submission', action: 'index')
         '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
-        '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
+
+        '/api/data-use/save'(controller: 'dataUse', action: 'save')
+        
         '/api/data-use/restriction'(controller: 'dataUse', action: 'findRestriction')
         '/api/consent/export'(controller: 'dataUse', action: 'exportConsent', method: 'POST')
 
