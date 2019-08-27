@@ -10,7 +10,6 @@ import './Btn.css';
 import './TableComponent.css'
 import { Export } from "./Export";
 import { EXPORT_FILE } from "../util/TableUtil";
-import { isEmpty } from "../util/Utils";
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 

@@ -198,15 +198,6 @@ class QaReport extends Component {
   };
 
   exportTable = (action, tab) => {
-    const allElementsQuery = {
-      draw: 1,
-      start: 0,
-      length: 0,
-      orderColumn: null,
-      sortDirection: 'desc',
-      searchValue: null,
-    };
-
     let cols = columns.filter(el => el.dataField !== 'id');
     let elementsArray = formatDataPrintableFormat(this.state[tab].data, cols);
     const titleText = 'Quality Assurance Report';
