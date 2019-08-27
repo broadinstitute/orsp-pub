@@ -5,7 +5,6 @@ import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
-import org.broadinstitute.orsp.ConsentException
 import org.broadinstitute.orsp.ConsentExportService
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DataUseLetterService
@@ -27,15 +26,6 @@ class DataUseController extends AuthenticatedController {
     DataUseLetterService dataUseLetterService
 
     def list() {
-        render(view: "/mainContainer/index", model:[restrictionId: params.id])
-    }
-
-    @Override
-    def show() {
-        render(view: "/mainContainer/index", model:[restrictionId: params.id])
-    }
-
-    def restriction() {
         render(view: "/mainContainer/index", model:[restrictionId: params.id])
     }
 
@@ -95,25 +85,6 @@ class DataUseController extends AuthenticatedController {
             render(status: 500, text: e as JSON, contentType: 'application/json')
         }
     }
-//    @Override
-//    create() {
-//        Issue consent = queryService.findByKey(params.id)
-//        DataUseRestriction restriction = new DataUseRestriction()
-//        restriction.consentGroupKey = params.id
-//        restriction.consentPIName = params.principalInvestigatorName
-//        render(view: "edit", model: [consent: consent,
-//                                     restriction: restriction,
-//                                     create: params.create])
-//    }
-
-//    // TODO: Move db logic to service
-//    def edit() {
-//        DataUseRestriction restriction = DataUseRestriction.findById(params.id)
-//        Issue consent = queryService.findByKey(restriction.consentGroupKey)
-//        [restriction: restriction,
-//         consent    : consent,
-//         create     : params.create]
-//    }
 
     def createSdul() {
         try {

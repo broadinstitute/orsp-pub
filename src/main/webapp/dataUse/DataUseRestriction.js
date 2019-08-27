@@ -9,6 +9,7 @@ import { TABLE_ACTIONS } from "../util/TableUtil";
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import  { UrlConstants }  from '../util/UrlConstants';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -31,7 +32,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      h(Link, {to: {pathname:'/dataUse/show/'+ row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
+      h(Link, {to: {pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + row.id, state: {consentKey: row.consentGroupKey, restrictionId: row.id}}}, ['View Restriction'])
     ])
   },
   {

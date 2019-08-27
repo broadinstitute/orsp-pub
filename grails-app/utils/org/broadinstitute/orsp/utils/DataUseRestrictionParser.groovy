@@ -14,14 +14,14 @@ class DataUseRestrictionParser {
         dataUseRestriction.hmbResearch = params.hmbResearch instanceof Boolean ? params.hmbResearch : IssueUtils.getBooleanForParam(params.hmbResearch)
         dataUseRestriction.manualReview = params.manualReview instanceof Boolean ? params.manualReview : IssueUtils.getBooleanForParam(params.manualReview)
         dataUseRestriction.diseaseRestrictions = new ArrayList<>()
-//        if (params.diseaseRestrictions != null) {
-//            if (params.diseaseRestrictions instanceof String[] || params.diseaseRestrictions instanceof JSONArray) {
-//                dataUseRestriction.diseaseRestrictions.addAll(params.diseaseRestrictions.findAll { !it?.isEmpty() })
-//            }
-//            else if (!params.diseaseRestrictions.isEmpty()) {
-//                dataUseRestriction.setDiseaseRestrictions(Collections.singletonList((String) params.diseaseRestrictions))
-//            }
-//        }
+        if (params.diseaseRestrictions != null) {
+            if (params.diseaseRestrictions instanceof String[] || params.diseaseRestrictions instanceof JSONArray) {
+                dataUseRestriction.diseaseRestrictions.addAll(params.diseaseRestrictions.findAll { !it?.isEmpty() })
+            }
+            else if (!params.diseaseRestrictions.isEmpty()) {
+                dataUseRestriction.setDiseaseRestrictions(Collections.singletonList((String) params.diseaseRestrictions))
+            }
+        }
         dataUseRestriction.populationOriginsAncestry = params.populationOriginsAncestry instanceof Boolean ? params.populationOriginsAncestry : IssueUtils.getBooleanForParam(params.populationOriginsAncestry)
         dataUseRestriction.commercialUseExcluded = params.commercialUseExcluded instanceof Boolean ? params.commercialUseExcluded : IssueUtils.getBooleanForParam(params.commercialUseExcluded)
         dataUseRestriction.methodsResearchExcluded = params.methodsResearchExcluded instanceof Boolean ? params.methodsResearchExcluded : IssueUtils.getBooleanForParam(params.methodsResearchExcluded)

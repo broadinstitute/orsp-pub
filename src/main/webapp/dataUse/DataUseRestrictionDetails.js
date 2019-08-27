@@ -9,6 +9,7 @@ import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
+import  { UrlConstants }  from '../util/UrlConstants';
 
 const DUR_SPINNER = 'dusDetail';
 
@@ -239,9 +240,11 @@ class DataUseRestrictionDetails extends Component {
                 }
              })
             ]),
-            a({isRendered: !component.isViewer, className: 'btn buttonSecondary', style: {'marginTop':'15px'}, href: component.serverURL + '/dataUse/edit/' + this.state.restriction.id },['Edit'])
-          ]),
-        
+            h(Link, {
+              isRendered: !component.isViewer, className: "btn buttonSecondary", style: {'marginTop':'15px'},
+              to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.state.restriction.id, state: { consentKey: this.props.projectKey, restrictionId: this.state.restriction.id } }, style: styles.buttonWithLink
+            }, ["Edit"]),
+          ]),        
           Panel({ title: "Export Data Use Restrictions to DUOS"},[
             p({}, ["Exporting consent data information to the vault will enable other systems to recognize the data use restrictions required for the samples that are associated to the consent group."]),
             pre({},[this.state.consentResource]),
