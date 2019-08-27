@@ -82,6 +82,10 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   init() {
     spinnerService.showAll();
+    const params = new URLSearchParams(this.props.location.search);
+    console.log(this.props.location);
+    const restrictionId = params.get('restrictionId');
+    console.log(this.state.consentKey);
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
       this.setState(prev => {
         prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
@@ -90,13 +94,13 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.disabledConsent = true;
         return prev;
       }, () => {
-        if(this.props.location.state.restrictionId === undefined) {
+        if(restrictionId === undefined) {
           spinnerService.hideAll();
         }
       })
     })
-    if(this.props.location.state.restrictionId !== undefined) {
-     DataUse.getRestriction(this.props.location.state.restrictionId).then(result => {
+    if(restrictionId !== undefined) {
+     DataUse.getRestriction(restrictionId).then(result => {
       let restriction = this.initRestriction(result.data.restriction);
       this.setState(prev => {
         prev.restriction = restriction;
@@ -229,7 +233,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.generalUse = false;
         prev.restriction.hmbResearch = false;
         prev.restriction.diseaseRestrictions = [];
-        prev.restriction.controlSetOption = false;
+        prev.restriction.controlSetOption = 'No';
         return prev;
       }, () => this.validateForm());
     } else {
@@ -266,7 +270,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     if (value) {
       this.setState(prev => {
         prev.restriction.hmbResearch = false;
-        prev.restriction.controlSetOption = false;
+        prev.restriction.controlSetOption = 'No';
         prev.restriction.diseaseRestrictions = [];
         prev.restriction.generalUse = true;
         return prev;
@@ -281,7 +285,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     if (value) {
       this.setState(prev => {
         prev.restriction.genomicResults = true;
-        prev.restriction.controlSetOption = false;
+        prev.restriction.controlSetOption = 'No';
         prev.restriction.diseaseRestrictions = [];
         prev.restriction.generalUse = true;
         return prev;
@@ -350,7 +354,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.generalUse = false;
         prev.restriction.hmbResearch = false;
         prev.restriction.populationOriginsAncestry = false;
-        prev.restriction.controlSetOption = true;
+        prev.restriction.controlSetOption = 'Yes';
       } else {
         prev.restriction.diseaseRestrictions = [];
       }
@@ -461,7 +465,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           InputFieldText({
             label: "Consent Group",
             disabled: true,
-            value: this.state.restriction.consentGroupKey
+            value: this.state.restriction.consentGroupKey,
+            onChange: () => {}
           })
         ]),
 

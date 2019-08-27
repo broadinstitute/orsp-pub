@@ -30,7 +30,7 @@ const headers =
     { name: 'Author', value: 'creator' },
     { name: 'Version', value: 'docVersion' },
     { name: 'Status', value: 'status' },
-    { name: 'Created', value: 'createDate' },
+    { name: 'Created', value: 'creationDate' },
     { name: '', value: 'remove' }
   ];
 

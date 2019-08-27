@@ -63,8 +63,9 @@ class DataUseRestrictionDetails extends Component {
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
     this.state = {
-      restrictionId: this.props.location.state !== undefined && this.props.location.state.restrictionId !== undefined  ? this.props.location.state.restrictionId : component.restrictionId,
+      restrictionId: params.get('restrictionId'),
       summary: [],
       restrictionUrl: '',
       message: null,
@@ -242,7 +243,7 @@ class DataUseRestrictionDetails extends Component {
             ]),
             h(Link, {
               isRendered: !component.isViewer, className: "btn buttonSecondary", style: {'marginTop':'15px'},
-              to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.state.restriction.id, state: { consentKey: this.props.projectKey, restrictionId: this.state.restriction.id } }, style: styles.buttonWithLink
+              to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.state.restriction.id + '&consentKey=' + this.state.consent.projectKey }
             }, ["Edit"]),
           ]),        
           Panel({ title: "Export Data Use Restrictions to DUOS"},[

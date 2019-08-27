@@ -19,13 +19,20 @@ const styles = {
   infoLinkWidth: '96',
   creationDateWidth: '140',
   removeWidth: '45',
+  removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
   numberWidth: '30',
   createDateWidth: '15',
   submissionDocumentsWidth: '100',
   submissionComments: '75',
-  createdWidth: '140'
+  createdWidth: '30',
+  linkOverflowEllipsis: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    color: '#337ab7'
+  }
 };
 
 export const Table = hh(class Table extends Component {
@@ -47,13 +54,6 @@ export const Table = hh(class Table extends Component {
     if (!isEmpty(date)) {
       const simpleDate = new Date(date);
       return format(simpleDate, 'MM/DD/YY')
-    }
-  };
-
-  parseDate = (date) => {
-    if (date !== null) {
-      const simpleDate = new Date(date);
-      return format(simpleDate, 'M/D/YY h:m A')
     }
   };
 
@@ -108,7 +108,7 @@ export const Table = hh(class Table extends Component {
      Btn({
       action: {
         labelClass: "glyphicon glyphicon-remove",
-        handler: this.props.remove(row)
+        handler: () => this.props.remove(row)
       },
     });
 
@@ -147,16 +147,15 @@ export const Table = hh(class Table extends Component {
     cell.forEach(data => {
       if (data.document !== undefined) {
         documents.push([
-          div({className: "linkOverflowEllipsis", key: data.document.id}, [
+          div({style: styles.linkOverflowEllipsis, key: data.document.id}, [
             a({
-              href: `${component.downloadDocumentUrl}?uuid=${data.document.uuid}`,
+              href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
               target: '_blank',
               title: data.document.fileType,
             }, [
               span({
-                className: 'glyphicon glyphicon-download submission-download',
-                styles: "margin-right: 10px;"
-              }, []),
+                className: 'glyphicon glyphicon-download submission-download'
+              }, []), " ",
               data.document.fileName
             ])
           ])
@@ -289,7 +288,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
-                dataFormat={this.parseDate}
+                dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
@@ -298,6 +297,12 @@ export const Table = hh(class Table extends Component {
                 key={header.value}
                 dataFormat={this.formatRemoveBtn}
                 width={styles.removeWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'removeFile') {
+              return <TableHeaderColumn isKey={isKey}
+                dataField={header.value}
+                key={header.value}
+                dataFormat={this.formatRemoveBtn}
+                width={styles.removeWidthFile}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'unlinkSampleCollection') {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}

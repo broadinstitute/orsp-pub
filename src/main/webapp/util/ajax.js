@@ -391,11 +391,48 @@ export const ProjectMigration = {
     return axios.get(UrlConstants.historyUrl + '?id=' + id);
   },
 
-  getSubmissions(id) {
-    return axios.get(UrlConstants.submissionsUrl + "?id=" + id);
-  },
-
   getDisplaySubmissions(id) {
     return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
+  },
+
+  getSubmissionFormInfo(projectKey, type, submissionId) {
+    if (submissionId === null) {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+    } else {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&type=" + type + "&submissionId=" + submissionId);
+    }
+  },
+
+  saveSubmission(submissionData, files, submissionId) {
+    let data = new FormData();
+
+    files.forEach(file => {
+      if (file.file != null) {
+        const fileData = {
+          fileType: file.fileType,
+          name: file.fileName
+        };
+        data.append('files', file.file, file.fileName);
+        data.append('fileTypes', JSON.stringify(fileData));
+      }
+    });
+    data.append('submission', JSON.stringify(submissionData));
+
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+    if (submissionId === null) {
+      return axios.post(UrlConstants.submissionSaveUrl, data, config);
+    } else {
+      return axios.post(UrlConstants.submissionSaveUrl + '?submissionId=' + submissionId, data, config);
+    }
+  },
+
+  removeSubmissionFile(sumissionId, uuid) {
+    return axios.delete(UrlConstants.submissionRemoveFileUrl + '?submissionId=' + sumissionId + "&uuid=" + uuid);
+  },
+
+  deleteSubmission(submissionId) {
+    return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
   }
 };

@@ -67,6 +67,12 @@ export const UrlConstants = {
  
   infoLinkUrl: context + '/api/info-link',
   showRestrictionsUrl: context + '/api/dur',
+  submissionsUrl: context + '/api/submissions',
+  submissionsAddNewUrl: '/submissions/add-new',
+  submissionInfoAddUrl: context + '/api/submissions/info',
+  submissionSaveUrl: context + '/api/submissions/save-new',
+  submissionDisplayUrl: context + '/api/submissions/display',
+  submissionRemoveFileUrl: context + '/api/submission/remove-file',
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
@@ -76,6 +82,7 @@ export const UrlConstants = {
   restrictionUrl: context + '/dataUse/restriction',  
   showRestrictionUrl: context + '/dataUse/show',
   dataUseRestrictionUrl: context + '/api/data-use/restriction/create',
+  newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',
   viewRestrictionUrl: context + '/api/data-use/restriction'
