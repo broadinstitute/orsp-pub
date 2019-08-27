@@ -114,8 +114,6 @@ class UrlMappings {
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
 
-        'dataUse/restriction'(controller:'dataUse', action:'list')
-        'dataUse/show'(controller:'dataUse', action:'list')
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

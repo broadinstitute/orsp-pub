@@ -26,7 +26,15 @@ class DataUseController extends AuthenticatedController {
     DataUseLetterService dataUseLetterService
 
     def list() {
-        render(view: "/mainContainer/index", model:[restrictionId: params.id])
+      redirectToMainContainer()
+    }
+
+    def restriction() {
+      redirectToMainContainer()
+    }
+
+    def show() {
+      redirectToMainContainer()
     }
 
     def findDataUseRestrictions() {

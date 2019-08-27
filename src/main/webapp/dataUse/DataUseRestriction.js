@@ -6,10 +6,10 @@ import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
+import  { UrlConstants }  from '../util/UrlConstants';
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import  { UrlConstants }  from '../util/UrlConstants';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
