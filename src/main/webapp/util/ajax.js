@@ -298,7 +298,7 @@ export const DUL = {
 
 export const DataUse = {
   createRestriction(restriction) {
-    return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
+    return axios.post(UrlConstants.dataUseRestrictionUrl, restriction);
   },
 
   getRestriction(restrictionId) {
@@ -306,7 +306,7 @@ export const DataUse = {
   },
 
   getRestrictions(query) {
-    return axios.get(UrlConstants.restrictionUrl, {
+    return axios.get(UrlConstants.showRestrictionsUrl, {
       params: {
         draw: 1,
         start: query.start,
@@ -316,9 +316,6 @@ export const DataUse = {
         searchValue: query.searchValue
       }
     })
-  },
-  createDataUseRestriction(restriction) {
-    return axios.post(UrlConstants.saveRestrictionUrl, restriction);
   }
 };
 

@@ -12,9 +12,17 @@ import { UrlConstants } from "../util/UrlConstants";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "./Spinner";
 import { Link } from 'react-router-dom';
+import '../components/Btn.css';
 
 const DOCUMENTS_SPINNER = 'documentsSpinner';
 
+const styles = {
+  buttonWithLink: {
+    textDecoration: 'none',
+    color: '#FFFFFF',
+    marginRight: '15px'
+  }
+}
 const headers =
   [
     { name: 'Document Type', value: 'fileType' },
@@ -174,25 +182,21 @@ export const Documents = hh(class Documents extends Component {
                   ]);
                 }),
               ]),
-            div({}, [
-              div({ isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer, className: "btn buttonSecondary", style: { 'marginRight': '15px' } }, [
-                h(Link, { to: { pathname: UrlConstants.restrictionUrl, search: '?create=true&id=' + this.props.projectKey, state: { consentKey: this.props.projectKey } } },
-                  ["Create Restriction"])
-              ]),
-              div({
-                isRendered: this.props.restrictionId !== null && !component.isViewer,
-                className: "btn buttonSecondary", style: { 'marginRight': '15px' }
-              }, [
-                  h(Link, { to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey } } },
-                    ["Edit Restriction"])
-                ]),
-              div({
-                isRendered: this.props.restrictionId !== null,
-                className: "btn buttonSecondary", style: { 'marginRight': '15px' }
-              }, [
-                  h(Link, { to: { pathname: UrlConstants.showRestrictionUrl + '/' + this.props.restrictionId, state: { restrictionId: this.props.restrictionId } } },
-                    ["Ver Restriction"])
-                ])
+            div({ className: "row", style: { "marginTop": "20px" } }, [
+              div({ className: "col-xs-12" }, [
+                h(Link, {
+                  isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer, className: "btn buttonPrimary floatLeft",
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?create=true&id=' + this.props.projectKey, state: { consentKey: this.props.projectKey, create: true } }, style: styles.buttonWithLink
+                }, ["Create Restriction"]),
+                h(Link, {
+                  isRendered: this.props.restrictionId !== null && !component.isViewer, className: "btn buttonPrimary floatLeft",
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey, restrictionId: this.props.restrictionId } }, style: styles.buttonWithLink
+                }, ["Edit Restriction"]),
+                h(Link, {
+                  isRendered: this.props.restrictionId !== null, className: "btn buttonPrimary floatLeft",
+                  to: { pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey, restrictionId: this.props.restrictionId } }, style: styles.buttonWithLink
+                }, ["View Restrictions"])
+              ])
             ]),
           ])
       ]),

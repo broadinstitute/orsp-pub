@@ -27,7 +27,7 @@ class DataUseController extends AuthenticatedController {
     DataUseLetterService dataUseLetterService
 
     def list() {
-        render(view: "/mainContainer/index")
+        render(view: "/mainContainer/index", model:[restrictionId: params.id])
     }
 
     @Override
@@ -115,29 +115,18 @@ class DataUseController extends AuthenticatedController {
 //         create     : params.create]
 //    }
 
-    def save() {
+    def createSdul() {
         try {
-            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
-            restriction = DataUseRestrictionParser.fromParams(restriction, params)
-            restriction = dataUseLetterService.createSdul(restriction, getUser()?.displayName)
+            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(request.JSON.consentGroupKey)
+            restriction = DataUseRestrictionParser.fromParams(restriction, request.JSON)
+            dataUseLetterService.createSdul(restriction, getUser()?.displayName)
             response.status = 200
-            render([data: restriction] as JSON)
+            render(response.status)
         } catch (Exception e) {
             response.status = 500
-            render([data: e.getMessage()] as JSON)
+            render([error: e.message] as JSON)
         }
-
-//        if (params.create) {
-//            redirect(controller: 'newConsentGroup', action: "main", params: [consentKey: restriction.consentGroupKey, tab: 'documents'])
-//        } else {
-//            redirect(controller: 'dataUse', action: "show", params: [id: restriction.id])
-//        }
     }
-
-    def edit2() {
-        render(view: "/mainContainer/index")
-    }
-
 
     private String getConsentServiceUrl() {
         grailsApplication.config.consent.service.url

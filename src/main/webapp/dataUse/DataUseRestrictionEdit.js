@@ -39,86 +39,106 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       create: this.props.location.state !== undefined && this.props.location.state.create !== undefined ? this.props.location.state.create : false,
       consentKey: this.props.location.state.consentKey
     }
+    this.submit = this.submit.bind(this);
   }
 
   componentWillMount() {
     this.init();
+    this.scrollTop();
   }
 
-  initRestriction() {
-    return {
-      consentPIName: '',
+  initRestriction(restriction) {
+    let resp = {
+      consentPIName: restriction !== undefined ? restriction.consentPIName : '',
       consentGroupKey: this.props.location.state.consentKey,
-      noRestriction: '',
-      hmbResearch: '',
+      noRestriction: restriction !== undefined ? restriction.noRestriction : '',
+      hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
       diseaseRestrictions: [],
-      generalUse: '',
-      populationOriginsAncestry: '',
-      commercialUseExcluded: '',
-      methodsResearchExcluded: '',
-      aggregateResearchResponse: '',
-      controlSetOption: '',
-      gender: '',
-      pediatric: '',
-      collaborationInvestigators: '',
-      irb: '',
-      publicationResults: '',
-      genomicResults: '',
-      geographicalRestrictions: '',
-      other: '',
-      manualReview: false,
-      comments: '',
+      generalUse: restriction !== undefined ? restriction.generalUse : '',
+      populationOriginsAncestry: restriction !== undefined ? restriction.populationOriginsAncestry : '',
+      commercialUseExcluded:  restriction !== undefined ? restriction.commercialUseExcluded : '',
+      methodsResearchExcluded: restriction !== undefined ? restriction.methodsResearchExcluded : '',
+      aggregateResearchResponse: restriction !== undefined ? restriction.aggregateResearchResponse : '',
+      controlSetOption: restriction !== undefined ? restriction.controlSetOption : '',
+      gender: restriction !== undefined ? restriction.gender : '',
+      pediatric: restriction !== undefined ? restriction.pediatric : '',
+      collaborationInvestigators: restriction !== undefined ? restriction.collaborationInvestigators : '',
+      irb: restriction !== undefined ? restriction.irb : '',
+      publicationResults: restriction !== undefined ? restriction.publicationResults : '',
+      genomicResults: restriction !== undefined ? restriction.genomicResults : '',
+      geographicalRestrictions: restriction !== undefined ? restriction.geographicalRestrictions : '',
+      other: restriction !== undefined ? restriction.other : '',
+      manualReview: restriction !== undefined ? restriction.manualReview : false,
+      comments: restriction !== undefined ? restriction.comments : '',
       populationRestrictions: [],
-      genomicSummaryResults: '',
-      genomicPhenotypicData: ''
+      genomicSummaryResults: restriction !== undefined ? restriction.genomicSummaryResults : '',
+      genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : ''
     };
+    return resp;
   }
 
   init() {
-    ConsentGroup.getConsentGroup('DEV-CG-5553').then(result => {
+    ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
       this.setState(prev => {
         prev.restriction.consentGroupKey = result.data.issue.projectKey;
         prev.consent = result.data.issue;
         return prev;
       })
     })
+    if(this.props.location.state.restrictionId !== undefined) {
+     DataUse.getRestriction(this.props.location.state.restrictionId).then(result => {
+      let restriction = this.initRestriction(result.data.restriction);
+      this.setState(prev => {
+        prev.restriction = restriction;
+        return prev;
+      })
+     })
+    }
+  }
+
+  scrollTop() {
+    $('html, body').animate({ scrollTop: top }, 'fast');
   }
 
   validateForm() {
+    let validForm = false;
     if (this.state.restriction.noRestriction || this.state.restriction.generalUse ||
-      this.state.restriction.hmbResearch || this.state.restriction.diseases.length > 0) {
-      return true;
-    } else {
-      return false;
+      this.state.restriction.hmbResearch || this.state.restriction.diseaseRestrictions.length > 0) {
+        validForm = true;
     }
+    let showError = !validForm;
+    this.setState(prev => {
+      prev.showError = showError;
+      return prev;
+    });
+    return validForm;
   }
 
   submit() {
     if (this.validateForm()) {
-      DataUse.createDataUseRestriction(this.state.restriction).then(resp => {
-        if(this.state.create) {
-          history.push({
+      let restriction = this.state.restriction;
+      restriction.diseaseRestrictions = this.getDiseases(this.state.restriction.diseaseRestrictions)
+      DataUse.createRestriction(restriction).then(resp => {
+        if (this.state.create) {
+          this.props.history.push({
             pathname: '/newConsentGroup/main',
             search: '?consentKey=' + this.state.consentKey,
-            state: {issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey}
+            state: { issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey }
           })
         } else {
-          history.push({
+          this.props.history.push({
             pathname: '/newConsentGroup/main',
             search: '?consentKey=' + this.state.consentKey,
-            pathname: UrlConstants.restrictionUrl, 
-            search: '?restrictionId=' + this.props.restrictionId, 
-            state: { consentKey: this.props.projectKey }
+            pathname: UrlConstants.restrictionUrl,
+            search: '?restrictionId=' + this.props.restrictionId,
+            state: { issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey }
           })
         }
       }).catch(error => {
         this.setState(() => { throw error; });
       });
     } else {
-      this.setState(prev => {
-        prev.showError = true;
-        return prev;
-      })
+      this.scrollTop();
     }
   }
 
@@ -128,19 +148,16 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     } else if (value === 'false') {
       value = false;
     }
-    if (field === 'noRestriction' && value) {
-      checkFields(value);
-    }
     this.setState(prev => {
       prev.restriction[field] = value;
       return prev;
     });
   }
 
-  handleControlSetChange= (e) => {
+  handleControlSetChange = (e) => {
     let name = e.target.name;
     this.setState(prev => {
-      if(name === 'controlSetOptionYes') {
+      if (name === 'controlSetOptionYes') {
         prev.restriction.controlSetOption = 'Yes';
       } else if (name === 'controlSetOptionNo') {
         prev.restriction.controlSetOption = 'No';
@@ -154,7 +171,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   handleResearchChange = (e) => {
     let name = e.target.name;
     this.setState(prev => {
-      if(name === 'agregateResearchYes') {
+      if (name === 'agregateResearchYes') {
         prev.restriction.aggregateResearchResponse = 'Yes';
       } else if (name === 'agregateResearchNo') {
         prev.restriction.aggregateResearchResponse = 'No';
@@ -168,7 +185,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   handleGenderChange = (e) => {
     let name = e.target.name;
     this.setState(prev => {
-      if(name === 'female') {
+      if (name === 'female') {
         prev.restriction.gender = 'female';
       } else if (name === 'male') {
         prev.restriction.gender = 'male';
@@ -183,7 +200,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   genomicHandlerChange = (e) => {
     let name = e.target.name;
     this.setState(prev => {
-      if(name === 'genomicYes') {
+      if (name === 'genomicYes') {
         prev.restriction.genomicPhenotypicData = 'Yes';
       } else if (name === 'genomicNo') {
         prev.restriction.genomicPhenotypicData = 'No';
@@ -204,7 +221,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.diseaseRestrictions = [];
         prev.restriction.controlSetOption = false;
         return prev;
-      });
+      }, () => this.validateForm());
     } else {
       this.setFieldValue(field, value);
     }
@@ -230,10 +247,10 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   See https://broadinstitute.atlassian.net/browse/GAWB-3210
   General Use, HMB, and Disease Restrictions are intertwined and exclusive. One has to
   choose one of the three.
- * GRU means HMB == no && no diseases && controlSet == yes
- * HMB means GRU == no && no diseases && POA == yes
- * Diseases means GRU == no && HMB == no && POA == yes
-*/
+  * GRU means HMB == no && no diseases && controlSet == yes
+  * HMB means GRU == no && no diseases && POA == yes
+  * Diseases means GRU == no && HMB == no && POA == yes
+  */
   handleGeneralUseRadioChange = (e, field, value) => {
     value = this.getValue(value);
     if (value) {
@@ -243,7 +260,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.diseaseRestrictions = [];
         prev.restriction.generalUse = true;
         return prev;
-      });
+      }, () => this.validateForm());
     } else {
       this.setFieldValue(field, value);
     }
@@ -273,7 +290,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.populationOriginsAncestry = true;
         prev.restriction.hmbResearch = true;
         return prev;
-      });
+      }, () => this.validateForm());
     } else {
       this.setFieldValue(field, value);
     }
@@ -328,6 +345,10 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.diseaseRestrictions = [];
       }
       return prev;
+    }, () => {
+      if(this.state.restriction.diseaseRestrictions.length > 0) {
+        this.validateForm();
+      }
     });
   };
 
@@ -375,7 +396,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       return prev;
     });
   };
-  
+
   reset = (e) => {
     let restriction = this.initRestriction();
     this.setState(prev => {
@@ -384,10 +405,16 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     });
   }
 
+  getDiseases(diseases) {
+    return diseases.map(disease =>
+        disease.key
+    );
+  }
+
   render() {
     return (
       div({}, [
-        h1({ className: styles.headerTitle }, [this.state.create ? 'Create ' : 'Edit ' + 'Data Use Restrictions for ' + this.state.consent.projectKey + ':' + this.state.consent.summary]),
+        h1({ className: styles.headerTitle }, [(this.state.create ? 'Create ' : 'Edit ') + 'Data Use Restrictions for ' + this.state.consentKey + ': ' + this.state.consent.summary]),
         div({ style: styles.borderedContainer }, [
           AlertMessage({
             msg: 'At least one of NRES, GRU, HMB, or a Disease Restriction must be selected.',
@@ -564,7 +591,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
           label({ className: "inputFieldLabel" }, ["Future use of aggregate-level data for general research purposes is prohibited [NAGR]"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.aggregateResearchResponse === 'Yes', onChange: this.handleResearchChange, name: 'agregateResearchYes'}, []),
+            input({ type: "radio", checked: this.state.restriction.aggregateResearchResponse === 'Yes', onChange: this.handleResearchChange, name: 'agregateResearchYes' }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Yes"])
           ]),
@@ -582,7 +609,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
           label({ className: "inputFieldLabel" }, ["Future as a control set for diseases other than those specified is prohibited [CTRL]"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.controlSetOption === 'Yes', onChange: this.handleControlSetChange, name: 'controlSetOptionYes'}, []),
+            input({ type: "radio", checked: this.state.restriction.controlSetOption === 'Yes', onChange: this.handleControlSetChange, name: 'controlSetOptionYes' }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Yes"])
           ]),
@@ -600,17 +627,17 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
           label({ className: "inputFieldLabel" }, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === 'male', onChange: this.handleGenderChange, name:'male' }, []),
+            input({ type: "radio", checked: this.state.restriction.gender === 'male', onChange: this.handleGenderChange, name: 'male' }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Male"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === 'female', onChange: this.handleGenderChange, name:'female' }, []),
+            input({ type: "radio", checked: this.state.restriction.gender === 'female', onChange: this.handleGenderChange, name: 'female' }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Female"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === 'na', onChange: this.handleGenderChange, name:"na"}, []),
+            input({ type: "radio", checked: this.state.restriction.gender === 'na', onChange: this.handleGenderChange, name: "na" }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["N/A"])
           ])
@@ -645,17 +672,17 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
           label({ className: "inputFieldLabel" }, ["Did participants consent to the use of their genomic and phenotypic data for future research and broad sharing?"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: "Yes", checked: this.state.restriction.genomicPhenotypicData === 'Yes', name:'genomicYes', onChange: this.genomicHandlerChange }, []),
+            input({ type: "radio", value: "Yes", checked: this.state.restriction.genomicPhenotypicData === 'Yes', name: 'genomicYes', onChange: this.genomicHandlerChange }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Yes"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: "No", checked: this.state.restriction.genomicPhenotypicData === 'No', name:'genomicNo', onChange: this.genomicHandlerChange}, []),
+            input({ type: "radio", value: "No", checked: this.state.restriction.genomicPhenotypicData === 'No', name: 'genomicNo', onChange: this.genomicHandlerChange }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["No"])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", value: "Unspecified", checked: this.state.restriction.genomicPhenotypicData === 'Unspecified', name:'genomicUnspecified', onChange: this.genomicHandlerChange}, []),
+            input({ type: "radio", value: "Unspecified", checked: this.state.restriction.genomicPhenotypicData === 'Unspecified', name: 'genomicUnspecified', onChange: this.genomicHandlerChange }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Unspecified"])
           ])
@@ -754,7 +781,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         ]),
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
-          button({ className: "btn btn-primary" , onClick: this.submit}, ["Save"])
+          button({ className: "btn btn-primary", onClick: this.submit }, ["Save"])
         ])
       ])
     )
