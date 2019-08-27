@@ -101,12 +101,6 @@ class UtilityClass {
     static void registerQaReportIssueMarshaller() {
         JSON.createNamedConfig(ISSUE_FOR_QA) {
             it.registerObjectMarshaller( Issue ) { Issue issue ->
-                String reviewCategory = issue.getReviewCategory()
-                if (StringUtils.isNotEmpty(issue.getInitialReviewType())) {
-                    def jsonSlurper = new JsonSlurper()
-                    Map<String, String> initialReview = jsonSlurper.parseText(issue.getInitialReviewType()) as Map
-                    reviewCategory = initialReview.size() > 0 && initialReview.containsKey('value') ? initialReview.get('value') : reviewCategory
-                }
                 return [
                         id: issue.id,
                         type: issue.type,
@@ -114,7 +108,6 @@ class UtilityClass {
                         summary: issue.summary,
                         status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
                         issueStatus: issue.status,
-                        reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
                         reporter       : issue.reporter,
                         requestDate    : issue.requestDate,
                         attachments    : issue.attachments,

@@ -39,7 +39,7 @@ class QueryService implements Status {
     UserService userService
     SessionFactory sessionFactory
     ConsentService consentService
-
+    StatusEventService statusEventService
     public static String PROJECT_KEY_PREFIX
 
     static {
@@ -675,7 +675,7 @@ class QueryService implements Status {
         String orderColumn = statusReportPaginationOrder(paginationOptions)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final StringBuffer query = new StringBuffer(' select distinct i.id from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != "Consent Group"')
+        final StringBuffer query = new StringBuffer(' select distinct i.project_key from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != "Consent Group"')
 
         if (paginationOptions.searchValue) {
             query.append("and (i.project_key LIKE :term ")
@@ -696,17 +696,15 @@ class QueryService implements Status {
         if (queryOptions.after) sqlQuery.setTimestamp('afterDate', queryOptions.after)
 
         // total rows
-        List<Long> ids = sqlQuery.list()
-        List<Issue> results = new ArrayList<>()
-        if (CollectionUtils.isNotEmpty(ids)) {
-            results = findPaginatedIssuesByIds(ids, orderColumn, paginationOptions)
-        }
+        List<String> ids = sqlQuery.list()
+        List<Issue> results = findPaginatedIssuesByProjectKey(ids, orderColumn, paginationOptions)
+        List<StatusEventService.StatusEventDTO> statusEvents = statusEventService.getStatusEventsForProjectList(results)
         new PaginatedResponse(
-                draw: paginationOptions.draw,
-                recordsTotal: ids.size(),
-                recordsFiltered: ids.size(),
-                data: results,
-                error: ""
+            draw: paginationOptions.draw,
+            recordsTotal: ids.size(),
+            recordsFiltered: ids.size(),
+            data:  results, //statusEventService.getStatusEventsForProjectList(results),
+            error: ""
         )
     }
 
@@ -1187,6 +1185,22 @@ class QueryService implements Status {
             setFirstResult(pagination.start)
             setMaxResults(pagination.length)
             setParameterList("ids", ids)
+            list()
+        }
+        results
+    }
+
+    private List<Issue> findPaginatedIssuesByProjectKey(List<String> keyList, String orderColumn, PaginationParams pagination) {
+        String query = 'select * from issue where project_key in :keyList '
+        if (orderColumn) {
+            query = query + " order by " + orderColumn + pagination.sortDirection
+        }
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<Issue> results = sqlQuery.with {
+            addEntity(Issue)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            setParameterList("keyList", keyList)
             list()
         }
         results

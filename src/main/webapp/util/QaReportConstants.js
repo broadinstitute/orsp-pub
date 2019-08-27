@@ -1,6 +1,7 @@
 export const QA_REPORT_SPINNER = "qaReportSpinner";
 export const NO_IRB = 'noIrb';
 export const IRB = 'irb';
+import { div, a } from 'react-hyperscript-helpers';
 
 export const columns = [{
   dataField: 'id',
@@ -10,7 +11,11 @@ export const columns = [{
 }, {
   dataField: 'projectKey',
   text: 'Project',
-  sort: true
+  sort: true,
+  formatter: (cell, row, rowIndex, colIndex) =>
+    div({},[
+      a({onClick: () => this.history.push("/statusEvent/qaEventReport/projectReport")},[row.projectKey])
+    ])
 }, {
   dataField: 'type',
   text: 'Type',

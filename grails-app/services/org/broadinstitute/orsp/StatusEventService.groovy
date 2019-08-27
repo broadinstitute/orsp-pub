@@ -36,18 +36,18 @@ class StatusEventService {
         results as Collection<Event>
     }
 
-    List<StatusEventDTO> getStatusEventDTOs(String projectId) {
-        List<Event> statusEvents = getStatusEventsForProject(projectId).sort {
-            a, b -> a.created <=> b.created
-        }
-        if (statusEvents.isEmpty()) return Collections.emptyList()
+    List<StatusEventDTO> getStatusEventDTOs(List<Event> statusEvents) {
+//        List<Event> statusEvents = getStatusEventsForProject(projectId).sort {
+//            a, b -> a.created <=> b.created
+//        }
+        if (statusEvents && statusEvents.isEmpty()) return Collections.emptyList()
 
         // The first event to calculate time from is either "Reviewing Form" if it exists,
         // or the very first event if it does not.
         // For IRBs, we don't need to be picky about the initial status because they are not
         // specifically required for QA reporting, only NE/NHSR projects.
         Event rf = statusEvents.find { it.eventType?.equals(EventType.REVIEWING_FORM) }
-        Event first = rf ?: statusEvents.head()
+        Event first = rf ?: statusEvents?.head()
         // Create DTOs from sorted events
         // Duration is calculated as this event's creation date compared to the next event's creation date.
         // If there isn't a next event, then we use today's date to calculate the duration which indicates
@@ -56,8 +56,8 @@ class StatusEventService {
         // Terminal Event Case:
         // If the event is a terminal event (i.e. completed, abandoned, etc.) then the duration is
         // calculated from the first event to the terminal state event.
-        List<StatusEventDTO> eventDTOs = statusEvents.
-                withIndex().
+        List<StatusEventDTO> eventDTOs = statusEvents?.
+                withIndex()?.
                 collect { Event event, int i ->
                     Period duration
                     if (TERMINAL_TYPES.contains(event.eventType)) {
@@ -68,20 +68,51 @@ class StatusEventService {
                     } else {
                         duration = new Period(event.created.time, new Date().time, PeriodType.yearMonthDay())
                     }
-                    new StatusEventDTO(event, duration)
+                    new StatusEventDTO(new Issue(), event, duration)
                 }
         eventDTOs
     }
 
+    List <StatusEventDTO> getStatusEventsForProjectList(List<Issue> issues) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from event e where e.project_key in :projectKeys ' +
+                             ' and e.event_type in :typeList '
+        final sqlQuery = session.createSQLQuery(query)
+
+        List<Event> eventList = sqlQuery.with {
+            addEntity(Event)
+            setParameterList('projectKeys', issues*.projectKey.toList())
+            setParameterList('typeList', TYPES*.name())
+            list()
+                    //.sort{ a, b -> a.created <=> b.created }
+        } as List<Event>
+
+        Map<String, Event> eventMap = eventList.groupBy {it.projectKey} as Map<String, Event>
+        List<StatusEventDTO> result = new ArrayList<>()
+        issues.collect { issue ->
+            List<StatusEventDTO> eventDTOs = getStatusEventDTOs(eventMap[issue.projectKey] as List<Event>)
+            if (eventDTOs) {
+                StatusEventDTO statusEventDTO = eventDTOs?.last()
+                statusEventDTO?.setIssue(issue)
+                result.add(statusEventDTO)
+            } else {
+                result.add(new StatusEventDTO(issue, null, null))
+            }
+        }
+        result
+    }
+
     class StatusEventDTO {
+        Issue issue
         Event event
         Period duration
         Integer stage
 
-        StatusEventDTO(Event event, Period duration) {
+        StatusEventDTO(Issue issue, Event event, Period duration) {
+            this.issue = issue
             this.event = event
             this.duration = duration
-            this.stage = getEventStage(event)
+            this.stage = event ? getEventStage(event) : 0
         }
 
         private Integer getEventStage(Event event) {
