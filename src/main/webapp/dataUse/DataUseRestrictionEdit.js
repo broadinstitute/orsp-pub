@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h1, div, hh, h2, strong, ul, i, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
+import { h1, h, div, hh, h2, strong, ul, i, p, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
 import { InputFieldText } from "../components/InputFieldText";
 import { InputYesNo } from "../components/InputYesNo";
 import { Search } from "../util/ajax";
@@ -8,8 +8,11 @@ import { MultiSelect } from "../components/MultiSelect";
 import { AlertMessage } from '../components/AlertMessage';
 import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
-import '../components/Btn.css';
 import { UrlConstants } from '../util/UrlConstants';
+import { spinnerService } from "../util/spinner-service";
+import { Spinner } from "../components/Spinner";
+import '../components/Btn.css';
+
 
 const styles = {
   borderedContainer: {
@@ -49,7 +52,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   initRestriction(restriction) {
     let resp = {
-      consentPIName: restriction !== undefined ? restriction.consentPIName : '',
       consentGroupKey: this.props.location.state.consentKey,
       noRestriction: restriction !== undefined ? restriction.noRestriction : '',
       hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
@@ -72,17 +74,25 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       comments: restriction !== undefined ? restriction.comments : '',
       populationRestrictions: [],
       genomicSummaryResults: restriction !== undefined ? restriction.genomicSummaryResults : '',
-      genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : ''
+      genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : '',
+      consentPIName: restriction !== undefined  && !isEmpty(restriction.consentPIName)  ? restriction.consentPIName : '',
     };
     return resp;
   }
 
   init() {
+    spinnerService.showAll();
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
       this.setState(prev => {
+        prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
         prev.restriction.consentGroupKey = result.data.issue.projectKey;
         prev.consent = result.data.issue;
+        prev.disabledConsent = true;
         return prev;
+      }, () => {
+        if(this.props.location.state.restrictionId === undefined) {
+          spinnerService.hideAll();
+        }
       })
     })
     if(this.props.location.state.restrictionId !== undefined) {
@@ -92,7 +102,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction = restriction;
         return prev;
       })
-     })
+     }, () => spinnerService.hideAll())
     }
   }
 
@@ -431,8 +441,10 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer }, [
           InputFieldText({
             label: "Principal Investigator listed on the informed consent form",
-            disabled: this.state.create ? false : true,
-            value: ''
+            disabled: true,
+            value: this.state.restriction.consentPIName,
+            onChange: this.changeTextHandler,
+            name: 'consentPIName'
           })
         ]),
 
@@ -731,7 +743,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ]),
           hr({ isRendered: this.state.restriction.genomicResults }, []),
           div({ isRendered: this.state.restriction.genomicResults, style: styles.inputGroup }, [
-            label({}, ["If ", i({}, ["Yes"]), ", please explain."]),
+            p({className: "inputFieldLabel"}, ["If ", i({}, ["Yes"]), ", please explain."]),
             InputFieldTextArea({
               disabled: false,
               value: this.state.restriction.genomicSummaryResults,
@@ -741,7 +753,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ]),
           hr({}, []),
           div({ style: styles.inputGroup }, [
-            label({}, ["Geographical restrictions?"]),
+            p({className: "inputFieldLabel"}, ["Geographical restrictions?"]),
             InputFieldText({
               disabled: false,
               value: this.state.restriction.geographicalRestrictions,
@@ -751,7 +763,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ]),
           hr({}, []),
           div({ style: styles.inputGroup }, [
-            label({}, ["Other terms of use?"]),
+            label({className: "inputFieldLabel"}, ["Other terms of use?"]),
             InputFieldTextArea({
               disabled: false,
               value: this.state.restriction.other,
@@ -771,7 +783,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ])
         ]),
         div({ style: styles.borderedContainer }, [
-          label({}, ["Comments (ORSP Use Only)"]),
+          label({className: "inputFieldLabel"}, ["Comments (ORSP Use Only)"]),
           InputFieldTextArea({
             disabled: false,
             value: this.state.restriction.comments,
@@ -782,7 +794,10 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
           button({ className: "btn btn-primary", onClick: this.submit }, ["Save"])
-        ])
+        ]),
+        h(Spinner, {
+          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+        })
       ])
     )
   }
