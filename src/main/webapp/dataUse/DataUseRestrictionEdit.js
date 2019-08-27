@@ -55,7 +55,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       consentGroupKey: this.props.location.state.consentKey,
       noRestriction: restriction !== undefined ? restriction.noRestriction : '',
       hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
-      diseaseRestrictions: [],
+      diseaseRestrictions: this.getDiseasesFromRestriction(),
       generalUse: restriction !== undefined ? restriction.generalUse : '',
       populationOriginsAncestry: restriction !== undefined ? restriction.populationOriginsAncestry : '',
       commercialUseExcluded:  restriction !== undefined ? restriction.commercialUseExcluded : '',
@@ -75,7 +75,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       populationRestrictions: [],
       genomicSummaryResults: restriction !== undefined ? restriction.genomicSummaryResults : '',
       genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : '',
-      consentPIName: restriction !== undefined  && !isEmpty(restriction.consentPIName)  ? restriction.consentPIName : '',
+      consentPIName: restriction !== undefined  && !isEmpty(restriction.consentPIName)  ? restriction.consentPIName : '', 
     };
     return resp;
   }
@@ -407,6 +407,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     });
   };
 
+  handleRadioIRB = (e, field, value) => {
+    value = this.getValue(value);
+    if (value) {
+      this.setState(prev => {
+        prev.restriction.manualReview = true;
+        prev.restriction.irb = true;
+        return prev;
+      });
+    } else {
+      this.setFieldValue(field, value);
+    }
+  }
+
   reset = (e) => {
     let restriction = this.initRestriction();
     this.setState(prev => {
@@ -419,6 +432,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     return diseases.map(disease =>
         disease.key
     );
+  }
+
+  getDiseasesFromRestriction(restriction) {
+    let diseases = []
+    if(restriction.diseaseRestrictions !== null) {
+      let diseases = restriction.diseaseRestrictions.map(disease => {
+        diseases.push( {
+          key: disease,
+          label: disease
+        })
+      })
+    }
+    return diseases;
   }
 
   render() {
@@ -706,7 +732,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             value: this.state.restriction.collaborationInvestigators,
             label: "Collaboration with the primary study investigators required [COL-XX]",
             readOnly: false,
-            onChange: this.handleRadioRelatedMRChange
+            onChange: this.handleRadioChange
           }),
           hr({}, []),
           div({ style: styles.inputGroup }, [
@@ -716,7 +742,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
               value: this.state.restriction.irb,
               label: "Ethics committee approval required?",
               readOnly: false,
-              onChange: this.handleRadioRelatedMRChange
+              onChange: this.handleRadioIRB
             })
           ]),
           hr({}, []),

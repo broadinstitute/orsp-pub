@@ -32,7 +32,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      h(Link, {to: {pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + row.id, state: {consentKey: row.consentGroupKey, restrictionId: row.id}}}, ['View Restriction'])
+      h(Link, {to: {pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
     ])
   },
   {
