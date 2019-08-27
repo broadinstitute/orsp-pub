@@ -1,13 +1,16 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
+import { h, div } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User, Project } from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User} from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
+import { Spinner } from "../components/Spinner";
 import { isEmpty } from "../util/Utils";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 
 const LAST_STEP = 1;
+const CONSENT_SPINNER = 'consentSpinner';
 
 class NewConsentGroup extends Component {
 
@@ -86,6 +89,9 @@ class NewConsentGroup extends Component {
       }
     );
   }
+  componentWillUnmount() {
+    spinnerService._unregister(CONSENT_SPINNER);
+  }
 
   getUserSession() {
     User.getUserSession().then(
@@ -95,7 +101,7 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = async () => {
 
-    spinnerService.showAll();
+    spinnerService.show(CONSENT_SPINNER);
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
@@ -111,11 +117,11 @@ class NewConsentGroup extends Component {
         .then(resp => {
           // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
           // transitioning from old gsps style is solved.
-          window.location.href = [this.props.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups&new"].join("/");
-          spinnerService.hideAll();
+          window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
+          spinnerService.hide(CONSENT_SPINNER);
         }).catch(error => {
         console.error(error);
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_SPINNER);
         this.toggleSubmitError();
         this.changeSubmitState();
       });
@@ -124,7 +130,7 @@ class NewConsentGroup extends Component {
         prev.generalError = true;
         return prev;
       }, () => {
-        spinnerService.hideAll();
+        spinnerService.hide(CONSENT_SPINNER);
       });
     }
   };
@@ -152,7 +158,7 @@ class NewConsentGroup extends Component {
     let consentCollectionLink = {};
     // consent collection link info
     consentCollectionLink.sampleCollectionId = sampleCollectionId;
-    consentCollectionLink.projectKey = this.props.projectKey;
+    consentCollectionLink.projectKey = component.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     consentCollectionLink.startDate = this.parseDate(this.state.generalDataFormData.startDate);
     consentCollectionLink.onGoingProcess = this.state.generalDataFormData.onGoingProcess ;
@@ -188,7 +194,7 @@ class NewConsentGroup extends Component {
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
    
-    extraProperties.push({ name: 'source', value: this.props.projectKey });
+    extraProperties.push({ name: 'source', value: component.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
     extraProperties.push({ name: 'consent', value: this.state.generalDataFormData.investigatorLastName });
@@ -477,7 +483,7 @@ class NewConsentGroup extends Component {
     }).catch(error => {
       console.error(error);
     });
-  }
+  };
 
   removeErrorMessage() {
     this.setState(prev => {
@@ -500,15 +506,16 @@ class NewConsentGroup extends Component {
     let projectType = determination.projectType;
 
     return (
-      Wizard({
-        title: "New Sample/Data Cohort",
-        note: "Please use this section to provide information about the data and/or samples you will receive.  Also upload any consent forms or associated documents.  If no consent form is available, please explain why this is the case.",
-        stepChanged: this.stepChanged,
-        isValid: this.isValid,
-        showSubmit: this.showSubmit,
-        submitHandler: this.submitNewConsentGroup,
-        disabledSubmit: this.state.formSubmitted,
-      }, [
+      div({name: 'wizardContainer'},[
+        Wizard({
+          title: "New Sample/Data Cohort",
+          note: "Please use this section to provide information about the data and/or samples you will receive.  Also upload any consent forms or associated documents.  If no consent form is available, please explain why this is the case.",
+          stepChanged: this.stepChanged,
+          isValid: this.isValid,
+          showSubmit: this.showSubmit,
+          submitHandler: this.submitNewConsentGroup,
+          disabledSubmit: this.state.formSubmitted
+        }, [
           NewConsentGroupGeneralData({
             title: "Sample/Data Cohort Info",
             currentStep: currentStep,
@@ -516,7 +523,7 @@ class NewConsentGroup extends Component {
             updateForm: this.updateGeneralDataFormData,
             errors: this.state.errors,
             removeErrorMessage: this.removeErrorMessage,
-            projectKey: this.props.projectKey,
+            projectKey: component.projectKey,
             sampleCollectionList: this.state.sampleCollectionList,
             fileHandler: this.fileHandler,
             projectType: projectType,
@@ -542,7 +549,11 @@ class NewConsentGroup extends Component {
             securityInfoData: this.state.securityInfoFormData,
             updateMTA: this.updateMTA
           })
-        ])
+        ]),
+        h(Spinner, {
+          name: CONSENT_SPINNER, group: "orsp", loadingImage: component.loadingImage
+        })
+      ])
     );
   }
 }

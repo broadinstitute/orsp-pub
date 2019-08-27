@@ -48,7 +48,7 @@ export const History = hh(class History extends Component {
   printHistory = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
     let historyArray = formatDataPrintableFormat(this.props.history, cols);
-    const titleText = (component.issueType === "project" ? ("Project ID: " + component.projectKey)
+    const titleText = (component.issueType === "project" ? ("Project ID: " + this.props.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];
     printData(historyArray, titleText, 'ORSP History', columnsWidths);
@@ -66,7 +66,9 @@ export const History = hh(class History extends Component {
           fileName: 'ORSP',
           showPrintButton: false,
           printComments: this.printHistory,
-          defaultSorted: defaultSorted
+          defaultSorted: defaultSorted,
+          showSearchBar: true,
+          pagination: true
         })
       ])
     )

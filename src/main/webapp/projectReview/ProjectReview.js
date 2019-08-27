@@ -21,6 +21,7 @@ import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+const PROJECT_REVIEW_SPINNER = "projectReviewSpinner";
 
 export const ProjectReview = hh(class ProjectReview extends Component {
 
@@ -148,8 +149,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     this.init();
+  }
+
+  componentWillUnmount() {
+    spinnerService._unregister(PROJECT_REVIEW_SPINNER);
   }
 
   init() {
@@ -158,7 +163,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     let future = {};
     let futureCopy = {};
     let formData = {};
-    Project.getProject(component.projectKey).then(
+    Project.getProject(this.props.projectKey).then(
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
@@ -178,7 +183,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         futureCopy = JSON.parse(currentStr);
         this.projectType = issue.data.issue.type;
 
-        Review.getSuggestions(component.projectKey).then(
+        Review.getSuggestions(this.props.projectKey).then(
           data => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('new') && urlParams.get('tab') === 'review') {
@@ -188,7 +193,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-              spinnerService.hideAll();
+              spinnerService.hide(PROJECT_REVIEW_SPINNER);
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -201,7 +206,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               });
               this.props.changeInfoStatus(false);
             } else {
-              spinnerService.hideAll();
+              spinnerService.hide(PROJECT_REVIEW_SPINNER);
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -215,14 +220,14 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
-        spinnerService.hideAll();
+        spinnerService.hide(PROJECT_REVIEW_SPINNER);
         this.setState(() => { throw error; });
       });
   }
 
   getReviewSuggestions() {
     this.init();
-      Review.getSuggestions(component.projectKey).then(
+      Review.getSuggestions(this.props.projectKey).then(
       data => {
         if (data.data !== '') {
           this.setState(prev => {
@@ -292,7 +297,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       approveInfoDialog: false
     });
     const data = { projectReviewApproved: true };
-    Project.addExtraProperties(component.projectKey, data).then(
+    Project.addExtraProperties(this.props.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
         this.setState(prev => {
@@ -300,7 +305,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           return prev;
         }, 
         () => {
-          Project.getProject(component.projectKey).then(
+          Project.getProject(this.props.projectKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
             })
@@ -311,7 +316,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     });
     if (this.state.reviewSuggestion) {
       let project = this.getProject();
-      Project.updateProject(project, component.projectKey).then(
+      Project.updateProject(project, this.props.projectKey).then(
         resp => {
           this.removeEdits('approve');
         })
@@ -322,51 +327,51 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   rejectProject() {
-    spinnerService.showAll();
-    Project.rejectProject(component.projectKey).then(resp => {
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    Project.rejectProject(this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
       window.location.href = [component.serverURL, "index"].join("/");
-      spinnerService.hideAll();
+      spinnerService.hide(PROJECT_REVIEW_SPINNER);
     }).catch(error => {
-      spinnerService.hideAll();
+      spinnerService.hide(PROJECT_REVIEW_SPINNER);
       this.setState(() => { throw error; });
     });
   }
 
   discardEdits() {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   }
 
   approveEdits = () => {
-    spinnerService.showAll();
+    spinnerService.show(PROJECT_REVIEW_SPINNER);
     let project = this.getProject();
     project.editsApproved = true;
-    Project.updateProject(project, component.projectKey).then(
+    Project.updateProject(project, this.props.projectKey).then(
       resp => {
         this.removeEdits('approve');
         this.setState((state, props) => {
           return { approveDialog: !state.approveDialog }
         });
       }).catch(error => {
-        spinnerService.hideAll();
-        this.setState(() => { throw error; });
+      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.setState(() => { throw error; });
       });
   };
 
   removeEdits(type) {
-    Review.deleteSuggestions(component.projectKey, type).then(
+    Review.deleteSuggestions(this.props.projectKey, type).then(
       resp => {
         this.props.updateContent();
         this.init();
-        spinnerService.hideAll();
+        spinnerService.hide(PROJECT_REVIEW_SPINNER);
       })
       .catch(error => {
-        spinnerService.hideAll();
+        spinnerService.hide(PROJECT_REVIEW_SPINNER);
         this.setState(() => { throw error; });
       });
   }
@@ -500,12 +505,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         resp => {
           suggestions.editCreator = resp.data.userName;
           const data = {
-            projectKey: component.projectKey,
+            projectKey: this.props.projectKey,
             suggestions: JSON.stringify(suggestions)
           };
 
           if (this.state.reviewSuggestion) {
-            Review.updateReview(component.projectKey, data).then(() =>
+            Review.updateReview(this.props.projectKey, data).then(() =>
               this.getReviewSuggestions()
             ).catch(error => {
               this.getReviewSuggestions();
@@ -757,7 +762,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   redirectToConsentGroupTab = async () => {
-    window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
+    window.location.href = [component.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
   };
 
   handleAttestationCheck = (e) => {
@@ -815,7 +820,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         RequestClarificationDialog({
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
-          issueKey: component.projectKey,
+          issueKey: this.props.projectKey,
           successClarification: this.successNotification,
         }),
 
@@ -1210,7 +1215,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           }, ["Request Clarification"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: PROJECT_REVIEW_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

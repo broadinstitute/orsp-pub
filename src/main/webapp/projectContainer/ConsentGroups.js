@@ -1,11 +1,69 @@
-import { Component, Fragment } from 'react';
-import { div, hh, h } from 'react-hyperscript-helpers';
-import { ProjectMigration } from '../util/ajax';
+import React, { Component, Fragment } from 'react';
+import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
+import { ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { Spinner } from "../components/Spinner";
+import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
+import { isEmpty } from "../util/Utils";
+import { TableComponent } from "../components/TableComponent";
+import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
+import { formatUrlDocument, parseDate } from "../util/TableUtil";
+import { AlertMessage } from "../components/AlertMessage";
+import { spinnerService } from "../util/spinner-service";
 import { UrlConstants } from "../util/UrlConstants";
+
+const CONSENT_GROUPS_SPINNER = 'consentGroupsSpinner';
+
+const columns = (cThis) => [{
+  dataField: 'id',
+  text: 'Id',
+  hidden: true,
+  csvExport : false
+},
+{
+  dataField: 'uuid',
+  text: '',
+  style: { pointerEvents: 'auto' },
+  headerStyle: (column, colIndex) => {
+    return {
+      width: '65px',
+    };
+  },
+  formatter: (cell, row, rowIndex, colIndex) =>
+    button({
+      isRendered: component.isAdmin,
+      className: 'btn btn-default btn-xs link-btn',
+      onClick: () => cThis.removeAttachedDocument(row)
+    },["Delete"])
+},
+{
+  dataField: 'fileType',
+  text: 'Attachment Type'
+}, {
+  dataField: 'fileName',
+  text: 'File Name',
+  style: { pointerEvents: 'auto' },
+  formatter: (cell, row, rowIndex, colIndex) =>
+    a(formatUrlDocument(row), [row.fileName])
+},
+{
+  dataField: 'creator',
+  text: 'Author'
+},
+{
+  dataField: 'creationDate',
+  text: 'Created',
+  formatter: (cell, row, rowIndex, colIndex) =>
+    isEmpty(row.creationDate) ? '' : parseDate(row.creationDate)
+}
+];
+
+const defaultSorted = [{
+  dataField: 'projectKey',
+  order: 'desc'
+}];
 
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
@@ -17,14 +75,34 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
       action: '',
       issueKey: '',
       consentKey: '',
-      showRequestClarification: false
+      showRequestClarification: false,
+      actionConsentKey: '',
+      fileIdToRemove: '',
+      issue: {},
+      showSuccessClarification: false
     };
-    this.loadConsentGroups = this.loadConsentGroups.bind(this);
   }
 
   componentDidMount() {
-    this.getConsentGroups();
+    this.getProjectConsentGroups();
   }
+
+  componentWillUnmount() {
+    spinnerService._unregister(CONSENT_GROUPS_SPINNER);
+  }
+
+  getProjectConsentGroups = () => {
+    ConsentGroup.getProjectConsentGroups(this.props.projectKey).then( result => {
+      this.handleSuccessNotification();
+      this.setState(prev => {
+        prev.consentGroups = result.data.consentGroups;
+        prev.issue = result.data.issue;
+        return prev;
+      },() => {
+        this.collapseBtnAnimationListener();
+      });
+    });
+  };
 
   closeConfirmationModal = () => {
     this.setState({showConfirmationModal: !this.state.showConfirmationModal});
@@ -36,26 +114,44 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   handleOkConfirmation = () => {
     if(this.state.action === "unlink" || this.state.action === "reject") {
-      ConsentCollectionLink.breakLink(this.state.issueKey, this.state.consentKey, this.state.action).then(resp => {
-        this.getConsentGroups();
+      ConsentCollectionLink.breakLink(this.state.issue.projectKey, this.state.actionConsentKey, this.state.action).then(resp => {
+        this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
+    } else if (this.state.action === 'remove') {
+      DocumentHandler.deleteAttachmentByUuid(this.state.fileIdToRemove).
+      then(resp => {
+        this.getProjectConsentGroups();
+        this.closeConfirmationModal();
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
     } else {
-      ConsentCollectionLink.approveLink(this.state.issueKey, this.state.consentKey).then(resp => {
-        this.getConsentGroups();
+      ConsentCollectionLink.approveLink(this.state.issue.projectKey, this.state.actionConsentKey).then(resp => {
+        this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
     }
   };
 
-  getConsentGroups() {
-    ProjectMigration.getConsentGroups(component.projectKey).then(resp => {
+  handleSuccessNotification = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('new') && urlParams.get('tab') === 'consent-groups') {
+      history.pushState({}, null, window.location.href.split('&')[0]);
+      setTimeout(this.clearAlertMessage, 8000, null);
+      this.props.updateContent();
       this.setState(prev => {
-        prev.content = resp.data;
+        prev.showSuccessClarification = true;
+        prev.alertType = 'success';
         return prev;
-      }, () => {
-        this.loadConsentGroups(this);
       });
+    }
+  };
+
+  clearAlertMessage = () => {
+    this.setState(prev => {
+      prev.showSuccessClarification = false;
+      return prev;
     });
   };
 
@@ -64,11 +160,10 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     this.closeRequestClarification();
   };
 
-  loadConsentGroups = (rThis) => {
-    $('.consent-group-panel-body').hide();
+  collapseBtnAnimationListener() {
     $('.consent-accordion-toggle').on('click', function () {
-      var icon = $(this).children().first();
-      var body = $(this).parent().parent().next();
+      const icon = $(this).children().first();
+      const body = $(this).parent().parent().next();
       if (icon.hasClass("glyphicon-chevron-up")) {
         icon.removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
         body.slideUp();
@@ -77,82 +172,140 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         body.show("slow");
       }
     });
-    $(".modal-add-button").on('click', function () {
-      $("#add-consent-document-modal").load(
-        UrlConstants.uploadModalUrl + "?" + $.param({
-          issueKey: $(this).data("issue"),
-          consentKey: $(this).data("consent")
-        }),
-        function () {
-          $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-          $("button[data-dismiss='modal']").on("click", function () { $("#add-consent-document-modal").dialog("close"); });
-        }
-      ).dialog({
-        modal: true,
-        minWidth: 1000,
-        minHeight: 500,
-        closeOnEscape: true,
-        hide: { effect: "fadeOut", duration: 300 },
-        show: { effect: "fadeIn", duration: 300 },
-        dialogClass: "no-titlebar"
-      }).parent().removeClass("ui-widget-content");
-      $(".ui-dialog-titlebar").hide();
-    });
+  }
 
-    $(".confirmationModal").on('click', function () {
-      rThis.setState(prev => {
-        prev.showConfirmationModal = true;
-        prev.action = $(this).data("handler");
-        prev.issueKey = $(this).data("issue");
-        prev.consentKey = $(this).data("consent");
-        return prev;
-      });
+  approve = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'approve';
+      prev.showConfirmationModal = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
     });
-    $(".request-clarification").on('click', function () {
-      rThis.setState(prev => {
-        prev.showRequestClarification = true;
-        prev.issueKey = $(this).data("issue");
-        prev.consentKey = $(this).data("consent");
-        return prev;
-      });
+  };
+
+  reject = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'reject';
+      prev.showConfirmationModal = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
     });
-    // Display for 8 seconds a message indicating the submission of a new consent group. 
-    // This is temporary until this page is moved to react.
-    // https://broadinstitute.atlassian.net/browse/BTRX-628
-    var url = new URLSearchParams(window.location.search);
-    if (url.get('tab') === 'consent-groups' && url.has('new')) {
-      $('#alert').fadeIn('slow', function () {
-        $('#alert').delay(15000).fadeOut();
-        history.pushState({}, null, window.location.href.split('&')[0]);
+  };
+
+  unlink = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'unlink';
+      prev.showConfirmationModal = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
+    });
+  };
+
+  requestClarification = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.showRequestClarification = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
+    });
+  };
+
+  parseCollapsibleElementsData = (consents) => {
+    let parsedArray = [];
+    if (!isEmpty(consents)) {
+      parsedArray = consents.map(consent => {
+        return {
+          consent : consent,
+          search : false,
+          remoteProp : false,
+          data: consent.attachments,
+          columns: columns(this),
+          keyField: 'id',
+          defaultSorted: defaultSorted,
+          fileName: '_',
+          pagination: false,
+          showExportButtons : false,
+          showSearchBar : false,
+          customHandlers : {
+            approveHandler: this.approve,
+            rejectHandler: this.reject,
+            unlinkHandler: this.unlink,
+            requestClarificationHandler: this.requestClarification
+          }
+        }
       });
     }
+    return parsedArray;
+  };
+
+  redirect = (action) => {
+    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl;
+    this.props.history.push(path)
+  };
+
+  removeAttachedDocument(file) {
+    this.setState(prev => {
+      prev.fileIdToRemove = file.uuid;
+      prev.action = 'remove';
+      prev.showConfirmationModal = true;
+      return prev;
+    });
   }
 
   render() {
     return (
-     h(Fragment, {}, [       
-      div({ dangerouslySetInnerHTML: { __html: this.state.content } }, []),
-      ConfirmationDialog({
-        closeModal: this.closeConfirmationModal,
-        show: this.state.showConfirmationModal,
-        handleOkAction: this.handleOkConfirmation,
-        bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
-        actionLabel: 'Yes'
-      }, []),
-      RequestClarificationDialog({
-        closeModal: this.closeRequestClarification,
-        show: this.state.showRequestClarification,
-        issueKey: this.state.issueKey,
-        consentKey: this.state.consentKey,
-        user: component.user,
-        emailUrl: component.emailUrl,
-        userName: component.userName,
-        successClarification: this.successClarification,
-        linkClarification: true
-      }),
-      h(Spinner, {
-        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
-      })
-     ]))
-    }
+      h(Fragment, {}, [
+        AlertMessage({
+          msg: 'Your Sample/Data Cohort was successfully submitted to the Broad Institute’s Office of Research Subject Protection. ' +
+            'It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
+          show: this.state.showSuccessClarification,
+          type: 'success'
+        }),
+        button({
+          className: "btn btn-default",
+          style: { marginRight:'5px' },
+          onClick:() => this.redirect('new')
+        }, ['Add New Sample/Data Cohort']),
+        button({
+          className:"btn btn-default",
+          onClick: () => this.redirect('useExisting')
+        }, ['Use Existing Sample/Data Cohort'] ),
+        h3({ isRendered: !isEmpty(this.state.consentGroups) },['Sample/Data Cohort']),
+        CollapsibleElements({
+          body: TableComponent,
+          header: SampleDataCohortsCollapsibleHeader,
+          accordion: false,
+          data: isEmpty(this.state.consentGroups) ? [] : this.parseCollapsibleElementsData(this.state.consentGroups),
+          extraData: { issue: this.state.issue, history: this.props.history }
+        }),
+
+        ConfirmationDialog({
+          closeModal: this.closeConfirmationModal,
+          show: this.state.showConfirmationModal,
+          handleOkAction: this.handleOkConfirmation,
+          bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
+          actionLabel: 'Yes'
+        }, []),
+
+        RequestClarificationDialog({
+          closeModal: this.closeRequestClarification,
+          show: this.state.showRequestClarification,
+          issueKey: this.props.projectKey,
+          consentKey: this.state.actionConsentKey,
+          user: component.user,
+          emailUrl: component.emailUrl,
+          userName: component.userName,
+          clarificationUrl: component.requestLinkClarificationUrl,
+          successClarification: this.successClarification,
+          linkClarification: true
+        }),
+        h(Spinner, {
+          name: CONSENT_GROUPS_SPINNER, group: "orsp", loadingImage: component.loadingImage
+        })
+      ])
+    )
+  }
 });

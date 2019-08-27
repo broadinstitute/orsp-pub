@@ -38,6 +38,7 @@ class QueryService implements Status {
     OntologyService ontologyService
     UserService userService
     SessionFactory sessionFactory
+    ConsentService consentService
 
     public static String PROJECT_KEY_PREFIX
 
@@ -299,22 +300,6 @@ class QueryService implements Status {
         links
     }
 
-    Collection<ConsentCollectionLink> findAllCollectionLinks() {
-        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAll()
-        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
-        Collection<Issue> projects = Issue.findAllByProjectKeyInList(links.collect { it.projectKey })
-        Collection<DataUseRestriction> durs = DataUseRestriction.findAllByConsentGroupKeyInList(links.collect { it.consentKey })
-        links.each { link ->
-            if (link) {
-                if (link.sampleCollectionId && collectionMap.containsKey(link.sampleCollectionId)) {
-                    link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
-                }
-                link.setLinkedProject(projects.find { it?.projectKey == link?.projectKey })
-                link.setRestriction(durs.find { it?.consentGroupKey == link?.consentKey })
-            }
-        }
-        links
-    }
 
     Collection<Object> getCCLSummaries() {
         final String query =
@@ -403,7 +388,8 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query =
                 ' select * from storage_document ' +
-                ' where consent_collection_link_id = :consentCollectionIds'
+                ' where consent_collection_link_id = :consentCollectionIds' +
+                ' and deleted = 0'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -411,6 +397,21 @@ class QueryService implements Status {
             list()
         }
         results.groupBy { it?.consentCollectionLinkId }
+    }
+
+    List <StorageDocument> findAllDocumentsBySampleCollectionIdList(List<Long> consentCollectionId) {
+        final session = sessionFactory.currentSession
+        final String query =
+                ' select * from storage_document ' +
+                        ' where consent_collection_link_id in :consentCollectionIds' +
+                        ' and deleted = 0'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameterList('consentCollectionIds', consentCollectionId)
+            list()
+        }
+        results
     }
 
     List<ConsentCollectionLinkDTO> getCollectionLinksDtoByConsentKey(String consentKey) {
@@ -622,13 +623,24 @@ class QueryService implements Status {
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys) {
+    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
         if (keys && !keys.isEmpty()) {
-            Collection<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList()) ?: Collections.emptyList()
-            Collection<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
+            List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())
+            List<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
+
             def docsByProject = documents.groupBy({d -> d.projectKey})
             issues.each { issue ->
-                issue.setAttachments(docsByProject.getOrDefault(issue.projectKey, Collections.emptyList()))
+                List<StorageDocument> docs = new ArrayList<>()
+                List<ConsentCollectionLink> links = findConsentCollectionLinksByProjectKeyAndConsentKey(projectKey, issue.projectKey)
+                List<StorageDocument> collectionDocuments = findAllDocumentsBySampleCollectionIdList(links?.collect{it.id})
+                List<StorageDocument> projectDocuments = docsByProject.get(issue.projectKey)
+                if (CollectionUtils.isNotEmpty(collectionDocuments)) {
+                    docs.addAll(collectionDocuments)
+                }
+                if (CollectionUtils.isNotEmpty(projectDocuments)) {
+                    docs.addAll(projectDocuments)
+                }
+                issue.setAttachments(docs)
                 issue.setStatus(keys.get(issue.projectKey).status)
             }
             issues
@@ -1195,7 +1207,7 @@ class QueryService implements Status {
             extraProperties  : new ConsentGroupExtraProperties(issue),
             collectionLinks  : collectionLinks,
             sampleCollections: sampleCollections,
-            attachmentsApproved: issue.attachmentsApproved()
+            attachmentsApproved: issue.attachmentsApproved() && consentService.collectionDocumentsApproved(collectionLinks.collect{it.id})
         ]
     }
 
@@ -1276,6 +1288,18 @@ class QueryService implements Status {
             list()
         }
         results
+    }
+
+    @SuppressWarnings("GroovyAssignabilityCheck")
+    StorageDocument findAttachmentByUuid(String uuid) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from storage_document where uuid = :uuid and deleted = 0'
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.with {
+            addEntity(StorageDocument)
+            setParameter("uuid", uuid)
+            uniqueResult()
+        }
     }
 
     @SuppressWarnings("GroovyAssignabilityCheck")
@@ -1485,5 +1509,84 @@ class QueryService implements Status {
             log.error("An error has occurred when trying to get comments for issueId: ${issueId}.", e)
         }
         results
+    }
+
+
+    PaginatedResponse findDataUseRestrictions(PaginationParams pagination) {
+        // get total rows
+        String query = 'select count(id) from data_use_restriction ' + getDURWhereClause(pagination)
+        String orderColumn = getRestrictionOrderColumn(pagination.orderColumn)
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
+        Long totalRows = sqlQuery.uniqueResult()
+
+        // get DUR paginated
+        String durQuery =  'select * from data_use_restriction ' + getDURWhereClause(pagination) + " order by " + orderColumn + pagination.sortDirection
+        SQLQuery sqlDURQuery = getSessionFactory().currentSession.createSQLQuery(durQuery)
+
+        List<DataUseRestriction> results = sqlDURQuery.with {
+            if (pagination.searchValue) setString('term', pagination.getLikeTerm())
+            addEntity(DataUseRestriction)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            list()
+        }
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: totalRows,
+                recordsFiltered: totalRows,
+                data: results,
+                error: ""
+        )
+    }
+
+    private String getDURWhereClause(PaginationParams pagination) {
+        String where = ''
+        if (pagination.searchValue) {
+            where = ' where consent_group_key LIKE :term OR vault_export_date LIKE :term '
+        }
+        where
+    }
+
+    List<ConsentCollectionLink> findCollectionLinks() {
+        String query = 'select * from consent_collection_link where deleted = 0 '
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<ConsentCollectionLink> links = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            list()
+        }
+        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
+        (links as Collection<ConsentCollectionLink>).each { link ->
+            if (link) {
+                if (link?.sampleCollectionId && collectionMap.containsKey(link?.sampleCollectionId)) {
+                    link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
+                }
+            }
+        }
+        links
+    }
+
+
+    List<DataUseRestriction> findDataUseRestrictionByConsentGroupKeyInList(List<String> consentGroupKeys) {
+        String query = 'select * from data_use_restriction where consent_group_key IN :consentGroupKeys '
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        sqlQuery.with {
+            addEntity(DataUseRestriction)
+            setParameterList('consentGroupKeys', consentGroupKeys)
+            list()
+        }
+    }
+
+    private String getRestrictionOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " consent_group_key "
+                break
+            case 1:
+                orderField = " vault_export_date "
+                break
+        }
+        orderField
     }
 }

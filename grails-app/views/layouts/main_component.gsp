@@ -71,22 +71,20 @@
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        error: "${error}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
         issueType: "${issueType}",
+        restrictionId: "${restrictionId}",
         tab: "${params.tab}",
         consentKey: "${consentKey}",
         projectType: '${params.type}',
         serverURL: "${grailsApplication.config.grails.serverURL}",
         contextPath: "${request.contextPath}",
-        isAdmin: ${session.isAdmin},
-        isViewer: ${session.isViewer},
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
-        isViewer: ${session.isViewer ? session.isViewer : false},
+        isViewer: ${session.isViewer ? session.isViewer : false}
       };
     </script>
 
@@ -113,7 +111,7 @@
 
     <g:layoutHead/>
 </head>
-<body>
+<body style="margin-top: 0; padding-top: 70px;">
 <g:render template="/base/topNav" />
 
 <auth:isNotAuthenticated>

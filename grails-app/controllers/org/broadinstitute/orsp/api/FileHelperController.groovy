@@ -3,7 +3,10 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
+import org.apache.commons.collections.CollectionUtils
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
@@ -13,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile
 
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class FileHelperController extends AuthenticatedController{
+
+    ConsentService consentService
 
     def attachDocument() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
@@ -95,12 +100,19 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def attachedDocuments() {
+        Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(params.issueKey)
+        List<Long> collectionIds = collectionLinks?.collect{it.id}
         Collection<StorageDocument> documents = queryService.getDocumentsForProject(params.issueKey)
+        Boolean collectionDocsApproved = true
+        if (CollectionUtils.isNotEmpty(collectionIds)) {
+            documents.addAll(queryService.findAllDocumentsBySampleCollectionIdList(collectionIds))
+            collectionDocsApproved = consentService.collectionDocumentsApproved(collectionIds)
+        }
         List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
         Boolean attachmentsApproved = queryService.findByKey(params.issueKey).attachmentsApproved()
         Gson gson = new Gson()
         String doc = gson.toJson(results)
-        render ([documents : doc, attachmentsApproved: attachmentsApproved] as JSON)
+        render ([documents : doc, attachmentsApproved: attachmentsApproved && collectionDocsApproved] as JSON)
     }
 
     def updateDocumentsVersion() {
@@ -128,6 +140,31 @@ class FileHelperController extends AuthenticatedController{
             documents.forEach {
                 storageProviderService.removeStorageDocument(it, getUser()?.userName)
             }
+        }
+    }
+
+    def deleteDocumentByUuid() {
+        if (params.uuid) {
+            try {
+                StorageDocument document = queryService.findAttachmentByUuid(params.uuid)
+                if (document) {
+                    storageProviderService.removeStorageDocument(document, getUser()?.displayName)
+                    response.status = 200
+                    render(['message': 'document deleted'] as JSON)
+                } else {
+                    log.error("Error trying to delete File. Document with Uuid: ${params.uuid} not found.")
+                    response.status = 404
+                    render(['message': 'File to delete not found.'] as JSON)
+                }
+            } catch(Exception e) {
+                response.status = 500
+                log.error("Error trying to delete file with Uuid: ${params.uuid}.", e.getMessage())
+                render(['message': 'An error has occurred trying to delete File.'] as JSON)
+            }
+        } else {
+            log.error("Error, document to delete has an empty UuId.")
+            response.status = 400
+            render(['message': 'Unable to delete a file with no Id.'] as JSON)
         }
     }
 }

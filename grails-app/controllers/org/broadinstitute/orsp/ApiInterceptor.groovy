@@ -34,15 +34,10 @@ class ApiInterceptor implements UserInfo  {
     boolean before() {
         if (!session.getAttribute("user")) {
             session.setAttribute("savedParams", params)
-            forbidden()
+            render(view: "/index")
             false
         }
         true
-    }
-
-    def forbidden() {
-        response.status = 403
-        render([error: 'access denied'] as JSON)
     }
 
     def exception(Exception e) {

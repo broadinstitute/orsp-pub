@@ -17,6 +17,8 @@ import { Spinner } from "../components/Spinner";
 import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
 
+const ADMIN_ONLY_SPINNER = 'adminOnlySpinner';
+
 export const AdminOnly = hh(class AdminOnly extends Component {
   constructor(props) {
     super(props);
@@ -49,13 +51,17 @@ export const AdminOnly = hh(class AdminOnly extends Component {
     this.init()
   }
 
+  componentWillUnmount() {
+    spinnerService._unregister(ADMIN_ONLY_SPINNER);
+  }
+
   init = () => {
-    Project.getProject(component.projectKey).then(
+    Project.getProject(this.props.projectKey).then(
       issue => {
         let formData = {};
         let initial = {};
         this.props.initStatusBoxInfo(issue.data);
-        formData.projectKey = component.projectKey;
+        formData.projectKey = this.props.projectKey;
         formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
         formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
         formData.degrees = issue.data.extraProperties.degrees;
@@ -136,11 +142,11 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   submit = () => {
-    spinnerService.showAll();
+    spinnerService.show(ADMIN_ONLY_SPINNER);
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(parsedForm , component.projectKey).then(
+    Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
       response => {
-        spinnerService.hideAll();
+        spinnerService.hide(ADMIN_ONLY_SPINNER);
         this.setState(prev => {
           prev.initial = createObjectCopy(this.state.formData);
           prev.showSubmissionError = false;
@@ -150,7 +156,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => {
-        spinnerService.hideAll();
+        spinnerService.hide(ADMIN_ONLY_SPINNER);
         this.init();
         this.setState(prev => {
           prev.showSubmissionError = true;
@@ -394,7 +400,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           }, ["Submit"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: ADMIN_ONLY_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

@@ -290,7 +290,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
                 minDate: this.state.startDate
               })
             ]),
-            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 checkbox", style: { 'marginTop': '32px' } }, [
+            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12 col-padding checkbox" }, [
               InputFieldCheckbox({
                 id: "onGoingProcess",
                 name: "onGoingProcess",

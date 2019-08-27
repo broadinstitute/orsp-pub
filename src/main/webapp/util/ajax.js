@@ -94,6 +94,14 @@ export const ConsentGroup = {
   unlinkSampleCollection(consentCollectionId) {
     const data = { consentCollectionId };
     return axios.put(UrlConstants.unlinkAssociatedSampleCollection, data);
+  },
+
+  getProjectConsentGroups(projectKey) {
+    return axios.get(UrlConstants.getProjectConsentGroupsUrl + '?projectKey=' + projectKey);
+  },
+
+  exportConsent(id) {
+    return axios.post(UrlConstants.exportConsent + '?id=' + id);
   }
 };
 
@@ -208,6 +216,10 @@ export const DocumentHandler = {
 
   delete(documentId) {
     return axios.delete(`${UrlConstants.removeDocumentUrl}?documentId=${documentId}`);
+  },
+
+  deleteAttachmentByUuid(fileUuid) {
+    return axios.delete(`${UrlConstants.removeAttachmentByUuidUrl}?uuid=${fileUuid}`);
   }
 };
 
@@ -284,7 +296,22 @@ export const DUL = {
 export const DataUse = {
   createRestriction(restriction) {
     return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
-  }  
+  },
+  getRestriction(restrictionId) {
+    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
+  },
+  getRestrictions(query) {
+    return axios.get(UrlConstants.restrictionUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
 };
 
 export const ProjectInfoLink = {
@@ -315,6 +342,10 @@ export const ConsentCollectionLink = {
 
   approveLink(projectKey, consentKey) {
     return axios.put(UrlConstants.sampleApproveLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey);
+  },
+
+  findCollectionLinks() {
+    return axios.get(UrlConstants.collectionLinks);
   }
 };
 
@@ -355,11 +386,48 @@ export const ProjectMigration = {
     return axios.get(UrlConstants.historyUrl + '?id=' + id);
   },
 
-  getSubmissions(id) {
-    return axios.get(UrlConstants.submissionsUrl + "?id=" + id);
-  },
-
   getDisplaySubmissions(id) {
     return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
+  },
+
+  getSubmissionFormInfo(projectKey, type, submissionId) {
+    if (submissionId === null) {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+    } else {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&type=" + type + "&submissionId=" + submissionId);
+    }
+  },
+
+  saveSubmission(submissionData, files, submissionId) {
+    let data = new FormData();
+
+    files.forEach(file => {
+      if (file.file != null) {
+        const fileData = {
+          fileType: file.fileType,
+          name: file.fileName
+        };
+        data.append('files', file.file, file.fileName);
+        data.append('fileTypes', JSON.stringify(fileData));
+      }
+    });
+    data.append('submission', JSON.stringify(submissionData));
+
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+    if (submissionId === null) {
+      return axios.post(UrlConstants.submissionSaveUrl, data, config);
+    } else {
+      return axios.post(UrlConstants.submissionSaveUrl + '?submissionId=' + submissionId, data, config);
+    }
+  },
+
+  removeSubmissionFile(sumissionId, uuid) {
+    return axios.delete(UrlConstants.submissionRemoveFileUrl + '?submissionId=' + sumissionId + "&uuid=" + uuid);
+  },
+
+  deleteSubmission(submissionId) {
+    return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
   }
 };
