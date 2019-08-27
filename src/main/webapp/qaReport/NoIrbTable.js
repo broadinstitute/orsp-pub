@@ -1,12 +1,9 @@
 import { Component } from 'react';
 import { TableComponent } from "../components/TableComponent";
-import { formatDataPrintableFormat } from "../util/TableUtil";
-import { exportData } from "../util/Utils";
 import {
   columns,
   COLUMNS_TO_HIDE_FROM_EXCEL,
   defaultSorted,
-  IRB,
   NO_IRB,
   SIZE_PER_PAGE_LIST
 } from "../util/QaReportConstants";
@@ -33,7 +30,7 @@ class NoIrbTable extends Component {
         columns: columns,
         keyField: 'id',
         search: true,
-        fileName: 'ORSP',
+        fileName: 'Quality Assurance Report',
         page: this.props[NO_IRB].currentPage,
         totalSize: this.props[NO_IRB].recordsFiltered,
         showPrintButton: true,

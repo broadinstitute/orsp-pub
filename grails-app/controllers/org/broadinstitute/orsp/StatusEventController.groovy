@@ -16,18 +16,12 @@ import java.text.SimpleDateFormat
 @Resource(readOnly = false, formats = ['JSON'])
 class StatusEventController extends AuthenticatedController {
     final static String NO_IRB = "noIrb"
+    final static String ALL_PROJECTS = 'all'
 
     def qaEventReport() {
         render(view: "/mainContainer/index")
     }
 
-// TODO REMOVE THIS
-    private Map<IssueType, Collection<Issue>> getGroupedIssues(QueryOptions options) {
-        queryService.
-                findIssuesForStatusReport(options).
-                groupBy { IssueType.valueOfName(it.type) }
-    }
-// TODO REMOVE THIS
     private Map<String, Period> calculateIssuePeriods(Collection<Issue> issues) {
         issues.collectEntries { issue ->
             List<StatusEventService.StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(issue.projectKey)
@@ -40,38 +34,6 @@ class StatusEventController extends AuthenticatedController {
             [issue.projectKey, period]
         }
     }
-// TODO REMOVE THIS
-    def index() {
-        QueryOptions options = new QueryOptions()
-        DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT)
-        if (params.after) {
-            try {
-                options.after = format.parse(params.after) as Timestamp
-            } catch (ParseException e) {
-                log.error("Parse Exception: " + e)
-                log.error("Unable to parse 'after' date: " + params.after)
-                flash.error = e.getMessage()
-            }
-        }
-        if (params.before) {
-            try {
-                options.before = format.parse(params.before) as Timestamp
-            } catch (ParseException e) {
-                log.error("Parse Exception: " + e)
-                log.error("Unable to parse 'before' date: " + params.before)
-                flash.error = e.getMessage()
-            }
-        }
-        if (params.project_type) {
-            options.issueTypeNames = [IssueType.valueOfController(params.project_type).name]
-        }
-        Map<IssueType, Collection<Issue>> groupedIssues = getGroupedIssues(options)
-        Collection<Issue> irbs = groupedIssues.getOrDefault(IssueType.IRB, Collections.emptyList())
-        Collection<Issue> nonIrbs = groupedIssues.getOrDefault(IssueType.NE, Collections.emptyList()) +
-                groupedIssues.getOrDefault(IssueType.NHSR, Collections.emptyList())
-        Map<String, Period> periodMap = calculateIssuePeriods(irbs + nonIrbs)
-        [irbs: irbs, nonIrbs: nonIrbs, periodMap: periodMap]
-    }
 
     def project() {
         Issue issue = queryService.findByKey(params.id)
@@ -82,23 +44,23 @@ class StatusEventController extends AuthenticatedController {
 
     def findQaEventReport() {
         UtilityClass.registerQaReportIssueMarshaller()
-        QueryOptions qo = new QueryOptions()
+        QueryOptions queryOptions = new QueryOptions()
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy")
 
         try {
             if (params.before)
-                qo.before = new Timestamp(formatter.parse(params.before).getTime())
+                queryOptions.before = new Timestamp(formatter.parse(params.before).getTime())
             if (params.after) {
-                qo.after = new Timestamp(formatter.parse(params.after).getTime())
+                queryOptions.after = new Timestamp(formatter.parse(params.after).getTime())
             }
         } catch (ParseException e) {
             log.error("Date Parse Exception: " + e)
         }
 
-        if (params.projectType && params.projectType != 'all') {
-            qo.issueTypeNames = [IssueType.valueOfController(params.projectType).name]
+        if (params.projectType && params.projectType != ALL_PROJECTS) {
+            queryOptions.issueTypeNames = [IssueType.valueOfController(params.projectType).name]
         } else if (params.tab) {
-            qo.issueTypeNames = params.tab == NO_IRB ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
+            queryOptions.issueTypeNames = params.tab == NO_IRB ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
         }
 
         PaginationParams pagination = new PaginationParams(
@@ -110,7 +72,7 @@ class StatusEventController extends AuthenticatedController {
             searchValue: params.get("searchValue")?.toString() ?: null)
 
         JSON.use(UtilityClass.ISSUE_FOR_QA) {
-            render queryService.findIssuesForStatusReport2(pagination, params.get("tab").toString(), qo) as JSON
+            render queryService.findIssuesForStatusReport(pagination, queryOptions) as JSON
         }
     }
 

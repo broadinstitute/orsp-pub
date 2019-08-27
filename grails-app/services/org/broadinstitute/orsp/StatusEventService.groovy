@@ -37,9 +37,6 @@ class StatusEventService {
     }
 
     List<StatusEventDTO> getStatusEventDTOs(List<Event> statusEvents) {
-//        List<Event> statusEvents = getStatusEventsForProject(projectId).sort {
-//            a, b -> a.created <=> b.created
-//        }
         if (statusEvents && statusEvents.isEmpty()) return Collections.emptyList()
 
         // The first event to calculate time from is either "Reviewing Form" if it exists,
@@ -83,14 +80,15 @@ class StatusEventService {
             addEntity(Event)
             setParameterList('projectKeys', issues*.projectKey.toList())
             setParameterList('typeList', TYPES*.name())
-            list()
-                    //.sort{ a, b -> a.created <=> b.created }
-        } as List<Event>
+            list().sort {
+                a, b -> a.created <=> b.created
+            }
+        }
 
         Map<String, Event> eventMap = eventList.groupBy {it.projectKey} as Map<String, Event>
         List<StatusEventDTO> result = new ArrayList<>()
         issues.collect { issue ->
-            List<StatusEventDTO> eventDTOs = getStatusEventDTOs(eventMap[issue.projectKey] as List<Event>)
+            List<StatusEventDTO> eventDTOs = getStatusEventDTOs(eventMap[issue.projectKey])
             if (eventDTOs) {
                 StatusEventDTO statusEventDTO = eventDTOs?.last()
                 statusEventDTO?.setIssue(issue)

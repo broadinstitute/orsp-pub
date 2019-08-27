@@ -85,10 +85,7 @@ class QaReport extends Component {
 
     spinnerService.show(QA_REPORT_SPINNER);
     try {
-      console.log("GET QA EVENT REPORT");
       let result = await Reports.getQaEventReport(query, tab, filter);
-      // DEBUGUGUGUGU
-      console.log("RESULT  -> \n", result)
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
       this.setState(prev => {
         prev.query = query;
@@ -201,7 +198,6 @@ class QaReport extends Component {
   };
 
   exportTable = (action, tab) => {
-
     const allElementsQuery = {
       draw: 1,
       start: 0,

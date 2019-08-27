@@ -11,13 +11,12 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
+import org.broadinstitute.orsp.StatusEventService
 import org.broadinstitute.orsp.User
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.Period
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
+import org.joda.time.Period
+
 import java.util.concurrent.atomic.AtomicInteger
 
 class UtilityClass {
@@ -94,25 +93,20 @@ class UtilityClass {
         }
     }
 
-    /**
-     * Register Issue's object JSON mapping for QA Report. This is in a separated DTO since it contains a period logic
-     * unnecessary for any other Issue mapping
-     */
     static void registerQaReportIssueMarshaller() {
         JSON.createNamedConfig(ISSUE_FOR_QA) {
-            it.registerObjectMarshaller( Issue ) { Issue issue ->
+            it.registerObjectMarshaller( StatusEventService.StatusEventDTO ) { StatusEventService.StatusEventDTO dto ->
                 return [
-                        id: issue.id,
-                        type: issue.type,
-                        projectKey: issue.projectKey,
-                        summary: issue.summary,
-                        status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
-                        issueStatus: issue.status,
-                        reporter       : issue.reporter,
-                        requestDate    : issue.requestDate,
-                        attachments    : issue.attachments,
-                        actor          : issue.getActorUsernames(),
-                        age            : calculatePeriod(issue.requestDate)
+                    id             : dto.issue.id,
+                    type           : dto.issue.type,
+                    projectKey     : dto.issue.projectKey,
+                    summary        : dto.issue.summary,
+                    status         : dto.issue.approvalStatus == IssueStatus.Legacy.name ? dto.issue.status : dto.issue.approvalStatus,
+                    reporter       : dto.issue.reporter,
+                    requestDate    : dto.issue.requestDate,
+                    attachments    : dto.issue.attachments,
+                    actor          : dto.issue.getActorUsernames(),
+                    age            : stringPeriod(dto.duration),
                 ]
             }
         }
@@ -188,21 +182,20 @@ class UtilityClass {
         }
     }
 
-    private static String calculatePeriod(Date date) {
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-        Period p = Period.between(localDate, LocalDate.now())
+    private static String stringPeriod(Period date) {
         StringBuffer age = new StringBuffer()
-        if (p.getYears() > 0 ) {
-            age.append(p.getYears() + " years ")
+        if (date?.getYears() > 0 ) {
+            age.append(date.getYears() + " years ")
         }
-        if (p.getMonths() > 0) {
-            age.append(p.getMonths() + " months ")
+        if (date?.getMonths() > 0) {
+            age.append(date.getMonths() + " months ")
         }
-        if (p.getMonths() > 0 || p.getYears() > 0) {
+        if (date?.getMonths() > 0 || date?.getYears() > 0) {
             age.append(" and ")
-
         }
-        age.append(p.getDays() + " days")
+        if (date?.getDays() >= 0 ) {
+            age.append(date?.getDays() + " days")
+        }
         age
     }
 }

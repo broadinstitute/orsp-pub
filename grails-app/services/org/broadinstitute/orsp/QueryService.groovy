@@ -20,6 +20,7 @@ import org.hibernate.SessionFactory
 import org.hibernate.transform.Transformers
 
 import javax.sql.DataSource
+import java.lang.reflect.Array
 import java.sql.SQLException
 
 /**
@@ -650,28 +651,12 @@ class QueryService implements Status {
     }
 
     /**
-     * Find project issues filtered by request date
+     * Find paginated and filtered project issues
      *
-     * @return Issue that match the query
+     * @return Issues that match the query
      */
-    // TODO REMOVE THIS
-    @SuppressWarnings(["GroovyAssignabilityCheck", "GrUnresolvedAccess"])
-    Collection<Issue> findIssuesForStatusReport(QueryOptions options) {
-        List<String> typeList
-        if (options.issueTypeNames) {
-            typeList = options.issueTypeNames
-        } else {
-            typeList = [IssueType.NE.name, IssueType.NHSR.name, IssueType.IRB.name]
-        }
-        Issue.withCriteria {
-            inList("type", typeList)
-            if (options.after) { gt("requestDate", options.after) }
-            if (options.before) { lt("requestDate", options.before) }
-        }
-    }
-
-
-    PaginatedResponse findIssuesForStatusReport2(PaginationParams paginationOptions, String tab, QueryOptions queryOptions) {
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    PaginatedResponse findIssuesForStatusReport(PaginationParams paginationOptions, QueryOptions queryOptions) {
         String orderColumn = statusReportPaginationOrder(paginationOptions)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
@@ -697,18 +682,22 @@ class QueryService implements Status {
 
         // total rows
         List<String> ids = sqlQuery.list()
-        List<Issue> results = findPaginatedIssuesByProjectKey(ids, orderColumn, paginationOptions)
-        List<StatusEventService.StatusEventDTO> statusEvents = statusEventService.getStatusEventsForProjectList(results)
+        List<StatusEventService.StatusEventDTO> statusEvents = new ArrayList<>()
+        if (CollectionUtils.isNotEmpty(ids)) {
+            List<Issue> results = findPaginatedIssuesByProjectKey(ids, orderColumn, paginationOptions)
+            statusEvents = statusEventService.getStatusEventsForProjectList(results)
+        }
+
         new PaginatedResponse(
             draw: paginationOptions.draw,
             recordsTotal: ids.size(),
             recordsFiltered: ids.size(),
-            data:  results, //statusEventService.getStatusEventsForProjectList(results),
+            data:  statusEvents,
             error: ""
         )
     }
 
-    private String statusReportPaginationOrder(PaginationParams paginationOptions) {
+    private static String statusReportPaginationOrder(PaginationParams paginationOptions) {
         String orderColumn
         switch (paginationOptions.orderColumn) {
             case 0:
