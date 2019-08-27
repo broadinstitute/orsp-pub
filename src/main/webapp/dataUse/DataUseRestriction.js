@@ -6,7 +6,6 @@ import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
-import  { UrlConstants }  from '../util/UrlConstants';
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -32,7 +31,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      h(Link, {to: {pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
+      h(Link, {to: {pathname:'/dataUse/show/'+ row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
     ])
   },
   {

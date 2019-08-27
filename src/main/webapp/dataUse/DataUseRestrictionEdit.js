@@ -50,12 +50,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     this.scrollTop();
   }
 
-  initRestriction(restriction) {
+  initRestriction(restriction, reset) {
     let resp = {
       consentGroupKey: this.props.location.state.consentKey,
       noRestriction: restriction !== undefined ? restriction.noRestriction : '',
       hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
-      diseaseRestrictions: this.getDiseasesFromRestriction(),
+      diseaseRestrictions: restriction !== undefined ? this.getDiseasesFromRestriction(restriction) : [],
       generalUse: restriction !== undefined ? restriction.generalUse : '',
       populationOriginsAncestry: restriction !== undefined ? restriction.populationOriginsAncestry : '',
       commercialUseExcluded:  restriction !== undefined ? restriction.commercialUseExcluded : '',
@@ -422,6 +422,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   reset = (e) => {
     let restriction = this.initRestriction();
+    restriction.consentPIName = this.state.restriction.consentPIName
     this.setState(prev => {
       prev.restriction = restriction;
       return prev;
@@ -435,7 +436,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   getDiseasesFromRestriction(restriction) {
-    let diseases = []
+    let diseases = [];
     if(restriction.diseaseRestrictions !== null) {
       let diseases = restriction.diseaseRestrictions.map(disease => {
         diseases.push( {
