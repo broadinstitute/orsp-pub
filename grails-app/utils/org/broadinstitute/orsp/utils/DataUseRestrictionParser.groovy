@@ -10,9 +10,9 @@ class DataUseRestrictionParser {
         dataUseRestriction = dataUseRestriction == null ? new DataUseRestriction() : dataUseRestriction
         dataUseRestriction.consentGroupKey = params.consentGroupKey
         dataUseRestriction.consentPIName = params.consentPIName
-        dataUseRestriction.generalUse = params.generalUse instanceof Boolean ? params.generalUse : IssueUtils.getBooleanForParam(params.generalUse)
-        dataUseRestriction.hmbResearch = params.hmbResearch instanceof Boolean ? params.hmbResearch : IssueUtils.getBooleanForParam(params.hmbResearch)
-        dataUseRestriction.manualReview = params.manualReview instanceof Boolean ? params.manualReview : IssueUtils.getBooleanForParam(params.manualReview)
+        dataUseRestriction.generalUse = params.generalUse instanceof Boolean ? params.generalUse : IssueUtils.getBooleanFromString(params.generalUse)
+        dataUseRestriction.hmbResearch = params.hmbResearch instanceof Boolean ? params.hmbResearch : IssueUtils.getBooleanFromString(params.hmbResearch)
+        dataUseRestriction.manualReview = params.manualReview instanceof Boolean ? params.manualReview : IssueUtils.getBooleanFromString(params.manualReview)
         dataUseRestriction.diseaseRestrictions = new ArrayList<>()
         if (params.diseaseRestrictions != null) {
             if (params.diseaseRestrictions instanceof String[] || params.diseaseRestrictions instanceof JSONArray) {
@@ -22,9 +22,9 @@ class DataUseRestrictionParser {
                 dataUseRestriction.setDiseaseRestrictions(Collections.singletonList((String) params.diseaseRestrictions))
             }
         }
-        dataUseRestriction.populationOriginsAncestry = params.populationOriginsAncestry instanceof Boolean ? params.populationOriginsAncestry : IssueUtils.getBooleanForParam(params.populationOriginsAncestry)
-        dataUseRestriction.commercialUseExcluded = params.commercialUseExcluded instanceof Boolean ? params.commercialUseExcluded : IssueUtils.getBooleanForParam(params.commercialUseExcluded)
-        dataUseRestriction.methodsResearchExcluded = params.methodsResearchExcluded instanceof Boolean ? params.methodsResearchExcluded : IssueUtils.getBooleanForParam(params.methodsResearchExcluded)
+        dataUseRestriction.populationOriginsAncestry = params.populationOriginsAncestry instanceof Boolean ? params.populationOriginsAncestry : IssueUtils.getBooleanFromString(params.populationOriginsAncestry)
+        dataUseRestriction.commercialUseExcluded = params.commercialUseExcluded instanceof Boolean ? params.commercialUseExcluded : IssueUtils.getBooleanFromString(params.commercialUseExcluded)
+        dataUseRestriction.methodsResearchExcluded = params.methodsResearchExcluded instanceof Boolean ? params.methodsResearchExcluded : IssueUtils.getBooleanFromString(params.methodsResearchExcluded)
         dataUseRestriction.aggregateResearchResponse = params.aggregateResearchResponse
         if (params.gender) {
             if (params.gender.equals("NA")) dataUseRestriction.gender = null
@@ -42,30 +42,30 @@ class DataUseRestrictionParser {
                 dataUseRestriction.populationRestrictions.add(params.populationRestrictions)
             }
         }
-        dataUseRestriction.pediatricLimited = params.pediatric instanceof Boolean ? params.pediatric : IssueUtils.getBooleanForParam(params.pediatric)
+        dataUseRestriction.pediatricLimited = params.pediatric instanceof Boolean ? params.pediatric : IssueUtils.getBooleanFromString(params.pediatric)
         if (StringUtils.isNotEmpty(params.dateRestriction)) {
             dataUseRestriction.dateRestriction = Date.parse('MM/dd/yyyy', params.dateRestriction)
         } else {
             dataUseRestriction.dateRestriction = null
         }
 
-        dataUseRestriction.recontactingDataSubjects = params.recontactingDataSubjects instanceof Boolean ? params.recontactingDataSubjects : IssueUtils.getBooleanForParam(params.recontactingDataSubjects)
+        dataUseRestriction.recontactingDataSubjects = params.recontactingDataSubjects instanceof Boolean ? params.recontactingDataSubjects : IssueUtils.getBooleanFromString(params.recontactingDataSubjects)
         dataUseRestriction.recontactMay = params.recontactMay
         dataUseRestriction.recontactMust = params.recontactMust
         dataUseRestriction.genomicPhenotypicData = params.genomicPhenotypicData
         dataUseRestriction.cloudStorage = params.cloudStorage
-        dataUseRestriction.irb =  params.irb instanceof Boolean ? params.irb : IssueUtils.getBooleanForParam(params.irb)
+        dataUseRestriction.irb =  params.irb instanceof Boolean ? params.irb : IssueUtils.getBooleanFromString(params.irb)
         dataUseRestriction.geographicalRestrictions = params.geographicalRestrictions
 
-        dataUseRestriction.noRestriction = params.noRestriction instanceof Boolean ? params.noRestriction : IssueUtils.getBooleanForParam(params.noRestriction)
+        dataUseRestriction.noRestriction = params.noRestriction instanceof Boolean ? params.noRestriction : IssueUtils.getBooleanFromString(params.noRestriction)
 
         if (dataUseRestriction.noRestriction) {
             dataUseRestriction.generalUse = true
         }
 
-        dataUseRestriction.collaborationInvestigators = params.collaborationInvestigators instanceof Boolean ? params.collaborationInvestigators : IssueUtils.getBooleanForParam(params.collaborationInvestigators)
-        dataUseRestriction.publicationResults = params.publicationResults instanceof Boolean ? params.publicationResults : IssueUtils.getBooleanForParam(params.publicationResults)
-        dataUseRestriction.genomicResults = params.genomicResults instanceof Boolean ? params.genomicResults : IssueUtils.getBooleanForParam(params.genomicResults)
+        dataUseRestriction.collaborationInvestigators = params.collaborationInvestigators instanceof Boolean ? params.collaborationInvestigators : IssueUtils.getBooleanFromString(params.collaborationInvestigators)
+        dataUseRestriction.publicationResults = params.publicationResults instanceof Boolean ? params.publicationResults : IssueUtils.getBooleanFromString(params.publicationResults)
+        dataUseRestriction.genomicResults = params.genomicResults instanceof Boolean ? params.genomicResults : IssueUtils.getBooleanFromString(params.genomicResults)
         if (dataUseRestriction.genomicResults) {
             dataUseRestriction.genomicSummaryResults = (String)params.genomicSummaryResults
         } else {

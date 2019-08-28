@@ -311,16 +311,24 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     }
   }
 
+  checkIfExist(data, key) {
+    console.log('hhh', _.find(data, (it) => { return it.key === key }));
+    return _.find(data, (it) => { return it.key === key }) === undefined ? false : true
+  }
+
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
       Search.getSourceDiseases(query)
         .then(response => {
-          let options = response.data.map(function (item) {
-            return {
-              key: item.id,
-              value: item.definition[0],
-              label: item.label
-            };
+          let options = [];
+          response.data.forEach(it => {
+            if (this.state.restriction.diseaseRestrictions.find((item) => { return it.id === item.key }) === undefined) {
+              options.push({
+                key: it.id,
+                value: it.definition[0],
+                label: it.label
+              });
+            }
           });
           callback(options);
         }).catch(error => {
@@ -333,12 +341,15 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     if (query.length > 2) {
       Search.getMatchingPopulationOntologies(query)
         .then(response => {
-          let options = response.data.map(function (item) {
-            return {
-              key: item.id,
-              label: item.label,
-              value: item.id
-            };
+          let options = [];
+          response.data.forEach(it => {
+            if (this.state.restriction.populationRestrictions.find((item) => { return it.id === item.key }) === undefined) {
+              options.push({
+                key: it.id,
+                label: it.label,
+                value: it.id
+              });
+            }
           });
           callback(options);
         }).catch(error => {
