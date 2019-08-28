@@ -581,7 +581,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           div({ className: "row" }, [
             div({ className: "col-sm-7" }, [
               MultiSelect({
-                key: 1,
                 id: "diseasesSelect",
                 label: "Please select",
                 name: "otherDiseaseSpecify",
