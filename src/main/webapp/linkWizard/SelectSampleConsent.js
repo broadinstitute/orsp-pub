@@ -53,6 +53,10 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     this.getConsentGroups();
   }
 
+  componentWillMount() {
+    requestTokens.cancelRequests();
+  }
+
   fileHandler = (docs) => {
     this.setState({
       files: docs
@@ -119,25 +123,26 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     this.setState({ documentOptions: documentOptions });
   };
 
-  getConsentGroups = () => {
+  getConsentGroups = async () => {
     this.setState({ consentGroupIsLoading: true });
-    ConsentGroup.getConsentGroupNames().then(
-      resp => {
-        const existingConsentGroups = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.label,
-            label: item.label
-          }
-        });
+    try {
+      const resp = await ConsentGroup.getConsentGroupNames();
+      const existingConsentGroups =  resp.data.map(item => {
+        return {
+          key: item.id,
+          value: item.label,
+          label: item.label
+        }
+      });
 
-        this.setState({
-          existingConsentGroups: existingConsentGroups,
-          consentGroupIsLoading: false,
-          consentGroup: existingConsentGroups[0]
-        }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
-        this.getAllSampleCollections(existingConsentGroups[0].key);
-      }).catch(() => {});
+      this.setState({
+        existingConsentGroups: existingConsentGroups,
+        consentGroupIsLoading: false,
+        consentGroup: existingConsentGroups[0]
+      }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
+      this.getAllSampleCollections(existingConsentGroups[0].key);
+
+    } catch (e) {}
   };
 
   componentWillUnmount() {

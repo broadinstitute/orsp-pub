@@ -57,12 +57,12 @@ export const SampleCollections = {
 };
 
 export const ConsentGroup = {
-  getConsentGroupNames() {
-      return axios.get(UrlConstants.consentNamesSearchURL, {
-        cancelToken: new CancelToken((c) => {
-          requestTokens.add({token: c, id: 'getConsentGroupNames'});
-        })
-      }).catch( () => {});
+  getConsentGroupNames: async () => {
+    return await axios.get(UrlConstants.consentNamesSearchURL, {
+      cancelToken: new CancelToken((c) => {
+        requestTokens.add({token: c, id: 'getConsentGroupNames'});
+      })
+    }).catch( () => {});
   },
 
   create(dataProject, dataConsentCollection, files, displayName, userName) {

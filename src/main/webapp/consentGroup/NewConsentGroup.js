@@ -80,28 +80,30 @@ class NewConsentGroup extends Component {
     requestTokens.cancelRequests();
   }
 
-  initFormSelectData = () => {
-    ConsentGroup.getConsentGroupNames().then(resp => {
+  initFormSelectData = async () => {
+    try {
+      const groupNames = await ConsentGroup.getConsentGroupNames();
+      console.log(groupNames.data);
       this.setState(prev => {
-        prev.existingGroupNames = resp.data;
+        prev.existingGroupNames = groupNames.data;
         return prev;
       });
-    }).catch(() => {});
 
-    SampleCollections.getSampleCollections().then(
-      resp => {
-        const sampleCollections = resp.data.map(item => {
-          return {
-            key: item.id,
-            value: item.collectionId,
-            label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-          };
-        });
-        this.setState(prev => {
-          prev.sampleCollectionList = sampleCollections;
-          return prev;
-        })
-      }).catch(() => {});
+      SampleCollections.getSampleCollections().then(
+        resp => {
+          const sampleCollections = resp.data.map(item => {
+            return {
+              key: item.id,
+              value: item.collectionId,
+              label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+            };
+          });
+          this.setState(prev => {
+            prev.sampleCollectionList = sampleCollections;
+            return prev;
+          })
+        }).catch(() => {});
+    } catch (e) { }
   };
 
   getUserSession() {
