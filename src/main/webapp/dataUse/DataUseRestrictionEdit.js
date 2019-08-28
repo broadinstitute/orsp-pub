@@ -49,7 +49,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     this.submit = this.submit.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.init();
     this.scrollTop();
   }
@@ -90,6 +90,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   init() {
+    spinnerService.show(RESTRICTION_SPINNER)
     spinnerService.show(RESTRICTION_SPINNER);
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
@@ -112,8 +113,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         this.setState(prev => {
           prev.restriction = restriction;
           return prev;
-        })
-      }, () => spinnerService.hide(RESTRICTION_SPINNER))
+        }, () => spinnerService.hide(RESTRICTION_SPINNER))
+      })
     }
   }
 
@@ -580,6 +581,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           div({ className: "row" }, [
             div({ className: "col-sm-7" }, [
               MultiSelect({
+                key: 1,
                 id: "diseasesSelect",
                 label: "Please select",
                 name: "otherDiseaseSpecify",

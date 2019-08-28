@@ -87,6 +87,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {
+              key:this.props.id, 
               id: this.props.id,
               isDisabled: this.props.isDisabled || this.props.readOnly,
               isMulti: this.props.isMulti,
