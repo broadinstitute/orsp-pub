@@ -25,7 +25,7 @@ class DataUseRestrictionParser {
         dataUseRestriction.populationOriginsAncestry = params.populationOriginsAncestry instanceof Boolean ? params.populationOriginsAncestry : IssueUtils.getBooleanForParam(params.populationOriginsAncestry)
         dataUseRestriction.commercialUseExcluded = params.commercialUseExcluded instanceof Boolean ? params.commercialUseExcluded : IssueUtils.getBooleanForParam(params.commercialUseExcluded)
         dataUseRestriction.methodsResearchExcluded = params.methodsResearchExcluded instanceof Boolean ? params.methodsResearchExcluded : IssueUtils.getBooleanForParam(params.methodsResearchExcluded)
-        dataUseRestriction.aggregateResearchResponse = params.aggregateResearchResponse instanceof Boolean ? params.aggregateResearchResponse : IssueUtils.getBooleanForParam(params.aggregateResearchResponse)
+        dataUseRestriction.aggregateResearchResponse = params.aggregateResearchResponse
         if (params.gender) {
             if (params.gender.equals("NA")) dataUseRestriction.gender = null
             else dataUseRestriction.gender = params.gender

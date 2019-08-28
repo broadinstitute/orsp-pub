@@ -186,15 +186,15 @@ export const Documents = hh(class Documents extends Component {
               div({ className: "col-xs-12" }, [
                 h(Link, {
                   isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer, className: "btn buttonPrimary floatLeft",
-                  to: { pathname: UrlConstants.restrictionUrl, search: '?create=true&id=' + this.props.projectKey, state: { consentKey: this.props.projectKey, create: true } }, style: styles.buttonWithLink
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?create=true&consentKey=' + this.props.projectKey }, style: styles.buttonWithLink
                 }, ["Create Restriction"]),
                 h(Link, {
                   isRendered: this.props.restrictionId !== null && !component.isViewer, className: "btn buttonPrimary floatLeft",
-                  to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey, restrictionId: this.props.restrictionId } }, style: styles.buttonWithLink
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId + '&consentKey=' + this.props.projectKey }, style: styles.buttonWithLink
                 }, ["Edit Restriction"]),
                 h(Link, {
                   isRendered: this.props.restrictionId !== null, className: "btn buttonPrimary floatLeft",
-                  to: { pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + this.props.restrictionId, state: { consentKey: this.props.projectKey, restrictionId: this.props.restrictionId } }, style: styles.buttonWithLink
+                  to: { pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + this.props.restrictionId }, style: styles.buttonWithLink
                 }, ["View Restrictions"])
               ])
             ]),

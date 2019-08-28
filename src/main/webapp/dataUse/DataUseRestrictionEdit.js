@@ -13,6 +13,9 @@ import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import '../components/Btn.css';
 
+const FEMALE = 'Female';
+const MALE = 'Male';
+const NA = 'NA';
 
 const styles = {
   borderedContainer: {
@@ -32,6 +35,7 @@ const styles = {
 export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
   constructor(props) {
     super(props);
+    let params = new URLSearchParams(this.props.location.search);
     this.state = {
       consent: {
         projectKey: '',
@@ -39,8 +43,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       },
       showError: false,
       restriction: this.initRestriction(),
-      create: this.props.location.state !== undefined && this.props.location.state.create !== undefined ? this.props.location.state.create : false,
-      consentKey: this.props.location.state.consentKey
+      create: params.get('create') !== undefined ? true : false,
+      consentKey: params.get('consentKey')
     }
     this.submit = this.submit.bind(this);
   }
@@ -51,19 +55,20 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   initRestriction(restriction, reset) {
+    let params = new URLSearchParams(this.props.location.search);
     let resp = {
-      consentGroupKey: this.props.location.state.consentKey,
+      consentGroupKey: restriction !== undefined ? restriction.consentGroupKey : params.get('consentKey'),
       noRestriction: restriction !== undefined ? restriction.noRestriction : '',
       hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
       diseaseRestrictions: restriction !== undefined ? this.getDiseasesFromRestriction(restriction) : [],
       generalUse: restriction !== undefined ? restriction.generalUse : '',
       populationOriginsAncestry: restriction !== undefined ? restriction.populationOriginsAncestry : '',
-      commercialUseExcluded:  restriction !== undefined ? restriction.commercialUseExcluded : '',
+      commercialUseExcluded: restriction !== undefined ? restriction.commercialUseExcluded : '',
       methodsResearchExcluded: restriction !== undefined ? restriction.methodsResearchExcluded : '',
       aggregateResearchResponse: restriction !== undefined ? restriction.aggregateResearchResponse : '',
       controlSetOption: restriction !== undefined ? restriction.controlSetOption : '',
       gender: restriction !== undefined ? restriction.gender : '',
-      pediatric: restriction !== undefined ? restriction.pediatric : '',
+      pediatric: restriction !== undefined ? restriction.pediatricLimited : '',
       collaborationInvestigators: restriction !== undefined ? restriction.collaborationInvestigators : '',
       irb: restriction !== undefined ? restriction.irb : '',
       publicationResults: restriction !== undefined ? restriction.publicationResults : '',
@@ -75,7 +80,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       populationRestrictions: [],
       genomicSummaryResults: restriction !== undefined ? restriction.genomicSummaryResults : '',
       genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : '',
-      consentPIName: restriction !== undefined  && !isEmpty(restriction.consentPIName)  ? restriction.consentPIName : '', 
+      consentPIName: restriction !== undefined && !isEmpty(restriction.consentPIName) ? restriction.consentPIName : '',
     };
     return resp;
   }
@@ -83,9 +88,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   init() {
     spinnerService.showAll();
     const params = new URLSearchParams(this.props.location.search);
-    console.log(this.props.location);
-    const restrictionId = params.get('restrictionId');
-    console.log(this.state.consentKey);
+    let restrictionId = params.get('restrictionId');
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
       this.setState(prev => {
         prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
@@ -94,19 +97,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.disabledConsent = true;
         return prev;
       }, () => {
-        if(restrictionId === undefined) {
+        if (restrictionId === undefined) {
           spinnerService.hideAll();
         }
       })
     })
-    if(restrictionId !== undefined) {
-     DataUse.getRestriction(restrictionId).then(result => {
-      let restriction = this.initRestriction(result.data.restriction);
-      this.setState(prev => {
-        prev.restriction = restriction;
-        return prev;
-      })
-     }, () => spinnerService.hideAll())
+    if (restrictionId !== undefined && restrictionId !== null) {
+      DataUse.getRestriction(restrictionId).then(result => {
+        let restriction = this.initRestriction(result.data.restriction);
+        this.setState(prev => {
+          prev.restriction = restriction;
+          return prev;
+        })
+      }, () => spinnerService.hideAll())
     }
   }
 
@@ -118,7 +121,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     let validForm = false;
     if (this.state.restriction.noRestriction || this.state.restriction.generalUse ||
       this.state.restriction.hmbResearch || this.state.restriction.diseaseRestrictions.length > 0) {
-        validForm = true;
+      validForm = true;
     }
     let showError = !validForm;
     this.setState(prev => {
@@ -132,22 +135,13 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     if (this.validateForm()) {
       let restriction = this.state.restriction;
       restriction.diseaseRestrictions = this.getDiseases(this.state.restriction.diseaseRestrictions)
+      console.log(restriction);
       DataUse.createRestriction(restriction).then(resp => {
-        if (this.state.create) {
-          this.props.history.push({
-            pathname: '/newConsentGroup/main',
-            search: '?consentKey=' + this.state.consentKey,
-            state: { issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey }
-          })
-        } else {
-          this.props.history.push({
-            pathname: '/newConsentGroup/main',
-            search: '?consentKey=' + this.state.consentKey,
-            pathname: UrlConstants.restrictionUrl,
-            search: '?restrictionId=' + this.props.restrictionId,
-            state: { issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey }
-          })
-        }
+        this.props.history.push({
+          pathname: '/newConsentGroup/main',
+          search: '?consentKey=' + this.state.consentKey,
+          state: { issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey }
+        })
       }).catch(error => {
         this.setState(() => { throw error; });
       });
@@ -199,12 +193,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   handleGenderChange = (e) => {
     let name = e.target.name;
     this.setState(prev => {
-      if (name === 'female') {
-        prev.restriction.gender = 'female';
-      } else if (name === 'male') {
-        prev.restriction.gender = 'male';
-      } else if (name === 'na') {
-        prev.restriction.gender = 'na';
+      if (name === FEMALE) {
+        prev.restriction.gender = FEMALE;
+      } else if (name === MALE) {
+        prev.restriction.gender = MALE;
+      } else if (name === NA) {
+        prev.restriction.gender = NA;
       }
       return prev;
     });
@@ -242,10 +236,14 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   setFieldValue(field, value) {
+    console.log(field);
+    console.log(value);
     this.setState(prev => {
       prev.restriction[field] = value;
       return prev;
-    });
+    }, () => {
+      this.uncheckManualReview();
+    })
   }
 
   getValue(value) {
@@ -360,7 +358,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       }
       return prev;
     }, () => {
-      if(this.state.restriction.diseaseRestrictions.length > 0) {
+      if (this.state.restriction.diseaseRestrictions.length > 0) {
         this.validateForm();
       }
     });
@@ -378,6 +376,17 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     });
   };
 
+  uncheckManualReview() {
+    if (this.state.restriction.populationRestrictions.length == 0 &&
+      isEmpty(this.state.restriction.geographicalRestrictions) &&
+      this.state.restriction.irb !== true) {
+      this.setState(prev => {
+        prev.restriction.manualReview = false;
+        return prev;
+      });
+    }
+  }
+
   handleGeographicalRestrictions = (e) => {
     const { name = '', value = '' } = e.target;
     this.setState(prev => {
@@ -386,21 +395,9 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.manualReview = true;
       }
       return prev;
+    }, () => {
+      this.uncheckManualReview()
     });
-  }
-
-  handleRadioRelatedMRChange = (e, field, value) => {
-    value = this.getValue(value);
-    if (value) {
-      this.setState(prev => {
-        prev.restriction.collaborationInvestigators = true;
-        prev.restriction.manualReview = true;
-        prev.restriction.irb = true;
-        return prev;
-      });
-    } else {
-      this.setFieldValue(field, value);
-    }
   }
 
   changeTextHandler = (e) => {
@@ -435,19 +432,19 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   getDiseases(diseases) {
     return diseases.map(disease =>
-        disease.key
+      disease.key
     );
   }
 
   getDiseasesFromRestriction(restriction) {
     let diseases = [];
-    if(restriction.diseaseRestrictions !== null) {
-      let diseases = restriction.diseaseRestrictions.map(disease => {
-        diseases.push( {
+    if (restriction.diseaseRestrictions !== null) {
+      diseases = restriction.diseaseRestrictions.map(disease => (
+        {
           key: disease,
           label: disease
-        })
-      })
+        }
+      ));
     }
     return diseases;
   }
@@ -466,7 +463,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             label: "Consent Group",
             disabled: true,
             value: this.state.restriction.consentGroupKey,
-            onChange: () => {}
+            onChange: () => { }
           })
         ]),
 
@@ -671,17 +668,17 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
           label({ className: "inputFieldLabel" }, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === 'male', onChange: this.handleGenderChange, name: 'male' }, []),
+            input({ type: "radio", checked: this.state.restriction.gender === MALE, onChange: this.handleGenderChange, name: MALE }, []),
             span({ className: "radioCheck" }, []),
-            span({ className: "radioLabel" }, ["Male"])
+            span({ className: "radioLabel" }, [MALE])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === 'female', onChange: this.handleGenderChange, name: 'female' }, []),
+            input({ type: "radio", checked: this.state.restriction.gender === FEMALE, onChange: this.handleGenderChange, name: FEMALE }, []),
             span({ className: "radioCheck" }, []),
-            span({ className: "radioLabel" }, ["Female"])
+            span({ className: "radioLabel" }, [FEMALE])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === 'na', onChange: this.handleGenderChange, name: "na" }, []),
+            input({ type: "radio", checked: this.state.restriction.gender === NA, onChange: this.handleGenderChange, name: NA }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["N/A"])
           ])
@@ -775,7 +772,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ]),
           hr({ isRendered: this.state.restriction.genomicResults }, []),
           div({ isRendered: this.state.restriction.genomicResults, style: styles.inputGroup }, [
-            p({className: "inputFieldLabel"}, ["If ", i({}, ["Yes"]), ", please explain."]),
+            p({ className: "inputFieldLabel" }, ["If ", i({}, ["Yes"]), ", please explain."]),
             InputFieldTextArea({
               disabled: false,
               value: this.state.restriction.genomicSummaryResults,
@@ -785,7 +782,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ]),
           hr({}, []),
           div({ style: styles.inputGroup }, [
-            p({className: "inputFieldLabel"}, ["Geographical restrictions?"]),
+            p({ className: "inputFieldLabel" }, ["Geographical restrictions?"]),
             InputFieldText({
               disabled: false,
               value: this.state.restriction.geographicalRestrictions,
@@ -795,7 +792,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ]),
           hr({}, []),
           div({ style: styles.inputGroup }, [
-            label({className: "inputFieldLabel"}, ["Other terms of use?"]),
+            label({ className: "inputFieldLabel" }, ["Other terms of use?"]),
             InputFieldTextArea({
               disabled: false,
               value: this.state.restriction.other,
@@ -815,7 +812,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           ])
         ]),
         div({ style: styles.borderedContainer }, [
-          label({className: "inputFieldLabel"}, ["Comments (ORSP Use Only)"]),
+          label({ className: "inputFieldLabel" }, ["Comments (ORSP Use Only)"]),
           InputFieldTextArea({
             disabled: false,
             value: this.state.restriction.comments,
