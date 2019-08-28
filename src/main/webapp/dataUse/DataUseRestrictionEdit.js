@@ -55,7 +55,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   componentWillUnmount() {
-    spinnerService._unregister(RESTRICTION_SPINNER)
+    spinnerService._unregister(RESTRICTION_SPINNER);
   }
 
   initRestriction(restriction, reset) {
@@ -240,8 +240,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   setFieldValue(field, value) {
-    console.log(field);
-    console.log(value);
     this.setState(prev => {
       prev.restriction[field] = value;
       return prev;
