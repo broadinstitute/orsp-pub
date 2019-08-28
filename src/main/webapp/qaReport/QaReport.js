@@ -99,8 +99,8 @@ class QaReport extends Component {
           orderColumn : query.orderColumn,
           sortDirection: query.sortDirection
         };
-        prev[tab].hide = result.data.data.length === 0;
-        prev.activeTab = prev[IRB].hide ? NO_IRB : IRB;
+        // prev[tab].hide = result.data.data.length === 0;
+        // prev.activeTab = prev[IRB].hide ? NO_IRB : IRB;
         return prev;
       }, () => {
         spinnerService.hide(QA_REPORT_SPINNER)

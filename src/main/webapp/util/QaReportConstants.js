@@ -11,11 +11,7 @@ export const columns = [{
 }, {
   dataField: 'projectKey',
   text: 'Project',
-  sort: true,
-  formatter: (cell, row, rowIndex, colIndex) =>
-    div({},[
-      a({onClick: () => this.history.push("/statusEvent/qaEventReport/projectReport")},[row.projectKey])
-    ])
+  sort: true
 }, {
   dataField: 'type',
   text: 'Type',

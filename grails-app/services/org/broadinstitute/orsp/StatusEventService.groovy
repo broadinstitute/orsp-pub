@@ -12,10 +12,19 @@ import org.joda.time.PeriodType
 class StatusEventService {
 
     private final List<EventType> TYPES =
-            EnumSet.range(EventType.INITIAL_STATE, EventType.ABANDON).toList()
+            EnumSet.range(EventType.INITIAL_STATE, EventType.REQUEST_CLARIFICATION).toList()
 
     private final List<EventType> TERMINAL_TYPES =
-            EnumSet.of(EventType.ABANDON, EventType.CLOSED, EventType.COMPLETED).toList()
+            EnumSet.of(
+                    EventType.ABANDON,
+                    EventType.CLOSED,
+                    EventType.COMPLETED,
+                    EventType.APPROVE_PROJECT,
+                    EventType.REJECT_PROJECT,
+                    EventType.ABANDON_PROJECT,
+                    EventType.DISAPPROVE_PROJECT,
+                    EventType.WITHDRAWN_PROJECT
+            ).toList()
 
     SessionFactory sessionFactory
 
