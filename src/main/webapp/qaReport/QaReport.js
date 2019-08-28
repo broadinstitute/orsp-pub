@@ -5,11 +5,10 @@ import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
 import FilterPanel from "./FilterPanel";
 import { formatDataPrintableFormat, TABLE_ACTIONS } from "../util/TableUtil";
-import { QA_EVENT_SORT_NAME_INDEX } from "../util/ReportConstants";
 import { MultiTab } from "../components/MultiTab";
 import IrbTable from "./IrbTable";
 import NoIrbTable from "./NoIrbTable";
-import { columns, IRB, NO_IRB, QA_REPORT_SPINNER } from "../util/QaReportConstants";
+import { columns, IRB, NO_IRB, QA_EVENT_SORT_NAME_INDEX, QA_REPORT_SPINNER } from "../util/QaReportConstants";
 import { exportData } from "../util/Utils";
 
 class QaReport extends Component {

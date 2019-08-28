@@ -95,18 +95,18 @@ class UtilityClass {
 
     static void registerQaReportIssueMarshaller() {
         JSON.createNamedConfig(ISSUE_FOR_QA) {
-            it.registerObjectMarshaller( StatusEventService.StatusEventDTO ) { StatusEventService.StatusEventDTO dto ->
+            it.registerObjectMarshaller( StatusEventService.StatusEventDTO ) { StatusEventService.StatusEventDTO statusEvent ->
                 return [
-                    id             : dto.issue.id,
-                    type           : dto.issue.type,
-                    projectKey     : dto.issue.projectKey,
-                    summary        : dto.issue.summary,
-                    status         : dto.issue.approvalStatus == IssueStatus.Legacy.name ? dto.issue.status : dto.issue.approvalStatus,
-                    reporter       : dto.issue.reporter,
-                    requestDate    : dto.issue.requestDate,
-                    attachments    : dto.issue.attachments,
-                    actor          : dto.issue.getActorUsernames(),
-                    age            : stringPeriod(dto.duration),
+                    id             : statusEvent.issue.id,
+                    type           : statusEvent.issue.type,
+                    projectKey     : statusEvent.issue.projectKey,
+                    summary        : statusEvent.issue.summary,
+                    status         : statusEvent.issue.approvalStatus == IssueStatus.Legacy.name ? statusEvent.issue.status : statusEvent.issue.approvalStatus,
+                    reporter       : statusEvent.issue.reporter,
+                    requestDate    : statusEvent.issue.requestDate,
+                    attachments    : statusEvent.issue.attachments,
+                    actor          : statusEvent.issue.getActorUsernames(),
+                    age            : stringPeriod(statusEvent.duration),
                 ]
             }
         }
@@ -182,6 +182,11 @@ class UtilityClass {
         }
     }
 
+    /**
+     *
+     * @param date project time period between creation and terminal statuses events
+     * @return string indicating years - months and days, returns an empty string if date is null or empty
+     */
     private static String stringPeriod(Period date) {
         StringBuffer age = new StringBuffer()
         if (date?.getYears() > 0 ) {

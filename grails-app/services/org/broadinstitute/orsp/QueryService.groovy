@@ -8,7 +8,6 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
-import liquibase.util.StringUtils
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
@@ -20,7 +19,6 @@ import org.hibernate.SessionFactory
 import org.hibernate.transform.Transformers
 
 import javax.sql.DataSource
-import java.lang.reflect.Array
 import java.sql.SQLException
 
 /**

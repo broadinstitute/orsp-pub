@@ -30,6 +30,5 @@ enum IssueType {
     static IssueType valueOfController(String controller) {
         values().find { it.controller == controller }
     }
-    // create validation of issue type
 
 }

@@ -44,4 +44,12 @@ export const defaultSorted = [{
   order: 'desc'
 }];
 
+export const QA_EVENT_SORT_NAME_INDEX = {
+  'projectKey': 0,
+  'approvalStatus': 1,
+  'age': 2,
+  'assignee': 3,
+  'type' : 4
+};
+
 export const COLUMNS_TO_HIDE_FROM_EXCEL = ['attachments', 'reporter', 'requestDate', 'reviewCategory', 'summary', 'issueStatus'];

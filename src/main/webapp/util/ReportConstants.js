@@ -21,14 +21,6 @@ export const RESTRICTION_SORT_NAME_INDEX = {
   "vaultExportDate": 1
 };
 
-export const QA_EVENT_SORT_NAME_INDEX = {
-  'projectKey': 0,
-  'approvalStatus': 1,
-  'age': 2,
-  'assignee': 3,
-  'type' : 4
-};
-
 export const styles = {
   fundingReport: { 
     issueTypeWidth: '96px',

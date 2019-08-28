@@ -80,9 +80,7 @@ class StatusEventService {
             addEntity(Event)
             setParameterList('projectKeys', issues*.projectKey.toList())
             setParameterList('typeList', TYPES*.name())
-            list().sort {
-                a, b -> a.created <=> b.created
-            }
+            list().sort { a, b -> a.created <=> b.created }
         }
 
         Map<String, Event> eventMap = eventList.groupBy {it.projectKey} as Map<String, Event>
