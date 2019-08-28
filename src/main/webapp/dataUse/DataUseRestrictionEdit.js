@@ -82,7 +82,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       manualReview: restriction !== undefined ? restriction.manualReview : false,
       comments: restriction !== undefined ? restriction.comments : '',
       populationRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.populationRestrictions) : [],
-      genomicSummaryResults: restriction !== undefined ? restriction.genomicSummaryResults : '',
+      genomicSummaryResults: restriction !== undefined && !isEmpty(restriction.genomicSummaryResults) ? restriction.genomicSummaryResults : '',
       genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : '',
       consentPIName: restriction !== undefined && !isEmpty(restriction.consentPIName) ? restriction.consentPIName : '',
     };
@@ -90,7 +90,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   init() {
-    spinnerService.show(RESTRICTION_SPINNER)
     spinnerService.show(RESTRICTION_SPINNER);
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
@@ -351,7 +350,13 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   handleDiseaseChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
-        prev.restriction.diseaseRestrictions = data;
+        let diseases = data.map(d => (
+          {
+            key: d.key,
+            label: d.key,
+            value: d.key
+          }));
+        prev.restriction.diseaseRestrictions = diseases;
         prev.restriction.noRestriction = false;
         prev.restriction.generalUse = false;
         prev.restriction.hmbResearch = false;
@@ -373,7 +378,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       let population = data.map(pop => (
         {
           key: pop.key,
-          label: pop.key
+          label: pop.key,
+          value: pop.key
         }));
       this.setState(prev => {
         if (population) {
@@ -443,22 +449,23 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   getKeys(list) {
-    return list.map(disease =>
-      disease.key
+    return list.map(value =>
+      value.key
     );
   }
 
   getAutocompleteData(data) {
-    let diseases = [];
+    let values = [];
     if (data !== null) {
-      diseases = data.map(disease => (
+      values = data.map(value => (
         {
-          key: disease,
-          label: disease
+          key: value,
+          label: value,
+          value: value
         }
       ));
     }
-    return diseases;
+    return values;
   }
 
   render() {
