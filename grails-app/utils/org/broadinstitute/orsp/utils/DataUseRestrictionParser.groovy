@@ -35,7 +35,7 @@ class DataUseRestrictionParser {
         dataUseRestriction.controlSetOption = params.controlSetOption
         dataUseRestriction.populationRestrictions = new ArrayList<>()
         if (params.populationRestrictions) {
-            if (params.populationRestrictions instanceof String[]) {
+            if (params.populationRestrictions instanceof String[]  || params.populationRestrictions instanceof JSONArray) {
                 dataUseRestriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
             }
             else if (!params.populationRestrictions.isEmpty()) {

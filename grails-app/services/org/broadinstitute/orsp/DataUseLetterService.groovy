@@ -44,7 +44,7 @@ class DataUseLetterService {
 
     DataUseRestriction createSdul(DataUseRestriction restriction, String displayName) {
         Issue consent = queryService.findByKey(restriction.consentGroupKey)
-        def updatedOrCreated = "Created"
+        def updatedOrCreated = "Updated"
         if (restriction.id == null) {
             updatedOrCreated = "Created"
         }

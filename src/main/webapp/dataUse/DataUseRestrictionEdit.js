@@ -16,7 +16,7 @@ import '../components/Btn.css';
 const FEMALE = 'Female';
 const MALE = 'Male';
 const NA = 'NA';
-
+const RESTRICTION_SPINNER = 'restrictionSpinner';
 const styles = {
   borderedContainer: {
     border: '1px solid #e3e3e3',
@@ -54,13 +54,17 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     this.scrollTop();
   }
 
+  componentWillUnmount() {
+    spinnerService._unregister(RESTRICTION_SPINNER)
+  }
+
   initRestriction(restriction, reset) {
     let params = new URLSearchParams(this.props.location.search);
     let resp = {
       consentGroupKey: restriction !== undefined ? restriction.consentGroupKey : params.get('consentKey'),
       noRestriction: restriction !== undefined ? restriction.noRestriction : '',
       hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
-      diseaseRestrictions: restriction !== undefined ? this.getDiseasesFromRestriction(restriction) : [],
+      diseaseRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.diseaseRestrictions) : [],
       generalUse: restriction !== undefined ? restriction.generalUse : '',
       populationOriginsAncestry: restriction !== undefined ? restriction.populationOriginsAncestry : '',
       commercialUseExcluded: restriction !== undefined ? restriction.commercialUseExcluded : '',
@@ -77,7 +81,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       other: restriction !== undefined ? restriction.other : '',
       manualReview: restriction !== undefined ? restriction.manualReview : false,
       comments: restriction !== undefined ? restriction.comments : '',
-      populationRestrictions: [],
+      populationRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.populationRestrictions) : [],
       genomicSummaryResults: restriction !== undefined ? restriction.genomicSummaryResults : '',
       genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : '',
       consentPIName: restriction !== undefined && !isEmpty(restriction.consentPIName) ? restriction.consentPIName : '',
@@ -86,7 +90,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   init() {
-    spinnerService.showAll();
+    spinnerService.show(RESTRICTION_SPINNER);
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
@@ -98,7 +102,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         return prev;
       }, () => {
         if (restrictionId === undefined) {
-          spinnerService.hideAll();
+          spinnerService.hide(RESTRICTION_SPINNER);
         }
       })
     })
@@ -109,7 +113,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           prev.restriction = restriction;
           return prev;
         })
-      }, () => spinnerService.hideAll())
+      }, () => spinnerService.hide(RESTRICTION_SPINNER))
     }
   }
 
@@ -134,8 +138,8 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   submit() {
     if (this.validateForm()) {
       let restriction = this.state.restriction;
-      restriction.diseaseRestrictions = this.getDiseases(this.state.restriction.diseaseRestrictions)
-      console.log(restriction);
+      restriction.diseaseRestrictions = this.getKeys(this.state.restriction.diseaseRestrictions)
+      restriction.populationRestrictions = this.getKeys(this.state.restriction.populationRestrictions)
       DataUse.createRestriction(restriction).then(resp => {
         this.props.history.push({
           pathname: '/newConsentGroup/main',
@@ -298,6 +302,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     if (value) {
       this.setState(prev => {
         prev.restriction.generalUse = false;
+        prev.restriction.noRestriction = false;
         prev.restriction.diseaseRestrictions = [];
         prev.restriction.populationOriginsAncestry = true;
         prev.restriction.hmbResearch = true;
@@ -365,15 +370,23 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   };
 
   handlePopulationChange = (data, action) => {
-    this.setState(prev => {
-      if (data !== null) {
-        prev.restriction.populationRestrictions = data;
-        prev.restriction.manualReview = true;
-      } else {
-        prev.restriction.populationRestrictions = [];
-      }
-      return prev;
-    });
+    if (data !== null) {
+      let population = data.map(pop => (
+        {
+          key: pop.key,
+          label: pop.key
+        }));
+      this.setState(prev => {
+        if (population) {
+          prev.restriction.populationRestrictions = population;
+          prev.restriction.manualReview = true;
+        } else {
+          prev.restriction.populationRestrictions = [];
+        }
+        return prev;
+
+      })
+    }
   };
 
   uncheckManualReview() {
@@ -430,16 +443,16 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     });
   }
 
-  getDiseases(diseases) {
-    return diseases.map(disease =>
+  getKeys(list) {
+    return list.map(disease =>
       disease.key
     );
   }
 
-  getDiseasesFromRestriction(restriction) {
+  getAutocompleteData(data) {
     let diseases = [];
-    if (restriction.diseaseRestrictions !== null) {
-      diseases = restriction.diseaseRestrictions.map(disease => (
+    if (data !== null) {
+      diseases = data.map(disease => (
         {
           key: disease,
           label: disease
@@ -678,7 +691,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             span({ className: "radioLabel" }, [FEMALE])
           ]),
           label({ className: "radioOptions" }, [
-            input({ type: "radio", checked: this.state.restriction.gender === NA, onChange: this.handleGenderChange, name: NA }, []),
+            input({ type: "radio", checked: this.state.restriction.gender === NA || this.state.restriction.gender === null, onChange: this.handleGenderChange, name: NA }, []),
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["N/A"])
           ])
@@ -825,7 +838,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           button({ className: "btn btn-primary", onClick: this.submit }, ["Save"])
         ]),
         h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
+          name: RESTRICTION_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
