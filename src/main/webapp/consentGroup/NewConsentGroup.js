@@ -2,17 +2,28 @@ import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
 import { h, div } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User, requestTokens } from '../util/ajax';
+import {
+  Files,
+  ConsentGroup,
+  SampleCollections,
+  User,
+  requestTokens, consentGroupToken,
+} from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { Spinner } from "../components/Spinner";
 import { isEmpty } from "../util/Utils";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
+import axios, { CancelToken } from 'axios';
+import { UrlConstants } from '../util/UrlConstants';
 
 const LAST_STEP = 1;
 const CONSENT_SPINNER = 'consentSpinner';
 
 class NewConsentGroup extends Component {
+
+  CancelToken = CancelToken;
+  source = this.CancelToken.source();
 
   constructor(props) {
     super(props);
@@ -74,36 +85,39 @@ class NewConsentGroup extends Component {
     this.initDocuments();
     this.getUserSession();
     this.initFormSelectData();
+    this.initCollectionData();
   }
   componentWillUnmount() {
     spinnerService._unregister(CONSENT_SPINNER);
     requestTokens.cancelRequests();
+    this.source.cancel('request cancelled');
   }
 
   initFormSelectData = async () => {
     try {
-      const groupNames = await ConsentGroup.getConsentGroupNames();
-      console.log(groupNames.data);
+      const result = await axios.get(UrlConstants.consentNamesSearchURL, {
+        cancelToken: this.source.token
+      });
       this.setState(prev => {
-        prev.existingGroupNames = groupNames.data;
+        prev.existingGroupNames = result.data;
         return prev;
       });
+    } catch (error) {}
+  };
 
-      SampleCollections.getSampleCollections().then(
-        resp => {
-          const sampleCollections = resp.data.map(item => {
-            return {
-              key: item.id,
-              value: item.collectionId,
-              label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-            };
-          });
-          this.setState(prev => {
-            prev.sampleCollectionList = sampleCollections;
-            return prev;
-          })
-        }).catch(() => {});
-    } catch (e) { }
+  initCollectionData = async () => {
+    const collectionsData = await SampleCollections.getSampleCollections();
+    const sampleCollections = collectionsData.data.map(item => {
+      return {
+        key: item.id,
+        value: item.collectionId,
+        label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+      };
+    });
+    this.setState(prev => {
+      prev.sampleCollectionList = sampleCollections;
+      return prev;
+    })
   };
 
   getUserSession() {
