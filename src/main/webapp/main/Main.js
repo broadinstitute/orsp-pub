@@ -8,6 +8,9 @@ import { isEmpty } from "../util/Utils";
 import './Main.css';
 
 class Main extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,47 +30,65 @@ class Main extends Component {
     };
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   initStatusBoxInfo = (elementInfo) => {
-    this.setState(prev => {
-      prev.status.type = get(elementInfo, 'issue.type', '');
-      prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
-      prev.status.summary = get(elementInfo, 'issue.summary', '');
-      prev.status.status = get(elementInfo, 'issue.approvalStatus', '');
-      prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
-      prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
-      prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
-      return prev;
-    });
+    if (this._isMounted) {
+      this.setState(prev => {
+        prev.status.type = get(elementInfo, 'issue.type', '');
+        prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
+        prev.status.summary = get(elementInfo, 'issue.summary', '');
+        prev.status.status = get(elementInfo, 'issue.approvalStatus', '');
+        prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
+        prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
+        prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
+        return prev;
+      });
+    }
   };
 
   changeInfoStatus = (data) => {
-    this.setState(prev => {
-      prev.status.projectReviewApproved = data;
-      return prev;
-    });
+    if (this._isMounted) {
+      this.setState(prev => {
+        prev.status.projectReviewApproved = data;
+        return prev;
+      });
+    }
   };
 
   updateDetailsStatus = (status) => {
-    this.setState(prev => {
-      prev.status.projectReviewApproved = status.extraProperties !== null && !isEmpty(status.extraProperties.projectReviewApproved) ? status.extraProperties.projectReviewApproved : false;
-      prev.status.summary = status.issue.summary;
-      prev.status.actor = status.extraProperties !== null && !isEmpty(status.extraProperties.actor) ? status.extraProperties.actor : '';
-      return prev;
-    })
+    if (this._isMounted) {
+      this.setState(prev => {
+        prev.status.projectReviewApproved = status.extraProperties !== null && !isEmpty(status.extraProperties.projectReviewApproved) ? status.extraProperties.projectReviewApproved : false;
+        prev.status.summary = status.issue.summary;
+        prev.status.actor = status.extraProperties !== null && !isEmpty(status.extraProperties.actor) ? status.extraProperties.actor : '';
+        return prev;
+      });
+    }
   };
 
   updateDocumentsStatus = (status) => {
-    this.setState(prev => {
-      prev.status.attachmentsApproved = status.attachmentsApproved;
-      return prev;
-    })
+    if (this._isMounted) {
+      this.setState(prev => {
+        prev.status.attachmentsApproved = status.attachmentsApproved;
+        return prev;
+      });
+    }
   };
 
   updateAdminOnlyStatus = (status) => {
-    this.setState(prev => {
-      prev.status.status = status.projectStatus;
-      return prev;
-    })
+    if (this._isMounted) {
+      this.setState(prev => {
+        prev.status.status = status.projectStatus;
+        return prev;
+      });
+    }
   };
 
   render() {

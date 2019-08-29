@@ -30,6 +30,8 @@ const headers =
 
 export const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -116,6 +118,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   componentDidMount() {
+    this._isMounted = true;
     spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
     ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
@@ -126,6 +129,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     requestTokens.cancelRequests();
     spinnerService._unregister(CONSENT_GROUP_REVIEW_SPINNER);
   }
@@ -141,16 +145,19 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
     ConsentGroup.getConsentGroup(this.props.consentKey).then(
       element => {
+        if (this._isMounted) {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
           resp => {
-            sampleCollections = resp.data.map(item => {
-              return {
-                key: item.id,
-                value: item.collectionId,
-                label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-              };
-            });
+            if (this._isMounted) {
+              sampleCollections = resp.data.map(item => {
+                return {
+                  key: item.id,
+                  value: item.collectionId,
+                  label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+                };
+              });
+            }
             sampleCollectionList = sampleCollections;
 
             current.consentExtraProps = element.data.extraProperties;
@@ -193,22 +200,24 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
               futureCopy = JSON.parse(currentStr);
             }
 
-            this.setState(prev => {
-              // prepare form data here, initially same as current ....
-              prev.sampleCollectionList = sampleCollectionList;
-              prev.formData = formData;
-              prev.current = current;
-              prev.future = future;
-              prev.futureCopy = futureCopy;
-              prev.isAdmin = component.isAdmin;
-              return prev;
-            }, () => spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER));
+            if (this._isMounted) {
+              this.setState(prev => {
+                // prepare form data here, initially same as current ....
+                prev.sampleCollectionList = sampleCollectionList;
+                prev.formData = formData;
+                prev.current = current;
+                prev.future = future;
+                prev.futureCopy = futureCopy;
+                prev.isAdmin = component.isAdmin;
+                return prev;
+              }, () => spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER));
+            }
           }
         );
       }
-    ).catch(error => {
+      }
+    ).catch(() => {
       spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
-      this.setState(() => { throw error; });
     });
   };
 
@@ -227,20 +236,22 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   getReviewSuggestions = () => {
     Review.getSuggestions(this.props.consentKey).then(data => {
-      if (data.data !== '') {
-        this.setState(prev => {
-          prev.formData = JSON.parse(data.data.suggestions);
-          prev.editedForm = JSON.parse(data.data.suggestions);
-          prev.reviewSuggestion = true;
-          return prev;
-        });
-        this.props.changeInfoStatus(false);
-      } else {
-        this.setState(prev => {
-          prev.formData = JSON.parse(JSON.stringify(this.state.current));
-          prev.reviewSuggestion = false;
-          return prev;
-        });
+      if (this._isMounted) {
+        if (data.data !== '') {
+          this.setState(prev => {
+            prev.formData = JSON.parse(data.data.suggestions);
+            prev.editedForm = JSON.parse(data.data.suggestions);
+            prev.reviewSuggestion = true;
+            return prev;
+          });
+          this.props.changeInfoStatus(false);
+        } else {
+          this.setState(prev => {
+            prev.formData = JSON.parse(JSON.stringify(this.state.current));
+            prev.reviewSuggestion = false;
+            return prev;
+          });
+        }
       }
     });
   };

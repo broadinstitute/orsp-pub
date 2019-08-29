@@ -10,6 +10,8 @@ import { ProjectMigration, Review, requestTokens } from '../util/ajax';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,11 +25,13 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getHistory();
     this.getComments();
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     requestTokens.cancelRequests();
   }
 
@@ -55,20 +59,24 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
   // history
   getHistory() {
     ProjectMigration.getHistory(this.props.consentKey).then(resp => {
-      this.setState(prev => {
-        prev.history = resp.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.history = resp.data;
+          return prev;
+        });
+      }
     }).catch(() => {});
   };
 
   // comments
   getComments() {
     Review.getComments(this.props.consentKey).then(result => {
-      this.setState(prev => {
-        prev.comments = result.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.comments = result.data;
+          return prev;
+        });
+      }
     });
   }
 
