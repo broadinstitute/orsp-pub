@@ -57,7 +57,7 @@ class DataUseLetterService {
         restriction
     }
 
-    DataUseRestriction updateRestrictionFromParams(Object params) {
+    DataUseRestriction getRestrictionFromParams(Object params) {
         if (params.consentGroupKey) {
             DataUseRestriction existentRestriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
             DataUseRestrictionParser.fromParams(existentRestriction, params)

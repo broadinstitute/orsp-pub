@@ -24,18 +24,6 @@ class DataUseController extends AuthenticatedController {
     ConsentExportService consentExportService
     DataUseLetterService dataUseLetterService
 
-    def list() {
-      redirectToMainContainer()
-    }
-
-    def restriction() {
-      redirectToMainContainer()
-    }
-
-    def show() {
-      redirectToMainContainer()
-    }
-
     def findDataUseRestrictions() {
         PaginationParams pagination = new PaginationParams(
                 draw: params.getInt("draw") ?: 1,
@@ -95,10 +83,10 @@ class DataUseController extends AuthenticatedController {
 
     def saveSdul() {
         try {
-            DataUseRestriction restriction = dataUseLetterService.updateRestrictionFromParams(request.JSON)
+            DataUseRestriction restriction = dataUseLetterService.getRestrictionFromParams(request.JSON)
             dataUseLetterService.saveRestriction(restriction, getUser()?.displayName)
             response.status = 200
-            render(response.status)
+            render(restriction: restriction as JSON)
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)

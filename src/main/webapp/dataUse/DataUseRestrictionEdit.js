@@ -7,7 +7,7 @@ import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { MultiSelect } from "../components/MultiSelect";
 import { AlertMessage } from '../components/AlertMessage';
 import { DataUse, ConsentGroup } from "../util/ajax";
-import { isEmpty } from '../util/Utils';
+import { isEmpty, createObjectCopy } from '../util/Utils';
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
@@ -138,7 +138,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   submit() {
     if (this.validateForm()) {
-      let restriction = this.state.restriction;
+      let restriction = createObjectCopy(this.state.restriction);
       restriction.diseaseRestrictions = this.getKeys(this.state.restriction.diseaseRestrictions)
       restriction.populationRestrictions = this.getKeys(this.state.restriction.populationRestrictions)
       DataUse.createRestriction(restriction).then(resp => {
