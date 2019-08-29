@@ -10,7 +10,8 @@ import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
-import _ from 'lodash';
+import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 import '../components/Btn.css';
 
 const FEMALE = 'Female';
@@ -43,7 +44,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       },
       showError: false,
       restriction: this.initRestriction(),
-      create: !_.isNil(params.get('create')) ? true : false,
+      create: !isNil(params.get('create')) ? true : false,
       consentKey: params.get('consentKey')
     }
     this.submit = this.submit.bind(this);
@@ -61,30 +62,30 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   initRestriction(restriction, reset) {
     let params = new URLSearchParams(this.props.location.search);
     let resp = {
-      consentGroupKey: _.get(restriction, 'consentGroupKey', params.get('consentKey')),
-      noRestriction: _.get(restriction, 'noRestriction', ''),
-      hmbResearch: _.get(restriction, 'hmbResearch', ''),
-      diseaseRestrictions: _.get(restriction, this.getAutocompleteData(restriction.diseaseRestrictions), []),
-      generalUse: _.get(restriction, 'generalUse', ''),
-      populationOriginsAncestry: _.get(restriction, 'populationOriginsAncestry', ''),
-      commercialUseExcluded: _.get(restriction, 'commercialUseExcluded', ''),
-      methodsResearchExcluded: _.get(restriction, 'methodsResearchExcluded', ''),
-      aggregateResearchResponse: _.get(restriction, 'aggregateResearchResponse', ''),
-      controlSetOption: _.get(restriction, 'controlSetOption', ''),
-      gender: _.get(restriction, 'gender', ''),
-      pediatric: _.get(restriction, 'pediatricLimited', ''),
-      collaborationInvestigators: _.get(restriction, 'collaborationInvestigators', ''),
-      irb: _.get(restriction, 'irb', ''),
-      publicationResults: _.get(restriction, 'publicationResults', ''),
-      genomicResults: _.get(restriction, 'genomicResults', ''),
-      geographicalRestrictions: _.get(restriction, 'geographicalRestrictions', ''),
-      other:_.get(restriction, 'other', ''),
-      manualReview: _.get(restriction, 'manualReview', false),
-      comments: _.get(restriction, 'comments', ''),
-      populationRestrictions: _.get(restriction, this.getAutocompleteData(restriction.populationRestrictions), []),
-      genomicSummaryResults:  _.get(restriction, 'genomicSummaryResults',''),
-      genomicPhenotypicData: _.get(restriction, 'genomicPhenotypicData',''),
-      consentPIName:  _.get(restriction, 'consentPIName','')
+      consentGroupKey: get(restriction, 'consentGroupKey', params.get('consentKey')),
+      noRestriction: get(restriction, 'noRestriction', ''),
+      hmbResearch: get(restriction, 'hmbResearch', ''),
+      diseaseRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.diseaseRestrictions) : [],
+      generalUse: get(restriction, 'generalUse', ''),
+      populationOriginsAncestry: get(restriction, 'populationOriginsAncestry', ''),
+      commercialUseExcluded: get(restriction, 'commercialUseExcluded', ''),
+      methodsResearchExcluded: get(restriction, 'methodsResearchExcluded', ''),
+      aggregateResearchResponse: get(restriction, 'aggregateResearchResponse', ''),
+      controlSetOption: get(restriction, 'controlSetOption', ''),
+      gender: get(restriction, 'gender', ''),
+      pediatric: get(restriction, 'pediatricLimited', ''),
+      collaborationInvestigators: get(restriction, 'collaborationInvestigators', ''),
+      irb: get(restriction, 'irb', ''),
+      publicationResults: get(restriction, 'publicationResults', ''),
+      genomicResults: get(restriction, 'genomicResults', ''),
+      geographicalRestrictions: get(restriction, 'geographicalRestrictions', ''),
+      other: get(restriction, 'other', ''),
+      manualReview: get(restriction, 'manualReview', false),
+      comments: get(restriction, 'comments', ''),
+      populationRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.populationRestrictions) : [],
+      genomicSummaryResults: get(restriction, 'genomicSummaryResults',''),
+      genomicPhenotypicData: get(restriction, 'genomicPhenotypicData',''),
+      consentPIName: get(restriction, 'consentPIName','')
     };
     return resp;
   }
@@ -106,7 +107,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         }
       })
     })
-    if (!_.isNil(restrictionId)) {
+    if (!isNil(restrictionId)) {
       DataUse.getRestriction(restrictionId).then(result => {
         let restriction = this.initRestriction(result.data.restriction);
         this.setState(prev => {
