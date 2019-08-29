@@ -67,6 +67,8 @@ function getValue(row) {
 
 export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
 
+  _isMount = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -81,11 +83,12 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
     };
   }
   componentDidMount() {
+    this._isMount = true;
     this.init();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMount = false;
   }
 
   init = () => {
@@ -95,13 +98,14 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
   tableHandler = (offset, limit, search, sort, page) => {
     ConsentCollectionLink.findCollectionLinks().then(result => {
       spinnerService.show(SPINNER_NAME);
-      this.setState(prev => {       
-        prev.links = result.data;
-        return prev;
-      }, () => spinnerService.hide(SPINNER_NAME))
-    }).catch(error => {
+      if (this._isMount) {
+        this.setState(prev => {
+          prev.links = result.data;
+          return prev;
+        }, () => spinnerService.hide(SPINNER_NAME))
+      }
+    }).catch(() => {
       spinnerService.hide(SPINNER_NAME);
-      this.setState(() => { throw error });
     });
   };
 

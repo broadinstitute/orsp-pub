@@ -122,9 +122,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     spinnerService.show(CONSENT_GROUP_REVIEW_SPINNER);
     ConsentGroup.getConsentGroupNames().then(
       resp => this.setState({ existingGroupNames: resp.data })
-    ).catch(error => {
-      this.setState(() => { throw error; });
-    });
+    ).catch(() => { });
     this.init();
   }
 
@@ -145,7 +143,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
     ConsentGroup.getConsentGroup(this.props.consentKey).then(
       element => {
-        if (this._isMounted) {
+        // if (this._isMounted) {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
           resp => {
@@ -214,7 +212,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             }
           }
         );
-      }
+      // }
       }
     ).catch(() => {
       spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
@@ -291,14 +289,16 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
       !collInst &&
       !consentGroupName;
 
-    this.setState(prev => {
-      prev.errors.consent = consent;
-      prev.errors.protocol = protocol;
-      prev.errors.collInst = collInst;
-      prev.errors.consentGroupName = consentGroupName;
-      return prev;
-    });
-    this.setState({ errorSubmit: !valid });
+    if (this._isMounted) {
+      this.setState(prev => {
+        prev.errors.consent = consent;
+        prev.errors.protocol = protocol;
+        prev.errors.collInst = collInst;
+        prev.errors.consentGroupName = consentGroupName;
+        return prev;
+      });
+      this.setState({ errorSubmit: !valid });
+    }
     return valid;
   };
 
