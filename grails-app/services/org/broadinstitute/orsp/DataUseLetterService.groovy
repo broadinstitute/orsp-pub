@@ -1,7 +1,6 @@
 package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
-import javassist.NotFoundException
 import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 
 class DataUseLetterService {
