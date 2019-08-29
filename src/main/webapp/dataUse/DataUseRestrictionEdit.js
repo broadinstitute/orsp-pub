@@ -8,7 +8,6 @@ import { MultiSelect } from "../components/MultiSelect";
 import { AlertMessage } from '../components/AlertMessage';
 import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
-import { UrlConstants } from '../util/UrlConstants';
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import '../components/Btn.css';
