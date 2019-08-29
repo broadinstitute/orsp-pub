@@ -103,7 +103,8 @@ final class IssueUtils {
 
     }
 
-    static Boolean getBooleanFromString(String param) {
+    static Boolean getBooleanForParam(Object param) {
+        if (param instanceof Boolean) return param
         if ("Yes".equalsIgnoreCase(param) || "true".equalsIgnoreCase(param)) return true
         if ("No".equalsIgnoreCase(param) || "false".equalsIgnoreCase(param)) return false
         null
