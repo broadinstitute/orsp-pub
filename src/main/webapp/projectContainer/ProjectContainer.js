@@ -9,10 +9,12 @@ import '../components/Wizard.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
 import { MultiTab } from "../components/MultiTab";
-import { ProjectMigration, Review, requestTokens } from '../util/ajax';
+import { ProjectMigration, Review } from '../util/ajax';
 import {isEmpty} from "../util/Utils";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -27,12 +29,13 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getHistory();
     this.getComments();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false;
   }
 
   updateDetailsStatus = (status) => {
@@ -60,20 +63,24 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   // history
   getHistory() {
     ProjectMigration.getHistory(this.props.projectKey).then(resp => {
-      this.setState(prev => {
-        prev.history = resp.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.history = resp.data;
+          return prev;
+        });
+      }
     });
   };
 
   //comments
   getComments() {
     Review.getComments(this.props.projectKey).then(result => {
-      this.setState(prev => {
-        prev.comments = result.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.comments = result.data;
+          return prev;
+        });
+      }
     });
   }
 

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { h, hh, div, h2, button } from 'react-hyperscript-helpers';
-import { Project } from "../util/ajax";
+import { Project, requestTokens } from "../util/ajax";
 import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
@@ -53,6 +53,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
 
   componentWillUnmount() {
     spinnerService._unregister(ADMIN_ONLY_SPINNER);
+    requestTokens.cancelRequests();
   }
 
   init = () => {
@@ -82,8 +83,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           prev.isAdmin = component.isAdmin;
           return prev;
         })
-      }).catch(error => {
-        this.setState(() => { throw error; });
+      }).catch(() => {
       });
   };
 

@@ -15,6 +15,7 @@ const LINK_WIZARD_SPINNER = 'linkWizardSpinner';
 
 export const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
+  _isMount = false;
 
   constructor(props) {
     super(props);
@@ -74,18 +75,24 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   componentDidMount() {
+    this._isMount = true;
     this.getUserSession();
   }
 
   componentWillUnmount() {
+    this._isMount = false;
     spinnerService._unregister(LINK_WIZARD_SPINNER);
   }
 
   getUserSession() {
-    User.getUserSession().then(
-      resp => this.setState({ user: resp.data })
-    ).catch(error => {
-      this.setState(() => { throw error; });
+    User.getUserSession().then( resp => {
+      if (this._isMount) {
+        this.setState({ user: resp.data })
+      }
+    }).catch(error => {
+      if (this._isMount) {
+        this.setState(() => { throw error; });
+      }
     });
   }
 

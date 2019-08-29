@@ -59,7 +59,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
         prev.history = resp.data;
         return prev;
       })
-    });
+    }).catch(() => {});
   };
 
   // comments

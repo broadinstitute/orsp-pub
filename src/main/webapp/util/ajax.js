@@ -1,6 +1,6 @@
 import axios, { CancelToken } from 'axios';
 import "regenerator-runtime/runtime";
-import  { UrlConstants }  from './UrlConstants';
+import { UrlConstants }  from './UrlConstants';
 
 export const requestTokens = {
   tokens: [],
@@ -38,8 +38,7 @@ export const Search = {
 };
 
 export const SampleCollections = {
-
-  getSampleCollections(query) {
+  getSampleCollections: async (query) => {
     return axios.get(UrlConstants.sampleSearchUrl + '?term=' + query, {
       cancelToken: new CancelToken((c) => {
         requestTokens.add({token: c, id: 'getSampleCollections'});
@@ -131,7 +130,7 @@ export const ConsentGroup = {
     return axios.put(UrlConstants.unlinkAssociatedSampleCollection, data);
   },
 
-  getProjectConsentGroups(projectKey) {
+  getProjectConsentGroups: async (projectKey) => {
     return axios.get(UrlConstants.getProjectConsentGroupsUrl + '?projectKey=' + projectKey, {
         cancelToken: new CancelToken((c) => {
           requestTokens.add({token: c, id: 'getProjectConsentGroups'});
@@ -215,8 +214,12 @@ export const Project = {
     return axios.post(UrlConstants.createProjectUrl, data, config);
   },
 
-  getProject(projectKey) {
-    return axios.get(UrlConstants.projectInfoUrl + '?id=' + projectKey);
+  getProject: async (projectKey) => {
+    return axios.get(UrlConstants.projectInfoUrl + '?id=' + projectKey, {
+      cancelToken: new CancelToken((c) => {
+        requestTokens.add({token: c, id: 'getProject'});
+      })
+    }).catch(() => {});
   },
 
   addExtraProperties(projectKey, data) {
@@ -253,8 +256,12 @@ export const DocumentHandler = {
     return axios.put(`${UrlConstants.rejectDocumentUrl}?uuid=${uuid}`);
   },
 
-   attachedDocuments(issueKey) {
-    return axios.get(`${UrlConstants.attachedDocumentsUrl}?issueKey=${issueKey}`);
+   attachedDocuments: async (issueKey) => {
+    return axios.get(`${UrlConstants.attachedDocumentsUrl}?issueKey=${issueKey}`, {
+      cancelToken: new CancelToken((c) => {
+        requestTokens.add({token: c, id: 'attachedDocuments'});
+      })
+    }).catch( () => {});
   },
 
   delete(documentId) {
@@ -267,8 +274,7 @@ export const DocumentHandler = {
 };
 
 export const User = {
-
-  getUserSession() {
+  getUserSession: async () =>  {
     return axios.get(UrlConstants.getUserUrl,{
       cancelToken: new CancelToken((c) => {
         requestTokens.add({token: c, id: 'getUserSession'});
@@ -325,7 +331,7 @@ export const Review = {
     return axios.post(UrlConstants.saveCommentUrl + '?id=' + id, { comment:comment })
   },
 
-  getComments(id) {
+  getComments: async (id) => {
     return axios.get(UrlConstants.getCommentsUrl + '?id=' + id, {
       cancelToken: new CancelToken((c) => {
         requestTokens.add({token: c, id: 'getComments'});
@@ -464,7 +470,7 @@ export const Reports = {
 };
 
 export const ProjectMigration = {
-  getHistory(id) {
+  getHistory: async (id) => {
     return axios.get(UrlConstants.historyUrl + '?id=' + id, {
       cancelToken: new CancelToken((c) => {
         requestTokens.add({token: c, id: 'getHistory'});

@@ -7,7 +7,7 @@ import {
   ConsentGroup,
   SampleCollections,
   User,
-  requestTokens, consentGroupToken,
+  requestTokens
 } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { Spinner } from "../components/Spinner";
