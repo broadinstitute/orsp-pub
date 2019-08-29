@@ -12,7 +12,6 @@ import { UrlConstants } from "../util/UrlConstants";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "./Spinner";
 import { Link } from 'react-router-dom';
-import '../components/Btn.css';
 
 const DOCUMENTS_SPINNER = 'documentsSpinner';
 

@@ -10,6 +10,7 @@ import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
+import _ from 'lodash';
 import '../components/Btn.css';
 
 const FEMALE = 'Female';
@@ -42,7 +43,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       },
       showError: false,
       restriction: this.initRestriction(),
-      create: params.get('create') !== undefined ? true : false,
+      create: !_.isNil(params.get('create')) ? true : false,
       consentKey: params.get('consentKey')
     }
     this.submit = this.submit.bind(this);
@@ -60,30 +61,30 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   initRestriction(restriction, reset) {
     let params = new URLSearchParams(this.props.location.search);
     let resp = {
-      consentGroupKey: restriction !== undefined ? restriction.consentGroupKey : params.get('consentKey'),
-      noRestriction: restriction !== undefined ? restriction.noRestriction : '',
-      hmbResearch: restriction !== undefined ? restriction.hmbResearch : '',
-      diseaseRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.diseaseRestrictions) : [],
-      generalUse: restriction !== undefined ? restriction.generalUse : '',
-      populationOriginsAncestry: restriction !== undefined ? restriction.populationOriginsAncestry : '',
-      commercialUseExcluded: restriction !== undefined ? restriction.commercialUseExcluded : '',
-      methodsResearchExcluded: restriction !== undefined ? restriction.methodsResearchExcluded : '',
-      aggregateResearchResponse: restriction !== undefined ? restriction.aggregateResearchResponse : '',
-      controlSetOption: restriction !== undefined ? restriction.controlSetOption : '',
-      gender: restriction !== undefined ? restriction.gender : '',
-      pediatric: restriction !== undefined ? restriction.pediatricLimited : '',
-      collaborationInvestigators: restriction !== undefined ? restriction.collaborationInvestigators : '',
-      irb: restriction !== undefined ? restriction.irb : '',
-      publicationResults: restriction !== undefined ? restriction.publicationResults : '',
-      genomicResults: restriction !== undefined ? restriction.genomicResults : '',
-      geographicalRestrictions: restriction !== undefined ? restriction.geographicalRestrictions : '',
-      other: restriction !== undefined ? restriction.other : '',
-      manualReview: restriction !== undefined ? restriction.manualReview : false,
-      comments: restriction !== undefined ? restriction.comments : '',
-      populationRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.populationRestrictions) : [],
-      genomicSummaryResults: restriction !== undefined && !isEmpty(restriction.genomicSummaryResults) ? restriction.genomicSummaryResults : '',
-      genomicPhenotypicData: restriction !== undefined ? restriction.genomicPhenotypicData : '',
-      consentPIName: restriction !== undefined && !isEmpty(restriction.consentPIName) ? restriction.consentPIName : '',
+      consentGroupKey: !_.isNil(restriction) ? restriction.consentGroupKey : params.get('consentKey'),
+      noRestriction: !_.isNil(restriction) ? restriction.noRestriction : '',
+      hmbResearch: !_.isNil(restriction) ? restriction.hmbResearch : '',
+      diseaseRestrictions: !_.isNil(restriction) ? this.getAutocompleteData(restriction.diseaseRestrictions) : [],
+      generalUse: !_.isNil(restriction) ? restriction.generalUse : '',
+      populationOriginsAncestry: !_.isNil(restriction) ? restriction.populationOriginsAncestry : '',
+      commercialUseExcluded: !_.isNil(restriction) ? restriction.commercialUseExcluded : '',
+      methodsResearchExcluded: !_.isNil(restriction) ? restriction.methodsResearchExcluded : '',
+      aggregateResearchResponse: !_.isNil(restriction) ? restriction.aggregateResearchResponse : '',
+      controlSetOption: !_.isNil(restriction) ? restriction.controlSetOption : '',
+      gender: !_.isNil(restriction) ? restriction.gender : '',
+      pediatric: !_.isNil(restriction) ? restriction.pediatricLimited : '',
+      collaborationInvestigators: !_.isNil(restriction) ? restriction.collaborationInvestigators : '',
+      irb: !_.isNil(restriction) ? restriction.irb : '',
+      publicationResults: !_.isNil(restriction) ? restriction.publicationResults : '',
+      genomicResults: !_.isNil(restriction) ? restriction.genomicResults : '',
+      geographicalRestrictions: !_.isNil(restriction)? restriction.geographicalRestrictions : '',
+      other: !_.isNil(restriction) ? restriction.other : '',
+      manualReview: !_.isNil(restriction) ? restriction.manualReview : false,
+      comments: !_.isNil(restriction) ? restriction.comments : '',
+      populationRestrictions: !_.isNil(restriction) ? this.getAutocompleteData(restriction.populationRestrictions) : [],
+      genomicSummaryResults: !_.isNil(restriction) && !isEmpty(restriction.genomicSummaryResults) ? restriction.genomicSummaryResults : '',
+      genomicPhenotypicData: !_.isNil(restriction) ? restriction.genomicPhenotypicData : '',
+      consentPIName: !_.isNil(restriction) && !isEmpty(restriction.consentPIName) ? restriction.consentPIName : '',
     };
     return resp;
   }
@@ -100,12 +101,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.disabledConsent = true;
         return prev;
       }, () => {
-        if (restrictionId === undefined) {
+        if (restrictionId === undefined || restrictionId === null) {
           spinnerService.hide(RESTRICTION_SPINNER);
         }
       })
     })
-    if (restrictionId !== undefined && restrictionId !== null) {
+    if (!_.isNil(restrictionId)) {
       DataUse.getRestriction(restrictionId).then(result => {
         let restriction = this.initRestriction(result.data.restriction);
         this.setState(prev => {
@@ -279,21 +280,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     }
   }
 
-  handleGenomicResultChange = (e, field, value) => {
-    value = this.getValue(value);
-    if (value) {
-      this.setState(prev => {
-        prev.restriction.genomicResults = true;
-        prev.restriction.controlSetOption = 'No';
-        prev.restriction.diseaseRestrictions = [];
-        prev.restriction.generalUse = true;
-        return prev;
-      });
-    } else {
-      this.setFieldValue(field, value);
-    }
-  }
-
   handleHmbResearchChange = (e, field, value) => {
     value = this.getValue(value);
     if (value) {
@@ -308,11 +294,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     } else {
       this.setFieldValue(field, value);
     }
-  }
-
-  checkIfExist(data, key) {
-    console.log('hhh', _.find(data, (it) => { return it.key === key }));
-    return _.find(data, (it) => { return it.key === key }) === undefined ? false : true
   }
 
   loadDOIDOptions = (query, callback) => {

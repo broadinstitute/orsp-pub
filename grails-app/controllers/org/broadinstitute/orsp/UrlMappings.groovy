@@ -72,7 +72,7 @@ class UrlMappings {
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'getDul', method: 'GET')
         '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
-        '/api/data-use/restriction/create'(controller: 'dataUse', action: 'createSdul', method: 'POST')
+        '/api/data-use/restriction/create'(controller: 'dataUse', action: 'saveSdul', method: 'POST')
 
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/collection'(controller: 'clarification', action: 'collectionRequestClarification', method: 'POST')

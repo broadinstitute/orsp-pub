@@ -1,6 +1,8 @@
 package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
+import javassist.NotFoundException
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 
 class DataUseLetterService {
     QueryService queryService
@@ -42,7 +44,7 @@ class DataUseLetterService {
         }
     }
 
-    DataUseRestriction createSdul(DataUseRestriction restriction, String displayName) {
+    DataUseRestriction saveRestriction(DataUseRestriction restriction, String displayName) {
         Issue consent = queryService.findByKey(restriction.consentGroupKey)
         def updatedOrCreated = "Updated"
         if (restriction.id == null) {
@@ -56,5 +58,13 @@ class DataUseLetterService {
         restriction
     }
 
+    DataUseRestriction updateRestrictionFromParams(Object params) {
+        if (params.consentGroupKey) {
+            DataUseRestriction existentRestriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
+            DataUseRestrictionParser.fromParams(existentRestriction, params)
+        } else {
+            throw new IllegalArgumentException('Consent Group is required')
+        }
+    }
 
 }

@@ -400,17 +400,21 @@ class QueryService implements Status {
     }
 
     List <StorageDocument> findAllDocumentsBySampleCollectionIdList(List<Long> consentCollectionId) {
-        final session = sessionFactory.currentSession
-        final String query =
-                ' select * from storage_document ' +
-                        ' where consent_collection_link_id in :consentCollectionIds' +
-                        ' and deleted = 0'
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(StorageDocument)
-            setParameterList('consentCollectionIds', consentCollectionId)
-            list()
+        List <StorageDocument> results = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(consentCollectionId)) {
+            final session = sessionFactory.currentSession
+            final String query =
+                    ' select * from storage_document ' +
+                            ' where consent_collection_link_id in :consentCollectionIds' +
+                            ' and deleted = 0'
+            final SQLQuery sqlQuery = session.createSQLQuery(query)
+            results = sqlQuery.with {
+                addEntity(StorageDocument)
+                setParameterList('consentCollectionIds', consentCollectionId)
+                list()
+            }
         }
+
         results
     }
 

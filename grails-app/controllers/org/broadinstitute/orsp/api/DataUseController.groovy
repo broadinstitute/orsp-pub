@@ -13,7 +13,6 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.consent.ConsentResource
-import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
@@ -94,11 +93,10 @@ class DataUseController extends AuthenticatedController {
         }
     }
 
-    def createSdul() {
+    def saveSdul() {
         try {
-            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(request.JSON.consentGroupKey)
-            restriction = DataUseRestrictionParser.fromParams(restriction, request.JSON)
-            dataUseLetterService.createSdul(restriction, getUser()?.displayName)
+            DataUseRestriction restriction = dataUseLetterService.updateRestrictionFromParams(request.JSON)
+            dataUseLetterService.saveRestriction(restriction, getUser()?.displayName)
             response.status = 200
             render(response.status)
         } catch (Exception e) {

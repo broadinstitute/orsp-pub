@@ -77,8 +77,6 @@ export const UrlConstants = {
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
   historyUrl: context + '/api/history',
-  submissionsUrl: context + '/api/submissions',
-  submissionDisplayUrl: context + '/api/submissions/display',
   restrictionUrl: context + '/dataUse/restriction',  
   showRestrictionUrl: context + '/dataUse/show',
   dataUseRestrictionUrl: context + '/api/data-use/restriction/create',
