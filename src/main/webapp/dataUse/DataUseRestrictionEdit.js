@@ -581,7 +581,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             div({ className: "col-sm-7" }, [
               MultiSelect({
                 id: "diseasesSelect",
-                label: "Please select",
+                label: "Future use is limited to research involving the following disease area(s) [DS]",
                 name: "otherDiseaseSpecify",
                 isDisabled: false,
                 loadOptions: this.loadDOIDOptions,
