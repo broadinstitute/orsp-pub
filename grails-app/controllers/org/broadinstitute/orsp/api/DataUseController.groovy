@@ -87,6 +87,9 @@ class DataUseController extends AuthenticatedController {
             dataUseLetterService.saveRestriction(restriction, getUser()?.displayName)
             response.status = 200
             render(restriction: restriction as JSON)
+        } catch (IllegalArgumentException iae) {
+            response.status = 400
+            render([error: iae.message] as JSON)
         } catch (Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
