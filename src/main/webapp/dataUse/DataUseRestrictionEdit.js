@@ -352,7 +352,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         prev.restriction.noRestriction = false;
         prev.restriction.generalUse = false;
         prev.restriction.hmbResearch = false;
-        prev.restriction.populationOriginsAncestry = false;
+        prev.restriction.populationOriginsAncestry = true;
         prev.restriction.controlSetOption = 'Yes';
       } else {
         prev.restriction.diseaseRestrictions = [];
@@ -581,7 +581,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
             div({ className: "col-sm-7" }, [
               MultiSelect({
                 id: "diseasesSelect",
-                label: "Please select",
+                label: "Future use is limited to research involving the following disease area(s) [DS]",
                 name: "otherDiseaseSpecify",
                 isDisabled: false,
                 loadOptions: this.loadDOIDOptions,
