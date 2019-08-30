@@ -54,7 +54,7 @@ class DataUseRestrictionParser {
         dataUseRestriction.recontactMust = params.recontactMust
         dataUseRestriction.genomicPhenotypicData = params.genomicPhenotypicData
         dataUseRestriction.cloudStorage = params.cloudStorage
-        dataUseRestriction.irb =  IssueUtils.getBooleanForParam(params.irb)
+        dataUseRestriction.irb = IssueUtils.getBooleanForParam(params.irb)
         dataUseRestriction.geographicalRestrictions = params.geographicalRestrictions
 
         dataUseRestriction.noRestriction = IssueUtils.getBooleanForParam(params.noRestriction)
