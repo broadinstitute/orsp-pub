@@ -11,9 +11,17 @@ import './Documents.css';
 import { UrlConstants } from "../util/UrlConstants";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "./Spinner";
+import { Link } from 'react-router-dom';
 
 const DOCUMENTS_SPINNER = 'documentsSpinner';
 
+const styles = {
+  buttonWithLink: {
+    textDecoration: 'none',
+    color: '#FFFFFF',
+    marginRight: '15px'
+  }
+}
 const headers =
   [
     { name: 'Document Type', value: 'fileType' },
@@ -58,18 +66,6 @@ export const Documents = hh(class Documents extends Component {
     });
   };
 
-  newRestriction = () => {
-    window.location.href = UrlConstants.newRestrictionUrl + '?create=true&id=' + this.props.projectKey;
-  };
-
-  editRestriction = () => {
-    window.location.href = component.serverURL + "/dataUse/edit/" + this.props.restrictionId;
-  };
-
-  showRestriction = () => {
-    window.location.href = component.serverURL + "/dataUse/show/" + this.props.restrictionId;
-  };
-
   closeRemoveModal = () => {
     this.setState({ showRemoveDocuments: !this.state.showRemoveDocuments });
   };
@@ -89,13 +85,13 @@ export const Documents = hh(class Documents extends Component {
   };
 
   removeDocument() {
-   DocumentHandler.delete(this.state.documentToRemove.id).
-    then(resp => {
-      this.closeRemoveModal();
-      this.props.handleLoadDocuments();
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });   
+    DocumentHandler.delete(this.state.documentToRemove.id).
+      then(resp => {
+        this.closeRemoveModal();
+        this.props.handleLoadDocuments();
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
   }
 
   findDul = () => {
@@ -155,60 +151,54 @@ export const Documents = hh(class Documents extends Component {
         })
       ]),
 
-      Panel({ 
-        title: "Data Use Limitation Record Request", 
-        isRendered: this.props.isConsentGroup === true }, [
-        DataUseLetter({
-          userName: this.props.userName,
-          projectKey: this.props.projectKey,
-        })
-      ]),
+      Panel({
+        title: "Data Use Limitation Record Request",
+        isRendered: this.props.isConsentGroup === true
+      }, [
+          DataUseLetter({
+            userName: this.props.userName,
+            projectKey: this.props.projectKey,
+          })
+        ]),
 
       div({ isRendered: this.props.restriction !== undefined }, [
         Panel({
           title: "Data Use Restrictions",
           isRendered: (component.isAdmin || component.isViewer) && this.findDul()
         }, [
-          h3({
-            style: {'marginTop': '10px'},
-            isRendered: this.props.restrictionId !== null
-          }, ["Summary"]),
-          div({
-            isRendered: restriction.length > 1
-          }, [
-            restriction.map((elem, index) => {
-              return h(Fragment, {key: index}, [
-                div({style: {'marginBottom': '10px'}}, [
-                  div({style: {'marginTop': '10px'}, className: index === 0 ? 'first' : 'indented'}, [elem])
-                ]),
-              ]);
-            }),
-          ]),
-          div({}, [
-            button({
-                className: "btn buttonSecondary",
-                style: { 'marginRight': '15px' },
-                onClick: this.newRestriction,
-                isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer,
-              },
-              ["Create Restriction"]),
-            button({
-                className: "btn buttonSecondary",
-                style: { 'marginRight': '15px' },
-                onClick: this.editRestriction,
-                isRendered: this.props.restrictionId !== null && !component.isViewer,
-              },
-              ["Edit Restrictions"]),
-            button({
-                className: "btn buttonSecondary",
-                onClick: this.showRestriction,
-                isRendered: this.props.restrictionId !== null,
-              },
-                ["View Restrictions"])
+            h3({
+              style: { 'marginTop': '10px' },
+              isRendered: this.props.restrictionId !== null
+            }, ["Summary"]),
+            div({
+              isRendered: restriction.length > 1
+            }, [
+                restriction.map((elem, index) => {
+                  return h(Fragment, { key: index }, [
+                    div({ style: { 'marginBottom': '10px' } }, [
+                      div({ style: { 'marginTop': '10px' }, className: index === 0 ? 'first' : 'indented' }, [elem])
+                    ]),
+                  ]);
+                }),
+              ]),
+            div({ className: "row", style: { "marginTop": "20px" } }, [
+              div({ className: "col-xs-12" }, [
+                h(Link, {
+                  isRendered: this.props.restrictionId === null && this.findDul() && !component.isViewer, className: "btn buttonPrimary floatLeft",
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?create=true&consentKey=' + this.props.projectKey }, style: styles.buttonWithLink
+                }, ["Create Restriction"]),
+                h(Link, {
+                  isRendered: this.props.restrictionId !== null && !component.isViewer, className: "btn buttonPrimary floatLeft",
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId + '&consentKey=' + this.props.projectKey }, style: styles.buttonWithLink
+                }, ["Edit Restriction"]),
+                h(Link, {
+                  isRendered: this.props.restrictionId !== null, className: "btn buttonPrimary floatLeft",
+                  to: { pathname: UrlConstants.showRestrictionUrl, search: '?restrictionId=' + this.props.restrictionId }, style: styles.buttonWithLink
+                }, ["View Restrictions"])
+              ])
             ]),
           ])
       ]),
-
       div({ isRendered: this.props.isConsentGroup === true && this.props.associatedProjects.length > 0 }, [
         Panel({ title: "Associated Projects" }, [
           Table({
