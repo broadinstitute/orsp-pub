@@ -46,6 +46,7 @@ export const UrlConstants = {
   issueReviewUrl: context + '/api/issue-review',
 
   getUserUrl: context + '/api/user/authenticated/user-data',
+  isAuthenticated: context + '/api/user/authenticated/user-session',
   projectKeySearchUrl: context + '/search/project-key/autocomplete',
   clarificationUrl: context + '/api/clarification-request',
   clarificationCollectionUrl: context + '/api/clarification-request/collection',
