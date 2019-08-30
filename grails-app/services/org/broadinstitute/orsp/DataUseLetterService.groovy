@@ -45,10 +45,7 @@ class DataUseLetterService {
 
     DataUseRestriction saveRestriction(DataUseRestriction restriction, String displayName) {
         Issue consent = queryService.findByKey(restriction.consentGroupKey)
-        def updatedOrCreated = "Updated"
-        if (restriction.id == null) {
-            updatedOrCreated = "Created"
-        }
+        String updatedOrCreated = (restriction.id == null) ? "Created" : "Updated"
         if (restriction.save(flush: true)) {
             persistenceService.saveEvent(consent.projectKey, displayName, "Data Use Restriction " + updatedOrCreated, null)
         } else {
