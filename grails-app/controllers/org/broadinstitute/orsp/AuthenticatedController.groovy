@@ -322,6 +322,10 @@ class AuthenticatedController implements Interceptor, UserInfo {
         ] as JSON)
     }
 
+    def hasSession() {
+        render(['session': getUser()!=null] as JSON)
+    }
+
     def issueIsForbidden(issue) {
         return permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isViewer())
     }

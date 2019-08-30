@@ -13,6 +13,7 @@ module.exports = {
     mainIndex: './src/main/webapp/main/main_index.js',
     project: './src/main/webapp/project/index.js',
     search: './src/main/webapp/search/index.js',
+    about: './src/main/webapp/aboutPage/index.js'
   },
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts/build'),
