@@ -90,7 +90,7 @@ class NewConsentGroup extends Component {
   componentWillUnmount() {
     spinnerService._unregister(CONSENT_SPINNER);
     requestTokens.cancelRequests();
-    this.source.cancel('request cancelled');
+    this.source.cancel();
   }
 
   initFormSelectData = async () => {
