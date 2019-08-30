@@ -334,4 +334,9 @@ class AuthenticatedController implements Interceptor, UserInfo {
         return permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isViewer())
     }
 
+    def redirectToMainContainer() {
+      render(view: "/mainContainer/index")
+    }
+
+
 }
