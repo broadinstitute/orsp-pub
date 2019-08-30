@@ -526,7 +526,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
                 id: "radioGeneralUse",
                 name: "generalUse",
                 value: this.state.restriction.generalUse,
-                label: "Data is available for future general research use [GRU]",
+                label: "Data is limited for future general research use [GRU]",
                 readOnly: false,
                 onChange: this.handleGeneralUseRadioChange
               })
