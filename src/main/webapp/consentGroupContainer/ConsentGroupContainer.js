@@ -6,7 +6,7 @@ import { Comments } from "../components/Comments";
 import '../components/Wizard.css';
 import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
 import { MultiTab } from "../components/MultiTab";
-import { ProjectMigration, Review, requestTokens } from '../util/ajax';
+import { ProjectMigration, Review } from '../util/ajax';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
 
@@ -32,7 +32,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   componentWillUnmount() {
     this._isMounted = false;
-    requestTokens.cancelRequests();
   }
 
   updateDetailsStatus = (status) => {

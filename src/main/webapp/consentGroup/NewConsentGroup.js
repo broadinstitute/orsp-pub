@@ -2,28 +2,19 @@ import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
 import { h, div } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import {
-  Files,
-  ConsentGroup,
-  SampleCollections,
-  User,
-  requestTokens
-} from '../util/ajax';
+import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
 import { spinnerService } from '../util/spinner-service';
 import { Spinner } from "../components/Spinner";
 import { isEmpty } from "../util/Utils";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
-import axios, { CancelToken } from 'axios';
-import { UrlConstants } from '../util/UrlConstants';
 
 const LAST_STEP = 1;
 const CONSENT_SPINNER = 'consentSpinner';
 
 class NewConsentGroup extends Component {
 
-  CancelToken = CancelToken;
-  source = this.CancelToken.source();
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -82,48 +73,42 @@ class NewConsentGroup extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.initDocuments();
     this.getUserSession();
-    this.initFormSelectData();
-    this.initCollectionData();
-  }
-  componentWillUnmount() {
-    spinnerService._unregister(CONSENT_SPINNER);
-    requestTokens.cancelRequests();
-    this.source.cancel();
-  }
-
-  initFormSelectData = async () => {
-    try {
-      const result = await axios.get(UrlConstants.consentNamesSearchURL, {
-        cancelToken: this.source.token
-      });
-      this.setState(prev => {
-        prev.existingGroupNames = result.data;
-        return prev;
-      });
-    } catch (error) {}
-  };
-
-  initCollectionData = async () => {
-    const collectionsData = await SampleCollections.getSampleCollections();
-    const sampleCollections = collectionsData.data.map(item => {
-      return {
-        key: item.id,
-        value: item.collectionId,
-        label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-      };
+    ConsentGroup.getConsentGroupNames().then(resp => {
+      if (this._isMounted) {
+        this.setState({ existingGroupNames: resp.data })
+      }
     });
-    this.setState(prev => {
-      prev.sampleCollectionList = sampleCollections;
-      return prev;
-    })
-  };
+
+    SampleCollections.getSampleCollections().then(
+      resp => {
+        const sampleCollections = resp.data.map(item => {
+          return {
+            key: item.id,
+            value: item.collectionId,
+            label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+          };
+        });
+        if (this._isMounted) {
+          this.setState({ sampleCollectionList: sampleCollections })
+        }
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    spinnerService._unregister(CONSENT_SPINNER);
+  }
 
   getUserSession() {
-    User.getUserSession().then(
-      resp => this.setState({ user: resp.data })
-    ).catch(() => {})
+    User.getUserSession().then(resp => {
+      if (this._isMounted) {
+        this.setState({ user: resp.data })
+      }
+    });
   }
 
   submitNewConsentGroup = async () => {
@@ -147,7 +132,7 @@ class NewConsentGroup extends Component {
           window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
           spinnerService.hide(CONSENT_SPINNER);
         }).catch(error => {
-        // console.error(error);
+        console.error(error);
         spinnerService.hide(CONSENT_SPINNER);
         this.toggleSubmitError();
         this.changeSubmitState();
@@ -220,7 +205,7 @@ class NewConsentGroup extends Component {
     consentGroup.reporter = this.state.user.userName;
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
-   
+
     extraProperties.push({ name: 'source', value: component.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
@@ -303,9 +288,9 @@ class NewConsentGroup extends Component {
 
   isConsentFormUploaded() {
     let isConsentFormUploaded = false;
-    if (this.state.files !== null && this.state.files.length > 0 && 
+    if (this.state.files !== null && this.state.files.length > 0 &&
       this.state.files.filter(file => file.fileKey === 'Consent Document').length > 0) {
-        isConsentFormUploaded = true;
+      isConsentFormUploaded = true;
     }
     this.setState(prev => {
       prev.isConsentFormPresent = isConsentFormUploaded;
@@ -327,7 +312,7 @@ class NewConsentGroup extends Component {
     let institutionalSourcesCountry = false;
     let noConsentFormReason = false;
     let isValid = true;
-    
+
     if (!this.state.isConsentFormPresent && isEmpty(this.state.generalDataFormData.noConsentFormReason)) {
       noConsentFormReason = true;
       isValid = false;
@@ -421,10 +406,10 @@ class NewConsentGroup extends Component {
   };
 
   handleInfoSecurityValidity(isValid) {
-    this.setState(prev => { 
+    this.setState(prev => {
       prev.isInfoSecurityValid = isValid;
       prev.showErrorInfoSecurity = !isValid;
-      return prev; 
+      return prev;
     })
   }
 
@@ -494,9 +479,11 @@ class NewConsentGroup extends Component {
     CONSENT_DOCUMENTS.forEach(type => {
       documents.push({ value: type, label: type });
     });
-    this.setState({
-      documentOptions: documents
-    });
+    if (this._isMounted) {
+      this.setState({
+        documentOptions: documents
+      });
+    }
   }
 
   downloadFillablePDF = () => {
@@ -507,7 +494,9 @@ class NewConsentGroup extends Component {
       link.setAttribute('download', 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf');
       document.body.appendChild(link);
       link.click();
-    }).catch(() => {});
+    }).catch(error => {
+      console.error(error);
+    });
   };
 
   removeErrorMessage() {

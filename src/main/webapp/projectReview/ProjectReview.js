@@ -12,7 +12,7 @@ import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
-import { Project, Search, Review, User, requestTokens } from "../util/ajax";
+import { Project, Search, Review, User } from "../util/ajax";
 import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
@@ -157,8 +157,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     spinnerService._unregister(PROJECT_REVIEW_SPINNER);
-    requestTokens.cancelRequests();
   }
 
   init() {

@@ -40,7 +40,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
 
   componentWillUnmount() {
     this._isMounted = false;
-    requestTokens.cancelRequests();
   }
 
   loadOptions() {

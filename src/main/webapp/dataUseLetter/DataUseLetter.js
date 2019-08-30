@@ -9,7 +9,7 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { requestTokens, ConsentGroup, DUL } from "../util/ajax";
+import { ConsentGroup, DUL } from "../util/ajax";
 import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
 import { MultiSelect } from "../components/MultiSelect";
@@ -19,6 +19,8 @@ import _ from 'lodash';
 import { isEmpty } from "../util/Utils";
 
 export const DataUseLetter = hh(class DataUseLetter extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -105,33 +107,36 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.initFormData();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false;
   }
 
   initFormData = () => {
     const uuid = window.location.href.split('id=')[1];
     ConsentGroup.getConsentGroupByUUID(uuid).then(consentGroup => {
-      this.setState(prev => {
-        prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
-        prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
-        prev.formData.date = this.parseDate(new Date());
-        prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
-        prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
-        prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
-        prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
-        if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
-          let dulInfo = JSON.parse(this.props.dul.dulInfo);
-          prev.formData.onGoingProcess = dulInfo.onGoingProcess;
-          prev.formData.startDate = dulInfo.startDate;
-          prev.formData.endDate = dulInfo.endDate;
-          prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
-        }        
-        return prev;
-      });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
+          prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
+          prev.formData.date = this.parseDate(new Date());
+          prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
+          prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
+          prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
+          prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
+          if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
+            let dulInfo = JSON.parse(this.props.dul.dulInfo);
+            prev.formData.onGoingProcess = dulInfo.onGoingProcess;
+            prev.formData.startDate = dulInfo.startDate;
+            prev.formData.endDate = dulInfo.endDate;
+            prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
+          }
+          return prev;
+        });
+      }
     }).catch(error => {
       this.setState(() => { throw error; });
     });

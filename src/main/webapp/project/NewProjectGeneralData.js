@@ -6,7 +6,7 @@ import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
-import { requestTokens, Search } from '../util/ajax';
+import { Search } from '../util/ajax';
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
@@ -24,6 +24,8 @@ const fundingTooltip =
   ]);
 
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -62,8 +64,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false;
   }
 
   handleUpdateFundings = (updated) => {
@@ -111,8 +117,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   loadUsersOptions(query, callback) {
     if (query.length > 2) {
-      Search.getMatchingQuery(query)
-        .then(response => {
+      Search.getMatchingQuery(query).then(response => {
+        if (this._isMounted) {
           let options = response.data.map(function (item) {
             return {
               key: item.id,
@@ -121,9 +127,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             };
           });
           callback(options);
-        }).catch(error => {
-          this.setState(() => { throw error; });
-        });
+        }
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
     }
   };
 

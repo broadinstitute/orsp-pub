@@ -1,7 +1,7 @@
 import { Component, Fragment} from 'react';
 import { h, div, h2, h3, span, a, p, b } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { ProjectInfoLink, requestTokens } from "../util/ajax";
+import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { isEmpty } from "../util/Utils";
@@ -14,6 +14,8 @@ const styles = {
 };
 
 class InfoLink extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -39,11 +41,12 @@ class InfoLink extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.initData();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false;
   }
 
   initData = () => {
@@ -53,16 +56,18 @@ class InfoLink extends Component {
         JSON.parse(data.data.sampleCollections).map(sampleCollection => {
           sampleCollectionsIds.push(sampleCollection);
         });
-        this.setState(prev => {
-          prev.documents = JSON.parse(data.data.documents);
-          prev.sampleCollections = sampleCollectionsIds;
-          prev.consentName = sampleCollectionsIds[0].consentName;
-          prev.projectName = sampleCollectionsIds[0].projectName;
-          prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
-          prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
-          prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
-          return prev;
-        });
+        if (this._isMounted) {
+          this.setState(prev => {
+            prev.documents = JSON.parse(data.data.documents);
+            prev.sampleCollections = sampleCollectionsIds;
+            prev.consentName = sampleCollectionsIds[0].consentName;
+            prev.projectName = sampleCollectionsIds[0].projectName;
+            prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
+            prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
+            prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
+            return prev;
+          });
+        }
     }).catch(error => {
       this.setState(() => { throw error; });
     });

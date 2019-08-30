@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
-import { ProjectMigration, requestTokens } from '../util/ajax';
+import { ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { MultiTab } from "../components/MultiTab";
 import { Table } from "../components/Table";
@@ -56,12 +56,12 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   componentDidMount() {
-    this.getDisplaySubmissions();
     this._isMounted = true;
+    this.getDisplaySubmissions();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false;
   }
 
   submissionEdit = (data) => {
@@ -94,9 +94,7 @@ export const Submissions = hh(class Submissions extends Component {
           return prev;
         });
       }
-    }).catch(error => {
-      // this.setState(() => { throw error; });
-    });
+    }).catch(() => { });
   };
 
   redirectEditSubmission = (data) => {

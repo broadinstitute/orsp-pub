@@ -128,7 +128,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
   componentWillUnmount() {
     this._isMounted = false;
-    requestTokens.cancelRequests();
     spinnerService._unregister(CONSENT_GROUP_REVIEW_SPINNER);
   }
 

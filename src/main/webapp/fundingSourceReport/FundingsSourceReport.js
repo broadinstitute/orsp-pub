@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { h, h1, div, a, span } from 'react-hyperscript-helpers';
-import { Reports, requestTokens } from "../util/ajax";
+import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
@@ -109,6 +109,8 @@ const columns = [
 
 class FundingsSourceReport extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -125,11 +127,12 @@ class FundingsSourceReport extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false;
   }
 
   init = () => {
@@ -150,21 +153,23 @@ class FundingsSourceReport extends Component {
     spinnerService.showAll();
     Reports.getFundingsReports(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
-      this.setState(prev => {
-        prev.lastPage = lastPage;
-        prev.currentPage = page;
-        prev.isAdmin = this.state.isAdmin;
-        prev.fundings = result.data.data;
-        prev.recordsTotal = result.data.recordsTotal;
-        prev.recordsFiltered = result.data.recordsFiltered;
-        prev.sizePerPage = query.length;
-        prev.search = query.searchValue;
-        prev.sort = {
-          orderColumn : query.orderColumn,
-          sortDirection: query.sortDirection
-        };
-        return prev;
-      }, () => spinnerService.hideAll())
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.lastPage = lastPage;
+          prev.currentPage = page;
+          prev.isAdmin = this.state.isAdmin;
+          prev.fundings = result.data.data;
+          prev.recordsTotal = result.data.recordsTotal;
+          prev.recordsFiltered = result.data.recordsFiltered;
+          prev.sizePerPage = query.length;
+          prev.search = query.searchValue;
+          prev.sort = {
+            orderColumn : query.orderColumn,
+            sortDirection: query.sortDirection
+          };
+          return prev;
+        }, () => spinnerService.hideAll())
+      }
     }).catch(error => {
       spinnerService.hideAll();
       this.setState(() => { throw error });

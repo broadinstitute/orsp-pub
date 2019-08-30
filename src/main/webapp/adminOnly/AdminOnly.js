@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { h, hh, div, h2, button } from 'react-hyperscript-helpers';
-import { Project, requestTokens } from "../util/ajax";
+import { Project } from "../util/ajax";
 import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
 import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
@@ -20,6 +20,9 @@ import { AlertMessage } from "../components/AlertMessage";
 const ADMIN_ONLY_SPINNER = 'adminOnlySpinner';
 
 export const AdminOnly = hh(class AdminOnly extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -48,43 +51,44 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init()
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     spinnerService._unregister(ADMIN_ONLY_SPINNER);
-    requestTokens.cancelRequests();
   }
 
   init = () => {
-    Project.getProject(this.props.projectKey).then(
-      issue => {
-        let formData = {};
-        let initial = {};
-        this.props.initStatusBoxInfo(issue.data);
-        formData.projectKey = this.props.projectKey;
-        formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
-        formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
-        formData.degrees = issue.data.extraProperties.degrees;
-        formData.preferredIrb = isEmpty(issue.data.extraProperties.irb) ? '' : JSON.parse(issue.data.extraProperties.irb);
-        formData.preferredIrbText = issue.data.extraProperties.irbReferralText;
-        formData.trackingNumber = issue.data.extraProperties.protocol;
-        formData.projectTitle = issue.data.extraProperties.projectTitle;
-        formData.initialDate = issue.data.extraProperties.initialDate;
-        formData.sponsor = this.getSponsorArray(issue.data.fundings);
-        formData.initialReviewType = isEmpty(issue.data.extraProperties.initialReviewType) ? '' : JSON.parse(issue.data.extraProperties.initialReviewType);
-        formData.bioMedical = issue.data.extraProperties.bioMedical;
-        formData.irbExpirationDate = issue.data.extraProperties.irbExpirationDate;
-        formData.projectStatus = issue.data.extraProperties.projectStatus;
-        initial = createObjectCopy(formData);
+    Project.getProject(this.props.projectKey).then(issue => {
+      let formData = {};
+      let initial = {};
+      this.props.initStatusBoxInfo(issue.data);
+      formData.projectKey = this.props.projectKey;
+      formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
+      formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
+      formData.degrees = issue.data.extraProperties.degrees;
+      formData.preferredIrb = isEmpty(issue.data.extraProperties.irb) ? '' : JSON.parse(issue.data.extraProperties.irb);
+      formData.preferredIrbText = issue.data.extraProperties.irbReferralText;
+      formData.trackingNumber = issue.data.extraProperties.protocol;
+      formData.projectTitle = issue.data.extraProperties.projectTitle;
+      formData.initialDate = issue.data.extraProperties.initialDate;
+      formData.sponsor = this.getSponsorArray(issue.data.fundings);
+      formData.initialReviewType = isEmpty(issue.data.extraProperties.initialReviewType) ? '' : JSON.parse(issue.data.extraProperties.initialReviewType);
+      formData.bioMedical = issue.data.extraProperties.bioMedical;
+      formData.irbExpirationDate = issue.data.extraProperties.irbExpirationDate;
+      formData.projectStatus = issue.data.extraProperties.projectStatus;
+      initial = createObjectCopy(formData);
+      if (this._isMounted) {
         this.setState(prev => {
           prev.formData = formData;
           prev.initial = initial;
           prev.isAdmin = component.isAdmin;
           return prev;
         })
-      }).catch(() => {
-      });
+      }
+    }).catch(() => { });
   };
 
   getSponsorArray(sponsors) {

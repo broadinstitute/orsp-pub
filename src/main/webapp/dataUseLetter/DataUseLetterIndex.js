@@ -4,10 +4,12 @@ import { div, h } from 'react-hyperscript-helpers';
 import DataUseLetter from './DataUseLetter';
 import DataUseLetterMessage from './DataUseLetterMessage';
 import '../index.css';
-import { DUL, requestTokens } from "../util/ajax";
+import { DUL } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
 
 class DataUseLetterIndex extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -19,22 +21,25 @@ class DataUseLetterIndex extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
   }
 
   componentWillUnmount() {
-    requestTokens.cancelRequests();
+    this._isMounted = false
   }
 
   init() {
     const uuid = window.location.href.split('id=')[1];
     DUL.getDULInfo(uuid).then(resp => {
-      this.setState(prev => {
-        prev.dul = resp.data.dul;
-        prev.error = resp.data.error;
-        prev.isLoading = false;
-        return prev;
-      });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.dul = resp.data.dul;
+          prev.error = resp.data.error;
+          prev.isLoading = false;
+          return prev;
+        });
+      }
     });
   }
 
