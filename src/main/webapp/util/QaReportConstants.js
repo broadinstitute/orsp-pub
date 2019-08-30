@@ -23,7 +23,7 @@ export const columns = [{
 }, {
   dataField: 'age',
   text: 'Age',
-  sort: true
+  sort: false
 }, {
   dataField: 'actor',
   text: 'Assignees',
@@ -42,9 +42,9 @@ export const defaultSorted = [{
 
 export const QA_EVENT_SORT_NAME_INDEX = {
   'projectKey': 0,
-  'approvalStatus': 1,
+  'status': 1,
   'age': 2,
-  'assignee': 3,
+  'actor': 3,
   'type' : 4
 };
 

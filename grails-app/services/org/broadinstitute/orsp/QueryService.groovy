@@ -5,6 +5,7 @@ import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -655,13 +656,12 @@ class QueryService implements Status {
      */
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     PaginatedResponse findIssuesForStatusReport(PaginationParams paginationOptions, QueryOptions queryOptions) {
-        String orderColumn = statusReportPaginationOrder(paginationOptions)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final StringBuffer query = new StringBuffer(' select distinct i.project_key from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != "Consent Group"')
+        final StringBuffer query = new StringBuffer(' select i.project_key from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != :consentGroup')
 
         if (paginationOptions.searchValue) {
-            query.append("and (i.project_key LIKE :term ")
+            query.append(" and (i.project_key LIKE :term ")
                  .append("or i.approval_status LIKE :term ")
                  .append("or i.status LIKE :term )")
         }
@@ -669,20 +669,24 @@ class QueryService implements Status {
 
         if (queryOptions.before) query.append(" and i.request_date < :beforeDate ")
         if (queryOptions.after) query.append(" and i.request_date > :afterDate ")
-
+        if (paginationOptions.orderColumn == 3) query.append(" and ie.name = :actor order by ie.value ").append(paginationOptions.sortDirection)
         SQLQuery sqlQuery = session.createSQLQuery(query.toString())
+        sqlQuery.setString('consentGroup', IssueType.CONSENT_GROUP.name)
         sqlQuery.setParameterList('filterType', queryOptions.issueTypeNames)
         if (paginationOptions.searchValue) {
             sqlQuery.setString('term', paginationOptions.getLikeTerm())
         }
         if (queryOptions.before) sqlQuery.setTimestamp('beforeDate', queryOptions.before)
         if (queryOptions.after) sqlQuery.setTimestamp('afterDate', queryOptions.after)
+        if (paginationOptions.orderColumn == 3) {
+            sqlQuery.setString('actor', IssueExtraProperty.ACTOR)
+        }
 
         // total rows
-        List<String> ids = sqlQuery.list()
+        Set<String> ids = sqlQuery.list()
         List<StatusEventService.StatusEventDTO> statusEvents = new ArrayList<>()
         if (CollectionUtils.isNotEmpty(ids)) {
-            List<Issue> results = findPaginatedIssuesByProjectKey(ids, orderColumn, paginationOptions)
+            List<Issue> results = findPaginatedIssuesByProjectKey(ids, paginationOptions)
             statusEvents = statusEventService.getStatusEventsForProjectList(results)
         }
 
@@ -699,22 +703,21 @@ class QueryService implements Status {
         String orderColumn
         switch (paginationOptions.orderColumn) {
             case 0:
-                orderColumn = " project_key "
+                orderColumn = " project_key " + paginationOptions.sortDirection
                 break
             case 1:
-                orderColumn = " approval_status "
+                orderColumn = " approval_status " + paginationOptions.sortDirection + ", status " + paginationOptions.sortDirection
                 break
             case 2:
-                orderColumn = " request_date "
+                orderColumn = " request_date " + paginationOptions.sortDirection
                 break
             case 3:
-                orderColumn = " assignee "
                 break
             case 4:
-                orderColumn = " type "
+                orderColumn = " type " + paginationOptions.sortDirection
                 break
             default:
-                orderColumn = " project_key "
+                orderColumn = " project_key " + paginationOptions.sortDirection
                 break
         }
         orderColumn
@@ -1177,10 +1180,11 @@ class QueryService implements Status {
         results
     }
 
-    private List<Issue> findPaginatedIssuesByProjectKey(List<String> keyList, String orderColumn, PaginationParams pagination) {
+    private List<Issue> findPaginatedIssuesByProjectKey(Set<String> keyList, PaginationParams pagination) {
         String query = 'select * from issue where project_key in :keyList '
-        if (orderColumn) {
-            query = query + " order by " + orderColumn + pagination.sortDirection
+        String orderColumn = statusReportPaginationOrder(pagination)
+        if (pagination.orderColumn != 3 && !StringUtils.isEmpty(orderColumn)) {
+            query = query + " order by " + orderColumn
         }
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> results = sqlQuery.with {

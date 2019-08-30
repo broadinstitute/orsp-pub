@@ -133,7 +133,9 @@ class QaReport extends Component {
   };
 
   onSearchChange = async (search, tab) => {
-    await this.tableHandler(0, this.state[tab].sizePerPage, search, this.state[tab].sort, 1, tab);
+    if (search.length >= 2 || search.length === 0 ) {
+      await this.tableHandler(0, this.state[tab].sizePerPage, search, this.state[tab].sort, 1, tab);
+    }
   };
 
   onPageChange = async (page, sizePerPage, tab) => {
@@ -142,6 +144,7 @@ class QaReport extends Component {
   };
 
   onSortChange = async (sortName, sortOrder, tab) => {
+    console.log("SORT ", sortName)
     const sort = {
       sortDirection: sortOrder,
       orderColumn: QA_EVENT_SORT_NAME_INDEX[sortName]
@@ -199,9 +202,9 @@ class QaReport extends Component {
   exportTable = (action, tab) => {
     let cols = columns.filter(el => el.dataField !== 'id');
     let elementsArray = formatDataPrintableFormat(this.state[tab].data, cols);
-    const titleText = 'Quality Assurance Report';
+    const headerText = 'Quality Assurance Report';
     const columnsWidths = ['*', '*', '*', '*', '*'];
-    exportData(action,'Quality Assurance Report', elementsArray, titleText, 'Quality Assurance Report', columnsWidths);
+    exportData(action,'Quality Assurance Report', elementsArray, '', headerText, columnsWidths);
   };
 
   render() {
