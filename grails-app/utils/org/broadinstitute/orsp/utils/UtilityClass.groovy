@@ -11,7 +11,7 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
-import org.broadinstitute.orsp.StatusEventService
+import org.broadinstitute.orsp.StatusEventDTO
 import org.broadinstitute.orsp.User
 
 import java.text.SimpleDateFormat
@@ -95,7 +95,7 @@ class UtilityClass {
 
     static void registerQaReportIssueMarshaller() {
         JSON.createNamedConfig(ISSUE_FOR_QA) {
-            it.registerObjectMarshaller( StatusEventService.StatusEventDTO ) { StatusEventService.StatusEventDTO statusEvent ->
+            it.registerObjectMarshaller( StatusEventDTO ) { StatusEventDTO statusEvent ->
                 return [
                     id             : statusEvent.issue.id,
                     type           : statusEvent.issue.type,

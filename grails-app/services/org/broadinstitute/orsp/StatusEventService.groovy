@@ -1,9 +1,11 @@
 package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
+import org.apache.commons.collections.CollectionUtils
 import org.hibernate.SessionFactory
 import org.joda.time.Period
 import org.joda.time.PeriodType
+
 
 /**
  * This class generates all of the potential events that need to be reported on.
@@ -46,7 +48,7 @@ class StatusEventService {
     }
 
     List<StatusEventDTO> getStatusEventDTOs(List<Event> statusEvents) {
-        if (statusEvents && statusEvents.isEmpty()) return Collections.emptyList()
+        if (CollectionUtils.isEmpty(statusEvents)) return Collections.emptyList()
 
         // The first event to calculate time from is either "Reviewing Form" if it exists,
         // or the very first event if it does not.
@@ -74,7 +76,7 @@ class StatusEventService {
                     } else {
                         duration = new Period(event.created.time, new Date().time, PeriodType.yearMonthDay())
                     }
-                    new StatusEventDTO(new Issue(), event, duration)
+                    new StatusEventDTO(event, duration)
                 }
         eventDTOs
     }
@@ -105,56 +107,6 @@ class StatusEventService {
             }
         }
         result
-    }
-
-    class StatusEventDTO {
-        Issue issue
-        Event event
-        Period duration
-        Integer stage
-
-        StatusEventDTO(Issue issue, Event event, Period duration) {
-            this.issue = issue
-            this.event = event
-            this.duration = duration
-            this.stage = event ? getEventStage(event) : 0
-        }
-
-        private Integer getEventStage(Event event) {
-            switch (event.eventType) {
-                case EventType.INITIAL_STATE:
-                    1 // All project types
-                    break
-                case EventType.GETTING_SIGNATURES:
-                    2 // IRB
-                    break
-                case EventType.REVIEWING_FORM:
-                    2 // Non-IRB
-                    break
-                case EventType.IRB_CONSIDERING:
-                    3 // IRB
-                    break
-                case EventType.GETTING_CCO_APPROVAL:
-                    3 // Non-IRB
-                    break
-                case EventType.APPROVED:
-                    4 // IRB
-                    break
-                case EventType.COMPLETED:
-                    4 // Non-IRB
-                    break
-                case EventType.CLOSED:
-                    5 // IRB
-                    break
-                case EventType.ABANDON:
-                    6
-                    break
-                default:
-                    0
-                    break
-            }
-        }
-
     }
 
 }

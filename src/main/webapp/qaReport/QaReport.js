@@ -99,8 +99,6 @@ class QaReport extends Component {
           orderColumn : query.orderColumn,
           sortDirection: query.sortDirection
         };
-        // prev[tab].hide = result.data.data.length === 0;
-        // prev.activeTab = prev[IRB].hide ? NO_IRB : IRB;
         return prev;
       }, () => {
         spinnerService.hide(QA_REPORT_SPINNER)
@@ -144,7 +142,6 @@ class QaReport extends Component {
   };
 
   onSortChange = async (sortName, sortOrder, tab) => {
-    console.log("SORT ", sortName)
     const sort = {
       sortDirection: sortOrder,
       orderColumn: QA_EVENT_SORT_NAME_INDEX[sortName]
@@ -172,14 +169,18 @@ class QaReport extends Component {
         prev.activeTab = IRB;
         prev[NO_IRB].hide = true;
         }, async () =>
-        await this.tableHandler(0, this.state[IRB].sizePerPage, this.state[IRB].search, this.state[IRB].sort, this.state[IRB].currentPage, IRB)
+        await this.tableHandler(0,
+          this.state[IRB].sizePerPage, this.state[IRB].search,
+          this.state[IRB].sort, this.state[IRB].currentPage, IRB)
       );
     } else if (this.state.projectType.value !== 'all') {
       this.setState(prev => {
         prev.activeTab = NO_IRB;
         prev[IRB].hide = true;
       }, async () =>
-        await this.tableHandler(0, this.state[NO_IRB].sizePerPage, this.state[NO_IRB].search, this.state[NO_IRB].sort, this.state[NO_IRB].currentPage, NO_IRB)
+        await this.tableHandler(0,
+          this.state[NO_IRB].sizePerPage, this.state[NO_IRB].search,
+          this.state[NO_IRB].sort, this.state[NO_IRB].currentPage, NO_IRB)
       );
     } else {
        this.init()

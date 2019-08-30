@@ -24,7 +24,7 @@ class StatusEventController extends AuthenticatedController {
 
     private Map<String, Period> calculateIssuePeriods(Collection<Issue> issues) {
         issues.collectEntries { issue ->
-            List<StatusEventService.StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(issue.projectKey)
+            List<StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(issue.projectKey)
             Period period = null
             if (!eventDTOs?.isEmpty()) {
                 period = eventDTOs.last().duration
@@ -38,7 +38,7 @@ class StatusEventController extends AuthenticatedController {
     def project() {
         Issue issue = queryService.findByKey(params.id)
         // Sort ascending and create DTOs
-        List<StatusEventService.StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(params.id)
+        List<StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(params.id)
         [statusEvents: eventDTOs, issue: issue]
     }
 

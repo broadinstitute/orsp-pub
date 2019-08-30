@@ -23,7 +23,7 @@ export const columns = [{
 }, {
   dataField: 'age',
   text: 'Age',
-  sort: false
+  sort: true
 }, {
   dataField: 'actor',
   text: 'Assignees',

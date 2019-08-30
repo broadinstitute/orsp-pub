@@ -684,10 +684,11 @@ class QueryService implements Status {
 
         // total rows
         Set<String> ids = sqlQuery.list()
-        List<StatusEventService.StatusEventDTO> statusEvents = new ArrayList<>()
+        List<StatusEventDTO> statusEvents = new ArrayList<>()
         if (CollectionUtils.isNotEmpty(ids)) {
             List<Issue> results = findPaginatedIssuesByProjectKey(ids, paginationOptions)
-            statusEvents = statusEventService.getStatusEventsForProjectList(results)
+            // bring this for all
+//            statusEvents = statusEventService.getStatusEventsForProjectList(results)
         }
 
         new PaginatedResponse(

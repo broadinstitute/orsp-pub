@@ -28,7 +28,9 @@ export const MultiTab = hh(class MultiTab extends Component {
     if (nextProps.defaultActive && nextProps.defaultActive !== prevState.defaultActive){
       return { key: nextProps.defaultActive, defaultActive: nextProps.defaultActive};
     }
-    else return null;
+    else {
+      return null;
+    }
   }
 
   render() {
