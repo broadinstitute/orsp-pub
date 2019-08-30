@@ -241,12 +241,14 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         this.changeSubmitState();
       });
     } else {
-      this.setState(prev => {
-        prev.generalError = true;
-        return prev;
-      }, () => {
-        spinnerService.hide(LINK_WIZARD_SPINNER);
-      });
+      if (this._isMount) {
+        this.setState(prev => {
+          prev.generalError = true;
+          return prev;
+        }, () => {
+          spinnerService.hide(LINK_WIZARD_SPINNER);
+        });
+      }
     }
 
   };
