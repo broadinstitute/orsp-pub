@@ -20,9 +20,8 @@ export const About = hh(class About extends Component {
 
   hasSession = () => {
       User.isAuthenticated().then(resp => {
-        this.setState(prev => {
-          prev.logged = resp.data.session;
-          return prev;
+        this.setState({
+          logged: resp.data.session
         })
       }).catch(error => this.setState(() => { throw error; }));
   };
@@ -33,7 +32,7 @@ export const About = hh(class About extends Component {
 
   render() {
 
-    const accessDetails = !isEmpty(this.props.showAccessDetails) ? true : false;
+    const showAccessDetails = !isEmpty(this.props.showAccessDetails) ? true : false;
 
     return (
       div({ className: "col-md-10" }, [
@@ -41,7 +40,7 @@ export const About = hh(class About extends Component {
         },["About the ORSP Portal"]),
         p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
           a({
-            isRendered: this.state.logged && accessDetails,
+            isRendered: this.state.logged && showAccessDetails,
             href:"https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection", target: "_blank"}, [
               "ORSP on the Broad Intranet"
           ]),
@@ -57,7 +56,7 @@ export const About = hh(class About extends Component {
             href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]
           ), " for assistance."
         ]),
-        div({ isRendered: this.state.logged && accessDetails }, [
+        div({ isRendered: this.state.logged && showAccessDetails }, [
             h3({ style: { fontSize: styles.titleSize }}, ["User Guide"]),
             p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }},[
               "To access detailed instructions about how to use the ORSP portal, please visit: ",

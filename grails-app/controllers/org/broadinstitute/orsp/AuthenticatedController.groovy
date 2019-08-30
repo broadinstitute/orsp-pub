@@ -323,11 +323,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
     }
 
     def hasSession() {
-        if (getUser()) {
-            render(['session': true] as JSON)
-        } else {
-            render(['session': false] as JSON)
-        }
+        render(['session': getUser()!=null] as JSON)
     }
 
     def issueIsForbidden(issue) {
