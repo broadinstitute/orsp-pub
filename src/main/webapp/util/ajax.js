@@ -33,8 +33,15 @@ export const Search = {
         requestTokens.add({token: c, id: 'getSourceDiseases'});
       })
     });
-  }
+  },
 
+  getMatchingPopulationOntologies(query) {
+    return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query, {
+      cancelToken: new CancelToken((c) => {
+        requestTokens.add({token: c, id: 'getMatchingPopulationOntologies'});
+      })
+    });
+  }
 };
 
 export const SampleCollections = {
@@ -364,7 +371,7 @@ export const DUL = {
 
 export const DataUse = {
   createRestriction(restriction) {
-    return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
+    return axios.post(UrlConstants.dataUseRestrictionUrl, restriction);
   },
 
   getRestriction(restrictionId) {
@@ -376,7 +383,7 @@ export const DataUse = {
   },
 
   getRestrictions(query) {
-    return axios.get(UrlConstants.restrictionUrl, {
+    return axios.get(UrlConstants.showRestrictionsUrl, {
       params: {
         draw: 1,
         start: query.start,

@@ -3,7 +3,7 @@ import { h, div, h2, button, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InstitutionalSource } from '../components/InstitutionalSource';
-import { ConsentGroup, SampleCollections, Review, User, Project, requestTokens } from "../util/ajax";
+import { ConsentGroup, SampleCollections, Review, User, Project } from "../util/ajax";
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { spinnerService } from "../util/spinner-service";
@@ -143,7 +143,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
 
     ConsentGroup.getConsentGroup(this.props.consentKey).then(
       element => {
-        // if (this._isMounted) {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
           resp => {
@@ -212,7 +211,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             }
           }
         );
-      // }
       }
     ).catch(() => {
       spinnerService.hide(CONSENT_GROUP_REVIEW_SPINNER);
