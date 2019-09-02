@@ -32,6 +32,7 @@ export const UrlConstants = {
   uploadModalUrl: context + '/api/consent-group/upload-modal',
   allConsentGroupsUrl: context + '/api/consent-groups',
   collectionLinks: context + '/api/collection-links',
+  exportConsent: context + '/api/consent/export',
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',
   attachedDocumentsUrl : context + '/api/files-helper/attached-documents',
@@ -45,11 +46,13 @@ export const UrlConstants = {
   issueReviewUrl: context + '/api/issue-review',
 
   getUserUrl: context + '/api/user/authenticated/user-data',
+  isAuthenticated: context + '/api/user/authenticated/user-session',
   projectKeySearchUrl: context + '/search/project-key/autocomplete',
   clarificationUrl: context + '/api/clarification-request',
   clarificationCollectionUrl: context + '/api/clarification-request/collection',
   userNameSearchUrl: context + '/search/matching-users',
   sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
+  populationOntologiesUrl: context + '/search/matching-population-ontologies',
   searchUrl: context + '/search/general-table-json',
 
   downloadDocumentUrl: context + '/api/user/authenticated/download-document',
@@ -62,18 +65,25 @@ export const UrlConstants = {
   getAllUsersUrl: context + '/api/get-users',
   dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
-  dataUseLetterRestrictionUrl: context + '/api/data-use-letter/restriction',
+ 
   infoLinkUrl: context + '/api/info-link',
-  restrictionUrl: context + '/api/dur',
-
+  showRestrictionsUrl: context + '/api/dur',
+  submissionsUrl: context + '/api/submissions',
+  submissionsAddNewUrl: '/submissions/add-new',
+  submissionInfoAddUrl: context + '/api/submissions/info',
+  submissionSaveUrl: context + '/api/submissions/save-new',
+  submissionDisplayUrl: context + '/api/submissions/display',
+  submissionRemoveFileUrl: context + '/api/submission/remove-file',
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
   historyUrl: context + '/api/history',
-  submissionsUrl: context + '/api/submissions',
-  submissionDisplayUrl: context + '/api/submissions/display',
+  restrictionUrl: context + '/dataUse/restriction',  
+  showRestrictionUrl: context + '/dataUse/show',
+  dataUseRestrictionUrl: context + '/api/data-use/restriction/create',
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',
+  viewRestrictionUrl: context + '/api/data-use/restriction'
 };
 

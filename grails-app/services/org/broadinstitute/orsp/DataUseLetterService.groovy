@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
+import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 
 class DataUseLetterService {
     QueryService queryService
@@ -42,12 +43,9 @@ class DataUseLetterService {
         }
     }
 
-    DataUseRestriction createSdul(DataUseRestriction restriction, String displayName) {
+    DataUseRestriction saveRestriction(DataUseRestriction restriction, String displayName) {
         Issue consent = queryService.findByKey(restriction.consentGroupKey)
-        def updatedOrCreated = "Created"
-        if (restriction.id == null) {
-            updatedOrCreated = "Created"
-        }
+        String updatedOrCreated = (restriction.id == null) ? "Created" : "Updated"
         if (restriction.save(flush: true)) {
             persistenceService.saveEvent(consent.projectKey, displayName, "Data Use Restriction " + updatedOrCreated, null)
         } else {
@@ -56,5 +54,13 @@ class DataUseLetterService {
         restriction
     }
 
+    DataUseRestriction getRestrictionFromParams(Object params) {
+        if (params.consentGroupKey) {
+            DataUseRestriction existentRestriction = DataUseRestriction.findByConsentGroupKey(params.consentGroupKey)
+            DataUseRestrictionParser.fromParams(existentRestriction, params)
+        } else {
+            throw new IllegalArgumentException('Consent Group is required')
+        }
+    }
 
 }

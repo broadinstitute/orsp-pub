@@ -1,0 +1,340 @@
+{{with $environment := env "ENVIRONMENT"}}{{with $orsp := secret "secret/dsde/orsp/all/application-cloud.json"}}{{with $bq := secret "secret/dsde/orsp/all/big-query.json" }}{{with $gcs := secret (printf "secret/dsde/orsp/all/%s/orsp-gcs-admin.json" $environment) }}apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orsp-config-{{$environment}}
+  namespace: orsp
+data:
+  application.yml: |-
+    ---
+    environments:
+      development:
+        grails.serverURL: https://ui.dsp-orsp-dev.broadinstitute.org
+        gkeServiceName: https://orsp-pub-service
+        googleSignInClientId: {{$orsp.Data.dev_google_signin_client_id}}
+        server:
+          contextPath: '/'
+        notifyService:
+          sendGridUrl: https://api.sendgrid.com/v3/mail/send
+          apiKey: {{$orsp.Data.sendgrid_api}}
+          fromAddress: orsp-dev@broadinstitute.org
+          defaultRecipient: orsp-dev@broadinstitute.org
+          adminRecipient: orsp-dev@broadinstitute.org
+          securityRecipient: orsp-dev@broadinstitute.org
+          agreementsRecipient: orsp-dev@broadinstitute.org
+          orspSpecialRecipients: [grushton@broadinstitute.org]
+          bccRecipients: [grushton@broadinstitute.org]
+          replyToRecipient: orsp-dev@broadinstitute.org
+          sendGridStatusUrl: http://status.sendgrid.com/
+        storage:
+          config: /orsp-config/orsp-client.json
+          url: https://storage.googleapis.com/
+          bucket: {{$orsp.Data.dev_bucket}}
+        consent:
+          service:
+            username: {{$orsp.Data.dev_consent_username}}
+            password: {{$orsp.Data.dev_consent_password}}
+            url: https://consent.dsde-dev.broadinstitute.org/basic/consent
+            statusUrl: https://consent.dsde-prod.broadinstitute.org/status
+            ontologyUrl: https://consent-ontology.dsde-dev.broadinstitute.org/
+            ontologyStatusUrl: https://consent-ontology.dsde-dev.broadinstitute.org/status
+        dataBio:
+          searchUrl: http://data.bioontology.org/search
+          classUrl: http://data.bioontology.org/ontologies
+          statusUrl: http://data.bioontology.org/
+          apiKey: {{$orsp.Data.data_bio_api}}
+        bsp:
+          sync: false
+          service:
+            username: {{$orsp.Data.bsp_username}}
+            password: {{$orsp.Data.bsp_password}}
+            allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
+            statusUrl: http://bsp/BSP/
+        hibernate:
+          cache:
+            queries: false
+            use_second_level_cache: false
+            use_query_cache: false
+            format_sql: true
+            show_sql: true
+        dataSource:
+          pooled: true
+          driverClassName: org.mariadb.jdbc.Driver
+          username: {{$orsp.Data.dev_ds_username}}
+          password: {{$orsp.Data.dev_ds_password}}
+          url: jdbc:mariadb://{{$orsp.Data.dev_ds_host}}/{{$orsp.Data.dev_ds_db}}
+          properties:
+            initialSize: 5
+            maxActive: 50
+            minIdle: 5
+            maxIdle: 25
+            maxWait: 10000
+            timeBetweenEvictionRunsMillis: 5000
+            minEvictableIdleTimeMillis: 60000
+            numTestsPerEvictionRun: 3
+            validationQuery: "SELECT 1"
+            validationQueryTimeout: 3
+            testOnBorrow: true
+            testOnReturn: true
+            testWhileIdle: true
+            defaultTransactionIsolation: 1 #TRANSACTION_READ_UNCOMMITTED
+        endpoints:
+          metrics:
+            enabled: true
+      staging:
+        grails.serverURL: https://staging.dsp-orsp-dev.broadinstitute.org
+        gkeServiceName: https://orsp-pub-service
+        googleSignInClientId: {{$orsp.Data.staging_google_signin_client_id}}
+        server:
+          contextPath: '/'
+        notifyService:
+          sendGridUrl: https://api.sendgrid.com/v3/mail/send
+          apiKey: {{$orsp.Data.sendgrid_api}}
+          fromAddress: orsp-dev@broadinstitute.org
+          defaultRecipient: orsp-dev@broadinstitute.org
+          adminRecipient: orsp-dev@broadinstitute.org
+          securityRecipient: orsp-dev@broadinstitute.org
+          agreementsRecipient: orsp-dev@broadinstitute.org
+          orspSpecialRecipients: [grushton@broadinstitute.org]
+          bccRecipients: [grushton@broadinstitute.org]
+          replyToRecipient: orsp-dev@broadinstitute.org
+          sendGridStatusUrl: http://status.sendgrid.com/
+        storage:
+          config: /orsp-config/orsp-client.json
+          url: https://storage.googleapis.com/
+          bucket: {{$orsp.Data.staging_bucket}}
+        consent:
+          service:
+            username: {{$orsp.Data.staging_consent_username}}
+            password: {{$orsp.Data.staging_consent_password}}
+            url: https://consent.dsde-staging.broadinstitute.org/basic/consent
+            statusUrl: https://consent.dsde-staging.broadinstitute.org/status
+            ontologyUrl: https://consent-ontology.dsde-staging.broadinstitute.org/
+            ontologyStatusUrl: https://consent-ontology.dsde-staging.broadinstitute.org/status
+        dataBio:
+          searchUrl: http://data.bioontology.org/search
+          classUrl: http://data.bioontology.org/ontologies
+          statusUrl: http://data.bioontology.org/
+          apiKey: {{$orsp.Data.data_bio_api}}
+        bsp:
+          sync: false
+          service:
+            username: {{$orsp.Data.bsp_username}}
+            password: {{$orsp.Data.bsp_password}}
+            allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
+            statusUrl: http://bsp/BSP/
+        hibernate:
+          cache:
+            queries: false
+            use_second_level_cache: false
+            use_query_cache: false
+            format_sql: false
+            show_sql: false
+        dataSource:
+          pooled: true
+          driverClassName: org.mariadb.jdbc.Driver
+          username: {{$orsp.Data.staging_ds_username}}
+          password: {{$orsp.Data.staging_ds_password}}
+          url: jdbc:mariadb://{{$orsp.Data.staging_ds_host}}/{{$orsp.Data.staging_ds_db}}
+          properties:
+            initialSize: 5
+            maxActive: 50
+            minIdle: 5
+            maxIdle: 25
+            maxWait: 10000
+            timeBetweenEvictionRunsMillis: 5000
+            minEvictableIdleTimeMillis: 60000
+            numTestsPerEvictionRun: 3
+            validationQuery: "SELECT 1"
+            validationQueryTimeout: 3
+            testOnBorrow: true
+            testOnReturn: true
+            testWhileIdle: true
+            defaultTransactionIsolation: 1 #TRANSACTION_READ_UNCOMMITTED
+        endpoints:
+          metrics:
+            enabled: true
+      production:
+        crowd:
+          url: https://crowd.broadinstitute.org:8443/crowd
+          username: {{$orsp.Data.crowd_username}}
+          password: {{$orsp.Data.crowd_password}}
+          interval: 500
+          range: 10
+        grails.serverURL: https://ui.dsp-orsp-prod.broadinstitute.org # https://orsp.broadinstitute.org
+        gkeServiceName: https://orsp-pub-service
+        googleSignInClientId: {{$orsp.Data.prod_google_signin_client_id}}
+        server:
+          contextPath: '/'
+        notifyService:
+          sendGridUrl: https://api.sendgrid.com/v3/mail/send
+          apiKey: {{$orsp.Data.sendgrid_api}}
+          fromAddress: orsp-portal@broadinstitute.org
+          defaultRecipient: orsp-portal@broadinstitute.org
+          adminRecipient: orsp@broadinstitute.org
+          securityRecipient: orsp-security@broadinstitute.org
+          agreementsRecipient: agreements@broadinstitute.org
+          orspSpecialRecipients: [orsp-portal@broadinstitute.org]
+          bccRecipients: []
+          replyToRecipient: orsp-portal@broadinstitute.org
+          sendGridStatusUrl: http://status.sendgrid.com/
+        storage:
+          config: /orsp-config/orsp-client.json
+          url: https://storage.googleapis.com/
+          bucket: {{$orsp.Data.prod_bucket}}
+        consent:
+          service:
+            username: {{$orsp.Data.prod_consent_username}}
+            password: {{$orsp.Data.prod_consent_password}}
+            url: https://consent.dsde-prod.broadinstitute.org/basic/consent
+            statusUrl: https://consent.dsde-prod.broadinstitute.org/status
+            ontologyUrl: https://consent-ontology.dsde-prod.broadinstitute.org/
+            ontologyStatusUrl: https://consent-ontology.dsde-prod.broadinstitute.org/status
+        dataBio:
+          searchUrl: http://data.bioontology.org/search
+          classUrl: http://data.bioontology.org/ontologies
+          statusUrl: http://data.bioontology.org/
+          apiKey: {{$orsp.Data.data_bio_api}}
+        bsp:
+          sync: false
+          service:
+            username: {{$orsp.Data.bsp_username}}
+            password: {{$orsp.Data.bsp_password}}
+            allSampleCollectionsUrl: http://bsp/ws/bsp/collection/get_all_collections
+            statusUrl: http://bsp/BSP/
+        hibernate:
+          cache:
+            queries: false
+            use_second_level_cache: false
+            use_query_cache: false
+            format_sql: false
+            show_sql: false
+        dataSource:
+          pooled: true
+          driverClassName: org.mariadb.jdbc.Driver
+          username: {{$orsp.Data.prod_ds_username}}
+          password: {{$orsp.Data.prod_ds_password}}
+          url: jdbc:mariadb://{{$orsp.Data.prod_ds_host}}/{{$orsp.Data.prod_ds_db}}
+          properties:
+            jmxEnabled: true
+            initialSize: 5
+            maxActive: 50
+            minIdle: 5
+            maxIdle: 25
+            maxWait: 10000
+            maxAge: 600000
+            timeBetweenEvictionRunsMillis: 5000
+            minEvictableIdleTimeMillis: 60000
+            validationQuery: SELECT 1
+            validationQueryTimeout: 3
+            validationInterval: 15000
+            testOnBorrow: true
+            testWhileIdle: true
+            testOnReturn: false
+            jdbcInterceptors: ConnectionState
+            defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+    ---
+    grails:
+      profile: web
+      codegen:
+        defaultPackage: orsp
+      spring:
+        transactionManagement:
+          proxies: false
+    info:
+      app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
+    spring:
+      groovy:
+        template:
+          check-template-location: false
+    ---
+    grails:
+      mime:
+        disable:
+          accept:
+            header:
+              userAgents:
+                - Gecko
+                - WebKit
+                - Presto
+                - Trident
+        types:
+          all: '*/*'
+          atom: application/atom+xml
+          css: text/css
+          csv: text/csv
+          form: application/x-www-form-urlencoded
+          html:
+            - text/html
+            - application/xhtml+xml
+          js: text/javascript
+          json:
+            - application/json
+            - text/json
+          multipartForm: multipart/form-data
+          pdf: application/pdf
+          rss: application/rss+xml
+          text: text/plain
+          hal:
+            - application/hal+json
+            - application/hal+xml
+          xml:
+            - text/xml
+            - application/xml
+      urlmapping:
+        cache:
+          maxsize: 1000
+      controllers:
+        defaultScope: prototype
+        upload:
+          maxFileSize: 15728640
+          maxRequestSize: 15728640
+      converters:
+        encoding: UTF-8
+      views:
+        default:
+          codec: html
+        gsp:
+          encoding: UTF-8
+          htmlcodec: xml
+          codecs:
+            expression: html
+            scriptlets: html
+            taglib: none
+            staticparts: none
+      plugin.databasemigration:
+        changelogLocation: grails-app/migrations
+        changelogFileName: changelog-master.xml
+        updateOnStart: true
+        updateOnStartFileName: changelog-master.xml
+    endpoints:
+      jmx:
+        unique-names: true
+  big-query.json: |
+    {
+      "type": "{{$bq.Data.type}}",
+      "project_id": "{{$bq.Data.project_id}}",
+      "private_key_id": "{{$bq.Data.private_key_id}}",
+      "private_key": "{{$bq.Data.private_key | replaceAll "\n" "\\n"}}",
+      "client_email": "{{$bq.Data.client_email}}",
+      "client_id": "{{$bq.Data.client_id}}",
+      "auth_uri": "{{$bq.Data.auth_uri}}",
+      "token_uri": "{{$bq.Data.token_uri}}",
+      "auth_provider_x509_cert_url": "{{$bq.Data.auth_provider_x509_cert_url}}",
+      "client_x509_cert_url": "{{$bq.Data.client_x509_cert_url}}"
+    }
+  orsp-client.json: |
+    {
+      "type": "{{$gcs.Data.type}}",
+      "project_id": "{{$gcs.Data.project_id}}",
+      "private_key_id": "{{$gcs.Data.private_key_id}}",
+      "private_key": "{{$gcs.Data.private_key | replaceAll "\n" "\\n"}}",
+      "client_email": "{{$gcs.Data.client_email}}",
+      "client_id": "{{$gcs.Data.client_id}}",
+      "auth_uri": "{{$gcs.Data.auth_uri}}",
+      "token_uri": "{{$gcs.Data.token_uri}}",
+      "auth_provider_x509_cert_url": "{{$gcs.Data.auth_provider_x509_cert_url}}",
+      "client_x509_cert_url": "{{$gcs.Data.client_x509_cert_url}}"
+    }{{end}}{{end}}{{end}}{{end}}

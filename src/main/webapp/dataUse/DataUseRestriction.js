@@ -31,7 +31,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      a({href: component.serverURL + '/dataUse/show/' + row.id}, ['View Restriction'])
+      h(Link, {to: {pathname:'/dataUse/show/'+ row.id, search:'?restrictionId=' + row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
     ])
   },
   {

@@ -31,18 +31,34 @@
 }
 
 .questionnaireProgressBar .progress {
-  height: 10px;
+  position: relative;
   margin-bottom: 0 !important;
-  border-radius: 2px;
-  background-color: #cccccc;
+  height: 20px;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  background-color: #F1F1F1;
+  border:0;
+  -moz-box-shadow:    0 0 0 0 #FFFFFF;
+  -webkit-box-shadow: 0 0 0 0 #FFFFFF;
+  box-shadow:         0 0 0 0 #FFFFFF;
+  overflow: visible;
 }
 
 .questionnaireProgressBar .progress-bar {
   background-color: #2c3e50;
   background-image: linear-gradient(to bottom,#395266 0,#2c3e50 100%);
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
 }
 
 .questionnaireProgressBar .progress.complete .progress-bar {
   background-color: #2a631e;
   background-image: linear-gradient(to bottom,#2fb20f 0,#339314 100%);
+}
+
+p.questionTitle {
+  display: none;
+  visibility: hidden;
 }

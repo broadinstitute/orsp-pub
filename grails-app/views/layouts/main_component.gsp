@@ -71,13 +71,13 @@
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
       const component = {
-        error: "${error}",
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
         issueType: "${issueType}",
+        restrictionId: "${restrictionId}",
         tab: "${params.tab}",
         consentKey: "${consentKey}",
         projectType: '${params.type}',
@@ -121,8 +121,8 @@
                 Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
              </div>
         </div>
-        <h3>About the ORSP Portal</h3>
-        <g:render template="/index/aboutBlurb"/>
+        <div id="about"></div>
+        <asset:javascript src="build/about.js"/>
     </div>
 </auth:isNotAuthenticated>
 
@@ -132,8 +132,8 @@
             You must be a Broad Institute User for further access. Please sign out and log in with
             a "broadinstitute.org" email account.
         </div>
-        <h3>About the ORSP Portal</h3>
-        <g:render template="/index/aboutBlurb"/>
+        <div id="about"></div>
+        <asset:javascript src="build/about.js"/>
     </div>
 </auth:nonBroadSession>
 

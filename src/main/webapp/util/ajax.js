@@ -10,8 +10,11 @@ export const Search = {
 
   getSourceDiseases(query) {
     return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query);
-  }
+  },
 
+  getMatchingPopulationOntologies(query) {
+    return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query);
+  }
 };
 
 export const SampleCollections = {
@@ -98,6 +101,10 @@ export const ConsentGroup = {
 
   getProjectConsentGroups(projectKey) {
     return axios.get(UrlConstants.getProjectConsentGroupsUrl + '?projectKey=' + projectKey);
+  },
+
+  exportConsent(id) {
+    return axios.post(UrlConstants.exportConsent + '?id=' + id);
   }
 };
 
@@ -225,6 +232,10 @@ export const User = {
     return axios.get(UrlConstants.getUserUrl)
   },
 
+  isAuthenticated() {
+    return axios.get(UrlConstants.isAuthenticated)
+  },
+
   getAllUsers(query) {
     return axios.get(UrlConstants.getAllUsersUrl, {
       params: {
@@ -291,10 +302,15 @@ export const DUL = {
 
 export const DataUse = {
   createRestriction(restriction) {
-    return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
+    return axios.post(UrlConstants.dataUseRestrictionUrl, restriction);
   },
+
+  getRestriction(restrictionId) {
+    return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
+  },
+
   getRestrictions(query) {
-    return axios.get(UrlConstants.restrictionUrl, {
+    return axios.get(UrlConstants.showRestrictionsUrl, {
       params: {
         draw: 1,
         start: query.start,
@@ -304,7 +320,7 @@ export const DataUse = {
         searchValue: query.searchValue
       }
     })
-  },
+  }
 };
 
 export const ProjectInfoLink = {
@@ -379,11 +395,48 @@ export const ProjectMigration = {
     return axios.get(UrlConstants.historyUrl + '?id=' + id);
   },
 
-  getSubmissions(id) {
-    return axios.get(UrlConstants.submissionsUrl + "?id=" + id);
-  },
-
   getDisplaySubmissions(id) {
     return axios.get(UrlConstants.submissionDisplayUrl + '?id=' + id);
+  },
+
+  getSubmissionFormInfo(projectKey, type, submissionId) {
+    if (submissionId === null) {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&?type=" + type);
+    } else {
+      return axios.get(UrlConstants.submissionInfoAddUrl + "?projectKey=" + projectKey + "&type=" + type + "&submissionId=" + submissionId);
+    }
+  },
+
+  saveSubmission(submissionData, files, submissionId) {
+    let data = new FormData();
+
+    files.forEach(file => {
+      if (file.file != null) {
+        const fileData = {
+          fileType: file.fileType,
+          name: file.fileName
+        };
+        data.append('files', file.file, file.fileName);
+        data.append('fileTypes', JSON.stringify(fileData));
+      }
+    });
+    data.append('submission', JSON.stringify(submissionData));
+
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+    if (submissionId === null) {
+      return axios.post(UrlConstants.submissionSaveUrl, data, config);
+    } else {
+      return axios.post(UrlConstants.submissionSaveUrl + '?submissionId=' + submissionId, data, config);
+    }
+  },
+
+  removeSubmissionFile(sumissionId, uuid) {
+    return axios.delete(UrlConstants.submissionRemoveFileUrl + '?submissionId=' + sumissionId + "&uuid=" + uuid);
+  },
+
+  deleteSubmission(submissionId) {
+    return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
   }
 };
