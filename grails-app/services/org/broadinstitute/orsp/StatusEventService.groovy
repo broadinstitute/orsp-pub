@@ -68,15 +68,19 @@ class StatusEventService {
                 withIndex()?.
                 collect { Event event, int i ->
                     Period duration
+                    Long durationTime
                     if (TERMINAL_TYPES.contains(event.eventType)) {
                         duration = new Period(first.created.time, event.created.time, PeriodType.yearMonthDay())
+                        durationTime = event.created.time - first.created.time
                     } else if (i < statusEvents.size() - 1) {
                         Event previousEvent = statusEvents.get(i + 1)
                         duration = new Period(event.created.time, previousEvent.created.time, PeriodType.yearMonthDay())
+                        durationTime = previousEvent.created.time - event.created.time
                     } else {
                         duration = new Period(event.created.time, new Date().time, PeriodType.yearMonthDay())
+                        durationTime = new Date().time - event.created.time
                     }
-                    new StatusEventDTO(event, duration)
+                    new StatusEventDTO(event, durationTime)
                 }
         eventDTOs
     }

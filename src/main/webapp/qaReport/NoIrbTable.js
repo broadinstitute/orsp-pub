@@ -24,15 +24,12 @@ class NoIrbTable extends Component {
   render() {
     return(
       TableComponent({
-        remoteProp: true,
-        onTableChange: (action, newState) => this.props.onTableChange(action, newState, NO_IRB),
+        remoteProp: false,
         data: this.props[NO_IRB].data,
         columns: columns,
         keyField: 'id',
         search: true,
         fileName: 'Quality Assurance Report',
-        page: this.props[NO_IRB].currentPage,
-        totalSize: this.props[NO_IRB].recordsFiltered,
         showPrintButton: true,
         sizePerPageList: SIZE_PER_PAGE_LIST,
         printComments: ()=> this.exportTable('print'),

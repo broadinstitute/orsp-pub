@@ -106,7 +106,7 @@ class UtilityClass {
                     requestDate    : statusEvent.issue.requestDate,
                     attachments    : statusEvent.issue.attachments,
                     actor          : statusEvent.issue.getActorUsernames(),
-                    age            : stringPeriod(statusEvent.duration),
+                    age            : statusEvent.duration//stringPeriod(),
                 ]
             }
         }

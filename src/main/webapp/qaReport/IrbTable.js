@@ -18,15 +18,12 @@ class IrbTable extends Component {
   render() {
     return(
       TableComponent({
-        remoteProp: true,
-        onTableChange: (action, newState) => this.props.onTableChange(action, newState, IRB),
+        remoteProp: false,
         data: this.props[IRB].data,
         columns: columns,
         keyField: 'id',
         search: true,
         fileName: 'Quality Assurance Report',
-        page: this.props[IRB].currentPage,
-        totalSize: this.props[IRB].recordsFiltered,
         showPrintButton: true,
         sizePerPageList: SIZE_PER_PAGE_LIST,
         printComments: () => this.exportTable('print'),

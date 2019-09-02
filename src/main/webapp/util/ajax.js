@@ -374,19 +374,10 @@ export const Reports = {
       }
     })
   },
-  getQaEventReport(query, tab, filter) {
+  getQaEventReport(tab) {
     return axios.get(UrlConstants.qaEventReportUrl, {
       params: {
-        draw: 1,
-        start: query.start,
-        length: query.length,
-        orderColumn: query.orderColumn,
-        sortDirection: query.sortDirection,
-        searchValue: query.searchValue,
-        tab: tab,
-        before: filter.before,
-        after: filter.after,
-        projectType: filter.projectType
+        tab: tab
       }
     })
   }

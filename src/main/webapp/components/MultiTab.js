@@ -18,6 +18,9 @@ export const MultiTab = hh(class MultiTab extends Component {
 
   handleSelect(key) {
     this.setState({ key: key });
+    if (this.props.handleSelect !== undefined) {
+      this.props.handleSelect(key);
+    }
   }
 
   componentDidMount() {

@@ -655,73 +655,27 @@ class QueryService implements Status {
      * @return Issues that match the query
      */
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    PaginatedResponse findIssuesForStatusReport(PaginationParams paginationOptions, QueryOptions queryOptions) {
+    PaginatedResponse findIssuesForStatusReport(QueryOptions queryOptions) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final StringBuffer query = new StringBuffer(' select i.project_key from issue i left outer join issue_extra_property ie on ie.issue_id = i.id where i.deleted = 0 and i.type != :consentGroup')
-
-        if (paginationOptions.searchValue) {
-            query.append(" and (i.project_key LIKE :term ")
-                 .append("or i.approval_status LIKE :term ")
-                 .append("or i.status LIKE :term )")
-        }
+        final StringBuffer query = new StringBuffer(' select distinct * from issue i where i.deleted = 0 and i.type != :consentGroup')
         query.append(' and i.type IN :filterType ')
-
-        if (queryOptions.before) query.append(" and i.request_date < :beforeDate ")
-        if (queryOptions.after) query.append(" and i.request_date > :afterDate ")
-        if (paginationOptions.orderColumn == 3) query.append(" and ie.name = :actor order by ie.value ").append(paginationOptions.sortDirection)
         SQLQuery sqlQuery = session.createSQLQuery(query.toString())
         sqlQuery.setString('consentGroup', IssueType.CONSENT_GROUP.name)
         sqlQuery.setParameterList('filterType', queryOptions.issueTypeNames)
-        if (paginationOptions.searchValue) {
-            sqlQuery.setString('term', paginationOptions.getLikeTerm())
-        }
-        if (queryOptions.before) sqlQuery.setTimestamp('beforeDate', queryOptions.before)
-        if (queryOptions.after) sqlQuery.setTimestamp('afterDate', queryOptions.after)
-        if (paginationOptions.orderColumn == 3) {
-            sqlQuery.setString('actor', IssueExtraProperty.ACTOR)
-        }
-
-        // total rows
-        Set<String> ids = sqlQuery.list()
+        List<Issue> issues = sqlQuery.addEntity(Issue).list()
         List<StatusEventDTO> statusEvents = new ArrayList<>()
-        if (CollectionUtils.isNotEmpty(ids)) {
-            List<Issue> results = findPaginatedIssuesByProjectKey(ids, paginationOptions)
-            // bring this for all
-//            statusEvents = statusEventService.getStatusEventsForProjectList(results)
+        if (CollectionUtils.isNotEmpty(issues)) {
+            statusEvents = statusEventService.getStatusEventsForProjectList(issues)
         }
 
         new PaginatedResponse(
-            draw: paginationOptions.draw,
-            recordsTotal: ids.size(),
-            recordsFiltered: ids.size(),
+            draw:1,
+            recordsTotal: issues.size(),
+            recordsFiltered: issues.size(),
             data:  statusEvents,
             error: ""
         )
-    }
-
-    private static String statusReportPaginationOrder(PaginationParams paginationOptions) {
-        String orderColumn
-        switch (paginationOptions.orderColumn) {
-            case 0:
-                orderColumn = " project_key " + paginationOptions.sortDirection
-                break
-            case 1:
-                orderColumn = " approval_status " + paginationOptions.sortDirection + ", status " + paginationOptions.sortDirection
-                break
-            case 2:
-                orderColumn = " request_date " + paginationOptions.sortDirection
-                break
-            case 3:
-                break
-            case 4:
-                orderColumn = " type " + paginationOptions.sortDirection
-                break
-            default:
-                orderColumn = " project_key " + paginationOptions.sortDirection
-                break
-        }
-        orderColumn
     }
 
     /**
@@ -1176,23 +1130,6 @@ class QueryService implements Status {
             setFirstResult(pagination.start)
             setMaxResults(pagination.length)
             setParameterList("ids", ids)
-            list()
-        }
-        results
-    }
-
-    private List<Issue> findPaginatedIssuesByProjectKey(Set<String> keyList, PaginationParams pagination) {
-        String query = 'select * from issue where project_key in :keyList '
-        String orderColumn = statusReportPaginationOrder(pagination)
-        if (pagination.orderColumn != 3 && !StringUtils.isEmpty(orderColumn)) {
-            query = query + " order by " + orderColumn
-        }
-        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
-        List<Issue> results = sqlQuery.with {
-            addEntity(Issue)
-            setFirstResult(pagination.start)
-            setMaxResults(pagination.length)
-            setParameterList("keyList", keyList)
             list()
         }
         results
