@@ -25,7 +25,7 @@ class NoIrbTable extends Component {
     return(
       TableComponent({
         remoteProp: false,
-        data: this.props[NO_IRB].data,
+        data: this.props[NO_IRB].filteredData,
         columns: columns,
         keyField: 'id',
         search: true,

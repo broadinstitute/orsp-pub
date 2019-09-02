@@ -9,7 +9,7 @@ import { MultiTab } from "../components/MultiTab";
 import IrbTable from "./IrbTable";
 import NoIrbTable from "./NoIrbTable";
 import { columns, IRB, NO_IRB, QA_REPORT_SPINNER } from "../util/QaReportConstants";
-import { exportData } from "../util/Utils";
+import { exportData, isEmpty } from "../util/Utils";
 
 class QaReport extends Component {
   constructor(props) {
@@ -23,10 +23,8 @@ class QaReport extends Component {
           sortDirection: 'asc',
           orderColumn: null
         },
-        currentPage: 1,
-        recordsTotal: 0,
-        recordsFiltered: 0,
         data: [],
+        filteredData: [],
         hide: false
       },
       noIrb : {
@@ -37,10 +35,8 @@ class QaReport extends Component {
           sortDirection: 'asc',
           orderColumn: null
         },
-        currentPage: 1,
-        recordsTotal: 0,
-        recordsFiltered: 0,
         data: [],
+        filteredData: [],
         hide: false
       },
       activeTab: IRB,
@@ -73,6 +69,7 @@ class QaReport extends Component {
       let result = await Reports.getQaEventReport(tab);
       this.setState(prev => {
         prev[tab].data = result.data.data;
+        prev[tab].filteredData = result.data.data;
         prev[tab].isLoaded = true;
         return prev;
       }, () => {
@@ -105,22 +102,52 @@ class QaReport extends Component {
   };
 
   applyFilterPanel = async () => {
+    let filtered = [];
     if (this.state.projectType.value === IRB) {
-      this.setState(prev => {
-        prev.activeTab = IRB;
-        }, async () =>
-        await this.tableHandler(IRB)
-      );
-    } else if (this.state.projectType.value === NO_IRB) {
-      this.setState(prev => {
-        prev.activeTab = NO_IRB;
-      }, async () =>
-        await this.tableHandler(NO_IRB)
-      );
-    } else {
-       this.init()
+      // if (this.state.beforeDate) {
+      //   filtered = this.state.irb.filteredData.filter( item => {
+      //     // console.log("item? => ", item.requestDate)
+      //     return (new Date(item.requestDate).getTime() < this.state.beforeDate.getTime());
+      //   })
+      // }
+      if (this.state.afterDate) {
+        filtered = this.state.irb.filteredData.filter( item => {
+          return (new Date(item.requestDate).getTime() > this.state.afterDate.getTime());
+        });
+        // console.log(filtered)
+        this.setState(prev => {
+          prev.irb.filteredData = this.state.irb.filteredData.filter( item => {
+            return (new Date(item.requestDate).getTime() > this.state.afterDate.getTime());
+          });
+          return prev;
+        })
+        }
+      }
+      // this.setState(prev => prev.irb.filteredData = filtered )
+      // this.state.irb.filteredData
+
     }
-  };
+
+    // if (this.state.projectType.value === IRB) {
+    //   this.setState(prev => {
+    //     prev.activeTab = IRB;
+    //     prev[IRB].hide = false;
+    //     prev[NO_IRB].hide = true;
+    //     }, async () =>
+    //     await this.tableHandler(IRB)
+    //   );
+    // } else if (this.state.projectType.value === NO_IRB) {
+    //   this.setState(prev => {
+    //     prev.activeTab = IRB;
+    //     prev[IRB].hide = true;
+    //     prev[NO_IRB].hide = false;
+    //     }, async () =>
+    //     await this.tableHandler(NO_IRB)
+    //   );
+    // } else {
+    //    this.init()
+    // }
+
 
   clearFilterPanel = () => {
     this.setState(prev => {

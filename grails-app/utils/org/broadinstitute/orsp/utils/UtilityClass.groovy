@@ -15,7 +15,6 @@ import org.broadinstitute.orsp.StatusEventDTO
 import org.broadinstitute.orsp.User
 
 import java.text.SimpleDateFormat
-import org.joda.time.Period
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -105,8 +104,8 @@ class UtilityClass {
                     reporter       : statusEvent.issue.reporter,
                     requestDate    : statusEvent.issue.requestDate,
                     attachments    : statusEvent.issue.attachments,
-                    actor          : statusEvent.issue.getActorUsernames(),
-                    age            : statusEvent.duration//stringPeriod(),
+                    actor          : statusEvent.issue.getActorUsernames().sort().join(' ,'),
+                    age            : statusEvent.duration,
                 ]
             }
         }
@@ -182,25 +181,4 @@ class UtilityClass {
         }
     }
 
-    /**
-     *
-     * @param date project time period between creation and terminal statuses events
-     * @return string indicating years - months and days, returns an empty string if date is null or empty
-     */
-    private static String stringPeriod(Period date) {
-        StringBuffer age = new StringBuffer()
-        if (date?.getYears() > 0 ) {
-            age.append(date.getYears() + " years ")
-        }
-        if (date?.getMonths() > 0) {
-            age.append(date.getMonths() + " months ")
-        }
-        if (date?.getMonths() > 0 || date?.getYears() > 0) {
-            age.append(" and ")
-        }
-        if (date?.getDays() >= 0 ) {
-            age.append(date?.getDays() + " days")
-        }
-        age
-    }
 }

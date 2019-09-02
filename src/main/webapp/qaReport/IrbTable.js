@@ -19,7 +19,7 @@ class IrbTable extends Component {
     return(
       TableComponent({
         remoteProp: false,
-        data: this.props[IRB].data,
+        data: this.props[IRB].filteredData,
         columns: columns,
         keyField: 'id',
         search: true,
