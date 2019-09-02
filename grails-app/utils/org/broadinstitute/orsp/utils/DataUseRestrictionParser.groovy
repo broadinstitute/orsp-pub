@@ -25,7 +25,7 @@ class DataUseRestrictionParser {
         dataUseRestriction.populationOriginsAncestry = IssueUtils.getBooleanForParam(params.populationOriginsAncestry)
         dataUseRestriction.commercialUseExcluded = IssueUtils.getBooleanForParam(params.commercialUseExcluded)
         dataUseRestriction.methodsResearchExcluded = IssueUtils.getBooleanForParam(params.methodsResearchExcluded)
-        dataUseRestriction.aggregateResearchResponse = IssueUtils.getBooleanForParam(params.aggregateResearchResponse)
+        dataUseRestriction.aggregateResearchResponse = params.aggregateResearchResponse
         if (params.gender) {
             if (params.gender.equals("NA")) dataUseRestriction.gender = null
             else dataUseRestriction.gender = params.gender
@@ -35,7 +35,7 @@ class DataUseRestrictionParser {
         dataUseRestriction.controlSetOption = params.controlSetOption
         dataUseRestriction.populationRestrictions = new ArrayList<>()
         if (params.populationRestrictions) {
-            if (params.populationRestrictions instanceof String[]) {
+            if (params.populationRestrictions instanceof String[] || params.populationRestrictions instanceof JSONArray) {
                 dataUseRestriction.populationRestrictions.addAll(params.populationRestrictions.findAll { !it.isEmpty() })
             }
             else if (!params.populationRestrictions.isEmpty()) {
@@ -78,7 +78,7 @@ class DataUseRestrictionParser {
             dataUseRestriction.other = null
         }
         if (params.comments) {
-            dataUseRestriction.comments = dataUseRestriction.comments
+            dataUseRestriction.comments = params.comments
         } else {
             dataUseRestriction.comments = null
         }
