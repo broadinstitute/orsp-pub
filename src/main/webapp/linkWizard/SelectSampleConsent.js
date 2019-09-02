@@ -8,9 +8,7 @@ import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { SampleCollections } from "../util/ajax";
-import axios, { CancelToken } from "axios";
-import {UrlConstants} from "../util/UrlConstants";
+import {ConsentGroup, SampleCollections} from "../util/ajax";
 
 const styles = {
   addDocumentContainer: {
@@ -31,8 +29,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   state = {};
   _isMounted = false;
-  CancelToken = CancelToken;
-  source = this.CancelToken.source();
 
   constructor(props) {
     super(props);
@@ -59,8 +55,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     this.getConsentGroups();
   }
 
-  componentWillMount() {
-    this.source.cancel();
+  componentWillUnmount() {
     this._isMounted = false;
   }
 
@@ -134,35 +129,26 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     }
   };
 
-  getConsentGroups = async () => {
+  getConsentGroups = () => {
     this.setState({ consentGroupIsLoading: true });
-    try {
-      const result = await axios.get(UrlConstants.consentNamesSearchURL, {
-        cancelToken: this.source.token
-      });
+    ConsentGroup.getConsentGroupNames().then(result => {
+      if (this._isMounted) {
+        const existingConsentGroups = result.data.map(item => {
+          return {
+            key: item.id,
+            value: item.label,
+            label: item.label
+          }
+        });
 
-      const existingConsentGroups = result.data.map(item => {
-        return {
-          key: item.id,
-          value: item.label,
-          label: item.label
-        }
-      });
-
-      this.setState({
-        existingConsentGroups: existingConsentGroups,
-        consentGroupIsLoading: false,
-        consentGroup: existingConsentGroups[0]
-      }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
-      this.getAllSampleCollections(existingConsentGroups[0].key);
-
-    } catch (error) {}
-
-  // ConsentGroup.getConsentGroupNames().then(resp => {
-  //       if (this._isMounted) {
-  //       }
-  //     }
-  //   ).catch(() => {});
+        this.setState({
+          existingConsentGroups: existingConsentGroups,
+          consentGroupIsLoading: false,
+          consentGroup: existingConsentGroups[0]
+        }, () => this.props.updateForm(this.state.consentGroup, "consentGroup"));
+        this.getAllSampleCollections(existingConsentGroups[0].key);
+      }
+    }).catch(() => {});
   };
 
   getAllSampleCollections = (consentKey) => {
