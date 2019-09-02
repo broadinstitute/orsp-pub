@@ -100,24 +100,6 @@ export const Comments = hh(class Comments extends Component {
           showExportButtons: true,
           showSearchBar: true
         }),
-
-        Panel({title: "My Task List"}, [
-          TableComponent({
-            remoteProp: false,
-            data: this.props.comments,
-            columns: columnsCopy,
-            keyField: 'id',
-            search: false,
-            fileName: 'XXXXXXX',
-            showPrintButton: false,
-            printComments: this.printComments,
-            defaultSorted: defaultSorted,
-            pagination: false,
-            showExportButtons: false,
-            showSearchBar: false
-          })
-        ]),
-        
       ])
     )
   }

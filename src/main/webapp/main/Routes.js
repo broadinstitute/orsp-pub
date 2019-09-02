@@ -14,6 +14,7 @@ import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 import AboutPage from "../aboutPage/AboutPage";
 import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
 import PageNotFound from "../PageNotFound/PageNotFound";
+import LandingPage from "./LandingPage";
 
 const Routes = ( props ) => (
   <Switch>
@@ -31,6 +32,7 @@ const Routes = ( props ) => (
     <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
+    <Route path= {"/index"} render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
   </Switch>
 );
