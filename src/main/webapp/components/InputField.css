@@ -232,7 +232,7 @@
   position: relative;
 }
 
-.inputFieldSelectWrapper {
+.inputFieldSelectWrapper .react-datepicker-popper[data-placement^="top"] {
   z-index: 1032;
 }
  
