@@ -793,12 +793,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           hr({ isRendered: this.state.restriction.genomicResults }, []),
           div({ isRendered: this.state.restriction.genomicResults, style: styles.inputGroup }, [
             p({ className: "inputFieldLabel" }, ["If ", i({}, ["Yes"]), ", please explain."]),
-            // InputFieldTextArea({
-            //   disabled: false,
-            //   value: this.state.restriction.genomicSummaryResults,
-            //   name: 'genomicSummaryResults',
-            //   onChange: this.changeTextHandler
-            // })
+            InputFieldTextArea({
+              disabled: false,
+              value: this.state.restriction.genomicSummaryResults,
+              name: 'genomicSummaryResults',
+              onChange: this.changeTextHandler
+            })
           ]),
           hr({}, []),
           div({ style: styles.inputGroup }, [
@@ -813,12 +813,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           hr({}, []),
           div({ style: styles.inputGroup }, [
             label({ className: "inputFieldLabel" }, ["Other terms of use?"]),
-            // InputFieldTextArea({
-            //   disabled: false,
-            //   value: this.state.restriction.other,
-            //   name: 'other',
-            //   onChange: this.changeTextHandler
-            // })
+            InputFieldTextArea({
+              disabled: false,
+              value: this.state.restriction.other,
+              name: 'other',
+              onChange: this.changeTextHandler
+            })
           ]),
           div({}, [
             InputYesNo({
@@ -833,12 +833,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         ]),
         div({ style: styles.borderedContainer }, [
           label({ className: "inputFieldLabel" }, ["Comments (ORSP Use Only)"]),
-          // InputFieldTextArea({
-          //   disabled: false,
-          //   value: this.state.restriction.comments,
-          //   name: 'comments',
-          //   onChange: this.changeTextHandler
-          // })
+          InputFieldTextArea({
+            disabled: false,
+            value: this.state.restriction.comments,
+            name: 'comments',
+            onChange: this.changeTextHandler
+          })
         ]),
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
