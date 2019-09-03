@@ -53,6 +53,21 @@ export const buildUrlToConsentGroup = (serverURL, consentKey, projectKey) => {
   return [serverURL, "newConsentGroup", "main?consentKey="+ consentKey + "&projectKey=" + projectKey + "&tab=review"].join("/");
 }
 
+export const dateParser = (milliseconds) => {
+  let secs = Math.floor(milliseconds/1000);
+  let mins = Math.floor(secs/60);
+  let hours = Math.floor(mins/60);
+  let days = Math.floor(hours/24);
+  let months = Math.floor(days/31);
+  let years = Math.floor(months/12);
+  months=Math.floor(months%12);
+  days = Math.floor(days%31);
+  hours = Math.floor(hours%24);
+  mins = Math.floor(mins%60);
+  secs = Math.floor(secs%60);
+  return { days: days, months: months, years: years, hours: hours, mins: mins, secs: secs } ;
+}
+
 // columns headers should be included in the first row in data array.
 // Eg of data : [['header1', 'header2', 'header3'],
 //               ['row1value1', 'row1value2', 'row1value3'],

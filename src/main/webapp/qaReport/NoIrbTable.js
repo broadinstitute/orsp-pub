@@ -13,7 +13,7 @@ class NoIrbTable extends Component {
     super(props);
     this.state = {
       showError: false,
-      isAdmin: component.isAdmin,
+      isAdmin: component.isAdmin
     };
   }
 

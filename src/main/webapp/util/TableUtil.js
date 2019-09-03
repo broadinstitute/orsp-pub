@@ -1,4 +1,4 @@
-import { isEmpty } from "./Utils";
+import { dateParser, isEmpty } from "./Utils";
 import { format } from 'date-fns';
 import { UrlConstants } from "./UrlConstants";
 
@@ -53,6 +53,12 @@ export const formatExcelData = (data, columns, hide) => {
 
 function parseDataElements(el, key) {
   let result = '';
+  if (key === 'age') {
+      const dateObj = dateParser(el[key]);
+      result =  (dateObj.years > 0 ? dateObj.years + ' years, ' : '') +
+        (dateObj.months > 0 ? dateObj.months + ' months ' : '') +
+        (dateObj.months > 0 || dateObj.years > 0 ? ' and ': '') + dateObj.days + ' days';
+  }
   if (typeof el[key] === 'string') {
     result = el[key].replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
   } else if (Array.isArray(el[key])) {

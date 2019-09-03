@@ -9,7 +9,7 @@ import { MultiTab } from "../components/MultiTab";
 import IrbTable from "./IrbTable";
 import NoIrbTable from "./NoIrbTable";
 import { columns, IRB, NO_IRB, QA_REPORT_SPINNER } from "../util/QaReportConstants";
-import { exportData, isEmpty } from "../util/Utils";
+import { createObjectCopy, exportData, isEmpty } from "../util/Utils";
 
 class QaReport extends Component {
   constructor(props) {
@@ -57,12 +57,6 @@ class QaReport extends Component {
     await this.tableHandler(IRB);
   }
 
-  dateHandler(today) {
-    let nextDay = new Date(today);
-    nextDay.setDate(today.getDate() + 1);
-    return nextDay;
-  }
-
   tableHandler = async ( tab) => {
     spinnerService.show(QA_REPORT_SPINNER);
     try {
@@ -102,64 +96,71 @@ class QaReport extends Component {
   };
 
   applyFilterPanel = async () => {
-    let filtered = [];
     if (this.state.projectType.value === IRB) {
-      // if (this.state.beforeDate) {
-      //   filtered = this.state.irb.filteredData.filter( item => {
-      //     // console.log("item? => ", item.requestDate)
-      //     return (new Date(item.requestDate).getTime() < this.state.beforeDate.getTime());
-      //   })
-      // }
-      if (this.state.afterDate) {
-        filtered = this.state.irb.filteredData.filter( item => {
-          return (new Date(item.requestDate).getTime() > this.state.afterDate.getTime());
-        });
-        // console.log(filtered)
-        this.setState(prev => {
-          prev.irb.filteredData = this.state.irb.filteredData.filter( item => {
-            return (new Date(item.requestDate).getTime() > this.state.afterDate.getTime());
-          });
+      this.filterByDate(this.state[IRB].filteredData);
+      this.setState( prev => {
+          prev[IRB].filteredData = this.filterByDate(this.state[IRB].data);
+          prev[IRB].hide = false;
+          prev[NO_IRB].hide = true;
+          prev.activeTab = IRB;
           return prev;
-        })
         }
+      )
+    } else if (this.state.projectType.value !== 'all') {
+      if (isEmpty(this.state[NO_IRB].data)) {
+        await this.tableHandler(NO_IRB);
       }
-      // this.setState(prev => prev.irb.filteredData = filtered )
-      // this.state.irb.filteredData
-
+      this.setState( prev => {
+          prev[NO_IRB].filteredData = this.filterByDate(this.state[NO_IRB].data.filter(element => (element.type === this.state.projectType.label)));
+          prev[IRB].hide = true;
+          prev[NO_IRB].hide = false;
+          prev.activeTab = NO_IRB;
+          return prev;
+        }
+      )
+    } else {
+      this.setState( prev => {
+        prev[IRB].filteredData = this.filterByDate(this.state[IRB].data);
+        prev[NO_IRB].filteredData = this.filterByDate(this.state[NO_IRB].data);
+        prev[IRB].hide = false;
+        prev[NO_IRB].hide = false;
+        prev.activeTab = IRB;
+        return prev;
+      })
     }
+  };
 
-    // if (this.state.projectType.value === IRB) {
-    //   this.setState(prev => {
-    //     prev.activeTab = IRB;
-    //     prev[IRB].hide = false;
-    //     prev[NO_IRB].hide = true;
-    //     }, async () =>
-    //     await this.tableHandler(IRB)
-    //   );
-    // } else if (this.state.projectType.value === NO_IRB) {
-    //   this.setState(prev => {
-    //     prev.activeTab = IRB;
-    //     prev[IRB].hide = true;
-    //     prev[NO_IRB].hide = false;
-    //     }, async () =>
-    //     await this.tableHandler(NO_IRB)
-    //   );
-    // } else {
-    //    this.init()
-    // }
-
+  filterByDate = (dataArray) => {
+    let filtered = dataArray;
+    if (this.state.afterDate || this.state.beforeDate) {
+      filtered = dataArray.filter(element => {
+        if (this.state.afterDate && this.state.beforeDate) {
+          return(
+            (new Date(element.requestDate) > this.state.afterDate) &&
+            (new Date(element.requestDate) < this.state.beforeDate)
+          )
+        } else if (this.state.afterDate) {
+          return (new Date(element.requestDate) > this.state.afterDate);
+        } else if (this.state.beforeDate) {
+          return (new Date(element.requestDate) < this.state.beforeDate);
+        }
+      });
+    }
+    return filtered;
+  };
 
   clearFilterPanel = () => {
     this.setState(prev => {
       prev.beforeDate = null;
       prev.afterDate = null;
       prev.projectType = { value: 'all', label: 'All' };
-      prev.hideIrb = false;
-      prev.hideNoIrb = false;
+      prev[IRB].filteredData = createObjectCopy(this.state[IRB].data);
+      prev[NO_IRB].filteredData = isEmpty(this.state[NO_IRB].data) ? [] : createObjectCopy(this.state[NO_IRB].data);
+      prev[IRB].hide = false;
+      prev[NO_IRB].hide = false;
+      prev.activeTab = IRB;
       return prev;
-    }, () =>
-      this.init()
-    );
+    });
   };
 
   exportTable = (action, tab) => {
