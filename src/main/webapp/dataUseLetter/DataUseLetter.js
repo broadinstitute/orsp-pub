@@ -20,8 +20,6 @@ import { isEmpty } from "../util/Utils";
 
 export const DataUseLetter = hh(class DataUseLetter extends Component {
 
-  _isMounted = false;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -107,36 +105,29 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
     this.initFormData();
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   initFormData = () => {
     const uuid = window.location.href.split('id=')[1];
     ConsentGroup.getConsentGroupByUUID(uuid).then(consentGroup => {
-      if (this._isMounted) {
-        this.setState(prev => {
-          prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
-          prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
-          prev.formData.date = this.parseDate(new Date());
-          prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
-          prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
-          prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
-          prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
-          if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
-            let dulInfo = JSON.parse(this.props.dul.dulInfo);
-            prev.formData.onGoingProcess = dulInfo.onGoingProcess;
-            prev.formData.startDate = dulInfo.startDate;
-            prev.formData.endDate = dulInfo.endDate;
-            prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
-          }
-          return prev;
-        });
-      }
+      this.setState(prev => {
+        prev.formData.protocolTitle = consentGroup.data.consent.summary !== undefined ? consentGroup.data.consent.summary : '';
+        prev.formData.protocolNumber = consentGroup.data.consent.protocol !== undefined ? consentGroup.data.consent.protocol : '';
+        prev.formData.date = this.parseDate(new Date());
+        prev.formData.dataManagerName = consentGroup.data.consent.dataManagerName !== undefined ? consentGroup.data.consent.dataManagerName : '';
+        prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
+        prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
+        prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
+        if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
+          let dulInfo = JSON.parse(this.props.dul.dulInfo);
+          prev.formData.onGoingProcess = dulInfo.onGoingProcess;
+          prev.formData.startDate = dulInfo.startDate;
+          prev.formData.endDate = dulInfo.endDate;
+          prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
+        }
+        return prev;
+      });
     }).catch(error => {
       this.setState(() => { throw error; });
     });
@@ -754,6 +745,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
             label: "Data is intended for repository deposition?",
             readOnly: this.state.readOnly,
             onChange: this.handleRadioChange,
+            readOnly: true,
           }),
 
           div({ className: "boxWrapper" }, [

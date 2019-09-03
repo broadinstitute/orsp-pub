@@ -34,6 +34,9 @@ const styles = {
 };
 
 export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     let params = new URLSearchParams(this.props.location.search);
@@ -51,11 +54,13 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
     this.scrollTop();
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     spinnerService._unregister(RESTRICTION_SPINNER);
   }
 
@@ -95,25 +100,29 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
-      this.setState(prev => {
-        prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
-        prev.restriction.consentGroupKey = result.data.issue.projectKey;
-        prev.consent = result.data.issue;
-        prev.disabledConsent = true;
-        return prev;
-      }, () => {
-        if (restrictionId === undefined || restrictionId === null) {
-          spinnerService.hide(RESTRICTION_SPINNER);
-        }
-      })
-    })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
+          prev.restriction.consentGroupKey = result.data.issue.projectKey;
+          prev.consent = result.data.issue;
+          prev.disabledConsent = true;
+          return prev;
+        }, () => {
+          if (restrictionId === undefined || restrictionId === null) {
+            spinnerService.hide(RESTRICTION_SPINNER);
+          }
+        })
+      }
+    });
     if (!isNil(restrictionId)) {
       DataUse.getRestriction(restrictionId).then(result => {
-        let restriction = this.initRestriction(result.data.restriction);
-        this.setState(prev => {
-          prev.restriction = restriction;
-          return prev;
-        }, () => spinnerService.hide(RESTRICTION_SPINNER))
+        if (this._isMounted) {
+          let restriction = this.initRestriction(result.data.restriction);
+          this.setState(prev => {
+            prev.restriction = restriction;
+            return prev;
+          }, () => spinnerService.hide(RESTRICTION_SPINNER))
+        }
       })
     }
   }
@@ -784,12 +793,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           hr({ isRendered: this.state.restriction.genomicResults }, []),
           div({ isRendered: this.state.restriction.genomicResults, style: styles.inputGroup }, [
             p({ className: "inputFieldLabel" }, ["If ", i({}, ["Yes"]), ", please explain."]),
-            InputFieldTextArea({
-              disabled: false,
-              value: this.state.restriction.genomicSummaryResults,
-              name: 'genomicSummaryResults',
-              onChange: this.changeTextHandler
-            })
+            // InputFieldTextArea({
+            //   disabled: false,
+            //   value: this.state.restriction.genomicSummaryResults,
+            //   name: 'genomicSummaryResults',
+            //   onChange: this.changeTextHandler
+            // })
           ]),
           hr({}, []),
           div({ style: styles.inputGroup }, [
@@ -804,12 +813,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           hr({}, []),
           div({ style: styles.inputGroup }, [
             label({ className: "inputFieldLabel" }, ["Other terms of use?"]),
-            InputFieldTextArea({
-              disabled: false,
-              value: this.state.restriction.other,
-              name: 'other',
-              onChange: this.changeTextHandler
-            })
+            // InputFieldTextArea({
+            //   disabled: false,
+            //   value: this.state.restriction.other,
+            //   name: 'other',
+            //   onChange: this.changeTextHandler
+            // })
           ]),
           div({}, [
             InputYesNo({
@@ -824,12 +833,12 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         ]),
         div({ style: styles.borderedContainer }, [
           label({ className: "inputFieldLabel" }, ["Comments (ORSP Use Only)"]),
-          InputFieldTextArea({
-            disabled: false,
-            value: this.state.restriction.comments,
-            name: 'comments',
-            onChange: this.changeTextHandler
-          })
+          // InputFieldTextArea({
+          //   disabled: false,
+          //   value: this.state.restriction.comments,
+          //   name: 'comments',
+          //   onChange: this.changeTextHandler
+          // })
         ]),
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),

@@ -4,7 +4,7 @@ import { DataUse } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
+import { RESTRICTION_SORT_NAME_INDEX } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
@@ -104,9 +104,8 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
           return prev;
         }, () => spinnerService.hideAll())
       }
-    }).catch(error => {
+    }).catch(() => {
       spinnerService.hideAll();
-      // this.setState(() => { throw error });
     });
   };
 
