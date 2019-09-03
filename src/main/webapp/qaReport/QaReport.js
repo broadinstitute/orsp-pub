@@ -96,6 +96,9 @@ class QaReport extends Component {
   };
 
   applyFilterPanel = async () => {
+    if (isEmpty(this.state[NO_IRB].data)) {
+      await this.tableHandler(NO_IRB);
+    }
     if (this.state.projectType.value === IRB) {
       this.filterByDate(this.state[IRB].filteredData);
       this.setState( prev => {
@@ -107,9 +110,6 @@ class QaReport extends Component {
         }
       )
     } else if (this.state.projectType.value !== 'all') {
-      if (isEmpty(this.state[NO_IRB].data)) {
-        await this.tableHandler(NO_IRB);
-      }
       this.setState( prev => {
           prev[NO_IRB].filteredData = this.filterByDate(this.state[NO_IRB].data.filter(element => (element.type === this.state.projectType.label)));
           prev[IRB].hide = true;
