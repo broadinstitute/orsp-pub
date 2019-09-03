@@ -1,7 +1,5 @@
 package org.broadinstitute.orsp
 
-import java.sql.Timestamp
-
 /**
  * This class holds all of the generic query arguments that are used for searching across issues
  */
@@ -41,7 +39,7 @@ class QueryOptions {
     String beforeAfter
     Date dateRestriction
     Boolean methodsResearchExcluded
-    Timestamp after
-    Timestamp before
+    Date after
+    Date before
 
 }

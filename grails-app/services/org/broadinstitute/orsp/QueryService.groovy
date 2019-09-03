@@ -5,7 +5,6 @@ import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -655,27 +654,20 @@ class QueryService implements Status {
      * @return Issues that match the query
      */
     @SuppressWarnings(["GroovyAssignabilityCheck"])
-    PaginatedResponse findIssuesForStatusReport(QueryOptions queryOptions) {
+    List<StatusEventDTO> findIssuesForStatusReport(Collection<String> issueTypeNames) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final StringBuffer query = new StringBuffer(' select distinct * from issue i where i.deleted = 0 and i.type != :consentGroup')
         query.append(' and i.type IN :filterType ')
         SQLQuery sqlQuery = session.createSQLQuery(query.toString())
         sqlQuery.setString('consentGroup', IssueType.CONSENT_GROUP.name)
-        sqlQuery.setParameterList('filterType', queryOptions.issueTypeNames)
+        sqlQuery.setParameterList('filterType', issueTypeNames)
         List<Issue> issues = sqlQuery.addEntity(Issue).list()
         List<StatusEventDTO> statusEvents = new ArrayList<>()
         if (CollectionUtils.isNotEmpty(issues)) {
             statusEvents = statusEventService.getStatusEventsForProjectList(issues)
         }
-
-        new PaginatedResponse(
-            draw:1,
-            recordsTotal: issues.size(),
-            recordsFiltered: issues.size(),
-            data:  statusEvents,
-            error: ""
-        )
+        statusEvents
     }
 
     /**

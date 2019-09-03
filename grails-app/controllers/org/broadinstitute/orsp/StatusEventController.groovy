@@ -4,13 +4,8 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.utils.UtilityClass
-import org.broadinstitute.orsp.webservice.PaginationParams
 import org.joda.time.Period
 
-import java.sql.Timestamp
-import java.text.DateFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON'])
@@ -22,6 +17,7 @@ class StatusEventController extends AuthenticatedController {
         render(view: "/mainContainer/index")
     }
 
+    // TODO: unused, this must be re-implemented
     private Map<String, Period> calculateIssuePeriods(Collection<Issue> issues) {
         issues.collectEntries { issue ->
             List<StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(issue.projectKey)
@@ -34,7 +30,7 @@ class StatusEventController extends AuthenticatedController {
             [issue.projectKey, period]
         }
     }
-
+    // TODO: unused, this must be re-implemented
     def project() {
         Issue issue = queryService.findByKey(params.id)
         // Sort ascending and create DTOs
@@ -44,14 +40,15 @@ class StatusEventController extends AuthenticatedController {
 
     def findQaEventReport() {
         UtilityClass.registerQaReportIssueMarshaller()
-        QueryOptions queryOptions = new QueryOptions()
+        Collection<String> issueTypeNames = new ArrayList<String>()
+
         if (params.projectType && params.projectType != ALL_PROJECTS) {
-            queryOptions.issueTypeNames = [IssueType.valueOfController(params.projectType).name]
+            issueTypeNames = [IssueType.valueOfController(params.projectType).name]
         } else if (params.tab) {
-            queryOptions.issueTypeNames = params.tab == NO_IRB ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
+            issueTypeNames = params.tab == NO_IRB ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
         }
         JSON.use(UtilityClass.ISSUE_FOR_QA) {
-            render queryService.findIssuesForStatusReport(queryOptions) as JSON
+            render queryService.findIssuesForStatusReport(issueTypeNames) as JSON
         }
     }
 

@@ -88,10 +88,10 @@ class StatusEventService {
             addEntity(Event)
             setParameterList('projectKeys', issues*.projectKey.toList())
             setParameterList('typeList', TYPES*.name())
-            list().sort { a, b -> a.created <=> b.created }
+            list()
         }
 
-        Map<String, Event> eventMap = eventList.groupBy {it.projectKey} as Map<String, Event>
+        Map<String, List<Event>> eventMap = eventList.groupBy {it.projectKey}
         List<StatusEventDTO> result = new ArrayList<>()
         issues.collect { issue ->
             List<StatusEventDTO> eventDTOs = getStatusEventDTOs(eventMap[issue.projectKey])
@@ -100,6 +100,7 @@ class StatusEventService {
                 statusEventDTO?.setIssue(issue)
                 result.add(statusEventDTO)
             } else {
+                log.warn("There are no period events for issue ${issue.projectKey}")
                 result.add(new StatusEventDTO(issue, null, null))
             }
         }

@@ -62,8 +62,8 @@ class QaReport extends Component {
     try {
       let result = await Reports.getQaEventReport(tab);
       this.setState(prev => {
-        prev[tab].data = result.data.data;
-        prev[tab].filteredData = result.data.data;
+        prev[tab].data = result.data;
+        prev[tab].filteredData = result.data;
         prev[tab].isLoaded = true;
         return prev;
       }, () => {
