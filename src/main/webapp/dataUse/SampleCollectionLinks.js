@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, li, ul, h2, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, requestTokens } from "../util/ajax";
+import { h, h1, div, li, ul, h2, hh } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";

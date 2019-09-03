@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h1, h, div, hh, h2, strong, ul, i, p, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
+import { h1, h, div, hh, h2, strong, ul, i, p, li, label, input, span, hr, button } from 'react-hyperscript-helpers';
 import { InputFieldText } from "../components/InputFieldText";
 import { InputYesNo } from "../components/InputYesNo";
 import { Search } from "../util/ajax";
@@ -81,15 +81,15 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       pediatric: get(restriction, 'pediatricLimited', ''),
       collaborationInvestigators: get(restriction, 'collaborationInvestigators', ''),
       irb: get(restriction, 'irb', ''),
-      publicationResults: get(restriction, 'publicationResults', ''),
+      publicationResults: restriction !== undefined && !isEmpty(restriction.publicationResults) ? restriction.publicationResults : '',
       genomicResults: get(restriction, 'genomicResults', ''),
-      geographicalRestrictions: get(restriction, 'geographicalRestrictions', ''),
-      other: get(restriction, 'other', ''),
+      geographicalRestrictions: restriction !== undefined && !isEmpty(restriction.geographicalRestrictions) ? restriction.geographicalRestrictions : '',
+      other: restriction !== undefined && !isEmpty(restriction.other) ? restriction.other : '',
       manualReview: get(restriction, 'manualReview', false),
-      comments: get(restriction, 'comments', ''),
+      comments: restriction !== undefined && !isEmpty(restriction.comments) ? restriction.comments : '',
       populationRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.populationRestrictions) : [],
-      genomicSummaryResults: get(restriction, 'genomicSummaryResults',''),
-      genomicPhenotypicData: get(restriction, 'genomicPhenotypicData',''),
+      genomicSummaryResults: restriction !== undefined && !isEmpty(restriction.genomicSummaryResults) ? restriction.genomicSummaryResults : '',
+      genomicPhenotypicData: restriction !== undefined && !isEmpty(restriction.genomicPhenotypicData) ? restriction.genomicPhenotypicData : '',
       consentPIName: get(restriction, 'consentPIName','')
     };
     return resp;
