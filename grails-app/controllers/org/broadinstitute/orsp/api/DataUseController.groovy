@@ -5,9 +5,9 @@ import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
-import org.broadinstitute.orsp.ConsentException
 import org.broadinstitute.orsp.ConsentExportService
 import org.broadinstitute.orsp.ConsentService
+import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SampleCollection
@@ -22,15 +22,7 @@ class DataUseController extends AuthenticatedController {
 
     ConsentService consentService
     ConsentExportService consentExportService
-
-    def list() {
-        render(view: "/mainContainer/index")
-    }
-
-    @Override
-    def show() {
-        render(view: "/mainContainer/index", model:[restrictionId: params.id])
-    }
+    DataUseLetterService dataUseLetterService
 
     def findDataUseRestrictions() {
         PaginationParams pagination = new PaginationParams(
@@ -86,6 +78,21 @@ class DataUseController extends AuthenticatedController {
         catch (Exception e) {
             response.status = 500
             render(status: 500, text: e as JSON, contentType: 'application/json')
+        }
+    }
+
+    def saveSdul() {
+        try {
+            DataUseRestriction restriction = dataUseLetterService.getRestrictionFromParams(request.JSON)
+            dataUseLetterService.saveRestriction(restriction, getUser()?.displayName)
+            response.status = 200
+            render(restriction: restriction as JSON)
+        } catch (IllegalArgumentException iae) {
+            response.status = 400
+            render([error: iae.message] as JSON)
+        } catch (Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
         }
     }
 

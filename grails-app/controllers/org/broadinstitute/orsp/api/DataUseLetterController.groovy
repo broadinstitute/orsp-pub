@@ -122,19 +122,6 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
-    def createSdul() {
-        try {
-            DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(request.JSON.consentGroupKey)
-            restriction = DataUseRestrictionParser.fromParams(restriction, request.JSON)
-            dataUseLetterService.createSdul(restriction, getUser()?.displayName)
-            response.status = 200
-            render(response.status)
-        } catch (Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
-        }
-    }
-
     def getDul() {
         String uid = request.parameterMap["id"]?.first()
         DataUseLetter dul = DataUseLetter.findByUid(uid)

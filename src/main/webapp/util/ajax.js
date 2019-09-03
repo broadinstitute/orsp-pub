@@ -10,8 +10,11 @@ export const Search = {
 
   getSourceDiseases(query) {
     return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query);
-  }
+  },
 
+  getMatchingPopulationOntologies(query) {
+    return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query);
+  }
 };
 
 export const SampleCollections = {
@@ -229,6 +232,10 @@ export const User = {
     return axios.get(UrlConstants.getUserUrl)
   },
 
+  isAuthenticated() {
+    return axios.get(UrlConstants.isAuthenticated)
+  },
+
   getAllUsers(query) {
     return axios.get(UrlConstants.getAllUsersUrl, {
       params: {
@@ -295,13 +302,15 @@ export const DUL = {
 
 export const DataUse = {
   createRestriction(restriction) {
-    return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
+    return axios.post(UrlConstants.dataUseRestrictionUrl, restriction);
   },
+
   getRestriction(restrictionId) {
     return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
   },
+
   getRestrictions(query) {
-    return axios.get(UrlConstants.restrictionUrl, {
+    return axios.get(UrlConstants.showRestrictionsUrl, {
       params: {
         draw: 1,
         start: query.start,
@@ -311,7 +320,7 @@ export const DataUse = {
         searchValue: query.searchValue
       }
     })
-  },
+  }
 };
 
 export const ProjectInfoLink = {
