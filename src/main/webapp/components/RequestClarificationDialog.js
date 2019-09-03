@@ -42,8 +42,8 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       prev.disableSendBtn = false;
       prev.alertMessage = '';
       prev.clarification = '';
-      prev.pm = [{key:''}],
-        prev.submit = false;
+      prev.pm = [{key:''}];
+      prev.submit = false;
       return prev;
     });
     this.props.closeModal();
