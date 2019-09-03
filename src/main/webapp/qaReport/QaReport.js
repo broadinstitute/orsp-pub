@@ -168,7 +168,7 @@ class QaReport extends Component {
     let elementsArray = formatDataPrintableFormat(this.state[tab].data, cols);
     const headerText = 'Quality Assurance Report';
     const columnsWidths = ['*', '*', '*', '*', '*'];
-    exportData(action,'Quality Assurance Report', elementsArray, '', headerText, columnsWidths);
+    exportData(action,'Quality Assurance Report', elementsArray, '', headerText, columnsWidths, 'A3');
   };
 
   render() {

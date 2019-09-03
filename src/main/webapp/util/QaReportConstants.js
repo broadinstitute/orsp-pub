@@ -25,12 +25,10 @@ export const columns = [{
   dataField: 'age',
   text: 'Age',
   sort: true,
-  formatter: (cell, row, rowIndex, colIndex) => {
-    const result = dateParser(row.age);
-    return  (result.years > 0 ? result.years + ' years, ' : '') +
-      (result.months > 0 ? result.months + ' months ' : '') +
-      (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
-  }
+  formatter: (cell, row, rowIndex, colIndex) =>
+    formatAge(row),
+  csvFormatter: (cell, row, rowIndex, colIndex) =>
+    formatAge(row)
 }, {
   dataField: 'actor',
   text: 'Assignees',
@@ -46,4 +44,12 @@ export const defaultSorted = [{
   dataField: 'date',
   order: 'desc'
 }];
+
 export const COLUMNS_TO_HIDE_FROM_EXCEL = ['attachments', 'reporter', 'requestDate', 'reviewCategory', 'summary', 'issueStatus'];
+
+let formatAge = (row) => {
+  const result = dateParser(row.age);
+  return  (result.years > 0 ? result.years + ' years, ' : '') +
+    (result.months > 0 ? result.months + ' months ' : '') +
+    (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
+};
