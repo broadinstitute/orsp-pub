@@ -8,6 +8,12 @@ import { CATEGORY_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
 import { handleRedirectToProject } from "../util/Utils";
 
+const stylesHeader = {
+  pageTitle: {
+    fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+  }
+};
+
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
   { text: '100', value: 100 },
@@ -172,7 +178,7 @@ class ReviewCategories extends Component {
   render() {
     return(
       div({},[
-        h1({}, ["Review Category Report"]),
+        h1({ style: stylesHeader.pageTitle}, ["Review Category Report"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,

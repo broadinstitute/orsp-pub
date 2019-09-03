@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, hh } from 'react-hyperscript-helpers';
+import { h, h1, div, a, hh, span } from 'react-hyperscript-helpers';
 import { DataUse } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
@@ -9,6 +9,12 @@ import { TABLE_ACTIONS } from "../util/TableUtil";
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+
+const stylesHeader = {
+  pageTitle: {
+    fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+  }
+};
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -153,7 +159,7 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
   render() {
     return(
       div({},[
-        h1({}, ["Data Use Restrictions"]),
+        h1({ style: stylesHeader.pageTitle}, ["Data Use Restrictions"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,
