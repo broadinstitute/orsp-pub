@@ -13,7 +13,8 @@ import NewConsentGroup from "../consentGroup/NewConsentGroup";
 import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 import AboutPage from "../aboutPage/AboutPage";
 import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
-import PageNotFound from "../PageNotFound/PageNotFound";
+import PageNotFound from "../pageNotFound/PageNotFound";
+import IssueList from "../issueList/IssueList"
 
 const Routes = ( props ) => (
   <Switch>
@@ -31,6 +32,7 @@ const Routes = ( props ) => (
     <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
+    <Route path= {"/issue/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
   </Switch>
 );

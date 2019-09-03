@@ -27,6 +27,7 @@ class UrlMappings {
         '/api/project/extra-properties'(controller: 'project', action: 'modifyExtraProperties', method: 'POST')
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
+        '/api/user/projects'(controller: 'issue', action: 'getProjectsForUser')
 
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')

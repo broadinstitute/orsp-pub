@@ -56,7 +56,7 @@ class IssueListController extends AuthenticatedController {
                 String url = createLink(controller: arguments.get("controller"), params: arguments.get("params"), action: arguments.get("action"))
                 [
                         url: url,
-                        key: it.projectKey,
+                        projectKey: it.projectKey,
                         summary: escapeQuote(it.summary),
                         status: escapeQuote(it.status),
                         type: escapeQuote(it.type),

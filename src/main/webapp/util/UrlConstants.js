@@ -10,6 +10,7 @@ export const UrlConstants = {
   addExtraPropertiesUrl: context + '/api/project/extra-properties',
   updateExtraPropertiesUrl: context + '/api/project/update-properties',
   updateAdminOnlyPropsUrl: context + '/api/project/update-admin-props',
+  userProjectUrl: context + '/api/user/projects',
 
   // Consent Group
   updateConsentGroupUrl: context + '/api/consent-group',

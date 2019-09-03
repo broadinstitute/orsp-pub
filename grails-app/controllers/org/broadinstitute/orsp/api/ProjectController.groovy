@@ -151,6 +151,46 @@ class ProjectController extends AuthenticatedController {
         transitionService.handleIntake(issue, [SupplementalRole.ORSP], IssueStatus.PreparingApplication.name)
     }
 
+    def getProjectsForUser() {
+        final List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
+
+        [issues: issues, assignee: params.assignee, header: params.header]
+    }
+
+    private List<Issue> projectsForUser(String assignee, String max) {
+        Collection<String> users = new ArrayList<>([getUser().getUserName()])
+        if (isORSP()) {
+            users.add(SupplementalRole.ORSP)
+        }
+
+        if (isComplianceOffice()) {
+            users.add(SupplementalRole.COMPLIANCE_OFFICE)
+        }
+
+        if (isViewer()) {
+            users.add(SupplementalRole.READ_ONLY_ADMIN)
+        }
+
+        Integer limit = null
+        if (!max?.isEmpty()) {
+            limit = max?.toInteger()
+        }
+        if (assignee == "true") {
+            queryService.findByAssignee(users, limit)
+        } else {
+            queryService.findByUserNames(users, limit)
+        }
+    }
+
+    private static String escapeQuote(String str) {
+        if (str != null) {
+            str.replaceAll('"', '\\"')
+        } else {
+            ""
+        }
+    }
+
+
     String getProjectType() {
         String projectType = issueService.getProjectType(params.id)
         if (StringUtils.isNotEmpty(projectType)) {
