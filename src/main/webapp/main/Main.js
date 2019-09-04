@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div } from 'react-hyperscript-helpers';
+import { div, button } from 'react-hyperscript-helpers';
 import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
@@ -77,6 +77,8 @@ class Main extends Component {
           status: this.state.status
         }),
         ProjectContainer({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner,
           history: this.props.history,
           isRendered: this.state.issueType === 'project',
           initStatusBoxInfo: this.initStatusBoxInfo,
@@ -89,6 +91,8 @@ class Main extends Component {
           tab: this.state.tab
         }),
         ConsentGroupContainer({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner,
           isRendered: this.state.issueType === 'consent-group',
           initStatusBoxInfo: this.initStatusBoxInfo,
           changeInfoStatus: this.changeInfoStatus,

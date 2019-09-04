@@ -5,7 +5,6 @@ import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
 import { AlertMessage } from "../components/AlertMessage";
-import { Spinner } from '../components/Spinner';
 
 export const ProjectDocument = hh(class ProjectDocument extends Component {
 
@@ -114,6 +113,8 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
           actionLabel: 'Yes'
         }, []),
         Documents({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner,
           documents: this.state.documents,
           handleDialogConfirm: this.handleDialog,
           user: this.state.user,

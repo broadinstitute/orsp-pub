@@ -95,6 +95,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Details",
               }, [
                   h(ProjectReview, {
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     updateDetailsStatus: this.updateDetailsStatus,
                     changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
@@ -107,6 +109,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Documents",
               }, [
                   h(ProjectDocument, {
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateDocumentsStatus: this.updateDocumentsStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
@@ -158,6 +162,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Admin Only",
               }, [
                   h(AdminOnly, {
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,

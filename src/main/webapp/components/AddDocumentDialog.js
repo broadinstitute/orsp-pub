@@ -4,7 +4,6 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bo
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
 import { Files } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
 import './ConfirmationDialog.css';
 
 export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
@@ -64,10 +63,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         if(this.props.projectKey !== undefined) {
-          spinnerService.show(this.props.spinner);
+          this.props.showSpinner();
           Files.upload(files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
-            spinnerService.hide(this.props.spinner);
+            this.props.hideSpinner();
             this.setState(prev => {
               prev.submit = false;
               prev.disableBtn = false;
@@ -78,7 +77,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
-            spinnerService.hide(this.props.spinner);
+            this.props.hideSpinner();
             this.setState(prev => {
               prev.alertType = 'danger';
               prev.alertMessage = 'Something went wrong. Please try again.';

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, hh, p, div, h2, button } from 'react-hyperscript-helpers';
+import { hh, p, div, h2, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -11,9 +11,7 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { spinnerService } from "../util/spinner-service";
 import { Project, Search, Review, User } from "../util/ajax";
-import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from "../components/InputFieldSelect";
@@ -21,7 +19,6 @@ import { PREFERRED_IRB } from "../util/TypeDescription";
 import { PI_AFFILIATION } from "../util/TypeDescription";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
-const PROJECT_REVIEW_SPINNER = "projectReviewSpinner";
 
 export const ProjectReview = hh(class ProjectReview extends Component {
 
@@ -149,12 +146,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.props.showSpinner();
     this.init();
-  }
-
-  componentWillUnmount() {
-    spinnerService._unregister(PROJECT_REVIEW_SPINNER);
   }
 
   init() {
@@ -193,7 +186,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
             if (data.data !== '') {
               formData = JSON.parse(data.data.suggestions);
-              spinnerService.hide(PROJECT_REVIEW_SPINNER);
+              this.props.hideSpinner();
               this.setState(prev => {
                 prev.formData = formData;
                 prev.current = current;
@@ -206,7 +199,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               });
               this.props.changeInfoStatus(false);
             } else {
-              spinnerService.hide(PROJECT_REVIEW_SPINNER);
+              this.props.hideSpinner();
               formData = JSON.parse(currentStr);
               this.setState(prev => {
                 prev.formData = formData;
@@ -220,7 +213,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           });
       }).catch(error => {
-        spinnerService.hide(PROJECT_REVIEW_SPINNER);
+        this.props.HideSpinner();
         this.setState(() => { throw error; });
       });
   }
@@ -327,28 +320,28 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   rejectProject() {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.props.showSpinner();
     Project.rejectProject(this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
       window.location.href = [component.serverURL, "index"].join("/");
-      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.props.hideSpinner();
     }).catch(error => {
-      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
     });
   }
 
   discardEdits() {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.props.showSpinner();
     this.setState({ discardEditsDialog: false });
     this.removeEdits('reject');
   }
 
   approveEdits = () => {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.props.showSpinner();
     let project = this.getProject();
     project.editsApproved = true;
     Project.updateProject(project, this.props.projectKey).then(
@@ -358,7 +351,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           return { approveDialog: !state.approveDialog }
         });
       }).catch(error => {
-      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
       });
   };
@@ -368,10 +361,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       resp => {
         this.props.updateContent();
         this.init();
-        spinnerService.hide(PROJECT_REVIEW_SPINNER);
+        this.props.hideSpinner();
       })
       .catch(error => {
-        spinnerService.hide(PROJECT_REVIEW_SPINNER);
+        this.props.hideSpinner();
         this.setState(() => { throw error; });
       });
   }
@@ -1213,10 +1206,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             onClick: this.toggleState('requestClarification'),
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ]),
-        h(Spinner, {
-          name: PROJECT_REVIEW_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }

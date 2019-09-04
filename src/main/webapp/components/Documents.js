@@ -9,11 +9,8 @@ import { DocumentHandler } from '../util/ajax';
 import { DataUseLetter } from './DataUseLetterLink';
 import './Documents.css';
 import { UrlConstants } from "../util/UrlConstants";
-import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "./Spinner";
 import { Link } from 'react-router-dom';
-
-const DOCUMENTS_SPINNER = 'documentsSpinner';
 
 const styles = {
   buttonWithLink: {
@@ -21,7 +18,8 @@ const styles = {
     color: '#FFFFFF',
     marginRight: '15px'
   }
-}
+};
+
 const headers =
   [
     { name: 'Document Type', value: 'fileType' },
@@ -54,10 +52,6 @@ export const Documents = hh(class Documents extends Component {
       error: false
     }
     this.removeDocument = this.removeDocument.bind(this);
-  }
-
-  componentWillUnmount() {
-    spinnerService._unregister(DOCUMENTS_SPINNER);
   }
 
   addDocuments = () => {
@@ -110,7 +104,8 @@ export const Documents = hh(class Documents extends Component {
     const { restriction = [] } = this.props;
     return div({}, [
       AddDocumentDialog({
-        spinner: DOCUMENTS_SPINNER,
+        showSpinner: this.props.showSpinner,
+        hideSpinner: this.props.hideSpinner,
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
@@ -212,10 +207,7 @@ export const Documents = hh(class Documents extends Component {
             isViewer: component.isViewer
           })
         ])
-      ]),
-      h(Spinner, {
-        name: DOCUMENTS_SPINNER, group: "orsp", loadingImage: component.loadingImage
-      })
+      ])
     ])
   }
 });

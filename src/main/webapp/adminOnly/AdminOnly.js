@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, hh, div, h2, button } from 'react-hyperscript-helpers';
+import { hh, div, h2, button } from 'react-hyperscript-helpers';
 import { Project } from "../util/ajax";
 import { Panel } from "../components/Panel";
 import { InputFieldText } from "../components/InputFieldText";
@@ -13,11 +13,7 @@ import { PREFERRED_IRB } from "../util/TypeDescription";
 import { INITIAL_REVIEW } from "../util/TypeDescription";
 import { InputTextList } from "../components/InputTextList";
 import { Fundings } from "../components/Fundings";
-import { Spinner } from "../components/Spinner";
-import { spinnerService } from "../util/spinner-service";
 import { AlertMessage } from "../components/AlertMessage";
-
-const ADMIN_ONLY_SPINNER = 'adminOnlySpinner';
 
 export const AdminOnly = hh(class AdminOnly extends Component {
   constructor(props) {
@@ -49,10 +45,6 @@ export const AdminOnly = hh(class AdminOnly extends Component {
 
   componentDidMount() {
     this.init()
-  }
-
-  componentWillUnmount() {
-    spinnerService._unregister(ADMIN_ONLY_SPINNER);
   }
 
   init = () => {
@@ -142,11 +134,11 @@ export const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   submit = () => {
-    spinnerService.show(ADMIN_ONLY_SPINNER);
+    this.props.showSpinner();
     const parsedForm = this.getParsedForm();
     Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
       response => {
-        spinnerService.hide(ADMIN_ONLY_SPINNER);
+        this.props.hideSpinner();
         this.setState(prev => {
           prev.initial = createObjectCopy(this.state.formData);
           prev.showSubmissionError = false;
@@ -156,7 +148,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
         this.successNotification('showSubmissionAlert', 'Project information been successfully updated.', 8000);
       }).catch(
       error => {
-        spinnerService.hide(ADMIN_ONLY_SPINNER);
+        this.props.hideSpinner();
         this.init();
         this.setState(prev => {
           prev.showSubmissionError = true;
@@ -398,10 +390,7 @@ export const AdminOnly = hh(class AdminOnly extends Component {
             onClick: this.submit,
             isRendered: this.state.isAdmin
           }, ["Submit"])
-        ]),
-        h(Spinner, {
-          name: ADMIN_ONLY_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }
