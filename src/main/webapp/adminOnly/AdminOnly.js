@@ -88,7 +88,9 @@ export const AdminOnly = hh(class AdminOnly extends Component {
           return prev;
         })
       }
-    }).catch(() => { });
+    }).catch(error => {
+      console.error(error);
+    });
   };
 
   getSponsorArray(sponsors) {

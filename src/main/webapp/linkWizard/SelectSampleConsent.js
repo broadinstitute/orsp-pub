@@ -8,7 +8,7 @@ import { Panel } from '../components/Panel';
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { Table } from "../components/Table";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import {ConsentGroup, SampleCollections} from "../util/ajax";
+import { ConsentGroup, SampleCollections } from "../util/ajax";
 
 const styles = {
   addDocumentContainer: {

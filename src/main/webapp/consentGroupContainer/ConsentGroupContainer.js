@@ -71,10 +71,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
   getComments() {
     Review.getComments(this.props.consentKey).then(result => {
       if (this._isMounted) {
-        this.setState(prev => {
-          prev.comments = result.data;
-          return prev;
-        });
+        this.setState({ comments: result.data });
       }
     });
   }
