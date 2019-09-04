@@ -661,8 +661,7 @@ class QueryService implements Status {
         }
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final StringBuffer query = new StringBuffer(' select distinct * from issue i where i.deleted = 0 and i.type != :consentGroup')
-        query.append(' and i.type IN :filterType ')
+        final StringBuffer query = new StringBuffer(' select distinct * from issue i where i.deleted = 0 and i.type != :consentGroup and i.type IN :filterType ')
         SQLQuery sqlQuery = session.createSQLQuery(query.toString())
         sqlQuery.setString('consentGroup', IssueType.CONSENT_GROUP.name)
         sqlQuery.setParameterList('filterType', issueTypeNames)

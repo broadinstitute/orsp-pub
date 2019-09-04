@@ -62,7 +62,7 @@ class StatusEventService {
         // If the event is a terminal event (i.e. completed, abandoned, etc.) then the duration is
         // calculated from the first event to the terminal state event.
         List<StatusEventDTO> eventDTOs = statusEvents?.
-                withIndex()?.
+                withIndex().
                 collect { Event event, int i ->
                     Long durationTime
                     if (TERMINAL_TYPES.contains(event.eventType)) {
@@ -93,7 +93,7 @@ class StatusEventService {
 
         Map<String, List<Event>> eventMap = eventList.groupBy {it.projectKey}
         List<StatusEventDTO> result = new ArrayList<>()
-        issues.collect { issue ->
+        issues.each { issue ->
             List<StatusEventDTO> eventDTOs = getStatusEventDTOs(eventMap[issue.projectKey])
             if (eventDTOs) {
                 StatusEventDTO statusEventDTO = eventDTOs?.last()
