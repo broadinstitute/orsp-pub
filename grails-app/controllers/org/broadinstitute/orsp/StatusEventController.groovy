@@ -42,14 +42,16 @@ class StatusEventController extends AuthenticatedController {
         UtilityClass.registerQaReportIssueMarshaller()
         Collection<String> issueTypeNames = new ArrayList<String>()
 
-        if (params.projectType && params.projectType != ALL_PROJECTS) {
-            issueTypeNames = [IssueType.valueOfController(params.projectType).name]
-        } else if (params.tab) {
+        if (params.tab) {
             issueTypeNames = params.tab == NO_IRB ? [IssueType.NE.name, IssueType.NHSR.name] : [IssueType.IRB.name]
         }
-        JSON.use(UtilityClass.ISSUE_FOR_QA) {
-            render queryService.findIssuesForStatusReport(issueTypeNames) as JSON
+        try {
+            JSON.use(UtilityClass.ISSUE_FOR_QA) {
+                render queryService.findIssuesForStatusReport(issueTypeNames) as JSON
+            }
+        } catch(IllegalArgumentException e) {
+            response.status = 400
+            render([error: e.message] as JSON)
         }
     }
-
 }

@@ -655,6 +655,10 @@ class QueryService implements Status {
      */
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     List<StatusEventDTO> findIssuesForStatusReport(Collection<String> issueTypeNames) {
+        if (issueTypeNames.isEmpty()) {
+            log.error("An error has occurred trying to find Issue Types from empty list for Quality Assurance Report.")
+            throw new IllegalArgumentException("Error trying to fetch Projects by unspecified type.")
+        }
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final StringBuffer query = new StringBuffer(' select distinct * from issue i where i.deleted = 0 and i.type != :consentGroup')
