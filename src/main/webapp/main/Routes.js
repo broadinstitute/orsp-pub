@@ -14,9 +14,11 @@ import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 import AboutPage from "../aboutPage/AboutPage";
 import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
 import PageNotFound from "../PageNotFound/PageNotFound";
+import NewProject from "../project/NewProject";
 
 const Routes = ( props ) => (
   <Switch>
+    <Route path= {"/newProject"} render ={(routeProps) => <NewProject {...routeProps} {...props}/> }/>
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
     <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
     <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>

@@ -1,10 +1,9 @@
 import { Component, React } from 'react';
-import { hh, h1, ul, li, span, div} from 'react-hyperscript-helpers';
+import { hh, h1, ul, li, span } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 import { Search } from '../util/ajax';
