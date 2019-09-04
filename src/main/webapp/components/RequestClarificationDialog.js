@@ -4,7 +4,6 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bo
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from './AlertMessage';
-import { spinnerService } from "../util/spinner-service";
 import { ClarificationRequest } from "../util/ajax";
 import { Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
@@ -61,12 +60,12 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     this.setState(prev => {
       prev.submit = true;
       return prev;
-    })
+    });
     if (this.validateClarification()) {
-      spinnerService.showAll();
+      this.props.showSpinner();
       ClarificationRequest.sendNewClarification(this.state.clarification, this.props.issueKey, this.state.pm[0].key, this.props.consentKey).
       then(resp => {
-        spinnerService.hideAll();
+        this.props.hideSpinner();
         this.props.successClarification('showSuccessClarification', 'Request clarification sent.', 5000);
         this.handleClose();
       }).catch(error => {
@@ -76,7 +75,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
           prev.showAlert = true;
           return prev;
         });
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     } else {
       this.setState(prev => {

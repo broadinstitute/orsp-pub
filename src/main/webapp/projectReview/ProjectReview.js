@@ -811,6 +811,8 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           actionLabel: 'Yes'
         }, []),
         RequestClarificationDialog({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner,
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: this.props.projectKey,

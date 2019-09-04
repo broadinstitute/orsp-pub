@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h1, h, div, hh, h2, strong, ul, i, p, li, label, abbr, input, span, hr, button } from 'react-hyperscript-helpers';
+import { h1, div, hh, h2, strong, ul, i, p, li, label, input, span, hr, button } from 'react-hyperscript-helpers';
 import { InputFieldText } from "../components/InputFieldText";
 import { InputYesNo } from "../components/InputYesNo";
 import { Search } from "../util/ajax";
@@ -8,8 +8,6 @@ import { MultiSelect } from "../components/MultiSelect";
 import { AlertMessage } from '../components/AlertMessage';
 import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty, createObjectCopy } from '../util/Utils';
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import '../components/Btn.css';
@@ -17,7 +15,6 @@ import '../components/Btn.css';
 const FEMALE = 'Female';
 const MALE = 'Male';
 const NA = 'NA';
-const RESTRICTION_SPINNER = 'restrictionSpinner';
 const styles = {
   borderedContainer: {
     border: '1px solid #e3e3e3',
@@ -55,10 +52,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     this.scrollTop();
   }
 
-  componentWillUnmount() {
-    spinnerService._unregister(RESTRICTION_SPINNER);
-  }
-
   initRestriction(restriction, reset) {
     let params = new URLSearchParams(this.props.location.search);
     let resp = {
@@ -91,7 +84,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   init() {
-    spinnerService.show(RESTRICTION_SPINNER);
+    this.props.showSpinner();
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
@@ -103,17 +96,17 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         return prev;
       }, () => {
         if (restrictionId === undefined || restrictionId === null) {
-          spinnerService.hide(RESTRICTION_SPINNER);
+          this.props.hideSpinner();
         }
       })
-    })
+    });
     if (!isNil(restrictionId)) {
       DataUse.getRestriction(restrictionId).then(result => {
         let restriction = this.initRestriction(result.data.restriction);
         this.setState(prev => {
           prev.restriction = restriction;
           return prev;
-        }, () => spinnerService.hide(RESTRICTION_SPINNER))
+        }, () => this.props.hideSpinner())
       })
     }
   }
@@ -279,7 +272,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     } else {
       this.setFieldValue(field, value);
     }
-  }
+  };
 
   handleHmbResearchChange = (e, field, value) => {
     value = this.getValue(value);
@@ -295,7 +288,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     } else {
       this.setFieldValue(field, value);
     }
-  }
+  };
 
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
@@ -438,7 +431,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       prev.restriction = restriction;
       return prev;
     });
-  }
+  };
 
   getKeys(list) {
     return list.map(value =>
@@ -834,10 +827,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
           button({ className: "btn btn-primary", onClick: this.submit }, ["Save"])
-        ]),
-        h(Spinner, {
-          name: RESTRICTION_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }

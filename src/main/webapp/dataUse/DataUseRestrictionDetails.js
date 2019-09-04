@@ -7,11 +7,8 @@ import { format } from 'date-fns';
 import { DUR_QUESTIONS } from './DataUseRestrictionConstants';
 import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
-import { Spinner } from '../components/Spinner';
-import { spinnerService } from "../util/spinner-service";
 import  { UrlConstants }  from '../util/UrlConstants';
 
-const DUR_SPINNER = 'dusDetail';
 
 const styles = {
   tableList: {
@@ -84,7 +81,7 @@ class DataUseRestrictionDetails extends Component {
   }
 
   componentDidMount() {
-    spinnerService.show(DUR_SPINNER);
+    this.props.showSpinner();
     this.init();
   }
   
@@ -99,7 +96,7 @@ class DataUseRestrictionDetails extends Component {
         prev.restrictionUrl = result.data.restrictionUrl;
         return prev;
       }, () => {
-        spinnerService.hide(DUR_SPINNER);
+        this.props.hideSpinner();
         this.scrollTop();
       });
     });
@@ -152,7 +149,7 @@ class DataUseRestrictionDetails extends Component {
   }
 
   exportConsent() {
-    spinnerService.showAll();
+    this.props.showSpinner();
     ConsentGroup.exportConsent(this.state.restriction.id).then(resp => {
       this.setState(prev => {
         prev.message = resp.data.message;
@@ -160,7 +157,7 @@ class DataUseRestrictionDetails extends Component {
         return prev;
       }, () => {
         this.scrollTop();
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     }).catch(error => {
       this.setState(prev => {
@@ -169,7 +166,7 @@ class DataUseRestrictionDetails extends Component {
         return prev;
       }, () => {
         this.scrollTop();
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     });
   }
@@ -191,9 +188,6 @@ class DataUseRestrictionDetails extends Component {
   render() {
     return (
       div({}, [
-        h(Spinner, {
-          name: DUR_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        }),
         h1({ style: { 'margin': '20px 0', 'fontWeight': '700', 'fontSize': '35px' } }, ["Data Use Restrictions for Consent Group: " + this.state.consent.projectKey]),
         AlertMessage({
           msg: this.state.message,

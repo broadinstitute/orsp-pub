@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, li, ul, h2, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, SampleCollections } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
+import { h, h1, div, li, ul, h2, hh } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink } from "../util/ajax";
 import { TableComponent } from "../components/TableComponent";
 import { styles } from "../util/ReportConstants";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { isEmpty } from "../util/Utils";
-
-const SPINNER_NAME = 'sampleCollectionLink';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -89,18 +85,15 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
 
   tableHandler = (offset, limit, search, sort, page) => {
     ConsentCollectionLink.findCollectionLinks().then(result => {
-      spinnerService.show(SPINNER_NAME);
+      this.props.showSpinner();
       this.setState(prev => {       
         prev.links = result.data;
         return prev;
-      }, () => spinnerService.hide(SPINNER_NAME))
+      }, () => this.props.hideSpinner());
     }).catch(error => {
-      spinnerService.hide(SPINNER_NAME);
+      this.props.hideSpinner();
       this.setState(() => { throw error });
     });
-  };
-
-  printContent = () => {
   };
 
   render() {
@@ -121,9 +114,6 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
           showSearchBar: true,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           pagination: true
-        }),
-        h(Spinner, {
-          name: SPINNER_NAME, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

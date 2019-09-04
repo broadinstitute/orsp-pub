@@ -9,7 +9,6 @@ import { DocumentHandler } from '../util/ajax';
 import { DataUseLetter } from './DataUseLetterLink';
 import './Documents.css';
 import { UrlConstants } from "../util/UrlConstants";
-import { Spinner } from "./Spinner";
 import { Link } from 'react-router-dom';
 
 const styles = {
@@ -151,6 +150,8 @@ export const Documents = hh(class Documents extends Component {
         isRendered: this.props.isConsentGroup === true
       }, [
           DataUseLetter({
+            showSpinner: this.props.showSpinner,
+            hideSpinner: this.props.hideSpinner,
             userName: this.props.userName,
             projectKey: this.props.projectKey,
           })

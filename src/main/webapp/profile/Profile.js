@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { p, div, span } from 'react-hyperscript-helpers';
-import { spinnerService } from "../util/spinner-service";
 import { User } from '../util/ajax';
 import { format } from 'date-fns';
 import './Profile.css';
@@ -19,12 +18,12 @@ class Profile extends Component {
   }
 
   init = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     User.getUserSession(component.getUserUrl).then(resp => {
       this.setState(prev => { 
         prev.user = resp.data;
         return prev;
-      });
+      },() => this.props.hideSpinner());
     });
   };
 

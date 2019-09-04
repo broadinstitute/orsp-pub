@@ -8,9 +8,7 @@ import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { Table } from "../components/Table";
 import { AddDocumentDialog } from "../components/AddDocumentDialog";
 import { isEmpty, scrollToTop } from "../util/Utils";
-import { spinnerService } from "../util/spinner-service";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { Spinner } from "../components/Spinner";
 import { AlertMessage } from "../components/AlertMessage";
 
 const styles = {
@@ -72,11 +70,6 @@ class SubmissionForm extends Component {
       prev.params.submissionId = params.get('submissionId');
       return prev;
     });
-  }
-
-  componentWillUnmount() {
-    spinnerService.hideAll();
-    spinnerService._unregisterAll();
   }
 
   getTypeSelected() {
@@ -157,8 +150,8 @@ class SubmissionForm extends Component {
 
   submitSubmission = () => {
     if(this.validateSubmission()) {
-      spinnerService.showAll();
-      const submissionData = {
+        this.props.showSpinner();
+        const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
         comments: this.state.submissionInfo.comments,
@@ -168,7 +161,7 @@ class SubmissionForm extends Component {
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
         this.backToProject();
       }).catch(error => {
-        spinnerService.hideAll();
+        this.props.hideSpinner();
         console.error(error);
         this.setState(prev => {
           prev.errors.serverError = true;
@@ -179,7 +172,7 @@ class SubmissionForm extends Component {
   };
 
   handleAction = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     this.closeModal('showDialog');
     if (this.state.action === 'document') {
       this.removeFile();
@@ -223,7 +216,7 @@ class SubmissionForm extends Component {
         prev.documents = documentsToUpdate;
         return prev;
       });
-      spinnerService.hideAll();
+      this.props.hideSpinner();
     });
   };
 
@@ -253,12 +246,12 @@ class SubmissionForm extends Component {
   };
 
   deleteSubmission = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     ProjectMigration.deleteSubmission(this.state.params.submissionId).then(prev => {
       this.props.history.goBack();
-      spinnerService.hideAll();
+      this.props.hideSpinner();
     }).catch(error => {
-      spinnerService.hideAll();
+      this.props.hideSpinner();
       console.error(error);
       this.setState(prev => {
         prev.errors.serverError = true;
@@ -381,9 +374,6 @@ class SubmissionForm extends Component {
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',
           show: this.state.errors.serverError
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );

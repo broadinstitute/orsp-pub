@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, span } from 'react-hyperscript-helpers';
+import { h1, div, a, span } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
 import { handleRedirectToProject, printData } from "../util/Utils";
 import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
@@ -129,7 +127,7 @@ class FundingsSourceReport extends Component {
   }
 
   init = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
@@ -143,7 +141,7 @@ class FundingsSourceReport extends Component {
       sortDirection: sort.sortDirection,
       searchValue: search,
     };
-    spinnerService.showAll();
+    this.props.showSpinner();
     Reports.getFundingsReports(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
       this.setState(prev => {
@@ -160,9 +158,9 @@ class FundingsSourceReport extends Component {
           sortDirection: query.sortDirection
         };
         return prev;
-      }, () => spinnerService.hideAll())
+      }, () => this.props.hideSpinner())
     }).catch(error => {
-      spinnerService.hideAll();
+      this.props.hideSpinner();
       this.setState(() => { throw error });
     });
   };
@@ -242,9 +240,6 @@ class FundingsSourceReport extends Component {
           pagination: true,
           showExportButtons: true,
           showSearchBar: true
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

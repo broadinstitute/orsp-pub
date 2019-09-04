@@ -79,6 +79,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Cohort Details",
               }, [
                   h(ConsentGroupReview, {
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     changeInfoStatus: this.props.changeInfoStatus,
                     updateDetailsStatus: this.updateDetailsStatus,
@@ -91,6 +93,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Documents",
               }, [
                   h(ConsentGroupDocuments, {
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     updateDocumentsStatus: this.updateDocumentsStatus,
                     consentKey: this.props.consentKey
                   })
@@ -100,6 +104,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Messages",
               }, [
                   h(Fragment, {}, [Comments({
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     comments: this.state.comments,
                     id: this.props.consentKey,
                     updateContent: this.updateContent

@@ -147,6 +147,8 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         actionLabel: 'Yes'
       }, []),
       Documents({
+        showSpinner: this.props.showSpinner,
+        hideSpinner: this.props.hideSpinner,
         documents: this.state.documents,
         handleDialogConfirm: this.handleDialog,
         isAdmin: this.state.isAdmin,

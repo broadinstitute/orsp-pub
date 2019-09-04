@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, hh } from 'react-hyperscript-helpers';
+import { h, h1, div, hh } from 'react-hyperscript-helpers';
 import { DataUse } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
+import { RESTRICTION_SORT_NAME_INDEX } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
@@ -64,7 +62,7 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
   }
 
   init = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
@@ -77,7 +75,7 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
       sortDirection: sort.sortDirection,
       searchValue: search
     };
-    spinnerService.showAll();
+    this.props.showSpinner();
     DataUse.getRestrictions(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsTotal / query.length);
       this.setState(prev => {
@@ -93,9 +91,9 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
           sortDirection: query.sortDirection
         };
         return prev;
-      }, () => spinnerService.hideAll())
+      }, () => this.props.hideSpinner())
     }).catch(error => {
-      spinnerService.hideAll();
+      this.props.hideSpinner();
       this.setState(() => { throw error });
     });
   };
@@ -170,9 +168,6 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
           showExportButtons: false,
           showSearchBar: true,
           pagination: true
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )

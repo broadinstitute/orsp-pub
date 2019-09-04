@@ -12,8 +12,14 @@ class DataUseRestrictionIndex extends Component {
   render() {
      return (
        div({}, [ 
-        DataUseRestriction(),
-        SampleCollectionLinks()
+        DataUseRestriction({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner
+        }),
+        SampleCollectionLinks({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner
+        })
        ])
      )
   }

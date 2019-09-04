@@ -17,7 +17,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
       currentStepIndex: 0,
       history: [],
       comments: [],
@@ -122,6 +121,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Sample/Data Cohorts",
               }, [
                   h(Fragment, {}, [ConsentGroups({
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     history: this.props.history,
                     updateContent: this.updateContent,
                     projectKey: this.props.projectKey,
@@ -141,6 +142,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Comments",
               }, [
                   h(Fragment, {}, [Comments({
+                    showSpinner: this.props.showSpinner,
+                    hideSpinner: this.props.hideSpinner,
                     comments: this.state.comments,
                     id: this.props.projectKey,
                     updateContent: this.updateContent,

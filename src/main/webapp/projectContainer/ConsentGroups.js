@@ -4,17 +4,13 @@ import { ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConsentCollectionLink } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
-import { Spinner } from "../components/Spinner";
 import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
 import { isEmpty } from "../util/Utils";
 import { TableComponent } from "../components/TableComponent";
 import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
 import { formatUrlDocument, parseDate } from "../util/TableUtil";
 import { AlertMessage } from "../components/AlertMessage";
-import { spinnerService } from "../util/spinner-service";
 import { UrlConstants } from "../util/UrlConstants";
-
-const CONSENT_GROUPS_SPINNER = 'consentGroupsSpinner';
 
 const columns = (cThis) => [{
   dataField: 'id',
@@ -85,10 +81,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   componentDidMount() {
     this.getProjectConsentGroups();
-  }
-
-  componentWillUnmount() {
-    spinnerService._unregister(CONSENT_GROUPS_SPINNER);
   }
 
   getProjectConsentGroups = () => {
@@ -291,6 +283,8 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
         }, []),
 
         RequestClarificationDialog({
+          showSpinner: this.props.showSpinner,
+          hideSpinner: this.props.hideSpinner,
           closeModal: this.closeRequestClarification,
           show: this.state.showRequestClarification,
           issueKey: this.props.projectKey,
@@ -301,9 +295,6 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           clarificationUrl: component.requestLinkClarificationUrl,
           successClarification: this.successClarification,
           linkClarification: true
-        }),
-        h(Spinner, {
-          name: CONSENT_GROUPS_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
