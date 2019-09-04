@@ -7,6 +7,12 @@ import { spinnerService } from "../util/spinner-service";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
+const stylesHeader = {
+  pageTitle: {
+    fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+  }
+};
+
 const SPINNER_NAME = 'ISSUE_LIST';
 const styles = {
   project: { 
@@ -182,7 +188,7 @@ export const IssueList = hh(class IssueList extends Component {
   render() {
     return (
       div({}, [
-        h1({style: {'marginBottom':'0'}}, ["My Task List"]),
+        h1({ style: stylesHeader.pageTitle}, ["My Task List"]),
         TableComponent({
           remoteProp: false,
           data: this.state.issues,
