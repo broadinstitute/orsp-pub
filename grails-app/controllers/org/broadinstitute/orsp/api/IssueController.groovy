@@ -7,6 +7,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.utils.UtilityClass
 
 @Slf4j
 @Resource
@@ -45,7 +46,10 @@ class IssueController extends AuthenticatedController {
 
     def getProjectsForUser() {
         try {
-            render projectsForUser((String) params.assignee, (String) params.max) as JSON
+            new UtilityClass(queryService).registerIssueListMarshaller()
+            JSON.use(UtilityClass.ISSUE_LIST) {
+                render projectsForUser((String) params.assignee, (String) params.max) as JSON
+            }
         } catch(Exception e) {
             response.status = 500
             render([error: e.message] as JSON)

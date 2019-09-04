@@ -5,6 +5,7 @@ import { Project } from '../util/ajax';
 import { Spinner } from "../components/Spinner";
 import { spinnerService } from "../util/spinner-service";
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 const SPINNER_NAME = 'ISSUE_LIST';
 const styles = {
@@ -12,7 +13,7 @@ const styles = {
     projectKeyWidth: '140px',
     projectWidth: '750px',
     titleWidth: '280px',
-    typeWidth: '140px'
+    typeWidth: '193px'
   }
 }
 
@@ -45,7 +46,11 @@ const columns = [
     sort: true,
     headerStyle: (column, colIndex) => {
       return { width: styles.project.titleWidth };
-    }
+    },
+    formatter: (cell, row, rowIndex, colIndex) =>
+    div({}, [
+      h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey}}}, [row.projectKey])
+    ])
   }, {
     dataField: 'type',
     text: 'Type',
@@ -56,12 +61,20 @@ const columns = [
   }, {
     dataField: 'status',
     text: 'Status',
-    sort: false
+    sort: false,
+    formatter: (cell, row, rowIndex, colIndex) =>
+    div({}, [
+      h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey}}}, [row.projectKey])
+    ])
   }, {
     dataField: 'updateDate',
     text: 'Updated',
     sort: false,
-    classes: 'ellipsis-column'
+    classes: 'ellipsis-column',
+    formatter: (cell, row, rowIndex, colIndex) =>
+    div({}, [
+      format(row.updateDate, 'MM/DD/YYYY')
+    ])
   }, {
     dataField: 'actor',
     text: 'Awaiting action from',
@@ -73,7 +86,6 @@ const columns = [
 export const IssueList = hh(class IssueList extends Component {
 
   constructor(props) {
-    console.log('acaaaaaaaaaaa');
     super(props);
     this.state = {
       sizePerPage: 10,
@@ -99,6 +111,8 @@ export const IssueList = hh(class IssueList extends Component {
 
   tableHandler = (offset, limit, search, sort, page) => {
     Project.getProjectByUser(true, null).then(result => {
+      console.log(result.data);
+
       this.setState(prev => {       
         prev.issues = result.data;
         return prev;
