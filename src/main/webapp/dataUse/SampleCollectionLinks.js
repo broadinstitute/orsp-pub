@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, li, ul, h2, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, SampleCollections } from "../util/ajax";
+import { h, h1, div, li, ul, h2, hh } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
@@ -67,6 +67,8 @@ function getValue(row) {
 
 export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
 
+  _isMount = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -81,8 +83,14 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
     };
   }
   componentDidMount() {
+    this._isMount = true;
     this.init();
   }
+
+  componentWillUnmount() {
+    this._isMount = false;
+  }
+
   init = () => {
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
@@ -90,17 +98,15 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
   tableHandler = (offset, limit, search, sort, page) => {
     ConsentCollectionLink.findCollectionLinks().then(result => {
       spinnerService.show(SPINNER_NAME);
-      this.setState(prev => {       
-        prev.links = result.data;
-        return prev;
-      }, () => spinnerService.hide(SPINNER_NAME))
-    }).catch(error => {
+      if (this._isMount) {
+        this.setState(prev => {
+          prev.links = result.data;
+          return prev;
+        }, () => spinnerService.hide(SPINNER_NAME))
+      }
+    }).catch(() => {
       spinnerService.hide(SPINNER_NAME);
-      this.setState(() => { throw error });
     });
-  };
-
-  printContent = () => {
   };
 
   render() {

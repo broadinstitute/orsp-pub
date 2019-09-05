@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, hh, span } from 'react-hyperscript-helpers';
+import { h, h1, div, hh } from 'react-hyperscript-helpers';
 import { DataUse } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { RESTRICTION_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
+import { RESTRICTION_SORT_NAME_INDEX } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
@@ -51,6 +51,9 @@ const columns = [
   }
 ];
 export const DataUseRestriction = hh(class DataUseRestriction extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -66,7 +69,12 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   init = () => {
@@ -86,23 +94,24 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
     spinnerService.showAll();
     DataUse.getRestrictions(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsTotal / query.length);
-      this.setState(prev => {
-        prev.lastPage = lastPage;
-        prev.currentPage = page;
-        prev.categories = result.data.data;
-        prev.recordsTotal = result.data.recordsTotal;
-        prev.recordsFiltered = result.data.recordsFiltered;
-        prev.sizePerPage = query.length;
-        prev.search = query.searchValue;
-        prev.sort = {
-          orderColumn : query.orderColumn,
-          sortDirection: query.sortDirection
-        };
-        return prev;
-      }, () => spinnerService.hideAll())
-    }).catch(error => {
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.lastPage = lastPage;
+          prev.currentPage = page;
+          prev.categories = result.data.data;
+          prev.recordsTotal = result.data.recordsTotal;
+          prev.recordsFiltered = result.data.recordsFiltered;
+          prev.sizePerPage = query.length;
+          prev.search = query.searchValue;
+          prev.sort = {
+            orderColumn : query.orderColumn,
+            sortDirection: query.sortDirection
+          };
+          return prev;
+        }, () => spinnerService.hideAll())
+      }
+    }).catch(() => {
       spinnerService.hideAll();
-      this.setState(() => { throw error });
     });
   };
 

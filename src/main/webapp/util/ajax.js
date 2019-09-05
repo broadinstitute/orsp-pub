@@ -61,7 +61,7 @@ export const ConsentGroup = {
   approve(consentKey, data) {
     return axios.post(UrlConstants.approveConsentGroupUrl + '?id=' + consentKey, data);
   },
-  
+
   rejectConsent(consentKey) {
     return axios.delete(UrlConstants.rejectConsentUrl + '?consentKey=' + consentKey);
   },
@@ -75,7 +75,7 @@ export const ConsentGroup = {
   },
 
   sendEmailDul(consentKey, userName, recipients) {
-   return axios.post(UrlConstants.emailDulUrl + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
+    return axios.post(UrlConstants.emailDulUrl + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
 
   rollbackConsentGroup(urlRollback, consentKey) {
@@ -215,11 +215,11 @@ export const DocumentHandler = {
     return axios.put(`${UrlConstants.approveDocumentUrl}?uuid=${uuid}`);
   },
 
-   rejectDocument(uuid) {
+  rejectDocument(uuid) {
     return axios.put(`${UrlConstants.rejectDocumentUrl}?uuid=${uuid}`);
   },
 
-   attachedDocuments(issueKey) {
+  attachedDocuments(issueKey) {
     return axios.get(`${UrlConstants.attachedDocumentsUrl}?issueKey=${issueKey}`);
   },
 
@@ -299,7 +299,7 @@ export const DUL = {
 
   createDulPdf(uid) {
     return axios.post(UrlConstants.saveDataUseLetterUrl, uid)
-  }, 
+  },
 
   getDULInfo(uid) {
     return axios.get(UrlConstants.dulInfoUrl + '?id=' + uid)

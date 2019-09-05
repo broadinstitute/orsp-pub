@@ -27,8 +27,8 @@ class IssueListController extends AuthenticatedController {
 
     private List<Issue> projectsForUser(String assignee, String max) {
         Collection<String> users = new ArrayList<>([getUser().getUserName()])
-        if (isORSP()) {
-            users.add(SupplementalRole.ORSP)
+        if (isAdmin()) {
+            users.addAll([SupplementalRole.ORSP, SupplementalRole.ADMIN])
         }
 
         if (isComplianceOffice()) {
