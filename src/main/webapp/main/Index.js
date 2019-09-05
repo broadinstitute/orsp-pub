@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hh, h, div, h1 } from 'react-hyperscript-helpers';
+import { hh, h, div, h2 } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from "../components/TableComponent";
 import { IssueList, User } from "../util/ajax";
@@ -142,37 +142,37 @@ const Index = hh(class Index extends Component{
     return (
       div({}, [
         About(),
-        div({
-          isRendered: this.state.logged,
-        }, [
-          h1({}, ["My Task List"]),
-          TableComponent({
-            remoteProp: false,
-            data: this.state.taskList,
-            columns: columnsCopy,
-            keyField: 'project',
-            fileName: 'xxxxx',
-            search: false,
-            showPrintButton: false,
-            defaultSorted: defaultSorted,
-            pagination: false,
-            showExportButtons: false,
-            showSearchBar: false
-          }),
-          h1({}, ["My Project List"]),
-          TableComponent({
-            remoteProp: false,
-            data: this.state.projectList,
-            columns: columnsCopy,
-            keyField: 'project',
-            fileName: 'xxxxx',
-            search: false,
-            showPrintButton: false,
-            defaultSorted: defaultSorted,
-            pagination: false,
-            showExportButtons: false,
-            showSearchBar: false
-          })
+        div({className: "row", isRendered: this.state.logged}, [
+          div({className: "col-xs-12"}, [
+            h2({}, ["My Task List"]),
+            TableComponent({
+              remoteProp: false,
+              data: this.state.taskList,
+              columns: columnsCopy,
+              keyField: 'project',
+              fileName: 'xxxxx',
+              search: false,
+              showPrintButton: false,
+              defaultSorted: defaultSorted,
+              pagination: false,
+              showExportButtons: false,
+              showSearchBar: false
+            }),
+            h2({}, ["My Project List"]),
+            TableComponent({
+              remoteProp: false,
+              data: this.state.projectList,
+              columns: columnsCopy,
+              keyField: 'project',
+              fileName: 'xxxxx',
+              search: false,
+              showPrintButton: false,
+              defaultSorted: defaultSorted,
+              pagination: false,
+              showExportButtons: false,
+              showSearchBar: false
+            })
+          ])
         ])
       ])
     );
