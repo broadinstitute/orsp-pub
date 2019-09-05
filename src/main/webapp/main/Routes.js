@@ -32,7 +32,7 @@ const Routes = ( props ) => (
     <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
-    <Route path= {"/issue/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
+    <Route path= {"/issueList/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
   </Switch>
 );

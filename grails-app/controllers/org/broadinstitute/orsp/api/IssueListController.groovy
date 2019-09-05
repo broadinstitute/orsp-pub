@@ -11,12 +11,19 @@ import org.broadinstitute.orsp.utils.UtilityClass
 
 @Slf4j
 @Resource
-class IssueController extends AuthenticatedController {
+class IssueListController extends AuthenticatedController {
 
-//    def list() {
-//        final List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
-//        [issues: issues, assignee: params.assignee, header: params.header]
-//    }
+    def getProjectsForUser() {
+        try {
+            new UtilityClass(queryService).registerIssueListMarshaller()
+            JSON.use(UtilityClass.ISSUE_LIST) {
+                render projectsForUser((String) params.assignee, (String) params.max) as JSON
+            }
+        } catch(Exception e) {
+            response.status = 500
+            render([error: e.message] as JSON)
+        }
+    }
 
     private List<Issue> projectsForUser(String assignee, String max) {
         Collection<String> users = new ArrayList<>([getUser().getUserName()])
@@ -43,17 +50,4 @@ class IssueController extends AuthenticatedController {
         }
     }
 
-
-    def getProjectsForUser() {
-        try {
-            new UtilityClass(queryService).registerIssueListMarshaller()
-            JSON.use(UtilityClass.ISSUE_LIST) {
-                render projectsForUser((String) params.assignee, (String) params.max) as JSON
-            }
-        } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
-        }
-
-    }
 }

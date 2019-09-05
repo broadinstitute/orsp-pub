@@ -4,8 +4,13 @@ import { TableComponent } from "../components/TableComponent";
 import { Project } from '../util/ajax';
 import { Spinner } from "../components/Spinner";
 import { spinnerService } from "../util/spinner-service";
+import { formatDataPrintableFormat } from "../util/TableUtil";
+import { printData } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import isNil from 'lodash/isNil';
+import '../index.css';
+
 
 const stylesHeader = {
   pageTitle: {
@@ -15,7 +20,7 @@ const stylesHeader = {
 
 const SPINNER_NAME = 'ISSUE_LIST';
 const styles = {
-  project: { 
+  project: {
     projectKeyWidth: '140px',
     projectWidth: '750px',
     titleWidth: '280px',
@@ -34,29 +39,29 @@ const columns = [
     dataField: 'id',
     text: 'Id',
     hidden: true,
-    csvExport : false
+    csvExport: false
   }, {
     dataField: 'projectKey',
     text: 'Project',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width:  styles.project.projectKeyWidth};
+      return { width: styles.project.projectKeyWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) =>
       div({}, [
-        h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey}}}, [row.projectKey])
+        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
       ])
   }, {
-  dataField: 'summary',
+    dataField: 'summary',
     text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
       return { width: styles.project.titleWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) =>
-    div({}, [
-      h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey}}}, [row.projectKey])
-    ])
+      div({}, [
+        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+      ])
   }, {
     dataField: 'type',
     text: 'Type',
@@ -69,27 +74,35 @@ const columns = [
     text: 'Status',
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
-    div({}, [
-      h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey}}}, [row.projectKey])
-    ])
+      div({}, [
+        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+      ])
   }, {
     dataField: 'updateDate',
     text: 'Updated',
     sort: false,
     classes: 'ellipsis-column',
     formatter: (cell, row, rowIndex, colIndex) =>
-    div({}, [
-      format(row.updateDate, 'MM/DD/YYYY')
-    ])
-  }, {
-    dataField: 'actor',
+      div({}, [
+        format(row.updateDate, 'MM/DD/YYYY')
+      ])
+  }, 
+  {
+    dataField: 'actors',
     text: 'Awaiting action from',
     sort: true,
-
+    formatter: (cell, row, rowIndex, colIndex) =>
+      div({}, [
+        !isNil(row.actors) ? row.actors.join(", ") : ''
+      ]),
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      !isNil(row.actors) ? row.actors.join(", ") : ''
   }
 ];
 
 export const IssueList = hh(class IssueList extends Component {
+
+  paramsContext = new URLSearchParams();
 
   constructor(props) {
     super(props);
@@ -107,8 +120,10 @@ export const IssueList = hh(class IssueList extends Component {
 
 
   componentDidMount() {
+    this.paramsContext = new URLSearchParams(this.props.location.search);
     this.init();
   }
+   
 
   init = () => {
     spinnerService.show(SPINNER_NAME);
@@ -116,10 +131,8 @@ export const IssueList = hh(class IssueList extends Component {
   };
 
   tableHandler = (offset, limit, search, sort, page) => {
-    Project.getProjectByUser(true, null).then(result => {
-      console.log(result.data);
-
-      this.setState(prev => {       
+    Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
+      this.setState(prev => {
         prev.issues = result.data;
         return prev;
       }, () => spinnerService.hide(SPINNER_NAME))
@@ -141,7 +154,7 @@ export const IssueList = hh(class IssueList extends Component {
     this.setState(prev => {
       prev.query.length = size;
       return prev;
-    }, () =>{
+    }, () => {
       this.tableHandler(this.state.query);
     });
   };
@@ -155,7 +168,7 @@ export const IssueList = hh(class IssueList extends Component {
   };
 
   onTableChange = (type, newState) => {
-    switch(type) {
+    switch (type) {
       case TABLE_ACTIONS.SEARCH: {
         this.onSearchChange(newState.searchText);
         break
@@ -177,18 +190,19 @@ export const IssueList = hh(class IssueList extends Component {
 
   printContent = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
-    let fundingsArray = formatDataPrintableFormat(this.state.issues, cols);
-    const tableColumnsWidth = [100, 100,'*',80 ,'*','*','*','*','*'];
+    let issues = formatDataPrintableFormat(this.state.issues, cols);
+    const tableColumnsWidth = [100, 100, '*', 80, '*', '*', '*', '*', '*'];
     const titleText = "";
-    printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
+    printData(issues, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
 
 
   render() {
+    
     return (
       div({}, [
-        h1({ style: stylesHeader.pageTitle}, ["My Task List"]),
+        h1({ style: stylesHeader.pageTitle }, [this.paramsContext.get('header')]),
         TableComponent({
           remoteProp: false,
           data: this.state.issues,
@@ -196,7 +210,7 @@ export const IssueList = hh(class IssueList extends Component {
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
-          showPrintButton: false,
+          showPrintButton: true,
           printComments: this.printContent,
           showExportButtons: true,
           showSearchBar: true,
