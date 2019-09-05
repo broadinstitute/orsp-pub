@@ -1,10 +1,8 @@
 import { Component } from 'react';
-import { hh, h1, div, input, label, br, span } from 'react-hyperscript-helpers';
-
+import { hh, h1, div } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
@@ -62,29 +60,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.props.removeErrorMessage();
   };
 
-  handleRadioChange = (e, field, value) => {
-    if (value === 'true') {
-      value = true;
-    } else if (value === 'false') {
-      value = false;
-    }
-
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }, () => this.props.updateForm(this.state.formData, field));
-    this.props.removeErrorMessage();
-  };
-
-  handleRadio2Change = (e, field, value) => {
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }, () => this.props.updateForm(this.state.formData, field));
-    this.props.removeErrorMessage();
-  };
-
-  static getDerivedStateFromError(error) {
+   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }
@@ -284,7 +260,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             onChange: this.handleInputChange,
             error: this.props.errors.noConsentFormReason,
             errorMessage: "Required field"
-          }),
+          })
         ])
       ])
     )

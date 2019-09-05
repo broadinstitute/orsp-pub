@@ -5,7 +5,6 @@ module.exports = {
       fs: "empty"
   },
   entry: {
-    consentGroup: './src/main/webapp/consentGroup/index.js',
     footer: './src/main/webapp/components/footer.js',
     infoLink: './src/main/webapp/infoLink/index.js',
     linkWizard: './src/main/webapp/linkWizard/index.js',

@@ -52,6 +52,7 @@
     "lodash-fp": "0.10.4",
     "pdfmake": "0.1.57",
     "prop-types": "15.6.2",
+    "query-string": "^6.8.3",
     "rc-collapse": "1.11.3",
     "react": "16.6.3",
     "react-bootstrap": "0.32.4",
