@@ -154,6 +154,7 @@ class UtilityClass {
 
     void registerIssueListMarshaller() {
         JSON.createNamedConfig(ISSUE_LIST) {
+            SimpleDateFormat  sd = new SimpleDateFormat("yyyy-MM-dd")
             it.registerObjectMarshaller( Issue ) { Issue ie ->
                 return [
                         id               : ie.id,
@@ -161,8 +162,7 @@ class UtilityClass {
                         summary          : IssueUtils.escapeQuote(ie.summary),
                         status           : IssueUtils.escapeQuote(ie.status),
                         type             : IssueUtils.escapeQuote(ie.type),
-                        updateDate       : ie.updateDate,
-                        expirationDate   : ie.expirationDate,
+                        updateDate       : ie.updateDate ? sd.format(ie.updateDate) : '',
                         actors           : queryService.findUsersInUserNameList((List<String>)ie.getActorUsernames())?.collect { it.displayName }
                 ]
             }

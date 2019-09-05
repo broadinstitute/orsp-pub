@@ -60,7 +60,7 @@ const columns = [
     },
     formatter: (cell, row, rowIndex, colIndex) =>
       div({}, [
-        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.summary])
       ])
   }, {
     dataField: 'type',
@@ -72,21 +72,13 @@ const columns = [
   }, {
     dataField: 'status',
     text: 'Status',
-    sort: false,
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
-      ])
+    sort: false
   }, {
     dataField: 'updateDate',
     text: 'Updated',
     sort: false,
-    classes: 'ellipsis-column',
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        format(row.updateDate, 'MM/DD/YYYY')
-      ])
-  }, 
+    classes: 'ellipsis-column'
+  },
   {
     dataField: 'actors',
     text: 'Awaiting action from',
@@ -123,7 +115,7 @@ export const IssueList = hh(class IssueList extends Component {
     this.paramsContext = new URLSearchParams(this.props.location.search);
     this.init();
   }
-   
+
 
   init = () => {
     spinnerService.show(SPINNER_NAME);
@@ -199,7 +191,7 @@ export const IssueList = hh(class IssueList extends Component {
 
 
   render() {
-    
+
     return (
       div({}, [
         h1({ style: stylesHeader.pageTitle }, [this.paramsContext.get('header')]),
