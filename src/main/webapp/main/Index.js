@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hh, h, div, h2 } from 'react-hyperscript-helpers';
+import { hh, h, div, h3 } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from "../components/TableComponent";
 import { IssueList, User } from "../util/ajax";
@@ -144,7 +144,7 @@ const Index = hh(class Index extends Component{
         About(),
         div({className: "row", isRendered: this.state.logged}, [
           div({className: "col-xs-12"}, [
-            h2({}, ["My Task List"]),
+            h3({style: {'fontWeight' : 'bold'}}, ["My Task List"]),
             TableComponent({
               remoteProp: false,
               data: this.state.taskList,
@@ -158,7 +158,7 @@ const Index = hh(class Index extends Component{
               showExportButtons: false,
               showSearchBar: false
             }),
-            h2({}, ["My Project List"]),
+            h3({style: {'fontWeight' : 'bold'}}, ["My Project List"]),
             TableComponent({
               remoteProp: false,
               data: this.state.projectList,
