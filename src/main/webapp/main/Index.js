@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { hh, h, div, h1 } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
-import { Panel } from '../components/Panel';
 import { TableComponent } from "../components/TableComponent";
-import { IssueList } from "../util/ajax";
+import { IssueList, User } from "../util/ajax";
 import { parseDate } from "../util/TableUtil";
 import { Link } from 'react-router-dom';
 
@@ -71,6 +70,7 @@ const Index = hh(class Index extends Component{
     this._isMounted = true;
     this.getProjectsList();
     this.getTaskList();
+    this.hasSession();
   }
 
   componentWillUnmount() {
@@ -128,42 +128,52 @@ const Index = hh(class Index extends Component{
 
   };
 
+  hasSession = () => {
+      User.isAuthenticated().then(resp => {
+        if (this._isMounted) {
+          this.setState({
+            logged: resp.data.session
+          })
+        }
+      }).catch(error => this.setState(() => { throw error; }));
+  };
+
   render() {
     return (
       div({}, [
-        About({
-          showAccessDetails : false
-        }),
-        // Panel({title: "My Task List"}, [
-        h1({}, ["My Task List"]),
-        TableComponent({
-          remoteProp: false,
-          data: this.state.taskList,
-          columns: columnsCopy,
-          keyField: 'project',
-          fileName: 'xxxxx',
-          search: false,
-          showPrintButton: false,
-          defaultSorted: defaultSorted,
-          pagination: false,
-          showExportButtons: false,
-          showSearchBar: false
-        }),
-        // ])
-        h1({}, ["My Project List"]),
-        TableComponent({
-          remoteProp: false,
-          data: this.state.projectList,
-          columns: columnsCopy,
-          keyField: 'project',
-          fileName: 'xxxxx',
-          search: false,
-          showPrintButton: false,
-          defaultSorted: defaultSorted,
-          pagination: false,
-          showExportButtons: false,
-          showSearchBar: false
-        })
+        About(),
+        div({
+          isRendered: this.state.logged,
+        }, [
+          h1({}, ["My Task List"]),
+          TableComponent({
+            remoteProp: false,
+            data: this.state.taskList,
+            columns: columnsCopy,
+            keyField: 'project',
+            fileName: 'xxxxx',
+            search: false,
+            showPrintButton: false,
+            defaultSorted: defaultSorted,
+            pagination: false,
+            showExportButtons: false,
+            showSearchBar: false
+          }),
+          h1({}, ["My Project List"]),
+          TableComponent({
+            remoteProp: false,
+            data: this.state.projectList,
+            columns: columnsCopy,
+            keyField: 'project',
+            fileName: 'xxxxx',
+            search: false,
+            showPrintButton: false,
+            defaultSorted: defaultSorted,
+            pagination: false,
+            showExportButtons: false,
+            showSearchBar: false
+          })
+        ])
       ])
     );
   }
