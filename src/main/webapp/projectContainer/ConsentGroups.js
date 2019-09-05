@@ -234,7 +234,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   redirect = (action) => {
-    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl;
+    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl+ '?projectKey='+ this.props.projectKey;
     this.props.history.push(path)
   };
 

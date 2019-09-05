@@ -9,7 +9,7 @@ function WithLoading(WrappedComponent) {
       div({}, [
         div({ isRendered: isLoading, style: containerStyle }, [
           div({ style: spinnerStyle }, [
-            img({ src: component.loadingImage, alt:'spinner' })
+            img({ src: "../assets/loading-indicator.svg", alt:'spinner' })
           ])
         ]),
         WrappedComponent({showSpinner, hideSpinner, ...props}, [])

@@ -6,7 +6,6 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from "../components/AlertMessage";
-import { Spinner } from '../components/Spinner';
 
 export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
@@ -167,9 +166,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
         show: this.state.serverError
-      }),
-      h(Spinner, {
-        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
       })
     ])
   }
