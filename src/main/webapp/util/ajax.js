@@ -440,3 +440,9 @@ export const ProjectMigration = {
     return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
   }
 };
+
+export const IssueList = {
+  getIssueList(assignee, max) {
+    return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max);
+  },
+};

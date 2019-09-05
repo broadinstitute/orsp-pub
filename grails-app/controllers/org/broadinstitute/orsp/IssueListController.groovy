@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.utils.IssueUtils
+import grails.converters.JSON
 
 @Slf4j
 class IssueListController extends AuthenticatedController {
@@ -49,6 +50,13 @@ class IssueListController extends AuthenticatedController {
     }
 
     def issueItems() {
+        if (session.user) {
+            List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
+            render(issues as JSON)
+        }
+    }
+
+    def issueItemsJsonView() {
         if (session.user) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
             def items = issues.collect {

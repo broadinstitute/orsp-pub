@@ -8,7 +8,6 @@ import './Btn.css';
 import { printData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatDataPrintableFormat } from "../util/TableUtil";
-import { Panel } from '../components/Panel';
 
 const defaultSorted = [{
   dataField: 'date',
