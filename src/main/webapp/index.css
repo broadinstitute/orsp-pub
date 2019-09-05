@@ -36,8 +36,10 @@ hr {
 }
 
 .stepTitle {
-  margin-bottom: 15px;
+  margin: 15px 0;
   display: inline-block;
+  font-size: 1.8rem;
+  line-height: 2.4rem;
 }
 
 .questionnaireContainer {
