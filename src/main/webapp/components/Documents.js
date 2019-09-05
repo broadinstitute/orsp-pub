@@ -30,7 +30,7 @@ const headers =
     { name: 'Version', value: 'docVersion' },
     { name: 'Status', value: 'status' },
     { name: 'Created', value: 'creationDate' },
-    { name: 'remove', value: 'remove' }
+    { name: '', value: 'remove' }
   ];
 
 const associatedProjectsHeaders = [

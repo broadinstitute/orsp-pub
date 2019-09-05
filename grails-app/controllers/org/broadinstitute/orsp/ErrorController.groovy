@@ -38,15 +38,6 @@ class ErrorController {
         }
     }
 
-    def error400() {
-        def exception = request.exception
-        withFormat {
-            html { render(view: '/error') }
-            json { render exception as JSON }
-        }
-    }
-
-
     def error500() {
         def exception = request.exception
         withFormat {

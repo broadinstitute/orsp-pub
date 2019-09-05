@@ -11,7 +11,6 @@ import { format } from 'date-fns';
 import isNil from 'lodash/isNil';
 import '../index.css';
 
-
 const stylesHeader = {
   pageTitle: {
     fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
@@ -93,8 +92,9 @@ const columns = [
 ];
 
 export const IssueList = hh(class IssueList extends Component {
-
+  
   paramsContext = new URLSearchParams();
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -110,12 +110,15 @@ export const IssueList = hh(class IssueList extends Component {
     };
   }
 
-
   componentDidMount() {
+    this._isMounted = true;
     this.paramsContext = new URLSearchParams(this.props.location.search);
     this.init();
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   init = () => {
     spinnerService.show(SPINNER_NAME);
@@ -123,16 +126,19 @@ export const IssueList = hh(class IssueList extends Component {
   };
 
   tableHandler = (offset, limit, search, sort, page) => {
-    Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
-      this.setState(prev => {
-        prev.issues = result.data;
-        return prev;
-      }, () => spinnerService.hide(SPINNER_NAME))
-    }).catch(error => {
-      spinnerService.hide(SPINNER_NAME);
-      this.setState(() => { throw error });
-    });
+    if(this._isMounted) {
+      Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
+        this.setState(prev => {
+          prev.issues = result.data;
+          return prev;
+        }, () => spinnerService.hide(SPINNER_NAME))
+      }).catch(error => {
+        spinnerService.hide(SPINNER_NAME);
+        this.setState(() => { throw error });
+      });
+    }    
   };
+  
   onSearchChange = (search) => {
     this.tableHandler(0, this.state.sizePerPage, search, this.state.sort, 1);
   };
@@ -188,10 +194,7 @@ export const IssueList = hh(class IssueList extends Component {
     printData(issues, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
-
-
   render() {
-
     return (
       div({}, [
         h1({ style: stylesHeader.pageTitle }, [this.paramsContext.get('header')]),

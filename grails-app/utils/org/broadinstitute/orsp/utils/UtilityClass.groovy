@@ -177,6 +177,4 @@ class UtilityClass {
             Collections.emptyList()
         }
     }
-
-
 }

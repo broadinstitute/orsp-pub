@@ -128,7 +128,7 @@ final class IssueUtils {
     }
 
     static String escapeQuote(String str) {
-        if (str != null) {
+        if (StringUtils.isNotEmpty(str)) {
             str.replaceAll('"', '\\"')
         } else {
             ""
