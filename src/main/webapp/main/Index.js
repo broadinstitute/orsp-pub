@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hh, h, div, h1, a } from 'react-hyperscript-helpers';
+import { hh, h, div, h3, a } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from "../components/TableComponent";
 import { IssueList, User } from "../util/ajax";
@@ -142,43 +142,45 @@ const Index = hh(class Index extends Component{
     return (
       div({}, [
         About(),
-        div({
-          isRendered: this.state.logged,
-        }, [
-          h1({}, ["My Task List"]),
-          a({
-            href: '/issueList/list?assignee=true&header=My+Task+List'
-          }, ["Show all"]),
-          TableComponent({
-            remoteProp: false,
-            data: this.state.taskList,
-            columns: columnsCopy,
-            keyField: 'project',
-            fileName: 'xxxxx',
-            search: false,
-            showPrintButton: false,
-            defaultSorted: defaultSorted,
-            pagination: false,
-            showExportButtons: false,
-            showSearchBar: false
-          }),
-          h1({}, ["My Project List"]),
-          a({
-            href: '/issueList/list?assignee=false&header=My+Projects'
-          }, ["Show all"]),
-          TableComponent({
-            remoteProp: false,
-            data: this.state.projectList,
-            columns: columnsCopy,
-            keyField: 'project',
-            fileName: 'xxxxx',
-            search: false,
-            showPrintButton: false,
-            defaultSorted: defaultSorted,
-            pagination: false,
-            showExportButtons: false,
-            showSearchBar: false
-          })
+        div({className: "row", isRendered: this.state.logged}, [
+          div({className: "col-xs-12"}, [
+            h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
+              a({ style: {'fontWeight' : 'normal'},
+                href: '/issueList/list?assignee=true&header=My+Task+List'
+              }, ["(show all)"])
+            ]),
+            TableComponent({
+              remoteProp: false,
+              data: this.state.taskList,
+              columns: columnsCopy,
+              keyField: 'project',
+              fileName: 'xxxxx',
+              search: false,
+              showPrintButton: false,
+              defaultSorted: defaultSorted,
+              pagination: false,
+              showExportButtons: false,
+              showSearchBar: false
+            }),
+            h3({style: {'fontWeight' : 'bold'}}, ["My Project List ",
+              a({ style: {'fontWeight' : 'normal'},
+                href: '/issueList/list?assignee=false&header=My+Projects'
+              }, ["(show all)"])
+            ]),
+            TableComponent({
+              remoteProp: false,
+              data: this.state.projectList,
+              columns: columnsCopy,
+              keyField: 'project',
+              fileName: 'xxxxx',
+              search: false,
+              showPrintButton: false,
+              defaultSorted: defaultSorted,
+              pagination: false,
+              showExportButtons: false,
+              showSearchBar: false
+            })
+          ])
         ])
       ])
     );
