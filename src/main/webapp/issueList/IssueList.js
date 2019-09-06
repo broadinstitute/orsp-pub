@@ -121,10 +121,10 @@ export const IssueList = hh(class IssueList extends Component {
 
   init = () => {
     spinnerService.show(SPINNER_NAME);
-    this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
+    this.tableHandler();
   };
 
-  tableHandler = (offset, limit, search, sort, page) => {
+  tableHandler = () => {
       Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
         if(this._isMounted) {
           this.setState(prev => {
@@ -217,5 +217,5 @@ export const IssueList = hh(class IssueList extends Component {
       ])
     )
   }
-})
+});
 export default IssueList;
