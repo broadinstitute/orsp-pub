@@ -56,7 +56,7 @@
 
                 <ul class="nav navbar-nav">
                     <g:if test="${session.user}">
-                        <li><a href="${createLink([controller: 'index', action: 'profile'])}">${session.user.displayName}</a></li>
+                        <li><a href="/profile">${session.user.displayName}</a></li>
                     </g:if>
                     %{-- Sign-out doesn't work without a sign-in button on the page somewhere --}%
                     <div class="g-signin2 hidden"></div>

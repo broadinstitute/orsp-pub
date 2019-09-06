@@ -18,14 +18,14 @@ import LandingPage from "./LandingPage";
 
 const Routes = ( props ) => (
   <Switch>
-    <Route exact path= {"/"} render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
-    <Route path= {"/index"} render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
+    <Route exact path= {"/"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
+    <Route path= {"/index"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
     <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
     <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) =>  <ReviewCategories {...routeProps} {...props}/> }/>
-    <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
+    <Route path= {"/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
     <Route path= {"/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/list"} render = {(routeProps) =>  <DataUseRestrictionIndex {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
