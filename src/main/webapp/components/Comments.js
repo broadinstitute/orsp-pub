@@ -98,7 +98,7 @@ export const Comments = hh(class Comments extends Component {
           pagination: true,
           showExportButtons: true,
           showSearchBar: true
-        }),
+        })
       ])
     )
   }

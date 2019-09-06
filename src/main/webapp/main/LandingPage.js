@@ -54,7 +54,7 @@ function linkFormatter(row, text) {
   return h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.project, state: {issueType: 'project', tab: 'review', projectKey: row.project}}}, [text])
 }
 
-const Index = hh(class Index extends Component{
+const LandingPage = hh(class LandingPage extends Component{
 
   _isMounted = false;
 
@@ -188,4 +188,4 @@ const Index = hh(class Index extends Component{
 
 });
 
-export default Index;
+export default LandingPage;
