@@ -15,6 +15,7 @@ class UrlMappings {
         "/api/report/get-all-fundings"(controller: 'report', action: "getAllFundings", method: 'GET')
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
+        '/'(controller: 'index', action: 'index')
 
         // Project end points
         '/api/project'(resource: 'project')

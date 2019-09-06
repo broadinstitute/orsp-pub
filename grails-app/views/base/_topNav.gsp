@@ -8,14 +8,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${createLink(controller: 'index', action: 'index')}">
+            <a class="navbar-brand" href="/index">
                 <g:if env="development">ORSP Portal <span class="label label-danger">Dev</span></g:if>
                 <g:else>ORSP Portal</g:else>
             </a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="${createLink([controller: 'index', action: 'about'])}">About</a></li>
+                <li><a href="/index/about">About</a></li>
                 <auth:isAuthenticated>
                     <li>
                         <a href="${createLink(controller: 'search', action: 'index')}">Search</a>

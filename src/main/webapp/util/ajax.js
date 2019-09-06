@@ -441,7 +441,7 @@ export const ProjectMigration = {
   }
 };
 
-export const IssueList = {
+export const Issues = {
   getIssueList(assignee, max) {
     return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max);
   },

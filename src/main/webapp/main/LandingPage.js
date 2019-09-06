@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { hh, h, div, h3, a } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from "../components/TableComponent";
-import { IssueList, User } from "../util/ajax";
+import { Issues, User } from "../util/ajax";
 import { parseDate } from "../util/TableUtil";
 import { Link } from 'react-router-dom';
 
@@ -78,7 +78,7 @@ const LandingPage = hh(class LandingPage extends Component{
   }
 
   getProjectsList = () => {
-    IssueList.getIssueList('assignee', 5).then(response => {
+    Issues.getIssueList('assignee', 5).then(response => {
       if (this._isMounted) {
         let projectListData = [];
 
@@ -102,7 +102,7 @@ const LandingPage = hh(class LandingPage extends Component{
   };
 
   getTaskList = () => {
-    IssueList.getIssueList('user', 5).then(response => {
+    Issues.getIssueList('user', 5).then(response => {
       if (this._isMounted) {
         let taskListData = [];
 
