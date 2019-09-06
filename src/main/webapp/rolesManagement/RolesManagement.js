@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, div, span, h1 } from 'react-hyperscript-helpers';
+import { h, div, h1 } from 'react-hyperscript-helpers';
 import { Table } from "../components/Table";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { User } from "../util/ajax";

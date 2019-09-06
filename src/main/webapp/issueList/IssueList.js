@@ -7,7 +7,6 @@ import { spinnerService } from "../util/spinner-service";
 import { formatDataPrintableFormat } from "../util/TableUtil";
 import { printData } from "../util/Utils";
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
 import isNil from 'lodash/isNil';
 import '../index.css';
 
@@ -126,17 +125,17 @@ export const IssueList = hh(class IssueList extends Component {
   };
 
   tableHandler = (offset, limit, search, sort, page) => {
-    if(this._isMounted) {
       Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
-        this.setState(prev => {
-          prev.issues = result.data;
-          return prev;
-        }, () => spinnerService.hide(SPINNER_NAME))
+        if(this._isMounted) {
+          this.setState(prev => {
+            prev.issues = result.data;
+            return prev;
+          }, () => spinnerService.hide(SPINNER_NAME))
+        }   
       }).catch(error => {
         spinnerService.hide(SPINNER_NAME);
         this.setState(() => { throw error });
-      });
-    }    
+      });  
   };
   
   onSearchChange = (search) => {
