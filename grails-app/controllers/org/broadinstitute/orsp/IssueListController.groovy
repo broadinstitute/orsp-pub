@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.utils.IssueUtils
+import grails.converters.JSON
 
 @Slf4j
 class IssueListController extends AuthenticatedController {
@@ -51,20 +52,8 @@ class IssueListController extends AuthenticatedController {
     def issueItems() {
         if (session.user) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
-            def items = issues.collect {
-                Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                String url = createLink(controller: arguments.get("controller"), params: arguments.get("params"), action: arguments.get("action"))
-                [
-                        url: url,
-                        key: it.projectKey,
-                        summary: escapeQuote(it.summary),
-                        status: escapeQuote(it.status),
-                        type: escapeQuote(it.type),
-                        updateDate: it.updateDate,
-                        expirationDate: it.expirationDate
-                ]
-            }
-            render(view: "_issueItemsJson", model: [issueList: items], contentType: "application/json")
+            render(issues as JSON)
         }
     }
+
 }
