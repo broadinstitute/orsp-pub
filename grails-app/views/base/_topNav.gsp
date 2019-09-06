@@ -15,7 +15,7 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/index/about">About</a></li>
+                <li><a href="/about">About</a></li>
                 <auth:isAuthenticated>
                     <li>
                         <a href="${createLink(controller: 'search', action: 'index')}">Search</a>
