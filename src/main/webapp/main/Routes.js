@@ -18,7 +18,7 @@ import LandingPage from "./LandingPage";
 
 const Routes = ( props ) => (
   <Switch>
-    <Route exact path= {"/"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
+    <Route path= {"/"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
     <Route path= {"/index"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
     <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
