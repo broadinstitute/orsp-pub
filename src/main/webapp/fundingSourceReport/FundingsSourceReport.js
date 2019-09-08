@@ -107,6 +107,8 @@ const columns = [
 
 class FundingsSourceReport extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -123,7 +125,12 @@ class FundingsSourceReport extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   init = () => {
@@ -144,21 +151,23 @@ class FundingsSourceReport extends Component {
     this.props.showSpinner();
     Reports.getFundingsReports(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
-      this.setState(prev => {
-        prev.lastPage = lastPage;
-        prev.currentPage = page;
-        prev.isAdmin = this.state.isAdmin;
-        prev.fundings = result.data.data;
-        prev.recordsTotal = result.data.recordsTotal;
-        prev.recordsFiltered = result.data.recordsFiltered;
-        prev.sizePerPage = query.length;
-        prev.search = query.searchValue;
-        prev.sort = {
-          orderColumn : query.orderColumn,
-          sortDirection: query.sortDirection
-        };
-        return prev;
-      }, () => this.props.hideSpinner())
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.lastPage = lastPage;
+          prev.currentPage = page;
+          prev.isAdmin = this.state.isAdmin;
+          prev.fundings = result.data.data;
+          prev.recordsTotal = result.data.recordsTotal;
+          prev.recordsFiltered = result.data.recordsFiltered;
+          prev.sizePerPage = query.length;
+          prev.search = query.searchValue;
+          prev.sort = {
+            orderColumn : query.orderColumn,
+            sortDirection: query.sortDirection
+          };
+          return prev;
+        }, () => this.props.hideSpinner())
+      }
     }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error });

@@ -62,6 +62,8 @@ const columns = [
 
 class ReviewCategories extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +79,12 @@ class ReviewCategories extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   init = () => {
@@ -97,20 +104,22 @@ class ReviewCategories extends Component {
     this.props.showSpinner();
     Reports.getReviewCategory(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsTotal / query.length);
-      this.setState(prev => {
-        prev.lastPage = lastPage;
-        prev.currentPage = page;
-        prev.categories = result.data.data;
-        prev.recordsTotal = result.data.recordsTotal;
-        prev.recordsFiltered = result.data.recordsFiltered;
-        prev.sizePerPage = query.length;
-        prev.search = query.searchValue;
-        prev.sort = {
-          orderColumn : query.orderColumn,
-          sortDirection: query.sortDirection
-        };
-        return prev;
-      }, () => this.props.hideSpinner())
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.lastPage = lastPage;
+          prev.currentPage = page;
+          prev.categories = result.data.data;
+          prev.recordsTotal = result.data.recordsTotal;
+          prev.recordsFiltered = result.data.recordsFiltered;
+          prev.sizePerPage = query.length;
+          prev.search = query.searchValue;
+          prev.sort = {
+            orderColumn : query.orderColumn,
+            sortDirection: query.sortDirection
+          };
+          return prev;
+        }, () => this.props.hideSpinner())
+      }
     }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error });

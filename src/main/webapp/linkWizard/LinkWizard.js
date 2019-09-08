@@ -13,6 +13,7 @@ const LAST_STEP = 1;
 
 export const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
+  _isMount = false;
 
   constructor(props) {
     super(props);
@@ -72,14 +73,24 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   componentDidMount() {
+    this._isMount = true;
     this.getUserSession();
   }
 
+
+  componentWillUnmount() {
+    this._isMount = false;
+  }
+
   getUserSession() {
-    User.getUserSession().then(
-      resp => this.setState({ user: resp.data })
-    ).catch(error => {
-      this.setState(() => { throw error; });
+    User.getUserSession().then( resp => {
+      if (this._isMount) {
+        this.setState({ user: resp.data })
+      }
+    }).catch(error => {
+      if (this._isMount) {
+        this.setState(() => { throw error; });
+      }
     });
   }
 
@@ -227,12 +238,14 @@ export const LinkWizard = hh( class LinkWizard extends Component {
         this.changeSubmitState();
       });
     } else {
-      this.setState(prev => {
-        prev.generalError = true;
-        return prev;
-      }, () => {
-        this.props.hideSpinner();
-      });
+      if (this._isMount) {
+        this.setState(prev => {
+          prev.generalError = true;
+          return prev;
+        }, () => {
+          this.props.hideSpinner();
+        });
+      }
     }
 
   };

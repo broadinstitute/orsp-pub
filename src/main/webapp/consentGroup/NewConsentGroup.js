@@ -12,6 +12,8 @@ const LAST_STEP = 1;
 
 class NewConsentGroup extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -69,10 +71,14 @@ class NewConsentGroup extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.initDocuments();
     this.getUserSession();
-    ConsentGroup.getConsentGroupNames().then(
-      resp => this.setState({ existingGroupNames: resp.data }));
+    ConsentGroup.getConsentGroupNames().then(resp => {
+      if (this._isMounted) {
+        this.setState({ existingGroupNames: resp.data })
+      }
+    });
 
     SampleCollections.getSampleCollections().then(
       resp => {
@@ -83,15 +89,23 @@ class NewConsentGroup extends Component {
             label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
           };
         });
-        this.setState({ sampleCollectionList: sampleCollections })
+        if (this._isMounted) {
+          this.setState({ sampleCollectionList: sampleCollections })
+        }
       }
     );
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   getUserSession() {
-    User.getUserSession().then(
-      resp => this.setState({ user: resp.data })
-    )
+    User.getUserSession().then(resp => {
+      if (this._isMounted) {
+        this.setState({ user: resp.data })
+      }
+    });
   }
 
   submitNewConsentGroup = async () => {
@@ -186,7 +200,7 @@ class NewConsentGroup extends Component {
     consentGroup.reporter = this.state.user.userName;
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
-   
+
     extraProperties.push({ name: 'source', value: component.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
@@ -269,9 +283,9 @@ class NewConsentGroup extends Component {
 
   isConsentFormUploaded() {
     let isConsentFormUploaded = false;
-    if (this.state.files !== null && this.state.files.length > 0 && 
+    if (this.state.files !== null && this.state.files.length > 0 &&
       this.state.files.filter(file => file.fileKey === 'Consent Document').length > 0) {
-        isConsentFormUploaded = true;
+      isConsentFormUploaded = true;
     }
     this.setState(prev => {
       prev.isConsentFormPresent = isConsentFormUploaded;
@@ -293,7 +307,7 @@ class NewConsentGroup extends Component {
     let institutionalSourcesCountry = false;
     let noConsentFormReason = false;
     let isValid = true;
-    
+
     if (!this.state.isConsentFormPresent && isEmpty(this.state.generalDataFormData.noConsentFormReason)) {
       noConsentFormReason = true;
       isValid = false;
@@ -387,10 +401,9 @@ class NewConsentGroup extends Component {
   };
 
   handleInfoSecurityValidity(isValid) {
-    this.setState(prev => { 
-      prev.isInfoSecurityValid = isValid;
-      prev.showErrorInfoSecurity = !isValid;
-      return prev; 
+    this.setState({
+      isInfoSecurityValid: isValid,
+      showErrorInfoSecurity: !isValid
     })
   }
 
@@ -460,9 +473,11 @@ class NewConsentGroup extends Component {
     CONSENT_DOCUMENTS.forEach(type => {
       documents.push({ value: type, label: type });
     });
-    this.setState({
-      documentOptions: documents
-    });
+    if (this._isMounted) {
+      this.setState({
+        documentOptions: documents
+      });
+    }
   }
 
   downloadFillablePDF = () => {
