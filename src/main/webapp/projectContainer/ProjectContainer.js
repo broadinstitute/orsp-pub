@@ -8,11 +8,13 @@ import { ConsentGroups } from "./ConsentGroups";
 import '../components/Wizard.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
 import { AdminOnly } from "../adminOnly/AdminOnly";
-import { MultiTab } from "../components/MultiTab";
+import MultiTab from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
 import {isEmpty} from "../util/Utils";
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -22,13 +24,19 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       history: [],
       comments: [],
       dialogContent: '',
-      defaultActive: 'review'
+      activeTab: 'review'
     };
   }
 
-  componentDidMount() {
+  componentDidMount= async () => {
+    this._isMounted = true;
+    await this.activeTab();
     this.getHistory();
     this.getComments();
+  };
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   updateDetailsStatus = (status) => {
@@ -56,39 +64,49 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   // history
   getHistory() {
     ProjectMigration.getHistory(this.props.projectKey).then(resp => {
-      this.setState(prev => {
-        prev.history = resp.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.history = resp.data;
+          return prev;
+        });
+      }
     });
   };
 
   //comments
   getComments() {
     Review.getComments(this.props.projectKey).then(result => {
-      this.setState(prev => {
-        prev.comments = result.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.comments = result.data;
+          return prev;
+        });
+      }
     });
   }
 
-  activeTab = () => {
-    let tab = this.state.defaultActive;
-
-   if (!isEmpty(this.props.tab) && !isEmpty(component.tab)){
+  activeTab = async () => {
+    let tab = this.state.activeTab;
+    if (!isEmpty(this.props.tab) && !isEmpty(component.tab)){
       tab = component.tab;
     } else if (!isEmpty(this.props.tab)) {
       tab =  this.props.tab;
     }
-    return tab;
+    await this.setState({ activeTab: tab });
+  };
+
+  handleTabChange = async (tab) => {
+    await this.setState({ activeTab: tab });
   };
 
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: this.activeTab() },
+          h( MultiTab, {
+              activeKey: this.state.activeTab,
+              handleSelect: this.handleTabChange
+            },
             [
               div({
                 key: "review",

@@ -5,11 +5,11 @@ import { spinnerService } from "../util/spinner-service";
 import { Spinner } from '../components/Spinner';
 import FilterPanel from "./FilterPanel";
 import { formatDataPrintableFormat } from "../util/TableUtil";
-import { MultiTab } from "../components/MultiTab";
 import IrbTable from "./IrbTable";
 import NoIrbTable from "./NoIrbTable";
 import { columns, IRB, NO_IRB, QA_REPORT_SPINNER } from "../util/QaReportConstants";
 import { createObjectCopy, exportData, isEmpty } from "../util/Utils";
+import MultiTab from "../components/MultiTab";
 
 class QaReport extends Component {
   constructor(props) {
@@ -76,6 +76,7 @@ class QaReport extends Component {
   };
 
   handleTabChange = async (tab) => {
+    await this.setState({activeTab: tab});
     if (!this.state[tab].isLoaded) {
       await this.tableHandler(tab);
     }
@@ -187,10 +188,12 @@ class QaReport extends Component {
         }),
         div({ className: "headerBoxContainer" }, [
           div({ className: "containerBox" }, [
-            MultiTab({
-              defaultActive: this.state.activeTab,
+            h(MultiTab,
+            {
+              activeKey: this.state.activeTab,
               handleSelect: this.handleTabChange
-            }, [
+            },
+              [
               div({
                 key: IRB,
                 title: "IRB Projects",
@@ -220,7 +223,8 @@ class QaReport extends Component {
                   projectType: this.state.projectType
                 })
               ])
-            ])
+            ]
+            )
           ])
         ]),
         h(Spinner, {

@@ -5,10 +5,12 @@ import { History } from "../components/History";
 import { Comments } from "../components/Comments";
 import '../components/Wizard.css';
 import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
-import { MultiTab } from "../components/MultiTab";
+import MultiTab from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -18,13 +20,18 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
       history: [],
       comments: [],
       dialogContent: '',
-      defaultActive: 'review'
+      activeTab: 'review'
     };
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getHistory();
     this.getComments();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   updateDetailsStatus = (status) => {
@@ -51,28 +58,36 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
   // history
   getHistory() {
     ProjectMigration.getHistory(this.props.consentKey).then(resp => {
-      this.setState(prev => {
-        prev.history = resp.data;
-        return prev;
-      })
-    });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.history = resp.data;
+          return prev;
+        });
+      }
+    }).catch(() => {});
   };
 
   // comments
   getComments() {
     Review.getComments(this.props.consentKey).then(result => {
-      this.setState(prev => {
-        prev.comments = result.data;
-        return prev;
-      })
+      if (this._isMounted) {
+        this.setState({ comments: result.data });
+      }
     });
   }
+
+  handleTabChange = async (tab) => {
+    await this.setState({ activeTab: tab });
+  };
 
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab },
+          h(MultiTab, {
+            activeKey: this.props.tab === "" ? this.state.activeTab : this.props.tab,
+            handleSelect: this.handleTabChange
+          },
             [
               div({
                 key: "review",

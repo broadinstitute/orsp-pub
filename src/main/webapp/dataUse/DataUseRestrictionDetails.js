@@ -61,6 +61,8 @@ const styles = {
 
 class DataUseRestrictionDetails extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     const params = new URLSearchParams(this.props.location.search);
@@ -84,24 +86,31 @@ class DataUseRestrictionDetails extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     spinnerService.show(DUR_SPINNER);
     this.init();
   }
-  
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   init() {   
     DataUse.getRestriction(this.state.restrictionId).then(result => {
-      this.setState(prev => {
-        prev.summary = result.data.summary;
-        prev.restriction = result.data.restriction;
-        prev.consent = result.data.consent;
-        prev.consentResource = result.data.consentResource;
-        prev.samples = result.data.samples;
-        prev.restrictionUrl = result.data.restrictionUrl;
-        return prev;
-      }, () => {
-        spinnerService.hide(DUR_SPINNER);
-        this.scrollTop();
-      });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.summary = result.data.summary;
+          prev.restriction = result.data.restriction;
+          prev.consent = result.data.consent;
+          prev.consentResource = result.data.consentResource;
+          prev.samples = result.data.samples;
+          prev.restrictionUrl = result.data.restrictionUrl;
+          return prev;
+        }, () => {
+          spinnerService.hide(DUR_SPINNER);
+          this.scrollTop();
+        });
+      }
     });
   }
 

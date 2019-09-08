@@ -1,7 +1,5 @@
 package org.broadinstitute.orsp
 
-import org.joda.time.Period
-
 class StatusEventDTO {
     Issue issue
     Event event

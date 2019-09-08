@@ -9,6 +9,8 @@ import { Spinner } from '../components/Spinner';
 
 export const ProjectDocument = hh(class ProjectDocument extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,29 +28,36 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getAttachedDocuments();
     this.loadOptions();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   getAttachedDocuments = () => {
     Project.getProject(this.props.projectKey).then(
       issue => {
-      this.props.initStatusBoxInfo(issue.data);
+        if (this._isMounted) {
+          this.props.initStatusBoxInfo(issue.data);
+        }
     });
-        DocumentHandler.attachedDocuments(this.props.projectKey).then(resp => {
-          User.getUserSession().then(user => {
-        this.setState(prev => {
-            prev.documents = JSON.parse(resp.data.documents);
-            prev.user = user.data;
-            return prev;
-          },() => {
-            this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved} )}
-        );
+    DocumentHandler.attachedDocuments(this.props.projectKey).then(resp => {
+      User.getUserSession().then(user => {
+        if (this._isMounted) {
+          this.setState(prev => {
+              prev.documents = JSON.parse(resp.data.documents);
+              prev.user = user.data;
+              return prev;
+            }, () => {
+              this.props.updateDocumentsStatus({attachmentsApproved: resp.data.attachmentsApproved})
+            }
+          );
+        }
       });
-    }).catch(error => {
-      this.setState({serverError: true});
-      console.error(error);
-    });
+    }).catch(() => { });
   };
 
   approveDocument = (uuid) => {

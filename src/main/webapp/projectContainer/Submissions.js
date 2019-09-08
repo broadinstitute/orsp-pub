@@ -2,7 +2,7 @@ import { Component, Fragment } from 'react';
 import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
 import { ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
-import { MultiTab } from "../components/MultiTab";
+import MultiTab from "../components/MultiTab";
 import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
@@ -41,6 +41,8 @@ const styles = {
 
 export const Submissions = hh(class Submissions extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -50,11 +52,17 @@ export const Submissions = hh(class Submissions extends Component {
       amendmentDocuments: [],
       otherDocuments: [],
       submissions: {},
+      activeTab: 'Amendment'
     };
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getDisplaySubmissions();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   submissionEdit = (data) => {
@@ -81,13 +89,13 @@ export const Submissions = hh(class Submissions extends Component {
         });
       });
 
-      this.setState(prev => {
-        prev.submissions = submissions;
-        return prev;
-      });
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.submissions = submissions;
+          return prev;
+        });
+      }
+    }).catch(() => { });
   };
 
   redirectEditSubmission = (data) => {
@@ -128,6 +136,10 @@ export const Submissions = hh(class Submissions extends Component {
     ]);
   };
 
+  handleTabChange = async (tab) => {
+    await this.setState({ activeTab: tab });
+  };
+
   render() {
     return (
       div({}, [
@@ -139,7 +151,10 @@ export const Submissions = hh(class Submissions extends Component {
         }, ["Edit Information"]),
         Panel({title: "Submissions"}, [
           div({}, [
-            MultiTab({ defaultActive: "Amendment"}, [
+            h(MultiTab, {
+              activeKey: this.state.activeTab,
+              handleSelect: this.handleTabChange
+            }, [
               _.map(this.state.submissions, (data, title) => {
                 return this.submissionTab(data, title)
               }),

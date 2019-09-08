@@ -4,7 +4,6 @@ import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 import { Search } from '../util/ajax';
@@ -25,6 +24,8 @@ const fundingTooltip =
   ]);
 
 export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -61,7 +62,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       }
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
+  }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleUpdateFundings = (updated) => {
@@ -82,15 +90,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }, () => this.props.updateForm(this.state.formData, field));
     this.props.removeErrorMessage();
   };
-
-  handleRadioChange = (e, field, value) => {
-    this.setState(prev => {
-      prev.formData[field] = value;
-      return prev;
-    }, () => this.props.updateForm(this.state.formData, field));
-    this.props.removeErrorMessage();
-  };
-
 
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
@@ -118,8 +117,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   loadUsersOptions(query, callback) {
     if (query.length > 2) {
-      Search.getMatchingQuery(query)
-        .then(response => {
+      Search.getMatchingQuery(query).then(response => {
+        if (this._isMounted) {
           let options = response.data.map(function (item) {
             return {
               key: item.id,
@@ -128,9 +127,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             };
           });
           callback(options);
-        }).catch(error => {
-          this.setState(() => { throw error; });
-        });
+        }
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
     }
   };
 
