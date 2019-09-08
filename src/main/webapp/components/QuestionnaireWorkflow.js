@@ -4,25 +4,6 @@ import { InputYesNo } from './InputYesNo';
 import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
 import './QuestionnaireWorkflow.css';
 
-const determination_questionnaire_styles = {
-  position: 'absolute',
-  right: '0',
-  top: '-65px',
-  padding: '0',
-  // background: 'red'
-};
-
-// const intCohorts_questionnaire_styles = {
-//   position: 'relative',
-//   width: 'calc(100% + 30px)',
-//   height: '60px',
-//   background: '#FFFFFF',
-//   margin: '-15px 0 15px -15px',
-//   mozBoxShadow: '0 1px 3px 1px #E1E1E1',
-//   webkitBoxShadow: '0 1px 3px 1px #E1E1E1',
-//   boxShadow: '0 1px 3px 1px #E1E1E1'
-// };
-
 export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Component {
 
   constructor(props) {
