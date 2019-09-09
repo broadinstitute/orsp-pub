@@ -41,6 +41,8 @@ const styles = {
 
 export const Submissions = hh(class Submissions extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -54,7 +56,12 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getDisplaySubmissions();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   submissionEdit = (data) => {
@@ -81,13 +88,13 @@ export const Submissions = hh(class Submissions extends Component {
         });
       });
 
-      this.setState(prev => {
-        prev.submissions = submissions;
-        return prev;
-      });
-    }).catch(error => {
-      this.setState(() => { throw error; });
-    });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.submissions = submissions;
+          return prev;
+        });
+      }
+    }).catch(() => { });
   };
 
   redirectEditSubmission = (data) => {

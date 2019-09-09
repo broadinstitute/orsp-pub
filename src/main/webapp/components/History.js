@@ -1,15 +1,12 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { TextEditor } from "../main/TextEditor";
-import { Review } from "../util/ajax";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
 import { printData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatDataPrintableFormat } from "../util/TableUtil";
-import { format } from 'date-fns';
 
 const defaultSorted = [{
   dataField: 'date',

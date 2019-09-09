@@ -10,6 +10,8 @@ import { Spinner } from '../components/Spinner';
 
 export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -29,10 +31,15 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getAttachedDocuments();
     this.getUseRestriction();
     this.loadOptions();
     this.getAssociatedProjects();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   loadOptions() {
@@ -40,45 +47,48 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     CONSENT_DOCUMENTS.forEach(type => {
       documentOptions.push({ value: type, label: type });
     });
-    this.setState({ documentOptions: documentOptions });
+    if (this._isMounted) {
+      this.setState({ documentOptions: documentOptions });
+    }
   };
 
   getAttachedDocuments = () => {
     DocumentHandler.attachedDocuments(this.props.consentKey).then(resp => {
       User.getUserSession().then(user => {
-        this.setState(prev => {
-            prev.documents = JSON.parse(resp.data.documents);
-            prev.user = user.data;
-            return prev;
-          }, () => {
-            this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved })
-          }
-        );
+        if (this._isMounted) {
+          this.setState(prev => {
+              prev.documents = JSON.parse(resp.data.documents);
+              prev.user = user.data;
+              return prev;
+            }, () => {
+              this.props.updateDocumentsStatus({ attachmentsApproved: resp.data.attachmentsApproved })
+            }
+          );
+        }
       });
-    }).catch(error => {
-      this.setState({ serverError: true });
-      console.error(error);
+    }).catch(() => {
     });
   };
 
   getUseRestriction = () => {
     ConsentGroup.getUseRestriction(this.props.consentKey).then(resp => {
       const newRestrictionId = resp.data.restrictionId ? resp.data.restrictionId : null;
-      this.setState(prev => {
-        prev.restriction = resp.data.restriction;
-        prev.restrictionId = newRestrictionId;
-        return prev;
-      })
-    });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.restriction = resp.data.restriction;
+          prev.restrictionId = newRestrictionId;
+          return prev;
+        });
+      }
+    }).catch( () => {});
   };
 
   getAssociatedProjects = () => {
     ConsentGroup.getConsentCollectionLinks(this.props.consentKey).then(response => {
-      this.setState({ associatedProjects: response.data.collectionLinks })
-    }).catch(error => {
-      this.setState({ serverError: true });
-      console.error(error);
-    });
+      if (this._isMounted) {
+        this.setState({ associatedProjects: response.data.collectionLinks })
+      }
+    }).catch(() => { });
   };
 
   handleUnlinkProject = (target) => () => {
@@ -89,8 +99,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
       console.error(error);
     });
   };
-
-
 
   approveDocument = (uuid) => {
     DocumentHandler.approveDocument(uuid).then(resp => {

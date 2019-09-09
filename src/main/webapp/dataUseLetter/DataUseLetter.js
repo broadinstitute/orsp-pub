@@ -125,7 +125,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
           prev.formData.startDate = dulInfo.startDate;
           prev.formData.endDate = dulInfo.endDate;
           prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
-        }        
+        }
         return prev;
       });
     }).catch(error => {
