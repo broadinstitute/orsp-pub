@@ -12,8 +12,6 @@ import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.User
-import org.springframework.util.CollectionUtils
-
 import java.text.SimpleDateFormat
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -26,7 +24,6 @@ class UtilityClass {
     public static final String HISTORY = 'history'
     public static final String SAMPLES = 'samples'
     public static final String CONSENT_COLLECTION = 'consentCollectionReport'
-    public static final String ISSUE_LIST = 'issueList'
 
     UtilityClass(QueryService queryService) {
         this.queryService = queryService
@@ -147,23 +144,6 @@ class UtilityClass {
                         sampleCollectionId: link.sampleCollectionId ?: '',
                         creationDate: link.creationDate,
                         sampleCollectionName: link.sampleCollection ? link.sampleCollection.name : ''
-                ]
-            }
-        }
-    }
-
-    void registerIssueListMarshaller() {
-        JSON.createNamedConfig(ISSUE_LIST) {
-            SimpleDateFormat  sd = new SimpleDateFormat("yyyy-MM-dd")
-            it.registerObjectMarshaller( Issue ) { Issue ie ->
-                return [
-                        id               : ie.id,
-                        projectKey       : ie.projectKey,
-                        summary          : IssueUtils.escapeQuote(ie.summary),
-                        status           : IssueUtils.escapeQuote(ie.status),
-                        type             : IssueUtils.escapeQuote(ie.type),
-                        updateDate       : ie.updateDate ? sd.format(ie.updateDate) : '',
-                        actors           : queryService.findUsersInUserNameList((List<String>)ie.getActorUsernames())?.collect { it.displayName }
                 ]
             }
         }
