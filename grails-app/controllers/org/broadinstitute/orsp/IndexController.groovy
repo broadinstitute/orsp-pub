@@ -5,7 +5,7 @@ class IndexController {
     UserService userService
 
     def index() {
-        render(view: "/index")
+        render(view: "/mainContainer/index")
     }
 
     def about() {

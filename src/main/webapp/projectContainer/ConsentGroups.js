@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
-import { ConsentGroup, DocumentHandler } from '../util/ajax';
-import { ConsentCollectionLink } from '../util/ajax';
+import { ConsentCollectionLink, DocumentHandler, ConsentGroup } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
 import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
@@ -63,6 +62,8 @@ const defaultSorted = [{
 
 export const ConsentGroups = hh(class ConsentGroups extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -80,20 +81,27 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.getProjectConsentGroups();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   getProjectConsentGroups = () => {
     ConsentGroup.getProjectConsentGroups(this.props.projectKey).then( result => {
-      this.handleSuccessNotification();
-      this.setState(prev => {
-        prev.consentGroups = result.data.consentGroups;
-        prev.issue = result.data.issue;
-        return prev;
-      },() => {
-        this.collapseBtnAnimationListener();
-      });
-    });
+      if (this._isMounted) {
+        this.handleSuccessNotification();
+        this.setState(prev => {
+          prev.consentGroups = result.data.consentGroups;
+          prev.issue = result.data.issue;
+          return prev;
+        },() => {
+          this.collapseBtnAnimationListener();
+        });
+      }
+    }).catch(() => {});
   };
 
   closeConfirmationModal = () => {

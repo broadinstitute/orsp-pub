@@ -8,14 +8,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${createLink(controller: 'index', action: 'index')}">
+            <a class="navbar-brand" href="/index">
                 <g:if env="development">ORSP Portal <span class="label label-danger">Dev</span></g:if>
                 <g:else>ORSP Portal</g:else>
             </a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="${createLink([controller: 'index', action: 'about'])}">About</a></li>
+                <li><a href="/about">About</a></li>
                 <auth:isAuthenticated>
                     <li>
                         <a href="${createLink(controller: 'search', action: 'index')}">Search</a>
@@ -56,7 +56,7 @@
 
                 <ul class="nav navbar-nav">
                     <g:if test="${session.user}">
-                        <li><a href="${createLink([controller: 'index', action: 'profile'])}">${session.user.displayName}</a></li>
+                        <li><a href="/profile">${session.user.displayName}</a></li>
                     </g:if>
                     %{-- Sign-out doesn't work without a sign-in button on the page somewhere --}%
                     <div class="g-signin2 hidden"></div>

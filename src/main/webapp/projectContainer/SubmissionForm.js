@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { div, h1, button, h, a } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
-import {Files, ProjectMigration} from "../util/ajax";
+import { Files, ProjectMigration } from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import InputFieldNumber from "../components/InputFieldNumber";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
@@ -32,6 +32,9 @@ const headers =
   ];
 
 class SubmissionForm extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -61,6 +64,7 @@ class SubmissionForm extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     scrollToTop();
     const params = new URLSearchParams(this.props.location.search);
     this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'), params.get('submissionId'));
@@ -70,6 +74,11 @@ class SubmissionForm extends Component {
       prev.params.submissionId = params.get('submissionId');
       return prev;
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.props.hideSpinner();
   }
 
   getTypeSelected() {
@@ -89,19 +98,21 @@ class SubmissionForm extends Component {
   getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
     ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
       const submissionInfo = resp.data;
-      this.setState(prev => {
-        prev.submissionInfo.typeLabel = submissionInfo.typeLabel;
-        prev.submissionInfo.projectKey = submissionInfo.issue.projectKey;
-        prev.submissionInfo.selectedType = this.getTypeSelected();
-        prev.submissionInfo.submissionTypes = this.formatSubmissionType(submissionInfo.submissionTypes);
-        prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission.comments : '';
-        prev.submissionInfo.submissionNumber = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
-        prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums;
-        prev.submissionInfo.number = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
-        prev.docTypes = this.loadOptions(submissionInfo.docTypes);
-        prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
-        return prev;
-      });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.submissionInfo.typeLabel = submissionInfo.typeLabel;
+          prev.submissionInfo.projectKey = submissionInfo.issue.projectKey;
+          prev.submissionInfo.selectedType = this.getTypeSelected();
+          prev.submissionInfo.submissionTypes = this.formatSubmissionType(submissionInfo.submissionTypes);
+          prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission.comments : '';
+          prev.submissionInfo.submissionNumber = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
+          prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums;
+          prev.submissionInfo.number = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
+          prev.docTypes = this.loadOptions(submissionInfo.docTypes);
+          prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
+          return prev;
+        });
+      }
     });
   };
 

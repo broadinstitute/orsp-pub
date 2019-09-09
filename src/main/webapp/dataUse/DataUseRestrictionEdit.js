@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h1, div, hh, h2, strong, ul, i, p, li, label, input, span, hr, button } from 'react-hyperscript-helpers';
+import { h1, h, div, hh, h2, strong, ul, i, p, li, label, input, span, hr, button } from 'react-hyperscript-helpers';
 import { InputFieldText } from "../components/InputFieldText";
 import { InputYesNo } from "../components/InputYesNo";
 import { Search } from "../util/ajax";
@@ -31,6 +31,9 @@ const styles = {
 };
 
 export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     let params = new URLSearchParams(this.props.location.search);
@@ -48,8 +51,13 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.init();
     this.scrollTop();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   initRestriction(restriction, reset) {
@@ -58,7 +66,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       consentGroupKey: get(restriction, 'consentGroupKey', params.get('consentKey')),
       noRestriction: get(restriction, 'noRestriction', ''),
       hmbResearch: get(restriction, 'hmbResearch', ''),
-      diseaseRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.diseaseRestrictions) : [],
+      diseaseRestrictions: restriction != null ? this.getAutocompleteData(restriction.diseaseRestrictions) : [],
       generalUse: get(restriction, 'generalUse', ''),
       populationOriginsAncestry: get(restriction, 'populationOriginsAncestry', ''),
       commercialUseExcluded: get(restriction, 'commercialUseExcluded', ''),
@@ -69,15 +77,15 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
       pediatric: get(restriction, 'pediatricLimited', ''),
       collaborationInvestigators: get(restriction, 'collaborationInvestigators', ''),
       irb: get(restriction, 'irb', ''),
-      publicationResults: get(restriction, 'publicationResults', ''),
+      publicationResults: restriction != null && !isEmpty(restriction.publicationResults) ? restriction.publicationResults : '',
       genomicResults: get(restriction, 'genomicResults', ''),
-      geographicalRestrictions: get(restriction, 'geographicalRestrictions', ''),
-      other: get(restriction, 'other', ''),
+      geographicalRestrictions: restriction != null && !isEmpty(restriction.geographicalRestrictions) ? restriction.geographicalRestrictions : '',
+      other: restriction != null && !isEmpty(restriction.other) ? restriction.other : '',
       manualReview: get(restriction, 'manualReview', false),
-      comments: get(restriction, 'comments', ''),
-      populationRestrictions: restriction !== undefined ? this.getAutocompleteData(restriction.populationRestrictions) : [],
-      genomicSummaryResults: get(restriction, 'genomicSummaryResults',''),
-      genomicPhenotypicData: get(restriction, 'genomicPhenotypicData',''),
+      comments: restriction != null && !isEmpty(restriction.comments) ? restriction.comments : '',
+      populationRestrictions: restriction != null ? this.getAutocompleteData(restriction.populationRestrictions) : [],
+      genomicSummaryResults: restriction != null && !isEmpty(restriction.genomicSummaryResults) ? restriction.genomicSummaryResults : '',
+      genomicPhenotypicData: restriction != null && !isEmpty(restriction.genomicPhenotypicData) ? restriction.genomicPhenotypicData : '',
       consentPIName: get(restriction, 'consentPIName','')
     };
     return resp;
@@ -88,25 +96,29 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
-      this.setState(prev => {
-        prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
-        prev.restriction.consentGroupKey = result.data.issue.projectKey;
-        prev.consent = result.data.issue;
-        prev.disabledConsent = true;
-        return prev;
-      }, () => {
-        if (restrictionId === undefined || restrictionId === null) {
-          this.props.hideSpinner();
-        }
-      })
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.restriction.consentPIName = !isEmpty(result.data.extraProperties["consent"]) ? result.data.extraProperties["consent"] : "";
+          prev.restriction.consentGroupKey = result.data.issue.projectKey;
+          prev.consent = result.data.issue;
+          prev.disabledConsent = true;
+          return prev;
+        }, () => {
+          if (restrictionId === undefined || restrictionId === null) {
+            this.props.hideSpinner();
+          }
+        })
+      }
     });
     if (!isNil(restrictionId)) {
       DataUse.getRestriction(restrictionId).then(result => {
-        let restriction = this.initRestriction(result.data.restriction);
-        this.setState(prev => {
-          prev.restriction = restriction;
-          return prev;
-        }, () => this.props.hideSpinner())
+        if (this._isMounted) {
+          let restriction = this.initRestriction(result.data.restriction);
+          this.setState(prev => {
+            prev.restriction = restriction;
+            return prev;
+          }, () => this.props.hideSpinner())
+        }
       })
     }
   }

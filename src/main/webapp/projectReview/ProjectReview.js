@@ -22,6 +22,8 @@ const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
 export const ProjectReview = hh(class ProjectReview extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
 
@@ -146,8 +148,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.props.showSpinner();
     this.init();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   init() {
@@ -184,37 +191,38 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               history.pushState({}, null, window.location.href.split('&')[0]);
               this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
             }
-            if (data.data !== '') {
-              formData = JSON.parse(data.data.suggestions);
-              this.props.hideSpinner();
-              this.setState(prev => {
-                prev.formData = formData;
-                prev.current = current;
-                prev.future = future;
-                prev.futureCopy = futureCopy;
-                prev.editedForm = JSON.parse(data.data.suggestions);
-                prev.reviewSuggestion = true;
-                prev.isAdmin = component.isAdmin;
-                return prev;
-              });
-              this.props.changeInfoStatus(false);
-            } else {
-              this.props.hideSpinner();
-              formData = JSON.parse(currentStr);
-              this.setState(prev => {
-                prev.formData = formData;
-                prev.current = current;
-                prev.future = future;
-                prev.futureCopy = futureCopy;
-                prev.reviewSuggestion = false;
-                prev.isAdmin = component.isAdmin;
-                return prev;
-              });
+            if (this._isMounted) {
+              if (data.data !== '') {
+                formData = JSON.parse(data.data.suggestions);
+                this.props.hideSpinner();
+                this.setState(prev => {
+                  prev.formData = formData;
+                  prev.current = current;
+                  prev.future = future;
+                  prev.futureCopy = futureCopy;
+                  prev.editedForm = JSON.parse(data.data.suggestions);
+                  prev.reviewSuggestion = true;
+                  prev.isAdmin = component.isAdmin;
+                  return prev;
+                });
+                this.props.changeInfoStatus(false);
+              } else {
+                this.props.hideSpinner();
+                formData = JSON.parse(currentStr);
+                this.setState(prev => {
+                  prev.formData = formData;
+                  prev.current = current;
+                  prev.future = future;
+                  prev.futureCopy = futureCopy;
+                  prev.reviewSuggestion = false;
+                  prev.isAdmin = component.isAdmin;
+                  return prev;
+                });
+              }
             }
-          });
-      }).catch(error => {
-        this.props.HideSpinner();
-        this.setState(() => { throw error; });
+          }).catch(() => {});
+      }).catch(() => {
+        this.props.hideSpinner();
       });
   }
 
@@ -222,25 +230,25 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     this.init();
       Review.getSuggestions(this.props.projectKey).then(
       data => {
-        if (data.data !== '') {
-          this.setState(prev => {
-            prev.formData = JSON.parse(data.data.suggestions);
-            prev.editedForm = JSON.parse(data.data.suggestions);
-            prev.reviewSuggestion = true;
-            return prev;
-          });
-          this.props.changeInfoStatus(false);
-        } else {
-          this.setState(prev => {
-            prev.editedForm = {};
-            prev.reviewSuggestion = false;
-            return prev;
-          });
-          this.props.changeInfoStatus(true);
+        if (this._isMounted) {
+          if (data.data !== '') {
+            this.setState(prev => {
+              prev.formData = JSON.parse(data.data.suggestions);
+              prev.editedForm = JSON.parse(data.data.suggestions);
+              prev.reviewSuggestion = true;
+              return prev;
+            });
+            this.props.changeInfoStatus(false);
+          } else {
+            this.setState(prev => {
+              prev.editedForm = {};
+              prev.reviewSuggestion = false;
+              return prev;
+            });
+            this.props.changeInfoStatus(true);
+          }
         }
-      }).catch(error => {
-        this.setState(() => { throw error; });
-      });
+      }).catch(() => { });
   }
 
   getUsersArray(array) {
