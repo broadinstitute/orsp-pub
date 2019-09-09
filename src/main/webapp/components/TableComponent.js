@@ -39,7 +39,7 @@ export const TableComponent = hh(class TableComponent extends Component {
                     fileName={this.props.fileName}
                     fileType={EXPORT_FILE.XLSX.mimeType}
                     fileExtension={EXPORT_FILE.XLSX.extension}
-                    hide={this.props.hideColumns !== undefined && this.props.hideColumns.length > 0 ? this.props.hideColumns : []}
+                    hide={this.props.hideXlsxColumns}
                   />
                   <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                     <span>

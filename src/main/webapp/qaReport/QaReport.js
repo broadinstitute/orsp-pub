@@ -57,7 +57,7 @@ class QaReport extends Component {
     await this.tableHandler(IRB);
   }
 
-  tableHandler = async ( tab) => {
+  tableHandler = async (tab) => {
     spinnerService.show(QA_REPORT_SPINNER);
     try {
       let result = await Reports.getQaEventReport(tab);

@@ -97,6 +97,7 @@ export const Comments = hh(class Comments extends Component {
           defaultSorted: defaultSorted,
           pagination: true,
           showExportButtons: true,
+          hideXlsxColumns: [],
           showSearchBar: true
         })
       ])

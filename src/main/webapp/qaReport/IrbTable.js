@@ -7,7 +7,7 @@ class IrbTable extends Component {
     super(props);
     this.state = {
       showError: false,
-      isAdmin: component.isAdmin,
+      isAdmin: component.isAdmin
     };
   }
 
@@ -33,7 +33,7 @@ class IrbTable extends Component {
         showExportButtons: true,
         showSearchBar: true,
         showPdfExport: true,
-        hideColumns: COLUMNS_TO_HIDE_FROM_EXCEL
+        hideXlsxColumns: COLUMNS_TO_HIDE_FROM_EXCEL
       })
     );
   }
