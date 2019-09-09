@@ -55,4 +55,5 @@ class IssueListController extends AuthenticatedController {
             render(issues as JSON)
         }
     }
+
 }
