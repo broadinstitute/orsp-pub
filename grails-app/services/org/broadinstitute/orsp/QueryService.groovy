@@ -1420,18 +1420,21 @@ class QueryService implements Status {
     }
 
     List<User> findUsersInUserNameList(List<String> usersList) {
-        final session = sessionFactory.currentSession
-        final String query = ' select * from user where user_name in :usersList '
-        final sqlQuery = session.createSQLQuery(query)
         List<User> results = Collections.emptyList()
-        try {
-            results = sqlQuery.with {
-                addEntity(User)
-                setParameterList('usersList', usersList)
-                list()
+        if (CollectionUtils.isNotEmpty(usersList)) {
+            final session = sessionFactory.currentSession
+            final String query = ' select * from user where user_name in :usersList '
+            final sqlQuery = session.createSQLQuery(query)
+
+            try {
+                results = sqlQuery.with {
+                    addEntity(User)
+                    setParameterList('usersList', usersList)
+                    list()
+                }
+            } catch(Exception e) {
+                log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
             }
-        } catch(Exception e) {
-            log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
         }
         results
     }

@@ -85,6 +85,8 @@ export const UrlConstants = {
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
   fundingReportsUrl: context + '/api/report/get-funding',
-  viewRestrictionUrl: context + '/api/data-use/restriction'
+  viewRestrictionUrl: context + '/api/data-use/restriction',
+
+  issueListUrl: context + '/api/issue-list',
 };
 

@@ -9,19 +9,35 @@ import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.utils.UtilityClass
 
+import java.text.SimpleDateFormat
+
 @Slf4j
 @Resource
 class IssueListController extends AuthenticatedController {
 
     def getProjectsForUser() {
         try {
-            new UtilityClass(queryService).registerIssueListMarshaller()
-            JSON.use(UtilityClass.ISSUE_LIST) {
-                render projectsForUser((String) params.assignee, (String) params.max) as JSON
-            }
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd")
+            List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
+            render issues.collect{it -> [
+                    id               : it.id,
+                    projectKey       : it.projectKey,
+                    summary          : IssueUtils.escapeQuote(it.summary),
+                    status           : IssueUtils.escapeQuote(it.status),
+                    type             : IssueUtils.escapeQuote(it.type),
+                    updateDate       : it.updateDate ? sd.format(it.updateDate) : '',
+                    actors           : queryService.findUsersInUserNameList(it.getActorUsernames())?.collect { it.displayName }
+            ]} as JSON
         } catch(Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
+        }
+    }
+
+    def issueItems() {
+        if (session.user) {
+            List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
+            render(issues as JSON)
         }
     }
 
