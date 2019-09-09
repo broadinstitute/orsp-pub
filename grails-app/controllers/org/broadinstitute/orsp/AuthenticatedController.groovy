@@ -83,7 +83,7 @@ class AuthenticatedController implements Interceptor, UserInfo {
     def show() {
         Issue issue = queryService.findByKey(params.id)
         if (issueIsForbidden(issue)) {
-            redirect(controller: 'Index', action: 'index')
+            render(view: "/mainContainer/index")
         }
         redirect([controller: issue.getController(), action: "show", params: [id: params.id, tab: "details"]])
     }

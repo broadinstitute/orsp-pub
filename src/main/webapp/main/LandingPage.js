@@ -78,7 +78,7 @@ const LandingPage = hh(class LandingPage extends Component{
   }
 
   getProjectsList = () => {
-    Issues.getIssueList('assignee', 5).then(response => {
+    Issues.getIssueList('false', 5).then(response => {
       if (this._isMounted) {
         let projectListData = [];
 
@@ -102,7 +102,7 @@ const LandingPage = hh(class LandingPage extends Component{
   };
 
   getTaskList = () => {
-    Issues.getIssueList('user', 5).then(response => {
+    Issues.getIssueList('true', 5).then(response => {
       if (this._isMounted) {
         let taskListData = [];
 
