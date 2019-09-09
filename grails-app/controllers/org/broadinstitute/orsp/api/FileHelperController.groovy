@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
+import javassist.NotFoundException
 import org.apache.commons.collections.CollectionUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
@@ -47,14 +48,11 @@ class FileHelperController extends AuthenticatedController{
             }
             render(['id': issue.projectKey, 'files': names] as JSON)
         } catch (Exception e) {
-            response.status = 500
-
             if (params.isNewIssue.toBoolean()) {
                 issueService.deleteIssue(issue.projectKey)
                 deleteDocuments(issue)
             }
-
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -68,13 +66,11 @@ class FileHelperController extends AuthenticatedController{
                 persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Rejected", EventType.REJECT_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
-                response.status = 404
-                render([error: 'Document not found'] as JSON)
+                handleException(new NotFoundException('Document not found'), 404)
             }
             transitionService.handleIntake(issue, [])
         } catch (Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -88,13 +84,11 @@ class FileHelperController extends AuthenticatedController{
                 persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Approved", EventType.APPROVE_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
-                response.status = 404
-                render([error: 'Document not found'] as JSON)
+                handleException(new NotFoundException('Document not found'), 404)
             }
             transitionService.handleIntake(issue, [])
         } catch (Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
 
     }
@@ -153,13 +147,11 @@ class FileHelperController extends AuthenticatedController{
                     render(['message': 'document deleted'] as JSON)
                 } else {
                     log.error("Error trying to delete File. Document with Uuid: ${params.uuid} not found.")
-                    response.status = 404
-                    render(['message': 'File to delete not found.'] as JSON)
+                    handleException(new NotFoundException('File to delete not found.'), 404)
                 }
             } catch(Exception e) {
-                response.status = 500
                 log.error("Error trying to delete file with Uuid: ${params.uuid}.", e.getMessage())
-                render(['message': 'An error has occurred trying to delete File.'] as JSON)
+                handleException(e, 500)
             }
         } else {
             log.error("Error, document to delete has an empty UuId.")

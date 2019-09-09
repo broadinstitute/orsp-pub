@@ -31,9 +31,7 @@ class InfoLinkController extends AuthenticatedController {
                 ] as JSON)
             }
         }  catch (Exception e) {
-            log.error("There was an error trying to get consent collection info: " + e.message)
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 }

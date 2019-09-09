@@ -12,7 +12,10 @@ import org.broadinstitute.orsp.NotifyArguments
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 
+import javax.annotation.Resource
+
 @Slf4j
+@Resource
 class DulNotifyController extends AuthenticatedController{
 
     LinkGenerator grailsLinkGenerator

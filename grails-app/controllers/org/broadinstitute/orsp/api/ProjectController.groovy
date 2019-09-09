@@ -5,6 +5,7 @@ import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
+import javassist.NotFoundException
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
@@ -68,9 +69,7 @@ class ProjectController extends AuthenticatedController {
             render([message: issue] as JSON)
         } catch (Exception e) {
             issueService.deleteIssue(projectKey)
-            log.error("There was an error trying to create a project: " + e.message)
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
 
     }
@@ -83,8 +82,7 @@ class ProjectController extends AuthenticatedController {
             Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
             render([message: updatedIssue] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -114,8 +112,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was deleted'] as JSON)
         } else {
-            response.status = 404
-            render([message: 'Project not found'] as JSON)
+            handleException(new NotFoundException('Project not found'), 404)
         }
     }
 
@@ -128,8 +125,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -140,8 +136,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -157,8 +152,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([projectType: projectType] as JSON)
         } else {
-            response.status = 404
-            render([message: "Project not found"] as JSON)
+            handleException(new NotFoundException('Project not found'), 404)
         }
         projectType
     }

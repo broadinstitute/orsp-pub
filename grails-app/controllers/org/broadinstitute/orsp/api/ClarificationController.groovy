@@ -21,9 +21,7 @@ class ClarificationController extends AuthenticatedController {
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
             if (comment == null || comment.hasErrors()) {
-                log.error("Error saving comment for issue '" + params.id + "': null")
-                response.status = 500
-                render([message: "Error saving comment"])
+              handleException(new Exception("Error saving comment"), 500)
             }
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress
@@ -63,8 +61,7 @@ class ClarificationController extends AuthenticatedController {
                 transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
-                response.status = 500
-                render([error: "${e}"] as JSON)
+                handleException(e, 500)
             }
         }
         response
@@ -94,8 +91,7 @@ class ClarificationController extends AuthenticatedController {
                 transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
-                response.status = 500
-                render([error: "${e}"] as JSON)
+                handleException(e, 500)
             }
         }
     }

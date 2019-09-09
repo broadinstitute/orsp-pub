@@ -32,8 +32,7 @@ class IssueReviewController extends AuthenticatedController {
                 render([issueReview] as JSON)
             }
         } catch (Exception e) {
-            response.status = 500
-            render([error: e.getMessage()] as JSON)
+            handleException(e, 500)
         }
     }
 

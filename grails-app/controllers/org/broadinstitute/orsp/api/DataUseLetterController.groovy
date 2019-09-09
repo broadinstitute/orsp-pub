@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.api
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
+import javassist.NotFoundException
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
@@ -31,8 +32,7 @@ class DataUseLetterController extends AuthenticatedController {
             response.status = 200
             render([dulToken: newDul.getUid()] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -46,11 +46,9 @@ class DataUseLetterController extends AuthenticatedController {
             response.status = 200
             render(response.status)
         } catch(IllegalArgumentException e) {
-            response.status = 400
-            render([error: "Form has been already submitted"] as JSON)
+            handleException(e, 400)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
@@ -84,15 +82,13 @@ class DataUseLetterController extends AuthenticatedController {
                 output.close()
                 response.status = 200
             } catch (Exception e) {
-                response.status = 500
-                log.error("Error trying to create Data Use Letter PDF for uid: " + dul.uid + e.message)
-                render([error: e.message] as JSON)
+                handleException(e, 500)
             } finally {
                 dulDOC.close()
                 output.close()
             }
         } else {
-            response.status = 404
+            handleException(new NotFoundException("DUL not found"), 404)
         }
     }
 
@@ -117,8 +113,7 @@ class DataUseLetterController extends AuthenticatedController {
                 throw new MissingResourceException("Unable to upload empty Data Use Letter pdf.")
             }
         } catch (Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e, 500)
         }
     }
 
