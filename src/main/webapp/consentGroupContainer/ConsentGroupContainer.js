@@ -85,7 +85,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
           h(MultiTab, {
-            activeKey: this.props.tab === "" ? this.state.activeTab : this.props.tab,
+            activeKey: this.props.tab !== this.state.activeTab ? this.state.activeTab : this.props.tab,
             handleSelect: this.handleTabChange
           },
             [
