@@ -12,6 +12,9 @@ import { isEmpty } from '../util/Utils';
 import './ConfirmationDialog.css';
 
 export const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component {
+
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +27,14 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleClose = () => {
     this.setState(prev => {
       prev.showAlert = false;
@@ -31,7 +42,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       prev.disableSendBtn = false;
       prev.alertMessage = '';
       prev.clarification = '';
-      prev.pm = [{key:''}],
+      prev.pm = [{key:''}];
       prev.submit = false;
       return prev;
     });
@@ -41,8 +52,8 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
   validateClarification() {
     let isValid = false;
     if (this.props.linkClarification === true) {
-      if (!isEmpty(this.state.clarification) && !isEmpty(this.state.pm) && 
-          !isEmpty(this.state.pm[0]) && !isEmpty(this.state.pm[0].key)) {
+      if (!isEmpty(this.state.clarification) && !isEmpty(this.state.pm) &&
+        !isEmpty(this.state.pm[0]) && !isEmpty(this.state.pm[0].key)) {
         isValid = true;
       }
     } else if (this.state.clarification !== '') {
@@ -93,9 +104,9 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       prev.clarification = value;
       prev.alertMessage = '';
       return prev;
-    }, () => { 
+    }, () => {
       if (this.state.submit) {
-       this.validateClarification();
+        this.validateClarification();
       }
     });
   };
@@ -113,8 +124,8 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
           });
           callback(options);
         }).catch(error => {
-          this.setState(() => { throw error; });
-        });
+        this.setState(() => { throw error; });
+      });
     }
   };
 
@@ -135,42 +146,42 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
       h(Modal, {
         show: this.props.show
       }, [
-          h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, ['Request Clarification on ' + this.props.issueKey])
-          ]),
-          h(ModalBody, { className: "dialogBody" }, [
-            MultiSelect({
-              isRendered: this.props.linkClarification === true,
-              id: "pm_select",
-              label: "Project Member",
-              name: 'pmList',
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handlePMChange,
-              value: this.state.pm,
-              isMulti: false,
-              edit: false
+        h(ModalHeader, {}, [
+          h(ModalTitle, { className: "dialogTitle" }, ['Request Clarification on ' + this.props.issueKey])
+        ]),
+        h(ModalBody, { className: "dialogBody" }, [
+          MultiSelect({
+            isRendered: this.props.linkClarification === true,
+            id: "pm_select",
+            label: "Project Member",
+            name: 'pmList',
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handlePMChange,
+            value: this.state.pm,
+            isMulti: false,
+            edit: false
+          }),
+          InputFieldTextArea({
+            id: "inputClarification",
+            name: "clarification",
+            label: "Please describe the clarification you are requesting",
+            value: this.state.clarification,
+            disabled: false,
+            onChange: this.handleFormDataTextChange
+          }),
+          div({ style: { 'marginTop': '15px' } }, [
+            AlertMessage({
+              msg: this.state.alertMessage,
+              show: this.state.showAlert
             }),
-            InputFieldTextArea({
-              id: "inputClarification",
-              name: "clarification",
-              label: "Please describe the clarification you are requesting",
-              value: this.state.clarification,
-              disabled: false,
-              onChange: this.handleFormDataTextChange
-            }),
-            div({ style: { 'marginTop': '15px' } }, [
-              AlertMessage({
-                msg: this.state.alertMessage,
-                show: this.state.showAlert
-              }),
-            ])
-          ]),
-
-          h(ModalFooter, {}, [
-            button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.submit }, ["Request Clarification"])
           ])
+        ]),
+
+        h(ModalFooter, {}, [
+          button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
+          button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.submit }, ["Request Clarification"])
         ])
+      ])
     )
   }
 });

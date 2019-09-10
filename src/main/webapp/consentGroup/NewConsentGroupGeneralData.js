@@ -1,10 +1,9 @@
 import { Component } from 'react';
-import { hh, h1, div, input, label, br, span } from 'react-hyperscript-helpers';
+import { hh, h1, div } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';

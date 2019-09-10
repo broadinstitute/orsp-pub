@@ -14,8 +14,8 @@ class UrlMappings {
         "/api/report/get-funding"(controller: 'report', action: "getFunding", method: 'GET')
         "/api/report/get-all-fundings"(controller: 'report', action: "getAllFundings", method: 'GET')
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
-        "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
+        '/'(controller: 'authenticated', action: 'redirectToMainContainer')
 
         // Project end points
         '/api/project'(resource: 'project')
@@ -119,6 +119,8 @@ class UrlMappings {
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
+
+        '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
