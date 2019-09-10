@@ -7,7 +7,6 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.utils.IssueUtils
-import org.broadinstitute.orsp.utils.UtilityClass
 
 import java.text.SimpleDateFormat
 
