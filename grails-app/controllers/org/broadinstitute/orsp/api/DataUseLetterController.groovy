@@ -43,7 +43,7 @@ class DataUseLetterController extends AuthenticatedController {
             response.status = 200
             render(response.status)
         } catch(IllegalArgumentException e) {
-            handleBadRequest(e)
+            handleIllegalArgumentException(e)
         } catch(Exception e) {
             handleException(e)
         }
