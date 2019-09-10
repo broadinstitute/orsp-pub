@@ -14,7 +14,8 @@ import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 import AboutPage from "../aboutPage/AboutPage";
 import QaReport from "../qaReport/QaReport";
 import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
-import PageNotFound from "../PageNotFound/PageNotFound";
+import PageNotFound from "../pageNotFound/PageNotFound";
+import IssueList from "../issueList/IssueList"
 import LandingPage from "./LandingPage";
 
 const Routes = ( props ) => (
@@ -38,6 +39,7 @@ const Routes = ( props ) => (
     <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
+    <Route path= {"/issueList/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
   </Switch>
 );
