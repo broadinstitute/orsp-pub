@@ -388,6 +388,13 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+  getQaEventReport(tab) {
+    return axios.get(UrlConstants.qaEventReportUrl, {
+      params: {
+        tab: tab
+      }
+    })
   }
 };
 

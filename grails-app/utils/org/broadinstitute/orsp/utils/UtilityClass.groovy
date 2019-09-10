@@ -11,15 +11,17 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
+import org.broadinstitute.orsp.StatusEventDTO
 import org.broadinstitute.orsp.User
 import java.text.SimpleDateFormat
+
 import java.util.concurrent.atomic.AtomicInteger
 
 class UtilityClass {
     QueryService queryService
 
     public static final String ISSUE_RENDERER_CONFIG = 'issue'
-    public static final String ISSUE_COMPLETE = 'issueForSampleDataCohorts'
+    public static final String ISSUE_FOR_QA = 'qaIssue'
     public static final String FUNDING_REPORT_RENDERER_CONFIG = 'fundingReport'
     public static final String HISTORY = 'history'
     public static final String SAMPLES = 'samples'
@@ -82,7 +84,27 @@ class UtilityClass {
                         reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
                         reporter       : issue.reporter,
                         requestDate    : issue.requestDate,
-                        attachments    : issue.attachments
+                        attachments    : issue.attachments,
+                        actor          : issue.getActorUsernames()
+                ]
+            }
+        }
+    }
+
+    static void registerQaReportIssueMarshaller() {
+        JSON.createNamedConfig(ISSUE_FOR_QA) {
+            it.registerObjectMarshaller( StatusEventDTO ) { StatusEventDTO statusEvent ->
+                return [
+                    id             : statusEvent.issue.id,
+                    type           : statusEvent.issue.type,
+                    projectKey     : statusEvent.issue.projectKey,
+                    summary        : statusEvent.issue.summary,
+                    status         : statusEvent.issue.approvalStatus == IssueStatus.Legacy.name ? statusEvent.issue.status : statusEvent.issue.approvalStatus,
+                    reporter       : statusEvent.issue.reporter,
+                    requestDate    : statusEvent.issue.requestDate,
+                    attachments    : statusEvent.issue.attachments,
+                    actor          : statusEvent.issue.getActorUsernames().sort().join(' ,'),
+                    age            : statusEvent.duration,
                 ]
             }
         }
@@ -157,4 +179,5 @@ class UtilityClass {
             Collections.emptyList()
         }
     }
+
 }

@@ -2,6 +2,7 @@ import _ from 'lodash';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import moment from "moment";
 
 export const validateEmail = (email) => {
   let valid = false;
@@ -53,11 +54,15 @@ export const buildUrlToConsentGroup = (serverURL, consentKey, projectKey) => {
   return [serverURL, "newConsentGroup", "main?consentKey="+ consentKey + "&projectKey=" + projectKey + "&tab=review"].join("/");
 }
 
+export const dateParser = (milliseconds) => {
+  return moment.duration(milliseconds, 'milliseconds')._data;
+}
+
 // columns headers should be included in the first row in data array.
 // Eg of data : [['header1', 'header2', 'header3'],
 //               ['row1value1', 'row1value2', 'row1value3'],
 //               ['row2value1', 'row2value2', 'row2value3']]
-export const printData = (data, titleText= '', headerText = '', columnsWidths, pageSize = 'A4', pageOrientation = 'portrait') => {
+export const exportData = (action, fileName= '', data, titleText= '', headerText = '', columnsWidths, pageSize = 'A4', pageOrientation = 'portrait') => {
   let documentTemplate = {
     pageSize: pageSize,
     pageOrientation: pageOrientation,
@@ -104,5 +109,9 @@ export const printData = (data, titleText= '', headerText = '', columnsWidths, p
       }
     }
   };
-  pdfMake.createPdf(documentTemplate).print();
+  if (action === 'download') {
+    pdfMake.createPdf(documentTemplate).download(fileName);
+  } else {
+    pdfMake.createPdf(documentTemplate).print();
+  }
 }
