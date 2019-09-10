@@ -2,6 +2,7 @@ import _ from 'lodash';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import moment from "moment";
 
 export const validateEmail = (email) => {
   let valid = false;
@@ -54,18 +55,7 @@ export const buildUrlToConsentGroup = (serverURL, consentKey, projectKey) => {
 }
 
 export const dateParser = (milliseconds) => {
-  let secs = Math.floor(milliseconds/1000);
-  let mins = Math.floor(secs/60);
-  let hours = Math.floor(mins/60);
-  let days = Math.floor(hours/24);
-  let months = Math.floor(days/31);
-  let years = Math.floor(months/12);
-  months=Math.floor(months%12);
-  days = Math.floor(days%31);
-  hours = Math.floor(hours%24);
-  mins = Math.floor(mins%60);
-  secs = Math.floor(secs%60);
-  return { days: days, months: months, years: years, hours: hours, mins: mins, secs: secs } ;
+  return moment.duration(milliseconds, 'milliseconds')._data;
 }
 
 // columns headers should be included in the first row in data array.
