@@ -28,17 +28,6 @@ class SampleCollectionController extends RestfulController<SampleCollection> {
         render(text: json, contentType: "application/json")
     }
 
-    boolean before() {
-        log.info(request.getHeader("Authorization"));
-        true
-    }
-
-    def sampleCollections() {
-        Collection<SampleCollection> sampleCollections = SampleCollection.findAll()
-        String json = gson.toJson(sampleCollections)
-        render(text: json, contentType: "application/json")
-    }
-
     /**
      * Receives a csv file containing all BSP Sample Collections 
      * from a cron job running in Broad's internal network, 
