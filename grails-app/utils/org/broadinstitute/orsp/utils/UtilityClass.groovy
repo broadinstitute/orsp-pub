@@ -13,7 +13,6 @@ import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.StatusEventDTO
 import org.broadinstitute.orsp.User
-
 import java.text.SimpleDateFormat
 
 import java.util.concurrent.atomic.AtomicInteger
