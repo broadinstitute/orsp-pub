@@ -51,7 +51,7 @@ class NewConsentGroupController extends AuthenticatedController {
             response.setContentType('application/pdf')
             response.outputStream << resource.openStream()
         } catch (Exception e) {
-           handleException(e, 500)
+           handleException(e)
         }
     }
 
@@ -99,7 +99,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 persistenceService.deleteCollectionLink(consentCollectionLink)
             }
             log.error("There was an error trying to create consent group: " + e.message)
-            handleException(e, 500)
+            handleException(e)
         }
 
     }
@@ -114,7 +114,7 @@ class NewConsentGroupController extends AuthenticatedController {
             issueService.modifyExtraProperties(simpleInput, projectKey)
             render([message: issue])
         } catch(Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 
@@ -126,8 +126,7 @@ class NewConsentGroupController extends AuthenticatedController {
             response.status = 200
             render([message: 'Consent Group was deleted'] as JSON)
         } else {
-            response.status = 404
-            render([message: 'Consent Group not found'] as JSON)
+            handleNotFound('Consent Group not found')
         }
     }
 
@@ -178,9 +177,9 @@ class NewConsentGroupController extends AuthenticatedController {
                 render( consentGroups as JSON)
             }
         } catch(IllegalArgumentException e) {
-            handleException(e, 400)
+            handleBadRequest(e)
         } catch(Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 
@@ -196,7 +195,7 @@ class NewConsentGroupController extends AuthenticatedController {
             persistenceService.deleteCollectionLinks(links)
             response.status = 200
         } catch (Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
         render(response)
     }
@@ -208,7 +207,7 @@ class NewConsentGroupController extends AuthenticatedController {
             persistenceService.deleteCollectionLink(collectionLink)
             response.status = 200
         } catch(Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
         render(response)
     }
@@ -230,7 +229,7 @@ class NewConsentGroupController extends AuthenticatedController {
               render(links as JSON)
             }
         } catch (Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
         render(response)
     }

@@ -28,8 +28,7 @@ class IssueListController extends AuthenticatedController {
                     actors           : queryService.findUsersInUserNameList(it.getActorUsernames())?.collect { it.displayName }
             ]} as JSON
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
     }
 

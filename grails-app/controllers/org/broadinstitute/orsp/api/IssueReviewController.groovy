@@ -22,8 +22,7 @@ class IssueReviewController extends AuthenticatedController {
             IssueReview issueReview = parseIssueReview(gson.toJson(request.JSON))
             Issue issue = queryService.findByKey(issueReview.projectKey)
             if (issue == null) {
-                response.status = 404
-                render([message: "Project key does not exist"] as JSON)
+                handleNotFound("Project key does not exist")
             } else {
                 issueReviewService.create(issueReview)
                 persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
@@ -32,7 +31,7 @@ class IssueReviewController extends AuthenticatedController {
                 render([issueReview] as JSON)
             }
         } catch (Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 
@@ -41,8 +40,7 @@ class IssueReviewController extends AuthenticatedController {
         IssueReview issueReviewFormer = issueReviewService.findByProjectKey(params.projectKey)
 
         if (issueReviewFormer == null) {
-            response.status = 404
-            render([message: "Issue review does not exist"] as JSON)
+            handleNotFound('Issue review does not exist')
         }
         IssueReview ir = parseIssueReview(gson.toJson(request.JSON))
         issueReviewFormer.suggestions = ir.suggestions

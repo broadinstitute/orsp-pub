@@ -76,7 +76,7 @@ class DataUseController extends AuthenticatedController {
             render([message: "Consent successfully exported to DUOS: $resource.name"] as JSON)
         }
         catch (Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 
@@ -87,9 +87,9 @@ class DataUseController extends AuthenticatedController {
             response.status = 200
             render(restriction: restriction as JSON)
         } catch (IllegalArgumentException iae) {
-            handleException(iae, 400)
+            handleBadRequest(iae)
         } catch (Exception e) {
-           handleException(e, 500)
+           handleException(e)
         }
     }
 

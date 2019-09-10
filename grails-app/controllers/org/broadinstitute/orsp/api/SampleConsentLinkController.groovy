@@ -37,7 +37,7 @@ class SampleConsentLinkController extends AuthenticatedController {
             render([message: consentCollectionLink] as JSON)
         } catch (Exception e) {
             persistenceService.deleteCollectionLink(consentCollectionLink)
-            handleException(e, 500)
+            handleException(e)
         }
     }
 }

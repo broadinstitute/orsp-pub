@@ -7,12 +7,10 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
-import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
-import org.broadinstitute.orsp.utils.DataUseRestrictionParser
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
 
@@ -31,7 +29,7 @@ class DataUseLetterController extends AuthenticatedController {
             response.status = 200
             render([dulToken: newDul.getUid()] as JSON)
         } catch(Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 
@@ -45,9 +43,9 @@ class DataUseLetterController extends AuthenticatedController {
             response.status = 200
             render(response.status)
         } catch(IllegalArgumentException e) {
-            handleException(e, 400)
+            handleBadRequest(e)
         } catch(Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 
@@ -81,13 +79,13 @@ class DataUseLetterController extends AuthenticatedController {
                 output.close()
                 response.status = 200
             } catch (Exception e) {
-                handleException(e, 500)
+                handleException(e)
             } finally {
                 dulDOC.close()
                 output.close()
             }
         } else {
-            response.status = 404
+            handleNotFound('DUL not found.')
         }
     }
 
@@ -112,7 +110,7 @@ class DataUseLetterController extends AuthenticatedController {
                 throw new MissingResourceException("Unable to upload empty Data Use Letter pdf.")
             }
         } catch (Exception e) {
-            handleException(e, 500)
+            handleException(e)
         }
     }
 

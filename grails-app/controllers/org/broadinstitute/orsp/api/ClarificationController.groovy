@@ -1,6 +1,5 @@
 package org.broadinstitute.orsp.api
 
-import grails.converters.JSON
 import grails.rest.Resource
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Comment
@@ -21,7 +20,7 @@ class ClarificationController extends AuthenticatedController {
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
             if (comment == null || comment.hasErrors()) {
-              handleException(new Exception("Error saving comment for issue '" + params.id + "': null"), 500)
+              handleException(new Exception("Error saving comment for issue '" + params.id + "': null"))
             }
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress
@@ -61,7 +60,7 @@ class ClarificationController extends AuthenticatedController {
                 transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
-                handleException(e, 500)
+                handleException(e)
             }
         }
         response
@@ -91,7 +90,7 @@ class ClarificationController extends AuthenticatedController {
                 transitionService.handleIntake(issue, getProjectManagersForIssue(issue)*.userName)
                 response.status = 201
             } catch (Exception e) {
-                handleException(e, 500)
+                handleException(e)
             }
         }
     }
