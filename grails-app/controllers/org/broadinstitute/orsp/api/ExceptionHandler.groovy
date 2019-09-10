@@ -1,12 +1,8 @@
 package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
-import grails.rest.Resource
 import groovy.util.logging.Slf4j
-import javassist.NotFoundException
-import org.apache.http.HttpResponse
 
-import javax.servlet.http.HttpServletResponse
 
 @Slf4j
 trait ExceptionHandler {
