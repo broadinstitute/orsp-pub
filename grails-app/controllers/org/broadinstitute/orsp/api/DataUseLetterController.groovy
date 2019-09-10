@@ -3,7 +3,6 @@ package org.broadinstitute.orsp.api
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
-import javassist.NotFoundException
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
@@ -88,7 +87,7 @@ class DataUseLetterController extends AuthenticatedController {
                 output.close()
             }
         } else {
-            handleException(new NotFoundException("DUL not found"), 404)
+            response.status = 404
         }
     }
 

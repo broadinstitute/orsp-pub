@@ -3,7 +3,6 @@ package org.broadinstitute.orsp.api
 import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
-import javassist.NotFoundException
 import org.apache.commons.collections.CollectionUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
@@ -66,7 +65,8 @@ class FileHelperController extends AuthenticatedController{
                 persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Rejected", EventType.REJECT_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
-                handleException(new NotFoundException('Document not found'), 404)
+                response.status = 404
+                render([error: 'Document not found'] as JSON)
             }
             transitionService.handleIntake(issue, [])
         } catch (Exception e) {
@@ -84,7 +84,8 @@ class FileHelperController extends AuthenticatedController{
                 persistenceService.saveEvent(document.projectKey, getUser()?.displayName, "Document Approved", EventType.APPROVE_DOCUMENT)
                 render(['document': document] as JSON)
             } else {
-                handleException(new NotFoundException('Document not found'), 404)
+                response.status = 404
+                render([error: 'Document not found'] as JSON)
             }
             transitionService.handleIntake(issue, [])
         } catch (Exception e) {
@@ -147,7 +148,8 @@ class FileHelperController extends AuthenticatedController{
                     render(['message': 'document deleted'] as JSON)
                 } else {
                     log.error("Error trying to delete File. Document with Uuid: ${params.uuid} not found.")
-                    handleException(new NotFoundException('File to delete not found.'), 404)
+                    response.status = 404
+                    render(['message': 'File to delete not found.'] as JSON)
                 }
             } catch(Exception e) {
                 log.error("Error trying to delete file with Uuid: ${params.uuid}.", e.getMessage())

@@ -21,7 +21,7 @@ class ClarificationController extends AuthenticatedController {
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
             if (comment == null || comment.hasErrors()) {
-              handleException(new Exception("Error saving comment"), 500)
+              handleException(new Exception("Error saving comment for issue '" + params.id + "': null"), 500)
             }
             List<String> toAddresses = new ArrayList<>()
             String fromAddress = (String) getUser()?.emailAddress

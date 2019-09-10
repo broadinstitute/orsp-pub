@@ -5,7 +5,6 @@ import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
-import javassist.NotFoundException
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
@@ -112,7 +111,8 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was deleted'] as JSON)
         } else {
-            handleException(new NotFoundException('Project not found'), 404)
+            response.status = 404
+            render([message: 'Project not found'] as JSON)
         }
     }
 
@@ -152,7 +152,8 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([projectType: projectType] as JSON)
         } else {
-            handleException(new NotFoundException('Project not found'), 404)
+            response.status = 404
+            render([message: "Project not found"] as JSON)
         }
         projectType
     }
