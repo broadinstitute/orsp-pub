@@ -27,6 +27,7 @@ class UrlMappings {
         '/api/project/extra-properties'(controller: 'project', action: 'modifyExtraProperties', method: 'POST')
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
+        '/api/user/projects'(controller: 'issueList', action: 'getProjectsForUser')
 
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')
@@ -94,6 +95,7 @@ class UrlMappings {
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
+        '/api/qa-event-report'(controller: 'statusEvent', action: 'findQaEventReport', method: 'GET')
 
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
