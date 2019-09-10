@@ -87,7 +87,7 @@ class DataUseController extends AuthenticatedController {
             response.status = 200
             render(restriction: restriction as JSON)
         } catch (IllegalArgumentException iae) {
-            handleBadRequest(iae)
+            handleIllegalArgumentException(iae)
         } catch (Exception e) {
            handleException(e)
         }
