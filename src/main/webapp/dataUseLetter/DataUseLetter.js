@@ -743,7 +743,6 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
             name: "repositoryDeposition",
             value: this.state.formData.repositoryDeposition,
             label: "Data is intended for repository deposition?",
-            readOnly: this.state.readOnly,
             onChange: this.handleRadioChange,
             readOnly: true,
           }),
