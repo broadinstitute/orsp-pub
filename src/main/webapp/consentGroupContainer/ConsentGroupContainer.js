@@ -5,7 +5,7 @@ import { History } from "../components/History";
 import { Comments } from "../components/Comments";
 import '../components/Wizard.css';
 import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
-import { MultiTab } from "../components/MultiTab";
+import MultiTab from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
@@ -20,7 +20,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
       history: [],
       comments: [],
       dialogContent: '',
-      defaultActive: 'review'
+      activeTab: 'review'
     };
   }
 
@@ -76,11 +76,18 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
     });
   }
 
+  handleTabChange = async (tab) => {
+    await this.setState({ activeTab: tab });
+  };
+
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          MultiTab({ defaultActive: this.props.tab === "" ? this.state.defaultActive : this.props.tab },
+          h(MultiTab, {
+            activeKey: this.props.tab !== this.state.activeTab ? this.state.activeTab : this.props.tab,
+            handleSelect: this.handleTabChange
+          },
             [
               div({
                 key: "review",

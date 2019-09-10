@@ -516,18 +516,6 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     return errorForm;
   };
 
-  getUsersArray(array) {
-    let usersArray = [];
-    if (array !== undefined && array !== null && array.length > 0) {
-      array.map(element => {
-        usersArray.push(
-          element.displayName + " (" + element.emailAddress + ") "
-        );
-      });
-    }
-    return usersArray
-  }
-
   startsBefore(date) {
     let result = false;
     if (!this.isEmpty(date) && !this.isEmpty(this.state.formData.startDate)) {
@@ -740,8 +728,8 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
             name: "repositoryDeposition",
             value: this.state.formData.repositoryDeposition,
             label: "Data is intended for repository deposition?",
-            readOnly: this.state.readOnly,
-            onChange: this.handleRadioChange
+            onChange: this.handleRadioChange,
+            readOnly: true,
           }),
 
           div({ className: "boxWrapper" }, [

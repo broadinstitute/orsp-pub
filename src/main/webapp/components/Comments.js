@@ -1,11 +1,11 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { TextEditor } from "../main/TextEditor";
+import { TextEditor } from "./TextEditor";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
-import { printData } from "../util/Utils";
+import { exportData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatDataPrintableFormat } from "../util/TableUtil";
 
@@ -75,7 +75,7 @@ export const Comments = hh(class Comments extends Component {
     const titleText = (component.issueType === "project" ? ("Project ID: "+ this.props.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];
-    printData(commentsArray, titleText, 'ORSP Comments', columnsWidths);
+    exportData('print', null, commentsArray, titleText, 'ORSP Comments', columnsWidths);
   };
 
   render() {
@@ -99,6 +99,7 @@ export const Comments = hh(class Comments extends Component {
           defaultSorted: defaultSorted,
           pagination: true,
           showExportButtons: true,
+          hideXlsxColumns: [],
           showSearchBar: true
         })
       ])

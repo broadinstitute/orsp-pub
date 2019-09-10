@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { div, hh, h, label, button } from 'react-hyperscript-helpers';
-import '../components/Wizard.css';
+import './Wizard.css';
 import { Editor } from "@tinymce/tinymce-react";
 import { Review } from "../util/ajax";
 import { AlertMessage } from "../components/AlertMessage";
