@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, span } from 'react-hyperscript-helpers';
+import { div, h1 } from 'react-hyperscript-helpers';
 import { Table } from "../components/Table";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { User } from "../util/ajax";
@@ -13,7 +13,7 @@ const tableHeaders =
     { name: 'Roles', value: 'roles' },
   ];
 
-  const styles = {
+  const stylesHeader = {
     pageTitle: {
       fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
     }
@@ -142,7 +142,7 @@ class RolesManagement extends Component {
    render() {
     return(
       div({ className: "roles-management" },[
-        span({ style: styles.pageTitle}, ["Roles Management"]),
+        h1({ style: stylesHeader.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,
           isAdmin: this.state.isAdmin,

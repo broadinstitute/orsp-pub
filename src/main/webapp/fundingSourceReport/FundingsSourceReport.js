@@ -6,6 +6,12 @@ import { handleRedirectToProject, exportData } from "../util/Utils";
 import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 
+const stylesHeader = {
+  pageTitle: {
+    fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+  }
+};
+
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
   { text: '100', value: 100 },
@@ -232,7 +238,7 @@ class FundingsSourceReport extends Component {
   render() {
     return(
       div({},[
-        h1({}, ["Funding Source Report"]),
+        h1({ style: stylesHeader.pageTitle}, ["Funding Source Report"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,

@@ -8,6 +8,12 @@ import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
+const stylesHeader = {
+  pageTitle: {
+    fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+  }
+};
+
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
   { text: '100', value: 100 },
@@ -160,7 +166,7 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
   render() {
     return(
       div({},[
-        h1({}, ["Data Use Restrictions"]),
+        h1({ style: stylesHeader.pageTitle}, ["Data Use Restrictions"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,
