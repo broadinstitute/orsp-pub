@@ -83,7 +83,6 @@ class DataUseRestrictionDetails extends Component {
   }
 
   componentDidMount() {
-    this.props.showSpinner();
     this._isMounted = true;
     this.init();
   }
@@ -92,7 +91,8 @@ class DataUseRestrictionDetails extends Component {
     this._isMounted = false;
   }
 
-  init() {   
+  init() {
+    this.props.showSpinner();
     DataUse.getRestriction(this.state.restrictionId).then(result => {
       if (this._isMounted) {
         this.setState(prev => {

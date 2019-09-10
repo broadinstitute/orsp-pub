@@ -66,19 +66,22 @@ const LandingPage = hh(class LandingPage extends Component{
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this._isMounted = true;
-    this.getProjectsList();
-    this.getTaskList();
-    this.hasSession();
-  }
+    this.props.showSpinner();
+    await this.getProjectsList();
+    await this.getTaskList();
+    await this.hasSession();
+    this.props.hideSpinner();
+  };
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  getProjectsList = () => {
-    Issues.getIssueList('assignee', 5).then(response => {
+  getProjectsList = async () => {
+    try {
+      const response = await Issues.getIssueList('assignee', 5);
       if (this._isMounted) {
         let projectListData = [];
 
@@ -98,11 +101,14 @@ const LandingPage = hh(class LandingPage extends Component{
           return resp;
         });
       }
-    }).catch(() => {});
+    } catch(e) {
+      this.props.hideSpinner()
+    }
   };
 
-  getTaskList = () => {
-    Issues.getIssueList('user', 5).then(response => {
+  getTaskList = async () => {
+    try {
+      const response = await Issues.getIssueList('user', 5);
       if (this._isMounted) {
         let taskListData = [];
 
@@ -117,25 +123,29 @@ const LandingPage = hh(class LandingPage extends Component{
           });
         });
         this.setState(resp => {
+          this.props.hideSpinner();
           resp.taskList = taskListData;
           return resp;
         });
       }
-    }).catch(() => {});
+    } catch(e) {
+      this.props.hideSpinner();
+    }
   };
 
-  printComments = () => {
-
-  };
-
-  hasSession = () => {
-      User.isAuthenticated().then(resp => {
-        if (this._isMounted) {
-          this.setState({
-            logged: resp.data.session
-          })
-        }
-      }).catch(error => this.setState(() => { throw error; }));
+  hasSession = async () => {
+    try {
+      const resp = await User.isAuthenticated();
+      if (this._isMounted) {
+        this.setState({
+          logged: resp.data.session
+        })
+      }
+    } catch(error) {
+      this.setState(() => {
+        throw error;
+      }, () => this.props.hideSpinner());
+    }
   };
 
   render() {

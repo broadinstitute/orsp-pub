@@ -14,7 +14,6 @@ const stylesHeader = {
   }
 };
 
-const SPINNER_NAME = 'ISSUE_LIST';
 const styles = {
   project: {
     projectKeyWidth: '140px',
