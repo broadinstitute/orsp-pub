@@ -51,7 +51,7 @@ class NewConsentGroupController extends AuthenticatedController {
             response.setContentType('application/pdf')
             response.outputStream << resource.openStream()
         } catch (Exception e) {
-           handleException(e)
+           handleException(e, 500)
         }
     }
 
@@ -99,7 +99,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 persistenceService.deleteCollectionLink(consentCollectionLink)
             }
             log.error("There was an error trying to create consent group: " + e.message)
-            handleException(e)
+            handleException(e, 500)
         }
 
     }
@@ -114,7 +114,7 @@ class NewConsentGroupController extends AuthenticatedController {
             issueService.modifyExtraProperties(simpleInput, projectKey)
             render([message: issue])
         } catch(Exception e) {
-            handleException(e)
+            handleException(e, 500)
         }
     }
 
@@ -178,9 +178,9 @@ class NewConsentGroupController extends AuthenticatedController {
                 render( consentGroups as JSON)
             }
         } catch(IllegalArgumentException e) {
-           handleIllegalArgumentException(e)
+            handleException(e, 400)
         } catch(Exception e) {
-            handleException(e)
+            handleException(e, 500)
         }
     }
 

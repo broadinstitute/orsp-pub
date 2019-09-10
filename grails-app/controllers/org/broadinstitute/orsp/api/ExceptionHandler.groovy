@@ -10,7 +10,7 @@ trait ExceptionHandler {
     def handleException(Exception e, Integer statusCode) {
         log.error("${e}")
         response.status = statusCode
-        render([message: e.message] as JSON)
+        render([error: e.message] as JSON)
     }
 
 }

@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Funding
+import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ReportService
 import org.broadinstitute.orsp.utils.UtilityClass
