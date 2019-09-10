@@ -4,7 +4,7 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { handleRedirectToProject, printData } from "../util/Utils";
+import { handleRedirectToProject, exportData } from "../util/Utils";
 import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
 
@@ -228,7 +228,7 @@ class FundingsSourceReport extends Component {
     let fundingsArray = formatDataPrintableFormat(this.state.fundings, cols);
     const tableColumnsWidth = [100, 100,'*',80 ,'*','*','*','*','*'];
     const titleText = "Funding Source Report";
-    printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
+    exportData('print' ,null,fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   render() {
