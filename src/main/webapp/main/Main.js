@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, button } from 'react-hyperscript-helpers';
+import { div } from 'react-hyperscript-helpers';
 import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";

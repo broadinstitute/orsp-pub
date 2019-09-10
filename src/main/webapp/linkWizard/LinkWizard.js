@@ -77,7 +77,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
     this.getUserSession();
   }
 
-
   componentWillUnmount() {
     this._isMount = false;
   }

@@ -161,8 +161,8 @@ class SubmissionForm extends Component {
 
   submitSubmission = () => {
     if(this.validateSubmission()) {
-        this.props.showSpinner();
-        const submissionData = {
+      this.props.showSpinner();
+      const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
         comments: this.state.submissionInfo.comments,
