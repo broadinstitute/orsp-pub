@@ -232,7 +232,7 @@ class Search extends React.Component {
           </div>
           <div className="row">
             <div className={"form-group col-md-6"}>
-              <label>Person</label>
+              <label>Broad Staff Member</label>
               <UserAutocomplete
                 ref={el => {
                   this.userAutocomplete = el;
@@ -327,7 +327,7 @@ class Search extends React.Component {
               <input
                 type={"reset"}
                 className={"btn btn-default"}
-                value={"Clear"}
+                value={"Clear Cache for new Search"}
                 onClick={this.handleClear}
               />
             </div>

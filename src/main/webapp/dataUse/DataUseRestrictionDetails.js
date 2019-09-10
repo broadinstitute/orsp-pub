@@ -9,6 +9,7 @@ import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
 import { spinnerService } from "../util/spinner-service";
+import  { UrlConstants }  from '../util/UrlConstants';
 
 const DUR_SPINNER = 'dusDetail';
 
@@ -60,10 +61,13 @@ const styles = {
 
 class DataUseRestrictionDetails extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
     this.state = {
-      restrictionId: this.props.location.state !== undefined && this.props.location.state.restrictionId !== undefined  ? this.props.location.state.restrictionId : component.restrictionId,
+      restrictionId: params.get('restrictionId'),
       summary: [],
       restrictionUrl: '',
       message: null,
@@ -82,24 +86,31 @@ class DataUseRestrictionDetails extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     spinnerService.show(DUR_SPINNER);
     this.init();
   }
-  
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   init() {   
     DataUse.getRestriction(this.state.restrictionId).then(result => {
-      this.setState(prev => {
-        prev.summary = result.data.summary;
-        prev.restriction = result.data.restriction;
-        prev.consent = result.data.consent;
-        prev.consentResource = result.data.consentResource;
-        prev.samples = result.data.samples;
-        prev.restrictionUrl = result.data.restrictionUrl;
-        return prev;
-      }, () => {
-        spinnerService.hide(DUR_SPINNER);
-        this.scrollTop();
-      });
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.summary = result.data.summary;
+          prev.restriction = result.data.restriction;
+          prev.consent = result.data.consent;
+          prev.consentResource = result.data.consentResource;
+          prev.samples = result.data.samples;
+          prev.restrictionUrl = result.data.restrictionUrl;
+          return prev;
+        }, () => {
+          spinnerService.hide(DUR_SPINNER);
+          this.scrollTop();
+        });
+      }
     });
   }
 
@@ -239,9 +250,11 @@ class DataUseRestrictionDetails extends Component {
                 }
              })
             ]),
-            a({isRendered: !component.isViewer, className: 'btn buttonSecondary', style: {'marginTop':'15px'}, href: component.serverURL + '/dataUse/edit/' + this.state.restriction.id },['Edit'])
-          ]),
-        
+            h(Link, {
+              isRendered: !component.isViewer, className: "btn buttonSecondary", style: {'marginTop':'15px'},
+              to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.state.restriction.id + '&consentKey=' + this.state.consent.projectKey }
+            }, ["Edit"]),
+          ]),        
           Panel({ title: "Export Data Use Restrictions to DUOS"},[
             p({}, ["Exporting consent data information to the vault will enable other systems to recognize the data use restrictions required for the samples that are associated to the consent group."]),
             pre({},[this.state.consentResource]),

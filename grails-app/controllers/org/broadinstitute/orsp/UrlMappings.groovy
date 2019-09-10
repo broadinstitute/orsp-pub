@@ -14,8 +14,8 @@ class UrlMappings {
         "/api/report/get-funding"(controller: 'report', action: "getFunding", method: 'GET')
         "/api/report/get-all-fundings"(controller: 'report', action: "getAllFundings", method: 'GET')
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
-        "/"(view:"/index")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
+        '/'(controller: 'authenticated', action: 'redirectToMainContainer')
 
         // Project end points
         '/api/project'(resource: 'project')
@@ -72,7 +72,7 @@ class UrlMappings {
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'getDul', method: 'GET')
         '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
-        '/api/data-use-letter/restriction'(controller: 'dataUseLetter', action: 'createSdul', method: 'POST')
+        '/api/data-use/restriction/create'(controller: 'dataUse', action: 'saveSdul', method: 'POST')
 
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/collection'(controller: 'clarification', action: 'collectionRequestClarification', method: 'POST')
@@ -81,6 +81,7 @@ class UrlMappings {
         '/api/get-users'(controller: 'user', action: 'getOrspUsers', method: 'GET')
         '/api/edit-user-role'(controller: 'user', action: 'editOrspUserRole', method: 'PUT')
         '/api/user/authenticated/user-data'(controller: 'authenticated', action: 'getSessionUser')
+        '/api/user/authenticated/user-session'(controller: 'authenticated', action: 'hasSession')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
 
@@ -89,6 +90,7 @@ class UrlMappings {
         '/search/project-key/autocomplete'(controller: 'search', action: 'projectKeyAutocomplete')
         '/search/matching-diseases-ontologies'(controller: 'search', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
+        '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
@@ -105,9 +107,9 @@ class UrlMappings {
         '/api/submissions/add-new-old'(controller: 'submission', action: 'index', method: 'GET')
         '/api/submissions/save-new'(controller: 'submission', action: 'save', method: 'POST')
         '/api/submissions/add-new'(controller: 'submission', action: 'save', method: 'POST')
+        '/api/data-use/save'(controller: 'dataUse', action: 'save')
         '/api/submission/remove-file'(controller: 'submission', action: 'removeFile', method: 'DELETE')
 
-        '/api/data-use/new-restriction'(controller: 'dataUse', action: 'create')
         '/api/data-use/restriction'(controller: 'dataUse', action: 'findRestriction')
         '/api/consent/export'(controller: 'dataUse', action: 'exportConsent', method: 'POST')
 
@@ -117,6 +119,9 @@ class UrlMappings {
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
+
+        '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")
@@ -132,6 +137,7 @@ class UrlMappings {
         "/.svn**"                       (controller: "error", action: "error403")
         "/.hg**"                        (controller: "error", action: "error403")
         "/.bzr**"                       (controller: "error", action: "error403")
+        "/**"                           (controller: "authenticated", action: "redirectToMainContainer")
     }
 
 }

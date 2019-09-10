@@ -10,8 +10,11 @@ export const Search = {
 
   getSourceDiseases(query) {
     return axios.get(UrlConstants.sourceDiseasesUrl + '?term=' + query);
-  }
+  },
 
+  getMatchingPopulationOntologies(query) {
+    return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query);
+  }
 };
 
 export const SampleCollections = {
@@ -57,7 +60,7 @@ export const ConsentGroup = {
   approve(consentKey, data) {
     return axios.post(UrlConstants.approveConsentGroupUrl + '?id=' + consentKey, data);
   },
-  
+
   rejectConsent(consentKey) {
     return axios.delete(UrlConstants.rejectConsentUrl + '?consentKey=' + consentKey);
   },
@@ -71,7 +74,7 @@ export const ConsentGroup = {
   },
 
   sendEmailDul(consentKey, userName, recipients) {
-   return axios.post(UrlConstants.emailDulUrl + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
+    return axios.post(UrlConstants.emailDulUrl + '?consentKey=' + consentKey, {'userName': userName, 'recipients': recipients });
   },
 
   rollbackConsentGroup(urlRollback, consentKey) {
@@ -206,11 +209,11 @@ export const DocumentHandler = {
     return axios.put(`${UrlConstants.approveDocumentUrl}?uuid=${uuid}`);
   },
 
-   rejectDocument(uuid) {
+  rejectDocument(uuid) {
     return axios.put(`${UrlConstants.rejectDocumentUrl}?uuid=${uuid}`);
   },
 
-   attachedDocuments(issueKey) {
+  attachedDocuments(issueKey) {
     return axios.get(`${UrlConstants.attachedDocumentsUrl}?issueKey=${issueKey}`);
   },
 
@@ -227,6 +230,10 @@ export const User = {
 
   getUserSession() {
     return axios.get(UrlConstants.getUserUrl)
+  },
+
+  isAuthenticated() {
+    return axios.get(UrlConstants.isAuthenticated)
   },
 
   getAllUsers(query) {
@@ -286,7 +293,7 @@ export const DUL = {
 
   createDulPdf(uid) {
     return axios.post(UrlConstants.saveDataUseLetterUrl, uid)
-  }, 
+  },
 
   getDULInfo(uid) {
     return axios.get(UrlConstants.dulInfoUrl + '?id=' + uid)
@@ -295,13 +302,15 @@ export const DUL = {
 
 export const DataUse = {
   createRestriction(restriction) {
-    return axios.post(UrlConstants.dataUseLetterRestrictionUrl, restriction);
+    return axios.post(UrlConstants.dataUseRestrictionUrl, restriction);
   },
+
   getRestriction(restrictionId) {
     return axios.get(UrlConstants.viewRestrictionUrl + '?id=' + restrictionId);
   },
+
   getRestrictions(query) {
-    return axios.get(UrlConstants.restrictionUrl, {
+    return axios.get(UrlConstants.showRestrictionsUrl, {
       params: {
         draw: 1,
         start: query.start,
@@ -311,7 +320,7 @@ export const DataUse = {
         searchValue: query.searchValue
       }
     })
-  },
+  }
 };
 
 export const ProjectInfoLink = {
@@ -430,4 +439,10 @@ export const ProjectMigration = {
   deleteSubmission(submissionId) {
     return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
   }
+};
+
+export const Issues = {
+  getIssueList(assignee, max) {
+    return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max);
+  },
 };

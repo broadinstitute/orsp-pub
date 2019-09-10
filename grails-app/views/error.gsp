@@ -6,6 +6,7 @@
 		<g:if env="development"><link rel="stylesheet" href="${resource(dir: 'css', file: 'errors.css')}" type="text/css"></g:if>
 	</head>
 	<body>
+    <g:if test="${exception.className != 'UrlMappingsInfoHandlerAdapter'}">
     <h1>Error</h1>
     <div class="alert alert-danger alert-dismissable" style="display: block">
         <g:if env="development">
@@ -17,5 +18,6 @@
             </ul>
         </g:else>
     </div>
+    </g:if>
 	</body>
 </html>
