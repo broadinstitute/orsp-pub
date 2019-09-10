@@ -911,7 +911,7 @@ class QueryService implements Status {
                 }
 
                 // Exclude abandoned by default unless statuses are specifically requested
-                if (options.ignoreAbandoned && !options.issueStatusNames) {
+                if (options.ignoreAbandoned && !options.issueStatusNames && !options.freeText) {
                     ne("status", IssueStatus.Abandoned.name)
                 }
 
@@ -919,6 +919,11 @@ class QueryService implements Status {
                     // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
                     like("projectKey", getIssueNumberFromString(options.projectKey))
                 }
+
+                if (options.freeText) {
+                    eq("projectKey", options.freeText)
+                }
+
                 if (options.sortField && options.sortOrder) order(options.sortField, options.sortOrder.name())
                 resultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
             }
@@ -978,7 +983,8 @@ class QueryService implements Status {
                             commentMap.get(issue.projectKey)?.any{it.description?.toLowerCase()?.contains(freeText)} ||
                             eventMap.get(issue.projectKey)?.any{it.summary?.toLowerCase()?.contains(freeText)} ||
                             issue.summary?.toLowerCase()?.contains(freeText) ||
-                            issue.description?.toLowerCase()?.contains(freeText)
+                            issue.description?.toLowerCase()?.contains(freeText) ||
+                            issue.projectKey?.toString()?.toLowerCase()?.equals(freeText)
             }
         }
 

@@ -44,7 +44,12 @@ class ApiService {
                  IssueType.NE.name,
                  IssueType.CONSENT_GROUP.name])
         filterUnique(queryService.findByQueryOptions(options).collect {
-            def link = getTagLib().createLink([controller: it.controller, action: 'show', absolute: true])
+            String link = ""
+            if (it.type.equals(IssueType.CONSENT_GROUP.name)) {
+                link = getTagLib().createLink([controller: it.controller, action: 'show', absolute: true])
+            } else {
+                link = getTagLib().createLink([controller: it.controller, action: 'show', absolute: true])
+            }
             [
                     "key": it.projectKey,
                     "label": it.projectKey + " (" + it.summary + ")",
