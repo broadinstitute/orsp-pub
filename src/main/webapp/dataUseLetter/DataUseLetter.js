@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh,p, div, h1, h2, h4, small, br, span, ul, li, button } from 'react-hyperscript-helpers';
+import { hh, p, div, h1, h2, h4, small, br, span, ul, li, button } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';

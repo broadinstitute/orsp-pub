@@ -4,34 +4,10 @@ import LoadingWrapper from "../components/LoadingWrapper";
 
 const AppWithLoading = LoadingWrapper(Routes);
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false
-    };
-  }
+export default function App() {
 
-  showSpinner = () => {
-    this.setState({
-      isLoading: true
-    });
-  };
-
-  hideSpinner = () => {
-    this.setState({
-      isLoading: false
-    });
-  };
-
-  render() {
     return (
       AppWithLoading({
-        isLoading: this.state.isLoading,
-        showSpinner: this.showSpinner,
-        hideSpinner: this.hideSpinner
       })
-    )
-  }
+    );
 }
-export default App;

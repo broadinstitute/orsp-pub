@@ -8,7 +8,7 @@ import App from "./App";
 ReactDOM.render(
   <ErrorHandler>
     <BrowserRouter basename= {component.contextPath}>
-      <App props={{}}/>
+      <App/>
     </BrowserRouter>
   </ErrorHandler>,
   document.getElementById('main')
