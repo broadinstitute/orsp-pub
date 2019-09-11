@@ -45,10 +45,10 @@ class ApiService {
                  IssueType.CONSENT_GROUP.name])
         filterUnique(queryService.findByQueryOptions(options).collect {
             String link = ""
-            if (it.type.equals(IssueType.CONSENT_GROUP.name)) {
-                link = getTagLib().createLink([controller: it.controller, action: 'show', absolute: true])
+            if (it.type == IssueType.CONSENT_GROUP.name) {
+                link = getTagLib().createLink([controller: 'newConsentGroup', action: 'main', absolute: true, params: [consentKey: it.projectKey]])
             } else {
-                link = getTagLib().createLink([controller: it.controller, action: 'show', absolute: true])
+                link = getTagLib().createLink([controller: 'project', action: 'main', absolute: true, params: [projectKey: it.projectKey]])
             }
             [
                     "key": it.projectKey,
@@ -56,7 +56,7 @@ class ApiService {
                     "type": it.type,
                     "status": it.status,
                     "description": it.description,
-                    "url": link + "/" + it.projectKey
+                    "url": link
             ]
         })
     }
