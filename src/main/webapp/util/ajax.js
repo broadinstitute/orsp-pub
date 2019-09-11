@@ -257,8 +257,14 @@ export const User = {
 
   editUserRole(userId, roles) {
     return axios.put(UrlConstants.editUserRoleUrl, {userId: userId, roles: roles});
-  }
+  },
 
+  authUser(token) {
+    const config = {
+      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+    };
+    return axios.get(UrlConstants.authUserUrl + '?token=' + token);
+  }
 };
 
 export const Review = {

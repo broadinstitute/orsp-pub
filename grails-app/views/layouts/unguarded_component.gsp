@@ -47,13 +47,13 @@
     const component = {
          serverURL: "${grailsApplication.config.grails.serverURL}",
          contextPath: "${request.contextPath}",
-         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}"
+         loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
+         clientId: "${grailsApplication.config.googleSignInClientId}"
        };
  </script>
 </head>
 
 <body style="margin-top: 0; padding-top: 70px;">
-  <g:render template="/base/topNav" />
 
   <div class="container">
     <div id="login_spinner" class="hidden">

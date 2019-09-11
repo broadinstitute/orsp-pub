@@ -41,7 +41,6 @@
     <g:layoutHead/>
 </head>
 <body style="margin-top: 0; padding-top: 70px;">
-<g:render template="/base/topNav" />
 
 <auth:isNotAuthenticated>
     <div class="container">

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { a, div } from 'react-hyperscript-helpers'
+import { a, div, hh, footer } from 'react-hyperscript-helpers'
 
-export class Footer extends React.Component {
+export const Footer = hh(class Footer extends Component {
   render() {
     const copy = div("Copyright © 2019 Eli & Edythe L. Broad Institute. All rights reserved. No unauthorized use or disclosure is permitted.");
     const links = div({style: {margin: "3rem 0 1rem 0"}},
@@ -13,11 +13,14 @@ export class Footer extends React.Component {
       ]
     );
     const well = div({className: "well"}, [copy, links]);
-    return div({className: "container"}, [well]);
+    return footer({}, [
+      div({className: "row"}, [
+        div({className: "col-xs-12"}, [
+          well
+        ])
+      ])
+    ]);
   }
-}
+});
 
-ReactDOM.render(
-  <Footer/>,
-  document.getElementById("footer")
-);
+export default Footer;

@@ -87,7 +87,11 @@ export const UrlConstants = {
   qaEventReportUrl: context + '/api/qa-event-report',
   fundingReportsUrl: context + '/api/report/get-funding',
   viewRestrictionUrl: context + '/api/data-use/restriction',
-
+  authUserUrl: context + '/api/auth',
   issueListUrl: context + '/api/issue-list',
+  profileUrl: context + '/profile',
+  aboutUrl: context + '/about',
+  viewSearchUrl: context + '/search/index',
+  index: context + '/index'
 };
 

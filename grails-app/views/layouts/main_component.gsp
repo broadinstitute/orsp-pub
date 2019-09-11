@@ -112,7 +112,6 @@
     <g:layoutHead/>
 </head>
 <body style="margin-top: 0; padding-top: 70px;">
-<g:render template="/base/topNav" />
 
 <auth:isNotAuthenticated>
     <div class="container">
@@ -143,9 +142,6 @@
         <g:layoutBody/>
     </div>
 </auth:broadSession>
-
-<div id="footer"></div>
-<asset:javascript src="build/footer.js"/>
 
 
 %{-- TODO: A lot of this code should go away once react conversion is complete --}%

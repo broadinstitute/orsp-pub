@@ -17,6 +17,7 @@ import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
 import PageNotFound from "../pageNotFound/PageNotFound";
 import IssueList from "../issueList/IssueList"
 import LandingPage from "./LandingPage";
+import Search from "../search/Search";
 
 const Routes = ( props ) => (
   <Switch>
@@ -40,6 +41,7 @@ const Routes = ( props ) => (
     <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
     <Route path= {"/issueList/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
+    <Route path= {"/search/index"} render = {(routeProps) =>  <Search {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
   </Switch>
 );
