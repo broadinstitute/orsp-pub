@@ -51,8 +51,7 @@ class NewConsentGroupController extends AuthenticatedController {
             response.setContentType('application/pdf')
             response.outputStream << resource.openStream()
         } catch (Exception e) {
-            response.status = 500
-            render([error: "${e}"] as JSON)
+           handleException(e)
         }
     }
 
@@ -100,8 +99,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 persistenceService.deleteCollectionLink(consentCollectionLink)
             }
             log.error("There was an error trying to create consent group: " + e.message)
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
 
     }
@@ -116,7 +114,7 @@ class NewConsentGroupController extends AuthenticatedController {
             issueService.modifyExtraProperties(simpleInput, projectKey)
             render([message: issue])
         } catch(Exception e) {
-            render([error: e.message] as JSON)
+            handleException(e)
         }
     }
 
@@ -128,8 +126,7 @@ class NewConsentGroupController extends AuthenticatedController {
             response.status = 200
             render([message: 'Consent Group was deleted'] as JSON)
         } else {
-            response.status = 404
-            render([message: 'Consent Group not found'] as JSON)
+            handleNotFound('Consent Group not found')
         }
     }
 
@@ -180,12 +177,9 @@ class NewConsentGroupController extends AuthenticatedController {
                 render( consentGroups as JSON)
             }
         } catch(IllegalArgumentException e) {
-            response.status = 400
-            render([message: "Error while trying to get project's Consent Groups. " + e as JSON])
+            handleIllegalArgumentException(e)
         } catch(Exception e) {
-            log.error("Error while trying to get Consent Groups for ProjectKey: ${params.projectKey}. ", e.getMessage())
-            response.status = 500
-            render([message: "Error while trying to get project's Consent Groups." as JSON])
+            handleException(e)
         }
     }
 
@@ -201,9 +195,7 @@ class NewConsentGroupController extends AuthenticatedController {
             persistenceService.deleteCollectionLinks(links)
             response.status = 200
         } catch (Exception e) {
-            response.status = 500
-            log.error("Exception deleting collection links: " + e)
-            flash.error = "Error deleting collection links: " + e
+            handleException(e)
         }
         render(response)
     }
@@ -215,9 +207,7 @@ class NewConsentGroupController extends AuthenticatedController {
             persistenceService.deleteCollectionLink(collectionLink)
             response.status = 200
         } catch(Exception e) {
-            response.status = 500
-            log.error("Exception deleting collection link: " + collectionLink.sampleCollectionId + e)
-            flash.error = "Error deleting collection links: " + collectionLink.sampleCollectionId + e
+            handleException(e)
         }
         render(response)
     }
@@ -239,8 +229,7 @@ class NewConsentGroupController extends AuthenticatedController {
               render(links as JSON)
             }
         } catch (Exception e) {
-            response.status = 500
-            log.error("Exception updating collection links status: " + e)
+            handleException(e)
         }
         render(response)
     }
