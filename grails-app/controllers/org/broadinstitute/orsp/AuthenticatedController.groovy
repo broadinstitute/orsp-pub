@@ -4,10 +4,11 @@ import grails.artefact.Interceptor
 import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.api.ExceptionHandler
 import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
-class AuthenticatedController implements Interceptor, UserInfo {
+class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler {
 
     NotifyService notifyService
     StorageProviderService storageProviderService
