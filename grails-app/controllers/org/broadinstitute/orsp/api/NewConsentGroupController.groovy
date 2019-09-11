@@ -177,7 +177,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 render( consentGroups as JSON)
             }
         } catch(IllegalArgumentException e) {
-            handleBadRequest(e)
+            handleIllegalArgumentException(e)
         } catch(Exception e) {
             handleException(e)
         }

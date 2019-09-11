@@ -19,7 +19,7 @@ trait ExceptionHandler {
         render([error: message] as JSON)
     }
 
-    def handleBadRequest(Exception e) {
+    def handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("${e}")
         response.status = 400
         render([error: e.message] as JSON)
