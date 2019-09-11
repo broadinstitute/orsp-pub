@@ -21,12 +21,6 @@ enum EventType {
     CLOSED,
     ABANDON,
 
-    // Consent Events
-    DUOS_CONSENT_CREATE,
-    DUOS_CONSENT_UPDATE,
-    DUOS_CONSENT_SAMPLES_EXPORT,
-    DUOS_CONSENT_DUL_EXPORT,
-
     // Project Events
     SUBMIT_PROJECT,
     READ_PROJECT,
@@ -39,6 +33,12 @@ enum EventType {
     REJECT_EDITS,
     SUBMIT_EDITS,
     REQUEST_CLARIFICATION,
+
+    // Consent Events
+    DUOS_CONSENT_CREATE,
+    DUOS_CONSENT_UPDATE,
+    DUOS_CONSENT_SAMPLES_EXPORT,
+    DUOS_CONSENT_DUL_EXPORT,
 
     // Documents Events
     UPLOAD_DOCUMENT,

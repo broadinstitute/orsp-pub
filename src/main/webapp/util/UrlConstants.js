@@ -10,6 +10,7 @@ export const UrlConstants = {
   addExtraPropertiesUrl: context + '/api/project/extra-properties',
   updateExtraPropertiesUrl: context + '/api/project/update-properties',
   updateAdminOnlyPropsUrl: context + '/api/project/update-admin-props',
+  userProjectUrl: context + '/api/user/projects',
 
   // Consent Group
   updateConsentGroupUrl: context + '/api/consent-group',
@@ -83,6 +84,7 @@ export const UrlConstants = {
   dataUseRestrictionUrl: context + '/api/data-use/restriction/create',
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
+  qaEventReportUrl: context + '/api/qa-event-report',
   fundingReportsUrl: context + '/api/report/get-funding',
   viewRestrictionUrl: context + '/api/data-use/restriction',
 

@@ -39,7 +39,7 @@ class DataUseLetterService {
             }
             dul
         } else {
-            throw new IllegalArgumentException()
+            throw new IllegalArgumentException("Form has been already submitted")
         }
     }
 

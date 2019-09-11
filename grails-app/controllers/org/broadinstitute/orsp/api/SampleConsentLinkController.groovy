@@ -7,7 +7,6 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
-import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
@@ -38,9 +37,7 @@ class SampleConsentLinkController extends AuthenticatedController {
             render([message: consentCollectionLink] as JSON)
         } catch (Exception e) {
             persistenceService.deleteCollectionLink(consentCollectionLink)
-            flash.error = e.getMessage()
-            response.status = 500
-            render([error: e.getMessage()] as JSON)
+            handleException(e)
         }
     }
 }

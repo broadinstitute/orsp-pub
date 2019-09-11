@@ -8,7 +8,6 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
-import liquibase.util.StringUtils
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.FetchMode
@@ -39,7 +38,7 @@ class QueryService implements Status {
     UserService userService
     SessionFactory sessionFactory
     ConsentService consentService
-
+    StatusEventService statusEventService
     public static String PROJECT_KEY_PREFIX
 
     static {
@@ -650,23 +649,28 @@ class QueryService implements Status {
     }
 
     /**
-     * Find project issues filtered by request date
+     * Find paginated and filtered project issues
      *
-     * @return Issue that match the query
+     * @return Issues that match the query
      */
-    @SuppressWarnings(["GroovyAssignabilityCheck", "GrUnresolvedAccess"])
-    Collection<Issue> findIssuesForStatusReport(QueryOptions options) {
-        List<String> typeList
-        if (options.issueTypeNames) {
-            typeList = options.issueTypeNames
-        } else {
-            typeList = [IssueType.NE.name, IssueType.NHSR.name, IssueType.IRB.name]
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    List<StatusEventDTO> findIssuesForStatusReport(Collection<String> issueTypeNames) {
+        if (issueTypeNames.isEmpty()) {
+            log.error("An error has occurred trying to find Issue Types from empty list for Quality Assurance Report.")
+            throw new IllegalArgumentException("Error trying to fetch Projects by unspecified type.")
         }
-        Issue.withCriteria {
-            inList("type", typeList)
-            if (options.after) { gt("requestDate", options.after) }
-            if (options.before) { lt("requestDate", options.before) }
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final StringBuffer query = new StringBuffer(' select distinct * from issue i where i.deleted = 0 and i.type != :consentGroup and i.type IN :filterType ')
+        SQLQuery sqlQuery = session.createSQLQuery(query.toString())
+        sqlQuery.setString('consentGroup', IssueType.CONSENT_GROUP.name)
+        sqlQuery.setParameterList('filterType', issueTypeNames)
+        List<Issue> issues = sqlQuery.addEntity(Issue).list()
+        List<StatusEventDTO> statusEvents = new ArrayList<>()
+        if (CollectionUtils.isNotEmpty(issues)) {
+            statusEvents = statusEventService.getStatusEventsForProjectList(issues)
         }
+        statusEvents
     }
 
     /**
@@ -1420,18 +1424,21 @@ class QueryService implements Status {
     }
 
     List<User> findUsersInUserNameList(List<String> usersList) {
-        final session = sessionFactory.currentSession
-        final String query = ' select * from user where user_name in :usersList '
-        final sqlQuery = session.createSQLQuery(query)
         List<User> results = Collections.emptyList()
-        try {
-            results = sqlQuery.with {
-                addEntity(User)
-                setParameterList('usersList', usersList)
-                list()
+        if (CollectionUtils.isNotEmpty(usersList)) {
+            final session = sessionFactory.currentSession
+            final String query = ' select * from user where user_name in :usersList '
+            final sqlQuery = session.createSQLQuery(query)
+
+            try {
+                results = sqlQuery.with {
+                    addEntity(User)
+                    setParameterList('usersList', usersList)
+                    list()
+                }
+            } catch(Exception e) {
+                log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
             }
-        } catch(Exception e) {
-            log.error("There is more than one matching result when trying to get comments for IssueId:.", e)
         }
         results
     }
