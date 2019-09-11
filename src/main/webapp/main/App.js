@@ -1,8 +1,8 @@
 import React from 'react';
 import Routes from "./Routes";
-import WithLoading from "../components/WithLoading";
+import LoadingWrapper from "../components/LoadingWrapper";
 
-const AppWithLoading = WithLoading(Routes);
+const AppWithLoading = LoadingWrapper(Routes);
 
 class App extends React.Component {
   constructor(props) {
