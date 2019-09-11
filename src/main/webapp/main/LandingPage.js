@@ -68,83 +68,53 @@ const LandingPage = hh(class LandingPage extends Component{
 
   componentDidMount = async () => {
     this._isMounted = true;
-    this.props.showSpinner();
-    await this.getProjectsList();
-    await this.getTaskList();
-    await this.hasSession();
-    this.props.hideSpinner();
+    await this.init()
   };
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  getProjectsList = async () => {
-    try {
-      const response = await Issues.getIssueList('assignee', 5);
-      if (this._isMounted) {
-        let projectListData = [];
+  init = async () => {
+    this.props.showSpinner();
+    const [ projects, tasks, user ] = await Promise.all([
+      Issues.getIssueList('assignee', 5),
+      Issues.getIssueList('user', 5),
+      User.isAuthenticated()
+    ]);
+    let projectList = [];
+    let taskList = [];
 
-        response.data.forEach(issue => {
-          projectListData.push({
-            project: issue.projectKey,
-            title: issue.summary,
-            status: issue.status,
-            type: issue.type,
-            updated: parseDate(issue.updateDate),
-            expiration: parseDate(issue.expirationDate)
-          });
-        });
+    projects.data.forEach(issue => {
+      projectList.push({
+        project: issue.projectKey,
+        title: issue.summary,
+        status: issue.status,
+        type: issue.type,
+        updated: parseDate(issue.updateDate),
+        expiration: parseDate(issue.expirationDate)
+      });
+    });
 
-        this.setState(resp => {
-          resp.projectList = projectListData;
-          return resp;
-        });
-      }
-    } catch(e) {
-      this.props.hideSpinner()
-    }
-  };
+    tasks.data.forEach(issue => {
+      taskList.push({
+        project: issue.projectKey,
+        title: issue.summary,
+        status: issue.status,
+        type: issue.type,
+        updated: parseDate(issue.updateDate),
+        expiration: parseDate(issue.expirationDate)
+      });
+    });
 
-  getTaskList = async () => {
-    try {
-      const response = await Issues.getIssueList('user', 5);
-      if (this._isMounted) {
-        let taskListData = [];
+    this.props.hideSpinner();
 
-        response.data.forEach(issue => {
-          taskListData.push({
-            project: issue.projectKey,
-            title: issue.summary,
-            status: issue.status,
-            type: issue.type,
-            updated: parseDate(issue.updateDate),
-            expiration: parseDate(issue.expirationDate)
-          });
-        });
-        this.setState(resp => {
-          this.props.hideSpinner();
-          resp.taskList = taskListData;
-          return resp;
-        });
-      }
-    } catch(e) {
-      this.props.hideSpinner();
-    }
-  };
-
-  hasSession = async () => {
-    try {
-      const resp = await User.isAuthenticated();
-      if (this._isMounted) {
-        this.setState({
-          logged: resp.data.session
-        })
-      }
-    } catch(error) {
-      this.setState(() => {
-        throw error;
-      }, () => this.props.hideSpinner());
+    if (this._isMounted) {
+      this.setState({
+        projectList: projectList,
+        taskList: taskList,
+        logged: user.data.session
+      })
     }
   };
 
