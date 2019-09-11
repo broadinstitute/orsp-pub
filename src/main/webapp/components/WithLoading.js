@@ -1,5 +1,6 @@
 import React from 'react';
-import { div, img } from 'react-hyperscript-helpers';
+import { Fragment } from 'react';
+import { h, div, img } from 'react-hyperscript-helpers';
 import { context } from "../util/UrlConstants";
 
 function WithLoading(WrappedComponent) {
@@ -8,14 +9,15 @@ function WithLoading(WrappedComponent) {
   return function WithLoadingComponent({ isLoading, showSpinner, hideSpinner, ...props }) {
 
     return (
-      div({}, [
+      h(Fragment, {}, [
         div({ isRendered: isLoading, style: containerStyle }, [
           div({ style: spinnerStyle }, [
             img({ src: context + "/assets/loading-indicator.svg", alt:'spinner' })
           ])
         ]),
         WrappedComponent({showSpinner, hideSpinner, ...props}, [])
-      ])
+        ]
+      )
     );
   }
 }

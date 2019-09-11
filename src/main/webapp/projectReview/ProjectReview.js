@@ -228,7 +228,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   getReviewSuggestions() {
     this.init();
-      Review.getSuggestions(this.props.projectKey).then(
+    Review.getSuggestions(this.props.projectKey).then(
       data => {
         if (this._isMounted) {
           if (data.data !== '') {
@@ -239,6 +239,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               return prev;
             });
             this.props.changeInfoStatus(false);
+            this.props.hideSpinner();
           } else {
             this.setState(prev => {
               prev.editedForm = {};
@@ -246,9 +247,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               return prev;
             });
             this.props.changeInfoStatus(true);
+            this.props.hideSpinner();
           }
         }
-      }).catch(() => { });
+      }).catch(() => this.props.hideSpinner())
   }
 
   getUsersArray(array) {
@@ -293,6 +295,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   approveRevision = () => {
+    this.props.showSpinner();
     this.setState({
       disableApproveButton: true,
       approveInfoDialog: false
@@ -308,11 +311,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         () => {
           Project.getProject(this.props.projectKey).then(
             issue => {
+              this.props.hideSpinner();
               this.props.updateDetailsStatus(issue.data);
             })
           });
         }
     ).catch(error => {
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
     });
     if (this.state.reviewSuggestion) {
@@ -322,6 +327,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           this.removeEdits('approve');
         })
         .catch(error => {
+          this.props.hideSpinner();
           this.setState(() => { throw error; });
         });
     }
@@ -475,6 +481,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   enableEdit = (e) => () => {
+    this.props.showSpinner();
     this.getReviewSuggestions();
     this.setState(prev => {
       prev.readOnly = false;
@@ -495,6 +502,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   submitEdit = () => () => {
+    this.props.showSpinner();
     if (this.isValid()) {
       this.setState(prev => {
         prev.readOnly = true;
@@ -534,12 +542,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             });
           }
       }).catch( error => {
-        this.setState(this.setState(() => { throw error; }));
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
       });
     } else {
       this.setState({
         errorSubmit: true
-      });
+      },() => this.props.hideSpinner());
     }
   };
 

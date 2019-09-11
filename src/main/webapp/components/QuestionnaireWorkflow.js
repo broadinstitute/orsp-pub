@@ -4,7 +4,9 @@ import { InputYesNo } from './InputYesNo';
 import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
 import './QuestionnaireWorkflow.css';
 
+
 export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Component {
+
   constructor(props) {
     super(props);
     this.state = {

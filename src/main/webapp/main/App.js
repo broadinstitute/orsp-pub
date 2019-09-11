@@ -8,26 +8,26 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      isLoading: false
     };
   }
 
   showSpinner = () => {
     this.setState({
-      loading: true
+      isLoading: true
     });
   };
 
   hideSpinner = () => {
     this.setState({
-      loading: false
+      isLoading: false
     });
   };
 
   render() {
     return (
       AppWithLoading({
-        isLoading: this.state.loading,
+        isLoading: this.state.isLoading,
         showSpinner: this.showSpinner,
         hideSpinner: this.hideSpinner
       })

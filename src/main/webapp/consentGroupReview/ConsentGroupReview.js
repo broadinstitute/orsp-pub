@@ -236,12 +236,13 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
             return prev;
           });
           this.props.changeInfoStatus(false);
+          this.props.hideSpinner();
         } else {
           this.setState(prev => {
             prev.formData = JSON.parse(JSON.stringify(this.state.current));
             prev.reviewSuggestion = false;
             return prev;
-          });
+          },() => this.props.hideSpinner());
         }
       }
     });
@@ -309,6 +310,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   approveConsentGroup = () => {
+    this.props.showSpinner();
     this.setState({ disableApproveButton: true });
     const data = { approvalStatus: "Approved" };
     ConsentGroup.approve(this.props.consentKey, data).then(
@@ -318,6 +320,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           ConsentGroup.updateConsent(consentGroup, this.props.consentKey).then(resp => {
             this.removeEdits();
           }).catch(error => {
+            this.props.hideSpinner();
             console.error(error);
           });
         }
@@ -330,6 +333,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           Project.getProject(this.props.consentKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
+              this.props.hideSpinner();
             })
           });
         })
@@ -400,6 +404,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   enableEdit = (e) => () => {
+    this.props.showSpinner();
     this.getReviewSuggestions();
     this.setState(prev => {
       prev.readOnly = false;
@@ -427,6 +432,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
   };
 
   submitEdit = (e) => () => {
+    this.props.showSpinner();
     let data = {};
     if (this.isValid()) {
       this.setState(prev => {
