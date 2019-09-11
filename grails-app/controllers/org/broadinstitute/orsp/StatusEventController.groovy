@@ -16,6 +16,27 @@ class StatusEventController extends AuthenticatedController {
         render(view: "/mainContainer/index")
     }
 
+    // TODO: unused, this must be re-implemented
+    private Map<String, Period> calculateIssuePeriods(Collection<Issue> issues) {
+        issues.collectEntries { issue ->
+            List<StatusEventDTO> eventDTOs = statusEventService.getStatusEventDTOs(issue.projectKey)
+            Period period = null
+            if (!eventDTOs?.isEmpty()) {
+                period = eventDTOs.last().duration
+            } else {
+                log.warn("There are no period events for issue ${issue.projectKey}")
+            }
+            [issue.projectKey, period]
+        }
+    }
+    // TODO: unused, this must be re-implemented
+    def project() {
+        Issue issue = queryService.findByKey(params.projectKey)
+        // Sort ascending and create DTOs
+        Collection<Event> eventDTOs = statusEventService.getStatusEventsForProject(params.projectKey)
+        [statusEvents: eventDTOs, issue: issue]
+    }
+
     def findQaEventReport() {
         UtilityClass.registerQaReportIssueMarshaller()
         Collection<String> issueTypeNames = (params?.tab == NO_IRB) ?

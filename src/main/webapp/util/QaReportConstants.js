@@ -1,4 +1,6 @@
 import { dateParser } from "./Utils";
+import { h } from 'react-hyperscript-helpers';
+import { Link } from 'react-router-dom'
 
 export const QA_REPORT_SPINNER = "qaReportSpinner";
 export const NO_IRB = 'noIrb';
@@ -12,7 +14,13 @@ export const columns = [{
 }, {
   dataField: 'projectKey',
   text: 'Project',
-  sort: true
+  sort: true,
+  formatter: (cell, row, rowIndex, colIndex) =>
+    h(Link,{
+      to: {
+        pathname:'/statusEvent/projectReport',
+        state: {projectKey:row.projectKey}
+      }}, [row.projectKey])
 }, {
   dataField: 'type',
   text: 'Type',

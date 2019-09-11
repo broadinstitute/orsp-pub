@@ -17,6 +17,7 @@ import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
 import PageNotFound from "../pageNotFound/PageNotFound";
 import IssueList from "../issueList/IssueList"
 import LandingPage from "./LandingPage";
+import ProjectReport from "../qaReport/ProjectReport";
 
 const Routes = ( props ) => (
   <Switch>
@@ -28,6 +29,7 @@ const Routes = ( props ) => (
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />
+    <Route path= {"/statusEvent/projectReport"} render = {(routeProps) => <ProjectReport {...routeProps} {...props}/>} />
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
     <Route path= {"/index/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
