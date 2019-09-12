@@ -1,4 +1,4 @@
-import { isEmpty } from "./Utils";
+import { dateParser, isEmpty } from "./Utils";
 import { format } from 'date-fns';
 import { UrlConstants } from "./UrlConstants";
 
@@ -34,7 +34,7 @@ export const formatDataPrintableFormat = (data, columns) => {
   return dataArray;
 };
 
-export const formatExcelData = (data, columns) => {
+export const formatExcelData = (data, columns, hide) => {
   let headers = {};
   let rows= [];
   columns.filter(el => el.dataField !== 'id').forEach(el => headers[el.dataField] = el.text);
@@ -42,7 +42,7 @@ export const formatExcelData = (data, columns) => {
   if (!isEmpty(data) && !isEmpty(columns)) {
     data.forEach(el => {
       let newEl = {};
-      Object.keys(el).filter(elem => elem !== 'id').forEach(key => {
+      Object.keys(el).filter(elem => (elem !== 'id' && !hide.includes(elem) )).forEach(key => {
         newEl[key] = parseDataElements(el, key);
       });
       rows.push(newEl);
@@ -59,6 +59,12 @@ function parseDataElements(el, key) {
     result = el[key].join(', ')
   } else {
     result = el[key];
+  }
+  if (key === 'age') {
+    const dateObj = dateParser(el[key]);
+    result =  (dateObj.years > 0 ? dateObj.years + ' years, ' : '') +
+      (dateObj.months > 0 ? dateObj.months + ' months ' : '') +
+      (dateObj.months > 0 || dateObj.years > 0 ? ' and ': '') + dateObj.days + ' days';
   }
   return result;
 }

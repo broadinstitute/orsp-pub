@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit
 
 class StatusService {
 
-    BspWebService bspWebService
     ConsentService consentService
     DataBioOntologyService dataBioOntologyService
     NotifyService notifyService
@@ -28,7 +27,6 @@ class StatusService {
         catch (e) { new SubsystemStatus(ok: false, messages: [e.message]) }
     }
 
-    private final Callable<SubsystemStatus> bsp = new Callable<SubsystemStatus>() {@Override SubsystemStatus call() throws Exception { bspWebService.getStatus() }}
     private final Callable<SubsystemStatus> database = new Callable<SubsystemStatus>() {@Override SubsystemStatus call() throws Exception { queryService.getStatus() }}
     private final Callable<SubsystemStatus> databio = new Callable<SubsystemStatus>() {@Override SubsystemStatus call() throws Exception { dataBioOntologyService.getStatus() }}
     private final Callable<SubsystemStatus> consent = new Callable<SubsystemStatus>() {@Override SubsystemStatus call() throws Exception { consentService.getStatus() }}
@@ -39,7 +37,6 @@ class StatusService {
     def status() {
         try {
             PromiseMap<String, SubsystemStatus> statusMap = new PromiseMap<>()
-            statusMap.put('BSP', { getCachedSubsystem('BSP', bsp) })
             statusMap.put('Database', { getCachedSubsystem('Database', database) })
             statusMap.put('DataBioOntology', { getCachedSubsystem('DataBioOntology', databio) })
             statusMap.put('DUOS', { getCachedSubsystem('DUOS', consent) })

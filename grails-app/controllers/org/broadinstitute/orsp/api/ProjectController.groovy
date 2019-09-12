@@ -68,9 +68,7 @@ class ProjectController extends AuthenticatedController {
             render([message: issue] as JSON)
         } catch (Exception e) {
             issueService.deleteIssue(projectKey)
-            log.error("There was an error trying to create a project: " + e.message)
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
 
     }
@@ -83,8 +81,7 @@ class ProjectController extends AuthenticatedController {
             Issue updatedIssue = issueService.modifyExtraProperties(input, projectKey)
             render([message: updatedIssue] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
     }
 
@@ -114,8 +111,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was deleted'] as JSON)
         } else {
-            response.status = 404
-            render([message: 'Project not found'] as JSON)
+            handleNotFound('Project not found')
         }
     }
 
@@ -128,8 +124,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
     }
 
@@ -140,8 +135,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
     }
 
@@ -157,8 +151,7 @@ class ProjectController extends AuthenticatedController {
             response.status = 200
             render([projectType: projectType] as JSON)
         } else {
-            response.status = 404
-            render([message: "Project not found"] as JSON)
+            handleNotFound('Project not found')
         }
         projectType
     }

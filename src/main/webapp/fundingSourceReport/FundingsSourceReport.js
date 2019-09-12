@@ -4,9 +4,15 @@ import { Reports } from "../util/ajax";
 import { spinnerService } from "../util/spinner-service";
 import { Spinner } from "../components/Spinner";
 import { TableComponent } from "../components/TableComponent";
-import { handleRedirectToProject, printData } from "../util/Utils";
+import { handleRedirectToProject, exportData } from "../util/Utils";
 import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
+
+const stylesHeader = {
+  pageTitle: {
+    fontWeight: '700', margin: '20px 0', fontSize: '35px', display: 'block'
+  }
+};
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -228,13 +234,13 @@ class FundingsSourceReport extends Component {
     let fundingsArray = formatDataPrintableFormat(this.state.fundings, cols);
     const tableColumnsWidth = [100, 100,'*',80 ,'*','*','*','*','*'];
     const titleText = "Funding Source Report";
-    printData(fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
+    exportData('print' ,null,fundingsArray, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   render() {
     return(
       div({},[
-        h1({}, ["Funding Source Report"]),
+        h1({ style: stylesHeader.pageTitle}, ["Funding Source Report"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import "regenerator-runtime/runtime";
 import  { UrlConstants }  from './UrlConstants';
+import isNil from 'lodash/isNil';
 
 export const Search = {
 
@@ -201,6 +202,11 @@ export const Project = {
       .then(resp => type = resp.data.projectType)
       .catch(err => console.error(err));
     return type;
+  },
+
+  getProjectByUser(assignee, max) {
+    let maxParam = !isNil(max) ? '&max=' + max : ''
+    return axios.get(UrlConstants.userProjectUrl + '?assignee=' + assignee + maxParam);
   }
 };
 
@@ -380,6 +386,13 @@ export const Reports = {
         orderColumn: query.orderColumn,
         sortDirection: query.sortDirection,
         searchValue: query.searchValue
+      }
+    })
+  },
+  getQaEventReport(tab) {
+    return axios.get(UrlConstants.qaEventReportUrl, {
+      params: {
+        tab: tab
       }
     })
   }

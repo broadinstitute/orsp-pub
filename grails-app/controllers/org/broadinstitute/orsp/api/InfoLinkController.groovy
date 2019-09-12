@@ -22,18 +22,14 @@ class InfoLinkController extends AuthenticatedController {
             Gson gson = new Gson()
             Map<ConsentCollectionLinkDTO, List<StorageDocument>> result = queryService.findSpecificCollectionLink(consentCollectionId)
             if (result.isEmpty()) {
-                log.error("There was an error trying to get consent collection link info Id : ${consentCollectionId}")
-                response.status = 404
-                render([message: "There is no association for the given set of ids."] as JSON)
+                handleNotFound("There is no association for the given set of ids.  Collection link info Id: ${consentCollectionId}")
             } else {
                 render ([ sampleCollections : gson.toJson(result.keySet()),
                           documents: gson.toJson(result.values())
                 ] as JSON)
             }
         }  catch (Exception e) {
-            log.error("There was an error trying to get consent collection info: " + e.message)
-            response.status = 500
-            render([error: e.message] as JSON)
+            handleException(e)
         }
     }
 }

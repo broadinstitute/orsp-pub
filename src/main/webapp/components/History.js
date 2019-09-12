@@ -1,10 +1,13 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
+import { TextEditor } from "./TextEditor";
+import { Review } from "../util/ajax";
+
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
-import { printData } from "../util/Utils";
+import { exportData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatDataPrintableFormat } from "../util/TableUtil";
 
@@ -48,7 +51,7 @@ export const History = hh(class History extends Component {
     const titleText = (component.issueType === "project" ? ("Project ID: " + this.props.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
     const columnsWidths = [100, '*', 200];
-    printData(historyArray, titleText, 'ORSP History', columnsWidths);
+    exportData('print',null, historyArray, titleText, 'ORSP History', columnsWidths);
   };
 
   render() {
