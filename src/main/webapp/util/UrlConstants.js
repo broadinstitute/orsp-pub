@@ -93,6 +93,13 @@ export const UrlConstants = {
   aboutUrl: context + '/about',
   viewSearchUrl: context + '/search/index',
   index: context + '/index',
-  signOutUrl: context + '/logout/logout'
+  signOutUrl: context + '/logout/logout',
+  dataUseListUrl: context + "/dataUse/list",
+  reviewCategoryReportUrl: context + "/report/reviewCategories",
+  qaEventReportUrl: context + "/statusEvent/qaEventReport",
+  fundingReportUrl: context + "/admin/fundingReport",
+  metricsReportUrl: context + "/report/aahrppMetrics",
+  rolesManagementUrl: context + "/user/rolesManagement",
+  projectUrl: "/project/main"
 };
 

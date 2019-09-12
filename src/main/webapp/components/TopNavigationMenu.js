@@ -2,12 +2,12 @@ import { Component } from "react";
 import { a, hh, div, button, span, ul, li, b, form, input, h } from 'react-hyperscript-helpers';
 import GoogleLoginButton from "./GoogleLoginButton";
 import { Storage } from '../util/storage'
-import { User } from "../util/ajax";
+import { User, Reports } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
-  
+
   constructor(props) {
 
     super(props);
@@ -38,11 +38,15 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     });
   }
 
+  openMetricsReport() {
+    Reports.getMetricsReport();
+  }
+
   render() {
     let isLogged = this.state.isLogged;
     let isViewer = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false;
-    let isAdmin =  Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin  || Storage.getCurrentUser().isORSP || Storage.getCurrentUser().isComplianceOffice : false;
-    let currentUser = {displayName: ''}
+    let isAdmin = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin || Storage.getCurrentUser().isORSP || Storage.getCurrentUser().isComplianceOffice : false;
+    let currentUser = { displayName: '' }
     if (isLogged) {
       currentUser = Storage.getCurrentUser();
     }
@@ -78,28 +82,28 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 )
               ]),
               li({ isRendered: isLogged, className: "dropdown" }, [
-                a({ className: "dropdown-toggle", href: "/" }, [
+                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
-                  li({}, [a({}, ["New Project"])])
+                  li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
                 ])
               ]),
-              li({isRendered: isLogged && isAdmin, className: "dropdown" }, [
-                a({ className: "dropdown-toggle", href: "/" }, [
+              li({ isRendered: isLogged && isAdmin, className: "dropdown" }, [
+                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
-                  li({}, [a({ href: "/" }, ["Data Use Restrictions"])]),
-                  li({}, [a({ href: "/" }, ["Review Category Report"])]),
-                  li({}, [a({ href: "/" }, ["Event Report"])]),
-                  li({}, [a({ href: "/" }, ["Funding Source Report"])]),
-                  li({}, [a({ href: "/" }, ["AAHRPP Metrics Report (CSV)"])]),
-                  li({}, [a({ href: "/" }, ["Roles Management"])])
+                  li({}, [h(Link, { to: { pathname: UrlConstants.dataUseListUrl } }, ["Data Use Restrictions"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportUrl } }, ["Event Report"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
+                  li({}, [a({ onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])
             ]),
-            form({ isRendered: isLogged , className: "navbar-form navbar-left" }, [
+            form({ isRendered: isLogged, className: "navbar-form navbar-left" }, [
               div({ className: "form-group" }, [
                 input({
                   className: "form-control",
@@ -119,7 +123,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   )
                 ]),
                 li({}, [
-                  h(Link, { to: { pathname: UrlConstants.aboutUrl }, onClick: () => this.signOut()},
+                  h(Link, { to: { pathname: UrlConstants.aboutUrl }, onClick: () => this.signOut() },
                     ["Sign out"]
                   )
                 ]),

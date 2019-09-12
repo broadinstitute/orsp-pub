@@ -405,6 +405,9 @@ export const Reports = {
         tab: tab
       }
     })
+  },
+  getMetricsReport(tab) {
+    return axios.get(UrlConstants.metricsReportUrl);
   }
 };
 
