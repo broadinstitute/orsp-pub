@@ -11,16 +11,18 @@ import { UrlConstants } from "../util/UrlConstants";
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   
   constructor(props) {
+
     super(props);
     this.state = {
-      pageCounter: 0,
-      isLogged: Storage.userIsLogged
+      isLogged: Storage.userIsLogged()
     };
     this.signOut = this.signOut.bind(this);
+    this.onSuccess = this.onSuccess.bind(this);
   }
 
   async onSuccess(token) {
-    let resp = await User.authUser(token)
+    await User.authUser(token);
+    let resp = await User.getUserSession();
     Storage.setCurrentUser(resp.data);
     Storage.setUserIsLogged(true);
     this.setState({
@@ -31,12 +33,17 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   signOut() {
     Storage.setUserIsLogged(false);
     Storage.clearStorage();
-    this.props.history.push(UrlConstants.index);
+    this.setState({
+      isLogged: false
+    })
+    //this.props.history.push(UrlConstants.index);
   }
 
   render() {
-    let isLogged = Storage.userIsLogged();
-    let currentUser = {}
+    let isLogged = this.state.isLogged;
+    let isViewer = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false;
+    let isAdmin =  Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin  || Storage.getCurrentUser().isORSP || Storage.getCurrentUser().isComplianceOffice : false;
+    let currentUser = {displayName: ''}
     if (isLogged) {
       currentUser = Storage.getCurrentUser();
     }
@@ -65,12 +72,13 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ['About']
                 )
               ]),
-              li({}, [
+              // if authenticated
+              li({ isRendered: isLogged }, [
                 h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
                   ['Search']
                 )
               ]),
-              li({ className: "dropdown" }, [
+              li({ isRendered: isLogged, className: "dropdown" }, [
                 a({ className: "dropdown-toggle", href: "/" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
@@ -78,7 +86,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [a({}, ["New Project"])])
                 ])
               ]),
-              li({ isRendered: true, className: "dropdown" }, [
+              li({isRendered: isLogged && isAdmin, className: "dropdown" }, [
                 a({ className: "dropdown-toggle", href: "/" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
@@ -92,7 +100,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ])
             ]),
-            form({ className: "navbar-form navbar-left" }, [
+            form({ isRendered: isLogged , className: "navbar-form navbar-left" }, [
               div({ className: "form-group" }, [
                 input({
                   className: "form-control",
@@ -104,7 +112,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 })
               ])
             ]),
-            div({ isRendered: this.state.isLogged }, [
+            div({ isRendered: isLogged }, [
               ul({ className: "nav navbar-nav" }, [
                 li({}, [
                   h(Link, { to: { pathname: UrlConstants.profileUrl } },
@@ -116,7 +124,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ]),
               ]),
             ]),
-            div({ isRendered: !this.state.isLogged }, [
+            div({ isRendered: !isLogged, className: "floatRight" }, [
               GoogleLoginButton({
                 clientId: component.clientId,
                 onSuccess: this.onSuccess
