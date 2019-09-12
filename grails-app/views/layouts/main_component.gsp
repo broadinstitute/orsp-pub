@@ -113,7 +113,9 @@
 </head>
 <body style="margin-top: 0; padding-top: 70px;">
 
-<auth:isNotAuthenticated>
+  <div id="main"></div>
+  <asset:javascript src="build/mainIndex.js"/>
+<!-- <auth:isNotAuthenticated>
     <div class="container">
         <div id="login_spinner" class="hidden">
             <div class="alert alert-success alert-dismissable" style="display: block">
@@ -123,9 +125,9 @@
         <div id="about"></div>
         <asset:javascript src="build/about.js"/>
     </div>
-</auth:isNotAuthenticated>
+</auth:isNotAuthenticated> -->
 
-<auth:nonBroadSession>
+<!-- <auth:nonBroadSession>
     <div class="container">
         <div class="alert alert-danger alert-dismissable" style="display: block">
             You must be a Broad Institute User for further access. Please sign out and log in with
@@ -141,7 +143,7 @@
         <g:render template="/base/messages" />
         <g:layoutBody/>
     </div>
-</auth:broadSession>
+</auth:broadSession> -->
 
 
 %{-- TODO: A lot of this code should go away once react conversion is complete --}%
