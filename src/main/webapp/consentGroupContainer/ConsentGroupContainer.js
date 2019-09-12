@@ -1,10 +1,10 @@
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { ConsentGroupReview } from "../consentGroupReview/ConsentGroupReview";
+import ConsentGroupReview from "../consentGroupReview/ConsentGroupReview";
 import { History } from "../components/History";
-import { Comments } from "../components/Comments";
+import Comments from "../components/Comments";
 import '../components/Wizard.css';
-import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
+import ConsentGroupDocuments from "../consentGroupDocuments/ConsentGroupDocuments";
 import MultiTab from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
 
@@ -94,8 +94,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Cohort Details",
               }, [
                   h(ConsentGroupReview, {
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     changeInfoStatus: this.props.changeInfoStatus,
                     updateDetailsStatus: this.updateDetailsStatus,
@@ -108,8 +106,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 title: "Documents",
               }, [
                   h(ConsentGroupDocuments, {
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     updateDocumentsStatus: this.updateDocumentsStatus,
                     consentKey: this.props.consentKey
                   })
@@ -118,7 +114,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 key: "comments",
                 title: "Messages",
               }, [
-                  h(Fragment, {}, [Comments({
+                  h(Fragment, {}, [
+                    h(Comments, {
                     showSpinner: this.props.showSpinner,
                     hideSpinner: this.props.hideSpinner,
                     comments: this.state.comments,

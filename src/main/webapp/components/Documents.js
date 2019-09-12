@@ -2,11 +2,11 @@ import { Component, Fragment } from 'react';
 import { hh, h, h3, div, p, button } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
-import { AddDocumentDialog } from './AddDocumentDialog'
+import AddDocumentDialog from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { DocumentHandler } from '../util/ajax';
-import { DataUseLetter } from './DataUseLetterLink';
+import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
 import { UrlConstants } from "../util/UrlConstants";
 import { Link } from 'react-router-dom';
@@ -102,9 +102,7 @@ export const Documents = hh(class Documents extends Component {
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
-      AddDocumentDialog({
-        showSpinner: this.props.showSpinner,
-        hideSpinner: this.props.hideSpinner,
+      h(AddDocumentDialog, {
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
@@ -149,9 +147,7 @@ export const Documents = hh(class Documents extends Component {
         title: "Data Use Limitation Record Request",
         isRendered: this.props.isConsentGroup === true
       }, [
-          DataUseLetter({
-            showSpinner: this.props.showSpinner,
-            hideSpinner: this.props.hideSpinner,
+          h(DataUseLetter, {
             userName: this.props.userName,
             projectKey: this.props.projectKey,
           })

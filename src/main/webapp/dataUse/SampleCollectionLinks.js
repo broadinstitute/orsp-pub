@@ -6,6 +6,7 @@ import { styles } from "../util/ReportConstants";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { isEmpty } from "../util/Utils";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -61,7 +62,7 @@ function getValue(row) {
   return lis;
 }
 
-export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
+const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
 
   _isMount = false;
 
@@ -128,4 +129,4 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
     )
   }
 });
-export default SampleCollectionLinks;
+export default LoadingWrapper(SampleCollectionLinks);

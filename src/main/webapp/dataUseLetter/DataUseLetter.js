@@ -14,8 +14,9 @@ import { Search } from "../util/ajax";
 import { DataUse } from "../util/ajax";
 import _ from 'lodash';
 import { isEmpty } from "../util/Utils";
+import LoadingWrapper from "../components/LoadingWrapper";
 
-export const DataUseLetter = hh(class DataUseLetter extends Component {
+const DataUseLetter = hh(class DataUseLetter extends Component{
 
   constructor(props) {
     super(props);
@@ -1148,4 +1149,4 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     )
   }
 });
-export default DataUseLetter;
+export default LoadingWrapper(DataUseLetter);

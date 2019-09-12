@@ -7,10 +7,10 @@ import { AlertMessage } from './AlertMessage';
 import { ClarificationRequest } from "../util/ajax";
 import { Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-
 import './ConfirmationDialog.css';
+import LoadingWrapper from "./LoadingWrapper";
 
-export const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component {
+const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component{
 
   _isMounted = false;
 
@@ -184,3 +184,5 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     )
   }
 });
+
+export default LoadingWrapper(RequestClarificationDialog, true);

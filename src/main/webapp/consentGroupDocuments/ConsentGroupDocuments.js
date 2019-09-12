@@ -6,8 +6,9 @@ import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { h, hh } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from "../components/AlertMessage";
-
-export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
+import LoadingWrapper from "../components/LoadingWrapper";
+ 
+const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
   _isMounted = false;
 
@@ -154,8 +155,6 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
         actionLabel: 'Yes'
       }, []),
       Documents({
-        showSpinner: this.props.showSpinner,
-        hideSpinner: this.props.hideSpinner,
         documents: this.state.documents,
         handleDialogConfirm: this.handleDialog,
         isAdmin: this.state.isAdmin,
@@ -178,3 +177,5 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
     ])
   }
 });
+
+export default LoadingWrapper(ConsentGroupDocuments);

@@ -122,8 +122,6 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
           actionLabel: 'Yes'
         }, []),
         Documents({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
           documents: this.state.documents,
           handleDialogConfirm: this.handleDialog,
           user: this.state.user,

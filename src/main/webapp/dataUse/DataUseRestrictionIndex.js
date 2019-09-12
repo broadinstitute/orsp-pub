@@ -1,9 +1,9 @@
-import { Component } from 'react';
-import { div } from 'react-hyperscript-helpers';
+import React, { Component, Fragment } from 'react';
+import { h, hh } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 
-class DataUseRestrictionIndex extends Component {
+const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Component {
 
   constructor(props) {
     super(props);
@@ -11,17 +11,12 @@ class DataUseRestrictionIndex extends Component {
   
   render() {
      return (
-       div({}, [ 
-        DataUseRestriction({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner
-        }),
-        SampleCollectionLinks({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner
-        })
-       ])
+       <Fragment >
+         <DataUseRestriction/>
+         <SampleCollectionLinks/>
+       </Fragment>
      )
   }
-}
+});
+
 export default DataUseRestrictionIndex;

@@ -4,7 +4,7 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InstitutionalSource } from '../components/InstitutionalSource';
 import { ConsentGroup, SampleCollections, Review, User, Project } from "../util/ajax";
-import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
+import RequestClarificationDialog from "../components/RequestClarificationDialog";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { AlertMessage } from "../components/AlertMessage";
 import get from 'lodash/get';
@@ -12,6 +12,7 @@ import { Table } from "../components/Table";
 import { isEmpty } from "../util/Utils";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { InputFieldRadio } from "../components/InputFieldRadio";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const headers =
   [
@@ -24,7 +25,7 @@ const headers =
     { name: 'Remove', value: 'unlinkSampleCollection' }
   ];
 
-export const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
+const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   _isMounted = false;
 
@@ -755,6 +756,18 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     return (
       div({}, [
         h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + this.props.consentKey]),
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.enableEdit(),
+          isRendered: this.state.readOnly === true && !component.isViewer,
+        }, ["Edit Information"]),
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.cancelEdit(),
+          isRendered: this.state.readOnly === false
+        }, ["Cancel"]),
         ConfirmationDialog({
           closeModal: this.toggleState('unlinkDialog'),
           show: this.state.unlinkDialog,
@@ -763,9 +776,7 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           bodyText: 'Are you sure you want to unlink the associated Sample Collection?',
           actionLabel: 'Yes'
         }),
-        RequestClarificationDialog({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
+        h(RequestClarificationDialog, {
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: this.props.consentKey,
@@ -803,18 +814,6 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
           bodyText: 'Are you sure you want to remove this  Group as Sample/Data Cohort?',
           actionLabel: 'Yes'
         }, []),
-        button({
-          className: "btn buttonPrimary floatRight",
-          style: { 'marginTop': '15px' },
-          onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !component.isViewer,
-        }, ["Edit Information"]),
-        button({
-          className: "btn buttonSecondary floatRight",
-          style: { 'marginTop': '15px' },
-          onClick: this.cancelEdit(),
-          isRendered: this.state.readOnly === false
-        }, ["Cancel"]),
         Panel({ title: "Notes to ORSP",
           isRendered: !this.state.readOnly || !isEmpty(this.state.formData.consentExtraProps.editDescription) || !isEmpty(this.state.formData.consentExtraProps.describeEditType)
         }, [
@@ -1001,3 +1000,5 @@ export const ConsentGroupReview = hh(class ConsentGroupReview extends Component 
     )
   }
 });
+
+export default LoadingWrapper(ConsentGroupReview);

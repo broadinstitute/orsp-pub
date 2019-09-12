@@ -5,9 +5,11 @@ import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
 import { Files } from "../util/ajax";
 import './ConfirmationDialog.css';
+import LoadingWrapper from "./LoadingWrapper";
 
-export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
-  constructor(props) {
+const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
+
+    constructor(props) {
     super(props);
     this.state = {
       alertMessage: '',
@@ -197,3 +199,5 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     )
   }
 });
+
+export default LoadingWrapper(AddDocumentDialog, true);

@@ -1,13 +1,13 @@
 import { Component } from 'react';
-import { div } from 'react-hyperscript-helpers';
-import { StatusBox } from "../components/StatusBox";
+import { div, h, hh } from 'react-hyperscript-helpers';
+import  StatusBox from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
 import { isEmpty } from "../util/Utils";
 import './Main.css';
 
-class Main extends Component {
+const Main = hh(class Main extends Component{
 
   _isMounted = false;
 
@@ -94,12 +94,10 @@ class Main extends Component {
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
-        StatusBox({
+        h(StatusBox, {
           status: this.state.status
         }),
         ProjectContainer({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
           history: this.props.history,
           isRendered: this.state.issueType === 'project',
           initStatusBoxInfo: this.initStatusBoxInfo,
@@ -112,8 +110,6 @@ class Main extends Component {
           tab: this.state.tab
         }),
         ConsentGroupContainer({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
           isRendered: this.state.issueType === 'consent-group',
           initStatusBoxInfo: this.initStatusBoxInfo,
           changeInfoStatus: this.changeInfoStatus,
@@ -125,6 +121,6 @@ class Main extends Component {
       ])
     );
   }
-}
+});
 
 export default Main;

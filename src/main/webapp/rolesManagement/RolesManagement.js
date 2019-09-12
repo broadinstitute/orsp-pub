@@ -1,9 +1,10 @@
 import { Component } from 'react';
-import { div, h1 } from 'react-hyperscript-helpers';
+import { hh, div, h1 } from 'react-hyperscript-helpers';
 import { Table } from "../components/Table";
 import { RoleManagementEdit } from "../components/RoleManagementEdit";
 import { User } from "../util/ajax";
 import { TablePaginator } from "../components/TablePaginator";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const tableHeaders =
   [
@@ -25,7 +26,7 @@ const tableHeaders =
     'emailAddress': 2
   };
 
-class RolesManagement extends Component {
+const RolesManagement = hh(class RolesManagement extends Component{
 
   constructor(props) {
     super(props);
@@ -169,6 +170,6 @@ class RolesManagement extends Component {
       ])
     );  
   }
-}
+});
 
-export default RolesManagement;
+export default LoadingWrapper(RolesManagement);

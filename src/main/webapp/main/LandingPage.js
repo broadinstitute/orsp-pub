@@ -5,6 +5,7 @@ import { TableComponent } from "../components/TableComponent";
 import { Issues, User } from "../util/ajax";
 import { parseDate } from "../util/TableUtil";
 import { Link } from 'react-router-dom';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const columnsCopy = [{
   dataField: 'project',
@@ -168,4 +169,4 @@ const LandingPage = hh(class LandingPage extends Component{
 
 });
 
-export default LandingPage;
+export default LoadingWrapper(LandingPage);

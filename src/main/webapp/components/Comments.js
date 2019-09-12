@@ -8,6 +8,7 @@ import './Btn.css';
 import { exportData } from "../util/Utils";
 import { TableComponent } from "./TableComponent";
 import { formatDataPrintableFormat } from "../util/TableUtil";
+import LoadingWrapper from "./LoadingWrapper";
 
 const defaultSorted = [{
   dataField: 'date',
@@ -63,7 +64,7 @@ const columnsCopy = [{
   sort: true
 }];
 
-export const Comments = hh(class Comments extends Component {
+const Comments = hh(class Comments extends Component {
 
   constructor(props) {
     super(props);
@@ -106,3 +107,5 @@ export const Comments = hh(class Comments extends Component {
     )
   }
 });
+
+export default LoadingWrapper(Comments)

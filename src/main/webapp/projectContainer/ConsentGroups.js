@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
 import { ConsentCollectionLink, DocumentHandler, ConsentGroup } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
+import RequestClarificationDialog from "../components/RequestClarificationDialog";
 import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
 import { isEmpty } from "../util/Utils";
 import { TableComponent } from "../components/TableComponent";
@@ -290,9 +290,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           actionLabel: 'Yes'
         }, []),
 
-        RequestClarificationDialog({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
+        h(RequestClarificationDialog, {
           closeModal: this.closeRequestClarification,
           show: this.state.showRequestClarification,
           issueKey: this.props.projectKey,

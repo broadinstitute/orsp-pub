@@ -14,8 +14,9 @@ import { INITIAL_REVIEW } from "../util/TypeDescription";
 import { InputTextList } from "../components/InputTextList";
 import { Fundings } from "../components/Fundings";
 import { AlertMessage } from "../components/AlertMessage";
+import LoadingWrapper from "../components/LoadingWrapper";
 
-export const AdminOnly = hh(class AdminOnly extends Component {
+const AdminOnly = hh(class AdminOnly extends Component {
 
   _isMounted = false;
 
@@ -404,3 +405,5 @@ export const AdminOnly = hh(class AdminOnly extends Component {
     )
   }
 });
+
+export default LoadingWrapper(AdminOnly)

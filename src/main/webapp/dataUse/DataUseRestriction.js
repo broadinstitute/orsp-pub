@@ -7,6 +7,7 @@ import { TABLE_ACTIONS } from "../util/TableUtil";
 import { isEmpty } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const stylesHeader = {
   pageTitle: {
@@ -48,7 +49,7 @@ const columns = [
     ])
   }
 ];
-export const DataUseRestriction = hh(class DataUseRestriction extends Component {
+const DataUseRestriction = hh(class DataUseRestriction extends Component {
 
   _isMounted = false;
 
@@ -188,4 +189,4 @@ export const DataUseRestriction = hh(class DataUseRestriction extends Component 
     )
   }
 });
-export default DataUseRestriction;
+export default LoadingWrapper(DataUseRestriction);

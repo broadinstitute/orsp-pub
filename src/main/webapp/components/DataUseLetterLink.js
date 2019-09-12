@@ -8,6 +8,7 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import './Documents.css';
 import { isEmpty } from '../util/Utils';
+import LoadingWrapper from "./LoadingWrapper";
 
 const styles = {
   getShareable: {
@@ -16,7 +17,7 @@ const styles = {
   }
 };
 
-export const DataUseLetter = hh(class DataUseLetter extends Component {
+const DataUseLetter = hh(class DataUseLetter extends Component{
 
   constructor(props) {
     super(props);
@@ -255,3 +256,4 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     );
   }
 });
+export default LoadingWrapper(DataUseLetter);

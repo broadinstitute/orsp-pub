@@ -1,13 +1,13 @@
 import { Component, Fragment } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
-import { ProjectReview } from "../projectReview/ProjectReview";
+import  ProjectReview from "../projectReview/ProjectReview";
 import { History } from "../components/History";
-import { Comments } from "../components/Comments";
+import Comments from "../components/Comments";
 import { Submissions } from "./Submissions";
 import { ConsentGroups } from "./ConsentGroups";
 import '../components/Wizard.css';
 import { ProjectDocument } from "../projectDocument/ProjectDocument";
-import { AdminOnly } from "../adminOnly/AdminOnly";
+import AdminOnly from "../adminOnly/AdminOnly";
 import MultiTab from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
 import {isEmpty} from "../util/Utils";
@@ -112,8 +112,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Details",
               }, [
                   h(ProjectReview, {
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     updateDetailsStatus: this.updateDetailsStatus,
                     changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
@@ -126,8 +124,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Documents",
               }, [
                   h(ProjectDocument, {
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateDocumentsStatus: this.updateDocumentsStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
@@ -139,8 +135,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Sample/Data Cohorts",
               }, [
                   h(Fragment, {}, [ConsentGroups({
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     history: this.props.history,
                     updateContent: this.updateContent,
                     projectKey: this.props.projectKey,
@@ -159,9 +153,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "comments",
                 title: "Comments",
               }, [
-                  h(Fragment, {}, [Comments({
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
+                  h(Fragment, {}, [
+                    h(Comments, {
                     comments: this.state.comments,
                     id: this.props.projectKey,
                     updateContent: this.updateContent,
@@ -183,8 +176,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Admin Only",
               }, [
                   h(AdminOnly, {
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
