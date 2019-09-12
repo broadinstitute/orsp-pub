@@ -1,5 +1,5 @@
-import { Component, React } from 'react';
-import { h1, div, h3, a } from 'react-hyperscript-helpers';
+import { Component } from 'react';
+import { h1, div, h3, a, hh } from 'react-hyperscript-helpers';
 
 
 const styles = {
@@ -11,7 +11,8 @@ const styles = {
   }
 };
 
-export default class ErrorHandler extends Component {
+export const ErrorHandler = hh(class ErrorHandler extends Component {
+
   constructor(props) {
     super(props)
     this.state = { 
@@ -36,4 +37,6 @@ export default class ErrorHandler extends Component {
       ])
     ]) : this.props.children
   }
-}
+});
+export default ErrorHandler;
+

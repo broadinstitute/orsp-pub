@@ -92,6 +92,7 @@ export const UrlConstants = {
   profileUrl: context + '/profile',
   aboutUrl: context + '/about',
   viewSearchUrl: context + '/search/index',
-  index: context + '/index'
+  index: context + '/index',
+  signOutUrl: context + '/logout/logout'
 };
 

@@ -6,11 +6,8 @@ import { BrowserRouter } from 'react-router-dom';
 import App from '../App';
 
 ReactDOM.render(
-  <ErrorHandler>
     <BrowserRouter basename= {component.contextPath}>
       <App/>
-    </BrowserRouter>
-  </ErrorHandler>,
-
+    </BrowserRouter>,
   document.getElementById('main')
 );

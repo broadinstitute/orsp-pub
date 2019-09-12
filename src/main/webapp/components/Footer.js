@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import { Component } from 'react'
 import { a, div, hh, footer } from 'react-hyperscript-helpers'
+import { styles } from '../util/ReportConstants';
 
 export const Footer = hh(class Footer extends Component {
   render() {
@@ -13,7 +13,7 @@ export const Footer = hh(class Footer extends Component {
       ]
     );
     const well = div({className: "well"}, [copy, links]);
-    return footer({}, [
+    return footer({style: {'marginTop': '30px'}}, [
       div({className: "row"}, [
         div({className: "col-xs-12"}, [
           well

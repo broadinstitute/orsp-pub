@@ -259,11 +259,15 @@ export const User = {
     return axios.put(UrlConstants.editUserRoleUrl, {userId: userId, roles: roles});
   },
 
-  authUser(token) {
+  signIn(token) {
     const config = {
       headers: { 'content-type': 'application/x-www-form-urlencoded' }
     };
     return axios.get(UrlConstants.authUserUrl + '?token=' + token);
+  },
+
+  signOut() {
+    return axios.get(UrlConstants.signOutUrl);
   }
 };
 

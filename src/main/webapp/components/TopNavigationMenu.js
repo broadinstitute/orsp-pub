@@ -1,7 +1,5 @@
 import { Component } from "react";
 import { a, hh, div, button, span, ul, li, b, form, input, h } from 'react-hyperscript-helpers';
-import { InputFieldText } from './InputFieldText';
-import { Btn } from '../components/Btn';
 import GoogleLoginButton from "./GoogleLoginButton";
 import { Storage } from '../util/storage'
 import { User } from "../util/ajax";
@@ -21,22 +19,23 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   }
 
   async onSuccess(token) {
-    await User.authUser(token);
+    await User.signIn(token);
     let resp = await User.getUserSession();
     Storage.setCurrentUser(resp.data);
     Storage.setUserIsLogged(true);
     this.setState({
       isLogged: true
-    })
+    });
+    this.props.history.push("/");
   }
 
   signOut() {
     Storage.setUserIsLogged(false);
     Storage.clearStorage();
+    User.signOut();
     this.setState({
       isLogged: false
-    })
-    //this.props.history.push(UrlConstants.index);
+    });
   }
 
   render() {
@@ -120,7 +119,9 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   )
                 ]),
                 li({}, [
-                  a({ onClick: this.signOut }, ["Sign out"])
+                  h(Link, { to: { pathname: UrlConstants.aboutUrl }, onClick: () => this.signOut()},
+                    ["Sign out"]
+                  )
                 ]),
               ]),
             ]),

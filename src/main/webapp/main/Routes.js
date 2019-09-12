@@ -18,21 +18,18 @@ import PageNotFound from "../pageNotFound/PageNotFound";
 import IssueList from "../issueList/IssueList"
 import LandingPage from "./LandingPage";
 import Search from "../search/Search";
+import TopNavigationMenu from "../components/TopNavigationMenu";
 
 const Routes = ( props ) => (
   <Switch>
-    <Route path= {"/"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
-    <Route path= {"/index"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
+    <Route path= {["/", "/index"]} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
-    <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
+    <Route path= {["/project/main", "/newConsentGroup/main"]} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />
-    <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/index/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
-    <Route path= {"/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {["/index/profile", "/profile"]} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
+    <Route path= {["/index/about", "/about"]} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUse/list"} render = {(routeProps) =>  <DataUseRestrictionIndex {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
     <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>

@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { hh, span, div, a, h3, p, br } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
 import { User } from "../util/ajax";
+import { Storage } from '../util/storage';
 
 const styles = {
   titleSize: '24px',
@@ -41,7 +42,7 @@ export const About = hh(class About extends Component {
           },["About the ORSP Portal"]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
             a({
-              isRendered: this.state.logged && showAccessDetails,
+              isRendered: Storage.userIsLogged() && showAccessDetails,
               href:"https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection", target: "_blank"}, [
                 "ORSP on the Broad Intranet"
             ]),
@@ -57,7 +58,7 @@ export const About = hh(class About extends Component {
               href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]
             ), " for assistance."
           ]),
-          div({ isRendered: this.state.logged && showAccessDetails }, [
+          div({ isRendered: Storage.userIsLogged() && showAccessDetails }, [
               h3({ style: { fontSize: styles.titleSize }}, ["User Guide"]),
               p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }},[
                 "To access detailed instructions about how to use the ORSP portal, please visit: ",
