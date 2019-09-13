@@ -285,7 +285,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
     } else {
       this.setFieldValue(field, value);
     }
-  };
+  }
 
   handleHmbResearchChange = (e, field, value) => {
     value = this.getValue(value);
@@ -301,7 +301,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
     } else {
       this.setFieldValue(field, value);
     }
-  };
+  }
 
   loadDOIDOptions = (query, callback) => {
     if (query.length > 2) {
@@ -444,7 +444,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
       prev.restriction = restriction;
       return prev;
     });
-  };
+  }
 
   getKeys(list) {
     return list.map(value =>

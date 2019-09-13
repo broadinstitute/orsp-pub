@@ -8,7 +8,6 @@ import './ConfirmationDialog.css';
 import LoadingWrapper from "./LoadingWrapper";
 
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
-
     constructor(props) {
     super(props);
     this.state = {

@@ -26,7 +26,7 @@ const tableHeaders =
     'emailAddress': 2
   };
 
-const RolesManagement = hh(class RolesManagement extends Component{
+const RolesManagement = hh(class RolesManagement extends Component {
 
   constructor(props) {
     super(props);

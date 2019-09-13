@@ -17,8 +17,7 @@ const styles = {
     color: '#FFFFFF',
     marginRight: '15px'
   }
-};
-
+}
 const headers =
   [
     { name: 'Document Type', value: 'fileType' },

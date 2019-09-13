@@ -112,7 +112,7 @@ const columns = [
   }
 ];
 
-const FundingsSourceReport = hh(class FundingsSourceReport extends Component{
+const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
 
   _isMounted = false;
 

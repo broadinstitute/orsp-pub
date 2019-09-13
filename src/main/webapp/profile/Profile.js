@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import './Profile.css';
 import LoadingWrapper from "../components/LoadingWrapper";
 
-const Profile = hh(class Profile extends Component{
+const Profile = hh(class Profile extends Component {
 
   constructor(props) {
     super(props);

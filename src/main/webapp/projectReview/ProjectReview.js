@@ -21,7 +21,7 @@ import LoadingWrapper from "../components/LoadingWrapper";
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
-const ProjectReview = hh(class ProjectReview extends Component{
+const ProjectReview = hh(class ProjectReview extends Component {
 
   _isMounted = false;
 
@@ -229,7 +229,7 @@ const ProjectReview = hh(class ProjectReview extends Component{
 
   getReviewSuggestions() {
     this.init();
-    Review.getSuggestions(this.props.projectKey).then(
+      Review.getSuggestions(this.props.projectKey).then(
       data => {
         if (this._isMounted) {
           if (data.data !== '') {
@@ -251,7 +251,10 @@ const ProjectReview = hh(class ProjectReview extends Component{
             this.props.hideSpinner();
           }
         }
-      }).catch(() => this.props.hideSpinner())
+      }).catch((error) =>{
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
+      })
   }
 
   getUsersArray(array) {
@@ -312,7 +315,7 @@ const ProjectReview = hh(class ProjectReview extends Component{
         () => {
           Project.getProject(this.props.projectKey).then(
             issue => {
-              // this.props.hideSpinner();
+              this.props.hideSpinner();
               this.props.updateDetailsStatus(issue.data);
             })
           });
@@ -1225,8 +1228,7 @@ const ProjectReview = hh(class ProjectReview extends Component{
             onClick: this.toggleState('requestClarification'),
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ]),
-        button({onClick: this.props.showSpinner }, ["CHOU SPINNER"])
+        ])
       ])
     )
   }

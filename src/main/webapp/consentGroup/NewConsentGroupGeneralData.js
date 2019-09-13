@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { hh, h1, div } from 'react-hyperscript-helpers';
+
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -60,7 +61,29 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
     this.props.removeErrorMessage();
   };
 
-   static getDerivedStateFromError(error) {
+  handleRadioChange = (e, field, value) => {
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    }
+
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
+  };
+
+  handleRadio2Change = (e, field, value) => {
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
+  };
+
+  static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }

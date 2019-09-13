@@ -7,7 +7,7 @@ import get from 'lodash/get';
 import { isEmpty } from "../util/Utils";
 import './Main.css';
 
-const Main = hh(class Main extends Component{
+const Main = hh(class Main extends Component {
 
   _isMounted = false;
 

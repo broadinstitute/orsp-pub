@@ -13,7 +13,7 @@ import LoadingWrapper from "../components/LoadingWrapper";
 
 const LAST_STEP = 2;
 
-const NewProject = hh(class NewProject extends Component{
+const NewProject = hh(class NewProject extends Component {
 
   constructor(props) {
     super(props);

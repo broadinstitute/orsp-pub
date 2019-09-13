@@ -67,7 +67,7 @@ const columns = [
   }
 ];
 
-const ReviewCategories = hh(class ReviewCategories extends Component{
+const ReviewCategories = hh(class ReviewCategories extends Component {
 
   _isMounted = false;
 
