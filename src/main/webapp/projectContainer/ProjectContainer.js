@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
 import  ProjectReview from "../projectReview/ProjectReview";
 import { History } from "../components/History";
@@ -144,33 +144,31 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "submissions",
                 title: "Submissions",
               }, [
-                  h(Fragment, {}, [Submissions({
-                    history: this.props.history,
-                    projectKey: this.props.projectKey,
-                  })]),
-                ]),
+                Submissions({
+                  history: this.props.history,
+                  projectKey: this.props.projectKey,
+                }),
+              ]),
               div({
                 key: "comments",
                 title: "Comments",
               }, [
-                  h(Fragment, {}, [
-                    h(Comments, {
-                    comments: this.state.comments,
-                    id: this.props.projectKey,
-                    updateContent: this.updateContent,
-                    projectKey: this.props.projectKey,
-                  })]),
-                ]),
+                h(Comments, {
+                  comments: this.state.comments,
+                  id: this.props.projectKey,
+                  updateContent: this.updateContent,
+                  projectKey: this.props.projectKey,
+                })
+              ]),
               div({
                 key: "history",
                 title: "History",
               }, [
-                  h(Fragment, {}, [History({
-                    history: this.state.history,
-                    projectKey: this.props.projectKey,
-                  }
-                  )]),
-                ]),
+                History({
+                  history: this.state.history,
+                  projectKey: this.props.projectKey,
+                }),
+              ]),
               div({
                 key: "adminOnly",
                 title: "Admin Only",

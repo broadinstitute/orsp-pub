@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { div, hh, h } from 'react-hyperscript-helpers';
 import ConsentGroupReview from "../consentGroupReview/ConsentGroupReview";
 import { History } from "../components/History";
@@ -114,21 +114,20 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 key: "comments",
                 title: "Messages",
               }, [
-                  h(Fragment, {}, [
-                    h(Comments, {
-                    comments: this.state.comments,
-                    id: this.props.consentKey,
-                    updateContent: this.updateContent
-                  })]),
-                ]),
+                h(Comments, {
+                  comments: this.state.comments,
+                  id: this.props.consentKey,
+                  updateContent: this.updateContent
+                })
+              ]),
               div({
                 key: "history",
                 title: "History",
               }, [
-                  h(Fragment, {}, [History({
-                    history: this.state.history
-                  })])
-                ])
+                History({
+                  history: this.state.history
+                })
+              ])
             ])
         ])
       ])

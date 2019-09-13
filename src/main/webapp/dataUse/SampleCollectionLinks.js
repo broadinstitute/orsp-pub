@@ -93,8 +93,8 @@ const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
   };
 
   tableHandler = (offset, limit, search, sort, page) => {
+    this.props.showSpinner();
     ConsentCollectionLink.findCollectionLinks().then(result => {
-      this.props.showSpinner();
       if (this._isMount) {
         this.setState(prev => {
           prev.links = result.data;
