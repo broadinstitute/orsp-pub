@@ -390,4 +390,4 @@ const LinkWizard = hh( class LinkWizard extends Component {
   }
 });
 
-export default LoadingWrapper(LinkWizard);
+export default LoadingWrapper(LinkWizard, 'fixedTop');

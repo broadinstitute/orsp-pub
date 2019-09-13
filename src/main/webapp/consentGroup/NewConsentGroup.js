@@ -564,4 +564,4 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
   }
 });
 
-export default LoadingWrapper(NewConsentGroup);
+export default LoadingWrapper(NewConsentGroup, 'fixedTop');

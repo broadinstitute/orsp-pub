@@ -1004,4 +1004,4 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   }
 });
 
-export default LoadingWrapper(ConsentGroupReview);
+export default LoadingWrapper(ConsentGroupReview, 'fixedTop');

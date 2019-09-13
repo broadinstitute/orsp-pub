@@ -406,4 +406,4 @@ const AdminOnly = hh(class AdminOnly extends Component {
   }
 });
 
-export default LoadingWrapper(AdminOnly)
+export default LoadingWrapper(AdminOnly, 'fixedTop')

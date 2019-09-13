@@ -845,4 +845,4 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
     )
   }
 });
-export default LoadingWrapper(DataUseRestrictionEdit);
+export default LoadingWrapper(DataUseRestrictionEdit, 'fixedTop');

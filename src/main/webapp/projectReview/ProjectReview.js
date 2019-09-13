@@ -335,14 +335,14 @@ const ProjectReview = hh(class ProjectReview extends Component{
   };
 
   rejectProject() {
+    this.props.showSpinner();
     Project.rejectProject(this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
-      this.props.showSpinner();
+      this.props.hideSpinner();
       window.location.href = [component.serverURL, "index"].join("/");
-      // this.props.hideSpinner();
     }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });
@@ -1225,9 +1225,10 @@ const ProjectReview = hh(class ProjectReview extends Component{
             onClick: this.toggleState('requestClarification'),
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ])
+        ]),
+        button({onClick: this.props.showSpinner }, ["CHOU SPINNER"])
       ])
     )
   }
 });
-export default LoadingWrapper(ProjectReview);
+export default LoadingWrapper(ProjectReview, 'fixedTop');

@@ -185,4 +185,4 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
   }
 });
 
-export default LoadingWrapper(RequestClarificationDialog, true);
+export default LoadingWrapper(RequestClarificationDialog, 'fixed');

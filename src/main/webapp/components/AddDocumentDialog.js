@@ -200,4 +200,4 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   }
 });
 
-export default LoadingWrapper(AddDocumentDialog, true);
+export default LoadingWrapper(AddDocumentDialog, 'fixed');

@@ -425,4 +425,4 @@ const NewProject = hh(class NewProject extends Component{
   }
 });
 
-export default LoadingWrapper(NewProject);
+export default LoadingWrapper(NewProject, 'fixedTop');
