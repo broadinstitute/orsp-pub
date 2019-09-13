@@ -5,6 +5,7 @@ import { Storage } from '../util/storage'
 import { User, Reports } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
+import './TopNavigationMenu.css';
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
