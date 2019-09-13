@@ -9,6 +9,7 @@ import { Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 import { spinnerService } from '../util/spinner-service';
 import "regenerator-runtime/runtime";
+import '../index.css';
 
 const LAST_STEP = 2;
 

@@ -19,12 +19,14 @@ import IssueList from "../issueList/IssueList"
 import LandingPage from "./LandingPage";
 import Search from "../search/Search";
 import TopNavigationMenu from "../components/TopNavigationMenu";
+import NewProject from "../project/NewProject";
 
 const Routes = ( props ) => (
   <Switch>
     <Route path= {["/", "/index"]} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
     <Route path= {["/project/main", "/newConsentGroup/main"]} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
+    <Route path= {"/project/pages"} render = {(routeProps) => <NewProject {...routeProps} {...props}/> }/>
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />

@@ -11,11 +11,9 @@ export const App = hh(class App extends Component {
   render() {
     return(
       div({className: "container"},[
-        ErrorHandler({},[
           Routes({},[]),
           TopNavigationMenu({history: this.props.history}),
           Footer()
-        ])       
       ])
     )
   }

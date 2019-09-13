@@ -26,7 +26,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.setState({
       isLogged: true
     });
-    this.props.history.push("/");
+    this.props.history.push("/index");
   }
 
   signOut() {
@@ -75,14 +75,13 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ['About']
                 )
               ]),
-              // if authenticated
               li({ isRendered: isLogged }, [
                 h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
                   ['Search']
                 )
               ]),
               li({ isRendered: isLogged, className: "dropdown" }, [
-                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                a({ className: "dropdown-toggle", "data-toggle": "dropdown", href: "#" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
@@ -90,7 +89,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ]),
               li({ isRendered: isLogged && isAdmin, className: "dropdown" }, [
-                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                a({ className: "dropdown-toggle", "data-toggle": "dropdown", href: "#" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [

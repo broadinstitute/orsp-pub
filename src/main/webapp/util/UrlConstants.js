@@ -100,6 +100,6 @@ export const UrlConstants = {
   fundingReportUrl: context + "/admin/fundingReport",
   metricsReportUrl: context + "/report/aahrppMetrics",
   rolesManagementUrl: context + "/user/rolesManagement",
-  projectUrl: "/project/main"
+  projectUrl:  context + "/project/pages"
 };
 
