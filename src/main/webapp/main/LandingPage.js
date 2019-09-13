@@ -82,7 +82,10 @@ const LandingPage = hh(class LandingPage extends Component{
       Issues.getIssueList('false', 5),
       Issues.getIssueList('true', 5),
       User.isAuthenticated()
-    ]);
+    ]).catch(error => {
+      this.props.hideSpinner();
+      this.setState(() => { throw error; });
+    });
     let projectList = [];
     let taskList = [];
 
