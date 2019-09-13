@@ -4,9 +4,9 @@ import  ProjectReview from "../projectReview/ProjectReview";
 import { History } from "../components/History";
 import Comments from "../components/Comments";
 import { Submissions } from "./Submissions";
-import { ConsentGroups } from "./ConsentGroups";
+import ConsentGroups from "./ConsentGroups";
 import '../components/Wizard.css';
-import { ProjectDocument } from "../projectDocument/ProjectDocument";
+import ProjectDocument from "../projectDocument/ProjectDocument";
 import AdminOnly from "../adminOnly/AdminOnly";
 import MultiTab from "../components/MultiTab";
 import { ProjectMigration, Review } from '../util/ajax';
@@ -134,11 +134,11 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "consent-groups",
                 title: "Sample/Data Cohorts",
               }, [
-                  h(Fragment, {}, [ConsentGroups({
-                    history: this.props.history,
-                    updateContent: this.updateContent,
-                    projectKey: this.props.projectKey,
-                  })]),
+                  h(ConsentGroups, {
+                  history: this.props.history,
+                  updateContent: this.updateContent,
+                  projectKey: this.props.projectKey,
+                })
                 ]),
               div({
                 key: "submissions",

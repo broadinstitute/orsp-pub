@@ -10,6 +10,7 @@ import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDa
 import { formatUrlDocument, parseDate } from "../util/TableUtil";
 import { AlertMessage } from "../components/AlertMessage";
 import { UrlConstants } from "../util/UrlConstants";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const columns = (cThis) => [{
   dataField: 'id',
@@ -60,7 +61,7 @@ const defaultSorted = [{
   order: 'desc'
 }];
 
-export const ConsentGroups = hh(class ConsentGroups extends Component {
+const ConsentGroups = hh(class ConsentGroups extends Component {
 
   _isMounted = false;
 
@@ -82,6 +83,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.showSpinner();
     this.getProjectConsentGroups();
   }
 
@@ -99,9 +101,12 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           return prev;
         },() => {
           this.collapseBtnAnimationListener();
+          this.props.hideSpinner();
         });
       }
-    }).catch(() => {});
+    }).catch(() => {
+      this.props.hideSpinner();
+    });
   };
 
   closeConfirmationModal = () => {
@@ -113,6 +118,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   handleOkConfirmation = () => {
+    this.props.showSpinner();
     if(this.state.action === "unlink" || this.state.action === "reject") {
       ConsentCollectionLink.breakLink(this.state.issue.projectKey, this.state.actionConsentKey, this.state.action).then(resp => {
         this.getProjectConsentGroups();
@@ -306,3 +312,4 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
     )
   }
 });
+export default LoadingWrapper(ConsentGroups, 'fixedTop');

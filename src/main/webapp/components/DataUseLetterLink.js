@@ -17,7 +17,7 @@ const styles = {
   }
 };
 
-const DataUseLetter = hh(class DataUseLetter extends Component{
+const DataUseLetter = hh(class DataUseLetter extends Component {
 
   constructor(props) {
     super(props);

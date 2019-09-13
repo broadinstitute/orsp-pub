@@ -15,7 +15,6 @@ import AboutPage from "../aboutPage/AboutPage";
 import QaReport from "../qaReport/QaReport";
 import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
 import PageNotFound from "../pageNotFound/PageNotFound";
-import NewProject from "../project/NewProject";
 import IssueList from "../issueList/IssueList"
 import LandingPage from "./LandingPage";
 
@@ -26,7 +25,6 @@ const Routes = ( props ) => (
     <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
     <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
     <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <Route path= {"/project/newProject"} render ={(routeProps) => <NewProject {...routeProps} {...props}/> }/>
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />

@@ -83,8 +83,6 @@ const Comments = hh(class Comments extends Component {
     return (
       h(Fragment, {}, [
         h(TextEditor, {
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
           id: this.props.id,
           loadComments: this.props.updateContent
         }),

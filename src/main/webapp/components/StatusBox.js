@@ -1,13 +1,8 @@
 import { Component, React } from 'react';
 import { hh, h1, span, div, p} from 'react-hyperscript-helpers';
 import './QuestionnaireWorkflow.css';
-import LoadingWrapper from "./LoadingWrapper";
 
-const StatusBox = hh(class StatusBox extends Component{
-
-  componentDidMount() {
-    this.props.showSpinner();
-  }
+export const StatusBox = hh(class StatusBox extends Component {
 
   showActor(actor) {
     return actor != "" && actor.length > 0;
@@ -23,10 +18,6 @@ const StatusBox = hh(class StatusBox extends Component{
       projectReviewApproved= '',
       attachmentsApproved = ''
     } = this.props.status;
-
-    if (type !== '' && projectKey !== '') {
-      this.props.hideSpinner()
-    }
 
     return(
       div({className: "headerBox"}, [
@@ -55,4 +46,3 @@ const StatusBox = hh(class StatusBox extends Component{
     );
   }
 });
-export default LoadingWrapper(StatusBox);

@@ -86,9 +86,7 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     }
 
     return (
-      div({className: 'internationlCohortsBar'}, [
-        QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination, questionnaireUnwrapped: true })
-      ])
+      QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination, questionnaireUnwrapped: true })
     )
   }
 });

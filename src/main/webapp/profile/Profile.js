@@ -24,7 +24,12 @@ const Profile = hh(class Profile extends Component {
       this.setState(prev => { 
         prev.user = resp.data;
         return prev;
-      },() => this.props.hideSpinner());
+      },() => {
+        this.props.hideSpinner();
+      });
+    }).catch(error => {
+      this.props.hideSpinner();
+      this.setState(() => { throw error; });
     });
   };
 

@@ -66,6 +66,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.showSpinner();
     scrollToTop();
     const params = new URLSearchParams(this.props.location.search);
     this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'), params.get('submissionId'));
@@ -75,6 +76,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       prev.params.submissionId = params.get('submissionId');
       return prev;
     });
+    this.props.hideSpinner();
   }
 
   componentWillUnmount() {
@@ -392,4 +394,4 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   }
 });
 
-export default LoadingWrapper(SubmissionForm);
+export default LoadingWrapper(SubmissionForm, 'fixedTop');

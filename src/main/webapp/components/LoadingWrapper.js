@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react';
-import { h, div, img } from 'react-hyperscript-helpers';
+import React, { useState } from 'react';
+import { div, img } from 'react-hyperscript-helpers';
 import { context } from "../util/UrlConstants";
 
 function LoadingWrapper(WrappedComponent, overlaySpinner = '') {
@@ -63,15 +63,13 @@ function LoadingWrapper(WrappedComponent, overlaySpinner = '') {
     };
 
     return (
-      h(Fragment, {},[
-        div({ style: (loading ? {'position': 'relative'} : {}) },[
-          div({isRendered: loading, style: getStyle()}, [
-            div({style: spinnerStyle}, [
-              img({src: context + "/assets/loading-indicator.svg", alt: 'spinner'})
-            ])
-          ]),
-          WrappedComponent({showSpinner, hideSpinner, ...props}, [])
-        ])
+      div({ style: (loading ? {'position': 'relative'} : {}) },[
+        div({isRendered: loading, style: getStyle()}, [
+          div({style: spinnerStyle}, [
+            img({src: context + "/assets/loading-indicator.svg", alt: 'spinner'})
+          ])
+        ]),
+        WrappedComponent({showSpinner, hideSpinner, ...props}, [])
       ])
     );
   }

@@ -25,7 +25,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="${createLink(controller: 'project', action: 'newProject')}">New Project</a></li>
+                            <li><a href="${createLink(controller: 'project', action: 'pages')}">New Project</a></li>
                         </ul>
                     </li>
                     </auth:isNotViewer>

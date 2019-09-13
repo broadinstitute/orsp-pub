@@ -1,13 +1,13 @@
 import { Component } from 'react';
-import { div, h, hh } from 'react-hyperscript-helpers';
-import  StatusBox from "../components/StatusBox";
+import { div } from 'react-hyperscript-helpers';
+import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
 import { isEmpty } from "../util/Utils";
 import './Main.css';
 
-const Main = hh(class Main extends Component {
+class Main extends Component {
 
   _isMounted = false;
 
@@ -94,7 +94,7 @@ const Main = hh(class Main extends Component {
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
-        h(StatusBox, {
+        StatusBox({
           status: this.state.status
         }),
         ProjectContainer({
@@ -121,6 +121,6 @@ const Main = hh(class Main extends Component {
       ])
     );
   }
-});
+}
 
 export default Main;
