@@ -1,10 +1,11 @@
 import { Component } from "react";
 import { a, hh, div, button, span, ul, li, b, form, input, h } from 'react-hyperscript-helpers';
-import GoogleLoginButton from "./GoogleLoginButton";
-import { Storage } from '../util/storage'
+import  GoogleLoginButton from "./GoogleLoginButton";
+import { Storage } from '../util/Storage'
 import { User, Reports } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
+import { nonBroadUser, isAdmin, broadUser } from "../util/UserUtils";
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
@@ -26,7 +27,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.setState({
       isLogged: true
     });
-    this.props.history.push("/index");
+    this.props.history.push(Storage.getCurrentUser().isBroad ? "/index" : "/about");
   }
 
   signOut() {
@@ -43,11 +44,9 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   }
 
   render() {
-    let isLogged = this.state.isLogged;
-    let isViewer = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false;
-    let isAdmin = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin || Storage.getCurrentUser().isORSP || Storage.getCurrentUser().isComplianceOffice : false;
+    let isBroadUser = this.state.isLogged && broadUser();
     let currentUser = { displayName: '' }
-    if (isLogged) {
+    if (this.state.isLogged) {
       currentUser = Storage.getCurrentUser();
     }
     return (
@@ -75,12 +74,12 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ['About']
                 )
               ]),
-              li({ isRendered: isLogged }, [
+              li({ isRendered: isBroadUser }, [
                 h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
                   ['Search']
                 )
               ]),
-              li({ isRendered: isLogged, className: "dropdown" }, [
+              li({ isRendered: isBroadUser, className: "dropdown" }, [
                 a({ className: "dropdown-toggle", "data-toggle": "dropdown", href: "#" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
@@ -88,7 +87,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
                 ])
               ]),
-              li({ isRendered: isLogged && isAdmin, className: "dropdown" }, [
+              li({ isRendered: isAdmin(), className: "dropdown" }, [
                 a({ className: "dropdown-toggle", "data-toggle": "dropdown", href: "#" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
@@ -102,7 +101,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ])
             ]),
-            form({ isRendered: isLogged, className: "navbar-form navbar-left" }, [
+            form({ isRendered: isBroadUser, className: "navbar-form navbar-left" }, [
               div({ className: "form-group" }, [
                 input({
                   className: "form-control",
@@ -114,7 +113,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 })
               ])
             ]),
-            div({ isRendered: isLogged }, [
+            div({ isRendered: this.state.isLogged, className: "floatRight" }, [
               ul({ className: "nav navbar-nav" }, [
                 li({}, [
                   h(Link, { to: { pathname: UrlConstants.profileUrl } },
@@ -128,7 +127,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ]),
               ]),
             ]),
-            div({ isRendered: !isLogged, className: "floatRight" }, [
+            div({ isRendered: !this.state.isLogged, className: "floatRight" }, [
               GoogleLoginButton({
                 clientId: component.clientId,
                 onSuccess: this.onSuccess

@@ -9,8 +9,7 @@ module.exports = {
     consentGroup: './src/main/webapp/consentGroup/index.js',
     infoLink: './src/main/webapp/infoLink/index.js',
     linkWizard: './src/main/webapp/linkWizard/index.js',
-    mainIndex: './src/main/webapp/main/main_index.js',
-    project: './src/main/webapp/project/index.js',
+    mainIndex: './src/main/webapp/main/main_index.js'
   },
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts/build'),

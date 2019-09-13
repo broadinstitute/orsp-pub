@@ -320,6 +320,7 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
             'isORSP': isORSP(),
             "isViewer": isViewer(),
             'isComplianceOffice': isComplianceOffice(),
+            'isBroad': isBroad()
         ] as JSON)
     }
 
