@@ -79,8 +79,8 @@ const LandingPage = hh(class LandingPage extends Component{
   init = async () => {
     this.props.showSpinner();
     const [ projects, tasks, user ] = await Promise.all([
-      Issues.getIssueList('assignee', 5),
-      Issues.getIssueList('user', 5),
+      Issues.getIssueList('false', 5),
+      Issues.getIssueList('true', 5),
       User.isAuthenticated()
     ]);
     let projectList = [];
