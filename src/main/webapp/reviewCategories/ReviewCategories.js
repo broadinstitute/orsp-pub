@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { h1, div, a, span } from 'react-hyperscript-helpers';
+import { hh, h1, div, a, span } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
 import { TableComponent } from "../components/TableComponent";
 import { CATEGORY_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { TABLE_ACTIONS } from "../util/TableUtil";
 import { handleRedirectToProject } from "../util/Utils";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const stylesHeader = {
   pageTitle: {
@@ -66,7 +67,7 @@ const columns = [
   }
 ];
 
-class ReviewCategories extends Component {
+const ReviewCategories = hh(class ReviewCategories extends Component{
 
   _isMounted = false;
 
@@ -206,6 +207,6 @@ class ReviewCategories extends Component {
       ])
     )
   }
-}
+});
 
-export default ReviewCategories;
+export default LoadingWrapper(ReviewCategories);

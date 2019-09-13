@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { h1, div, a, span } from 'react-hyperscript-helpers';
+import { hh, h1, div, a, span } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
 import { TableComponent } from "../components/TableComponent";
 import { handleRedirectToProject, exportData } from "../util/Utils";
 import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const stylesHeader = {
   pageTitle: {
@@ -111,7 +112,7 @@ const columns = [
   }
 ];
 
-class FundingsSourceReport extends Component {
+const FundingsSourceReport = hh(class FundingsSourceReport extends Component{
 
   _isMounted = false;
 
@@ -259,7 +260,7 @@ class FundingsSourceReport extends Component {
       ])
     )
   }
-}
+});
 
-export default FundingsSourceReport;
+export default LoadingWrapper(FundingsSourceReport);
 

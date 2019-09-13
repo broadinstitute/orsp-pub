@@ -7,6 +7,7 @@ import { printData } from "../util/Utils";
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const stylesHeader = {
   pageTitle: {
@@ -87,7 +88,7 @@ const columns = [
   }
 ];
 
-export const IssueList = hh(class IssueList extends Component {
+const IssueList = hh(class IssueList extends Component {
   
   paramsContext = new URLSearchParams();
   _isMounted = false;
@@ -212,4 +213,4 @@ export const IssueList = hh(class IssueList extends Component {
     )
   }
 });
-export default IssueList;
+export default LoadingWrapper(IssueList);

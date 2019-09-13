@@ -11,6 +11,7 @@ import { isEmpty, createObjectCopy } from '../util/Utils';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import '../components/Btn.css';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const FEMALE = 'Female';
 const MALE = 'Male';
@@ -30,7 +31,7 @@ const styles = {
   }
 };
 
-export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
+const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
 
   _isMounted = false;
 
@@ -844,4 +845,4 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
     )
   }
 });
-export default DataUseRestrictionEdit;
+export default LoadingWrapper(DataUseRestrictionEdit);

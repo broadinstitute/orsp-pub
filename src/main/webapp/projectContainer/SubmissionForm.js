@@ -1,15 +1,16 @@
 import { Component } from 'react';
-import { div, h1, button, h, a } from 'react-hyperscript-helpers';
+import { hh, div, h1, button, h, a } from 'react-hyperscript-helpers';
 import { Panel } from "../components/Panel";
 import { Files, ProjectMigration } from "../util/ajax";
 import { InputFieldSelect } from "../components/InputFieldSelect";
 import InputFieldNumber from "../components/InputFieldNumber";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
 import { Table } from "../components/Table";
-import { AddDocumentDialog } from "../components/AddDocumentDialog";
+import AddDocumentDialog from "../components/AddDocumentDialog";
 import { isEmpty, scrollToTop } from "../util/Utils";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { AlertMessage } from "../components/AlertMessage";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const styles = {
   addDocumentContainer: {
@@ -31,7 +32,7 @@ const headers =
     { name: 'Remove', value: 'removeFile' }
   ];
 
-class SubmissionForm extends Component {
+const SubmissionForm = hh(class SubmissionForm extends Component {
 
   _isMounted = false;
 
@@ -294,7 +295,7 @@ class SubmissionForm extends Component {
           bodyText: `Are you sure you want to delete this ${this.state.action}?`,
           actionLabel: 'Yes'
         }),
-        AddDocumentDialog({
+        h(AddDocumentDialog, {
           closeModal: () => this.closeModal("showAddDocuments"),
           show: this.state.showAddDocuments,
           options: this.state.docTypes,
@@ -389,6 +390,6 @@ class SubmissionForm extends Component {
       ])
     );
   }
-}
+});
 
-export default SubmissionForm;
+export default LoadingWrapper(SubmissionForm);

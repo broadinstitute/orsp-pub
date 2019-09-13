@@ -384,6 +384,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       });
     }
     else {
+      this.props.hideSpinner();
       this.setState({
         errorSubmit: true
       });
@@ -398,6 +399,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       });
     }
     else {
+      this.props.hideSpinner();
       this.setState({
         errorSubmit: true
       });
@@ -480,6 +482,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         });
       });
     } else {
+      this.props.hideSpinner();
       this.setState(prev => {
         prev.submitted = true;
         prev.errorSubmit = true;

@@ -8,10 +8,11 @@ import { isEmpty } from "../util/Utils";
 import '../index.css';
 import { ConsentCollectionLink } from "../util/ajax";
 import * as qs from 'query-string';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const LAST_STEP = 1;
 
-export const LinkWizard = hh( class LinkWizard extends Component {
+const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
   _isMount = false;
 
@@ -389,3 +390,4 @@ export const LinkWizard = hh( class LinkWizard extends Component {
   }
 });
 
+export default LoadingWrapper(LinkWizard);

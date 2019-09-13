@@ -7,11 +7,13 @@ import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from "../util/TypeDescription";
 import { Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
+import { hh } from 'react-hyperscript-helpers';
 import "regenerator-runtime/runtime";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const LAST_STEP = 2;
 
-class NewProject extends Component {
+const NewProject = hh(class NewProject extends Component{
 
   constructor(props) {
     super(props);
@@ -421,6 +423,6 @@ class NewProject extends Component {
         ])
     );
   }
-}
+});
 
-export default NewProject;
+export default LoadingWrapper(NewProject);

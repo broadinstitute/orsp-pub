@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { h, h1, div, button, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
+import { hh, h, h1, div, button, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { DataUse, ConsentGroup } from "../util/ajax";
 import { isEmpty } from "../util/Utils";
@@ -8,6 +8,7 @@ import { DUR_QUESTIONS } from './DataUseRestrictionConstants';
 import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
 import  { UrlConstants }  from '../util/UrlConstants';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 
 const styles = {
@@ -56,7 +57,7 @@ const styles = {
   }
 };
 
-class DataUseRestrictionDetails extends Component {
+const DataUseRestrictionDetails = hh(class DataUseRestrictionDetails extends Component {
 
   _isMounted = false;
 
@@ -267,5 +268,5 @@ class DataUseRestrictionDetails extends Component {
       ])
     )
   }
-}
-export default DataUseRestrictionDetails;
+});
+export default LoadingWrapper(DataUseRestrictionDetails);

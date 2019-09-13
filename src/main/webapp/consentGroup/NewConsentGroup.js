@@ -1,16 +1,17 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
-import { div } from 'react-hyperscript-helpers';
+import { div, hh } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { Files, ConsentGroup, SampleCollections, User} from '../util/ajax';
 import { isEmpty } from "../util/Utils";
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 import * as qs from 'query-string';
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const LAST_STEP = 1;
 
-class NewConsentGroup extends Component {
+const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
   _isMounted = false;
 
@@ -561,6 +562,6 @@ class NewConsentGroup extends Component {
       ])
     );
   }
-}
+});
 
-export default NewConsentGroup;
+export default LoadingWrapper(NewConsentGroup);

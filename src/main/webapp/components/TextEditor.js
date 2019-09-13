@@ -7,8 +7,9 @@ import { Review } from "../util/ajax";
 import { AlertMessage } from "../components/AlertMessage";
 import '../components/Btn.css';
 import { isEmpty } from "../util/Utils";
+import LoadingWrapper from "./LoadingWrapper";
 
-export const TextEditor = hh(class TextEditor extends Component {
+const TextEditor = hh(class TextEditor extends Component {
 
   constructor(props) {
     super(props);
@@ -88,3 +89,4 @@ export const TextEditor = hh(class TextEditor extends Component {
     );
   }
 });
+export default LoadingWrapper(TextEditor);

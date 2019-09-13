@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { h, h1, div } from 'react-hyperscript-helpers';
+import { hh, h, h1, div } from 'react-hyperscript-helpers';
 import { Reports } from "../util/ajax";
 import FilterPanel from "./FilterPanel";
 import { formatDataPrintableFormat } from "../util/TableUtil";
@@ -8,8 +8,10 @@ import NoIrbTable from "./NoIrbTable";
 import { columns, IRB, NO_IRB } from "../util/QaReportConstants";
 import { createObjectCopy, exportData, isEmpty } from "../util/Utils";
 import MultiTab from "../components/MultiTab";
+import LoadingWrapper from "../components/LoadingWrapper";
 
-class QaReport extends Component {
+const QaReport = hh(class QaReport extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -228,5 +230,5 @@ class QaReport extends Component {
       ])
     );
   }
-}
-export default QaReport;
+});
+export default LoadingWrapper(QaReport);

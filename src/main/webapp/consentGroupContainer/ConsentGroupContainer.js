@@ -116,8 +116,6 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
               }, [
                   h(Fragment, {}, [
                     h(Comments, {
-                    showSpinner: this.props.showSpinner,
-                    hideSpinner: this.props.hideSpinner,
                     comments: this.state.comments,
                     id: this.props.consentKey,
                     updateContent: this.updateContent

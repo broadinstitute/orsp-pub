@@ -8,7 +8,7 @@ import SubmissionForm from "../projectContainer/SubmissionForm";
 import DataUseRestrictionDetails from "../dataUse/DataUseRestrictionDetails";
 import Profile from "../profile/Profile";
 import DataUseRestrictionIndex from "../dataUse/DataUseRestrictionIndex";
-import { LinkWizard } from "../linkWizard/LinkWizard";
+import LinkWizard from "../linkWizard/LinkWizard";
 import NewConsentGroup from "../consentGroup/NewConsentGroup";
 import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
 import AboutPage from "../aboutPage/AboutPage";

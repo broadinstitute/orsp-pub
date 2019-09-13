@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { p, div, span } from 'react-hyperscript-helpers';
+import { hh, p, div, span } from 'react-hyperscript-helpers';
 import { User } from '../util/ajax';
 import { format } from 'date-fns';
 import './Profile.css';
+import LoadingWrapper from "../components/LoadingWrapper";
 
-class Profile extends Component {
+const Profile = hh(class Profile extends Component{
 
   constructor(props) {
     super(props);
@@ -86,6 +87,6 @@ class Profile extends Component {
 
     );
   }
-}
+});
 
-export default Profile;
+export default LoadingWrapper(Profile);

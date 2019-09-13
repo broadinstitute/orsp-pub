@@ -48,8 +48,6 @@ class DataUseLetterIndex extends Component {
     if (isEmpty(this.state.error)) {
       dul =  h(Fragment, {}, [
         DataUseLetter({
-          showSpinner: this.props.showSpinner,
-          hideSpinner: this.props.hideSpinner,
           dul: this.state.dul
         })
       ])
