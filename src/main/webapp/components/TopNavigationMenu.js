@@ -6,6 +6,7 @@ import { User, Reports } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
 import { nonBroadUser, isAdmin, broadUser } from "../util/UserUtils";
+import './TopNavigationMenu.css';
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
@@ -80,7 +81,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 )
               ]),
               li({ isRendered: isBroadUser, className: "dropdown" }, [
-                a({ className: "dropdown-toggle", "data-toggle": "dropdown", href: "#" }, [
+                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
@@ -88,7 +89,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ]),
               li({ isRendered: isAdmin(), className: "dropdown" }, [
-                a({ className: "dropdown-toggle", "data-toggle": "dropdown", href: "#" }, [
+                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [

@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { } from "./";
 import { broadUser, isAdmin } from "../util/UserUtils";
+import { Storage } from "../util/Storage";
 
-const AuthenticatedRoute = ({ component: Component, props: componentProps, rolesAllowed, ...rest }) => {
+const AuthenticatedRoute = ({ component: Component, props: componentProps, admin, ...rest }) => {
 
   const { path, location, computedMatch } = rest;
   
@@ -15,8 +15,7 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, roles
         props =>
           verifyUser(admin)
             ? <Component {...props} {...componentProps} />
-            : !Storage.userIsLogged() ? <Login {...props} {...componentProps} componentRoles={admin} />
-              : <Redirect to={'/about'} />
+            : <Redirect to={'/about'} />
       }
     />
   );

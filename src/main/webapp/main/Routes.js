@@ -20,28 +20,29 @@ import LandingPage from "./LandingPage";
 import Search from "../search/Search";
 import TopNavigationMenu from "../components/TopNavigationMenu";
 import NewProject from "../project/NewProject";
+import AuthenticatedRoute from "./AuthenticatedRoute";
 
 const Routes = ( props ) => (
   <Switch>
-    <Route path= {["/", "/index"]} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {["/project/main", "/newConsentGroup/main"]} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/project/pages"} render = {(routeProps) => <NewProject {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
-    <AuthenticatedRoute path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />
-    <AuthenticatedRoute path= {["/index/about", "/about"]} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/dataUse/list"} render = {(routeProps) =>  <DataUseRestrictionIndex {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/issueList/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/search/index"} render = {(routeProps) =>  <Search {...routeProps} {...props}/> }/>
-    <AuthenticatedRoute path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
+    <AuthenticatedRoute path= {["/", "/index"]} exact component={LandingPage} props={props}/> }/>
+    <AuthenticatedRoute path= {"/user/rolesManagement"} component={RolesManagement} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {["/project/main", "/newConsentGroup/main"]} component={Main} props={props}/> }/>
+    <AuthenticatedRoute path= {"/project/pages"} component={NewProject} props={props}/> }/>
+    <AuthenticatedRoute path= {"/admin/fundingReport"} component={FundingsSourceReport} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/report/reviewCategories"} component={ReviewCategories} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/statusEvent/qaEventReport"} component={QaReport} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/dataUse/list"}  component={DataUseRestrictionIndex} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/consent-group/use-existing"} component={LinkWizard} props={props}/> }/>
+    <AuthenticatedRoute path= {"/consent-group/new"} component={NewConsentGroup} props={props}/> }/>
+    <AuthenticatedRoute path= {"/dataUse/show"} component={DataUseRestrictionDetails} props={props}/> }/>
+    <AuthenticatedRoute path= {"/dataUse/restriction"} component={DataUseRestrictionEdit} props={props}/> }/>
+    <AuthenticatedRoute path= {"/issueList/list"} component={IssueList} props={props} /> }/>
+    <AuthenticatedRoute path= {"/search/index"} component={Search} props={props} /> }/>
+    <AuthenticatedRoute path= {"/submissions/add-new"} component={SubmissionForm} props={props} /> }/>
     <Route path= {["/index/profile", "/profile"]} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
+    <Route path= {["/index/about", "/about"]} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>   
   </Switch>
 );
 

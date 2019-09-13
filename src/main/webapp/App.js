@@ -5,6 +5,8 @@ import TopNavigationMenu from './components/TopNavigationMenu';
 import Footer from './components/Footer';
 import ErrorHandler from './components/ErrorHandler';
 import { withRouter} from 'react-router-dom';
+import '../webapp/index.css';
+
 
 export const App = hh(class App extends Component {
 
