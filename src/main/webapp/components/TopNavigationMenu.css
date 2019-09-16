@@ -18,3 +18,25 @@
 .navbar-default .navbar-nav>li>a:focus {
     color: #FFFFFF;
 }
+
+.navbar-form .select__indicators {
+    display: none;
+    visibility: hidden;
+}
+
+/* Search */
+.navbar-default .navbar-form.navbar-left {
+    width: 220px;
+    display: inline-block;
+    margin: 3px 0 4px 0;
+}
+
+.inputField .inputFieldSelect .select__control {
+    border-radius: 4px;
+    padding: 5px 8px;
+    height: 40px;
+}
+
+.inputField .inputFieldSelect .select__control .select__value-container {
+    padding: 0;
+}

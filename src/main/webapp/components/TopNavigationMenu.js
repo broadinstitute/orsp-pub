@@ -143,7 +143,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ])
             ]),
-            div({ isRendered: isBroadUser, className: "navbar-form navbar-left", style: { "width": "220px", "display": "inline-block" } }, [
+            div({ isRendered: isBroadUser, className: "navbar-form navbar-left" }, [
               MultiSelect({
                 id: "pk_select",
                 label: "",
