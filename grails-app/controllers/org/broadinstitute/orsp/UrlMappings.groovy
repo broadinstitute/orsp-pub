@@ -139,7 +139,7 @@ class UrlMappings {
         "/.svn**"                       (controller: "error", action: "error403")
         "/.hg**"                        (controller: "error", action: "error403")
         "/.bzr**"                       (controller: "error", action: "error403")
-        "/**"                           (controller: "authenticated", action: "redirectToMainContainer")
+        "/**"                           (controller: "index", action: "index")
     }
 
 }
