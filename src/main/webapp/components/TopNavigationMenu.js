@@ -1,22 +1,22 @@
 import { Component } from "react";
-import { a, hh, div, button, span, ul, li, b, form, input, h } from 'react-hyperscript-helpers';
-import GoogleLoginButton from "./GoogleLoginButton";
+import { a, hh, div, button, span, ul, li, b, h } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
 import { User, Reports, Search } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
-import { nonBroadUser, isAdmin, broadUser } from "../util/UserUtils";
+import { isAdmin, broadUser } from "../util/UserUtils";
 import { MultiSelect } from '../components/MultiSelect';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 import './TopNavigationMenu.css';
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   constructor(props) {
-
     super(props);
     this.state = {
       isLogged: Storage.userIsLogged(),
-      searchValue: ''
+      searchValue: '',
+      googleButton: null
     };
     this.signOut = this.signOut.bind(this);
     this.onSuccess = this.onSuccess.bind(this);
@@ -34,6 +34,10 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   }
 
   signOut() {
+    if (window.gapi.auth2 != undefined) {
+      let auth2 = window.gapi.auth2.getAuthInstance();
+      auth2.signOut();
+    }
     Storage.setUserIsLogged(false);
     Storage.clearStorage();
     User.signOut();
@@ -72,13 +76,12 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     } else {
       callback(options)
     }
-
   };
 
   handlePIChange = (data, action) => {
-    if(!data.disabled) {
+    if (!data.disabled) {
       window.location.href = data.url;
-    }    
+    }
     this.setState(prev => {
       prev.search = data.data;
       return prev;
@@ -122,7 +125,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 )
               ]),
               li({ isRendered: isBroadUser, className: "dropdown" }, [
-                a({href:"#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
@@ -130,7 +133,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ]),
               li({ isRendered: isAdmin(), className: "dropdown" }, [
-                a({href:"#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
@@ -138,7 +141,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportUrl } }, ["Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({ onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])

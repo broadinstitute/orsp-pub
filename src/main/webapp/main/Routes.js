@@ -32,9 +32,9 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/report/reviewCategories"} component={ReviewCategories} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/statusEvent/qaEventReport"} component={QaReport} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/dataUse/list"}  component={DataUseRestrictionIndex} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/dataUse/show/"}  component={DataUseRestrictionDetails} props={props}/> }/>
     <AuthenticatedRoute path= {"/consent-group/use-existing"} component={LinkWizard} props={props}/> }/>
     <AuthenticatedRoute path= {"/consent-group/new"} component={NewConsentGroup} props={props}/> }/>
-    <AuthenticatedRoute path= {"/dataUse/show"} component={DataUseRestrictionDetails} props={props}/> }/>
     <AuthenticatedRoute path= {"/dataUse/restriction"} component={DataUseRestrictionEdit} props={props}/> }/>
     <AuthenticatedRoute path= {"/issueList/list"} component={IssueList} props={props} /> }/>
     <AuthenticatedRoute path= {"/search/index"} component={Search} props={props} /> }/>
@@ -45,5 +45,4 @@ const Routes = ( props ) => (
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>   
   </Switch>
 );
-
 export default Routes;

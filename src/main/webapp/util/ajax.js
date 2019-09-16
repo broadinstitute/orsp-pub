@@ -410,8 +410,14 @@ export const Reports = {
       }
     })
   },
-  getMetricsReport(tab) {
-    return axios.get(UrlConstants.metricsReportUrl);
+  async getMetricsReport() {
+    let resp = await axios.get(UrlConstants.metricsReportUrl);
+    let blob = new Blob([resp.data], { type: 'text/plain' });
+    const urlBlob = window.URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = urlBlob;
+    a.download = 'AAHRPPMetrics.csv';
+    a.click();
   }
 };
 

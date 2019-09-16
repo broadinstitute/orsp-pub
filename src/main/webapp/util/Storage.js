@@ -1,8 +1,8 @@
 
 // Storage Variables
 
-const CurrentUser = "CurrentUser"; // System user
-const UserIsLogged = "isLogged"; // User log status flag
+const CurrentUser = "CurrentUser";
+const UserIsLogged = "isLogged"; 
 
 export const Storage = {
 

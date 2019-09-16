@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { h, hh } from 'react-hyperscript-helpers';
 import GoogleLogin from 'react-google-login';
+import { Storage } from '../util/Storage'
 
 const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
 
@@ -8,8 +9,6 @@ const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
     super(props);
     this.state = {
       googleButton: null,
-      toDashBoard: false,
-      loading: true
     };
     this.onSuccess = this.onSuccess.bind(this);
   }
@@ -22,26 +21,17 @@ const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
     const googleButton = await h(GoogleLogin, {
       clientId: this.props.clientId,
       buttonText: "Sign In",
-      onSuccess: this.onSuccess,
-      onFailure: this.onFailure
+      onSuccess: this.onSuccess
     });
-
     this.setState(prev => {
       prev.googleButton = googleButton;
-      prev.loading = false;
       return prev;
     })
   }
-
-
   
   async onSuccess(googleUser) {
     const token = googleUser.getAuthResponse().id_token;
     this.props.onSuccess(token);
-  }
-
-  onFailure(googleUser) {    
-    console.log("error" + googleUser);
   }
 
   render() {
