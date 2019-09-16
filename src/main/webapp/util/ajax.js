@@ -15,6 +15,10 @@ export const Search = {
 
   getMatchingPopulationOntologies(query) {
     return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query);
+  },
+
+  getMatchingIssues(query) {
+    return axios.get(UrlConstants.matchingIssueUrl + '?term=' + query);
   }
 };
 

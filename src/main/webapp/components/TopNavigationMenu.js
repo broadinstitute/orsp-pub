@@ -1,11 +1,12 @@
 import { Component } from "react";
 import { a, hh, div, button, span, ul, li, b, form, input, h } from 'react-hyperscript-helpers';
-import  GoogleLoginButton from "./GoogleLoginButton";
+import GoogleLoginButton from "./GoogleLoginButton";
 import { Storage } from '../util/Storage'
-import { User, Reports } from "../util/ajax";
+import { User, Reports, Search } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
 import { nonBroadUser, isAdmin, broadUser } from "../util/UserUtils";
+import { MultiSelect } from '../components/MultiSelect';
 import './TopNavigationMenu.css';
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
@@ -14,7 +15,8 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
     super(props);
     this.state = {
-      isLogged: Storage.userIsLogged()
+      isLogged: Storage.userIsLogged(),
+      searchValue: ''
     };
     this.signOut = this.signOut.bind(this);
     this.onSuccess = this.onSuccess.bind(this);
@@ -43,6 +45,45 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   openMetricsReport() {
     Reports.getMetricsReport();
   }
+
+  loadOptions(query, callback) {
+    let options = []
+    if (query.length > 2) {
+      Search.getMatchingIssues(query).then(response => {
+        let options = response.data.map(function (item) {
+          let label = item.label;
+          if (item.linkDisabled === true && item.pm.length > 0) {
+            label = item.label + ' Please contact ' + item.pm + ' for access';
+          } else if (item.linkDisabled === true) {
+            label = item.label + ' Please contact ' + item.reporter + ' for access';
+          }
+          return {
+            key: item.id,
+            value: item.value,
+            label: label,
+            linkDisabled: item.linkDisabled,
+            url: item.url
+          };
+        });
+        callback(options);
+      }).catch(e => {
+        callback(options)
+      });
+    } else {
+      callback(options)
+    }
+
+  };
+
+  handlePIChange = (data, action) => {
+    if(!data.disabled) {
+      window.location.href = data.url;
+    }    
+    this.setState(prev => {
+      prev.search = data.data;
+      return prev;
+    })
+  };
 
   render() {
     let isBroadUser = this.state.isLogged && broadUser();
@@ -81,7 +122,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 )
               ]),
               li({ isRendered: isBroadUser, className: "dropdown" }, [
-                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                a({href:"#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
@@ -89,7 +130,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ]),
               li({ isRendered: isAdmin(), className: "dropdown" }, [
-                a({ className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                a({href:"#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
@@ -102,17 +143,18 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ])
             ]),
-            form({ isRendered: isBroadUser, className: "navbar-form navbar-left" }, [
-              div({ className: "form-group" }, [
-                input({
-                  className: "form-control",
-                  id: this.props.id,
-                  type: 'text',
-                  disabled: false,
-                  onChange: this.props.onChange,
-                  placeholder: "ORSP ID #"
-                })
-              ])
+            div({ isRendered: isBroadUser, className: "navbar-form navbar-left", style: { "width": "220px", "display": "inline-block" } }, [
+              MultiSelect({
+                id: "pk_select",
+                label: "",
+                isDisabled: false,
+                loadOptions: this.loadOptions,
+                handleChange: this.handlePIChange,
+                value: this.state.searchValue,
+                placeholder: "ORSP ID #",
+                isMulti: false,
+                edit: false
+              })
             ]),
             div({ isRendered: this.state.isLogged, className: "floatRight" }, [
               ul({ className: "nav navbar-nav" }, [

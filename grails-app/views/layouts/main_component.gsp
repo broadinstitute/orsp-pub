@@ -14,6 +14,7 @@
     <meta name="google-signin-client_id" content="${grailsApplication.config.googleSignInClientId}">
     <meta charset="utf-8"/>
 
+    <link rel="shortcut icon" href="${resource(dir: 'assets', file: 'favicon.ico')}" type="image/x-icon">
     <link rel="apple-touch-icon" href="${resource(dir: 'assets', file: 'apple-touch-icon.png')}">
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
@@ -46,7 +47,6 @@
     <script>
       if (location.protocol !== "https:") location.protocol = "https:";
     </script>
-    <g:render template="/layouts/signin"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
 
     %{--
@@ -57,15 +57,12 @@
       const issueTypes = [
         <g:each status="count" in="${IssueType.values()}" var="type">"${raw(type.name)}"<g:if test="${count < IssueType.values().size() - 1}">,</g:if>
         </g:each>];
-
       const issueStatuses = [
         <g:each status="count" in="${IssueStatus.values().sort{it.sequence}}" var="status">"${raw(status.name)}"<g:if test="${count < IssueStatus.values().size() - 1}">,</g:if>
         </g:each>];
-
       const irbs = [
           <g:each status="count" in="${PreferredIrb.values()}" var="map">{ id:"${raw(map.key)}", value:"${raw(map.label)}"}<g:if test="${count < PreferredIrb.values().size() - 1}">,</g:if>
         </g:each>];
-
       // TODO: Many of these should be static values directly accessible from the components directly.
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
@@ -83,7 +80,8 @@
         serverURL: "${grailsApplication.config.grails.serverURL}",
         contextPath: "${request.contextPath}",
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
-        isViewer: ${session.isViewer ? session.isViewer : false}
+        isViewer: ${session.isViewer ? session.isViewer : false},
+        clientId: "${grailsApplication.config.googleSignInClientId}"
       };
     </script>
 
@@ -111,38 +109,10 @@
     <g:layoutHead/>
 </head>
 <body style="margin-top: 0; padding-top: 70px;">
+ <div id="main"></div>
+    <asset:javascript src="build/mainIndex.js"/>
 
-  <div id="main"></div>
-  <asset:javascript src="build/mainIndex.js"/>
-<!-- <auth:isNotAuthenticated>
-    <div class="container">
-        <div id="login_spinner" class="hidden">
-            <div class="alert alert-success alert-dismissable" style="display: block">
-                Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-             </div>
-        </div>
-        <div id="about"></div>
-        <asset:javascript src="build/about.js"/>
-    </div>
-</auth:isNotAuthenticated> -->
 
-<!-- <auth:nonBroadSession>
-    <div class="container">
-        <div class="alert alert-danger alert-dismissable" style="display: block">
-            You must be a Broad Institute User for further access. Please sign out and log in with
-            a "broadinstitute.org" email account.
-        </div>
-        <div id="about"></div>
-        <asset:javascript src="build/about.js"/>
-    </div>
-</auth:nonBroadSession>
-
-<auth:broadSession>
-    <div class="container">
-        <g:render template="/base/messages" />
-        <g:layoutBody/>
-    </div>
-</auth:broadSession> -->
 
 
 %{-- TODO: A lot of this code should go away once react conversion is complete --}%
@@ -160,11 +130,39 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $(".chosen-select").chosen({width: "100%"});
-
     $('[data-toggle="tooltip"]').tooltip();
   });
-
-
+  function loadComments(url) {
+    $("#comments").load(
+      url,
+      function() {
+        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
+        $("#comments-table").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          order: [1, "desc"]
+        });
+        initializeEditor();
+      }
+    );
+  }
+  function loadHistory(url) {
+    $("#history").load(
+      url,
+      function() {
+        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
+        $("#history-table").DataTable({
+          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
+          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
+          language: { search: 'Filter:' },
+          pagingType: "full_numbers",
+          order: [1, "desc"]
+        });
+      }
+    );
+  }
   // Toggle pattern for Jira-style objects. Relies on "-id" naming pattern
   function toggleContinueMessage(elementId, val1, val2) {
     $("input[name='" + elementId + "-id'], input[name='" + elementId + "']").change(
@@ -179,7 +177,6 @@
       }
     );
   }
-
   // Toggle pattern for property style objects. Slightly different from Jira-style objects.
   function togglePropertyMessage(elementName, val1, val2) {
     $("input[name='" + elementName + "']").change(
@@ -196,7 +193,6 @@
       }
     );
   }
-
 </script>
 
 <script id="uploadedFileTemplate" type="text/x-jsrender">
@@ -207,7 +203,6 @@
 </div>
 </script>
 
-<asset:javascript src="application.js"/>
 
 <g:if test="${tab}">
     <asset:script type="text/javascript">

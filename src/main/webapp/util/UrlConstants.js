@@ -55,6 +55,7 @@ export const UrlConstants = {
   sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
   populationOntologiesUrl: context + '/search/matching-population-ontologies',
   searchUrl: context + '/search/general-table-json',
+  matchingIssueUrl: context + '/search/matching-issues',
 
   downloadDocumentUrl: context + '/api/user/authenticated/download-document',
   saveCommentUrl: context + '/api/comments/save',
