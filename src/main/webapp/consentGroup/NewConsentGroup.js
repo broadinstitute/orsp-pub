@@ -1,18 +1,17 @@
 import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
-import { h, div } from 'react-hyperscript-helpers';
+import { div, hh } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User } from '../util/ajax';
-import { spinnerService } from '../util/spinner-service';
-import { Spinner } from "../components/Spinner";
-import { isEmpty } from "../util/Utils";
+import { ConsentGroup, Files, SampleCollections, User } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
+import * as qs from 'query-string';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 1;
-const CONSENT_SPINNER = 'consentSpinner';
 
-class NewConsentGroup extends Component {
+const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
   _isMounted = false;
 
@@ -100,7 +99,6 @@ class NewConsentGroup extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    spinnerService._unregister(CONSENT_SPINNER);
   }
 
   getUserSession() {
@@ -113,7 +111,7 @@ class NewConsentGroup extends Component {
 
   submitNewConsentGroup = async () => {
 
-    spinnerService.show(CONSENT_SPINNER);
+    this.props.showSpinner();
     this.setState({ submitError: false });
 
     if (this.validateForm()) {
@@ -127,13 +125,11 @@ class NewConsentGroup extends Component {
         this.state.user.displayName,
         this.state.user.userName)
         .then(resp => {
-          // TODO: window.location.href is a temporal way to redirect the user to project's consent-group page tab. We need to change this after
-          // transitioning from old gsps style is solved.
-          window.location.href = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups&new"].join("/");
-          spinnerService.hide(CONSENT_SPINNER);
+          this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
+          this.props.hideSpinner()
         }).catch(error => {
         console.error(error);
-        spinnerService.hide(CONSENT_SPINNER);
+        this.props.hideSpinner();
         this.toggleSubmitError();
         this.changeSubmitState();
       });
@@ -142,7 +138,7 @@ class NewConsentGroup extends Component {
         prev.generalError = true;
         return prev;
       }, () => {
-        spinnerService.hide(CONSENT_SPINNER);
+        this.props.hideSpinner();
       });
     }
   };
@@ -562,13 +558,10 @@ class NewConsentGroup extends Component {
             securityInfoData: this.state.securityInfoFormData,
             updateMTA: this.updateMTA
           })
-        ]),
-        h(Spinner, {
-          name: CONSENT_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     );
   }
-}
+});
 
-export default NewConsentGroup;
+export default LoadingWrapper(NewConsentGroup);

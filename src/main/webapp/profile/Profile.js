@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { p, div, span } from 'react-hyperscript-helpers';
-import { spinnerService } from "../util/spinner-service";
+import { div, hh, p, span } from 'react-hyperscript-helpers';
 import { User } from '../util/ajax';
 import { format } from 'date-fns';
 import './Profile.css';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-class Profile extends Component {
+const Profile = hh(class Profile extends Component {
 
   constructor(props) {
     super(props);
@@ -19,12 +19,17 @@ class Profile extends Component {
   }
 
   init = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     User.getUserSession(component.getUserUrl).then(resp => {
       this.setState(prev => { 
         prev.user = resp.data;
         return prev;
+      },() => {
+        this.props.hideSpinner();
       });
+    }).catch(error => {
+      this.props.hideSpinner();
+      this.setState(() => { throw error; });
     });
   };
 
@@ -87,6 +92,6 @@ class Profile extends Component {
 
     );
   }
-}
+});
 
-export default Profile;
+export default LoadingWrapper(Profile);

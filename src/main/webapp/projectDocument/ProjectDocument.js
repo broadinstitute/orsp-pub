@@ -1,13 +1,13 @@
 import { Component, Fragment } from 'react';
 import { Documents } from '../components/Documents'
-import { DocumentHandler, User, Project } from "../util/ajax";
+import { DocumentHandler, Project, User } from '../util/ajax';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { h, hh } from 'react-hyperscript-helpers';
-import { AlertMessage } from "../components/AlertMessage";
-import { Spinner } from '../components/Spinner';
+import { AlertMessage } from '../components/AlertMessage';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-export const ProjectDocument = hh(class ProjectDocument extends Component {
+const ProjectDocument = hh(class ProjectDocument extends Component {
 
   _isMounted = false;
 
@@ -38,6 +38,7 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
   }
 
   getAttachedDocuments = () => {
+    this.props.showSpinner();
     Project.getProject(this.props.projectKey).then(
       issue => {
         if (this._isMounted) {
@@ -52,12 +53,16 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
               prev.user = user.data;
               return prev;
             }, () => {
-              this.props.updateDocumentsStatus({attachmentsApproved: resp.data.attachmentsApproved})
+              this.props.updateDocumentsStatus({attachmentsApproved: resp.data.attachmentsApproved});
+              this.props.hideSpinner();
             }
           );
         }
       });
-    }).catch(() => { });
+    }).catch((error) => {
+      this.props.hideSpinner();
+      this.setState(() => { throw error; });
+    });
   };
 
   approveDocument = (uuid) => {
@@ -139,3 +144,4 @@ export const ProjectDocument = hh(class ProjectDocument extends Component {
     )}
 
 });
+export default LoadingWrapper(ProjectDocument);

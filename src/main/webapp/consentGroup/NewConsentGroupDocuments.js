@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { hh, h1, div, button, p } from 'react-hyperscript-helpers';
-import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import { Table } from "../components/Table";
+import { button, div, h, h1, hh, p } from 'react-hyperscript-helpers';
+import AddDocumentDialog from '../components/AddDocumentDialog';
+import { Table } from '../components/Table';
 
 const styles = {
   addDocumentContainer: {
@@ -94,7 +94,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     return (
           div({ className: "questionnaireContainerLight" }, [
             p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
-            AddDocumentDialog({
+            h(AddDocumentDialog, {
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.state.documentOptions,
