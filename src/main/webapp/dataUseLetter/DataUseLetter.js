@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, p, div, h1, h2, h4, small, br, span, ul, li, button } from 'react-hyperscript-helpers';
+import { br, button, div, h1, h2, h4, hh, li, p, small, span, ul } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -8,15 +8,13 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { ConsentGroup, DUL } from "../util/ajax";
-import { MultiSelect } from "../components/MultiSelect";
-import { Search } from "../util/ajax";
-import { DataUse } from "../util/ajax";
+import { ConsentGroup, DataUse, DUL, Search } from '../util/ajax';
+import { MultiSelect } from '../components/MultiSelect';
 import _ from 'lodash';
-import { isEmpty } from "../util/Utils";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { isEmpty } from '../util/Utils';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-const DataUseLetter = hh(class DataUseLetter extends Component{
+const DataUseLetter = hh(class DataUseLetter extends Component {
 
   constructor(props) {
     super(props);

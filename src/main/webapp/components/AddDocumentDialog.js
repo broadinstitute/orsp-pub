@@ -1,11 +1,11 @@
 import { Component } from 'react';
-import { hh, h, button } from 'react-hyperscript-helpers';
-import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
+import { button, h, hh } from 'react-hyperscript-helpers';
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
-import { Files } from "../util/ajax";
+import { Files } from '../util/ajax';
 import './ConfirmationDialog.css';
-import LoadingWrapper from "./LoadingWrapper";
+import LoadingWrapper from './LoadingWrapper';
 
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     constructor(props) {
@@ -199,4 +199,4 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   }
 });
 
-export default LoadingWrapper(AddDocumentDialog, 'fixed');
+export default LoadingWrapper(AddDocumentDialog, true);

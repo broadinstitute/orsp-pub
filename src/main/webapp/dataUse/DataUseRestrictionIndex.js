@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { hh, h } from 'react-hyperscript-helpers';
+import { h, hh } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 

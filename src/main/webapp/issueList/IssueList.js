@@ -1,13 +1,13 @@
 import { Component } from 'react';
-import { hh, div, h1, h } from 'react-hyperscript-helpers';
-import { TableComponent } from "../components/TableComponent";
+import { div, h, h1, hh } from 'react-hyperscript-helpers';
+import { TableComponent } from '../components/TableComponent';
 import { Project } from '../util/ajax';
-import { formatDataPrintableFormat } from "../util/TableUtil";
-import { printData } from "../util/Utils";
+import { formatDataPrintableFormat } from '../util/TableUtil';
+import { printData } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const stylesHeader = {
   pageTitle: {

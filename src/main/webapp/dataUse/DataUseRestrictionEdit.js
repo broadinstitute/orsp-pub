@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { h1, h, div, hh, h2, strong, ul, i, p, li, label, input, span, hr, button } from 'react-hyperscript-helpers';
-import { InputFieldText } from "../components/InputFieldText";
-import { InputYesNo } from "../components/InputYesNo";
-import { Search } from "../util/ajax";
-import { InputFieldTextArea } from "../components/InputFieldTextArea";
-import { MultiSelect } from "../components/MultiSelect";
+import { button, div, h1, h2, hh, hr, i, input, label, li, p, span, strong, ul } from 'react-hyperscript-helpers';
+import { InputFieldText } from '../components/InputFieldText';
+import { InputYesNo } from '../components/InputYesNo';
+import { ConsentGroup, DataUse, Search } from '../util/ajax';
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from '../components/AlertMessage';
-import { DataUse, ConsentGroup } from "../util/ajax";
-import { isEmpty, createObjectCopy } from '../util/Utils';
+import { createObjectCopy, isEmpty } from '../util/Utils';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import '../components/Btn.css';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const FEMALE = 'Female';
 const MALE = 'Male';
@@ -845,4 +844,4 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
     )
   }
 });
-export default LoadingWrapper(DataUseRestrictionEdit, 'fixedTop');
+export default LoadingWrapper(DataUseRestrictionEdit);

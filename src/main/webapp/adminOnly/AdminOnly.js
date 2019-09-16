@@ -1,20 +1,19 @@
 import { Component } from 'react';
-import { hh, div, h2, button } from 'react-hyperscript-helpers';
-import { Project } from "../util/ajax";
-import { Panel } from "../components/Panel";
-import { InputFieldText } from "../components/InputFieldText";
-import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
-import { InputFieldRadio } from "../components/InputFieldRadio";
-import { isEmpty, createObjectCopy, compareNotEmptyObjects } from "../util/Utils";
+import { button, div, h2, hh } from 'react-hyperscript-helpers';
+import { Project } from '../util/ajax';
+import { Panel } from '../components/Panel';
+import { InputFieldText } from '../components/InputFieldText';
+import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
+import { InputFieldRadio } from '../components/InputFieldRadio';
+import { compareNotEmptyObjects, createObjectCopy, isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
-import "regenerator-runtime/runtime";
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import { PREFERRED_IRB } from "../util/TypeDescription";
-import { INITIAL_REVIEW } from "../util/TypeDescription";
-import { InputTextList } from "../components/InputTextList";
-import { Fundings } from "../components/Fundings";
-import { AlertMessage } from "../components/AlertMessage";
-import LoadingWrapper from "../components/LoadingWrapper";
+import 'regenerator-runtime/runtime';
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import { INITIAL_REVIEW, PREFERRED_IRB } from '../util/TypeDescription';
+import { InputTextList } from '../components/InputTextList';
+import { Fundings } from '../components/Fundings';
+import { AlertMessage } from '../components/AlertMessage';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const AdminOnly = hh(class AdminOnly extends Component {
 
@@ -164,7 +163,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
           prev.showSubmissionError = true;
           prev.alertMessage = 'Something went wrong. Please try again.';
           return prev;
-        });      
+        });
       }
     );
   };
@@ -243,7 +242,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
   render() {
     return(
       div({},[
-        h2({ className: "stepTitle" }, ["Admin Only"]),   
+        h2({ className: "stepTitle" }, ["Admin Only"]),
         Panel({ title: "Project Details" }, [
           InputFieldRadio({
             id: "radioProjectStatus",
@@ -355,7 +354,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
             options: INITIAL_REVIEW,
             readOnly: !this.state.isAdmin,
             value: this.state.formData.initialReviewType,
-            onChange: this.handleSelect("initialReviewType"),          
+            onChange: this.handleSelect("initialReviewType"),
             placeholder: "Select..."
           }),
           InputFieldRadio({
@@ -406,4 +405,4 @@ const AdminOnly = hh(class AdminOnly extends Component {
   }
 });
 
-export default LoadingWrapper(AdminOnly, 'fixedTop')
+export default LoadingWrapper(AdminOnly)

@@ -1,10 +1,10 @@
 import { Component } from 'react';
-import { hh, div, h1 } from 'react-hyperscript-helpers';
-import { Table } from "../components/Table";
-import { RoleManagementEdit } from "../components/RoleManagementEdit";
-import { User } from "../util/ajax";
-import { TablePaginator } from "../components/TablePaginator";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { div, h1, hh } from 'react-hyperscript-helpers';
+import { Table } from '../components/Table';
+import { RoleManagementEdit } from '../components/RoleManagementEdit';
+import { User } from '../util/ajax';
+import { TablePaginator } from '../components/TablePaginator';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const tableHeaders =
   [

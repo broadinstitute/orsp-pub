@@ -1,18 +1,18 @@
 import { Component } from 'react';
-import { h, div, h2, button, hh } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InstitutionalSource } from '../components/InstitutionalSource';
-import { ConsentGroup, SampleCollections, Review, User, Project } from "../util/ajax";
-import RequestClarificationDialog from "../components/RequestClarificationDialog";
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { AlertMessage } from "../components/AlertMessage";
+import { ConsentGroup, Project, Review, SampleCollections, User } from '../util/ajax';
+import RequestClarificationDialog from '../components/RequestClarificationDialog';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { AlertMessage } from '../components/AlertMessage';
 import get from 'lodash/get';
-import { Table } from "../components/Table";
-import { isEmpty } from "../util/Utils";
-import { InputFieldTextArea } from "../components/InputFieldTextArea";
-import { InputFieldRadio } from "../components/InputFieldRadio";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { Table } from '../components/Table';
+import { isEmpty } from '../util/Utils';
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { InputFieldRadio } from '../components/InputFieldRadio';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const headers =
   [
@@ -1004,4 +1004,4 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   }
 });
 
-export default LoadingWrapper(ConsentGroupReview, 'fixedTop');
+export default LoadingWrapper(ConsentGroupReview);

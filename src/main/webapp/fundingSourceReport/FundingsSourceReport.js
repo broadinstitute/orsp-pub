@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { hh, h1, div, a, span } from 'react-hyperscript-helpers';
-import { Reports } from "../util/ajax";
-import { TableComponent } from "../components/TableComponent";
-import { handleRedirectToProject, exportData } from "../util/Utils";
-import { FUNDING_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
-import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from "../util/TableUtil";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { a, div, h1, hh, span } from 'react-hyperscript-helpers';
+import { Reports } from '../util/ajax';
+import { TableComponent } from '../components/TableComponent';
+import { exportData, handleRedirectToProject } from '../util/Utils';
+import { FUNDING_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
+import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from '../util/TableUtil';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const stylesHeader = {
   pageTitle: {

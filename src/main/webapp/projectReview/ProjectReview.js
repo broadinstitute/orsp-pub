@@ -1,23 +1,22 @@
 import { Component } from 'react';
-import { h, hh, p, div, h2, button } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh, p } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
 import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
-import RequestClarificationDialog from "../components/RequestClarificationDialog";
+import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { Project, Search, Review, User } from "../util/ajax";
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import { PREFERRED_IRB } from "../util/TypeDescription";
-import { PI_AFFILIATION } from "../util/TypeDescription";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -1233,4 +1232,4 @@ const ProjectReview = hh(class ProjectReview extends Component {
     )
   }
 });
-export default LoadingWrapper(ProjectReview, 'fixedTop');
+export default LoadingWrapper(ProjectReview);

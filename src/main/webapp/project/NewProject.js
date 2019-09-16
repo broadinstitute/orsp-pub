@@ -4,12 +4,12 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
-import { DETERMINATION } from "../util/TypeDescription";
+import { DETERMINATION } from '../util/TypeDescription';
 import { Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 import { hh } from 'react-hyperscript-helpers';
-import "regenerator-runtime/runtime";
-import LoadingWrapper from "../components/LoadingWrapper";
+import 'regenerator-runtime/runtime';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 2;
 
@@ -425,4 +425,4 @@ const NewProject = hh(class NewProject extends Component {
   }
 });
 
-export default LoadingWrapper(NewProject, 'fixedTop');
+export default LoadingWrapper(NewProject);

@@ -1,16 +1,16 @@
 import React, { Component, Fragment } from 'react';
-import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, DocumentHandler, ConsentGroup } from '../util/ajax';
+import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink, ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import RequestClarificationDialog from "../components/RequestClarificationDialog";
-import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
-import { isEmpty } from "../util/Utils";
-import { TableComponent } from "../components/TableComponent";
-import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
-import { formatUrlDocument, parseDate } from "../util/TableUtil";
-import { AlertMessage } from "../components/AlertMessage";
-import { UrlConstants } from "../util/UrlConstants";
-import LoadingWrapper from "../components/LoadingWrapper";
+import RequestClarificationDialog from '../components/RequestClarificationDialog';
+import { CollapsibleElements } from '../CollapsiblePanel/CollapsibleElements';
+import { isEmpty } from '../util/Utils';
+import { TableComponent } from '../components/TableComponent';
+import { SampleDataCohortsCollapsibleHeader } from '../CollapsiblePanel/SampleDataCohortsCollapsibleHeader';
+import { formatUrlDocument, parseDate } from '../util/TableUtil';
+import { AlertMessage } from '../components/AlertMessage';
+import { UrlConstants } from '../util/UrlConstants';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const columns = (cThis) => [{
   dataField: 'id',
@@ -143,7 +143,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
   handleSuccessNotification = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('new') && urlParams.get('tab') === 'consent-groups') {
-      history.pushState({}, null, window.location.href.replace('&new',''));
+      history.pushState({}, null, window.location.href.split('&')[0]);
       setTimeout(this.clearAlertMessage, 8000, null);
       this.props.updateContent();
       this.setState(prev => {
@@ -312,4 +312,4 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
     )
   }
 });
-export default LoadingWrapper(ConsentGroups, 'fixedTop');
+export default LoadingWrapper(ConsentGroups);

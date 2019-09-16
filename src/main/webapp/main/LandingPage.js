@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { hh, h, div, h3, a } from 'react-hyperscript-helpers';
+import { a, div, h, h3, hh } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
-import { TableComponent } from "../components/TableComponent";
-import { Issues, User } from "../util/ajax";
-import { parseDate } from "../util/TableUtil";
+import { TableComponent } from '../components/TableComponent';
+import { Issues, User } from '../util/ajax';
+import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const columnsCopy = [{
   dataField: 'project',

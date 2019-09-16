@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { hh, p, div, span } from 'react-hyperscript-helpers';
+import { div, hh, p, span } from 'react-hyperscript-helpers';
 import { User } from '../util/ajax';
 import { format } from 'date-fns';
 import './Profile.css';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const Profile = hh(class Profile extends Component {
 

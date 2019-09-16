@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { hh, h, h1, div } from 'react-hyperscript-helpers';
-import { Reports } from "../util/ajax";
-import FilterPanel from "./FilterPanel";
-import { formatDataPrintableFormat } from "../util/TableUtil";
-import IrbTable from "./IrbTable";
-import NoIrbTable from "./NoIrbTable";
-import { columns, IRB, NO_IRB } from "../util/QaReportConstants";
-import { createObjectCopy, exportData, isEmpty } from "../util/Utils";
-import MultiTab from "../components/MultiTab";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { div, h, h1, hh } from 'react-hyperscript-helpers';
+import { Reports } from '../util/ajax';
+import FilterPanel from './FilterPanel';
+import { formatDataPrintableFormat } from '../util/TableUtil';
+import IrbTable from './IrbTable';
+import NoIrbTable from './NoIrbTable';
+import { columns, IRB, NO_IRB } from '../util/QaReportConstants';
+import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
+import MultiTab from '../components/MultiTab';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const QaReport = hh(class QaReport extends Component {
 

@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import { hh, div, h, button } from 'react-hyperscript-helpers';
-import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
+import { button, div, h, hh } from 'react-hyperscript-helpers';
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from './AlertMessage';
-import { ClarificationRequest } from "../util/ajax";
-import { Search } from '../util/ajax';
+import { ClarificationRequest, Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 import './ConfirmationDialog.css';
-import LoadingWrapper from "./LoadingWrapper";
+import LoadingWrapper from './LoadingWrapper';
 
 const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component{
 
@@ -185,4 +184,4 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
   }
 });
 
-export default LoadingWrapper(RequestClarificationDialog, 'fixed');
+export default LoadingWrapper(RequestClarificationDialog, true);

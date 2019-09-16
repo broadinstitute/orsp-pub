@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { h, h1, div, li, ul, h2, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink } from "../util/ajax";
-import { TableComponent } from "../components/TableComponent";
-import { styles } from "../util/ReportConstants";
+import { div, h, h1, h2, hh, li, ul } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink } from '../util/ajax';
+import { TableComponent } from '../components/TableComponent';
+import { styles } from '../util/ReportConstants';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { isEmpty } from "../util/Utils";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { isEmpty } from '../util/Utils';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },

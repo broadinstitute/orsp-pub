@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h, h1, button, div, p, small } from 'react-hyperscript-helpers';
+import { button, div, h, h1, hh, p, small } from 'react-hyperscript-helpers';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { Panel } from "../components/Panel";
-import { Table } from "../components/Table";
+import { Panel } from '../components/Panel';
+import { Table } from '../components/Table';
 import AddDocumentDialog from '../components/AddDocumentDialog'
 
 

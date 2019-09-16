@@ -2,12 +2,12 @@ import { Component } from 'react';
 import { Wizard } from '../components/Wizard';
 import { div, hh } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
-import { Files, ConsentGroup, SampleCollections, User} from '../util/ajax';
-import { isEmpty } from "../util/Utils";
+import { ConsentGroup, Files, SampleCollections, User } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 import * as qs from 'query-string';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 1;
 
@@ -564,4 +564,4 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
   }
 });
 
-export default LoadingWrapper(NewConsentGroup, 'fixedTop');
+export default LoadingWrapper(NewConsentGroup);

@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { hh, h, h3, div, p, button } from 'react-hyperscript-helpers';
+import { button, div, h, h3, hh, p } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
 import AddDocumentDialog from './AddDocumentDialog'
@@ -8,7 +8,7 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { DocumentHandler } from '../util/ajax';
 import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
-import { UrlConstants } from "../util/UrlConstants";
+import { UrlConstants } from '../util/UrlConstants';
 import { Link } from 'react-router-dom';
 
 const styles = {

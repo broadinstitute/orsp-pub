@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { hh, h, h1, div, button, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
+import { a, button, div, h, h1, hh, li, p, pre, span, ul } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { DataUse, ConsentGroup } from "../util/ajax";
-import { isEmpty } from "../util/Utils";
+import { ConsentGroup, DataUse } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
 import { DUR_QUESTIONS } from './DataUseRestrictionConstants';
 import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
-import  { UrlConstants }  from '../util/UrlConstants';
-import LoadingWrapper from "../components/LoadingWrapper";
+import { UrlConstants } from '../util/UrlConstants';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 
 const styles = {

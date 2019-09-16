@@ -1,22 +1,22 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import RolesManagement from "../rolesManagement/RolesManagement";
-import ReviewCategories from "../reviewCategories/ReviewCategories";
-import Main from "./Main";
-import FundingsSourceReport from "../fundingSourceReport/FundingsSourceReport";
-import SubmissionForm from "../projectContainer/SubmissionForm";
-import DataUseRestrictionDetails from "../dataUse/DataUseRestrictionDetails";
-import Profile from "../profile/Profile";
-import DataUseRestrictionIndex from "../dataUse/DataUseRestrictionIndex";
-import LinkWizard from "../linkWizard/LinkWizard";
-import NewConsentGroup from "../consentGroup/NewConsentGroup";
-import DataUseLetterIndex from "../dataUseLetter/DataUseLetterIndex";
-import AboutPage from "../aboutPage/AboutPage";
-import QaReport from "../qaReport/QaReport";
-import DataUseRestrictionEdit from "../dataUse/DataUseRestrictionEdit";
-import PageNotFound from "../pageNotFound/PageNotFound";
-import IssueList from "../issueList/IssueList"
-import LandingPage from "./LandingPage";
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import RolesManagement from '../rolesManagement/RolesManagement';
+import ReviewCategories from '../reviewCategories/ReviewCategories';
+import Main from './Main';
+import FundingsSourceReport from '../fundingSourceReport/FundingsSourceReport';
+import SubmissionForm from '../projectContainer/SubmissionForm';
+import DataUseRestrictionDetails from '../dataUse/DataUseRestrictionDetails';
+import Profile from '../profile/Profile';
+import DataUseRestrictionIndex from '../dataUse/DataUseRestrictionIndex';
+import LinkWizard from '../linkWizard/LinkWizard';
+import NewConsentGroup from '../consentGroup/NewConsentGroup';
+import DataUseLetterIndex from '../dataUseLetter/DataUseLetterIndex';
+import AboutPage from '../aboutPage/AboutPage';
+import QaReport from '../qaReport/QaReport';
+import DataUseRestrictionEdit from '../dataUse/DataUseRestrictionEdit';
+import PageNotFound from '../pageNotFound/PageNotFound';
+import IssueList from '../issueList/IssueList'
+import LandingPage from './LandingPage';
 
 const Routes = ( props ) => (
   <Switch>

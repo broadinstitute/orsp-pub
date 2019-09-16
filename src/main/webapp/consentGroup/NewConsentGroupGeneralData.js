@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1, div } from 'react-hyperscript-helpers';
+import { div, h1, hh } from 'react-hyperscript-helpers';
 
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';

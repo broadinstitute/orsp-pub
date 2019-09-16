@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { hh, h, button, div, p } from 'react-hyperscript-helpers';
-import { WizardStep } from "../components/WizardStep";
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import { InputFieldCheckbox } from "../components/InputFieldCheckbox";
-import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
+import { button, div, h, hh, p } from 'react-hyperscript-helpers';
+import { WizardStep } from '../components/WizardStep';
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
+import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { Panel } from '../components/Panel';
-import AddDocumentDialog from "../components/AddDocumentDialog";
-import { Table } from "../components/Table";
+import AddDocumentDialog from '../components/AddDocumentDialog';
+import { Table } from '../components/Table';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { ConsentGroup, SampleCollections } from "../util/ajax";
+import { ConsentGroup, SampleCollections } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {

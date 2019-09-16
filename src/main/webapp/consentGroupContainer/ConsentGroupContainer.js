@@ -1,11 +1,11 @@
 import { Component } from 'react';
-import { div, hh, h } from 'react-hyperscript-helpers';
-import ConsentGroupReview from "../consentGroupReview/ConsentGroupReview";
-import { History } from "../components/History";
-import Comments from "../components/Comments";
+import { div, h, hh } from 'react-hyperscript-helpers';
+import ConsentGroupReview from '../consentGroupReview/ConsentGroupReview';
+import { History } from '../components/History';
+import Comments from '../components/Comments';
 import '../components/Wizard.css';
-import ConsentGroupDocuments from "../consentGroupDocuments/ConsentGroupDocuments";
-import MultiTab from "../components/MultiTab";
+import ConsentGroupDocuments from '../consentGroupDocuments/ConsentGroupDocuments';
+import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {

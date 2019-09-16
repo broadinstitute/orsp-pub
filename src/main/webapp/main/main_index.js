@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import '../index.css';
 import ErrorHandler from '../components/ErrorHandler';
 import { BrowserRouter } from 'react-router-dom';
-import App from "./App";
+import App from './App';
 
 ReactDOM.render(
   <ErrorHandler>

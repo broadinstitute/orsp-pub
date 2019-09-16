@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import { hh, div, p, button, span } from 'react-hyperscript-helpers';
-import { DUL, ConsentGroup } from '../util/ajax';
+import { button, div, hh, p, span } from 'react-hyperscript-helpers';
+import { ConsentGroup, DUL } from '../util/ajax';
 import { AlertMessage } from './AlertMessage';
-import { validateEmail } from "../util/Utils";
+import { isEmpty, validateEmail } from '../util/Utils';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import './Documents.css';
-import { isEmpty } from '../util/Utils';
-import LoadingWrapper from "./LoadingWrapper";
+import LoadingWrapper from './LoadingWrapper';
 
 const styles = {
   getShareable: {

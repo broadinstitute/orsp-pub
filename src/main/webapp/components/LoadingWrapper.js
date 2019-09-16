@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
 import { div, img } from 'react-hyperscript-helpers';
-import { context } from "../util/UrlConstants";
+import { context } from '../util/UrlConstants';
 
-function LoadingWrapper(WrappedComponent, overlaySpinner = '') {
+function LoadingWrapper(WrappedComponent, fixed = false) {
   const baseStyle = {
     'left': '0',
     'width': '100%',
     'height': '100%',
     'background': 'rgba(255, 255, 255, 0.5)',
-  };
-
-  const containerStyle = {
-    'position': 'absolute',
-    'top': '51px',
-    'zIndex': '1029'
   };
 
   const containerStyleFixed = {
@@ -52,12 +46,10 @@ function LoadingWrapper(WrappedComponent, overlaySpinner = '') {
 
     const getStyle = () => {
       let style = {};
-      if (overlaySpinner === 'fixed') {
+      if (fixed) {
         style = {...baseStyle, ...containerStyleFixed }
-      } else if (overlaySpinner === 'fixedTop') {
+      } else {
         style = {...baseStyle, ...containerStyleFixedTop }
-    } else {
-        style = {...baseStyle, ...containerStyle}
       }
       return style;
     };

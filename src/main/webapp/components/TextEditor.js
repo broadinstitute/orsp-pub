@@ -1,13 +1,12 @@
-import React from 'react';
-import { Component } from 'react';
-import { div, hh, h, label, button } from 'react-hyperscript-helpers';
+import React, { Component } from 'react';
+import { button, div, h, hh, label } from 'react-hyperscript-helpers';
 import './Wizard.css';
-import { Editor } from "@tinymce/tinymce-react";
-import { Review } from "../util/ajax";
-import { AlertMessage } from "../components/AlertMessage";
+import { Editor } from '@tinymce/tinymce-react';
+import { Review } from '../util/ajax';
+import { AlertMessage } from '../components/AlertMessage';
 import '../components/Btn.css';
-import { isEmpty } from "../util/Utils";
-import LoadingWrapper from "./LoadingWrapper";
+import { isEmpty } from '../util/Utils';
+import LoadingWrapper from './LoadingWrapper';
 
 const TextEditor = hh(class TextEditor extends Component {
 

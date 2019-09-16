@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { h, h1, div, hh } from 'react-hyperscript-helpers';
-import { DataUse } from "../util/ajax";
-import { TableComponent } from "../components/TableComponent";
-import { RESTRICTION_SORT_NAME_INDEX } from "../util/ReportConstants";
-import { TABLE_ACTIONS } from "../util/TableUtil";
-import { isEmpty } from "../util/Utils";
+import { div, h, h1, hh } from 'react-hyperscript-helpers';
+import { DataUse } from '../util/ajax';
+import { TableComponent } from '../components/TableComponent';
+import { RESTRICTION_SORT_NAME_INDEX } from '../util/ReportConstants';
+import { TABLE_ACTIONS } from '../util/TableUtil';
+import { isEmpty } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const stylesHeader = {
   pageTitle: {

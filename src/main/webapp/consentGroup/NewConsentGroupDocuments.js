@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { hh, h, h1, div, button, p } from 'react-hyperscript-helpers';
-import AddDocumentDialog from "../components/AddDocumentDialog";
-import { Table } from "../components/Table";
+import { button, div, h, h1, hh, p } from 'react-hyperscript-helpers';
+import AddDocumentDialog from '../components/AddDocumentDialog';
+import { Table } from '../components/Table';
 
 const styles = {
   addDocumentContainer: {

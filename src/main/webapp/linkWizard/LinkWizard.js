@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import { h1, hh, div } from 'react-hyperscript-helpers';
-import { Wizard } from "../components/Wizard";
-import { SelectSampleConsent } from "./SelectSampleConsent";
-import { LinkQuestions } from "./LinkQuestions";
-import { User } from "../util/ajax";
-import { isEmpty } from "../util/Utils";
+import { div, h1, hh } from 'react-hyperscript-helpers';
+import { Wizard } from '../components/Wizard';
+import { SelectSampleConsent } from './SelectSampleConsent';
+import { LinkQuestions } from './LinkQuestions';
+import { ConsentCollectionLink, User } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import '../index.css';
-import { ConsentCollectionLink } from "../util/ajax";
 import * as qs from 'query-string';
-import LoadingWrapper from "../components/LoadingWrapper";
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 1;
 
@@ -390,4 +389,4 @@ const LinkWizard = hh( class LinkWizard extends Component {
   }
 });
 
-export default LoadingWrapper(LinkWizard, 'fixedTop');
+export default LoadingWrapper(LinkWizard);

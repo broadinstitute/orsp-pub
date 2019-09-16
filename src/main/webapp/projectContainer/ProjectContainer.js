@@ -1,16 +1,16 @@
 import { Component } from 'react';
-import { div, hh, h } from 'react-hyperscript-helpers';
-import  ProjectReview from "../projectReview/ProjectReview";
-import { History } from "../components/History";
-import Comments from "../components/Comments";
-import { Submissions } from "./Submissions";
-import ConsentGroups from "./ConsentGroups";
+import { div, h, hh } from 'react-hyperscript-helpers';
+import ProjectReview from '../projectReview/ProjectReview';
+import { History } from '../components/History';
+import Comments from '../components/Comments';
+import { Submissions } from './Submissions';
+import ConsentGroups from './ConsentGroups';
 import '../components/Wizard.css';
-import ProjectDocument from "../projectDocument/ProjectDocument";
-import AdminOnly from "../adminOnly/AdminOnly";
-import MultiTab from "../components/MultiTab";
+import ProjectDocument from '../projectDocument/ProjectDocument';
+import AdminOnly from '../adminOnly/AdminOnly';
+import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
-import {isEmpty} from "../util/Utils";
+import { isEmpty } from '../util/Utils';
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 

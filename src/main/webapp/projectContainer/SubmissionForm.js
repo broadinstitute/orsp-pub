@@ -1,16 +1,16 @@
 import { Component } from 'react';
-import { hh, div, h1, button, h, a } from 'react-hyperscript-helpers';
-import { Panel } from "../components/Panel";
-import { Files, ProjectMigration } from "../util/ajax";
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import InputFieldNumber from "../components/InputFieldNumber";
-import { InputFieldTextArea } from "../components/InputFieldTextArea";
-import { Table } from "../components/Table";
-import AddDocumentDialog from "../components/AddDocumentDialog";
-import { isEmpty, scrollToTop } from "../util/Utils";
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { AlertMessage } from "../components/AlertMessage";
-import LoadingWrapper from "../components/LoadingWrapper";
+import { a, button, div, h, h1, hh } from 'react-hyperscript-helpers';
+import { Panel } from '../components/Panel';
+import { Files, ProjectMigration } from '../util/ajax';
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import InputFieldNumber from '../components/InputFieldNumber';
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { Table } from '../components/Table';
+import AddDocumentDialog from '../components/AddDocumentDialog';
+import { isEmpty, scrollToTop } from '../util/Utils';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { AlertMessage } from '../components/AlertMessage';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const styles = {
   addDocumentContainer: {
@@ -394,4 +394,4 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   }
 });
 
-export default LoadingWrapper(SubmissionForm, 'fixedTop');
+export default LoadingWrapper(SubmissionForm);
