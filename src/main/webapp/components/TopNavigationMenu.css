@@ -24,6 +24,18 @@
     visibility: hidden;
 }
 
+.navbar .googleButton {
+    float: right;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.navbar .googleButton button,
+.navbar .googleButton button div,
+.navbar .googleButton button span {
+    height: 40px;
+}
+
 /* Search */
 .navbar-default .navbar-form.navbar-left {
     width: 220px;

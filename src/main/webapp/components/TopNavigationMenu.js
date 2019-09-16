@@ -170,7 +170,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ]),
               ]),
             ]),
-            div({ isRendered: !this.state.isLogged, className: "floatRight" }, [
+            div({ isRendered: !this.state.isLogged, className: "googleButton" }, [
               GoogleLoginButton({
                 clientId: component.clientId,
                 onSuccess: this.onSuccess
