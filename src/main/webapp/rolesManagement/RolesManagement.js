@@ -1,11 +1,10 @@
 import { Component } from 'react';
-import { h, div, h1 } from 'react-hyperscript-helpers';
-import { Table } from "../components/Table";
-import { RoleManagementEdit } from "../components/RoleManagementEdit";
-import { User } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from '../components/Spinner';
-import { TablePaginator } from "../components/TablePaginator";
+import { div, h1, hh } from 'react-hyperscript-helpers';
+import { Table } from '../components/Table';
+import { RoleManagementEdit } from '../components/RoleManagementEdit';
+import { User } from '../util/ajax';
+import { TablePaginator } from '../components/TablePaginator';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const tableHeaders =
   [
@@ -27,7 +26,7 @@ const tableHeaders =
     'emailAddress': 2
   };
 
-class RolesManagement extends Component {
+const RolesManagement = hh(class RolesManagement extends Component {
 
   constructor(props) {
     super(props);
@@ -52,7 +51,7 @@ class RolesManagement extends Component {
   }
 
   init = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
@@ -135,7 +134,7 @@ class RolesManagement extends Component {
           sortDirection: query.sortDirection
         };
         return prev;
-      }, () => spinnerService.hideAll())
+      }, () => this.props.hideSpinner())
     }).catch(error => {
       this.setState(() => { throw error });
     });
@@ -167,13 +166,10 @@ class RolesManagement extends Component {
           show: this.state.editRoleDialog,
           isRendered: this.state.editRoleDialog,
           userData : this.state.editRoleRowData
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );  
   }
-}
+});
 
-export default RolesManagement;
+export default LoadingWrapper(RolesManagement);

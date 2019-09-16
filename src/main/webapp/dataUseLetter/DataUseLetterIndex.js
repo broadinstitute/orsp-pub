@@ -47,7 +47,7 @@ class DataUseLetterIndex extends Component {
     let dul = '';
     if (isEmpty(this.state.error)) {
       dul =  h(Fragment, {}, [
-        DataUseLetter({
+        h(DataUseLetter, {
           dul: this.state.dul
         })
       ])

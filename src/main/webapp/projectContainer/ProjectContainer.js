@@ -1,16 +1,16 @@
-import { Component, Fragment } from 'react';
-import { div, hh, h } from 'react-hyperscript-helpers';
-import { ProjectReview } from "../projectReview/ProjectReview";
-import { History } from "../components/History";
-import { Comments } from "../components/Comments";
-import { Submissions } from "./Submissions";
-import { ConsentGroups } from "./ConsentGroups";
+import { Component } from 'react';
+import { div, h, hh } from 'react-hyperscript-helpers';
+import ProjectReview from '../projectReview/ProjectReview';
+import { History } from '../components/History';
+import Comments from '../components/Comments';
+import { Submissions } from './Submissions';
+import ConsentGroups from './ConsentGroups';
 import '../components/Wizard.css';
-import { ProjectDocument } from "../projectDocument/ProjectDocument";
-import { AdminOnly } from "../adminOnly/AdminOnly";
-import MultiTab from "../components/MultiTab";
+import ProjectDocument from '../projectDocument/ProjectDocument';
+import AdminOnly from '../adminOnly/AdminOnly';
+import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
-import {isEmpty} from "../util/Utils";
+import { isEmpty } from '../util/Utils';
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -19,7 +19,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
       currentStepIndex: 0,
       history: [],
       comments: [],
@@ -135,42 +134,41 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "consent-groups",
                 title: "Sample/Data Cohorts",
               }, [
-                  h(Fragment, {}, [ConsentGroups({
-                    history: this.props.history,
-                    updateContent: this.updateContent,
-                    projectKey: this.props.projectKey,
-                  })]),
+                  h(ConsentGroups, {
+                  history: this.props.history,
+                  updateContent: this.updateContent,
+                  projectKey: this.props.projectKey,
+                })
                 ]),
               div({
                 key: "submissions",
                 title: "Submissions",
               }, [
-                  h(Fragment, {}, [Submissions({
-                    history: this.props.history,
-                    projectKey: this.props.projectKey,
-                  })]),
-                ]),
+                Submissions({
+                  history: this.props.history,
+                  projectKey: this.props.projectKey,
+                }),
+              ]),
               div({
                 key: "comments",
                 title: "Comments",
               }, [
-                  h(Fragment, {}, [Comments({
-                    comments: this.state.comments,
-                    id: this.props.projectKey,
-                    updateContent: this.updateContent,
-                    projectKey: this.props.projectKey,
-                  })]),
-                ]),
+                h(Comments, {
+                  comments: this.state.comments,
+                  id: this.props.projectKey,
+                  updateContent: this.updateContent,
+                  projectKey: this.props.projectKey,
+                })
+              ]),
               div({
                 key: "history",
                 title: "History",
               }, [
-                  h(Fragment, {}, [History({
-                    history: this.state.history,
-                    projectKey: this.props.projectKey,
-                  }
-                  )]),
-                ]),
+                History({
+                  history: this.state.history,
+                  projectKey: this.props.projectKey,
+                }),
+              ]),
               div({
                 key: "adminOnly",
                 title: "Admin Only",

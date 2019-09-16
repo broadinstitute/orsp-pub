@@ -34,7 +34,7 @@ class ApiInterceptor implements UserInfo  {
     boolean before() {
         if (!session.getAttribute("user")) {
             session.setAttribute("savedParams", params)
-            render(view: "/index")
+            render(view: "/mainContainer/index")
             false
         }
         true

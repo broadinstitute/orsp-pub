@@ -5,8 +5,6 @@ module.exports = {
       fs: "empty"
   },
   entry: {
-    adminOnly: './src/main/webapp/adminOnly/AdminOnly.js',
-    consentGroup: './src/main/webapp/consentGroup/index.js',
     infoLink: './src/main/webapp/infoLink/index.js',
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js'

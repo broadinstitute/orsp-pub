@@ -29,7 +29,7 @@ class ProjectController extends AuthenticatedController {
     def main() {
         Issue issue = queryService.findByKey(params.projectKey)
         if (issueIsForbidden(issue)) {
-            redirect(controller: 'Index', action: 'index')
+            render(view: "/mainContainer/index")
         }
         render(view: "/mainContainer/index", model: [projectKey: params.projectKey, issueType: 'project'])
     }
