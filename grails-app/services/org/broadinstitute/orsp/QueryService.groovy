@@ -978,7 +978,8 @@ class QueryService implements Status {
                             commentMap.get(issue.projectKey)?.any{it.description?.toLowerCase()?.contains(freeText)} ||
                             eventMap.get(issue.projectKey)?.any{it.summary?.toLowerCase()?.contains(freeText)} ||
                             issue.summary?.toLowerCase()?.contains(freeText) ||
-                            issue.description?.toLowerCase()?.contains(freeText)
+                            issue.description?.toLowerCase()?.contains(freeText) ||
+                            issue.projectKey?.toString()?.toLowerCase()?.contains(freeText)
             }
         }
 
