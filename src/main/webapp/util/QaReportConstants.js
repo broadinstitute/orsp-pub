@@ -34,9 +34,9 @@ export const columns = [{
   text: 'Age',
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) =>
-    formatAge(row),
+    formatAge(row.age),
   csvFormatter: (cell, row, rowIndex, colIndex) =>
-    formatAge(row)
+    formatAge(row.age)
 }, {
   dataField: 'actor',
   text: 'Assignees',
@@ -48,6 +48,11 @@ export const SIZE_PER_PAGE_LIST = [
   { text: '100', value: 100 },
   { text: '500', value: 500 }];
 
+export const SIZE_PER_PAGE_LIST_PROJECT = [
+  { text: '15', value: 15 },
+  { text: '30', value: 30 },
+  { text: '50', value: 50 }];
+
 export const defaultSorted = [{
   dataField: 'date',
   order: 'desc'
@@ -55,8 +60,8 @@ export const defaultSorted = [{
 
 export const COLUMNS_TO_HIDE_FROM_EXCEL = ['attachments', 'reporter', 'requestDate', 'reviewCategory', 'summary', 'issueStatus'];
 
-let formatAge = (row) => {
-  const result = dateParser(row.age);
+export let formatAge = (row) => {
+  const result = dateParser(row);
   return  (result.years > 0 ? result.years + ' years, ' : '') +
     (result.months > 0 ? result.months + ' months ' : '') +
     (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
