@@ -1,17 +1,15 @@
 import { Component } from 'react';
-import { hh, div, h, button } from 'react-hyperscript-helpers';
-import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
+import { button, div, h, hh } from 'react-hyperscript-helpers';
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from './AlertMessage';
-import { spinnerService } from "../util/spinner-service";
-import { ClarificationRequest } from "../util/ajax";
-import { Search } from '../util/ajax';
+import { ClarificationRequest, Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-
 import './ConfirmationDialog.css';
+import LoadingWrapper from './LoadingWrapper';
 
-export const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component {
+const RequestClarificationDialog = hh(class RequestClarificationDialog extends Component{
 
   _isMounted = false;
 
@@ -72,12 +70,12 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     this.setState(prev => {
       prev.submit = true;
       return prev;
-    })
+    });
     if (this.validateClarification()) {
-      spinnerService.showAll();
+      this.props.showSpinner();
       ClarificationRequest.sendNewClarification(this.state.clarification, this.props.issueKey, this.state.pm[0].key, this.props.consentKey).
       then(resp => {
-        spinnerService.hideAll();
+        this.props.hideSpinner();
         this.props.successClarification('showSuccessClarification', 'Request clarification sent.', 5000);
         this.handleClose();
       }).catch(error => {
@@ -87,7 +85,7 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
           prev.showAlert = true;
           return prev;
         });
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     } else {
       this.setState(prev => {
@@ -185,3 +183,5 @@ export const RequestClarificationDialog = hh(class RequestClarificationDialog ex
     )
   }
 });
+
+export default LoadingWrapper(RequestClarificationDialog, true);

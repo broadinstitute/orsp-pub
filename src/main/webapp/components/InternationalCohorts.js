@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import { hh, h1, span, a } from 'react-hyperscript-helpers';
+import { a, h1, hh, span } from 'react-hyperscript-helpers';
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
-import { DETERMINATION } from "../util/TypeDescription";
+import { DETERMINATION } from '../util/TypeDescription';
 import './InternationalCohorts.css';
 
 export const InternationalCohorts = hh(class InternationalCohorts extends Component {

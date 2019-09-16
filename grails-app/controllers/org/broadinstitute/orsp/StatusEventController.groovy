@@ -31,10 +31,11 @@ class StatusEventController extends AuthenticatedController {
     }
     // TODO: unused, this must be re-implemented
     def project() {
-        Issue issue = queryService.findByKey(params.projectKey)
+//        Issue issue = queryService.findByKey(params.projectKey)
         // Sort ascending and create DTOs
-        Collection<Event> eventDTOs = statusEventService.getStatusEventsForProject(params.projectKey)
-        [statusEvents: eventDTOs, issue: issue]
+        Collection<Event> eventDTOs = statusEventService.getProjectEvents(params.projectKey)
+
+        render eventDTOs as JSON
     }
 
     def findQaEventReport() {

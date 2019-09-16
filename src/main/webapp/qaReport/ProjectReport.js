@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import { h, h1, div } from 'react-hyperscript-helpers';
+import { div, h, h1, hh } from 'react-hyperscript-helpers';
 import { Link } from 'react-router-dom'
-import { TableComponent } from "../components/TableComponent";
-import {
-  defaultSorted,
-  formatAge,
-  SIZE_PER_PAGE_LIST
-} from "../util/QaReportConstants";
-import { Reports } from "../util/ajax";
+import { TableComponent } from '../components/TableComponent';
+import { defaultSorted, formatAge, SIZE_PER_PAGE_LIST } from '../util/QaReportConstants';
+import LoadingWrapper from '../components/LoadingWrapper';
+import { Reports } from '../util/ajax';
 
 const columns = [{
   dataField: 'id',
@@ -15,7 +12,7 @@ const columns = [{
   hidden: true,
   csvExport : false
 }, {
-  dataField: 'status',
+  dataField: 'summary',
   text: 'Status',
   sort: true
 }, {
@@ -23,18 +20,19 @@ const columns = [{
   text: 'Author',
   sort: true
 }, {
-  dataField: 'statusDate',
+  dataField: 'created',
   text: 'Status Date',
   sort: true
 }, {
   dataField: 'duration',
   text: 'Duration',
   sort: true,
-  formatter: (cell, row, rowIndex, colIndex) =>
-    formatAge(row)
+  // formatter: (cell, row, rowIndex, colIndex) =>
+    // formatAge(row)
 }];
 
-class ProjectReport extends Component {
+const ProjectReport = hh(class ProjectReport extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,11 +41,15 @@ class ProjectReport extends Component {
   }
 
   componentDidMount = async () => {
+    this.props.showSpinner();
     try {
       const result = await Reports.getQaEventReportForProject(this.props.location.state.projectKey);
-      console.log(result)
-      this.setState({ data: result.data });
+      console.log(result.data);
+      this.setState({ data: result.data },
+        ()=> this.props.hideSpinner()
+        );
     } catch(error) {
+      this.props.hideSpinner();
       this.setState(() => { throw error; })
     }
   };
@@ -61,7 +63,7 @@ class ProjectReport extends Component {
         div({ className:'container-fluid well' }, [
           TableComponent({
             remoteProp: false,
-            data: [],
+            data: this.state.data,
             columns: columns,
             keyField: 'id',
             search: true,
@@ -78,6 +80,6 @@ class ProjectReport extends Component {
       ])
     )
   }
-}
+});
 
-export default ProjectReport;
+export default LoadingWrapper(ProjectReport);

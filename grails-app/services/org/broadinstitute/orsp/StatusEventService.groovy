@@ -107,4 +107,12 @@ class StatusEventService {
         result
     }
 
+    Collection<Event> getProjectEvents(String projectKey) {
+        Collection<Event> eventDTOs = new ArrayList<>()
+        if(projectKey) {
+            eventDTOs = getStatusEventsForProject(projectKey)
+        }
+        eventDTOs
+    }
+
 }

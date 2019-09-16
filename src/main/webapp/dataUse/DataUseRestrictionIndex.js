@@ -1,21 +1,18 @@
-import { Component } from 'react';
-import { div } from 'react-hyperscript-helpers';
+import React, { Component, Fragment } from 'react';
+import { h, hh } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 
-class DataUseRestrictionIndex extends Component {
+const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-  
   render() {
      return (
-       div({}, [ 
-        DataUseRestriction(),
-        SampleCollectionLinks()
+       h( Fragment, {},[
+         h(DataUseRestriction, {}),
+         h(SampleCollectionLinks,{}),
        ])
      )
   }
-}
+});
+
 export default DataUseRestrictionIndex;

@@ -1,18 +1,14 @@
-import React from 'react';
-import { Component } from 'react';
-import { div, hh, h, label, button } from 'react-hyperscript-helpers';
+import React, { Component } from 'react';
+import { button, div, h, hh, label } from 'react-hyperscript-helpers';
 import './Wizard.css';
-import { Editor } from "@tinymce/tinymce-react";
-import { Review } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
-import { AlertMessage } from "../components/AlertMessage";
+import { Editor } from '@tinymce/tinymce-react';
+import { Review } from '../util/ajax';
+import { AlertMessage } from '../components/AlertMessage';
 import '../components/Btn.css';
-import { isEmpty } from "../util/Utils";
+import { isEmpty } from '../util/Utils';
+import LoadingWrapper from './LoadingWrapper';
 
-const TEXT_EDITOR_SPINNER = 'textEditorSpinner';
-
-export const TextEditor = hh(class TextEditor extends Component {
+const TextEditor = hh(class TextEditor extends Component {
 
   constructor(props) {
     super(props);
@@ -23,10 +19,6 @@ export const TextEditor = hh(class TextEditor extends Component {
     this.handleEditorChange = this.handleEditorChange.bind(this);
   }
 
-  componentWillUnmount() {
-    spinnerService._unregister(TEXT_EDITOR_SPINNER);
-  }
-
   handleEditorChange = (comment, editor) => {
     this.setState(prev => {
       prev.comment =  comment;
@@ -35,10 +27,10 @@ export const TextEditor = hh(class TextEditor extends Component {
   };
 
   addComment = () => {
-    spinnerService.show(TEXT_EDITOR_SPINNER);
+    this.props.showSpinner();
     Review.addComments(this.props.id, this.state.comment).then(
       response => {
-        spinnerService.hide(TEXT_EDITOR_SPINNER);
+        this.props.hideSpinner();
         this.setState(prev => {
           prev.comment = '';
           return prev;
@@ -48,7 +40,7 @@ export const TextEditor = hh(class TextEditor extends Component {
     ).catch(error =>
       this.setState(prev => {
         prev.showError = true;
-      },()=> spinnerService.hide(TEXT_EDITOR_SPINNER))
+      },()=> this.props.hideSpinner())
     )
   };
 
@@ -91,11 +83,9 @@ export const TextEditor = hh(class TextEditor extends Component {
             closeable: true,
             closeAlertHandler: this.closeAlertHandler
           })
-        ]),
-        h(Spinner, {
-          name: TEXT_EDITOR_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     );
   }
 });
+export default LoadingWrapper(TextEditor);

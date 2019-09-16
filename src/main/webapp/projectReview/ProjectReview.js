@@ -1,29 +1,26 @@
 import { Component } from 'react';
-import { h, hh, p, div, h2, button } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh, p } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
 import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
-import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
+import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { spinnerService } from "../util/spinner-service";
-import { Project, Search, Review, User } from "../util/ajax";
-import { Spinner } from "../components/Spinner";
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
 import { isEmpty } from '../util/Utils';
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import { PREFERRED_IRB } from "../util/TypeDescription";
-import { PI_AFFILIATION } from "../util/TypeDescription";
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
-const PROJECT_REVIEW_SPINNER = "projectReviewSpinner";
 
-export const ProjectReview = hh(class ProjectReview extends Component {
+const ProjectReview = hh(class ProjectReview extends Component {
 
   _isMounted = false;
 
@@ -152,13 +149,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.props.showSpinner();
     this.init();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    spinnerService._unregister(PROJECT_REVIEW_SPINNER);
   }
 
   init() {
@@ -198,7 +194,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             if (this._isMounted) {
               if (data.data !== '') {
                 formData = JSON.parse(data.data.suggestions);
-                spinnerService.hide(PROJECT_REVIEW_SPINNER);
+                this.props.hideSpinner();
                 this.setState(prev => {
                   prev.formData = formData;
                   prev.current = current;
@@ -211,7 +207,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
                 });
                 this.props.changeInfoStatus(false);
               } else {
-                spinnerService.hide(PROJECT_REVIEW_SPINNER);
+                this.props.hideSpinner();
                 formData = JSON.parse(currentStr);
                 this.setState(prev => {
                   prev.formData = formData;
@@ -226,7 +222,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             }
           }).catch(() => {});
       }).catch(() => {
-        spinnerService.hide(PROJECT_REVIEW_SPINNER);
+        this.props.hideSpinner();
       });
   }
 
@@ -243,6 +239,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               return prev;
             });
             this.props.changeInfoStatus(false);
+            this.props.hideSpinner();
           } else {
             this.setState(prev => {
               prev.editedForm = {};
@@ -250,9 +247,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
               return prev;
             });
             this.props.changeInfoStatus(true);
+            this.props.hideSpinner();
           }
         }
-      }).catch(() => { });
+      }).catch((error) =>{
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
+      })
   }
 
   getUsersArray(array) {
@@ -297,6 +298,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   approveRevision = () => {
+    this.props.showSpinner();
     this.setState({
       disableApproveButton: true,
       approveInfoDialog: false
@@ -312,11 +314,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
         () => {
           Project.getProject(this.props.projectKey).then(
             issue => {
+              this.props.hideSpinner();
               this.props.updateDetailsStatus(issue.data);
             })
           });
         }
     ).catch(error => {
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
     });
     if (this.state.reviewSuggestion) {
@@ -326,44 +330,46 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           this.removeEdits('approve');
         })
         .catch(error => {
+          this.props.hideSpinner();
           this.setState(() => { throw error; });
         });
     }
   };
 
   rejectProject() {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.props.showSpinner();
     Project.rejectProject(this.props.projectKey).then(resp => {
       this.setState(prev => {
         prev.rejectProjectDialog = !this.state.rejectProjectDialog;
         return prev;
       });
+      this.props.hideSpinner();
       window.location.href = [component.serverURL, "index"].join("/");
-      spinnerService.hide(PROJECT_REVIEW_SPINNER);
     }).catch(error => {
-      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
     });
   }
 
   discardEdits() {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
     this.setState({ discardEditsDialog: false });
+    this.props.showSpinner();
     this.removeEdits('reject');
   }
 
   approveEdits = () => {
-    spinnerService.show(PROJECT_REVIEW_SPINNER);
+    this.setState((state, props) => {
+      return { approveDialog: !state.approveDialog }
+    });
+    this.props.showSpinner();
     let project = this.getProject();
     project.editsApproved = true;
     Project.updateProject(project, this.props.projectKey).then(
       resp => {
         this.removeEdits('approve');
-        this.setState((state, props) => {
-          return { approveDialog: !state.approveDialog }
-        });
+
       }).catch(error => {
-      spinnerService.hide(PROJECT_REVIEW_SPINNER);
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
       });
   };
@@ -373,10 +379,10 @@ export const ProjectReview = hh(class ProjectReview extends Component {
       resp => {
         this.props.updateContent();
         this.init();
-        spinnerService.hide(PROJECT_REVIEW_SPINNER);
+        this.props.hideSpinner();
       })
       .catch(error => {
-        spinnerService.hide(PROJECT_REVIEW_SPINNER);
+        this.props.hideSpinner();
         this.setState(() => { throw error; });
       });
   }
@@ -479,6 +485,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   enableEdit = (e) => () => {
+    this.props.showSpinner();
     this.getReviewSuggestions();
     this.setState(prev => {
       prev.readOnly = false;
@@ -499,6 +506,7 @@ export const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   submitEdit = () => () => {
+    this.props.showSpinner();
     if (this.isValid()) {
       this.setState(prev => {
         prev.readOnly = true;
@@ -538,12 +546,13 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             });
           }
       }).catch( error => {
-        this.setState(this.setState(() => { throw error; }));
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
       });
     } else {
       this.setState({
         errorSubmit: true
-      });
+      },() => this.props.hideSpinner());
     }
   };
 
@@ -790,6 +799,26 @@ export const ProjectReview = hh(class ProjectReview extends Component {
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.enableEdit(),
+          isRendered: this.state.readOnly === true && !component.isViewer
+        }, ["Edit Information"]),
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.redirectToConsentGroupTab,
+          isRendered: this.state.readOnly === true && !component.isViewer
+        }, ["Add Sample/Data Cohort"]),
+
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.cancelEdit(),
+          isRendered: this.state.readOnly === false
+        }, ["Cancel"]),
+
         ConfirmationDialog({
           closeModal: this.toggleState('rejectProjectDialog'),
           show: this.state.rejectProjectDialog,
@@ -822,32 +851,12 @@ export const ProjectReview = hh(class ProjectReview extends Component {
           bodyText: 'Are you sure you want to approve Project Information?',
           actionLabel: 'Yes'
         }, []),
-        RequestClarificationDialog({
+        h(RequestClarificationDialog,{
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: this.props.projectKey,
           successClarification: this.successNotification,
         }),
-
-        button({
-          className: "btn buttonPrimary floatRight",
-          style: { 'marginTop': '15px' },
-          onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !component.isViewer
-        }, ["Edit Information"]),
-        button({
-          className: "btn buttonSecondary floatRight",
-          style: { 'marginTop': '15px' },
-          onClick: this.redirectToConsentGroupTab,
-          isRendered: this.state.readOnly === true && !component.isViewer
-        }, ["Add Sample/Data Cohort"]),
-
-        button({
-          className: "btn buttonSecondary floatRight",
-          style: { 'marginTop': '15px' },
-          onClick: this.cancelEdit(),
-          isRendered: this.state.readOnly === false
-        }, ["Cancel"]),
 
         AlertMessage({
           msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
@@ -1218,11 +1227,9 @@ export const ProjectReview = hh(class ProjectReview extends Component {
             onClick: this.toggleState('requestClarification'),
             isRendered: this.state.isAdmin && this.state.readOnly === true
           }, ["Request Clarification"])
-        ]),
-        h(Spinner, {
-          name: PROJECT_REVIEW_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }
 });
+export default LoadingWrapper(ProjectReview);

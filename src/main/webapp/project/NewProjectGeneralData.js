@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { hh, h1, ul, li, span, div} from 'react-hyperscript-helpers';
+import { h1, hh, li, span, ul } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -7,9 +7,8 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { Fundings } from '../components/Fundings';
 import { MultiSelect } from '../components/MultiSelect';
 import { Search } from '../util/ajax';
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import { PREFERRED_IRB } from "../util/TypeDescription";
-import { PI_AFFILIATION } from "../util/TypeDescription";
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 
 const fundingTooltip =
   ul({}, [

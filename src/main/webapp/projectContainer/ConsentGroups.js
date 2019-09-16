@@ -1,19 +1,16 @@
 import React, { Component, Fragment } from 'react';
-import { hh, h, h3, a, button } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, DocumentHandler, ConsentGroup } from '../util/ajax';
+import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink, ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { RequestClarificationDialog } from "../components/RequestClarificationDialog";
-import { Spinner } from "../components/Spinner";
-import { CollapsibleElements } from "../CollapsiblePanel/CollapsibleElements";
-import { isEmpty } from "../util/Utils";
-import { TableComponent } from "../components/TableComponent";
-import { SampleDataCohortsCollapsibleHeader } from "../CollapsiblePanel/SampleDataCohortsCollapsibleHeader";
-import { formatUrlDocument, parseDate } from "../util/TableUtil";
-import { AlertMessage } from "../components/AlertMessage";
-import { spinnerService } from "../util/spinner-service";
-import { UrlConstants } from "../util/UrlConstants";
-
-const CONSENT_GROUPS_SPINNER = 'consentGroupsSpinner';
+import RequestClarificationDialog from '../components/RequestClarificationDialog';
+import { CollapsibleElements } from '../CollapsiblePanel/CollapsibleElements';
+import { isEmpty } from '../util/Utils';
+import { TableComponent } from '../components/TableComponent';
+import { SampleDataCohortsCollapsibleHeader } from '../CollapsiblePanel/SampleDataCohortsCollapsibleHeader';
+import { formatUrlDocument, parseDate } from '../util/TableUtil';
+import { AlertMessage } from '../components/AlertMessage';
+import { UrlConstants } from '../util/UrlConstants';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const columns = (cThis) => [{
   dataField: 'id',
@@ -64,7 +61,7 @@ const defaultSorted = [{
   order: 'desc'
 }];
 
-export const ConsentGroups = hh(class ConsentGroups extends Component {
+const ConsentGroups = hh(class ConsentGroups extends Component {
 
   _isMounted = false;
 
@@ -86,12 +83,12 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.showSpinner();
     this.getProjectConsentGroups();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    spinnerService._unregister(CONSENT_GROUPS_SPINNER);
   }
 
   getProjectConsentGroups = () => {
@@ -104,9 +101,12 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           return prev;
         },() => {
           this.collapseBtnAnimationListener();
+          this.props.hideSpinner();
         });
       }
-    }).catch(() => {});
+    }).catch(() => {
+      this.props.hideSpinner();
+    });
   };
 
   closeConfirmationModal = () => {
@@ -118,6 +118,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   handleOkConfirmation = () => {
+    this.props.showSpinner();
     if(this.state.action === "unlink" || this.state.action === "reject") {
       ConsentCollectionLink.breakLink(this.state.issue.projectKey, this.state.actionConsentKey, this.state.action).then(resp => {
         this.getProjectConsentGroups();
@@ -247,7 +248,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
   };
 
   redirect = (action) => {
-    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl;
+    const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl+ '?projectKey='+ this.props.projectKey;
     this.props.history.push(path)
   };
 
@@ -295,7 +296,7 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           actionLabel: 'Yes'
         }, []),
 
-        RequestClarificationDialog({
+        h(RequestClarificationDialog, {
           closeModal: this.closeRequestClarification,
           show: this.state.showRequestClarification,
           issueKey: this.props.projectKey,
@@ -306,11 +307,9 @@ export const ConsentGroups = hh(class ConsentGroups extends Component {
           clarificationUrl: component.requestLinkClarificationUrl,
           successClarification: this.successClarification,
           linkClarification: true
-        }),
-        h(Spinner, {
-          name: CONSENT_GROUPS_SPINNER, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
   }
 });
+export default LoadingWrapper(ConsentGroups);

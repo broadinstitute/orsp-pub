@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { hh, h, div, h3, a } from 'react-hyperscript-helpers';
+import { a, div, h, h3, hh } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
-import { TableComponent } from "../components/TableComponent";
-import { Issues, User } from "../util/ajax";
-import { parseDate } from "../util/TableUtil";
+import { TableComponent } from '../components/TableComponent';
+import { Issues, User } from '../util/ajax';
+import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const columnsCopy = [{
   dataField: 'project',
@@ -66,76 +67,59 @@ const LandingPage = hh(class LandingPage extends Component{
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this._isMounted = true;
-    this.getProjectsList();
-    this.getTaskList();
-    this.hasSession();
-  }
+    await this.init()
+  };
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  getProjectsList = () => {
-    Issues.getIssueList('false', 5).then(response => {
-      if (this._isMounted) {
-        let projectListData = [];
+  init = async () => {
+    this.props.showSpinner();
+    const [ projects, tasks, user ] = await Promise.all([
+      Issues.getIssueList('false', 5),
+      Issues.getIssueList('true', 5),
+      User.isAuthenticated()
+    ]).catch(error => {
+      this.props.hideSpinner();
+      this.setState(() => { throw error; });
+    });
+    let projectList = [];
+    let taskList = [];
 
-        response.data.forEach(issue => {
-          projectListData.push({
-            project: issue.projectKey,
-            title: issue.summary,
-            status: issue.status,
-            type: issue.type,
-            updated: parseDate(issue.updateDate),
-            expiration: parseDate(issue.expirationDate)
-          });
-        });
+    projects.data.forEach(issue => {
+      projectList.push({
+        project: issue.projectKey,
+        title: issue.summary,
+        status: issue.status,
+        type: issue.type,
+        updated: parseDate(issue.updateDate),
+        expiration: parseDate(issue.expirationDate)
+      });
+    });
 
-        this.setState(resp => {
-          resp.projectList = projectListData;
-          return resp;
-        });
-      }
-    }).catch(() => {});
-  };
+    tasks.data.forEach(issue => {
+      taskList.push({
+        project: issue.projectKey,
+        title: issue.summary,
+        status: issue.status,
+        type: issue.type,
+        updated: parseDate(issue.updateDate),
+        expiration: parseDate(issue.expirationDate)
+      });
+    });
 
-  getTaskList = () => {
-    Issues.getIssueList('true', 5).then(response => {
-      if (this._isMounted) {
-        let taskListData = [];
+    this.props.hideSpinner();
 
-        response.data.forEach(issue => {
-          taskListData.push({
-            project: issue.projectKey,
-            title: issue.summary,
-            status: issue.status,
-            type: issue.type,
-            updated: parseDate(issue.updateDate),
-            expiration: parseDate(issue.expirationDate)
-          });
-        });
-        this.setState(resp => {
-          resp.taskList = taskListData;
-          return resp;
-        });
-      }
-    }).catch(() => {});
-  };
-
-  printComments = () => {
-
-  };
-
-  hasSession = () => {
-      User.isAuthenticated().then(resp => {
-        if (this._isMounted) {
-          this.setState({
-            logged: resp.data.session
-          })
-        }
-      }).catch(error => this.setState(() => { throw error; }));
+    if (this._isMounted) {
+      this.setState({
+        projectList: projectList,
+        taskList: taskList,
+        logged: user.data.session
+      })
+    }
   };
 
   render() {
@@ -188,4 +172,4 @@ const LandingPage = hh(class LandingPage extends Component{
 
 });
 
-export default LandingPage;
+export default LoadingWrapper(LandingPage);

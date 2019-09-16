@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { hh, button, div, p } from 'react-hyperscript-helpers';
-import { WizardStep } from "../components/WizardStep";
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import { InputFieldCheckbox } from "../components/InputFieldCheckbox";
-import { InputFieldDatePicker } from "../components/InputFieldDatePicker";
+import { button, div, h, hh, p } from 'react-hyperscript-helpers';
+import { WizardStep } from '../components/WizardStep';
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
+import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { Panel } from '../components/Panel';
-import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import { Table } from "../components/Table";
+import AddDocumentDialog from '../components/AddDocumentDialog';
+import { Table } from '../components/Table';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { ConsentGroup, SampleCollections } from "../util/ajax";
+import { ConsentGroup, SampleCollections } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {
@@ -320,7 +320,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         }, [
           div({ className: "questionnaireContainerLight" }, [
             p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
-            AddDocumentDialog({
+            h(AddDocumentDialog, {
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.state.documentOptions,

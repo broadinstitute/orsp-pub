@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { h, h1, div, a, span } from 'react-hyperscript-helpers';
-import { Reports } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
-import { TableComponent } from "../components/TableComponent";
-import { CATEGORY_SORT_NAME_INDEX, styles } from "../util/ReportConstants";
-import { TABLE_ACTIONS } from "../util/TableUtil";
-import { handleRedirectToProject } from "../util/Utils";
+import { a, div, h1, hh, span } from 'react-hyperscript-helpers';
+import { Reports } from '../util/ajax';
+import { TableComponent } from '../components/TableComponent';
+import { CATEGORY_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
+import { TABLE_ACTIONS } from '../util/TableUtil';
+import { handleRedirectToProject } from '../util/Utils';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const stylesHeader = {
   pageTitle: {
@@ -68,7 +67,7 @@ const columns = [
   }
 ];
 
-class ReviewCategories extends Component {
+const ReviewCategories = hh(class ReviewCategories extends Component {
 
   _isMounted = false;
 
@@ -96,7 +95,7 @@ class ReviewCategories extends Component {
   }
 
   init = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
@@ -109,7 +108,7 @@ class ReviewCategories extends Component {
       sortDirection: sort.sortDirection,
       searchValue: search
     };
-    spinnerService.showAll();
+    this.props.showSpinner();
     Reports.getReviewCategory(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsTotal / query.length);
       if (this._isMounted) {
@@ -126,10 +125,10 @@ class ReviewCategories extends Component {
             sortDirection: query.sortDirection
           };
           return prev;
-        }, () => spinnerService.hideAll())
+        }, () => this.props.hideSpinner())
       }
     }).catch(error => {
-      spinnerService.hideAll();
+      this.props.hideSpinner();
       this.setState(() => { throw error });
     });
   };
@@ -204,13 +203,10 @@ class ReviewCategories extends Component {
           showExportButtons: false,
           showSearchBar: true,
           pagination: true
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
   }
-}
+});
 
-export default ReviewCategories;
+export default LoadingWrapper(ReviewCategories);
