@@ -69,9 +69,9 @@ export const Documents = hh(class Documents extends Component {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
-  remove = (row) => (e) => {
+  remove = (row) => {
     this.setState({
-      showRemoveDocuments: !this.state.showRemoveDocuments,
+      showRemoveDocuments: true,
       documentToRemove: row
     });
   };
