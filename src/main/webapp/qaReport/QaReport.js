@@ -70,7 +70,7 @@ const QaReport = hh(class QaReport extends Component {
       this.props.hideSpinner()
       })
     } catch(error) {
-      this.hideSpinner();
+      this.props.hideSpinner();
       this.setState(() => { throw error });
     }
   };
