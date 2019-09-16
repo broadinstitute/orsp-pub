@@ -1,13 +1,13 @@
-import React from 'react';
-import { Component, Fragment } from 'react';
-import { div, hh, h } from 'react-hyperscript-helpers';
-import { TextEditor } from "./TextEditor";
+import React, { Component, Fragment } from 'react';
+import { div, h, hh } from 'react-hyperscript-helpers';
+import TextEditor from './TextEditor';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import './Btn.css';
-import { exportData } from "../util/Utils";
-import { TableComponent } from "./TableComponent";
-import { formatDataPrintableFormat } from "../util/TableUtil";
+import { exportData } from '../util/Utils';
+import { TableComponent } from './TableComponent';
+import { formatDataPrintableFormat } from '../util/TableUtil';
+import LoadingWrapper from './LoadingWrapper';
 
 const defaultSorted = [{
   dataField: 'date',
@@ -63,7 +63,7 @@ const columnsCopy = [{
   sort: true
 }];
 
-export const Comments = hh(class Comments extends Component {
+const Comments = hh(class Comments extends Component {
 
   constructor(props) {
     super(props);
@@ -81,7 +81,7 @@ export const Comments = hh(class Comments extends Component {
   render() {
     return (
       h(Fragment, {}, [
-        TextEditor({
+        h(TextEditor, {
           id: this.props.id,
           loadComments: this.props.updateContent
         }),
@@ -104,3 +104,5 @@ export const Comments = hh(class Comments extends Component {
     )
   }
 });
+
+export default LoadingWrapper(Comments)

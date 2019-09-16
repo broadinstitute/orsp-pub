@@ -1,23 +1,20 @@
 import React, { Component } from 'react';
-import { h1, h, div, hh, h2, strong, ul, i, p, li, label, input, span, hr, button } from 'react-hyperscript-helpers';
-import { InputFieldText } from "../components/InputFieldText";
-import { InputYesNo } from "../components/InputYesNo";
-import { Search } from "../util/ajax";
-import { InputFieldTextArea } from "../components/InputFieldTextArea";
-import { MultiSelect } from "../components/MultiSelect";
+import { button, div, h1, h2, hh, hr, i, input, label, li, p, span, strong, ul } from 'react-hyperscript-helpers';
+import { InputFieldText } from '../components/InputFieldText';
+import { InputYesNo } from '../components/InputYesNo';
+import { ConsentGroup, DataUse, Search } from '../util/ajax';
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { MultiSelect } from '../components/MultiSelect';
 import { AlertMessage } from '../components/AlertMessage';
-import { DataUse, ConsentGroup } from "../util/ajax";
-import { isEmpty, createObjectCopy } from '../util/Utils';
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
+import { createObjectCopy, isEmpty } from '../util/Utils';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import '../components/Btn.css';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const FEMALE = 'Female';
 const MALE = 'Male';
 const NA = 'NA';
-const RESTRICTION_SPINNER = 'restrictionSpinner';
 const styles = {
   borderedContainer: {
     border: '1px solid #e3e3e3',
@@ -33,7 +30,7 @@ const styles = {
   }
 };
 
-export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
+const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component {
 
   _isMounted = false;
 
@@ -61,7 +58,6 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
 
   componentWillUnmount() {
     this._isMounted = false;
-    spinnerService._unregister(RESTRICTION_SPINNER);
   }
 
   initRestriction(restriction, reset) {
@@ -96,7 +92,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
   }
 
   init() {
-    spinnerService.show(RESTRICTION_SPINNER);
+    this.props.showSpinner();
     const params = new URLSearchParams(this.props.location.search);
     let restrictionId = params.get('restrictionId');
     ConsentGroup.getConsentGroup(this.state.consentKey).then(result => {
@@ -109,7 +105,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           return prev;
         }, () => {
           if (restrictionId === undefined || restrictionId === null) {
-            spinnerService.hide(RESTRICTION_SPINNER);
+            this.props.hideSpinner();
           }
         })
       }
@@ -121,7 +117,7 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
           this.setState(prev => {
             prev.restriction = restriction;
             return prev;
-          }, () => spinnerService.hide(RESTRICTION_SPINNER))
+          }, () => this.props.hideSpinner())
         }
       })
     }
@@ -843,12 +839,9 @@ export const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Co
         div({ className: "modal-footer", style: { 'marginTop': '15px' } }, [
           button({ className: "btn btn-default", onClick: this.reset }, ["Reset"]),
           button({ className: "btn btn-primary", onClick: this.submit }, ["Save"])
-        ]),
-        h(Spinner, {
-          name: RESTRICTION_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }
 });
-export default DataUseRestrictionEdit;
+export default LoadingWrapper(DataUseRestrictionEdit);

@@ -1,17 +1,16 @@
 import { Component } from 'react';
-import { div, h1, button, h, a } from 'react-hyperscript-helpers';
-import { Panel } from "../components/Panel";
-import { Files, ProjectMigration } from "../util/ajax";
-import { InputFieldSelect } from "../components/InputFieldSelect";
-import InputFieldNumber from "../components/InputFieldNumber";
-import { InputFieldTextArea } from "../components/InputFieldTextArea";
-import { Table } from "../components/Table";
-import { AddDocumentDialog } from "../components/AddDocumentDialog";
-import { isEmpty, scrollToTop } from "../util/Utils";
-import { spinnerService } from "../util/spinner-service";
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { Spinner } from "../components/Spinner";
-import { AlertMessage } from "../components/AlertMessage";
+import { a, button, div, h, h1, hh } from 'react-hyperscript-helpers';
+import { Panel } from '../components/Panel';
+import { Files, ProjectMigration } from '../util/ajax';
+import { InputFieldSelect } from '../components/InputFieldSelect';
+import InputFieldNumber from '../components/InputFieldNumber';
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { Table } from '../components/Table';
+import AddDocumentDialog from '../components/AddDocumentDialog';
+import { isEmpty, scrollToTop } from '../util/Utils';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { AlertMessage } from '../components/AlertMessage';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const styles = {
   addDocumentContainer: {
@@ -33,7 +32,7 @@ const headers =
     { name: 'Remove', value: 'removeFile' }
   ];
 
-class SubmissionForm extends Component {
+const SubmissionForm = hh(class SubmissionForm extends Component {
 
   _isMounted = false;
 
@@ -67,6 +66,7 @@ class SubmissionForm extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.showSpinner();
     scrollToTop();
     const params = new URLSearchParams(this.props.location.search);
     this.getSubmissionFormInfo(params.get('projectKey'), params.get('type'), params.get('submissionId'));
@@ -76,12 +76,12 @@ class SubmissionForm extends Component {
       prev.params.submissionId = params.get('submissionId');
       return prev;
     });
+    this.props.hideSpinner();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    spinnerService.hideAll();
-    spinnerService._unregisterAll();
+    this.props.hideSpinner();
   }
 
   getTypeSelected() {
@@ -164,7 +164,7 @@ class SubmissionForm extends Component {
 
   submitSubmission = () => {
     if(this.validateSubmission()) {
-      spinnerService.showAll();
+      this.props.showSpinner();
       const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
@@ -175,7 +175,7 @@ class SubmissionForm extends Component {
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
         this.backToProject();
       }).catch(error => {
-        spinnerService.hideAll();
+        this.props.hideSpinner();
         console.error(error);
         this.setState(prev => {
           prev.errors.serverError = true;
@@ -186,7 +186,7 @@ class SubmissionForm extends Component {
   };
 
   handleAction = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     this.closeModal('showDialog');
     if (this.state.action === 'document') {
       this.removeFile();
@@ -230,7 +230,7 @@ class SubmissionForm extends Component {
         prev.documents = documentsToUpdate;
         return prev;
       });
-      spinnerService.hideAll();
+      this.props.hideSpinner();
     });
   };
 
@@ -260,12 +260,12 @@ class SubmissionForm extends Component {
   };
 
   deleteSubmission = () => {
-    spinnerService.showAll();
+    this.props.showSpinner();
     ProjectMigration.deleteSubmission(this.state.params.submissionId).then(prev => {
       this.props.history.goBack();
-      spinnerService.hideAll();
+      this.props.hideSpinner();
     }).catch(error => {
-      spinnerService.hideAll();
+      this.props.hideSpinner();
       console.error(error);
       this.setState(prev => {
         prev.errors.serverError = true;
@@ -297,7 +297,7 @@ class SubmissionForm extends Component {
           bodyText: `Are you sure you want to delete this ${this.state.action}?`,
           actionLabel: 'Yes'
         }),
-        AddDocumentDialog({
+        h(AddDocumentDialog, {
           closeModal: () => this.closeModal("showAddDocuments"),
           show: this.state.showAddDocuments,
           options: this.state.docTypes,
@@ -388,13 +388,10 @@ class SubmissionForm extends Component {
         AlertMessage({
           msg: 'Something went wrong in the server. Please try again later.',
           show: this.state.errors.serverError
-        }),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
         })
       ])
     );
   }
-}
+});
 
-export default SubmissionForm;
+export default LoadingWrapper(SubmissionForm);

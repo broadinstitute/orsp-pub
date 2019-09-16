@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { h, h1, div, li, ul, h2, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "../components/Spinner";
-import { TableComponent } from "../components/TableComponent";
-import { styles } from "../util/ReportConstants";
+import { div, h, h1, h2, hh, li, ul } from 'react-hyperscript-helpers';
+import { ConsentCollectionLink } from '../util/ajax';
+import { TableComponent } from '../components/TableComponent';
+import { styles } from '../util/ReportConstants';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { isEmpty } from "../util/Utils";
-
-const SPINNER_NAME = 'sampleCollectionLink';
+import { isEmpty } from '../util/Utils';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
@@ -65,7 +62,7 @@ function getValue(row) {
   return lis;
 }
 
-export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
+const SampleCollectionLinks = hh(class SampleCollectionLinks extends Component {
 
   _isMount = false;
 
@@ -96,16 +93,16 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
   };
 
   tableHandler = (offset, limit, search, sort, page) => {
+    this.props.showSpinner();
     ConsentCollectionLink.findCollectionLinks().then(result => {
-      spinnerService.show(SPINNER_NAME);
       if (this._isMount) {
         this.setState(prev => {
           prev.links = result.data;
           return prev;
-        }, () => spinnerService.hide(SPINNER_NAME))
+        }, () => this.props.hideSpinner())
       }
     }).catch(() => {
-      spinnerService.hide(SPINNER_NAME);
+      this.props.hideSpinner();
     });
   };
 
@@ -127,12 +124,9 @@ export const SampleCollectionLinks = hh(class SampleCollectionLinks extends Comp
           showSearchBar: true,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           pagination: true
-        }),
-        h(Spinner, {
-          name: SPINNER_NAME, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
   }
 });
-export default SampleCollectionLinks;
+export default LoadingWrapper(SampleCollectionLinks);

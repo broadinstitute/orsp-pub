@@ -1,6 +1,5 @@
 import { Component } from 'react';
-import { hh, h, p, div, h1, h2, h4, small, br, input, label, span, a, ul, li, button } from 'react-hyperscript-helpers';
-
+import { br, button, div, h1, h2, h4, hh, li, p, small, span, ul } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -9,16 +8,13 @@ import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
-import { ConsentGroup, DUL } from "../util/ajax";
-import { Spinner } from '../components/Spinner';
-import { spinnerService } from "../util/spinner-service";
-import { MultiSelect } from "../components/MultiSelect";
-import { Search } from "../util/ajax";
-import { DataUse } from "../util/ajax";
+import { ConsentGroup, DataUse, DUL, Search } from '../util/ajax';
+import { MultiSelect } from '../components/MultiSelect';
 import _ from 'lodash';
-import { isEmpty } from "../util/Utils";
+import { isEmpty } from '../util/Utils';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-export const DataUseLetter = hh(class DataUseLetter extends Component {
+const DataUseLetter = hh(class DataUseLetter extends Component {
 
   constructor(props) {
     super(props);
@@ -379,7 +375,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       return prev;
     });
     if (this.validateForm() === false) {
-      spinnerService.showAll();
+      this.props.showSpinner();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form).then(resp => {
@@ -401,7 +397,7 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
       prev.dulError = true;
       return prev;
     });
-    spinnerService.hideAll();
+    this.props.hideSpinner();
   }
 
   validateForm() {
@@ -518,18 +514,6 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
     });
     return errorForm;
   };
-
-  getUsersArray(array) {
-    let usersArray = [];
-    if (array !== undefined && array !== null && array.length > 0) {
-      array.map(element => {
-        usersArray.push(
-          element.displayName + " (" + element.emailAddress + ") "
-        );
-      });
-    }
-    return usersArray
-  }
 
   startsBefore(date) {
     let result = false;
@@ -1158,12 +1142,9 @@ export const DataUseLetter = hh(class DataUseLetter extends Component {
               disabled: this.state.submit
             }, ["Submit"])
           ])
-        ]),
-        h(Spinner, {
-          name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }
 });
-export default DataUseLetter;
+export default LoadingWrapper(DataUseLetter);

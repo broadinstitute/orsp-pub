@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { hh, h, button } from 'react-hyperscript-helpers';
-import { Modal, ModalHeader, ModalTitle, ModalFooter, ModalBody } from 'react-bootstrap';
+import { button, h, hh } from 'react-hyperscript-helpers';
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
-import { Files } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
+import { Files } from '../util/ajax';
 import './ConfirmationDialog.css';
+import LoadingWrapper from './LoadingWrapper';
 
-export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
-  constructor(props) {
+const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
+    constructor(props) {
     super(props);
     this.state = {
       alertMessage: '',
@@ -64,10 +64,10 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
         let file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         if(this.props.projectKey !== undefined) {
-          spinnerService.show(this.props.spinner);
+          this.props.showSpinner();
           Files.upload(files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
           .then(resp => {
-            spinnerService.hide(this.props.spinner);
+            this.props.hideSpinner();
             this.setState(prev => {
               prev.submit = false;
               prev.disableBtn = false;
@@ -78,7 +78,7 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
             this.props.handleLoadDocuments();
             this.props.closeModal();
           }).catch(error => {
-            spinnerService.hide(this.props.spinner);
+            this.props.hideSpinner();
             this.setState(prev => {
               prev.alertType = 'danger';
               prev.alertMessage = 'Something went wrong. Please try again.';
@@ -198,3 +198,5 @@ export const AddDocumentDialog = hh(class AddDocumentDialog extends Component {
     )
   }
 });
+
+export default LoadingWrapper(AddDocumentDialog, true);

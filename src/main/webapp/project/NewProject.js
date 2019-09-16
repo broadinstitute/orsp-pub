@@ -4,15 +4,16 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
-import { DETERMINATION } from "../util/TypeDescription";
+import { DETERMINATION } from '../util/TypeDescription';
 import { Project, User } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
-import { spinnerService } from '../util/spinner-service';
-import "regenerator-runtime/runtime";
+import { hh } from 'react-hyperscript-helpers';
+import 'regenerator-runtime/runtime';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 2;
 
-class NewProject extends Component {
+const NewProject = hh(class NewProject extends Component {
 
   constructor(props) {
     super(props);
@@ -80,7 +81,7 @@ class NewProject extends Component {
 
   submitNewProject = () => {
     this.toggleFalseSubmitError();
-    spinnerService.showAll();
+    this.props.showSpinner();
     if (this.validateForm()) {
       this.changeStateSubmitButton();
       Project.createProject(
@@ -93,7 +94,7 @@ class NewProject extends Component {
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
-          spinnerService.hideAll();
+          this.props.hideSpinner();
           console.error(error);
       });
     } else {
@@ -101,7 +102,7 @@ class NewProject extends Component {
         prev.generalError = true;
         return prev;
       }, () => {
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     }
   };
@@ -422,6 +423,6 @@ class NewProject extends Component {
         ])
     );
   }
-}
+});
 
-export default NewProject;
+export default LoadingWrapper(NewProject);
