@@ -7,6 +7,8 @@ import get from 'lodash/get';
 import { isEmpty } from "../util/Utils";
 import './Main.css';
 
+const LEGACY = 'Legacy';
+
 class Main extends Component {
 
   _isMounted = false;
@@ -40,11 +42,12 @@ class Main extends Component {
 
   initStatusBoxInfo = (elementInfo) => {
     if (this._isMounted) {
+      const issueStatus = get(elementInfo, 'issue.approvalStatus', '');
       this.setState(prev => {
         prev.status.type = get(elementInfo, 'issue.type', '');
         prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
         prev.status.summary = get(elementInfo, 'issue.summary', '');
-        prev.status.status = get(elementInfo, 'issue.approvalStatus', '');
+        prev.status.status = issueStatus !== LEGACY ? issueStatus : get(elementInfo, 'issue.status', '') ;
         prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
         prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
         prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
