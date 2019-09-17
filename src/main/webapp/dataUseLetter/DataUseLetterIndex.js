@@ -30,7 +30,8 @@ class DataUseLetterIndex extends Component {
   }
 
   init() {
-    const uuid = window.location.href.split('id=')[1];
+    const params = new URLSearchParams(this.props.location.search);
+    const uuid = params.get('id');
     DUL.getDULInfo(uuid).then(resp => {
       if (this._isMounted) {
         this.setState(prev => {

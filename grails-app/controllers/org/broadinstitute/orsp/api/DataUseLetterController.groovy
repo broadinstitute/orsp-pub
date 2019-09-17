@@ -49,11 +49,6 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
-    @Override
-    def show() {
-        render(view: "/dataUseLetter/index")
-    }
-
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def createPdf() {
         String templateName = "DataUseLetterPDF.pdf"

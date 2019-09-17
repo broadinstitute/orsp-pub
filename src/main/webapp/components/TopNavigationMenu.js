@@ -45,23 +45,23 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   }
 
   async onSuccess(token) {
-    await User.signIn(token);
+    User.signIn(token);
     this.init().then(resp => {
-      this.props.history.push(this.state.userSession.isBroad ? "/index" : "/about");
+      this.props.history.push("/index" );
     });
   }
 
-  signOut() {
+  async signOut() {
     if (window.gapi.auth2 != undefined) {
       let auth2 = window.gapi.auth2.getAuthInstance();
       auth2.signOut();
     }
     Storage.clearStorage();
-    User.signOut();
+    await User.signOut();
     this.setState({
       isLogged: false
     });
-    this.props.history.push("/about");
+    this.props.history.push("/");
   }
 
   openMetricsReport() {
@@ -97,7 +97,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   };
 
   handlePIChange = (data, action) => {
-    if (!data.disabled) {
+    if (!data.linkDisabled) {
       window.location.href = data.url;
     }
     this.setState(prev => {
