@@ -9,6 +9,24 @@ import GoogleLoginButton from '../components/GoogleLoginButton';
 import './TopNavigationMenu.css';
 import { INITIAL_REVIEW } from "../util/TypeDescription";
 
+const styles = {
+  listResultContainer: {
+    backgroundColor: '#FAFAFA',
+    display: 'block',
+    width: '100%',
+    cursor: 'default',
+    margin: '0 !important',
+    padding: '10px 15px'
+  },
+  badgeContactAccess: {
+    display: 'inlineBlock',
+    padding: '5px 10px',
+    color: '#EEEEEE',
+    backgroundColor: '#999999',
+    borderRadius: '4px',
+    fontSize: '12px'
+  }
+}
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   constructor(props) {
@@ -39,7 +57,8 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }).catch(error => {
       this.setState({
         isLogged: false
-      }, () => this.props.history.push("/" ));
+      });
+      this.props.history.push(this.props.history.location);
       Storage.clearStorage()
     });
   }
@@ -74,13 +93,34 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       Search.getMatchingIssues(query).then(response => {
         let options = response.data.map(function (item) {
           let label = item.label;
+          if (item.linkDisabled === true && item.pm.length > 0) {
+            label = 
+            span({style: styles.listResultContainer}, [
+              span({style: styles.badgeContactAccess}, [
+                'Please contact ' + item.pm + ' for access'    
+              ]),
+              div({style: {'marginTop': '10px'}}, [
+                item.label
+              ])
+            ])
+          } else if (item.linkDisabled === true) {
+            label = 
+            span({style: styles.listResultContainer}, [
+              span({style: styles.badgeContactAccess}, [
+                ' Please contact ' + item.reporter + ' for access'
+              ]),
+              div({style: {'marginTop': '10px'}}, [
+                item.label
+              ])
+            ])
+          }
           return {
             key: item.id,
             value: item.value,
-            label: label + 'Please contact Vero',
+            label: label,
             linkDisabled: item.linkDisabled,
             url: item.url,
-            className: 'disabled'
+            isDisabled: item.linkDisabled
           };
         });
         callback(options);
@@ -104,7 +144,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   render() {
     let isBroadUser = this.state.isLogged && this.state.userSession != null && this.state.userSession.isBroad;
-    let isAdmin = this.state.isLogged && this.state.userSession != null && (this.state.userSession.isAdmin || this.state.userSession.isOrsp);
+    let isAdmin = this.state.isLogged && this.state.userSession != null && (this.state.userSession.isAdmin || this.state.userSession.isORSP);
     return (
       div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
         div({ className: "container" }, [
@@ -152,7 +192,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [a({ onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])

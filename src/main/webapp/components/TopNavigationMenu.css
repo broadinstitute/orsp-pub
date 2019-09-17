@@ -49,6 +49,23 @@
     height: 40px;
 }
 
-.inputField .inputFieldSelect .select__control .select__value-container {
+.inputFieldSelect {
     padding: 0;
+    margin: 0;
+}
+
+.inputField .inputFieldSelect .select__option {
+    background-color: #FFFFFF;
+    cursor: pointer;
+    padding: 0;
+    display: block;
+    margin: 0;
+}
+
+.inputField .inputFieldSelect .select__option.select__option--is-focused:hover {
+    color: #337ab7;
+}
+
+.inputField .inputFieldSelect .select__menu .select__menu-list .select__option.select__option--is-focused {
+    padding: 20px 15px;
 }
