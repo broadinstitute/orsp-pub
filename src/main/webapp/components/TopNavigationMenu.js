@@ -4,46 +4,64 @@ import { Storage } from '../util/Storage'
 import { User, Reports, Search } from "../util/ajax";
 import { Link, withRouter } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
-import { isAdmin, broadUser } from "../util/UserUtils";
 import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import './TopNavigationMenu.css';
+import { INITIAL_REVIEW } from "../util/TypeDescription";
 
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isLogged: Storage.userIsLogged(),
+      isLogged: false,
       searchValue: '',
-      googleButton: null
+      googleButton: null,
+      userSession: { displayName: '' }
     };
     this.signOut = this.signOut.bind(this);
     this.onSuccess = this.onSuccess.bind(this);
   }
 
-  async onSuccess(token) {
-    await User.signIn(token);
-    let resp = await User.getUserSession();
-    Storage.setCurrentUser(resp.data);
-    Storage.setUserIsLogged(true);
-    this.setState({
-      isLogged: true
-    });
-    this.props.history.push(Storage.getCurrentUser().isBroad ? "/index" : "/about");
+  componentDidMount() {
+    this.init();
   }
 
-  signOut() {
+  async init() {
+    User.getUserSession().then(resp => {
+      this.setState({
+        isLogged: true,
+        userSession: resp.data
+      }, () => {
+        Storage.setUserIsLogged(true);
+        Storage.setCurrentUser(resp.data);
+      });
+    }).catch(error => {
+      this.setState({
+        isLogged: false
+      }, () => this.props.history.push("/" ));
+      Storage.clearStorage()
+    });
+  }
+
+  async onSuccess(token) {
+    await User.signIn(token);
+    this.init().then(resp => {
+      this.props.history.push("/index" );
+    });
+  }
+
+  async signOut() {
     if (window.gapi.auth2 != undefined) {
       let auth2 = window.gapi.auth2.getAuthInstance();
       auth2.signOut();
     }
-    Storage.setUserIsLogged(false);
     Storage.clearStorage();
-    User.signOut();
+    await User.signOut();
     this.setState({
       isLogged: false
     });
+    this.props.history.push("/");
   }
 
   openMetricsReport() {
@@ -75,7 +93,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   };
 
   handlePIChange = (data, action) => {
-    if (!data.disabled) {
+    if (!data.linkDisabled) {
       window.location.href = data.url;
     }
     this.setState(prev => {
@@ -85,11 +103,8 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   };
 
   render() {
-    let isBroadUser = this.state.isLogged && broadUser();
-    let currentUser = { displayName: '' }
-    if (this.state.isLogged) {
-      currentUser = Storage.getCurrentUser();
-    }
+    let isBroadUser = this.state.isLogged && this.state.userSession != null && this.state.userSession.isBroad;
+    let isAdmin = this.state.isLogged && this.state.userSession != null && (this.state.userSession.isAdmin || this.state.userSession.isOrsp);
     return (
       div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
         div({ className: "container" }, [
@@ -128,14 +143,14 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
                 ])
               ]),
-              li({ isRendered: isAdmin(), className: "dropdown" }, [
+              li({ isRendered: isAdmin, className: "dropdown" }, [
                 a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
                 ul({ className: "dropdown-menu" }, [
                   li({}, [h(Link, { to: { pathname: UrlConstants.dataUseListUrl } }, ["Data Use Restrictions"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
-                  li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportUrl } }, ["Event Report"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
                   li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
@@ -159,7 +174,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
               ul({ className: "nav navbar-nav" }, [
                 li({}, [
                   h(Link, { to: { pathname: UrlConstants.profileUrl } },
-                    [currentUser.displayName]
+                    [this.state.userSession.displayName]
                   )
                 ]),
                 li({}, [

@@ -143,7 +143,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
   handleSuccessNotification = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('new') && urlParams.get('tab') === 'consent-groups') {
-      history.pushState({}, null, window.location.href.split('&')[0]);
+      history.pushState({}, null, window.location.href.replace('&new',''));
       setTimeout(this.clearAlertMessage, 8000, null);
       this.props.updateContent();
       this.setState(prev => {

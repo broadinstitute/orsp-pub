@@ -2,6 +2,7 @@ import axios from 'axios';
 import "regenerator-runtime/runtime";
 import  { UrlConstants }  from './UrlConstants';
 import isNil from 'lodash/isNil';
+import fileDownload from 'js-file-download';
 
 export const Search = {
 
@@ -413,11 +414,7 @@ export const Reports = {
   async getMetricsReport() {
     let resp = await axios.get(UrlConstants.metricsReportUrl);
     let blob = new Blob([resp.data], { type: 'text/plain' });
-    const urlBlob = window.URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = urlBlob;
-    a.download = 'AAHRPPMetrics.csv';
-    a.click();
+    fileDownload(blob, 'AAHRPPMetrics.csv');
   }
 };
 
