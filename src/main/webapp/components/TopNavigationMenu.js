@@ -56,17 +56,13 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       Search.getMatchingIssues(query).then(response => {
         let options = response.data.map(function (item) {
           let label = item.label;
-          if (item.linkDisabled === true && item.pm.length > 0) {
-            label = item.label + ' Please contact ' + item.pm + ' for access';
-          } else if (item.linkDisabled === true) {
-            label = item.label + ' Please contact ' + item.reporter + ' for access';
-          }
           return {
             key: item.id,
             value: item.value,
-            label: label,
+            label: label + 'Please contact Vero',
             linkDisabled: item.linkDisabled,
-            url: item.url
+            url: item.url,
+            className: 'disabled'
           };
         });
         callback(options);

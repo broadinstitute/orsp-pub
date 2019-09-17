@@ -163,14 +163,21 @@ div.invalid {
     margin-left: 5px;
 }
 
-
-.ui-menu {
+/* Search Menu */
+.inputField .inputFieldSelect .select__menu .select__menu-list {
     width: 500px;
     z-index: 3000;
     max-height: 400px;
+    background-color: #FFFFFF;
     overflow-y: auto;
     position: fixed;
-    top: 0;
+    top: 52px;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+}
+
+.inputField .inputFieldSelect .select__menu .select__menu-list .select__option.disabled {
+    background: yellow;
 }
 
 .ui-menu .ui-menu-item {
