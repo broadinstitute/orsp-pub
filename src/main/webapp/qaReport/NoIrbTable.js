@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { TableComponent } from "../components/TableComponent";
-import { columns, COLUMNS_TO_HIDE_FROM_EXCEL, defaultSorted, NO_IRB, SIZE_PER_PAGE_LIST } from '../util/ReportsConstants';
+import { QA_REPORT_COLUMNS, COLUMNS_TO_HIDE_FROM_EXCEL, defaultSorted, NO_IRB, SIZE_PER_PAGE_LIST } from '../util/ReportsConstants';
 
 class NoIrbTable extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class NoIrbTable extends Component {
       TableComponent({
         remoteProp: false,
         data: this.props[NO_IRB].filteredData,
-        columns: columns,
+        columns: QA_REPORT_COLUMNS,
         keyField: 'id',
         search: true,
         fileName: 'Quality Assurance Report',
