@@ -39,7 +39,8 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }).catch(error => {
       this.setState({
         isLogged: false
-      }, () => this.props.history.push("/" ));
+      });
+      this.props.history.push(this.props.history.location);
       Storage.clearStorage()
     });
   }
@@ -156,7 +157,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [a({ onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])
