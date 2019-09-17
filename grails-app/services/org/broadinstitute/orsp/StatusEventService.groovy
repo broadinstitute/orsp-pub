@@ -28,11 +28,9 @@ class StatusEventService {
     SessionFactory sessionFactory
 
     List<StatusEventDTO> getStatusEventsForProject(final String projectKey) {
-        if(projectKey) {
+        if (projectKey) {
             final session = sessionFactory.currentSession
-            final String query =
-                    ' select * from event e where e.project_key = :projectKey ' +
-                            ' and e.event_type in :typeList '
+            final String query = 'select * from event e where e.project_key = :projectKey and e.event_type in :typeList'
             final sqlQuery = session.createSQLQuery(query)
             final results = sqlQuery.with {
                 addEntity(Event)

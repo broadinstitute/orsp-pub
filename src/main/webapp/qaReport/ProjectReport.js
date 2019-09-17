@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { div, h, h1, hh } from 'react-hyperscript-helpers';
 import { Link } from 'react-router-dom'
 import { TableComponent } from '../components/TableComponent';
-import { defaultSorted, PROJECT_COLUMNS, SIZE_PER_PAGE_LIST_PROJECT } from '../util/ReportsConstants';
+import { defaultSorted, PROJECT_COLUMNS, SIZE_PER_PAGE_LIST_PROJECT } from '../util/ReportConstants';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Reports } from '../util/ajax';
 import get from 'lodash/get';
@@ -20,30 +20,33 @@ const ProjectReport = hh(class ProjectReport extends Component {
   componentDidMount = async () => {
     this.props.showSpinner();
     try {
-      const result = await Reports.getQaEventReportForProject(get(qs.parse(this.props.location.search), 'projectKey', ''));
+      const result = await Reports.getQaEventReportForProject(this.getProjectKey());
       this.setState({ data: result.data },
         ()=> this.props.hideSpinner()
       );
-    } catch(error) {
+    } catch (error) {
       this.props.hideSpinner();
       this.setState(() => { throw error; })
     }
   };
 
+  getProjectKey = () => {
+    return get(qs.parse(this.props.location.search), 'projectKey', '');
+  };
+
   render() {
-    const projectKey = get(qs.parse(this.props.location.search), 'projectKey', '');
     return(
       div({},[
         h1({ style: { marginBottom: '15px' } }, [" Quality Assurance Report for ",
           h(Link, {
             to: {
               pathname:'/project/main',
-              search: '?projectKey=' + projectKey,
+              search: '?projectKey=' + this.getProjectKey(),
               state: {issueType: 'project',
               tab: 'review',
-              projectKey: projectKey}
+              projectKey: this.getProjectKey()}
             }
-          }, [projectKey])
+          }, [this.getProjectKey()])
         ]),
         div({ className:'container-fluid well' }, [
           TableComponent({

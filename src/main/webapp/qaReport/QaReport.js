@@ -5,7 +5,7 @@ import FilterPanel from './FilterPanel';
 import { formatDataPrintableFormat } from '../util/TableUtil';
 import IrbTable from './IrbTable';
 import NoIrbTable from './NoIrbTable';
-import { IRB, NO_IRB, QA_REPORT_COLUMNS } from '../util/ReportsConstants';
+import { IRB, NO_IRB, QA_REPORT_COLUMNS } from '../util/ReportConstants';
 import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
 import MultiTab from '../components/MultiTab';
 import LoadingWrapper from '../components/LoadingWrapper';
