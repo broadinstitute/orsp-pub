@@ -30,10 +30,6 @@ class ProjectController extends AuthenticatedController {
         render(view: "/mainContainer/index", model: [projectKey: params.projectKey, issueType: 'project'])
     }
 
-    def dul() {
-        render(view: "/dataUseLetter/index")
-    }
-
     @Override
     def show() {
         List<String> diseaseAndPopulationRestrictions = queryService.findAllDiseaseAndPopulationRestrictions()
