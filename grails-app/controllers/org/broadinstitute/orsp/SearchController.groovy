@@ -160,7 +160,7 @@ class SearchController implements UserInfo {
                         linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
                         title: it.summary,
                         type: it.type,
-                        status: it.approvalStatus != "Legacy" ? it.approvalStatus : it.status,
+                        status: it.getApprovalStatus(),
                         updated: it.updateDate ? format.format(it.updateDate): "",
                         expiration: it.expirationDate ? format.format(it.expirationDate) : "",
                         projectAccessContact: it.accessContacts
