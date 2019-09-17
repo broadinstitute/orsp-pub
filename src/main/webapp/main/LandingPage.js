@@ -6,6 +6,7 @@ import { Issues, User } from '../util/ajax';
 import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { Storage } from '../util/Storage';
 
 const columnsCopy = [{
   dataField: 'project',
@@ -126,7 +127,7 @@ const LandingPage = hh(class LandingPage extends Component{
     return (
       div({}, [
         About(),
-        div({className: "row", isRendered: this.state.logged}, [
+        div({className: "row", isRendered: Storage.userIsLogged()}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},

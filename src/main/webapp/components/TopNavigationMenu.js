@@ -45,7 +45,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   }
 
   async onSuccess(token) {
-    User.signIn(token);
+    await User.signIn(token);
     this.init().then(resp => {
       this.props.history.push("/index" );
     });
