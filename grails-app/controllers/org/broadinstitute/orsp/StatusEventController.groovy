@@ -4,19 +4,13 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.utils.UtilityClass
-import org.joda.time.Period
-
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON'])
 class StatusEventController extends AuthenticatedController {
     final static String NO_IRB = "noIrb"
 
-    def qaEventReport() {
-        render(view: "/mainContainer/index")
-    }
-
-    def project() {
+    def findProjectReport() {
         try {
             List<StatusEventDTO> eventDTOs = statusEventService.getStatusEventsForProject(params.projectKey)
             render eventDTOs as JSON

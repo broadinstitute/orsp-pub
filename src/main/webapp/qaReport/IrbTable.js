@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { TableComponent } from "../components/TableComponent";
-import { columns, COLUMNS_TO_HIDE_FROM_EXCEL, defaultSorted, IRB, SIZE_PER_PAGE_LIST } from "../util/QaReportConstants";
+import { columns, COLUMNS_TO_HIDE_FROM_EXCEL, defaultSorted, IRB, SIZE_PER_PAGE_LIST } from '../util/ReportsConstants';
 
 class IrbTable extends Component {
   constructor(props) {

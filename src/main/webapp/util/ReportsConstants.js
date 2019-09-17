@@ -2,7 +2,6 @@ import { dateParser } from "./Utils";
 import { h } from 'react-hyperscript-helpers';
 import { Link } from 'react-router-dom'
 
-export const QA_REPORT_SPINNER = "qaReportSpinner";
 export const NO_IRB = 'noIrb';
 export const IRB = 'irb';
 
@@ -65,4 +64,12 @@ export let formatAge = (row) => {
   return  (result.years > 0 ? result.years + ' years, ' : '') +
     (result.months > 0 ? result.months + ' months ' : '') +
     (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
+};
+
+export const PROJECT_DATA_FIELD = {
+  ID: 'event.id',
+  SUMMARY: 'event.summary',
+  AUTHOR: 'event.author',
+  CREATED: 'event.created',
+  DURATION: 'duration'
 };
