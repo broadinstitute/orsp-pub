@@ -95,7 +95,7 @@ export const MultiSelect = hh(class MultiSelect extends Component {
               onChange: (option) => this.props.handleChange(option),
               value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
               placeholder: !this.props.readOnly && this.props.placeholder !== undefined ? this.props.placeholder : '--',
-              className: "inputFieldSelect",
+              className: "inputFieldSelect disabled",
               classNamePrefix: "select"
             })
           ])

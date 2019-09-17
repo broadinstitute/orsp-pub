@@ -1,12 +1,11 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { broadUser, isAdmin } from "../util/UserUtils";
-import { Storage } from "../util/Storage";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import { User } from '../util/ajax';
 
 const AuthenticatedRoute = ({ component: Component, props: componentProps, admin, ...rest }) => {
 
-  const { path, location, computedMatch } = rest;
-  
+  const { path, location } = rest;
+
   return (
     <Route
       path={path}
@@ -21,11 +20,14 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
   );
 }
 
-const verifyUser = (admin) => {
- if (broadUser()) {
-   // if admin role is required, check if user is admin
-    return admin ? isAdmin() : true; 
+const verifyUser = async (admin) => {
+  try {
+    let user = await User.getUserSession();
+    return admin ? user.isAdmin : true
+  } catch (error) {
+    return false;
   }
 };
+
 
 export default AuthenticatedRoute;

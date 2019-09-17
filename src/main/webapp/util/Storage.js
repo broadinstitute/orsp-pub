@@ -7,23 +7,23 @@ const UserIsLogged = "isLogged";
 export const Storage = {
 
   clearStorage: () => {
-    sessionStorage.clear();
+    localStorage.clear();
   },
 
   setCurrentUser: data => {
-    sessionStorage.setItem(CurrentUser, JSON.stringify(data));
+    localStorage.setItem(CurrentUser, JSON.stringify(data));
   },
 
   getCurrentUser: () => {
-    return sessionStorage.getItem(CurrentUser) ? JSON.parse(sessionStorage.getItem(CurrentUser)) : null;
+    return localStorage.getItem(CurrentUser) ? JSON.parse(localStorage.getItem(CurrentUser)) : null;
   },
 
   userIsLogged: () => {
-    return sessionStorage.getItem(UserIsLogged) === 'true';
+    return localStorage.getItem(UserIsLogged) === 'true';
   },
 
   setUserIsLogged: value => {
-    sessionStorage.setItem(UserIsLogged, value);
+    localStorage.setItem(UserIsLogged, value);
   }
 
 };

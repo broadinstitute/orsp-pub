@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { a, h1, hh, span } from 'react-hyperscript-helpers';
+import { a, h1, hh, span, div } from 'react-hyperscript-helpers';
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 import { DETERMINATION } from '../util/TypeDescription';
 import './InternationalCohorts.css';
