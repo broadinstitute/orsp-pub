@@ -15,7 +15,7 @@ class UrlMappings {
         "/api/report/get-all-fundings"(controller: 'report', action: "getAllFundings", method: 'GET')
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
-        '/'(controller: 'authenticated', action: 'redirectToMainContainer')
+        '/'(controller: 'index', action: 'index')
 
         // Project end points
         '/api/project'(resource: 'project')
@@ -142,7 +142,7 @@ class UrlMappings {
         "/.svn**"                       (controller: "error", action: "error403")
         "/.hg**"                        (controller: "error", action: "error403")
         "/.bzr**"                       (controller: "error", action: "error403")
-        "/**"                           (controller: "authenticated", action: "redirectToMainContainer")
+        "/**"                           (controller: "index", action: "index")
     }
 
 }
