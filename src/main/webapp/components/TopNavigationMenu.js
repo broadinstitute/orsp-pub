@@ -39,7 +39,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }).catch(error => {
       this.setState({
         isLogged: false
-      });
+      }, () => this.props.history.push("/" ));
       Storage.clearStorage()
     });
   }
