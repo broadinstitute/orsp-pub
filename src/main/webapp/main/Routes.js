@@ -29,6 +29,7 @@ const Routes = ( props ) => (
     <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
     <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
     <Route path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />
+    {/*<Route path= {"/statusEvent/projectReport/:projectKey"} render = {(routeProps) => <ProjectReport {...routeProps} {...props}/>} />*/}
     <Route path= {"/statusEvent/projectReport"} render = {(routeProps) => <ProjectReport {...routeProps} {...props}/>} />
     <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
     <Route path= {"/index/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>

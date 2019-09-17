@@ -18,10 +18,12 @@ export const QA_REPORT_COLUMNS = [{
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) =>
     h(Link,{
-      to: {
-        pathname:'/statusEvent/projectReport',
-        state: {projectKey:row.projectKey}
-      }}, [row.projectKey])
+      to: '/statusEvent/projectReport?projectKey=' + row.projectKey
+        //{
+        // pathname:'/statusEvent/projectReport?projectKey=' + row.projectKey
+        // state: {projectKey: row.projectKey}
+      //}
+      }, [row.projectKey])
 }, {
   dataField: 'type',
   text: 'Type',

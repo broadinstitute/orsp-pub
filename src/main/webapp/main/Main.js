@@ -95,6 +95,7 @@ class Main extends Component {
     return (
       div({ className: "headerBoxContainer" }, [
         StatusBox({
+          issueType: this.state.issueType,
           status: this.state.status
         }),
         ProjectContainer({
