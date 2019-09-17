@@ -109,7 +109,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   render() {
     let isBroadUser = this.state.isLogged && this.state.userSession != null && this.state.userSession.isBroad;
-    let isAdmin = this.state.isLogged && this.state.userSession != null && (this.state.userSession.isAdmin || this.state.userSession.isOrsp);
+    let isAdmin = this.state.isLogged && this.state.userSession != null && (this.state.userSession.isAdmin || this.state.userSession.isORSP);
     return (
       div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
         div({ className: "container" }, [
@@ -157,7 +157,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({ onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])
