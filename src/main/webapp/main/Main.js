@@ -4,7 +4,7 @@ import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
-import { isEmpty } from "../util/Utils";
+import { isEmpty, projectStatus } from '../util/Utils';
 import './Main.css';
 
 const LEGACY = 'Legacy';
@@ -42,12 +42,11 @@ class Main extends Component {
 
   initStatusBoxInfo = (elementInfo) => {
     if (this._isMounted) {
-      const issueStatus = get(elementInfo, 'issue.approvalStatus', '');
       this.setState(prev => {
         prev.status.type = get(elementInfo, 'issue.type', '');
         prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
         prev.status.summary = get(elementInfo, 'issue.summary', '');
-        prev.status.status = issueStatus !== LEGACY  && issueStatus ? issueStatus : get(elementInfo, 'issue.status', '');
+        prev.status.status = projectStatus(get(elementInfo, 'issue', ''));
         prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
         prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
         prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
