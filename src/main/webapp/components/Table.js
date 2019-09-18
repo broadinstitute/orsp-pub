@@ -92,20 +92,20 @@ export const Table = hh(class Table extends Component {
   };
 
   formatUrlDocument = (cell, row) => {
-   return  downloadSelectedFile(row.file);
+    let urlObject = {};
+    if (isEmpty(row.uuid)) {
+      urlObject = downloadSelectedFile(row.file);
+    }
 
-    // if (this.props.reviewFlow) {
-    //   return a({
-    //     href: `${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
-    //     target: '_blank',
-    //     title: row.fileName,
-    //   }, [row.fileName])
-    // } else {
-    //   return span({}, [row.fileName])
-    // }
+    return a({
+      href: isEmpty(row.uuid) ? urlObject :`${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
+      target: '_blank',
+      title: row.fileName,
+    }, [row.fileName])
   };
 
   formatRemoveBtn = (cell, row) => {
+    console.log(row);
     let btn = this.props.isViewer ? null :
      Btn({
       action: {
