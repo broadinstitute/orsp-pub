@@ -1,11 +1,11 @@
-import { Component, Fragment } from 'react';
-import { div, hh, h } from 'react-hyperscript-helpers';
-import { ConsentGroupReview } from "../consentGroupReview/ConsentGroupReview";
-import { History } from "../components/History";
-import { Comments } from "../components/Comments";
+import { Component } from 'react';
+import { div, h, hh } from 'react-hyperscript-helpers';
+import ConsentGroupReview from '../consentGroupReview/ConsentGroupReview';
+import { History } from '../components/History';
+import Comments from '../components/Comments';
 import '../components/Wizard.css';
-import { ConsentGroupDocuments } from "../consentGroupDocuments/ConsentGroupDocuments";
-import MultiTab from "../components/MultiTab";
+import ConsentGroupDocuments from '../consentGroupDocuments/ConsentGroupDocuments';
+import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
@@ -114,20 +114,20 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                 key: "comments",
                 title: "Messages",
               }, [
-                  h(Fragment, {}, [Comments({
-                    comments: this.state.comments,
-                    id: this.props.consentKey,
-                    updateContent: this.updateContent
-                  })]),
-                ]),
+                h(Comments, {
+                  comments: this.state.comments,
+                  id: this.props.consentKey,
+                  updateContent: this.updateContent
+                })
+              ]),
               div({
                 key: "history",
                 title: "History",
               }, [
-                  h(Fragment, {}, [History({
-                    history: this.state.history
-                  })])
-                ])
+                History({
+                  history: this.state.history
+                })
+              ])
             ])
         ])
       ])

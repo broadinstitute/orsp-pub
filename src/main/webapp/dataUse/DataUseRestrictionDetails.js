@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import { h, h1, div, button, a, p, ul, li, span, pre } from 'react-hyperscript-helpers';
+import { a, button, div, h, h1, hh, li, p, pre, span, ul } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { DataUse, ConsentGroup } from "../util/ajax";
-import { isEmpty } from "../util/Utils";
+import { ConsentGroup, DataUse } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
 import { DUR_QUESTIONS } from './DataUseRestrictionConstants';
 import { AlertMessage } from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
-import { Spinner } from '../components/Spinner';
-import { spinnerService } from "../util/spinner-service";
-import  { UrlConstants }  from '../util/UrlConstants';
+import { UrlConstants } from '../util/UrlConstants';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-const DUR_SPINNER = 'dusDetail';
 
 const styles = {
   tableList: {
@@ -59,7 +57,7 @@ const styles = {
   }
 };
 
-class DataUseRestrictionDetails extends Component {
+const DataUseRestrictionDetails = hh(class DataUseRestrictionDetails extends Component {
 
   _isMounted = false;
 
@@ -87,7 +85,6 @@ class DataUseRestrictionDetails extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    spinnerService.show(DUR_SPINNER);
     this.init();
   }
 
@@ -95,7 +92,8 @@ class DataUseRestrictionDetails extends Component {
     this._isMounted = false;
   }
 
-  init() {   
+  init() {
+    this.props.showSpinner();
     DataUse.getRestriction(this.state.restrictionId).then(result => {
       if (this._isMounted) {
         this.setState(prev => {
@@ -107,7 +105,7 @@ class DataUseRestrictionDetails extends Component {
           prev.restrictionUrl = result.data.restrictionUrl;
           return prev;
         }, () => {
-          spinnerService.hide(DUR_SPINNER);
+          this.props.hideSpinner();
           this.scrollTop();
         });
       }
@@ -161,7 +159,7 @@ class DataUseRestrictionDetails extends Component {
   }
 
   exportConsent() {
-    spinnerService.showAll();
+    this.props.showSpinner();
     ConsentGroup.exportConsent(this.state.restriction.id).then(resp => {
       this.setState(prev => {
         prev.message = resp.data.message;
@@ -169,7 +167,7 @@ class DataUseRestrictionDetails extends Component {
         return prev;
       }, () => {
         this.scrollTop();
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     }).catch(error => {
       this.setState(prev => {
@@ -178,7 +176,7 @@ class DataUseRestrictionDetails extends Component {
         return prev;
       }, () => {
         this.scrollTop();
-        spinnerService.hideAll();
+        this.props.hideSpinner();
       });
     });
   }
@@ -200,9 +198,6 @@ class DataUseRestrictionDetails extends Component {
   render() {
     return (
       div({}, [
-        h(Spinner, {
-          name: DUR_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        }),
         h1({ style: { 'margin': '20px 0', 'fontWeight': '700', 'fontSize': '35px' } }, ["Data Use Restrictions for Consent Group: " + this.state.consent.projectKey]),
         AlertMessage({
           msg: this.state.message,
@@ -273,5 +268,5 @@ class DataUseRestrictionDetails extends Component {
       ])
     )
   }
-}
-export default DataUseRestrictionDetails;
+});
+export default LoadingWrapper(DataUseRestrictionDetails);

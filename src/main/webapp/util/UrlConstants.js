@@ -1,4 +1,4 @@
-const context = process.env.NODE_ENV === 'test' ? 'http://localhost' : component.contextPath;
+export const context = process.env.NODE_ENV === 'test' ? 'http://localhost' : component.contextPath;
 
 export const UrlConstants = {
   // Project

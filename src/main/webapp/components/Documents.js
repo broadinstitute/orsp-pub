@@ -1,19 +1,15 @@
 import { Component, Fragment } from 'react';
-import { hh, h, h3, div, p, button } from 'react-hyperscript-helpers';
+import { button, div, h, h3, hh, p } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
-import { AddDocumentDialog } from './AddDocumentDialog'
+import AddDocumentDialog from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { DocumentHandler } from '../util/ajax';
-import { DataUseLetter } from './DataUseLetterLink';
+import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
-import { UrlConstants } from "../util/UrlConstants";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from "./Spinner";
+import { UrlConstants } from '../util/UrlConstants';
 import { Link } from 'react-router-dom';
-
-const DOCUMENTS_SPINNER = 'documentsSpinner';
 
 const styles = {
   buttonWithLink: {
@@ -56,10 +52,6 @@ export const Documents = hh(class Documents extends Component {
     this.removeDocument = this.removeDocument.bind(this);
   }
 
-  componentWillUnmount() {
-    spinnerService._unregister(DOCUMENTS_SPINNER);
-  }
-
   addDocuments = () => {
     this.setState({
       showAddKeyDocuments: !this.state.showAddKeyDocuments
@@ -77,7 +69,7 @@ export const Documents = hh(class Documents extends Component {
     this.setState({ showAddAdditionalDocuments: !this.state.showAddAdditionalDocuments });
   };
 
-  remove = (row) => (e) => {
+  remove = (row) => {
     this.setState({
       showRemoveDocuments: !this.state.showRemoveDocuments,
       documentToRemove: row
@@ -109,8 +101,7 @@ export const Documents = hh(class Documents extends Component {
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
-      AddDocumentDialog({
-        spinner: DOCUMENTS_SPINNER,
+      h(AddDocumentDialog, {
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
@@ -155,7 +146,7 @@ export const Documents = hh(class Documents extends Component {
         title: "Data Use Limitation Record Request",
         isRendered: this.props.isConsentGroup === true
       }, [
-          DataUseLetter({
+          h(DataUseLetter, {
             userName: this.props.userName,
             projectKey: this.props.projectKey,
           })
@@ -212,10 +203,7 @@ export const Documents = hh(class Documents extends Component {
             isViewer: component.isViewer
           })
         ])
-      ]),
-      h(Spinner, {
-        name: DOCUMENTS_SPINNER, group: "orsp", loadingImage: component.loadingImage
-      })
+      ])
     ])
   }
 });

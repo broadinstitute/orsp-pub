@@ -1,19 +1,17 @@
 import { Component } from 'react';
-import { h, h1, hh, div } from 'react-hyperscript-helpers';
-import { Wizard } from "../components/Wizard";
-import { SelectSampleConsent } from "./SelectSampleConsent";
-import { LinkQuestions } from "./LinkQuestions";
-import { User } from "../util/ajax";
-import { isEmpty } from "../util/Utils";
-import { spinnerService } from '../util/spinner-service';
-import { Spinner } from "../components/Spinner";
+import { div, h1, hh } from 'react-hyperscript-helpers';
+import { Wizard } from '../components/Wizard';
+import { SelectSampleConsent } from './SelectSampleConsent';
+import { LinkQuestions } from './LinkQuestions';
+import { ConsentCollectionLink, User } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 import '../index.css';
-import { ConsentCollectionLink } from "../util/ajax";
+import * as qs from 'query-string';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 1;
-const LINK_WIZARD_SPINNER = 'linkWizardSpinner';
 
-export const LinkWizard = hh( class LinkWizard extends Component {
+const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
   _isMount = false;
 
@@ -81,7 +79,6 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   componentWillUnmount() {
     this._isMount = false;
-    spinnerService._unregister(LINK_WIZARD_SPINNER);
   }
 
   getUserSession() {
@@ -224,19 +221,18 @@ export const LinkWizard = hh( class LinkWizard extends Component {
 
   submitLink = async () => {
     this.setState({ submitError: false });
-    spinnerService.show(LINK_WIZARD_SPINNER);
-
+    this.props.showSpinner();
     if (this.validateForm()) {
       this.removeErrorMessage();
       this.changeSubmitState();
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
       ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
-        window.location.href  = [component.serverURL, "project", "main?projectKey=" + component.projectKey + "&tab=consent-groups"].join("/");
-        spinnerService.hide(LINK_WIZARD_SPINNER);
+        this.props.hideSpinner();
+        this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
       }).catch(error => {
         console.error(error);
-        spinnerService.hide(LINK_WIZARD_SPINNER);
+        this.props.hideSpinner();
         this.toggleSubmitError();
         this.changeSubmitState();
       });
@@ -246,7 +242,7 @@ export const LinkWizard = hh( class LinkWizard extends Component {
           prev.generalError = true;
           return prev;
         }, () => {
-          spinnerService.hide(LINK_WIZARD_SPINNER);
+          this.props.hideSpinner();
         });
       }
     }
@@ -387,12 +383,10 @@ export const LinkWizard = hh( class LinkWizard extends Component {
             updateMTA: this.updateMTA,
             removeErrorMessage: this.removeErrorMessage,
           })
-        ]),
-        h(Spinner, {
-          name: LINK_WIZARD_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     )
   }
 });
 
+export default LoadingWrapper(LinkWizard);

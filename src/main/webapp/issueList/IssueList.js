@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import { hh, div, h1, h } from 'react-hyperscript-helpers';
-import { TableComponent } from "../components/TableComponent";
+import { div, h, h1, hh } from 'react-hyperscript-helpers';
+import { TableComponent } from '../components/TableComponent';
 import { Project } from '../util/ajax';
-import { Spinner } from "../components/Spinner";
-import { spinnerService } from "../util/spinner-service";
-import { formatDataPrintableFormat } from "../util/TableUtil";
-import { printData } from "../util/Utils";
+import { formatDataPrintableFormat } from '../util/TableUtil';
+import { printData } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const stylesHeader = {
   pageTitle: {
@@ -16,7 +15,6 @@ const stylesHeader = {
   }
 };
 
-const SPINNER_NAME = 'ISSUE_LIST';
 const styles = {
   project: {
     projectKeyWidth: '140px',
@@ -45,21 +43,35 @@ const columns = [
     headerStyle: (column, colIndex) => {
       return { width: styles.project.projectKeyWidth };
     },
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
-      ])
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.projectKey])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+        ])
+      }
+    }
   }, {
     dataField: 'summary',
     text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: styles.project.titleWidth };
+      return {width: styles.project.titleWidth};
     },
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.summary])
-      ])
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.summary])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey} } }, [row.summary])
+        ])
+      }
+  }
   }, {
     dataField: 'type',
     text: 'Type',
@@ -90,7 +102,7 @@ const columns = [
   }
 ];
 
-export const IssueList = hh(class IssueList extends Component {
+const IssueList = hh(class IssueList extends Component {
   
   paramsContext = new URLSearchParams();
   _isMounted = false;
@@ -120,7 +132,7 @@ export const IssueList = hh(class IssueList extends Component {
   }
 
   init = () => {
-    spinnerService.show(SPINNER_NAME);
+    this.props.showSpinner();
     this.tableHandler();
   };
 
@@ -130,10 +142,10 @@ export const IssueList = hh(class IssueList extends Component {
           this.setState(prev => {
             prev.issues = result.data;
             return prev;
-          }, () => spinnerService.hide(SPINNER_NAME))
+          }, () => this.props.hideSpinner())
         }   
       }).catch(error => {
-        spinnerService.hide(SPINNER_NAME);
+        this.props.hideSpinner();
         this.setState(() => { throw error });
       });  
   };
@@ -210,12 +222,9 @@ export const IssueList = hh(class IssueList extends Component {
           showSearchBar: true,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           pagination: true
-        }),
-        h(Spinner, {
-          name: SPINNER_NAME, group: "orsp", loadingImage: component.loadingImage
         })
       ])
     )
   }
 });
-export default IssueList;
+export default LoadingWrapper(IssueList);

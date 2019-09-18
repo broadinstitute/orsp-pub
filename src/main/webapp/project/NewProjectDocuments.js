@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { hh, h1, button, div, p, small } from 'react-hyperscript-helpers';
+import { button, div, h, h1, hh, p, small } from 'react-hyperscript-helpers';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { Panel } from "../components/Panel";
-import { Table } from "../components/Table";
-import { AddDocumentDialog } from '../components/AddDocumentDialog'
+import { Panel } from '../components/Panel';
+import { Table } from '../components/Table';
+import AddDocumentDialog from '../components/AddDocumentDialog'
 
 
 const styles = {
@@ -113,7 +113,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       }, [
           div({ className: "questionnaireContainerLight" }, [
             p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."]),
-            AddDocumentDialog({
+            h(AddDocumentDialog, {
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.props.options,

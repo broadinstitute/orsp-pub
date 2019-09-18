@@ -1,14 +1,14 @@
 import { Component, Fragment } from 'react';
-import { Documents } from "../components/Documents";
-import { DocumentHandler, ConsentGroup, User } from "../util/ajax";
+import { Documents } from '../components/Documents';
+import { ConsentGroup, DocumentHandler, User } from '../util/ajax';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { h, hh } from 'react-hyperscript-helpers';
 import '../index.css';
-import { AlertMessage } from "../components/AlertMessage";
-import { Spinner } from '../components/Spinner';
+import { AlertMessage } from '../components/AlertMessage';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
+const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
   _isMounted = false;
 
@@ -173,10 +173,9 @@ export const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Comp
       AlertMessage({
         msg: 'Something went wrong in the server. Please try again later.',
         show: this.state.serverError
-      }),
-      h(Spinner, {
-        name: "mainSpinner", group: "orsp", loadingImage: component.loadingImage
       })
     ])
   }
 });
+
+export default LoadingWrapper(ConsentGroupDocuments);

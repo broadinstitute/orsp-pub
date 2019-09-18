@@ -1,17 +1,17 @@
 import { Component } from 'react';
-import { h, h1, div } from 'react-hyperscript-helpers';
-import { Reports } from "../util/ajax";
-import { spinnerService } from "../util/spinner-service";
-import { Spinner } from '../components/Spinner';
-import FilterPanel from "./FilterPanel";
-import { formatDataPrintableFormat } from "../util/TableUtil";
-import IrbTable from "./IrbTable";
-import NoIrbTable from "./NoIrbTable";
-import { columns, IRB, NO_IRB, QA_REPORT_SPINNER } from "../util/QaReportConstants";
-import { createObjectCopy, exportData, isEmpty } from "../util/Utils";
-import MultiTab from "../components/MultiTab";
+import { div, h, h1, hh } from 'react-hyperscript-helpers';
+import { Reports } from '../util/ajax';
+import FilterPanel from './FilterPanel';
+import { formatDataPrintableFormat } from '../util/TableUtil';
+import IrbTable from './IrbTable';
+import NoIrbTable from './NoIrbTable';
+import { columns, IRB, NO_IRB } from '../util/QaReportConstants';
+import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
+import MultiTab from '../components/MultiTab';
+import LoadingWrapper from '../components/LoadingWrapper';
 
-class QaReport extends Component {
+const QaReport = hh(class QaReport extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -58,7 +58,7 @@ class QaReport extends Component {
   }
 
   tableHandler = async (tab) => {
-    spinnerService.show(QA_REPORT_SPINNER);
+    this.props.showSpinner();
     try {
       let result = await Reports.getQaEventReport(tab);
       this.setState(prev => {
@@ -67,10 +67,10 @@ class QaReport extends Component {
         prev[tab].isLoaded = true;
         return prev;
       }, () => {
-        spinnerService.hide(QA_REPORT_SPINNER)
+      this.props.hideSpinner()
       })
     } catch(error) {
-      spinnerService.hide(QA_REPORT_SPINNER);
+      this.props.hideSpinner();
       this.setState(() => { throw error });
     }
   };
@@ -226,12 +226,9 @@ class QaReport extends Component {
             ]
             )
           ])
-        ]),
-        h(Spinner, {
-          name: QA_REPORT_SPINNER, group: "orsp", loadingImage: component.loadingImage
-        })
+        ])
       ])
     );
   }
-}
-export default QaReport;
+});
+export default LoadingWrapper(QaReport);
