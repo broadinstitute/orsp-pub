@@ -18,7 +18,6 @@ export const StatusBox = hh(class StatusBox extends Component {
       projectReviewApproved= '',
       attachmentsApproved = ''
     } = this.props.status;
-
     return(
       div({className: "headerBox"}, [
         p({className: "issue-type"}, [type]),
@@ -26,11 +25,11 @@ export const StatusBox = hh(class StatusBox extends Component {
           span({className: "projectKey"}, [projectKey+": " ]),
           span({className: "italic"}, [summary])
         ]),
-        p({isRendered: component.issueType === 'project', className: "headerLabel"}, [
+        p({isRendered: this.props.issueType === 'project', className: "headerLabel"}, [
           "Status: ",
           span({}, [status])
         ]),
-        p({isRendered: component.issueType === 'project' && this.showActor(actor), className: "headerLabel"}, [
+        p({isRendered: this.props.issueType === 'project' && this.showActor(actor), className: "headerLabel"}, [
           "Awaiting action from: ",
           span({}, [this.showActor(actor) ? actor.join(", ") : ''])
         ]),
