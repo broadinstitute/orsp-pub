@@ -86,9 +86,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   activeTab = async () => {
     let tab = this.state.activeTab;
-    if (!isEmpty(this.props.tab) && !isEmpty(component.tab) && this.props.tab !== 'submissions') {
-      tab = component.tab;
-    } else if (!isEmpty(this.props.tab)) {
+    if (!isEmpty(this.props.tab)) {
       tab =  this.props.tab;
     }
     await this.setState({ activeTab: tab });
