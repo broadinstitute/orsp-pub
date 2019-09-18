@@ -112,4 +112,6 @@ class IssueSearchItemDTO {
         }
         resultDTO
     }
+
+    String getApprovalStatus() { approvalStatus != IssueStatus.Legacy.name ? approvalStatus : status }
 }

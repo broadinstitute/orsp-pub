@@ -43,21 +43,35 @@ const columns = [
     headerStyle: (column, colIndex) => {
       return { width: styles.project.projectKeyWidth };
     },
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
-      ])
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.projectKey])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+        ])
+      }
+    }
   }, {
     dataField: 'summary',
     text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: styles.project.titleWidth };
+      return {width: styles.project.titleWidth};
     },
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.summary])
-      ])
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.summary])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey} } }, [row.summary])
+        ])
+      }
+  }
   }, {
     dataField: 'type',
     text: 'Type',

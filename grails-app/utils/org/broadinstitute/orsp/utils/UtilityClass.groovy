@@ -8,7 +8,6 @@ import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Event
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
-import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.StatusEventDTO
@@ -79,7 +78,7 @@ class UtilityClass {
                         type: issue.type,
                         projectKey: issue.projectKey,
                         summary: issue.summary,
-                        status:  issue.approvalStatus == IssueStatus.Legacy.name ? issue.status : issue.approvalStatus,
+                        status:  issue.getApprovalStatus(),
                         issueStatus: issue.status,
                         reviewCategory: StringUtils.isNotEmpty(reviewCategory) ? reviewCategory : '',
                         reporter       : issue.reporter,
@@ -99,7 +98,7 @@ class UtilityClass {
                     type           : statusEvent.issue.type,
                     projectKey     : statusEvent.issue.projectKey,
                     summary        : statusEvent.issue.summary,
-                    status         : statusEvent.issue.approvalStatus == IssueStatus.Legacy.name ? statusEvent.issue.status : statusEvent.issue.approvalStatus,
+                    status         : statusEvent.issue.getApprovalStatus(),
                     reporter       : statusEvent.issue.reporter,
                     requestDate    : statusEvent.issue.requestDate,
                     attachments    : statusEvent.issue.attachments,
