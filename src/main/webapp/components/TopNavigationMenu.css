@@ -66,6 +66,11 @@
     color: #337ab7;
 }
 
-.inputField .inputFieldSelect .select__menu .select__menu-list .select__option.select__option--is-focused {
+.inputField .inputFieldSelect .select__option.select__option--is-disabled {
+    background-color: #FAFAFA;
+    padding: 15px !important;
+}
+
+.inputField .inputFieldSelect .select__menu .select__menu-list .select__option {
     padding: 20px 15px;
 }
