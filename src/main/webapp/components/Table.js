@@ -101,6 +101,7 @@ export const Table = hh(class Table extends Component {
       href: isEmpty(row.uuid) ? urlObject :`${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
       target: '_blank',
       title: row.fileName,
+      download: row.fileName,
     }, [row.fileName])
   };
 

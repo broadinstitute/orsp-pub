@@ -119,14 +119,6 @@ export const exportData = (action, fileName= '', data, titleText= '', headerText
 export const downloadSelectedFile = (file) => {
   const fileReader = new FileReader();
   fileReader.readAsDataURL(file);
-  const blob = new Blob([file], { type: 'multipart/form-data' });
-  // const urlObject = window.URL.createObjectURL(blob);
+  const blob = new Blob([file], { 'content-type': 'multipart/form-data' });
   return window.URL.createObjectURL(blob);
-
-  // const link = document.createElement('a');
-  // link.href = urlObject;
-  // link.download = file.name;
-  // link.title = file.name;
-  // console.log(link);
-  // return link;
 };
