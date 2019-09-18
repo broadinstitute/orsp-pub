@@ -1,6 +1,5 @@
 <script>
   function onSignIn(googleUser) {
-  console.log(googleUser);
       // show spinner while the page is re-loading
       document.getElementById("login_spinner").setAttribute("class", "visible");
       var profile = googleUser.getBasicProfile();
