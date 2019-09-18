@@ -105,7 +105,6 @@ export const Table = hh(class Table extends Component {
   };
 
   formatRemoveBtn = (cell, row) => {
-    console.log(row);
     let btn = this.props.isViewer ? null :
      Btn({
       action: {
