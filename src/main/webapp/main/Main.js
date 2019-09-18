@@ -47,7 +47,7 @@ class Main extends Component {
         prev.status.type = get(elementInfo, 'issue.type', '');
         prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
         prev.status.summary = get(elementInfo, 'issue.summary', '');
-        prev.status.status = issueStatus !== LEGACY  && issueStatus ? issueStatus : get(elementInfo, 'issue.status', '');
+        prev.status.status = issueStatus !== LEGACY ? issueStatus : get(elementInfo, 'issue.status', '');
         prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
         prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
         prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');

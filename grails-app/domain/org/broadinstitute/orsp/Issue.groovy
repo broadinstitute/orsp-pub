@@ -58,7 +58,7 @@ class Issue implements LogicalDelete<Issue> {
 
     transient isFlagSet(name) { getExtraProperties().find { (it.name == name) }?.value == "Yes" ?: false }
 
-    transient String getApprovalStatus() { approvalStatus != IssueStatus.Legacy.name ? approvalStatus : status }
+    String getApprovalStatus() { approvalStatus != IssueStatus.Legacy.name ? approvalStatus : status }
 
     // General Data
     transient String getSubjectProtection() { getExtraProperties().find { it.name == IssueExtraProperty.SUBJECT_PROTECTION }?.value }
