@@ -46,21 +46,24 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   }
 
   async init() {
-    User.getUserSession().then(resp => {
-      this.setState({
-        isLogged: true,
-        userSession: resp.data
-      }, () => {
-        Storage.setUserIsLogged(true);
-        Storage.setCurrentUser(resp.data);
+    let user = await User.isAuthenticated();
+    if (user != null && user.data.session) {
+      User.getUserSession().then(resp => {
+        this.setState({
+          isLogged: true,
+          userSession: resp.data
+        }, () => {
+          Storage.setUserIsLogged(true);
+          Storage.setCurrentUser(resp.data);
+        });
+      }).catch(error => {
+        this.setState({
+          isLogged: false
+        });
+        this.props.history.push(this.props.history.location);
+        Storage.clearStorage()
       });
-    }).catch(error => {
-      this.setState({
-        isLogged: false
-      });
-      this.props.history.push(this.props.history.location);
-      Storage.clearStorage()
-    });
+    }    
   }
 
   async onSuccess(token) {
