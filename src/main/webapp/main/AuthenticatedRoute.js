@@ -23,7 +23,7 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
 const verifyUser = async (admin) => {
   try {
     let user = await User.getUserSession();
-    return admin ? user.isAdmin : true
+    return admin ? user.data.isAdmin : true
   } catch (error) {
     return false;
   }
