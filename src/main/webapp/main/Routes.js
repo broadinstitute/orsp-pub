@@ -20,6 +20,8 @@ import LandingPage from './LandingPage';
 import NewProject from '../project/NewProject';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import Search from '../search/Search';
+import ProjectReport from '../qaReport/ProjectReport';
+
 
 const Routes = ( props ) => (
   <Switch>
@@ -30,6 +32,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/admin/fundingReport"} component={FundingsSourceReport} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/report/reviewCategories"} component={ReviewCategories} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/statusEvent/qaEventReport"} component={QaReport} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/statusEvent/projectReport"} render = {(routeProps) => <ProjectReport {...routeProps} {...props} admin={true}/>} />
     <AuthenticatedRoute path= {"/dataUse/list"}  component={DataUseRestrictionIndex} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/dataUse/view"}  component={DataUseRestrictionDetails} props={props}/> }/>
     <AuthenticatedRoute path= {"/consent-group/use-existing"} component={LinkWizard} props={props}/> }/>

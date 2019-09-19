@@ -9,6 +9,17 @@ import org.broadinstitute.orsp.utils.UtilityClass
 @Resource(readOnly = false, formats = ['JSON'])
 class StatusEventController extends AuthenticatedController {
     final static String NO_IRB = "noIrb"
+    
+    def findProjectReport() {
+        try {
+            List<StatusEventDTO> eventDTOs = statusEventService.getStatusEventsForProject(params.projectKey)
+            render eventDTOs as JSON
+        } catch(IllegalArgumentException e) {
+            handleIllegalArgumentException(e)
+        } catch(Exception e) {
+            handleException(e)
+        }
+    }
 
     def findQaEventReport() {
         UtilityClass.registerQaReportIssueMarshaller()

@@ -7,6 +7,7 @@ import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Storage } from '../util/Storage';
+import { projectStatus } from '../util/Utils';
 
 const columnsCopy = [{
   dataField: 'project',
@@ -94,7 +95,7 @@ const LandingPage = hh(class LandingPage extends Component{
       projectList.push({
         project: issue.projectKey,
         title: issue.summary,
-        status: issue.status,
+        status: projectStatus(issue),
         type: issue.type,
         updated: parseDate(issue.updateDate),
         expiration: parseDate(issue.expirationDate)
@@ -105,7 +106,7 @@ const LandingPage = hh(class LandingPage extends Component{
       taskList.push({
         project: issue.projectKey,
         title: issue.summary,
-        status: issue.status,
+        status: projectStatus(issue),
         type: issue.type,
         updated: parseDate(issue.updateDate),
         expiration: parseDate(issue.expirationDate)

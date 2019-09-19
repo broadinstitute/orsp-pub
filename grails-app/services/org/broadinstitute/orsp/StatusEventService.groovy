@@ -27,21 +27,21 @@ class StatusEventService {
 
     SessionFactory sessionFactory
 
-    Collection<Event> getStatusEventsForProject(final String projectKey) {
-        final session = sessionFactory.currentSession
-        final String query =
-                ' select * ' +
-                        ' from event e ' +
-                        ' where e.project_key = :projectKey ' +
-                        ' and e.event_type in :typeList '
-        final sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(Event)
-            setString('projectKey', projectKey)
-            setParameterList('typeList', TYPES*.name())
-            list()
+    List<StatusEventDTO> getStatusEventsForProject(final String projectKey) {
+        if (projectKey) {
+            final session = sessionFactory.currentSession
+            final String query = 'select * from event e where e.project_key = :projectKey and e.event_type in :typeList'
+            final sqlQuery = session.createSQLQuery(query)
+            final results = sqlQuery.with {
+                addEntity(Event)
+                setString('projectKey', projectKey)
+                setParameterList('typeList', TYPES*.name())
+                list()
+            }
+            getStatusEventDTOs(results)
+        } else {
+            throw new IllegalArgumentException("Can't get status Events for empty Project Key.")
         }
-        results as Collection<Event>
     }
 
     List<StatusEventDTO> getStatusEventDTOs(List<Event> statusEvents) {
