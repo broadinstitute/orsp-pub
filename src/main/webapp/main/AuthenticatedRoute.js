@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { User } from '../util/ajax';
+import { Storage } from '../util/Storage';
 
 const AuthenticatedRoute = ({ component: Component, props: componentProps, admin, ...rest }) => {
 
@@ -12,22 +12,16 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
       location={location}
       render={
         props =>
-          verifyUser(admin)
+       verifyUser(admin, props)
             ? <Component {...props} {...componentProps} />
             : <Redirect to={'/'} />
       }
     />
   );
 }
-
-const verifyUser = async (admin) => {
-  try {
-    let user = await User.getUserSession();
-    return admin ? user.data.isAdmin : true
-  } catch (error) {
-    return false;
-  }
-};
-
+const verifyUser = (admin, props) => {
+  Storage.setLocationFrom(props.history.location);
+  return admin ? Storage.getCurrentUser() != null && Storage.getCurrentUser().isAdmin : Storage.userIsLogged();
+}
 
 export default AuthenticatedRoute;

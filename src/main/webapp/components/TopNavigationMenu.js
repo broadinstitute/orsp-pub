@@ -7,7 +7,6 @@ import { UrlConstants } from "../util/UrlConstants";
 import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import './TopNavigationMenu.css';
-import { INITIAL_REVIEW } from "../util/TypeDescription";
 
 const styles = {
   listResultContainer: {
@@ -29,47 +28,52 @@ const styles = {
 }
 export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
       isLogged: false,
       searchValue: '',
-      googleButton: null,
       userSession: { displayName: '' }
     };
     this.signOut = this.signOut.bind(this);
     this.onSuccess = this.onSuccess.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    this._isMounted = true;
     this.init();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   async init() {
     let user = await User.isAuthenticated();
     if (user != null && user.data.session) {
-      User.getUserSession().then(resp => {
+      let resp = await User.getUserSession();
+      Storage.setCurrentUser(resp.data);
+      if (this._isMounted) {
         this.setState({
           isLogged: true,
           userSession: resp.data
-        }, () => {
-          Storage.setUserIsLogged(true);
-          Storage.setCurrentUser(resp.data);
         });
-      }).catch(error => {
-        this.setState({
-          isLogged: false
-        });
-        this.props.history.push(this.props.history.location);
-        Storage.clearStorage()
-      });
-    }    
+      }
+    }
   }
 
   async onSuccess(token) {
     await User.signIn(token);
+    Storage.setUserIsLogged(true);
     this.init().then(resp => {
-      this.props.history.push("/index" );
+      if (Storage.getLocationFrom()) {
+        this.props.history.push(Storage.getLocationFrom());
+        Storage.removeLocationFrom();
+      } else {
+        this.props.history.push("/index");
+      }
     });
   }
 
@@ -97,25 +101,25 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
         let options = response.data.map(function (item) {
           let label = item.label;
           if (item.linkDisabled === true && item.pm.length > 0) {
-            label = 
-            span({style: styles.listResultContainer}, [
-              span({style: styles.badgeContactAccess}, [
-                'Please contact ' + item.pm + ' for access'    
-              ]),
-              div({style: {'marginTop': '10px'}}, [
-                item.label
+            label =
+              span({ style: styles.listResultContainer }, [
+                span({ style: styles.badgeContactAccess }, [
+                  'Please contact ' + item.pm + ' for access'
+                ]),
+                div({ style: { 'marginTop': '10px' } }, [
+                  item.label
+                ])
               ])
-            ])
           } else if (item.linkDisabled === true) {
-            label = 
-            span({style: styles.listResultContainer}, [
-              span({style: styles.badgeContactAccess}, [
-                ' Please contact ' + item.reporter + ' for access'
-              ]),
-              div({style: {'marginTop': '10px'}}, [
-                item.label
+            label =
+              span({ style: styles.listResultContainer }, [
+                span({ style: styles.badgeContactAccess }, [
+                  ' Please contact ' + item.reporter + ' for access'
+                ]),
+                div({ style: { 'marginTop': '10px' } }, [
+                  item.label
+                ])
               ])
-            ])
           }
           return {
             key: item.id,
@@ -135,19 +139,26 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }
   };
 
-  handlePIChange = (data, action) => {
+  handleSearchChange = (data, action) => {
     if (!data.linkDisabled) {
       window.location.href = data.url;
     }
-    this.setState(prev => {
-      prev.search = data.data;
-      return prev;
-    })
+    this.setState({
+      searchValue: data.data
+    });
   };
 
+  isBroadUser() {
+    return this.state.isLogged && this.state.userSession != null &&
+      this.state.userSession.isBroad;
+  }
+
+  isAdmin() {
+    return this.state.isLogged && this.state.userSession != null &&
+      (this.state.userSession.isAdmin || this.state.userSession.isORSP);
+  }
+
   render() {
-    let isBroadUser = this.state.isLogged && this.state.userSession != null && this.state.userSession.isBroad;
-    let isAdmin = this.state.isLogged && this.state.userSession != null && (this.state.userSession.isAdmin || this.state.userSession.isORSP);
     return (
       div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
         div({ className: "container" }, [
@@ -162,7 +173,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
               [
                 span({}, [
                   "ORSP Portal ",
-                  span({ className: "label label-danger" }, ["Dev"])
+                  span({isRendered: process.env.NODE_ENV === 'development', className: "label label-danger" }, ["Dev"])
                 ])
               ])
           ]),
@@ -173,12 +184,12 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ['About']
                 )
               ]),
-              li({ isRendered: isBroadUser }, [
+              li({ isRendered: this.isBroadUser() }, [
                 h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
                   ['Search']
                 )
               ]),
-              li({ isRendered: isBroadUser, className: "dropdown" }, [
+              li({ isRendered: this.isBroadUser(), className: "dropdown" }, [
                 a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
@@ -186,7 +197,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
                 ])
               ]),
-              li({ isRendered: isAdmin, className: "dropdown" }, [
+              li({ isRendered: this.isAdmin(), className: "dropdown" }, [
                 a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
@@ -200,13 +211,13 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ])
               ])
             ]),
-            div({ isRendered: isBroadUser, className: "navbar-form navbar-left" }, [
+            div({ isRendered: this.isBroadUser(), className: "navbar-form navbar-left" }, [
               MultiSelect({
                 id: "pk_select",
                 label: "",
                 isDisabled: false,
                 loadOptions: this.loadOptions,
-                handleChange: this.handlePIChange,
+                handleChange: this.handleSearchChange,
                 value: this.state.searchValue,
                 placeholder: "ORSP ID #",
                 isMulti: false,

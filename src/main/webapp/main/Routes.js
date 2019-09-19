@@ -25,7 +25,6 @@ import ProjectReport from '../qaReport/ProjectReport';
 
 const Routes = ( props ) => (
   <Switch>
-    <AuthenticatedRoute path= {"/index"} exact component={LandingPage} props={props}/> }/>
     <AuthenticatedRoute path= {"/user/rolesManagement"} component={RolesManagement} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {["/project/main", "/newConsentGroup/main"]} component={Main} props={props}/> }/>
     <AuthenticatedRoute path= {"/project/pages"} component={NewProject} props={props}/> }/>
@@ -41,8 +40,9 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/issueList/list"} component={IssueList} props={props} /> }/>
     <AuthenticatedRoute path= {"/search/index"} component={Search} props={props} /> }/>
     <AuthenticatedRoute path= {"/submissions/add-new"} component={SubmissionForm} props={props} /> }/>
+    <Route path= {["/index", "/"]} exact component={LandingPage} props={props}/> }/>
     <Route path= {["/index/profile", "/profile"]} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {["/index/about", "/about", "/"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {"/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/view"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>   
   </Switch>

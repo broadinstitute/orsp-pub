@@ -42,7 +42,7 @@
         }
     }
     </style>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
 
     <script>
       if (location.protocol !== "https:") location.protocol = "https:";

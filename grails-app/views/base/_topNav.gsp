@@ -71,6 +71,7 @@
         </div><!--/.nav-collapse -->
     </div>
 </div>
+div({className: "g-signin2 "})
 
 <auth:isAuthenticated>
     <asset:script type="text/javascript">
