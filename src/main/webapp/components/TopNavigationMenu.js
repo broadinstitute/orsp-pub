@@ -14,8 +14,9 @@ const styles = {
     display: 'block',
     width: '100%',
     cursor: 'default',
-    margin: '0 !important',
-    padding: '10px 15px'
+    margin: '0 0 0 -15px',
+    padding: '0 15px',
+    width: 'calc(100% + 30px)'
   },
   badgeContactAccess: {
     display: 'inlineBlock',
