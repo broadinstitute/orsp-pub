@@ -43,18 +43,36 @@
     margin: 3px 0 4px 0;
 }
 
-.inputField .inputFieldSelect .select__control {
+/* Search Results (list) */
+
+.navbar .inputField .inputFieldSelect .select__menu .select__menu-list {
+    width: 500px;
+    z-index: 3000;
+    max-height: 400px;
+    background-color: #FFFFFF;
+    overflow-y: auto;
+    position: fixed;
+    top: 52px;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+}
+
+.navbar .inputField .inputFieldSelect .select__control {
     border-radius: 4px;
     padding: 5px 8px;
     height: 40px;
 }
 
-.inputFieldSelect {
+.navbar .inputField .inputFieldSelect .select__control .select__value-container {
+    margin-top: -3px;
+}
+
+.navbar .inputFieldSelect {
     padding: 0;
     margin: 0;
 }
 
-.inputField .inputFieldSelect .select__option {
+.navbar .inputField .inputFieldSelect .select__option {
     background-color: #FFFFFF;
     cursor: pointer;
     padding: 0;
@@ -62,15 +80,15 @@
     margin: 0;
 }
 
-.inputField .inputFieldSelect .select__option.select__option--is-focused:hover {
+.navbar .inputField .inputFieldSelect .select__option.select__option--is-focused:hover {
     color: #337ab7;
 }
 
-.inputField .inputFieldSelect .select__option.select__option--is-disabled {
+.navbar .inputField .inputFieldSelect .select__option.select__option--is-disabled {
     background-color: #FAFAFA;
     padding: 15px !important;
 }
 
-.inputField .inputFieldSelect .select__menu .select__menu-list .select__option {
+.navbar .inputField .inputFieldSelect .select__menu .select__menu-list .select__option {
     padding: 20px 15px;
 }
