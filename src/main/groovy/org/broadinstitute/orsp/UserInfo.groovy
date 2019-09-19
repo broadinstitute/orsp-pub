@@ -39,11 +39,7 @@ trait UserInfo implements ServletAttributes {
     }
 
     boolean isBroad() {
-        if (session["user"] && session["isBroad"]) {
-           true
-        } else {
-            false
-        }
+        session["user"] && session["isBroad"]
     }
 
     User getUser() {

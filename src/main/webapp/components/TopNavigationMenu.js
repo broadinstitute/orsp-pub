@@ -88,7 +88,6 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.setState({
       isLogged: false
     });
-    this.props.history.push("/");
   }
 
   openMetricsReport() {
@@ -141,12 +140,9 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   };
 
   handleSearchChange = (data, action) => {
-    if (!data.linkDisabled) {
+    if (data != null && !data.linkDisabled) {
       window.location.href = data.url;
     }
-    this.setState({
-      searchValue: data.data
-    });
   };
 
   isBroadUser() {
@@ -205,9 +201,9 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ul({ className: "dropdown-menu" }, [
                   li({}, [h(Link, { to: { pathname: UrlConstants.dataUseListUrl } }, ["Data Use Restrictions"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
-                  li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["Event Report"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["QA Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({ onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [a({href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])
@@ -233,7 +229,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   )
                 ]),
                 li({}, [
-                  h(Link, { to: { pathname: UrlConstants.aboutUrl }, onClick: () => this.signOut() },
+                  h(Link, { to: { pathname: '/' }, onClick: () => this.signOut() },
                     ["Sign out"]
                   )
                 ]),

@@ -50,8 +50,9 @@ class InfoLink extends Component {
   }
 
   initData = () => {
+    let params = new URLSearchParams(this.props.location.search);
     let sampleCollectionsIds = [];
-    ProjectInfoLink.getProjectSampleCollections(infoLinkConstant.cclId, component.serverURL).then(
+    ProjectInfoLink.getProjectSampleCollections(params.get("cclId")).then(
       data => {
         JSON.parse(data.data.sampleCollections).map(sampleCollection => {
           sampleCollectionsIds.push(sampleCollection);
@@ -74,10 +75,12 @@ class InfoLink extends Component {
   };
 
   redirectToProject = () => {
-    return [component.serverURL, "newConsentGroup/main?consentKey=" + component.consentKey + "&projectKey=" + component.projectKey].join("/");
+    let params = new URLSearchParams(this.props.location.search);
+    return [component.serverURL, "newConsentGroup/main?consentKey=" + params.get("consentKey") + "&projectKey=" + params.get("projectKey")].join("/");
   };
 
   render() {
+    let params = new URLSearchParams(this.props.location.search);
     const { sampleCollections } = this.state;
     return (
       div({}, [
@@ -85,11 +88,11 @@ class InfoLink extends Component {
             onClick: () => window.open(this.redirectToProject(),"_self"),
             target: '_blank'}, [
           span({ className: "glyphicon glyphicon-chevron-left" }, []),
-          component.consentKey + " : " +this.state.consentName
+          params.get("consentKey") + " : " +this.state.consentName
         ]),
         h2({ className: "pageTitle" }, [
           div({}, ["Sample Collections associated to"]),
-          div({ className: "italic normal" }, [component.projectKey + " : " +this.state.projectName])
+          div({ className: "italic normal" }, [ params.get("projectKey") + " : " +this.state.projectName])
         ]),
 
         div({ className: "tabContainer" }, [
