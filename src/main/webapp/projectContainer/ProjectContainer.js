@@ -10,7 +10,8 @@ import ProjectDocument from '../projectDocument/ProjectDocument';
 import AdminOnly from '../adminOnly/AdminOnly';
 import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
-import { isEmpty } from '../util/Utils';
+
+const projectReviewTabs = ["adminOnly", "history", "comments", "submissions", "consent-groups", "documents", "review"];
 
 export const ProjectContainer = hh(class ProjectContainer extends Component {
 
@@ -86,10 +87,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   activeTab = async () => {
     let tab = this.state.activeTab;
-    if (!isEmpty(this.props.tab) && !isEmpty(component.tab) && this.props.tab !== 'submissions') {
-      tab = component.tab;
-    } else if (!isEmpty(this.props.tab)) {
-      tab =  this.props.tab;
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('tab') && projectReviewTabs.includes(urlParams.get('tab'))) {
+      tab =  urlParams.get('tab');
     }
     await this.setState({ activeTab: tab });
   };
