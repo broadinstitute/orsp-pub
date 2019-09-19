@@ -123,7 +123,8 @@ const LandingPage = hh(class LandingPage extends Component{
         projectList: projectList,
         taskList: taskList,
         logged: user.data.session
-      })
+      });
+      Storage.setUserIsLogged(user.data.session);
     }
   };
 
