@@ -200,9 +200,8 @@ const IssueList = hh(class IssueList extends Component {
   printContent = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
     let issues = formatDataPrintableFormat(this.state.issues, cols);
-    const tableColumnsWidth = [100, 100, '*', 80, '*', '*', '*', '*', '*'];
-    const titleText = "";
-    exportData(issues, titleText, '', tableColumnsWidth, 'A3', 'landscape');
+    const tableColumnsWidth = [100, 100, '*', 80, '*', '*'];
+    exportData(issues, '', issues, tableColumnsWidth, '');
   };
 
   render() {
