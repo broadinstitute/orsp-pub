@@ -78,7 +78,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     Storage.setUserIsLogged(true);
     this.init().then(resp => {
       if (Storage.getLocationFrom() != null || Storage.getUnauthorizedLocationFrom() != null) {
-        this.props.history.push(Storage.getUnauthorizedLocationFrom() != null ? Storage.getUnauthorizedLocationFrom() : Storage.getLocationFrom() : );
+        this.props.history.push(Storage.getUnauthorizedLocationFrom() != null ? Storage.getUnauthorizedLocationFrom() : Storage.getLocationFrom());
         Storage.removeLocationFrom();
         Storage.removeUnauthorizedLocationFrom();
       } else {
