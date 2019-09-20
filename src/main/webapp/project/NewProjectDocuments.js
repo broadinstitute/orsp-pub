@@ -60,7 +60,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     });
   };
 
-  removeFile = (row) => (e) => {
+  removeFile = (row) => {
     const documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
     this.setState(prev => {
       prev.documents = documentsToUpdate;
