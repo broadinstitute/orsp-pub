@@ -3,7 +3,7 @@ import { div, h, h1, hh } from 'react-hyperscript-helpers';
 import { TableComponent } from '../components/TableComponent';
 import { Project } from '../util/ajax';
 import { formatDataPrintableFormat } from '../util/TableUtil';
-import { printData } from '../util/Utils';
+import { exportData } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
@@ -202,7 +202,7 @@ const IssueList = hh(class IssueList extends Component {
     let issues = formatDataPrintableFormat(this.state.issues, cols);
     const tableColumnsWidth = [100, 100, '*', 80, '*', '*', '*', '*', '*'];
     const titleText = "";
-    printData(issues, titleText, '', tableColumnsWidth, 'A3', 'landscape');
+    exportData(issues, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   render() {
