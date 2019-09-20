@@ -55,7 +55,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     });
   };
 
-  removeFile = (row) => (e) => {
+  removeFile = (row) => {
     let docs = this.state.documents;
     var documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
     this.setState(prev => {

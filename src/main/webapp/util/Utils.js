@@ -123,3 +123,10 @@ export const exportData = (action, fileName= '', data, titleText= '', headerText
     pdfMake.createPdf(documentTemplate).print();
   }
 }
+
+export const downloadSelectedFile = (file) => {
+  const fileReader = new FileReader();
+  fileReader.readAsDataURL(file);
+  const blob = new Blob([file], { 'content-type': 'multipart/form-data' });
+  return window.URL.createObjectURL(blob);
+};
