@@ -127,7 +127,6 @@ class UrlMappings {
         '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
         '/api/auth'(controller: 'auth', action: 'authUser')
 
-
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

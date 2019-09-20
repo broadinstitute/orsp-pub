@@ -2,7 +2,7 @@ import { Component } from "react";
 import { a, hh, div, button, span, ul, li, b, h } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
 import { User, Reports, Search } from "../util/ajax";
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
 import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
@@ -12,7 +12,6 @@ const styles = {
   listResultContainer: {
     backgroundColor: '#FAFAFA',
     display: 'block',
-    width: '100%',
     cursor: 'default',
     margin: '0 0 0 -15px',
     padding: '0 15px',
@@ -38,14 +37,12 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       searchValue: '',
       userSession: { displayName: '' }
     };
-    this.signOut = this.signOut.bind(this);
-    this.onSuccess = this.onSuccess.bind(this);
   }
 
   componentDidMount = async () => {
     this._isMounted = true;
     this.init();
-  }
+  };
 
   handleUnauthorized() {
     Storage.clearStorage();
@@ -73,7 +70,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }
   }
 
-  async onSuccess(token) {
+  onSuccess = async(token) => {
     await User.signIn(token);
     Storage.setUserIsLogged(true);
     this.init().then(resp => {
@@ -85,9 +82,9 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
         this.props.history.push("/index");
       }
     });
-  }
+  };
 
-  async signOut() {
+  signOut = async() => {
     if (window.gapi.auth2 != undefined) {
       let auth2 = window.gapi.auth2.getAuthInstance();
       auth2.signOut();
@@ -97,14 +94,14 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.setState({
       isLogged: false
     });
-  }
+  };
 
   openMetricsReport() {
     Reports.getMetricsReport();
   }
 
   loadOptions(query, callback) {
-    let options = []
+    let options = [];
     if (query.length > 2) {
       Search.getMatchingIssues(query).then(response => {
         let options = response.data.map(function (item) {
@@ -241,7 +238,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   )
                 ]),
                 li({}, [
-                  h(Link, { to: { pathname: '/' }, onClick: () => this.signOut() },
+                  h(Link, { to: { pathname: '/' }, onClick: this.signOut },
                     ["Sign out"]
                   )
                 ]),

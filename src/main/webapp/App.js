@@ -28,11 +28,7 @@ export const App = hh(class App extends Component {
 
   async handleUnauthorized() {
     Storage.clearStorage();
-    if (window.gapi.auth2 != undefined) {
-      Storage.setUnauthorizedLocationFrom(this.props.location);
-      let auth2 = window.gapi.auth2.getAuthInstance();
-      await auth2.signOut();
-    }
+    Storage.setUnauthorizedLocationFrom(this.props.location);
     this.props.history.push('/');
   }
 
