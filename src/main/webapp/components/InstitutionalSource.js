@@ -163,7 +163,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.name : rd.name,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0,
+                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0 && this.isEmpty(rd.name ===''),
                       disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
@@ -180,7 +180,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.country : rd.country,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "country") : this.props.errorCountry && index === 0,
+                      error: this.props.edit ? this.getError(index, "country") : this.props.errorCountry && index === 0 && this.isEmpty(rd.country),
                       disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly
