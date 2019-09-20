@@ -42,7 +42,7 @@ export const formatExcelData = (data, columns, hide) => {
   if (!isEmpty(data) && !isEmpty(columns)) {
     data.forEach(el => {
       let newEl = {};
-      Object.keys(el).filter(elem => (elem !== 'id' && !hide.includes(elem) )).forEach(key => {
+      Object.keys(el).filter(elem => (elem !== 'id' || (hide && !hide.includes(elem)) )).forEach(key => {
         newEl[key] = parseDataElements(el, key);
       });
       rows.push(newEl);
