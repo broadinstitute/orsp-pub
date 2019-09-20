@@ -1242,7 +1242,7 @@ class QueryService implements Status {
         results
     }
 
-    private Collection<StorageDocument> getAttachmentsForProject(String projectKey) {
+    Collection<StorageDocument> getAttachmentsForProject(String projectKey) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =
