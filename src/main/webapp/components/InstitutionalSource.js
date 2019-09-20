@@ -1,7 +1,12 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helpers';
+import { div, h, hh, hr, label } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { Btn } from './Btn';
+
+const EMPTY_EDIT_OBJECT = {
+  current: { name: null, country: null },
+  future: { name: '', country: '' }
+};
 
 export const InstitutionalSource = hh(class InstitutionalSource extends Component {
 
@@ -25,20 +30,19 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   addInstitutionalSources() {
     if (this.props.edit) {
       // Only for edit / review
-      if ((this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
-        || this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country ) {
+      if (this.props.institutionalSources[0] && (this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
+        || this.props.institutionalSources[0] && (this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country )) {
         this.setState(prev => {
           let institutionalSources = this.props.institutionalSources;
-          institutionalSources.splice(0, 0, {
-            current: { name: null, country: null },
-            future: { name: '', country: '' }
-          });
+          institutionalSources.splice(0, 0, EMPTY_EDIT_OBJECT);
           prev.institutionalSources = institutionalSources;
           this.props.error && this.props.edit ? this.props.errorHandler() : prev.error = false;
           return prev;
         }, () => {
           this.props.updateInstitutionalSource(this.state.institutionalSources)
         });
+      } else {
+        this.props.updateInstitutionalSource([EMPTY_EDIT_OBJECT])
       }
     } else {
       // For new Projects
