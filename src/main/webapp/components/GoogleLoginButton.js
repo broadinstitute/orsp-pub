@@ -13,8 +13,7 @@ const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
         window.gapi.auth2.init({
     }).then(() => {
         window.gapi.signin2.render('signin', {
-          onsuccess: this.onSuccess,
-          onfailure: this.onFailure
+          onsuccess: this.onSuccess
         })
       }) 
     })    

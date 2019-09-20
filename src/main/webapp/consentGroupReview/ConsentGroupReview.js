@@ -202,7 +202,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
                 prev.current = current;
                 prev.future = future;
                 prev.futureCopy = futureCopy;
-                prev.isAdmin = component.isAdmin;
+                prev.isAdmin = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin : false;
                 return prev;
               }, () => this.props.hideSpinner());
             }
@@ -763,7 +763,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !component.isViewer,
+          isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false),
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -945,7 +945,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !component.isViewer,
+            isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false),
           }, ["Edit Information"]),
 
           button({

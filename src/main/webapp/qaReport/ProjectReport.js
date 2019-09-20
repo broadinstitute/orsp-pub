@@ -5,6 +5,8 @@ import { TableComponent } from '../components/TableComponent';
 import { defaultSorted, PROJECT_COLUMNS, SIZE_PER_PAGE_LIST_PROJECT } from '../util/ReportConstants';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Reports } from '../util/ajax';
+import get from 'lodash/get';
+import * as qs from 'query-string';
 
 const ProjectReport = hh(class ProjectReport extends Component {
 
@@ -29,8 +31,7 @@ const ProjectReport = hh(class ProjectReport extends Component {
   };
 
   getProjectKey = () => {
-    let params = new URLSearchParams(this.props.location.search);
-    return params.get('projectKey') != null ? params.get('projectKey') : '';
+    return get(qs.parse(this.props.location.search), 'projectKey', '');
   };
 
   render() {

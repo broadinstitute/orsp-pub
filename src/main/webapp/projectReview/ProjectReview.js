@@ -17,6 +17,7 @@ import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { Storage } from '../util/Storage';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -202,7 +203,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   prev.futureCopy = futureCopy;
                   prev.editedForm = JSON.parse(data.data.suggestions);
                   prev.reviewSuggestion = true;
-                  prev.isAdmin = component.isAdmin;
+                  prev.isAdmin = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin : false;
                   return prev;
                 });
                 this.props.changeInfoStatus(false);
@@ -215,7 +216,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   prev.future = future;
                   prev.futureCopy = futureCopy;
                   prev.reviewSuggestion = false;
-                  prev.isAdmin = component.isAdmin;
+                  prev.isAdmin = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin : false;
                   return prev;
                 });
               }
@@ -803,13 +804,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !component.isViewer
+          isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false)
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToConsentGroupTab,
-          isRendered: this.state.readOnly === true && !component.isViewer
+          isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false)
         }, ["Add Sample/Data Cohort"]),
 
         button({
@@ -1175,7 +1176,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !component.isViewer
+            isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false)
           }, ["Edit Information"]),
 
           button({
@@ -1191,7 +1192,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             disabled: isEmpty(this.state.editedForm) ?
               !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
               : this.compareObj("formData", "editedForm"),
-            isRendered: this.state.readOnly === false && !component.isViewer
+            isRendered: this.state.readOnly === false && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false)
           }, ["Submit Edits"]),
 
           /*visible for Admin in readOnly mode and if the project is in "pending" status*/

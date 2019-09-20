@@ -2,7 +2,7 @@
  * Generic utility functions
  */
 
- // @TODO: These functions should all be deprecated.
+// @TODO: These functions should all be deprecated.
 // local functions
 var orsp = (function (module) {
     module.radioChild = function (parent) {
@@ -24,7 +24,7 @@ var orsp = (function (module) {
         fcn();
     };
 
-     module.radioMessage = function (divId) {
+    module.radioMessage = function (divId) {
         var div = $("#" + divId);
         $("div.radio-msg", $(div)).hide();
         var fcn = function () {
@@ -36,7 +36,7 @@ var orsp = (function (module) {
         $("input[type='radio']", $(div)).change(fcn);
     };
 
-     module.selectChild = function (node) {
+    module.selectChild = function (node) {
         var childId = $(node).attr("data-child-id");
         if (childId.length < 1) {
             return;
@@ -65,7 +65,7 @@ var orsp = (function (module) {
         fcn();
     };
 
-     module.methodButton = function () {
+    module.methodButton = function () {
         var mth = $(this).attr("data-method");
         var arg = $(this).attr("data-arg");
         var key = $(this).attr("data-key");
@@ -85,7 +85,7 @@ var orsp = (function (module) {
         }
     };
 
-     module.loadDiv = function (div, extra) {
+    module.loadDiv = function (div, extra) {
         var url = div.attr("data-href");
         if (url) {
             var form = $("form", div).get(0);
@@ -109,7 +109,7 @@ var orsp = (function (module) {
         }
     };
 
-     module.bindHandlers = function (context, extra) {
+    module.bindHandlers = function (context, extra) {
         $(".orsp-tabs", context).tabs({
             activate: function (evt, ui) {
                 orsp.loadDiv(ui.newPanel, extra);
@@ -130,14 +130,14 @@ var orsp = (function (module) {
         $(".methodButton", context).click(orsp.methodButton);
         $(".scroll-replace", context).click(orsp.scrollReplace);
 
-         for (var key in extra) {
+        for (var key in extra) {
             $("." + key, context).on(extra[key]);
         }
     }
 
-     return module;
+    return module;
 }(orsp || {}));
 
- $(document).ready(function () {
+$(document).ready(function () {
     orsp.bindHandlers($(document));
 });

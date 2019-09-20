@@ -47,6 +47,14 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.init();
   }
 
+  handleUnauthorized() {
+    Storage.clearStorage();
+    if (window.gapi.auth2 != undefined) {
+      let auth2 = window.gapi.auth2.getAuthInstance();
+      auth2.signOut();
+    }
+    this.props.history.push(this.props.location);
+  }
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -69,9 +77,10 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     await User.signIn(token);
     Storage.setUserIsLogged(true);
     this.init().then(resp => {
-      if (Storage.getLocationFrom()) {
-        this.props.history.push(Storage.getLocationFrom());
+      if (Storage.getLocationFrom() != null || Storage.getUnauthorizedLocationFrom() != null) {
+        this.props.history.push(Storage.getUnauthorizedLocationFrom() != null ? Storage.getUnauthorizedLocationFrom() : Storage.getLocationFrom() : );
         Storage.removeLocationFrom();
+        Storage.removeUnauthorizedLocationFrom();
       } else {
         this.props.history.push("/index");
       }
@@ -155,6 +164,9 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       (this.state.userSession.isAdmin || this.state.userSession.isORSP);
   }
 
+  isViewer() {
+    return this.state.isLogged && this.state.userSession != null && this.state.userSession.isViewer;
+  }
   render() {
     return (
       div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
@@ -186,7 +198,7 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ['Search']
                 )
               ]),
-              li({ isRendered: this.isBroadUser(), className: "dropdown" }, [
+              li({ isRendered: this.isBroadUser() && !this.isViewer(), className: "dropdown" }, [
                 a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),

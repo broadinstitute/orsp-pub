@@ -57,12 +57,15 @@
       const issueTypes = [
         <g:each status="count" in="${IssueType.values()}" var="type">"${raw(type.name)}"<g:if test="${count < IssueType.values().size() - 1}">,</g:if>
         </g:each>];
+
       const issueStatuses = [
         <g:each status="count" in="${IssueStatus.values().sort{it.sequence}}" var="status">"${raw(status.name)}"<g:if test="${count < IssueStatus.values().size() - 1}">,</g:if>
         </g:each>];
+
       const irbs = [
           <g:each status="count" in="${PreferredIrb.values()}" var="map">{ id:"${raw(map.key)}", value:"${raw(map.label)}"}<g:if test="${count < PreferredIrb.values().size() - 1}">,</g:if>
         </g:each>];
+
       // TODO: Many of these should be static values directly accessible from the components directly.
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
@@ -82,6 +85,7 @@
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
         isViewer: ${session.isViewer ? session.isViewer : false},
         clientId: "${grailsApplication.config.googleSignInClientId}"
+
       };
     </script>
 
@@ -130,8 +134,10 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $(".chosen-select").chosen({width: "100%"});
+
     $('[data-toggle="tooltip"]').tooltip();
   });
+
   function loadComments(url) {
     $("#comments").load(
       url,
@@ -148,6 +154,7 @@
       }
     );
   }
+
   function loadHistory(url) {
     $("#history").load(
       url,
@@ -163,6 +170,7 @@
       }
     );
   }
+
   // Toggle pattern for Jira-style objects. Relies on "-id" naming pattern
   function toggleContinueMessage(elementId, val1, val2) {
     $("input[name='" + elementId + "-id'], input[name='" + elementId + "']").change(
@@ -177,6 +185,7 @@
       }
     );
   }
+
   // Toggle pattern for property style objects. Slightly different from Jira-style objects.
   function togglePropertyMessage(elementName, val1, val2) {
     $("input[name='" + elementName + "']").change(
@@ -193,6 +202,7 @@
       }
     );
   }
+
 </script>
 
 <script id="uploadedFileTemplate" type="text/x-jsrender">
