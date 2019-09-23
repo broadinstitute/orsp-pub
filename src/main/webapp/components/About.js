@@ -37,13 +37,13 @@ export const About = hh(class About extends Component {
 
     const showAccessDetails = !isEmpty(this.props.showAccessDetails) ? true : false;
     return (
-      
-      div({className:"row"}, [
+      div({className: "row"}, [
         AlertMessage({
           msg: 'You must be a Broad Institute User for further access. Please sign out and log in with a "broadinstitute.org" email account.',
           show: nonBroadUser(),
           type: 'danger'
         }),
+  
         div({ className: "col-md-10" }, [
           h3({ style: { fontSize: styles.titleSize }
           },["About the ORSP Portal"]),
@@ -65,7 +65,7 @@ export const About = hh(class About extends Component {
               href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]
             ), " for assistance."
           ]),
-          div({ isRendered: Storage.userIsLogged() && !nonBroadUser() && showAccessDetails }, [
+          div({ isRendered:  Storage.userIsLogged() && !nonBroadUser() && showAccessDetails}, [
               h3({ style: { fontSize: styles.titleSize }}, ["User Guide"]),
               p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }},[
                 "To access detailed instructions about how to use the ORSP portal, please visit: ",
@@ -76,8 +76,8 @@ export const About = hh(class About extends Component {
                 )
               ])
           ])
-        ])
+        ])  
       ])
-    )
+    );
   }
 });
