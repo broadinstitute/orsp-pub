@@ -26,7 +26,7 @@ const styles = {
   link: {
       textDecoration: "none",
       display: "inline-block",
-      height: "30px",
+      height: "42px",
       lineHeight: "30px",
       color:"#000000",
   }
