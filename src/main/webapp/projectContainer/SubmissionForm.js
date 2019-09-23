@@ -372,7 +372,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             remove: this.removeFileDialog,
             reviewFlow: false,
             pagination: false,
-
+            isAdmin: component.isAdmin,
           }),
           button({
             isRendered: component.isAdmin,
