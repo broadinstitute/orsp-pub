@@ -1,8 +1,10 @@
 import _ from 'lodash';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import moment from 'moment';
+import get from 'lodash/get';
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import moment from "moment";
 
 export const validateEmail = (email) => {
   let valid = false;
@@ -11,6 +13,12 @@ export const validateEmail = (email) => {
     valid = true;
   }
   return valid;
+};
+
+export const projectStatus = (project) => {
+  const LEGACY = 'Legacy';
+  const issueStatus = get(project, 'approvalStatus', '');
+  return issueStatus !== LEGACY ? issueStatus : get(project, 'status', '');
 };
 
 export const areAllTheseThingsTruthy = (values) => {
@@ -115,3 +123,10 @@ export const exportData = (action, fileName= '', data, titleText= '', headerText
     pdfMake.createPdf(documentTemplate).print();
   }
 }
+
+export const downloadSelectedFile = (file) => {
+  const fileReader = new FileReader();
+  fileReader.readAsDataURL(file);
+  const blob = new Blob([file], { 'content-type': 'multipart/form-data' });
+  return window.URL.createObjectURL(blob);
+};

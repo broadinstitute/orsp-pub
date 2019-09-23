@@ -5,7 +5,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
-import { handleRedirectToProject } from "../util/Utils";
+import { downloadSelectedFile, handleRedirectToProject } from "../util/Utils";
 import { formatRoleName } from "../util/roles";
 import { UrlConstants } from "../util/UrlConstants";
 import { isEmpty } from "../util/Utils";
@@ -92,15 +92,17 @@ export const Table = hh(class Table extends Component {
   };
 
   formatUrlDocument = (cell, row) => {
-    if (this.props.reviewFlow) {
-      return a({
-        href: `${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
-        target: '_blank',
-        title: row.fileName,
-      }, [row.fileName])
-    } else {
-      return span({}, [row.fileName])
+    let urlObject = {};
+    if (isEmpty(row.uuid)) {
+      urlObject = downloadSelectedFile(row.file);
     }
+
+    return a({
+      href: isEmpty(row.uuid) ? urlObject :`${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
+      target: '_blank',
+      title: row.fileName,
+      download: row.fileName,
+    }, [row.fileName])
   };
 
   formatRemoveBtn = (cell, row) => {

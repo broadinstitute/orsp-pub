@@ -5,7 +5,7 @@ import FilterPanel from './FilterPanel';
 import { formatDataPrintableFormat } from '../util/TableUtil';
 import IrbTable from './IrbTable';
 import NoIrbTable from './NoIrbTable';
-import { columns, IRB, NO_IRB } from '../util/QaReportConstants';
+import { IRB, NO_IRB, QA_REPORT_COLUMNS } from '../util/ReportConstants';
 import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
 import MultiTab from '../components/MultiTab';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -165,7 +165,7 @@ const QaReport = hh(class QaReport extends Component {
   };
 
   exportTable = (action, tab) => {
-    let cols = columns.filter(el => el.dataField !== 'id');
+    let cols = QA_REPORT_COLUMNS.filter(el => el.dataField !== 'id');
     let elementsArray = formatDataPrintableFormat(this.state[tab].data, cols);
     const headerText = 'Quality Assurance Report';
     const columnsWidths = ['*', '*', '*', '*', '*'];

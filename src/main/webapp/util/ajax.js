@@ -395,6 +395,9 @@ export const Reports = {
         tab: tab
       }
     })
+  },
+  getQaEventReportForProject(projectKey) {
+    return axios.get(UrlConstants.qaEventReportForProjectUrl + '?projectKey=' + projectKey)
   }
 };
 
