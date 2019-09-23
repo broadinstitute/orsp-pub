@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { UrlConstants } from "../util/UrlConstants";
 import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import LoadingWrapper from '../components/LoadingWrapper';
 import './TopNavigationMenu.css';
 
 const styles = {
@@ -26,7 +27,7 @@ const styles = {
     fontSize: '12px'
   }
 }
-export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
+const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   _isMounted = false;
 
@@ -84,15 +85,16 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   };
 
   signOut = async() => {
+    this.props.showSpinner();
+    Storage.clearStorage();
     if (window.gapi.auth2 != undefined) {
       let auth2 = window.gapi.auth2.getAuthInstance();
-      auth2.signOut();
+      await auth2.signOut();
+      await User.signOut();
     }
-    Storage.clearStorage();
-    await User.signOut();
     this.setState({
       isLogged: false
-    });
+    }, () => this.props.hideSpinner());
   };
 
   openMetricsReport() {
@@ -255,4 +257,4 @@ export const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     )
   }
 });
-export default TopNavigationMenu;
+export default LoadingWrapper(TopNavigationMenu, true);

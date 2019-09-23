@@ -4,22 +4,26 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
+import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.StorageDocument
+import org.broadinstitute.orsp.StorageProviderService
+import org.broadinstitute.orsp.UserInfo
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
-class DataUseLetterController extends AuthenticatedController {
-    DataUseLetterService dataUseLetterService
+class DataUseLetterController implements ExceptionHandler, UserInfo {
 
-    @Override
+    DataUseLetterService dataUseLetterService
+    PersistenceService persistenceService
+    StorageProviderService storageProviderService
+
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def create () {
         DataUseLetter inputDul = IssueUtils.getJson(DataUseLetter.class, request.JSON)
@@ -33,7 +37,6 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
-    @Override
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def update () {
         DataUseLetter input = IssueUtils.getJson(DataUseLetter.class, request.JSON)
