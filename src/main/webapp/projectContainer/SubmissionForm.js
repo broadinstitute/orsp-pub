@@ -327,7 +327,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             value: this.state.submissionInfo.selectedType,
             onChange: this.handleSelectChange("selectedType"),
             placeholder: this.state.submissionInfo.selectedType,
-            readOnly: !component.isAdmin,
+            readOnly: component.isViewer,
             edit: false
           }),
           InputFieldNumber({
@@ -337,7 +337,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             label: "Submission Number",
             min: minimunNumber,
             showLabel: true,
-            readOnly: !component.isAdmin,
+            readOnly: component.isViewer,
             edit: false
           }),
           InputFieldTextArea({
@@ -350,7 +350,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             edit: component.isAdmin,
             error: this.state.errors.comment,
             errorMessage: "Required field",
-            readOnly: !component.isAdmin,
+            readOnly: component.isViewer,
           }),
         ]),
         Panel({
@@ -358,7 +358,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         },[
           div({ style: styles.addDocumentContainer }, [
             button({
-              isRendered: component.isAdmin && !component.isViewer,
+              isRendered: !component.isViewer,
               className: "btn buttonSecondary",
               style: styles.addDocumentBtn,
               onClick: this.addDocuments
@@ -375,12 +375,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             isAdmin: component.isAdmin,
           }),
           button({
-            isRendered: component.isAdmin,
+            isRendered: !component.isViewer,
             className: "btn buttonPrimary pull-right", style: {'marginTop':'30px', 'marginLeft':'12px'},
             onClick: this.submitSubmission,
           }, [edit ? "Save" : "Submit"]),
           button({
-            isRendered: component.isAdmin && edit,
+            isRendered: !component.isViewer && edit,
             className: "btn buttonPrimary floatRight", style: {'marginTop':'30px'},
             onClick: this.removeSubmissionDialog
           }, ["Delete"])
