@@ -79,6 +79,4 @@ export const About = hh(class About extends Component {
       ])
     );
   }
-
-
 });

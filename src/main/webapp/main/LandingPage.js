@@ -124,7 +124,6 @@ const LandingPage = hh(class LandingPage extends Component{
   };
 
   render() {
-    console.log('is broad landing page',  component.isBroad);
     return (
       div({}, [
         About(),
