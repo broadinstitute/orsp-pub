@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { hh, div, h } from 'react-hyperscript-helpers';
-import Routes from "./main/Routes";
+import Routes from './main/Routes';
 import TopNavigationMenu from './components/TopNavigationMenu';
 import Footer from './components/Footer';
 import { withRouter } from 'react-router-dom';
@@ -10,11 +10,7 @@ import '../webapp/index.css';
 
 export const App = hh(class App extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
-  async componentDidMount() {
+  componentDidMount() {
     axios.interceptors.response.use(function (response) {
       return response;
     }, (error) => {
@@ -22,11 +18,11 @@ export const App = hh(class App extends Component {
         this.handleUnauthorized();
       } else {
         return Promise.reject(error);
-      }      
+      }
     });
   }
 
-  async handleUnauthorized() {
+  handleUnauthorized() {
     Storage.clearStorage();
     window.location.reload();
   }
@@ -34,7 +30,7 @@ export const App = hh(class App extends Component {
   render() {
     return (
       div({ className: "container" }, [
-        h(TopNavigationMenu,{ history: this.props.history }),
+        h(TopNavigationMenu, { history: this.props.history }),
         Routes({}, []),
         Footer()
       ])

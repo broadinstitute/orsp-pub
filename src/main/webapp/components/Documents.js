@@ -99,7 +99,6 @@ export const Documents = hh(class Documents extends Component {
   };
 
   render() {
-    console.log('is viewer', component.isViewer)
     const { restriction = [] } = this.props;
     return div({}, [
       h(AddDocumentDialog, {
