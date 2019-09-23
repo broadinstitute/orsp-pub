@@ -10,7 +10,7 @@ import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
 
 const LAST_STEP = 1;
-
+const NEXT_INDICATOR = 0;
 const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
   _isMounted = false;
@@ -75,11 +75,6 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     this._isMounted = true;
     this.initDocuments();
     this.getUserSession();
-    ConsentGroup.getConsentGroupNames().then(resp => {
-      if (this._isMounted) {
-        this.setState({ existingGroupNames: resp.data })
-      }
-    });
 
     SampleCollections.getSampleCollections().then(
       resp => {
@@ -114,7 +109,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     this.props.showSpinner();
     this.setState({ submitError: false });
 
-    if (this.validateForm()) {
+    if (await this.validateForm()) {
       this.removeErrorMessage();
       this.changeSubmitState();
       let consentGroup = this.getConsentGroup();
@@ -240,10 +235,10 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     return renderSubmit;
   };
 
-  isValid = (field) => {
+  isValid = async (field) => {
     let isValid = true;
     if (this.state.currentStep === 0) {
-      isValid = this.validateGeneralData(field);
+      isValid = await this.validateGeneralData(field);
     } else if (this.state.currentStep === 1) {
       isValid = this.validateInternationalCohorts() && this.validateInfoSecurity();
       if (!this.validateMTA()) {
@@ -268,18 +263,21 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     return isValid
   }
 
-  validateForm() {
-    let isGeneralDataValid = this.validateGeneralData();
+  async validateForm() {
+    let isGeneralDataValid = await this.validateGeneralData();
     let isInternationalCohortsValid = this.validateInternationalCohorts();
     let isInfoSecurityValid = this.validateInfoSecurity();
     let isMTAValid = this.validateMTA();
     return isGeneralDataValid && isInternationalCohortsValid && isInfoSecurityValid && isMTAValid;
   }
 
-  consentGroupNameExists() {
-    if (this.state.existingGroupNames !== undefined) {
-      return this.state.existingGroupNames.indexOf(this.state.generalDataFormData.consentGroupName) > -1;
+  async consentGroupNameExists() {
+    let exists = false;
+    if (!isEmpty(this.state.generalDataFormData.consentGroupName)) {
+      const result = await ConsentGroup.getMatchingConsentByName(this.state.generalDataFormData.consentGroupName);
+      exists = result.data;
     }
+    return exists;
   }
 
   isConsentFormUploaded() {
@@ -299,7 +297,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     return isConsentFormUploaded;
   }
 
-  validateGeneralData(field) {
+  async validateGeneralData(field) {
     let investigatorLastName = false;
     let institutionProtocolNumber = false;
     let consentGroupName = false;
@@ -313,7 +311,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
       noConsentFormReason = true;
       isValid = false;
     }
-    if (field === "consentGroupName" && this.consentGroupNameExists()) {
+    if ((field === "consentGroupName" || field === NEXT_INDICATOR || field === undefined ) && await this.consentGroupNameExists()) {
       consentGroupName = true;
       isValid = false;
     }
@@ -396,8 +394,8 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         prev.showInternationalCohortsError = false;
       }
       return prev;
-    }, () => {
-      this.isValid(null);
+    }, async () => {
+      await this.isValid(null);
     })
   };
 
@@ -439,15 +437,15 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     return { hasError: true }
   }
 
-  updateGeneralDataFormData = (updatedForm, field) => {
+  updateGeneralDataFormData = async (updatedForm, field) => {
     if (this.state.currentStep === 0) {
-      this.validateGeneralData(field);
+      await this.validateGeneralData(field);
     }
     this.setState(prev => {
       prev.generalDataFormData = updatedForm;
       return prev;
-    }, () => {
-      this.isValid(field);
+    }, async () => {
+      await this.isValid(field);
     })
   };
 
@@ -455,8 +453,8 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     this.setState(prev => {
       prev.linkFormData = updatedForm;
       return prev;
-    }, () => {
-      this.isValid(field);
+    }, async () => {
+      await this.isValid(field);
     })
   };
 
@@ -464,8 +462,8 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     this.setState(prev => {
       prev.securityInfoFormData = updatedForm;
       return prev;
-    }, () => {
-      this.isValid(null);
+    }, async () => {
+      await this.isValid(null);
     })
   };
 

@@ -1078,6 +1078,18 @@ class QueryService implements Status {
         results
     }
 
+    List<Issue> findIssueByName (String issueName) {
+        final session = sessionFactory.currentSession
+        final String query = 'select * from issue where summary = :issueName'
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            addEntity(Issue)
+            setString('issueName', issueName)
+            list()
+        }
+        results
+    }
+
     PaginatedResponse findIssueByProjectType(String type, PaginationParams pagination) {
         String orderColumn = getIssueOrderColumn(pagination.orderColumn)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
