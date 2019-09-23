@@ -2,6 +2,7 @@ import axios from 'axios';
 import "regenerator-runtime/runtime";
 import  { UrlConstants }  from './UrlConstants';
 import isNil from 'lodash/isNil';
+import fileDownload from 'js-file-download';
 
 export const Search = {
 
@@ -395,6 +396,11 @@ export const Reports = {
         tab: tab
       }
     })
+  },
+  async getMetricsReport() {
+    const resp = await axios.get(UrlConstants.metricsReportUrl);
+    const blob = new Blob([resp.data], { type: 'text/plain' });
+    fileDownload(blob, 'AAHRPPMetrics.csv');
   },
   getQaEventReportForProject(projectKey) {
     return axios.get(UrlConstants.qaEventReportForProjectUrl + '?projectKey=' + projectKey)
