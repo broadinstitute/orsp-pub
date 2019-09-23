@@ -84,7 +84,8 @@
         serverURL: "${grailsApplication.config.grails.serverURL}",
         contextPath: "${request.contextPath}",
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
-        isViewer: ${session.isViewer ? session.isViewer : false}
+        isViewer: ${session.isViewer ? session.isViewer : false},
+        isBroad: ${session.isBroad ? session.isBroad : false}
       };
     </script>
 
@@ -128,10 +129,6 @@
 
 <auth:nonBroadSession>
     <div class="container">
-        <div class="alert alert-danger alert-dismissable" style="display: block">
-            You must be a Broad Institute User for further access. Please sign out and log in with
-            a "broadinstitute.org" email account.
-        </div>
         <div id="about"></div>
         <asset:javascript src="build/about.js"/>
     </div>
