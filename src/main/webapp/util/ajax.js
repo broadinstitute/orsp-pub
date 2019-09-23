@@ -398,8 +398,8 @@ export const Reports = {
     })
   },
   async getMetricsReport() {
-    let resp = await axios.get(UrlConstants.metricsReportUrl);
-    let blob = new Blob([resp.data], { type: 'text/plain' });
+    const resp = await axios.get(UrlConstants.metricsReportUrl);
+    const blob = new Blob([resp.data], { type: 'text/plain' });
     fileDownload(blob, 'AAHRPPMetrics.csv');
   },
   getQaEventReportForProject(projectKey) {
