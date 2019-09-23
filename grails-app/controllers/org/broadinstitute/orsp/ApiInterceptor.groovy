@@ -1,13 +1,14 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.api.ExceptionHandler
 
 /**
  * Interceptor specific to API based services.
  *
  * Requires an active session to proceed.
  */
-class ApiInterceptor implements UserInfo  {
+class ApiInterceptor implements UserInfo, ExceptionHandler  {
 
     ApiInterceptor() {
         match controller: 'clarification'

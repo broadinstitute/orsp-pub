@@ -1,8 +1,6 @@
 const CurrentUser = "CurrentUser";
 const UserIsLogged = "isLogged";
 const URLFrom = "URLFrom";
-const UnauthorizedFrom = "UnauthorizedFrom";
-
 
 export const Storage = {
 
@@ -36,17 +34,5 @@ export const Storage = {
 
   removeLocationFrom: () => {
     return localStorage.removeItem(URLFrom);
-  },
-
-  setUnauthorizedLocationFrom: unauthorizedFrom => {
-    localStorage.setItem(UnauthorizedFrom, JSON.stringify(unauthorizedFrom));
-  },
-
-  getUnauthorizedLocationFrom: () => {
-    return localStorage.getItem(UnauthorizedFrom) ? JSON.parse(localStorage.getItem(UnauthorizedFrom)) : null;
-  },
-
-  removeUnauthorizedLocationFrom: () => {
-    return localStorage.removeItem(UnauthorizedFrom);
   }
 };

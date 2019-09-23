@@ -28,8 +28,7 @@ export const App = hh(class App extends Component {
 
   async handleUnauthorized() {
     Storage.clearStorage();
-    Storage.setUnauthorizedLocationFrom(this.props.location);
-    this.props.history.push('/');
+    window.location.reload();
   }
 
   render() {
