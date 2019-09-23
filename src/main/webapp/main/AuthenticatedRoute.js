@@ -12,7 +12,7 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
       location={location}
       render={
         props =>
-       verifyUser(admin, props)
+          verifyUser(admin, props)
             ? <Component {...props} {...componentProps} />
             : <Redirect to={'/'} />
       }

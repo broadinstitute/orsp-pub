@@ -2,9 +2,8 @@ import { Component } from 'react';
 import { hh, span, div, a, h3, p, br } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
 import { User } from "../util/ajax";
-import { Storage } from '../util/Storage';
 import { AlertMessage } from './AlertMessage';
-import { nonBroadUser } from '../util/UserUtils';
+import { Storage } from '../util/Storage';
 
 const styles = {
   titleSize: '24px',
@@ -40,7 +39,7 @@ export const About = hh(class About extends Component {
       div({className: "row"}, [
         AlertMessage({
           msg: 'You must be a Broad Institute User for further access. Please sign out and log in with a "broadinstitute.org" email account.',
-          show: nonBroadUser(),
+          show: Storage.userIsLogged() && !Storage.getCurrentUser().isBroad,
           type: 'danger'
         }),
   
@@ -49,7 +48,7 @@ export const About = hh(class About extends Component {
           },["About the ORSP Portal"]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
             a({
-              isRendered: Storage.userIsLogged() && !nonBroadUser() && showAccessDetails,
+              isRendered: component.isBroad && showAccessDetails,
               href:"https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection", target: "_blank"}, [
                 "ORSP on the Broad Intranet"
             ]),
@@ -65,7 +64,7 @@ export const About = hh(class About extends Component {
               href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]
             ), " for assistance."
           ]),
-          div({ isRendered:  Storage.userIsLogged() && !nonBroadUser() && showAccessDetails}, [
+          div({ isRendered:  component.isBroad && showAccessDetails}, [
               h3({ style: { fontSize: styles.titleSize }}, ["User Guide"]),
               p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }},[
                 "To access detailed instructions about how to use the ORSP portal, please visit: ",

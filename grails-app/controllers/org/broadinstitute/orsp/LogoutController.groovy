@@ -22,6 +22,6 @@ class LogoutController {
         session["isAdmin"] = null
         session["isBroad"] = null
         session.invalidate()
-        redirect(uri: "/index")
+        redirect(uri: "/")
     }
 }

@@ -13,7 +13,6 @@ import { isEmpty } from '../util/Utils';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import LoadingWrapper from '../components/LoadingWrapper';
-import { Storage } from '../util/Storage';
 
 const headers =
   [
@@ -203,7 +202,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
                 prev.current = current;
                 prev.future = future;
                 prev.futureCopy = futureCopy;
-                prev.isAdmin = Storage.getCurrentUser() != null ? Storage.getCurrentUser().isAdmin : false;
+                prev.isAdmin = component.isAdmin;
                 return prev;
               }, () => this.props.hideSpinner());
             }
@@ -764,7 +763,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false),
+          isRendered: this.state.readOnly === true && !component.isViewer,
         }, ["Edit Information"]),
         button({
           className: "btn buttonSecondary floatRight",
@@ -946,7 +945,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           button({
             className: "btn buttonPrimary floatLeft",
             onClick: this.enableEdit(),
-            isRendered: this.state.readOnly === true && !(Storage.getCurrentUser() != null ? Storage.getCurrentUser().isViewer : false),
+            isRendered: this.state.readOnly === true && !component.isViewer,
           }, ["Edit Information"]),
 
           button({

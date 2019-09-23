@@ -16,8 +16,7 @@ class DataUseLetterIndex extends Component {
     this.state = {
       isLoading: true,
       error: '',
-      uuid: '',
-      dul: {uuid: null}
+      dul: { }
     };
   }
 

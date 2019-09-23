@@ -42,7 +42,7 @@
         }
     }
     </style>
-    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <script>
       if (location.protocol !== "https:") location.protocol = "https:";
@@ -84,8 +84,8 @@
         contextPath: "${request.contextPath}",
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
         isViewer: ${session.isViewer ? session.isViewer : false},
+        isBroad:  ${session.isBroad ? session.isBroad : false},
         clientId: "${grailsApplication.config.googleSignInClientId}"
-
       };
     </script>
 

@@ -71,9 +71,10 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }
   }
 
-  onSuccess = async(token) => {
+  onSuccess = async (token) => {
     await User.signIn(token);
     Storage.setUserIsLogged(true);
+    window.location.reload();
     this.init().then(resp => {
       if (Storage.getLocationFrom() != null) {
         this.props.history.push(Storage.getLocationFrom());
@@ -84,7 +85,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     });
   };
 
-  signOut = async() => {
+  signOut = async () => {
     this.props.showSpinner();
     Storage.clearStorage();
     if (window.gapi.auth2 != undefined) {
@@ -94,44 +95,24 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }
     this.setState({
       isLogged: false
-    }, () => this.props.hideSpinner());
+    }, () => {
+      window.location.reload();
+    });
   };
 
   openMetricsReport() {
     Reports.getMetricsReport();
   }
 
-  loadOptions(query, callback) {
+  loadOptions = (query, callback) => {
     let options = [];
     if (query.length > 2) {
       Search.getMatchingIssues(query).then(response => {
-        let options = response.data.map(function (item) {
-          let label = item.label;
-          if (item.linkDisabled === true && item.pm.length > 0) {
-            label =
-              span({ style: styles.listResultContainer }, [
-                span({ style: styles.badgeContactAccess }, [
-                  'Please contact ' + item.pm + ' for access'
-                ]),
-                div({ style: { 'marginTop': '10px' } }, [
-                  item.label
-                ])
-              ])
-          } else if (item.linkDisabled === true) {
-            label =
-              span({ style: styles.listResultContainer }, [
-                span({ style: styles.badgeContactAccess }, [
-                  ' Please contact ' + item.reporter + ' for access'
-                ]),
-                div({ style: { 'marginTop': '10px' } }, [
-                  item.label
-                ])
-              ])
-          }
+        let options = response.data.map((item) => {
           return {
             key: item.id,
             value: item.value,
-            label: label,
+            label: this.generateLabel(item),
             linkDisabled: item.linkDisabled,
             url: item.url,
             isDisabled: item.linkDisabled
@@ -146,25 +127,34 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     }
   };
 
+  generateLabel = (item) => {
+    let label = item.label;
+    if (item.linkDisabled === true && item.pm.length > 0) {
+      label = this.createLabel(item.pm);
+    } else if (item.linkDisabled === true) {
+      label = this.createLabel(item.reporter);
+    }
+    console.log('test', label);
+    return label;
+  }
+
+  createLabel(contact) {
+    return span({ style: styles.listResultContainer }, [
+      span({ style: styles.badgeContactAccess }, [
+        ' Please contact ' + contact + ' for access'
+      ]),
+      div({ style: { 'marginTop': '10px' } }, [
+        item.label
+      ])
+    ])
+  }
+
   handleSearchChange = (data, action) => {
     if (data != null && !data.linkDisabled) {
       window.location.href = data.url;
     }
   };
 
-  isBroadUser() {
-    return this.state.isLogged && this.state.userSession != null &&
-      this.state.userSession.isBroad;
-  }
-
-  isAdmin() {
-    return this.state.isLogged && this.state.userSession != null &&
-      (this.state.userSession.isAdmin || this.state.userSession.isORSP);
-  }
-
-  isViewer() {
-    return this.state.isLogged && this.state.userSession != null && this.state.userSession.isViewer;
-  }
   render() {
     return (
       div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
@@ -176,11 +166,11 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
               span({ className: "icon-bar" }, []),
               span({ className: "icon-bar" }, [])
             ]),
-            h(Link, { className: "navbar-brand", to: { pathname: UrlConstants.index } },
+            h(Link, { className: "navbar-brand", to: { pathname: Storage.userIsLogged() ? UrlConstants.index : '/' } },
               [
                 span({}, [
                   "ORSP Portal ",
-                  span({isRendered: process.env.NODE_ENV === 'development', className: "label label-danger" }, ["Dev"])
+                  span({ isRendered: process.env.NODE_ENV === 'development', className: "label label-danger" }, ["Dev"])
                 ])
               ])
           ]),
@@ -191,12 +181,12 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ['About']
                 )
               ]),
-              li({ isRendered: this.isBroadUser() }, [
+              li({ isRendered: component.isBroad }, [
                 h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
                   ['Search']
                 )
               ]),
-              li({ isRendered: this.isBroadUser() && !this.isViewer(), className: "dropdown" }, [
+              li({ isRendered: component.isBroad && !component.isViewer, className: "dropdown" }, [
                 a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "New ", b({ className: "caret" }, [])
                 ]),
@@ -204,7 +194,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
                 ])
               ]),
-              li({ isRendered: this.isAdmin(), className: "dropdown" }, [
+              li({ isRendered: component.isAdmin, className: "dropdown" }, [
                 a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
                   "Admin ", b({ className: "caret" }, [])
                 ]),
@@ -213,12 +203,12 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["QA Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                  li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
               ])
             ]),
-            div({ isRendered: this.isBroadUser(), className: "navbar-form navbar-left" }, [
+            div({ isRendered: component.isBroad, className: "navbar-form navbar-left" }, [
               MultiSelect({
                 id: "pk_select",
                 label: "",

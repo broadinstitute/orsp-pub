@@ -22,6 +22,7 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import Search from '../search/Search';
 import ProjectReport from '../qaReport/ProjectReport';
 import InfoLink from '../infoLink/InfoLink';
+import { Storage } from '../util/Storage';
 
 
 const Routes = ( props ) => (
@@ -41,10 +42,11 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/issueList/list"} component={IssueList} props={props} /> }/>
     <AuthenticatedRoute path= {"/search/index"} component={Search} props={props} /> }/>
     <AuthenticatedRoute path= {"/submissions/add-new"} component={SubmissionForm} props={props} /> }/>
-    <Route path= {"/infoLink/showInfoLink"} component={InfoLink} props={props}/> }/>
-    <Route path= {["/index", "/"]} exact component={LandingPage} props={props}/> }/>
-    <Route path= {["/index/profile", "/profile"]} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <AuthenticatedRoute path= {"/infoLink/showInfoLink"} component={InfoLink} props={props}/> }/>
+    <AuthenticatedRoute path= {["/index/profile", "/profile"]} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
+    <Route path= {"/index"} exact component={LandingPage} props={props}/> }/>
+    <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/view"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>   
   </Switch>

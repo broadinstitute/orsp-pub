@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
 import { Storage } from '../util/Storage';
-import { nonBroadUser } from '../util/UserUtils';
 
 const columnsCopy = [{
   dataField: 'project',
@@ -85,7 +84,7 @@ const LandingPage = hh(class LandingPage extends Component{
     let user = await User.isAuthenticated();
     let projectList = [];
     let taskList = [];
-    if (user.data.session && !nonBroadUser()) {
+    if (user.data.session && component.isBroad) {
       const [ projects, tasks ] = await Promise.all([
         Issues.getIssueList('false', 5),
         Issues.getIssueList('true', 5)
@@ -130,13 +129,10 @@ const LandingPage = hh(class LandingPage extends Component{
   };
 
   render() {
-    if (Storage.userIsLogged() && !this.state.logged) {
-      this.init();
-    }
     return (
       div({}, [
         About(),
-        div({className: "row", isRendered: Storage.userIsLogged() &&  !nonBroadUser()}, [
+        div({className: "row", isRendered: component.isBroad}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},
