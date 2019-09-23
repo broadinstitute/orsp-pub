@@ -33,7 +33,6 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
             current: { name: null, country: null },
             future: { name: '', country: '' }
           });
-          // console.log("institutional sources -> ", institutionalSources)
           prev.institutionalSources = institutionalSources;
           this.props.error && this.props.edit ? this.props.errorHandler() : prev.error = false;
           return prev;
