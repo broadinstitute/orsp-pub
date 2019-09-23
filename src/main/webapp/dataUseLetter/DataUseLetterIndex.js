@@ -29,8 +29,17 @@ class DataUseLetterIndex extends Component {
     this._isMounted = false
   }
 
-  init() {
-    const uuid = window.location.href.split('id=')[1];
+  reload = (uuid) => {
+    this.setState({
+      isLoading: true
+    }, () => this.init(uuid))
+  }
+
+  init(uuid) {
+    if (uuid == null) {
+      const params = new URLSearchParams(this.props.location.search);
+      uuid = params.get('id');
+    }
     DUL.getDULInfo(uuid).then(resp => {
       if (this._isMounted) {
         this.setState(prev => {
@@ -48,7 +57,8 @@ class DataUseLetterIndex extends Component {
     if (isEmpty(this.state.error)) {
       dul =  h(Fragment, {}, [
         h(DataUseLetter, {
-          dul: this.state.dul
+          dul: this.state.dul,
+          init: this.reload
         })
       ])
     }
