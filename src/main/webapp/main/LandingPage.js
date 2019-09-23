@@ -124,10 +124,11 @@ const LandingPage = hh(class LandingPage extends Component{
   };
 
   render() {
+    console.log('is broad landing page',  component.isBroad);
     return (
       div({}, [
         About(),
-        div({className: "row", isRendered: this.state.logged}, [
+        div({className: "row", isRendered: this.state.logged && component.isBroad}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},
