@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <asset:stylesheet src="bootstrap-customizations.css"/>
     <asset:stylesheet src="jasny-bootstrap.min.css"/>
-    </style>
     <script>
         if (location.protocol !== "https:") location.protocol = "https:";
     </script>
