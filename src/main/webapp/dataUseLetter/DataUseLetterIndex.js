@@ -56,6 +56,8 @@ class DataUseLetterIndex extends Component {
             return prev;
           });
         }
+      }).catch(error => {
+        this.setState(() => { throw error; });
       });
     }
   }
