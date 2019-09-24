@@ -9,15 +9,19 @@ import GoogleLoginButton from '../components/GoogleLoginButton';
 import LoadingWrapper from '../components/LoadingWrapper';
 import './TopNavigationMenu.css';
 
+function ColorValue(isDisabled, isFocused) {
+  let color =  '#000000';
+  if (!isDisabled && isFocused) {
+    color = '#337ab7';
+  } else if (!isDisabled && !isFocused) {
+    color = '#000000';
+  } else if (isDisabled && !isFocused) {
+    color = '#999999';
+  }
+  return color;
+}
+
 const styles = {
-  listResultContainer: {
-    backgroundColor: '#FAFAFA',
-    display: 'block',
-    cursor: 'default',
-    margin: '0 0 0 -15px',
-    padding: '0 15px',
-    width: 'calc(100% + 30px)'
-  },
   badgeContactAccess: {
     display: 'inlineBlock',
     padding: '5px 10px',
@@ -25,8 +29,48 @@ const styles = {
     backgroundColor: '#999999',
     borderRadius: '4px',
     fontSize: '12px'
+  },
+  customStyles: {
+    option: (provided, state) => ({
+      ...provided,
+      color: ColorValue(state.isDisabled, state.isFocused),
+      backgroundColor: state.isDisabled ? '#FAFAFA' : '#FFFFFF',
+      cursor: state.isDisabled ? 'default' : 'pointer',
+      padding: '15px 10px'
+    }),
+    input: () => ({
+      backgroundColor: '#FFFFFF',
+      paddingLeft: '15px',
+      width: '220px',
+      height: '30px',
+      lineHeight: '30px',
+      display: 'inline-block',
+      margin: '0',
+      position:'relative',
+      borderRadius: '3px !important'
+    }),
+    placeholder: () => ({
+      margin: '0 0 0 15px',
+      position: 'absolute',
+      zIndex: '99',
+      height: '30px',
+      top: '2px',
+      lineHeight: '30px',
+    }),
+    menuList: () => ({
+      width: '500px',
+      zIndex: '3000',
+      maxHeight: '400px',
+      backgroundColor: '#FFFFFF',
+      overflowY: 'auto',
+      position: 'fixed',
+      top: '52px',
+      border: '1px solid #CCCCCC',
+      borderRadius: '4px'
+    })
   }
 }
+
 const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   _isMounted = false;
@@ -211,6 +255,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
               MultiSelect({
                 id: "pk_select",
                 label: "",
+                styles: styles.customStyles,
                 isDisabled: false,
                 loadOptions: this.loadOptions,
                 handleChange: this.handleSearchChange,
