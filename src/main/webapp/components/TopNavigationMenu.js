@@ -130,20 +130,20 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   generateLabel = (item) => {
     let label = item.label;
     if (item.linkDisabled === true && item.pm.length > 0) {
-      label = this.createLabel(item.pm);
+      label = this.createLabel(item.pm, item.label);
     } else if (item.linkDisabled === true) {
-      label = this.createLabel(item.reporter);
+      label = this.createLabel(item.reporter, item.label);
     }
     return label;
   }
 
-  createLabel(contact) {
-    return span({ style: styles.listResultContainer }, [
+  createLabel (contact, label) {
+    return h(span, { style: styles.listResultContainer }, [
       span({ style: styles.badgeContactAccess }, [
         ' Please contact ' + contact + ' for access'
       ]),
       div({ style: { 'marginTop': '10px' } }, [
-        item.label
+        label
       ])
     ])
   }
