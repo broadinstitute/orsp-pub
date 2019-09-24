@@ -106,7 +106,7 @@ export const Table = hh(class Table extends Component {
   };
 
   formatRemoveBtn = (cell, row) => {
-    let btn = this.props.isViewer ? null :
+    let btn = component.isViewer ? null :
      Btn({
       action: {
         labelClass: "glyphicon glyphicon-remove",
