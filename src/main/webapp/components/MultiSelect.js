@@ -96,7 +96,8 @@ export const MultiSelect = hh(class MultiSelect extends Component {
               value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
               placeholder: !this.props.readOnly && this.props.placeholder !== undefined ? this.props.placeholder : '--',
               className: "inputFieldSelect",
-              classNamePrefix: "select"
+              classNamePrefix: "select",
+              styles: this.props.styles
             })
           ])
         ])

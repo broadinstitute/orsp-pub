@@ -10,14 +10,6 @@ import LoadingWrapper from '../components/LoadingWrapper';
 import './TopNavigationMenu.css';
 
 const styles = {
-  listResultContainer: {
-    backgroundColor: '#FAFAFA',
-    display: 'block',
-    cursor: 'default',
-    margin: '0 0 0 -15px',
-    padding: '0 15px',
-    width: 'calc(100% + 30px)'
-  },
   badgeContactAccess: {
     display: 'inlineBlock',
     padding: '5px 10px',
@@ -25,8 +17,58 @@ const styles = {
     backgroundColor: '#999999',
     borderRadius: '4px',
     fontSize: '12px'
+  },
+  customStyles: {
+    option: (provided, state) => ({
+      ...provided,
+      color: state.isFocused ? '#337ab7' : '#000000',
+      backgroundColor: state.isDisabled ? 'red' : '#FFFFFF',
+      cursor: state.isDisabled ? 'default' : 'pointer',
+      padding: '15px 10px'
+    }),
+    input: () => ({
+      backgroundColor: '#FFFFFF',
+      paddingLeft: '15px',
+      width: '220px',
+      height: '30px',
+      lineHeight: '30px',
+      display: 'inline-block',
+      margin: '0',
+      position:'relative',
+      borderRadius: '3px !important'
+    }),
+    placeholder: () => ({
+      margin: '0 0 0 15px',
+      position: 'absolute',
+      zIndex: '99',
+      height: '30px',
+      top: '2px',
+      lineHeight: '30px',
+    }),
+    control: () => ({
+      // none of react-select's styles are passed to <Control />
+      // width: 200,
+    }),
+    menuList: () => ({
+      width: '500px',
+      zIndex: '3000',
+      maxHeight: '400px',
+      backgroundColor: '#FFFFFF',
+      overflowY: 'auto',
+      position: 'fixed',
+      top: '52px',
+      border: '1px solid #CCCCCC',
+      borderRadius: '4px'
+    }),
+    singleValue: (provided, state) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = 'opacity 300ms';
+  
+      return { ...provided, opacity, transition };
+    }
   }
 }
+
 const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   _isMounted = false;
@@ -212,6 +254,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
               MultiSelect({
                 id: "pk_select",
                 label: "",
+                styles: styles.customStyles,
                 isDisabled: false,
                 loadOptions: this.loadOptions,
                 handleChange: this.handleSearchChange,

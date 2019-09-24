@@ -36,16 +36,9 @@
     height: 40px;
 }
 
-/* Search */
-.navbar-default .navbar-form.navbar-left {
-    width: 220px;
-    display: inline-block;
-    margin: 3px 0 4px 0;
-}
-
 /* Search Results (list) */
 
-.navbar .inputField .inputFieldSelect .select__menu .select__menu-list {
+/* .navbar .inputField .inputFieldSelect .select__menu .select__menu-list {
     width: 500px;
     z-index: 3000;
     max-height: 400px;
@@ -91,4 +84,4 @@
 
 .navbar .inputField .inputFieldSelect .select__menu .select__menu-list .select__option {
     padding: 20px 15px;
-}
+} */
