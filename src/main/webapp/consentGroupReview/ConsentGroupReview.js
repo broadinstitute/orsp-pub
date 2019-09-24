@@ -680,12 +680,10 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     if (!isEmpty(this.state.formData.consentExtraProps.consent) && !isEmpty(this.state.formData.consentExtraProps.protocol)) {
       const result = await ConsentGroup.getMatchingConsentByName(groupName);
       exists = result.data;
-      // let consentGroupNameExists = groupName === this.state.formData.consentForm.summary ? false : this.state.existingGroupNames.indexOf(groupName) > -1;
       this.setState(prev => {
         prev.errors.consentGroupName = exists;
         return prev;
       });
-      // return consentGroupNameExists;
     }
     return exists;
   }
