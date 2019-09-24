@@ -45,5 +45,5 @@ const Routes = ( props ) => (
     <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
   </Switch>
 );
-
+// /project/main?projectKey=DEV-NE-4333&tab=consent-groups&new
 export default Routes;

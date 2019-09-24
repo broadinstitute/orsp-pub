@@ -125,7 +125,8 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         this.state.user.displayName,
         this.state.user.userName)
         .then(resp => {
-          this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
+          console.log("redirect => ", '/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new');
+          this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new');
           this.props.hideSpinner()
         }).catch(error => {
         console.error(error);
@@ -195,6 +196,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
   }
 
   getConsentGroup() {
+    const params = new URLSearchParams(this.props.location.search);
     // step 1
     let consentGroup = {};
     consentGroup.summary = this.state.generalDataFormData.consentGroupName;
@@ -202,7 +204,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
 
-    extraProperties.push({ name: 'source', value: component.projectKey });
+    extraProperties.push({ name: 'source', value: params.get('projectKey') != null ? params.get('projectKey') : component.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
     extraProperties.push({ name: 'consent', value: this.state.generalDataFormData.investigatorLastName });

@@ -187,12 +187,13 @@ const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   getConsentCollectionData = () => {
+    const params = new URLSearchParams(this.props.location.search);
     let consentCollectionLink = {};
     // consent group info
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
     consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
-    consentCollectionLink.projectKey = component.projectKey;
+    consentCollectionLink.projectKey = params.get('projectKey') != null ? params.get('projectKey') : component.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
     consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;

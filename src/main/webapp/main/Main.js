@@ -15,6 +15,7 @@ class Main extends Component {
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
     this.state = {
       status: {
         type: '',
@@ -25,10 +26,10 @@ class Main extends Component {
         projectReviewApproved: '',
         attachmentsApproved: ''
       },
-      consentKey: this.props.location.state !== undefined && this.props.location.state.consentKey !== undefined  ? this.props.location.state.consentKey : component.consentKey,
-      projectKey: this.props.location.state !== undefined && this.props.location.state.projectKey !== undefined  ? this.props.location.state.projectKey : component.projectKey,
-      tab: this.props.location.state !== undefined && this.props.location.state.tab !== undefined  ? this.props.location.state.tab : component.tab,
-      issueType: this.props.location.state !== undefined && this.props.location.state.issueType !== undefined  ? this.props.location.state.issueType : component.issueType
+      consentKey: params.get('consentKey') != null ? params.get('consentKey') : component.projectKey,
+      projectKey: params.get('projectKey') != null ? params.get('projectKey') : component.projectKey,
+      tab:  params.get('tab') != null ? params.get('tab') : component.tab,
+      issueType:  params.get('consentKey') != null ? 'consent-group' : 'project'
     };
   }
 
