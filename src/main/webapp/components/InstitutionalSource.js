@@ -24,12 +24,14 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     }
   }
 
+  checkEmptySrc(elementPostition) {
+    return (get(this.props.institutionalSources[elementPostition], 'future.name') !== '' && get(this.props.institutionalSources[elementPostition], 'future.country') !== '')
+      || (!isEmpty(this.props.institutionalSources[elementPostition].current.name) && !isEmpty(this.props.institutionalSources[elementPostition].current.country));
+  }
+
   addInstitutionalSources() {
     if (this.props.edit) {
-      if (!isEmpty(this.props.institutionalSources) &&
-         (get(this.props.institutionalSources,'[0].future.name') !== '' && get(this.props.institutionalSources,'[0].future.country') !== '')
-          || (!isEmpty(this.props.institutionalSources[0].current.name) && !isEmpty(this.props.institutionalSources[0].current.country ))
-      ) {
+      if (!isEmpty(this.props.institutionalSources) && this.checkEmptySrc(0)) {
         this.setState(prev => {
           let institutionalSources = this.props.institutionalSources;
           institutionalSources.splice(0, 0, {
@@ -42,7 +44,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         }, () => {
           this.props.updateInstitutionalSource(this.state.institutionalSources)
         });
-      } else {
+      } else if (this.checkEmptySrc(0) && this.checkEmptySrc(1)) {
         this.props.updateInstitutionalSource([{
           current: { name: null, country: null },
           future: { name: '', country: '' }
@@ -167,7 +169,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.name : rd.name,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0 && this.isEmpty(rd.name ===''),
+                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0 && this.isEmpty(rd.name),
                       disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
