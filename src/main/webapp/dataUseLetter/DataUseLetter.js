@@ -381,7 +381,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       DUL.updateDUL(form).then(resp => {
         this.createRestriction();
         DUL.createDulPdf({ uid: id }).then(() => {
-          window.location.href = component.serverURL + "/dataUseLetter/show?id=" + id;
+          this.props.init(id);
+          this.props.hideSpinner();
         }, (reject) => {
           this.showDulError();
         })
