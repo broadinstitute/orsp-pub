@@ -143,7 +143,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputInvestigatorLastName",
             name: "investigatorLastName",
-            label: "Last Name of Investigator Listed on the Consent Form*",
+            label: "Last Name of Investigator Listed on the Consent Form (or, if no consent form, last name of individual providing samples/data to Broad)",
             value: this.state.formData.investigatorLastName,
             disabled: false,
             required: true,
@@ -156,7 +156,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputInstitutionProtocolNumber",
             name: "institutionProtocolNumber",
-            label: "Collaborating Institution's Protocol Number*",
+            label: "Collaborating Institution's Protocol Number (enter N/A if not applicable)",
             value: this.state.formData.institutionProtocolNumber,
             disabled: false,
             required: true,
