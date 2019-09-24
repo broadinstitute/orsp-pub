@@ -134,7 +134,6 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     } else if (item.linkDisabled === true) {
       label = this.createLabel(item.reporter);
     }
-    console.log('test', label);
     return label;
   }
 
