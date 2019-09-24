@@ -39,23 +39,31 @@ class DataUseLetterIndex extends Component {
     if (uuid == null) {
       const params = new URLSearchParams(this.props.location.search);
       uuid = params.get('id');
-    }
-    DUL.getDULInfo(uuid).then(resp => {
-      if (this._isMounted) {
-        this.setState(prev => {
-          prev.dul = resp.data.dul;
-          prev.error = resp.data.error;
-          prev.isLoading = false;
-          return prev;
+      if (uuid == null) {
+        this.setState(() => {
+          prev =>
+          prev.error = 'Id can not be null';
         });
       }
-    });
+    }
+    if (uuid != null) {
+      DUL.getDULInfo(uuid).then(resp => {
+        if (this._isMounted) {
+          this.setState(prev => {
+            prev.dul = resp.data.dul;
+            prev.error = resp.data.error;
+            prev.isLoading = false;
+            return prev;
+          });
+        }
+      });
+    }
   }
 
   displayUseLetter = () => {
     let dul = '';
     if (isEmpty(this.state.error)) {
-      dul =  h(Fragment, {}, [
+      dul = h(Fragment, {}, [
         h(DataUseLetter, {
           dul: this.state.dul,
           init: this.reload
@@ -63,11 +71,11 @@ class DataUseLetterIndex extends Component {
       ])
     }
     else {
-      dul =  h(Fragment, {}, [
+      dul = h(Fragment, {}, [
         DataUseLetterMessage({
           error: this.state.error
         })
-      ])      
+      ])
     }
     return dul;
   };
@@ -76,7 +84,7 @@ class DataUseLetterIndex extends Component {
     let dUL = ''
     if (!this.state.isLoading) {
       dUL = this.displayUseLetter();
-    }   
+    }
     return (
       div({}, [
         dUL
