@@ -14,9 +14,12 @@ const LAST_STEP = 1;
 const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
   _isMount = false;
+  projectKey = '';
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
+    this.projectKey = params.get('projectKey') != null ? params.get('projectKey') : component.projectKey;
     this.state = {
       files: [],
       startDate: null,
@@ -187,13 +190,12 @@ const LinkWizard = hh( class LinkWizard extends Component {
   };
 
   getConsentCollectionData = () => {
-    const params = new URLSearchParams(this.props.location.search);
     let consentCollectionLink = {};
     // consent group info
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
     consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
-    consentCollectionLink.projectKey = params.get('projectKey') != null ? params.get('projectKey') : component.projectKey;
+    consentCollectionLink.projectKey = this.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
     consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
@@ -363,7 +365,8 @@ const LinkWizard = hh( class LinkWizard extends Component {
             updateForm: this.updateGeneralForm,
             consentGroupIsLoading: this.state.consentGroupIsLoading,
             updateDateRange: this.updateDateRange,
-            generalError: this.state.generalError
+            generalError: this.state.generalError,
+            projectKey: this.projectKey
           }),
           LinkQuestions({
             title: "Security/MTA/International Info",

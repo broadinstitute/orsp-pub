@@ -29,12 +29,9 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   state = {};
   _isMounted = false;
-  projectKey = '';
 
   constructor(props) {
     super(props);
-    const params = new URLSearchParams(this.props.location.search);
-    this.projectKey = params.get('projectKey') != null ? params.get('projectKey') : component.projectKey;
     this.state = {
       showAddDocuments: false,
       documentOptions: [],
@@ -269,7 +266,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         }, [
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.projectKey,
+            label: "Link Sample Collection to " + this.props.projectKey,
             isDisabled: false,
             options: this.state.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,
@@ -328,7 +325,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               show: this.state.showAddDocuments,
               options: this.state.documentOptions,
               attachDocumentsUrl: this.props.attachDocumentsUrl,
-              projectKey: this.props.projectKey,
               user: this.props.user,
               handleLoadDocuments: this.props.handleLoadDocuments,
               serverURL: this.props.serverURL,
