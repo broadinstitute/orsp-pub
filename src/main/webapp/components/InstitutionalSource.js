@@ -2,6 +2,8 @@ import { Component, Fragment } from 'react';
 import { div, h, hh, hr, label } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { Btn } from './Btn';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 export const InstitutionalSource = hh(class InstitutionalSource extends Component {
 
@@ -24,9 +26,10 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
 
   addInstitutionalSources() {
     if (this.props.edit) {
-      // Only for edit / review
-      if (this.props.institutionalSources[0] && (this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
-        || this.props.institutionalSources[0] && (this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country )) {
+      if (!isEmpty(this.props.institutionalSources) &&
+         (get(this.props.institutionalSources,'[0].future.name') !== '' && get(this.props.institutionalSources,'[0].future.country') !== '')
+          || (!isEmpty(this.props.institutionalSources[0].current.name) && !isEmpty(this.props.institutionalSources[0].current.country ))
+      ) {
         this.setState(prev => {
           let institutionalSources = this.props.institutionalSources;
           institutionalSources.splice(0, 0, {
