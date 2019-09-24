@@ -354,9 +354,9 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.noConsentFormReason = noConsentFormReason;
         prev.errors.isValid = isValid;
-        if (isValid) {
-          prev.generalError = false;
-        }
+        // if (isValid) {
+          prev.generalError = isValid;
+        // }
         return prev;
       });
     }

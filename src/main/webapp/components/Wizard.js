@@ -48,8 +48,9 @@ export const Wizard = hh(class Wizard extends Component {
     }
   };
 
-  goStep = (n) => (e) => {
+  goStep = (n) => async (e) => {
     e.preventDefault();
+    // await this.props.isValid(n, null)
     this.setState(prev => {
       prev.currentStepIndex = n;
       prev.readyToSubmit = this.props.showSubmit(n);
