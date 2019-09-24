@@ -26,7 +26,7 @@ const styles = {
   link: {
       textDecoration: "none",
       display: "inline-block",
-      height: "30px",
+      height: "42px",
       lineHeight: "30px",
       color:"#000000",
   }
@@ -80,13 +80,13 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
         div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
-              isRendered: status === STATUS.pending || isEmpty(status) && component.isAdmin,
+              isRendered: component.isAdmin && (status === STATUS.pending || isEmpty(status)),
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => approveHandler(e, projectKey)
             },['Approve']),
             button({
-              isRendered: status === STATUS.pending || isEmpty(status) && component.isAdmin,
+              isRendered: component.isAdmin && (status === STATUS.pending || isEmpty(status)),
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => rejectHandler(e, projectKey)
@@ -101,6 +101,7 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
 
           div({ className: 'right-container' }, [
             button({
+              isRendered: component.isAdmin,
               className:'request-clarification',
               style: styles.pointer.auto,
               onClick:(e) =>  requestClarificationHandler(e, projectKey)
