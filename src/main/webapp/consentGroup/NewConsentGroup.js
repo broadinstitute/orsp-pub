@@ -8,6 +8,7 @@ import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
+import get from 'lodash/get';
 
 const LAST_STEP = 1;
 const NEXT_INDICATOR = 0;
@@ -272,12 +273,9 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
   }
 
   async consentGroupNameExists() {
-    let exists = false;
-    if (!isEmpty(this.state.generalDataFormData.consentGroupName)) {
-      const result = await ConsentGroup.getMatchingConsentByName(this.state.generalDataFormData.consentGroupName);
-      exists = result.data;
-    }
-    return exists;
+    return !isEmpty(this.state.generalDataFormData.consentGroupName)
+      ? get(await ConsentGroup.getMatchingConsentByName(this.state.generalDataFormData.consentGroupName), 'data', false)
+      : false;
   }
 
   isConsentFormUploaded() {
