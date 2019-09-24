@@ -9,6 +9,18 @@ import GoogleLoginButton from '../components/GoogleLoginButton';
 import LoadingWrapper from '../components/LoadingWrapper';
 import './TopNavigationMenu.css';
 
+function ColorValue(isDisabled, isFocused) {
+  let color =  '#000000';
+  if (!isDisabled && isFocused) {
+    color = '#337ab7';
+  } else if (!isDisabled && !isFocused) {
+    color = '#000000';
+  } else if (isDisabled && !isFocused) {
+    color = '#999999';
+  }
+  return color;
+}
+
 const styles = {
   badgeContactAccess: {
     display: 'inlineBlock',
@@ -21,8 +33,8 @@ const styles = {
   customStyles: {
     option: (provided, state) => ({
       ...provided,
-      color: state.isFocused ? '#337ab7' : '#000000',
-      backgroundColor: state.isDisabled ? 'red' : '#FFFFFF',
+      color: ColorValue(state.isDisabled, state.isFocused),
+      backgroundColor: state.isDisabled ? '#FAFAFA' : '#FFFFFF',
       cursor: state.isDisabled ? 'default' : 'pointer',
       padding: '15px 10px'
     }),
@@ -45,10 +57,6 @@ const styles = {
       top: '2px',
       lineHeight: '30px',
     }),
-    control: () => ({
-      // none of react-select's styles are passed to <Control />
-      // width: 200,
-    }),
     menuList: () => ({
       width: '500px',
       zIndex: '3000',
@@ -59,13 +67,7 @@ const styles = {
       top: '52px',
       border: '1px solid #CCCCCC',
       borderRadius: '4px'
-    }),
-    singleValue: (provided, state) => {
-      const opacity = state.isDisabled ? 0.5 : 1;
-      const transition = 'opacity 300ms';
-  
-      return { ...provided, opacity, transition };
-    }
+    })
   }
 }
 
