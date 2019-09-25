@@ -1078,6 +1078,14 @@ class QueryService implements Status {
         results
     }
 
+    Long matchingIssueNamesCount(String issueName) {
+        final session = sessionFactory.currentSession
+        final String query = 'select count(id) from issue where summary = :issueName'
+        SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString('issueName', issueName)
+        sqlQuery.uniqueResult() as Long
+    }
+
     PaginatedResponse findIssueByProjectType(String type, PaginationParams pagination) {
         String orderColumn = getIssueOrderColumn(pagination.orderColumn)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')

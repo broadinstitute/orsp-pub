@@ -50,6 +50,7 @@ class UrlMappings {
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
         '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/get-project-consent-groups'(controller:'newConsentGroup', action:'getProjectConsentGroups', method: 'GET')
+        '/api/consent-groups/matching-name'(controller: 'newConsentGroup', action: 'matchConsentName', method: 'GET')
 
         // File related end points
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')

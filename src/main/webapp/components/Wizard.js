@@ -33,9 +33,9 @@ export const Wizard = hh(class Wizard extends Component {
     })
   };
 
-  nextStep = (e) => {
+  nextStep = async (e) => {
     e.preventDefault();
-    if (this.props.isValid(this.state.currentStepIndex, null)) {
+    if (await this.props.isValid(this.state.currentStepIndex, null)) {
       this.setState(prev => {
         prev.showError = true;
         prev.currentStepIndex = prev.currentStepIndex === this.props.children.length - 1 ? 0 : prev.currentStepIndex + 1;
@@ -48,7 +48,7 @@ export const Wizard = hh(class Wizard extends Component {
     }
   };
 
-  goStep = (n) => (e) => {
+  goStep = (n) => async (e) => {
     e.preventDefault();
     this.setState(prev => {
       prev.currentStepIndex = n;
