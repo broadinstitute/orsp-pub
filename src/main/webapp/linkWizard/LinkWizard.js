@@ -8,15 +8,19 @@ import { isEmpty } from '../util/Utils';
 import '../index.css';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
+import defaultTo from 'lodash/defaultTo';
 
 const LAST_STEP = 1;
 
 const LinkWizard = hh( class LinkWizard extends Component {
   state = {};
   _isMount = false;
+  projectKey = '';
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
+    this.projectKey = defaultTo(params.get('projectKey'), component.projectKey);
     this.state = {
       files: [],
       startDate: null,
@@ -192,7 +196,7 @@ const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.consentKey = this.state.consentGroup.key;
     // consent collection link info
     consentCollectionLink.sampleCollectionId = this.state.sampleCollection.value;
-    consentCollectionLink.projectKey = component.projectKey;
+    consentCollectionLink.projectKey = this.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     // security
     consentCollectionLink.pii = this.state.securityInfoFormData.pii == "true" ? true : false;
@@ -362,7 +366,8 @@ const LinkWizard = hh( class LinkWizard extends Component {
             updateForm: this.updateGeneralForm,
             consentGroupIsLoading: this.state.consentGroupIsLoading,
             updateDateRange: this.updateDateRange,
-            generalError: this.state.generalError
+            generalError: this.state.generalError,
+            projectKey: this.projectKey
           }),
           LinkQuestions({
             title: "Security/MTA/International Info",

@@ -8,6 +8,7 @@ import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
+import defaultTo from 'lodash/defaultTo';
 import get from 'lodash/get';
 
 const LAST_STEP = 1;
@@ -15,9 +16,12 @@ const NEXT_INDICATOR = 0;
 const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
   _isMounted = false;
+  projectKey = '';
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
+    this.projectKey = defaultTo(params.get('projectKey'), component.projectKey);
     this.state = {
       user: {
         displayName: '',
@@ -121,7 +125,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         this.state.user.displayName,
         this.state.user.userName)
         .then(resp => {
-          this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
+          this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new');
           this.props.hideSpinner()
         }).catch(error => {
         console.error(error);
@@ -162,7 +166,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     let consentCollectionLink = {};
     // consent collection link info
     consentCollectionLink.sampleCollectionId = sampleCollectionId;
-    consentCollectionLink.projectKey = component.projectKey;
+    consentCollectionLink.projectKey = this.projectKey;
     consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
     consentCollectionLink.startDate = this.parseDate(this.state.generalDataFormData.startDate);
     consentCollectionLink.onGoingProcess = this.state.generalDataFormData.onGoingProcess ;
@@ -198,7 +202,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentGroup.samples = this.getSampleCollections();
     let extraProperties = [];
 
-    extraProperties.push({ name: 'source', value: component.projectKey });
+    extraProperties.push({ name: 'source', value: this.projectKey });
     extraProperties.push({ name: 'collInst', value: this.state.generalDataFormData.collaboratingInstitution });
     extraProperties.push({ name: 'collContact', value: this.state.generalDataFormData.primaryContact });
     extraProperties.push({ name: 'consent', value: this.state.generalDataFormData.investigatorLastName });
@@ -526,7 +530,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
             updateForm: this.updateGeneralDataFormData,
             errors: this.state.errors,
             removeErrorMessage: this.removeErrorMessage,
-            projectKey: component.projectKey,
+            projectKey: this.projectKey,
             sampleCollectionList: this.state.sampleCollectionList,
             fileHandler: this.fileHandler,
             projectType: projectType,
