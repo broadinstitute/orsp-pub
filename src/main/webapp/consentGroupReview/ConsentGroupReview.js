@@ -111,7 +111,6 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       isEdited: false,
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
-    this.consentGroupNameExists = this.consentGroupNameExists.bind(this);
   }
 
   componentDidMount() {
@@ -674,7 +673,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   }
 
 
-   async consentGroupNameExists() {
+   consentGroupNameExists = async () =>  {
     const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
     let exists = false;
     if (!isEmpty(this.state.formData.consentExtraProps.consent) && !isEmpty(this.state.formData.consentExtraProps.protocol)) {
