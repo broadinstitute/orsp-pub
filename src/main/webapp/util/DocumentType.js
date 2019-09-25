@@ -37,7 +37,6 @@ export const PROJECT_DOCUMENTS = [
   'Appendix',
   'Application',
   'Approval Memo',
-  'Attestation',
   'Continuing Review',
   'Other',
   'Other Event',
