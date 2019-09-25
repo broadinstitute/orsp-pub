@@ -221,7 +221,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
               }
             }
           }).catch(() => {});
-      }).catch(() => {
+      }).catch((error) => {
+        if(error.response.status === 403) {
+          this.props.history.push("/index")
+        }
         this.props.hideSpinner();
       });
   }

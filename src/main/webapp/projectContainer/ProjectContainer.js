@@ -117,6 +117,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     updateContent: this.updateContent,
                     projectKey: this.props.projectKey,
+                    history: this.props.history
                   })
                 ]),
               div({

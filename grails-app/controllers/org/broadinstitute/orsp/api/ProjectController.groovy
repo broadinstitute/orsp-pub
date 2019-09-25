@@ -89,18 +89,23 @@ class ProjectController extends AuthenticatedController {
     def getProject() {
         String projectKey = params.id
         Issue issue = queryService.findByKey(projectKey)
-        Collection<Funding> fundingList = issue.getFundings()
-        ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
-        Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
-        render([issue             : issue,
-                requestor         : getRequestorForIssue(issue),
-                pms               : getProjectManagersForIssue(issue),
-                pis               : getPIsForIssue(issue),
-                fundings          : fundingList,
-                extraProperties   : projectExtraProperties,
-                collaborators     : colls,
-                attachmentsApproved: issue.attachmentsApproved()
-        ] as JSON)
+        if (!issueIsForbidden(issue)) {
+            Collection<Funding> fundingList = issue.getFundings()
+            ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
+            Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
+            render([issue             : issue,
+                    requestor         : getRequestorForIssue(issue),
+                    pms               : getProjectManagersForIssue(issue),
+                    pis               : getPIsForIssue(issue),
+                    fundings          : fundingList,
+                    extraProperties   : projectExtraProperties,
+                    collaborators     : colls,
+                    attachmentsApproved: issue.attachmentsApproved()
+            ] as JSON)
+        } else {
+            response.status = 403
+        }
+
     }
 
     def delete() {
