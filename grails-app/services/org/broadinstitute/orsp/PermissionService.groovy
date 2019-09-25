@@ -11,7 +11,7 @@ class PermissionService implements UserInfo {
 
     // get issue's collaborators as a List<String>
     List<String> getIssueCollaborators(Map<String, List<String>> extraProperties) {
-        List<String> collaborators = extraProperties.findAll({ it.key == IssueExtraProperty.COLLABORATOR })
+        List<String> collaborators = extraProperties.findAll({ it.key == IssueExtraProperty.COLLABORATOR || it.key == IssueExtraProperty.COLLABORATORS })
                 .values().flatten().collect({ it -> it.toString() })
         collaborators
     }
