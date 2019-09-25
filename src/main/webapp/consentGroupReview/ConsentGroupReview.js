@@ -867,7 +867,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           InputFieldText({
             id: "inputInvestigatorLastName",
             name: "consent",
-            label: "Last Name of Investigator Listed on the Consent Form (or, if no consent form, last name of individual providing samples/data to Broad)",
+            label: "Last Name of Investigator Listed on the Consent Form",
+            moreInfo: " (or, if no consent form, last name of individual providing samples/data to Broad)",
             value: consent,
             currentValue: this.state.current.consentExtraProps.consent,
             onChange: this.handleExtraPropsInputChange,
@@ -879,7 +880,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           InputFieldText({
             id: "inputInstitutionProtocolNumber",
             name: "protocol",
-            label: "Collaborating Institution's Protocol Number (enter N/A if not applicable)",
+            label: "Collaborating Institution's Protocol Number",
+            moreInfo: " (enter N/A if not applicable)",
             value: protocol,
             currentValue: this.state.current.consentExtraProps.protocol,
             onChange: this.handleExtraPropsInputChange,
