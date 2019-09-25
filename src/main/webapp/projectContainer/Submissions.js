@@ -69,7 +69,7 @@ export const Submissions = hh(class Submissions extends Component {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
-    }, [component.isAdmin === true ? 'Edit': 'View']);
+    }, [!component.isViewer ? 'Edit': 'View']);
     const submissionComment = span({style: styles.submissionComment}, [data.comments]);
     return h(Fragment, {}, [indexButton, submissionComment]);
   };
