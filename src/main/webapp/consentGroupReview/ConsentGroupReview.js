@@ -111,19 +111,11 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       isEdited: false,
     };
     this.rejectConsentGroup = this.rejectConsentGroup.bind(this);
-    this.consentGroupNameExists = this.consentGroupNameExists.bind(this);
   }
 
   componentDidMount() {
     this.props.showSpinner();
     this._isMounted = true;
-    ConsentGroup.getConsentGroupNames().then(
-      resp => {
-        if (this._isMounted) {
-          this.setState({ existingGroupNames: resp.data })
-        }
-      }
-    ).catch(() => { });
     this.init();
   }
 
@@ -249,7 +241,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     });
   };
 
-  isValid = () => {
+  isValid = async () => {
     let consent = false;
     let protocol = false;
     let collInst = false;
@@ -274,7 +266,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       endDate = true;
     }
 
-    if (this.consentGroupNameExists()) {
+    if (await this.consentGroupNameExists()) {
       consentGroupName = true;
     }
 
@@ -375,8 +367,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     });
   };
 
-  handleApproveDialog = () => {
-    if (this.isValid()) {
+  handleApproveDialog = async () => {
+    if (await this.isValid()) {
       this.setState({
         approveDialog: true,
         isEdited: true,
@@ -434,10 +426,10 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     });
   };
 
-  submitEdit = (e) => () => {
+  submitEdit = (e) => async () => {
     this.props.showSpinner();
     let data = {};
-    if (this.isValid()) {
+    if (await this.isValid()) {
       this.setState(prev => {
         prev.readOnly = true;
         prev.errorSubmit = false;
@@ -600,9 +592,9 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       prev.isEdited = true;
       prev.errors.instError = false;
       return prev;
-    }, () => {
+    }, async () => {
       if (this.state.submitted) {
-        this.isValid();
+        await this.isValid();
       }
     });
   };
@@ -622,9 +614,9 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       prev.errors[field] = false;
       prev.isEdited = !this.areObjectsEqual("formData", "current");
       return prev;
-    }, () => {
+    }, async () => {
       if (this.state.errorSubmit === true) {
-        this.isValid();
+        await this.isValid();
       }
     });
   };
@@ -635,9 +627,9 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       prev.isEdited = !this.areObjectsEqual("formData", "current");
       prev.errors[id] = false;
       return prev;
-    }, () => {
+    }, async () => {
       if (this.state.errorSubmit === true) {
-        this.isValid();
+        await this.isValid();
       }
     });
   };
@@ -648,8 +640,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       prev.errors[field] = false;
       prev.isEdited = !this.areObjectsEqual("formData", "current");
       return prev;
-    }, () => {
-      if (this.state.errorSubmit) this.isValid()
+    }, async () => {
+      if (this.state.errorSubmit) await this.isValid()
     });
   };
 
@@ -680,16 +672,18 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     return JSON.stringify(newValues) === JSON.stringify(currentValues);
   }
 
-  consentGroupNameExists() {
+
+   consentGroupNameExists = async () =>  {
     const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
-    if (this.state.existingGroupNames !== undefined) {
-      let consentGroupNameExists = groupName === this.state.formData.consentForm.summary ? false : this.state.existingGroupNames.indexOf(groupName) > -1;
+    let exists = false;
+    if (!isEmpty(this.state.formData.consentExtraProps.consent) && !isEmpty(this.state.formData.consentExtraProps.protocol)) {
+      exists = get(await ConsentGroup.getMatchingConsentByName(groupName), 'data', false);
       this.setState(prev => {
-        prev.errors.consentGroupName = consentGroupNameExists;
+        prev.errors.consentGroupName = exists;
         return prev;
       });
-      return consentGroupNameExists;
     }
+    return exists;
   }
 
   areFormsEqual() {

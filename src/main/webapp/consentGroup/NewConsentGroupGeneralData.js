@@ -131,6 +131,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.collaboratingInstitution ||
           this.props.errors.primaryContact ||
           this.props.errors.requireMta ||
+          this.props.errors.consentGroupName ||
           this.props.errors.institutionalSourcesName ||
           this.props.errors.institutionalSourcesCountry ||
           this.props.errors.startDate ||
