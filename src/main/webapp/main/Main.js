@@ -119,8 +119,7 @@ class Main extends Component {
           updateDetailsStatus: this.updateDetailsStatus,
           updateDocumentsStatus: this.updateDocumentsStatus,
           consentKey: this.state.consentKey,
-          tab: this.state.tab,
-          history: this.props.history,
+          tab: this.state.tab
         })
       ])
     );

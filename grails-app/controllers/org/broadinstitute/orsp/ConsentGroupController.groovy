@@ -256,14 +256,8 @@ class ConsentGroupController extends AuthenticatedController {
 
     def getConsentGroup(){
         String projectKey = params.id
-        Issue issue = queryService.findByKey(projectKey)
-        if (!issueIsForbidden(issue)) {
-            LinkedHashMap consentGroup = queryService.getConsentGroupByKey(issue, projectKey)
-            render(consentGroup as JSON)
-        } else {
-            response.status = 403
-        }
-
+        LinkedHashMap consentGroup = queryService.getConsentGroupByKey(projectKey)
+        render(consentGroup as JSON)
     }
 
     def unConsentedSampleCollections() {

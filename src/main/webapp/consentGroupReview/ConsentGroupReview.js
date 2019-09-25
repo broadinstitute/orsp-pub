@@ -200,10 +200,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             }
           }
         );
-      }).catch((error) => {
-        if(error.response.status === 403) {
-          this.props.history.push("/index")
-        }
+      }).catch(() => {
       this.props.hideSpinner();
     });
   };

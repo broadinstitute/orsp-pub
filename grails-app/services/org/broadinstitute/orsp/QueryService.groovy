@@ -1205,7 +1205,8 @@ class QueryService implements Status {
         results
     }
 
-    LinkedHashMap getConsentGroupByKey(Issue issue, String projectKey) {
+    LinkedHashMap getConsentGroupByKey(String projectKey) {
+        Issue issue = findByKey(projectKey)
         List<ConsentCollectionLinkDTO> collectionLinks = getCollectionLinksDtoByConsentKey(projectKey)
         Collection<String> collectionIds = findAllSampleCollectionIdsForConsent(projectKey)
         Collection<SampleCollection> sampleCollections

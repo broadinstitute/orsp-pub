@@ -98,8 +98,7 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     changeInfoStatus: this.props.changeInfoStatus,
                     updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent,
-                    consentKey: this.props.consentKey,
-                    history: this.props.history
+                    consentKey: this.props.consentKey
                   })
                 ]),
               div({
