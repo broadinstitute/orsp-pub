@@ -34,6 +34,7 @@ export const UrlConstants = {
   allConsentGroupsUrl: context + '/api/consent-groups',
   collectionLinks: context + '/api/collection-links',
   exportConsent: context + '/api/consent/export',
+  matchingName: context + '/api/consent-groups/matching-name',
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',
   attachedDocumentsUrl : context + '/api/files-helper/attached-documents',

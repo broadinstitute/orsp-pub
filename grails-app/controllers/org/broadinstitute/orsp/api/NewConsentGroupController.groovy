@@ -234,4 +234,11 @@ class NewConsentGroupController extends AuthenticatedController {
         render(response)
     }
 
+    def matchConsentName() {
+        try {
+            render(params.consentName ? queryService.matchingIssueNamesCount(params.consentName) > 0 : false)
+        } catch(Exception error) {
+            handleException(error)
+        }
+    }
 }
