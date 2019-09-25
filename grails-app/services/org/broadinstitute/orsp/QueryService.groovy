@@ -1078,16 +1078,12 @@ class QueryService implements Status {
         results
     }
 
-    List<Issue> findIssueByName (String issueName) {
+    Long matchingIssueNamesCount(String issueName) {
         final session = sessionFactory.currentSession
-        final String query = 'select * from issue where summary = :issueName'
-        final sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(Issue)
-            setString('issueName', issueName)
-            list()
-        }
-        results
+        final String query = 'select count(id) from issue where summary = :issueName'
+        SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setString('issueName', issueName)
+        sqlQuery.uniqueResult() as Long
     }
 
     PaginatedResponse findIssueByProjectType(String type, PaginationParams pagination) {

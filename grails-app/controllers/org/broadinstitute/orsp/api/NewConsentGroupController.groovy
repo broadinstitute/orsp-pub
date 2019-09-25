@@ -16,7 +16,6 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.PersistenceService
-import org.broadinstitute.orsp.QueryOptions
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.utils.UtilityClass
@@ -237,7 +236,7 @@ class NewConsentGroupController extends AuthenticatedController {
 
     def matchConsentName() {
         try {
-            render(params.consentName ? !queryService.findIssueByName(params.consentName).isEmpty(): false as JSON)
+            render(params.consentName ? queryService.matchingIssueNamesCount(params.consentName) > 0 : false)
         } catch(Exception error) {
             handleException(error)
         }
