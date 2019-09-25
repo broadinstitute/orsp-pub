@@ -8,6 +8,7 @@ import { isEmpty } from '../util/Utils';
 import '../index.css';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
+import defaultTo from 'lodash/defaultTo';
 
 const LAST_STEP = 1;
 
@@ -19,7 +20,7 @@ const LinkWizard = hh( class LinkWizard extends Component {
   constructor(props) {
     super(props);
     const params = new URLSearchParams(this.props.location.search);
-    this.projectKey = params.get('projectKey') != null ? params.get('projectKey') : component.projectKey;
+    this.projectKey = defaultTo(params.get('projectKey'), component.projectKey);
     this.state = {
       files: [],
       startDate: null,
