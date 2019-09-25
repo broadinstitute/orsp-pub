@@ -271,11 +271,13 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           type: 'success'
         }),
         button({
+          isRendered: !component.isViewer,
           className: "btn btn-default",
           style: { marginRight:'5px' },
           onClick:() => this.redirect('new')
         }, ['Add New Sample/Data Cohort']),
         button({
+          isRendered: !component.isViewer,
           className:"btn btn-default",
           onClick: () => this.redirect('useExisting')
         }, ['Use Existing Sample/Data Cohort'] ),

@@ -1,7 +1,9 @@
 import { Component, Fragment } from 'react';
-import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helpers';
+import { div, h, hh, hr, label } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { Btn } from './Btn';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 export const InstitutionalSource = hh(class InstitutionalSource extends Component {
 
@@ -22,11 +24,14 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     }
   }
 
+  checkEmptySrc(elementPostition) {
+    return (get(this.props.institutionalSources[elementPostition], 'future.name') !== '' && get(this.props.institutionalSources[elementPostition], 'future.country') !== '')
+      || (!isEmpty(this.props.institutionalSources[elementPostition].current.name) && !isEmpty(this.props.institutionalSources[elementPostition].current.country));
+  }
+
   addInstitutionalSources() {
     if (this.props.edit) {
-      // Only for edit / review
-      if ((this.props.institutionalSources[0].future.name !== '' && this.props.institutionalSources[0].future.country !== '')
-        || this.props.institutionalSources[0].current.name && this.props.institutionalSources[0].current.country ) {
+      if (!isEmpty(this.props.institutionalSources) && this.checkEmptySrc(0)) {
         this.setState(prev => {
           let institutionalSources = this.props.institutionalSources;
           institutionalSources.splice(0, 0, {
@@ -39,6 +44,11 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         }, () => {
           this.props.updateInstitutionalSource(this.state.institutionalSources)
         });
+      } else if (this.checkEmptySrc(0) && this.checkEmptySrc(1)) {
+        this.props.updateInstitutionalSource([{
+          current: { name: null, country: null },
+          future: { name: '', country: '' }
+        }])
       }
     } else {
       // For new Projects
@@ -159,7 +169,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.name : rd.name,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0,
+                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0 && this.isEmpty(rd.name),
                       disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly,
@@ -176,7 +186,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
                       currentValue: this.props.edit ? rd.current.country : rd.country,
                       required: true,
                       onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "country") : this.props.errorCountry && index === 0,
+                      error: this.props.edit ? this.getError(index, "country") : this.props.errorCountry && index === 0 && this.isEmpty(rd.country),
                       disabled: (index > 0) && !this.props.edit,
                       errorMessage: this.props.errorMessage,
                       readOnly: this.props.readOnly
