@@ -675,7 +675,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
    consentGroupNameExists = async () =>  {
     let exists = false;
-    if (this.consentNameIsEdited() && !isEmpty(this.state.formData.consentExtraProps.consent) && !isEmpty(this.state.formData.consentExtraProps.protocol)) {
+    if (this.consentNameIsEdited()) {
       const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
       exists = get(await ConsentGroup.getMatchingConsentByName(groupName), 'data', false);
     }
