@@ -4,6 +4,7 @@ import { StatusBox } from "../components/StatusBox";
 import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
+import defaultTo from 'lodash/defaultTo';
 import { isEmpty, projectStatus } from '../util/Utils';
 import './Main.css';
 
@@ -15,6 +16,7 @@ class Main extends Component {
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(this.props.location.search);
     this.state = {
       status: {
         type: '',
@@ -25,10 +27,11 @@ class Main extends Component {
         projectReviewApproved: '',
         attachmentsApproved: ''
       },
-      consentKey: this.props.location.state !== undefined && this.props.location.state.consentKey !== undefined  ? this.props.location.state.consentKey : component.consentKey,
-      projectKey: this.props.location.state !== undefined && this.props.location.state.projectKey !== undefined  ? this.props.location.state.projectKey : component.projectKey,
-      tab: this.props.location.state !== undefined && this.props.location.state.tab !== undefined  ? this.props.location.state.tab : component.tab,
-      issueType: this.props.location.state !== undefined && this.props.location.state.issueType !== undefined  ? this.props.location.state.issueType : component.issueType
+
+      consentKey: defaultTo(params.get('consentKey'), component.projectKey),
+      projectKey: defaultTo(params.get('projectKey'), component.projectKey),
+      tab: defaultTo(params.get('tab'), component.tab),
+      issueType:  params.get('consentKey') != null ? 'consent-group' : 'project'
     };
   }
 

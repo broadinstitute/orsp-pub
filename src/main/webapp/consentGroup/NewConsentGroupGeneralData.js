@@ -131,6 +131,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.collaboratingInstitution ||
           this.props.errors.primaryContact ||
           this.props.errors.requireMta ||
+          this.props.errors.consentGroupName ||
           this.props.errors.institutionalSourcesName ||
           this.props.errors.institutionalSourcesCountry ||
           this.props.errors.startDate ||
@@ -143,7 +144,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputInvestigatorLastName",
             name: "investigatorLastName",
-            label: "Last Name of Investigator Listed on the Consent Form*",
+            label: "Last Name of Investigator Listed on the Consent Form",
+            moreInfo:" (or, if no consent form, last name of individual providing samples/data to Broad)*",
             value: this.state.formData.investigatorLastName,
             disabled: false,
             required: true,
@@ -156,7 +158,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputInstitutionProtocolNumber",
             name: "institutionProtocolNumber",
-            label: "Collaborating Institution's Protocol Number*",
+            label: "Collaborating Institution's Protocol Number",
+            moreInfo: " (enter N/A if not applicable)*",
             value: this.state.formData.institutionProtocolNumber,
             disabled: false,
             required: true,

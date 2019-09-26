@@ -87,7 +87,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 consent.status = 201
                 render([message: consent] as JSON)
             } else {
-                Response response = Response.status(400)
+                Response response = response.status(400)
                 response.entity("Invalid project key")
                 render([message: response] as JSON)
             }
@@ -234,4 +234,11 @@ class NewConsentGroupController extends AuthenticatedController {
         render(response)
     }
 
+    def matchConsentName() {
+        try {
+            render(params.consentName ? queryService.matchingIssueNamesCount(params.consentName) > 0 : false)
+        } catch(Exception error) {
+            handleException(error)
+        }
+    }
 }
