@@ -61,7 +61,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irb: '',
-          affiliations: '',
+          affiliations: [],
           affiliationOther: '',
           accurate: '',
           feeForServiceWork: '',
@@ -172,7 +172,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),
-        current.projectExtraProps.affiliations = isEmpty(current.projectExtraProps.affiliations) ? '' : JSON.parse(current.projectExtraProps.affiliations),
+        current.projectExtraProps.affiliations = this.getAffiliations(current.projectExtraProps.affiliations),
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
@@ -407,8 +407,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.sharingType = this.state.formData.projectExtraProps.sharingType;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
-    project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
-    project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
+    project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);    project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.irb = isEmpty(this.state.formData.projectExtraProps.irb.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irb);
 
     if (this.state.reviewSuggestion) {
@@ -450,6 +449,16 @@ const ProjectReview = hh(class ProjectReview extends Component {
       project.collaborator = collaboratorList;
     }
     return project;
+  }
+
+  getAffiliations(affiliations) {
+    if (affiliations != null && affiliations.length > 0) {
+      try {
+        return JSON.parse(affiliations[0]);
+      } catch (error) {
+        return '';
+      }
+    }
   }
 
   getFundings(fundings) {
