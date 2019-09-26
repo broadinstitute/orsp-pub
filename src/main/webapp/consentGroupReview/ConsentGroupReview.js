@@ -674,17 +674,26 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
 
    consentGroupNameExists = async () =>  {
-    const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
     let exists = false;
-    if (!isEmpty(this.state.formData.consentExtraProps.consent) && !isEmpty(this.state.formData.consentExtraProps.protocol)) {
+    if (this.consentNameIsEdited()) {
+      const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
       exists = get(await ConsentGroup.getMatchingConsentByName(groupName), 'data', false);
-      this.setState(prev => {
-        prev.errors.consentGroupName = exists;
-        return prev;
-      });
     }
+    this.setState(prev => {
+      prev.errors.consentGroupName = exists;
+      return prev;
+    });
     return exists;
-  }
+  };
+
+  consentNameIsEdited = () => {
+    const currentConsentValue = get(this.state.current.consentExtraProps, 'consent', '');
+    const currentProtocolValue = get(this.state.current.consentExtraProps, 'protocol', '');
+    const consentValue = get(this.state.formData.consentExtraProps, 'consent', '');
+    const protocolValue = get(this.state.formData.consentExtraProps, 'protocol', '');
+
+    return consentValue !== currentConsentValue || protocolValue !== currentProtocolValue
+  };
 
   areFormsEqual() {
     let areFormsEqual = false;
