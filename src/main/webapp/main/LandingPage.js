@@ -20,13 +20,11 @@ const columnsCopy = [{
   dataField: 'project',
   text: 'Project',
   sort: true,
+  headerStyle: { width: styles.projectWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
       linkFormatter(row, row.project)
     ])
-  },
-  headerStyle: (column, colIndex) => {
-    return { width: styles.projectWidth };
   }
 }, {
   dataField: 'title',
@@ -41,30 +39,22 @@ const columnsCopy = [{
   dataField: 'status',
   text: 'Status',
   sort: true,
-  headerStyle: (column, colIndex) => {
-    return { width: styles.statusWidth };
-  }
+  headerStyle: { width: styles.statusWidth }
 }, {
   dataField: 'type',
   text: 'Type',
   sort: true,
-  headerStyle: (column, colIndex) => {
-    return { width: styles.typeWidth };
-  }
+  headerStyle: { width: styles.typeWidth }
 }, {
   dataField: 'updated',
   text: 'Updated',
   sort: true,
-  headerStyle: (column, colIndex) => {
-    return { width: styles.updatedWidth };
-  }
+  headerStyle: { width: styles.updatedWidth }
 }, {
   dataField: 'expiration',
   text: 'Expiration',
   sort: true,
-  headerStyle: (column, colIndex) => {
-    return { width: styles.expirationWidth };
-  }
+  headerStyle: { width: styles.expirationWidth }
 }];
 
 const defaultSorted = [{
