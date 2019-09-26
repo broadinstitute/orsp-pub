@@ -13,6 +13,8 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
+import head from 'lodash/head';
+import orderBy from 'lodash/orderBy'
 import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
@@ -172,7 +174,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),
-        current.projectExtraProps.affiliations = this.getAffiliations(current.projectExtraProps.affiliations),
+        current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations),
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
@@ -452,10 +454,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return project;
   }
 
-  getAffiliations(affiliations) {
+  getAffiliation(affiliations) {
     if (affiliations != null && affiliations.length > 0) {
       try {
-        return JSON.parse(affiliations[0]);
+        let aff = affiliations.map(it => JSON.parse(it));
+        return head(orderBy(aff, 'value'));
       } catch (error) {
         return '';
       }
