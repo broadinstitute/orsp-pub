@@ -111,6 +111,10 @@ export const ConsentGroup = {
 
   exportConsent(id) {
     return axios.post(UrlConstants.exportConsent + '?id=' + id);
+  },
+
+  getMatchingConsentByName(consentName) {
+    return axios.get(UrlConstants.matchingName + '?consentName=' + consentName);
   }
 };
 

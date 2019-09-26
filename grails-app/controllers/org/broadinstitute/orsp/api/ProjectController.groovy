@@ -79,20 +79,32 @@ class ProjectController extends AuthenticatedController {
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def getProject() {
-        String projectKey = params.id
-        Issue issue = queryService.findByKey(projectKey)
-        Collection<Funding> fundingList = issue.getFundings()
-        ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
-        Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
-        render([issue             : issue,
-                requestor         : getRequestorForIssue(issue),
-                pms               : getProjectManagersForIssue(issue),
-                pis               : getPIsForIssue(issue),
-                fundings          : fundingList,
-                extraProperties   : projectExtraProperties,
-                collaborators     : colls,
-                attachmentsApproved: issue.attachmentsApproved()
-        ] as JSON)
+        try {
+            String projectKey = params.id
+            if (!StringUtils.isEmpty(projectKey)) {
+                Issue issue = queryService.findByKey(projectKey)
+                if (!issueIsForbidden(issue)) {
+                    Collection<Funding> fundingList = issue.getFundings()
+                    ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
+                    Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
+                    render([issue             : issue,
+                            requestor         : getRequestorForIssue(issue),
+                            pms               : getProjectManagersForIssue(issue),
+                            pis               : getPIsForIssue(issue),
+                            fundings          : fundingList,
+                            extraProperties   : projectExtraProperties,
+                            collaborators     : colls,
+                            attachmentsApproved: issue.attachmentsApproved()
+                    ] as JSON)
+                } else {
+                    response.status = 403
+                }
+            } else {
+             handleIllegalArgumentException(new IllegalArgumentException("project key is requiered"))
+            }
+        } catch (Exception e) {
+            handleException(e)
+        }
     }
 
     def delete() {
