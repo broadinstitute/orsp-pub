@@ -13,6 +13,8 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
+import head from 'lodash/head';
+import orderBy from 'lodash/orderBy'
 import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
@@ -61,7 +63,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irb: '',
-          affiliations: '',
+          affiliations: [],
           affiliationOther: '',
           accurate: '',
           feeForServiceWork: '',
@@ -172,7 +174,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),
-        current.projectExtraProps.affiliations = isEmpty(current.projectExtraProps.affiliations) ? '' : JSON.parse(current.projectExtraProps.affiliations),
+        current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations),
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
@@ -450,6 +452,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
       project.collaborator = collaboratorList;
     }
     return project;
+  }
+
+  getAffiliation(affiliations) {
+    if (affiliations != null && affiliations.length > 0) {
+      try {
+        let aff = affiliations.map(it => JSON.parse(it));
+        return head(orderBy(aff, 'value'));
+      } catch (error) {
+        return '';
+      }
+    }
   }
 
   getFundings(fundings) {

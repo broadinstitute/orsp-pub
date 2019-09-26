@@ -17,7 +17,7 @@ class ProjectExtraProperties {
     String uploadConsentGroup
     String notCGSpecify
     String irb
-    String affiliations
+    List<String> affiliations
     String affiliationOther
 
     // Determination questions
