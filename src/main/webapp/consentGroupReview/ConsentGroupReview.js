@@ -674,17 +674,26 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
 
    consentGroupNameExists = async () =>  {
-    const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
     let exists = false;
-    if (!isEmpty(this.state.formData.consentExtraProps.consent) && !isEmpty(this.state.formData.consentExtraProps.protocol)) {
+    if (this.consentNameIsEdited()) {
+      const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
       exists = get(await ConsentGroup.getMatchingConsentByName(groupName), 'data', false);
-      this.setState(prev => {
-        prev.errors.consentGroupName = exists;
-        return prev;
-      });
     }
+    this.setState(prev => {
+      prev.errors.consentGroupName = exists;
+      return prev;
+    });
     return exists;
-  }
+  };
+
+  consentNameIsEdited = () => {
+    const currentConsentValue = get(this.state.current.consentExtraProps, 'consent', '');
+    const currentProtocolValue = get(this.state.current.consentExtraProps, 'protocol', '');
+    const consentValue = get(this.state.formData.consentExtraProps, 'consent', '');
+    const protocolValue = get(this.state.formData.consentExtraProps, 'protocol', '');
+
+    return consentValue !== currentConsentValue || protocolValue !== currentProtocolValue
+  };
 
   areFormsEqual() {
     let areFormsEqual = false;
@@ -752,7 +761,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
     return (
       div({}, [
-        h2({ className: "stepTitle" }, [" Group as Sample/Data Cohort: " + this.props.consentKey]),
+        h2({ className: "stepTitle" }, [" Sample/Data Cohort: " + this.props.consentKey]),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
@@ -800,7 +809,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           show: this.state.approveInfoDialog,
           handleOkAction: this.approveConsentGroup,
           title: 'Approve Project Information',
-          bodyText: 'Are you sure you want to approve this  Group as Sample/Data Cohort Details?',
+          bodyText: 'Are you sure you want to approve this Sample/Data Cohort Details?',
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
@@ -808,7 +817,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           show: this.state.dialog,
           handleOkAction: this.rejectConsentGroup,
           title: 'Remove Confirmation',
-          bodyText: 'Are you sure you want to remove this  Group as Sample/Data Cohort?',
+          bodyText: 'Are you sure you want to remove this Sample/Data Cohort?',
           actionLabel: 'Yes'
         }, []),
         Panel({ title: "Notes to ORSP",
@@ -845,18 +854,18 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             errorMessage: "Required field"
           })
         ]),
-        Panel({ title: " Group as Sample/Data Cohort Details" }, [
+        Panel({ title: " Sample/Data Cohort Details" }, [
           InputFieldText({
             id: "inputConsentGroupName",
             name: "consentGroupName",
-            label: " Group as Sample/Data Cohort Name",
+            label: " Sample/Data Cohort Name",
             disabled: !this.state.readOnly,
             value: consent + " / " + protocol,
             currentValue: this.state.current.consentForm.summary,
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
             error: this.state.errors.consentGroupName,
-            errorMessage: "An existing  Group as Sample/Data Cohort with this protocol exists. Please choose a different one."
+            errorMessage: "An existing Sample/Data Cohort with this protocol exists. Please choose a different one."
           }),
           InputFieldText({
             id: "inputInvestigatorLastName",

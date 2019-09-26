@@ -18,7 +18,7 @@ const styles = {
   creatorWidth: '130',
   infoLinkWidth: '96',
   creationDateWidth: '140',
-  removeWidth: '45',
+  removeWidth: '50',
   removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',

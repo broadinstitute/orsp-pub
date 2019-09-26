@@ -8,10 +8,19 @@ import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
 
+const styles = {
+  projectWidth: '120px',
+  expirationWidth: '120px',
+  updatedWidth: '130px',
+  typeWidth: '170px',
+  statusWidth: '220px'
+}
+
 const columnsCopy = [{
   dataField: 'project',
   text: 'Project',
   sort: true,
+  headerStyle: { width: styles.projectWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
       linkFormatter(row, row.project)
@@ -29,19 +38,23 @@ const columnsCopy = [{
 }, {
   dataField: 'status',
   text: 'Status',
-  sort: true
+  sort: true,
+  headerStyle: { width: styles.statusWidth }
 }, {
   dataField: 'type',
   text: 'Type',
-  sort: true
+  sort: true,
+  headerStyle: { width: styles.typeWidth }
 }, {
   dataField: 'updated',
   text: 'Updated',
-  sort: true
+  sort: true,
+  headerStyle: { width: styles.updatedWidth }
 }, {
   dataField: 'expiration',
   text: 'Expiration',
-  sort: true
+  sort: true,
+  headerStyle: { width: styles.expirationWidth }
 }];
 
 const defaultSorted = [{
