@@ -241,9 +241,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   updateDocuments = () => {
-    const documentsToUpdate = this.state.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
     this.setState(prev => {
-      prev.documents = documentsToUpdate;
+      prev.documents = prev.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
       return prev;
     });
     this.props.hideSpinner();
