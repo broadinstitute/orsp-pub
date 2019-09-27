@@ -811,16 +811,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
-  isOtherSelected = () => {
-    let isOtherSelected = false;
-    if (!isEmptyArray(this.state.formData.projectExtraProps.affiliations)) {
-      const affiliation = this.getAffiliation(this.state.formData.projectExtraProps.affiliations);
-      if (affiliation.value === "other") {
-        isOtherSelected = true;
-      }
-    }
-    return isOtherSelected;
-  }
 
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
@@ -976,7 +966,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           }),
 
           InputFieldText({
-            isRendered: this.isOtherSelected(),
+            isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other",
             id: "affiliationOther",
             name: "affiliationOther",
             label: "Primary Investigator Other Affiliation",
