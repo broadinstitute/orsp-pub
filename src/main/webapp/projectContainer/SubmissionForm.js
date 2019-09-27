@@ -227,6 +227,13 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     if(!isEmpty(this.state.fileToRemove.uuid)) {
       ProjectMigration.removeSubmissionFile(this.state.params.submissionId, this.state.fileToRemove.uuid).then(prev => {
         this.updateDocuments();
+      }).catch(error => {
+        console.error(error);
+        this.setState(prev => {
+          prev.errors.serverError = true;
+          return prev;
+        });
+        this.props.hideSpinner();
       });
     } else {
       this.updateDocuments();
