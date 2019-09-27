@@ -456,7 +456,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   getAffiliation(affiliations) {
-    if (isEmptyArray(affiliations)) {
+    if (!isEmptyArray(affiliations)) {
       try {
         let aff = affiliations.map(it => JSON.parse(it));
         return head(orderBy(aff, 'value'));
