@@ -410,7 +410,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.sharingType = this.state.formData.projectExtraProps.sharingType;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
-    project.affiliations = isEmptyArray(this.state.formData.projectExtraProps.affiliations) ? null : this.getAffiliation(this.state.formData.projectExtraProps.affiliations);
+    project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.irb = isEmpty(this.state.formData.projectExtraProps.irb.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irb);
 
