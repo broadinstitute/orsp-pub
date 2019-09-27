@@ -224,14 +224,22 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   removeFile = () => {
-    ProjectMigration.removeSubmissionFile(this.state.params.submissionId, this.state.fileToRemove.uuid).then(prev => {
-      const documentsToUpdate = this.state.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
-      this.setState(prev => {
-        prev.documents = documentsToUpdate;
-        return prev;
+    if(!isEmpty(this.state.fileToRemove.uuid)) {
+      ProjectMigration.removeSubmissionFile(this.state.params.submissionId, this.state.fileToRemove.uuid).then(prev => {
+        this.updateDocuments();
       });
-      this.props.hideSpinner();
+    } else {
+      this.updateDocuments();
+    }
+  };
+
+  updateDocuments = () => {
+    const documentsToUpdate = this.state.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
+    this.setState(prev => {
+      prev.documents = documentsToUpdate;
+      return prev;
     });
+    this.props.hideSpinner();
   };
 
   setFilesToUpload = (doc) => {
