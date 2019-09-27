@@ -14,7 +14,8 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
 import head from 'lodash/head';
-import orderBy from 'lodash/orderBy'
+import orderBy from 'lodash/orderBy';
+import isEmptyArray from 'lodash/isEmpty';
 import { isEmpty } from '../util/Utils';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
@@ -409,7 +410,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.sharingType = this.state.formData.projectExtraProps.sharingType;
     project.compliance = this.state.formData.projectExtraProps.compliance;
     project.pii = this.state.formData.projectExtraProps.pii;
-    project.affiliations = isEmpty(this.state.formData.projectExtraProps.affiliations.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
+    project.affiliations = this.state.formData.projectExtraProps.affiliations == null || (this.state.formData.projectExtraProps.affiliations != null && isEmpty(this.state.formData.projectExtraProps.affiliations.value)) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.irb = isEmpty(this.state.formData.projectExtraProps.irb.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irb);
 
@@ -455,7 +456,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   getAffiliation(affiliations) {
-    if (affiliations != null && affiliations.length > 0) {
+    if (!isEmptyArray(affiliations)) {
       try {
         let aff = affiliations.map(it => JSON.parse(it));
         return head(orderBy(aff, 'value'));
@@ -810,6 +811,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
+
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
@@ -959,7 +961,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             currentValue: this.state.current.projectExtraProps.affiliations,
             onChange: this.handleSelect("affiliations"),
             readOnly: this.state.readOnly,
-            placeholder: isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
+            placeholder: isEmptyArray(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
             edit: true
           }),
 
