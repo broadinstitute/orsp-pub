@@ -9,15 +9,18 @@ import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
+import org.broadinstitute.orsp.OntologyService
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.webservice.OntologyTerm
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class DataUseLetterController extends AuthenticatedController {
     DataUseLetterService dataUseLetterService
+    OntologyService ontologyService
 
     @Override
     @SuppressWarnings(["GroovyAssignabilityCheck"])
@@ -124,6 +127,12 @@ class DataUseLetterController extends AuthenticatedController {
         } else {
             render([dul: dul] as JSON)
         }
+    }
+
+    def getMatchingDiseaseOntologies() {
+        String term = params.q ?: params.term
+        List<OntologyTerm> matches = ontologyService.getDiseaseMatches(term)
+        render(text: matches as JSON, contentType: "application/json")
     }
 
 }

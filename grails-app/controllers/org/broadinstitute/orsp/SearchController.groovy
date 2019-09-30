@@ -198,12 +198,6 @@ class SearchController implements UserInfo {
         render (view: '_dataUseRecords', model: ["issues": issues])
     }
 
-    def getMatchingDiseaseOntologies() {
-        String term = params.q ?: params.term
-        List<OntologyTerm> matches = ontologyService.getDiseaseMatches(term)
-        render(text: matches as JSON, contentType: "application/json")
-    }
-
     def getMatchingPopulationOntologies() {
         List<OntologyTerm> matches = ontologyService.getPopulationMatches((String) params.term)
         render(text: matches as JSON, contentType: "application/json")
