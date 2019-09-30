@@ -16,7 +16,7 @@ class DataUseLetterIndex extends Component {
     this.state = {
       isLoading: true,
       error: '',
-      dul: { }
+      dul: {}
     };
   }
 
@@ -60,12 +60,6 @@ class DataUseLetterIndex extends Component {
         this.setState(() => { throw error; });
       });
     }
-  }
-
-  reload = (uuid) => {
-    this.setState({
-      isLoading: true
-    }, () => this.init(uuid))
   }
 
   displayUseLetter = () => {
