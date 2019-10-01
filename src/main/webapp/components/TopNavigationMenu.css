@@ -13,7 +13,14 @@
     background-color: #39506A;
 }
 
+.navbar-brand {
+    margin: 2px 0 !important;
+}
+
 /* Navigation */
+.navbar-nav {
+    margin-top: 3px;
+}
 .navbar-default .navbar-nav>li>a:active,
 .navbar-default .navbar-nav>li>a:focus {
     color: #FFFFFF;

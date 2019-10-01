@@ -50,7 +50,6 @@ const styles = {
       borderRadius: '3px !important'
     }),
     placeholder: () => ({
-      margin: '0 0 0 15px',
       position: 'absolute',
       zIndex: '99',
       height: '30px',
