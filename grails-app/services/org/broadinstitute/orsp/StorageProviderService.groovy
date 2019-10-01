@@ -13,7 +13,6 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.storage.StorageScopes
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
-import org.apache.commons.lang.StringUtils
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.config.StorageConfiguration
 import org.grails.io.support.GrailsResourceUtils
