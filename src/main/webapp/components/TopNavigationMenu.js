@@ -118,7 +118,6 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   onSuccess = async (token) => {
     await User.signIn(token);
     Storage.setUserIsLogged(true);
-    window.location.reload();
     this.init().then(resp => {
       if (Storage.getLocationFrom() != null) {
         this.props.history.push(Storage.getLocationFrom());
@@ -126,6 +125,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       } else {
         this.props.history.push("/index");
       }
+      window.location.reload();
     });
   };
 
@@ -213,7 +213,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
               [
                 span({}, [
                   "ORSP Portal ",
-                  span({ isRendered: process.env.NODE_ENV === 'development', className: "label label-danger" }, ["Dev"])
+                  span({ isRendered: component.env === 'development', className: "label label-danger" }, ["Dev"])
                 ])
               ])
           ]),

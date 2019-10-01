@@ -1,6 +1,7 @@
 <%@ page import="org.broadinstitute.orsp.IssueStatus" %>
 <%@ page import="org.broadinstitute.orsp.IssueType" %>
 <%@ page import="org.broadinstitute.orsp.PreferredIrb" %>
+<%@ page import="grails.util.Environment" %>
 
 <!DOCTYPE html>
 <html>
@@ -69,6 +70,7 @@
       // TODO: Many of these should be static values directly accessible from the components directly.
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
+
       const component = {
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
@@ -85,7 +87,8 @@
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
         isViewer: ${session.isViewer ? session.isViewer : false},
         isBroad:  ${session.isBroad ? session.isBroad : false},
-        clientId: "${grailsApplication.config.googleSignInClientId}"
+        clientId: "${grailsApplication.config.googleSignInClientId}",
+        env: "${Environment.current.name}"
       };
     </script>
 
