@@ -283,14 +283,8 @@ class StorageProviderService implements Status {
         HttpRequest request
         HttpResponse response = null
         try {
-            if (StringUtils.isNotEmpty(document.projectKey)) {
-                request = buildHttpPutRequest(getUrlForKey(document.projectKey + "/" + document.uuid), content)
-                request.getHeaders().put(RESPONSE_PROJECT_HEADER, document.projectKey)
-            } else if (document.consentCollectionLinkId) {
-                // Stores files to the bucket in a folder named CCL-<id of the consent collection link>
-                request = buildHttpPutRequest(getUrlForKey("CCL-" + document.consentCollectionLinkId + "/" + document.uuid), content)
-                request.getHeaders().put(RESPONSE_PROJECT_HEADER, document.consentCollectionLinkId.toString())
-            }
+            request = buildHttpPutRequest(getUrlForKey(document.projectKey + "/" + document.uuid), content)
+            request.getHeaders().put(RESPONSE_PROJECT_HEADER, document.projectKey)
             request.getHeaders().put(RESPONSE_UUID_HEADER, document.uuid)
             request.getHeaders().put(RESPONSE_FILE_HEADER, document.fileName)
             request.getHeaders().put(RESPONSE_TYPE_HEADER, document.fileType)
