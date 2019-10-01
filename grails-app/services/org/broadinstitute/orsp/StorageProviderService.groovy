@@ -13,6 +13,7 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.storage.StorageScopes
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
+import org.apache.commons.lang.StringUtils
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.config.StorageConfiguration
 import org.grails.io.support.GrailsResourceUtils
@@ -282,8 +283,14 @@ class StorageProviderService implements Status {
         HttpRequest request
         HttpResponse response = null
         try {
-            request = buildHttpPutRequest(getUrlForKey(document.projectKey + "/" + document.uuid), content)
-            request.getHeaders().put(RESPONSE_PROJECT_HEADER, document.projectKey)
+            if (StringUtils.isNotEmpty(document.projectKey)) {
+                request = buildHttpPutRequest(getUrlForKey(document.projectKey + "/" + document.uuid), content)
+                request.getHeaders().put(RESPONSE_PROJECT_HEADER, document.projectKey)
+            } else if (document.consentCollectionLinkId) {
+                // Stores files to the bucket in a folder named CCL-<id of the consent collection link>
+                request = buildHttpPutRequest(getUrlForKey("CCL-" + document.consentCollectionLinkId + "/" + document.uuid), content)
+                request.getHeaders().put(RESPONSE_PROJECT_HEADER, document.consentCollectionLinkId.toString())
+            }
             request.getHeaders().put(RESPONSE_UUID_HEADER, document.uuid)
             request.getHeaders().put(RESPONSE_FILE_HEADER, document.fileName)
             request.getHeaders().put(RESPONSE_TYPE_HEADER, document.fileType)
