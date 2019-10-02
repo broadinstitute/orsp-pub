@@ -22,20 +22,12 @@ import org.springframework.web.multipart.MultipartFile
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ProjectController extends AuthenticatedController {
 
-    def pages() {
-        render(view: "/newProject/index")
-    }
-
     def main() {
         Issue issue = queryService.findByKey(params.projectKey)
         if (issueIsForbidden(issue)) {
             render(view: "/mainContainer/index")
         }
         render(view: "/mainContainer/index", model: [projectKey: params.projectKey, issueType: 'project'])
-    }
-
-    def dul() {
-        render(view: "/dataUseLetter/index")
     }
 
     @Override

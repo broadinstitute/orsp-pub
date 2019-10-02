@@ -1,6 +1,7 @@
 <%@ page import="org.broadinstitute.orsp.IssueStatus" %>
 <%@ page import="org.broadinstitute.orsp.IssueType" %>
 <%@ page import="org.broadinstitute.orsp.PreferredIrb" %>
+<%@ page import="grails.util.Environment" %>
 
 <!DOCTYPE html>
 <html>
@@ -47,7 +48,6 @@
     <script>
       if (location.protocol !== "https:") location.protocol = "https:";
     </script>
-    <g:render template="/layouts/signin"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
 
     %{--
@@ -70,6 +70,7 @@
       // TODO: Many of these should be static values directly accessible from the components directly.
       // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
+
       const component = {
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
@@ -85,7 +86,9 @@
         contextPath: "${request.contextPath}",
         isAdmin: ${session.isAdmin ? session.isAdmin : false},
         isViewer: ${session.isViewer ? session.isViewer : false},
-        isBroad: ${session.isBroad ? session.isBroad : false}
+        isBroad:  ${session.isBroad ? session.isBroad : false},
+        clientId: "${grailsApplication.config.googleSignInClientId}",
+        env: "${Environment.current.name}"
       };
     </script>
 
@@ -113,36 +116,10 @@
     <g:layoutHead/>
 </head>
 <body style="margin-top: 0; padding-top: 70px;">
-<g:render template="/base/topNav" />
+ <div id="main"></div>
+    <asset:javascript src="build/mainIndex.js"/>
 
-<auth:isNotAuthenticated>
-    <div class="container">
-        <div id="login_spinner" class="hidden">
-            <div class="alert alert-success alert-dismissable" style="display: block">
-                Loading ... <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-             </div>
-        </div>
-        <div id="about"></div>
-        <asset:javascript src="build/about.js"/>
-    </div>
-</auth:isNotAuthenticated>
 
-<auth:nonBroadSession>
-    <div class="container">
-        <div id="about"></div>
-        <asset:javascript src="build/about.js"/>
-    </div>
-</auth:nonBroadSession>
-
-<auth:broadSession>
-    <div class="container">
-        <g:render template="/base/messages" />
-        <g:layoutBody/>
-    </div>
-</auth:broadSession>
-
-<div id="footer"></div>
-<asset:javascript src="build/footer.js"/>
 
 
 %{-- TODO: A lot of this code should go away once react conversion is complete --}%
@@ -239,7 +216,6 @@
 </div>
 </script>
 
-<asset:javascript src="application.js"/>
 
 <g:if test="${tab}">
     <asset:script type="text/javascript">

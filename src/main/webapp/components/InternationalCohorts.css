@@ -1,4 +1,4 @@
-.questionnaireProgressBar {
+.internationlCohortsBar .questionnaireProgressBar {
     position: relative;
     width: calc(100% + 30px);
     height: 60px;
@@ -9,17 +9,19 @@
     box-shadow:         0 1px 3px 1px #E1E1E1;
 }
 
-.questionContainer {
+.internationlCohortsBar .questionContainer {
     width: 323px;
     margin: 0 0 0 15px;
     padding-top: 20px;
 }
 
-.questionnaireContainerLight .questionnaireProgressBar {
+.internationlCohortsBar .questionnaireContainerLight .questionnaireProgressBar,
+.internationlCohortsBar .questionnaireContainer .questionnaireProgressBar {
     top: 0;
 }
 
-.questionnaireContainerLight .questionnaireProgressBar p {
+.internationlCohortsBar .questionnaireContainerLight .questionnaireProgressBar p,
+.internationlCohortsBar .questionnaireContainer .questionnaireProgressBar p  {
     position: absolute;
     display: inline-block;
     margin: 20px 0 0 0;
@@ -28,7 +30,8 @@
     color: #666666;
 }
 
-.questionnaireContainerLight .questionnaireProgressBar p.questionTitle {
+.internationlCohortsBar .questionnaireContainerLight .questionnaireProgressBar p.questionTitle,
+.internationlCohortsBar .questionnaireContainer .questionnaireProgressBar p.questionTitle {
     position: relative;
     left: 338px;
     top: -20px;
@@ -36,7 +39,7 @@
     color: #000000;
 }
 
-p.internationlCohortsTitle {
+.internationlCohortsBar p.internationlCohortsTitle {
     display: block;
     visibility: visible;
 }

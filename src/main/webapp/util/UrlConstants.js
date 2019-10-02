@@ -56,6 +56,7 @@ export const UrlConstants = {
   sourceDiseasesUrl: context + '/search/matching-diseases-ontologies',
   populationOntologiesUrl: context + '/search/matching-population-ontologies',
   searchUrl: context + '/search/general-table-json',
+  matchingIssueUrl: context + '/search/matching-issues',
 
   downloadDocumentUrl: context + '/api/user/authenticated/download-document',
   saveCommentUrl: context + '/api/comments/save',
@@ -81,7 +82,7 @@ export const UrlConstants = {
   sampleApproveLinkUrl: context + '/api/approve-link',
   historyUrl: context + '/api/history',
   restrictionUrl: context + '/dataUse/restriction',  
-  showRestrictionUrl: context + '/dataUse/show',
+  showRestrictionUrl: context + '/dataUse/view',
   dataUseRestrictionUrl: context + '/api/data-use/restriction/create',
   newRestrictionUrl: context + '/api/data-use/new-restriction',
   reviewCategoriesUrl: context + '/api/report/review-categories',
@@ -89,7 +90,19 @@ export const UrlConstants = {
   qaEventReportForProjectUrl: context + '/api/qa-project-event-report',
   fundingReportsUrl: context + '/api/report/get-funding',
   viewRestrictionUrl: context + '/api/data-use/restriction',
-
+  authUserUrl: context + '/api/auth',
   issueListUrl: context + '/api/issue-list',
+  profileUrl: context + '/profile',
+  aboutUrl: context + '/about',
+  viewSearchUrl: context + '/search/index',
+  index: context + '/index',
+  signOutUrl: context + '/logout/logout',
+  dataUseListUrl: context + "/dataUse/list",
+  reviewCategoryReportUrl: context + "/report/reviewCategories",
+  qaEventReportViewUrl: context + "/statusEvent/qaEventReport",
+  fundingReportUrl: context + "/admin/fundingReport",
+  metricsReportUrl: context + "/report/aahrppMetrics",
+  rolesManagementUrl: context + "/user/rolesManagement",
+  projectUrl:  context + "/project/pages"
 };
 
