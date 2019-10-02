@@ -14,13 +14,14 @@
 }
 
 .navbar-brand {
-    margin: 2px 0 !important;
+    margin: 2px 0 5px 0!important;
 }
 
 /* Navigation */
 .navbar-nav {
     margin-top: 3px;
 }
+
 .navbar-default .navbar-nav>li>a:active,
 .navbar-default .navbar-nav>li>a:focus {
     color: #FFFFFF;
@@ -34,11 +35,10 @@
 .navbar .googleButton {
     float: right;
     overflow: hidden;
-    margin-top: 5px;
+    margin-top: 12px;
 }
 
-.navbar .googleButton button,
-.navbar .googleButton button div,
-.navbar .googleButton button span {
-    height: 40px;
+.navbar .googleButton #signin > div {
+    height: auto !important;
+    width: auto !important;
 }
