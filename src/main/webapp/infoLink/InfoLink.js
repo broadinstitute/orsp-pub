@@ -1,10 +1,10 @@
-import { Component, Fragment} from 'react';
-import { h, hh, div, h2, h3, span, a, p, b ,button} from 'react-hyperscript-helpers';
+import { Component, Fragment } from 'react';
+import { a, b, div, h, h2, h3, hh, p, span } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { ProjectInfoLink } from "../util/ajax";
-import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
+import { ProjectInfoLink } from '../util/ajax';
+import { SampleCollectionWizard } from '../components/SampleCollectionWizard';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { isEmpty } from "../util/Utils";
+import { isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
 import LoadingWrapper from '../components/LoadingWrapper';
 
