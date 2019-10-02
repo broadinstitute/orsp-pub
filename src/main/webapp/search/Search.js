@@ -6,6 +6,7 @@ import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
 import { UrlConstants } from "../util/UrlConstants";
+import "./style.css";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
 
@@ -21,9 +22,6 @@ class Search extends React.Component {
     this.projectAutocomplete = React.createRef();
     this.state = {
       // setup data
-      issueTypes: props.issueTypes,
-      issueStatuses: props.issueStatuses,
-      irbs: props.irbs,
       data: [],
       loading: false,
       loaded: false,
@@ -221,7 +219,7 @@ class Search extends React.Component {
                 ref={"issueType"}
                 align={"left"}
                 multiple={true}
-                options={this.state.issueTypes}
+                options={component.issueTypes}
                 onChange={selected => {
                   this.setState(() => ({ types: selected }));
                   this.saveStateToLocalStorage();
@@ -264,7 +262,7 @@ class Search extends React.Component {
                 ref={"issueStatus"}
                 align={"left"}
                 multiple={true}
-                options={this.state.issueStatuses}
+                options={component.issueStatuses}
                 renderMenu={this.renderMenu}
                 onChange={selected => {
                   this.setState(() => ({ statuses: selected }));
@@ -292,7 +290,7 @@ class Search extends React.Component {
                 align={"left"}
                 multiple={true}
                 labelKey={option => `${option.value}`}
-                options={this.state.irbs}
+                options={component.irbs}
                 onChange={selected => {
                   this.setState(() => ({ irb: selected }));
                   this.saveStateToLocalStorage();

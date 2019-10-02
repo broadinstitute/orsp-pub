@@ -42,9 +42,11 @@ export const WizardStep = hh(class WizardStep extends Component {
     if (currentStep === step) {
       view = div({ className: "wizardStepContainer" }, [
         div({ className: "row" }, [
-          h2({ className: "wizardStepTitle " + (questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12') }, [
-            small({}, ["Step " + (step + 1)]),
-            this.props.title
+          div({className: questionnaireStep !== undefined ? 'col-lg-8 col-md-7 col-sm-7 col-8' : 'col-lg-12 col-md-12 col-sm-12 col-12'}, [
+            h2({ className: "wizardStepTitle" }, [
+              small({}, ["Step " + (step + 1)]),
+              this.props.title
+            ])
           ])
         ]),
         div({ className: "wizardStepContent" }, [this.props.children] ), 
