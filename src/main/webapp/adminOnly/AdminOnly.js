@@ -15,6 +15,7 @@ import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import get from 'lodash/get';
+import moment from 'moment';
 
 const IRB = 'IRB Project';
 
@@ -110,9 +111,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   parseDate = (date) => {
-    if (date !== null) {
-      let d = new Date(date).toISOString();
-      return d.slice(0, d.indexOf("T"));
+    if (date != null) {
+      return moment(date).format('YYYY/MM/DD')
     }
   };
 
