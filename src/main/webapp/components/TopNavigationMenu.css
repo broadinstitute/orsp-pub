@@ -14,12 +14,14 @@
 }
 
 .navbar-brand {
-    margin: 2px 0 5px 0!important;
+    margin: 0!important;
+    min-height: 60px !important;
+    line-height: 28px !important;
 }
 
 /* Navigation */
 .navbar-nav {
-    margin-top: 3px;
+    margin-top: 5px;
 }
 
 .navbar-default .navbar-nav>li>a:active,
