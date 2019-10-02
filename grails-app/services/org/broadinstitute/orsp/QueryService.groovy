@@ -479,9 +479,7 @@ class QueryService implements Status {
     List findIssuesBySearchTermAsProjectKey(String term) {
         // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
         String issueNumber = getIssueNumberFromString(term)
-        if (StringUtils.isEmpty(issueNumber)) {
-            return Collections.emptyList()
-        }
+        if (StringUtils.isEmpty(issueNumber)) { return Collections.emptyList() }
         String iLikeTerm = "%" + issueNumber + "%"
         Issue.findAllByProjectKeyIlike(iLikeTerm).collect {
             [id             : it.id,
