@@ -702,9 +702,26 @@ class QueryService implements Status {
         if (userNames.isEmpty()) { return Collections.emptyList() }
         List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect { it.projectKey }
         if (keys.isEmpty()) { return Collections.emptyList() }
-        Map params = [sort: "updateDate", order: "desc"]
-        if (max) { params += ["max": max] }
-        Issue.findAllByProjectKeyInList(keys, params)
+        findAllByProjectKeyInList(keys, max)
+    }
+
+    /**
+     * Find all issues by project key and optionally limit by max
+     *
+     * @param projectKeys
+     * @param max
+     * @return List of Issues that match the query
+     */
+    List<Issue> findAllByProjectKeyInList(List<String> projectKeys, Integer max) {
+        if (CollectionUtils.isEmpty(projectKeys)) { return  Collections.emptyList() }
+        String query = 'select * from issue where project_key IN (:projectKeys) order by update_date desc '
+        if (max) query = query + ' limit ' + max
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<Issue> issues = sqlQuery.with {
+            setParameterList('projectKeys', projectKeys)
+            addEntity(Issue)
+            list()
+        }
     }
 
     /**
@@ -719,9 +736,7 @@ class QueryService implements Status {
         List<String> propertyNames = [IssueExtraProperty.ACTOR, IssueExtraProperty.PM, IssueExtraProperty.PI]
         List<String> keys = IssueExtraProperty.findAllByNameInListAndValueInList(propertyNames, userNames.asList(), [:])?.collect { it.projectKey }
         if (keys.isEmpty()) { return Collections.emptyList() }
-        Map params = [sort: "updateDate", order: "desc"]
-        if (max) { params += ["max": max] }
-        Issue.findAllByProjectKeyInList(keys, params)
+        findAllByProjectKeyInList(keys, max)
     }
 
     /**
