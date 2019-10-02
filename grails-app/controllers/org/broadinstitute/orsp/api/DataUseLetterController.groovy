@@ -8,6 +8,7 @@ import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
+import org.broadinstitute.orsp.OntologyService
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.StorageProviderService
@@ -15,12 +16,14 @@ import org.broadinstitute.orsp.UserInfo
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.webservice.OntologyTerm
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class DataUseLetterController implements ExceptionHandler, UserInfo {
 
     DataUseLetterService dataUseLetterService
+    OntologyService ontologyService
     PersistenceService persistenceService
     StorageProviderService storageProviderService
 
@@ -122,6 +125,12 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
         } else {
             render([dul: dul] as JSON)
         }
+    }
+
+    def getMatchingDiseaseOntologies() {
+        String term = params.q ?: params.term
+        List<OntologyTerm> matches = ontologyService.getDiseaseMatches(term)
+        render(text: matches as JSON, contentType: "application/json")
     }
 
 }

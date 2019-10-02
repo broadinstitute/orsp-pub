@@ -90,7 +90,7 @@ class UrlMappings {
         // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')
         '/search/project-key/autocomplete'(controller: 'search', action: 'projectKeyAutocomplete')
-        '/search/matching-diseases-ontologies'(controller: 'search', action: 'getMatchingDiseaseOntologies')
+        '/search/matching-diseases-ontologies'(controller: 'dataUseLetter', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
         '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
         '/search/matching-issues'(controller:'search', action:'getMatchingIssues')
