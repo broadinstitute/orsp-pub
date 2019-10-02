@@ -5,7 +5,7 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldRadio } from '../components/InputFieldRadio';
-import { compareNotEmptyObjects, createObjectCopy, isEmpty } from '../util/Utils';
+import { compareNotEmptyObjects, createObjectCopy, isEmpty, ISSUE_TYPES, ISSUE_TYPES2 } from '../util/Utils';
 import { format } from 'date-fns';
 import 'regenerator-runtime/runtime';
 import { InputFieldSelect } from '../components/InputFieldSelect';
@@ -14,6 +14,9 @@ import { InputTextList } from '../components/InputTextList';
 import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
+import get from 'lodash/get';
+
+const IRB = 'IRB Project';
 
 const AdminOnly = hh(class AdminOnly extends Component {
 
@@ -61,6 +64,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
       let initial = {};
       this.props.initStatusBoxInfo(issue.data);
       formData.projectKey = this.props.projectKey;
+      formData.projectType = get(issue.data, 'issue.type', '');
       formData.investigatorFirstName = issue.data.extraProperties.investigatorFirstName;
       formData.investigatorLastName = issue.data.extraProperties.investigatorLastName;
       formData.degrees = issue.data.extraProperties.degrees;
@@ -373,6 +377,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
             edit: false
           }),
           InputFieldDatePicker({
+            isRendered: this.state.formData.projectType === IRB,
             selected: this.state.formData.irbExpirationDate,
             value: isEmpty(this.state.formData.irbExpirationDate) ? format(new Date(this.state.formData.irbExpirationDate), 'MM/DD/YYYY') : null,
             name: "irbExpirationDate",
