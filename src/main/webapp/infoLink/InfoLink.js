@@ -1,11 +1,12 @@
 import { Component, Fragment} from 'react';
-import { h, div, h2, h3, span, a, p, b } from 'react-hyperscript-helpers';
+import { h, hh, div, h2, h3, span, a, p, b ,button} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from "../util/ajax";
 import { SampleCollectionWizard } from "../components/SampleCollectionWizard";
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { isEmpty } from "../util/Utils";
 import { format } from 'date-fns';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 const styles = {
   dateRange: {
@@ -13,7 +14,7 @@ const styles = {
   }
 };
 
-class InfoLink extends Component {
+const InfoLink = hh(class InfoLink extends Component {
 
   _isMounted = false;
 
@@ -51,6 +52,7 @@ class InfoLink extends Component {
 
   initData = () => {
     let sampleCollectionsIds = [];
+    this.props.showSpinner();
     ProjectInfoLink.getProjectSampleCollections(infoLinkConstant.cclId, component.serverURL).then(
       data => {
         JSON.parse(data.data.sampleCollections).map(sampleCollection => {
@@ -66,9 +68,10 @@ class InfoLink extends Component {
             prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
             prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
             return prev;
-          });
+          }, () => this.props.hideSpinner());
         }
     }).catch(error => {
+      this.props.hideSpinner();
       this.setState(() => { throw error; });
     });
   };
@@ -138,6 +141,6 @@ class InfoLink extends Component {
       ])
     )
   }
-}
+});
 
-export default InfoLink;
+export default LoadingWrapper(InfoLink);
