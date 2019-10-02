@@ -26,7 +26,7 @@ class DulNotifyController extends AuthenticatedController{
         dataUseLetter.setConsentGroupKey(issue.projectKey)
         dataUseLetter.setCreator(user.userName)
         String uuid = dataUseLetterService.generateDul(dataUseLetter)[DataUseLetterFields.UID.abbreviation]
-        String urlFormDul = grailsLinkGenerator.getServerBaseURL() + "/dataUseLetter/show?id=" + uuid
+        String urlFormDul = grailsLinkGenerator.getServerBaseURL() + "/dataUseLetter/view?id=" + uuid
 
         usersNotif.each {
             notifyService.sendDulFormLinkNotification(

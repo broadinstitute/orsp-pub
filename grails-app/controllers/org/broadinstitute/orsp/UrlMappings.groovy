@@ -93,6 +93,7 @@ class UrlMappings {
         '/search/matching-diseases-ontologies'(controller: 'dataUseLetter', action: 'getMatchingDiseaseOntologies')
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
         '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
+        '/search/matching-issues'(controller:'search', action:'getMatchingIssues')
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
@@ -125,6 +126,7 @@ class UrlMappings {
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
 
         '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
+        '/api/auth'(controller: 'auth', action: 'authUser')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
