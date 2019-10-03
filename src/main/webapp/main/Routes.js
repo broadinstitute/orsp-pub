@@ -17,33 +17,38 @@ import DataUseRestrictionEdit from '../dataUse/DataUseRestrictionEdit';
 import PageNotFound from '../pageNotFound/PageNotFound';
 import IssueList from '../issueList/IssueList'
 import LandingPage from './LandingPage';
+import NewProject from '../project/NewProject';
+import AuthenticatedRoute from './AuthenticatedRoute';
+import Search from '../search/Search';
 import ProjectReport from '../qaReport/ProjectReport';
+import InfoLink from '../infoLink/InfoLink';
+import { Storage } from '../util/Storage';
+
 
 const Routes = ( props ) => (
   <Switch>
-    <Route path= {"/"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
-    <Route path= {"/index"} exact render = {(routeProps) =>  <LandingPage {...routeProps} {...props}/> }/>
-    <Route path= {"/user/rolesManagement"} render = {(routeProps) =>  <RolesManagement {...routeProps} {...props}/> }/>
-    <Route path= {"/project/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <Route path= {"/newConsentGroup/main"} render = {(routeProps) => <Main {...routeProps} {...props}/> }/>
-    <Route path= {"/admin/fundingReport"} render = {(routeProps)=> <FundingsSourceReport {...routeProps} {...props}/>}/>
-    <Route path= {"/report/reviewCategories"} render = {(routeProps) => <ReviewCategories {...routeProps} {...props}/> }/>
-    <Route path= {"/statusEvent/qaEventReport"} render = {(routeProps) => <QaReport {...routeProps} {...props}/>} />
-    <Route path= {"/statusEvent/projectReport"} render = {(routeProps) => <ProjectReport {...routeProps} {...props}/>} />
-    <Route path= {"/index/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/index/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
-    <Route path= {"/profile"} render = {(routeProps) =>  <Profile {...routeProps} {...props}/> }/>
-    <Route path= {"/about"} render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
-    <Route path= {"/dataUse/list"} render = {(routeProps) =>  <DataUseRestrictionIndex {...routeProps} {...props}/> }/>
-    <Route path= {"/consent-group/use-existing"} render = {(routeProps) => <LinkWizard {...routeProps} {...props}/> }/>
-    <Route path= {"/consent-group/new"} render = {(routeProps) =>  <NewConsentGroup {...routeProps} {...props}/> }/>
-    <Route path= {"/dataUseLetter/show"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
-    <Route path= {"/submissions/add-new"} render={(routeProps) => <SubmissionForm {...routeProps} {...props} />} />
-    <Route path= {"/dataUse/show"} render = {(routeProps) =>  <DataUseRestrictionDetails {...routeProps} {...props}/> }/>
-    <Route path= {"/dataUse/restriction"} render = {(routeProps) =>  <DataUseRestrictionEdit {...routeProps} {...props}/> }/>
-    <Route path= {"/issueList/list"} render = {(routeProps) =>  <IssueList {...routeProps} {...props}/> }/>
-    <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>
+    <AuthenticatedRoute path= {"/user/rolesManagement"} component={RolesManagement} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {["/project/main", "/newConsentGroup/main"]} component={Main} props={props}/> }/>
+    <AuthenticatedRoute path= {"/project/pages"} component={NewProject} props={props}/> }/>
+    <AuthenticatedRoute path= {"/admin/fundingReport"} component={FundingsSourceReport} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/report/reviewCategories"} component={ReviewCategories} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/statusEvent/qaEventReport"} component={QaReport} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/statusEvent/projectReport"} component={ProjectReport} props={props} admin={true} />
+    <AuthenticatedRoute path= {"/dataUse/list"}  component={DataUseRestrictionIndex} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/dataUse/view"}  component={DataUseRestrictionDetails} props={props}/> }/>
+    <AuthenticatedRoute path= {"/consent-group/use-existing"} component={LinkWizard} props={props}/> }/>
+    <AuthenticatedRoute path= {"/consent-group/new"} component={NewConsentGroup} props={props}/> }/>
+    <AuthenticatedRoute path= {"/dataUse/restriction"} component={DataUseRestrictionEdit} props={props}/> }/>
+    <AuthenticatedRoute path= {"/issueList/list"} component={IssueList} props={props} /> }/>
+    <AuthenticatedRoute path= {"/search/index"} component={Search} props={props} /> }/>
+    <AuthenticatedRoute path= {"/submissions/add-new"} component={SubmissionForm} props={props} /> }/>
+    <AuthenticatedRoute path= {"/infoLink/showInfoLink"} component={InfoLink} props={props}/> }/>
+    <AuthenticatedRoute path= {["/index/profile", "/profile"]} component={Profile} props={props}/>  }/>
+    <Route path= {"/index"} exact component={LandingPage} props={props}/> }/>
+    <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>
+    <Route path= {"/dataUseLetter/view"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>
+    <Route path= {"/*"} render = {(routeProps) =>  <PageNotFound {...routeProps} {...props}/> }/>   
   </Switch>
 );
-
 export default Routes;

@@ -5,6 +5,7 @@ import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -477,17 +478,19 @@ class QueryService implements Status {
 
     List findIssuesBySearchTermAsProjectKey(String term) {
         // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
-        String iLikeTerm = "%" + getIssueNumberFromString(term) + "%"
+        String issueNumber = getIssueNumberFromString(term)
+        if (StringUtils.isEmpty(issueNumber)) { return Collections.emptyList() }
+        String iLikeTerm = "%" + issueNumber + "%"
         Issue.findAllByProjectKeyIlike(iLikeTerm).collect {
-            [id: it.id,
-             projectKey: it.projectKey,
-             summary: it.summary,
-             reporter: it.reporter,
-             pm: userService.findUsers(it.getPMs()).displayName,
-             actor: userService.findUsers(it.getActorUsernames()).displayName,
+            [id             : it.id,
+             projectKey     : it.projectKey,
+             summary        : it.summary,
+             reporter       : it.reporter,
+             pm             : userService.findUsers(it.getPMs()).displayName,
+             actor          : userService.findUsers(it.getActorUsernames()).displayName,
              extraProperties: it.extraPropertiesMap,
-             controller: it.controller,
-             type: it.type
+             controller     : it.controller,
+             type           : it.type
             ]
         }
     }
@@ -702,9 +705,27 @@ class QueryService implements Status {
         if (userNames.isEmpty()) { return Collections.emptyList() }
         List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect { it.projectKey }
         if (keys.isEmpty()) { return Collections.emptyList() }
-        Map params = [sort: "updateDate", order: "desc"]
-        if (max) { params += ["max": max] }
-        Issue.findAllByProjectKeyInList(keys, params)
+        findAllByProjectKeyInList(keys, max)
+    }
+
+    /**
+     * Find all issues by project key and optionally limit by max
+     *
+     * @param projectKeys
+     * @param max
+     * @return List of Issues that match the query
+     */
+    List<Issue> findAllByProjectKeyInList(List<String> projectKeys, Integer max) {
+        if (CollectionUtils.isEmpty(projectKeys)) { return  Collections.emptyList() }
+        String query = 'select * from issue where project_key IN (:projectKeys) order by update_date desc '
+        if (max) { query = query + ' limit ' + max }
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<Issue> issues = sqlQuery.with {
+            setParameterList('projectKeys', projectKeys)
+            addEntity(Issue)
+            list()
+        }
+        issues
     }
 
     /**
@@ -719,9 +740,7 @@ class QueryService implements Status {
         List<String> propertyNames = [IssueExtraProperty.ACTOR, IssueExtraProperty.PM, IssueExtraProperty.PI]
         List<String> keys = IssueExtraProperty.findAllByNameInListAndValueInList(propertyNames, userNames.asList(), [:])?.collect { it.projectKey }
         if (keys.isEmpty()) { return Collections.emptyList() }
-        Map params = [sort: "updateDate", order: "desc"]
-        if (max) { params += ["max": max] }
-        Issue.findAllByProjectKeyInList(keys, params)
+        findAllByProjectKeyInList(keys, max)
     }
 
     /**

@@ -1,0 +1,46 @@
+/* Logo */
+.navbar-default .navbar-brand:active,
+.navbar-default .navbar-brand:focus,
+.navbar-default .navbar-brand:hover {
+    color: #FFFFFF;
+    -webkit-transition: background-color 0.3s ease-in-out;
+  -moz-transition: background-color 0.3s ease-in-out;
+  -o-transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.navbar-default .navbar-brand:hover {
+    background-color: #39506A;
+}
+
+.navbar-brand {
+    margin: 0!important;
+    min-height: 60px !important;
+    line-height: 28px !important;
+}
+
+/* Navigation */
+.navbar-nav {
+    margin-top: 5px;
+}
+
+.navbar-default .navbar-nav>li>a:active,
+.navbar-default .navbar-nav>li>a:focus {
+    color: #FFFFFF;
+}
+
+.navbar-form .select__indicators {
+    display: none;
+    visibility: hidden;
+}
+
+.navbar .googleButton {
+    float: right;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.navbar .googleButton #signin > div {
+    height: auto !important;
+    width: auto !important;
+}
