@@ -206,7 +206,7 @@ class IssueService implements UserInfo {
         if (!input.containsKey(IssueExtraProperty.AFFILIATIONS)) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATIONS})
         }
-        if (!input.containsKey(IssueExtraProperty.AFFILIATION_OTHER)) {
+        if (input.containsKey(IssueExtraProperty.AFFILIATION_OTHER) ) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.AFFILIATION_OTHER})
         }
         if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {

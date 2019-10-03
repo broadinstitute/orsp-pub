@@ -528,6 +528,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
       this.setState(prev => {
         prev.readOnly = true;
         prev.errorSubmit = false;
+        if (prev.formData.projectExtraProps.affiliations.value !== 'other') {
+          prev.formData.projectExtraProps.affiliationOther = '';
+        }
         return prev;
       });
       let suggestions = this.state.formData;
