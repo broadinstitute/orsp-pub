@@ -25,4 +25,9 @@ trait ExceptionHandler {
         render([error: e.message] as JSON)
     }
 
+    def handleUnauthorized() {
+        log.error("Unauthorized")
+        response.status = 401
+    }
+
 }

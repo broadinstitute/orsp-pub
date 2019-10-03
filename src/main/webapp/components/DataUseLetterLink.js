@@ -79,7 +79,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       dulInfo: JSON.stringify(this.state.formData)
     };
     DUL.generateRedirectLink(data).then(resp => {
-      navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/show?id=" + resp.data.dulToken);
+      navigator.clipboard.writeText(component.serverURL + "/dataUseLetter/view?id=" + resp.data.dulToken);
       this.successTimeAlert();
     }).catch(error => {
       this.setState(prev => {

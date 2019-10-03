@@ -16,6 +16,10 @@ export const Search = {
 
   getMatchingPopulationOntologies(query) {
     return axios.get(UrlConstants.populationOntologiesUrl + '?term=' + query);
+  },
+
+  getMatchingIssues(query) {
+    return axios.get(UrlConstants.matchingIssueUrl + '?term=' + query);
   }
 };
 
@@ -262,8 +266,18 @@ export const User = {
 
   editUserRole(userId, roles) {
     return axios.put(UrlConstants.editUserRoleUrl, {userId: userId, roles: roles});
-  }
+  },
 
+  signIn(token) {
+    const config = {
+      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+    };
+    return axios.get(UrlConstants.authUserUrl + '?token=' + token);
+  },
+
+  signOut() {
+    return axios.get(UrlConstants.signOutUrl);
+  }
 };
 
 export const Review = {

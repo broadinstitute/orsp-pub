@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { a, h1, hh, span } from 'react-hyperscript-helpers';
+import { a, h1, hh, span, div } from 'react-hyperscript-helpers';
 import { QuestionnaireWorkflow } from './QuestionnaireWorkflow';
 import { DETERMINATION } from '../util/TypeDescription';
 import './InternationalCohorts.css';
@@ -86,7 +86,9 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
     }
 
     return (
-      QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination, questionnaireUnwrapped: true })
+      div({className: 'internationlCohortsBar'}, [
+        QuestionnaireWorkflow({ questions: this.state.questions, handler: this.props.handler, determination: this.props.determination, questionnaireUnwrapped: true })
+      ])
     )
   }
 });
