@@ -7,7 +7,7 @@ import InputFieldNumber from '../components/InputFieldNumber';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { Table } from '../components/Table';
 import AddDocumentDialog from '../components/AddDocumentDialog';
-import { isEmpty, scrollToTop } from '../util/Utils';
+import { isEmpty, removeHtmlTags, scrollToTop } from '../util/Utils';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -168,7 +168,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
-        comments: this.state.submissionInfo.comments,
+        comments: removeHtmlTags(this.state.submissionInfo.comments),
         projectKey: this.state.submissionInfo.projectKey
       };
 
