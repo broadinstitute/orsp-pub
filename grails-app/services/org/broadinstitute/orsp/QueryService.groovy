@@ -5,6 +5,7 @@ import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -477,17 +478,19 @@ class QueryService implements Status {
 
     List findIssuesBySearchTermAsProjectKey(String term) {
         // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
-        String iLikeTerm = "%" + getIssueNumberFromString(term) + "%"
+        String issueNumber = getIssueNumberFromString(term)
+        if (StringUtils.isEmpty(issueNumber)) { return Collections.emptyList() }
+        String iLikeTerm = "%" + issueNumber + "%"
         Issue.findAllByProjectKeyIlike(iLikeTerm).collect {
-            [id: it.id,
-             projectKey: it.projectKey,
-             summary: it.summary,
-             reporter: it.reporter,
-             pm: userService.findUsers(it.getPMs()).displayName,
-             actor: userService.findUsers(it.getActorUsernames()).displayName,
+            [id             : it.id,
+             projectKey     : it.projectKey,
+             summary        : it.summary,
+             reporter       : it.reporter,
+             pm             : userService.findUsers(it.getPMs()).displayName,
+             actor          : userService.findUsers(it.getActorUsernames()).displayName,
              extraProperties: it.extraPropertiesMap,
-             controller: it.controller,
-             type: it.type
+             controller     : it.controller,
+             type           : it.type
             ]
         }
     }
