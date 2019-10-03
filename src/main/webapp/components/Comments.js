@@ -8,8 +8,6 @@ import { exportData } from '../util/Utils';
 import { TableComponent } from './TableComponent';
 import { formatDataPrintableFormat } from '../util/TableUtil';
 import LoadingWrapper from './LoadingWrapper';
-import { format } from 'date-fns';
-import { isEmpty } from '../util/Utils';
 
 const defaultSorted = [{
   dataField: 'date',
@@ -28,11 +26,7 @@ const columns = [{
   }, {
     dataField: 'date',
     text: 'Date',
-    sort: true,
-    formatter: (cell, row, rowIndex, colIndex) =>
-    div({},[
-      !isEmpty(row.date) ? format(new Date(row.date), 'MM/DD/YYYY HH:MM') : ''
-    ])
+    sort: true
   }, {
     dataField: 'comment',
     text: 'Comment',
