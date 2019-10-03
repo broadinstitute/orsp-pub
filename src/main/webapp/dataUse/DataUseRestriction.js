@@ -36,7 +36,7 @@ const columns = [
     sort: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
-      h(Link, {to: {pathname:'/dataUse/show/'+ row.id, search:'?restrictionId=' + row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
+      h(Link, {to: {pathname:'/dataUse/view', search:'?restrictionId=' + row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
     ])
   },
   {

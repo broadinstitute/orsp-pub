@@ -4,22 +4,29 @@ import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
+import org.broadinstitute.orsp.OntologyService
+import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.StorageDocument
+import org.broadinstitute.orsp.StorageProviderService
+import org.broadinstitute.orsp.UserInfo
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
+import org.broadinstitute.orsp.webservice.OntologyTerm
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
-class DataUseLetterController extends AuthenticatedController {
-    DataUseLetterService dataUseLetterService
+class DataUseLetterController implements ExceptionHandler, UserInfo {
 
-    @Override
+    DataUseLetterService dataUseLetterService
+    OntologyService ontologyService
+    PersistenceService persistenceService
+    StorageProviderService storageProviderService
+
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def create () {
         DataUseLetter inputDul = IssueUtils.getJson(DataUseLetter.class, request.JSON)
@@ -33,7 +40,6 @@ class DataUseLetterController extends AuthenticatedController {
         }
     }
 
-    @Override
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def update () {
         DataUseLetter input = IssueUtils.getJson(DataUseLetter.class, request.JSON)
@@ -47,11 +53,6 @@ class DataUseLetterController extends AuthenticatedController {
         } catch(Exception e) {
             handleException(e)
         }
-    }
-
-    @Override
-    def show() {
-        render(view: "/dataUseLetter/index")
     }
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
@@ -124,6 +125,12 @@ class DataUseLetterController extends AuthenticatedController {
         } else {
             render([dul: dul] as JSON)
         }
+    }
+
+    def getMatchingDiseaseOntologies() {
+        String term = params.q ?: params.term
+        List<OntologyTerm> matches = ontologyService.getDiseaseMatches(term)
+        render(text: matches as JSON, contentType: "application/json")
     }
 
 }

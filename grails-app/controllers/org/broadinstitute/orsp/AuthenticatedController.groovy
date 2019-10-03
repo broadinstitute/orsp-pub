@@ -311,17 +311,22 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
 
     def getSessionUser() {
         User user = getUser()
-        render([
-            'displayName': user.displayName,
-            'emailAddress': user.emailAddress,
-            'userName': user.userName,
-            'lastLoginDate': user.lastLoginDate,
-            'isAdmin': isAdmin(),
-            'isORSP': isORSP(),
-            "isViewer": isViewer(),
-            'isComplianceOffice': isComplianceOffice(),
-            'isBroad': isBroad()
-        ] as JSON)
+        if(user) {
+            render([
+                    'displayName': user.displayName,
+                    'emailAddress': user.emailAddress,
+                    'userName': user.userName,
+                    'lastLoginDate': user.lastLoginDate,
+                    'isAdmin': isAdmin(),
+                    'isORSP': isORSP(),
+                    "isViewer": isViewer(),
+                    'isComplianceOffice': isComplianceOffice(),
+                    'isBroad': isBroad()
+            ] as JSON)
+        } else {
+            handleUnauthorized()
+        }
+
     }
 
     def hasSession() {
