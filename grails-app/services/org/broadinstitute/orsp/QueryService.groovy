@@ -715,13 +715,14 @@ class QueryService implements Status {
     List<Issue> findAllByProjectKeyInList(List<String> projectKeys, Integer max) {
         if (CollectionUtils.isEmpty(projectKeys)) { return  Collections.emptyList() }
         String query = 'select * from issue where project_key IN (:projectKeys) order by update_date desc '
-        if (max) query = query + ' limit ' + max
+        if (max) { query = query + ' limit ' + max }
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> issues = sqlQuery.with {
             setParameterList('projectKeys', projectKeys)
             addEntity(Issue)
             list()
         }
+        issues
     }
 
     /**
