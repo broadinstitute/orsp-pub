@@ -1,16 +1,21 @@
 import { Component } from 'react';
-import { a, button, div, h, h1, hh } from 'react-hyperscript-helpers';
+import { a, button, div, h, h1, hh, small } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { Files, ProjectMigration } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import InputFieldNumber from '../components/InputFieldNumber';
-import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { Table } from '../components/Table';
 import AddDocumentDialog from '../components/AddDocumentDialog';
-import { isEmpty, removeHtmlTags, scrollToTop } from '../util/Utils';
+import { isEmpty, scrollToTop } from '../util/Utils';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { Editor } from '@tinymce/tinymce-react';
+
+const errorBorderStyle = {
+  border: "1px solid red",
+  marginTop:'4px'
+};
 
 const styles = {
   addDocumentContainer: {
@@ -133,11 +138,9 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     return  docTypes.map(type => { return { value: type, label: type } });
   };
 
-  handleInputChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
+  handleInputChange = (comment, editor) => {
     this.setState(prev => {
-      prev.submissionInfo[field] = value;
+      prev.submissionInfo.comments = comment;
       prev.errors.comment = false;
       return prev;
     });
@@ -168,7 +171,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
         number: this.state.submissionInfo.number,
-        comments: removeHtmlTags(this.state.submissionInfo.comments),
+        comments: this.state.submissionInfo.comments,
         projectKey: this.state.submissionInfo.projectKey
       };
 
@@ -354,18 +357,23 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             readOnly: component.isViewer,
             edit: false
           }),
-          InputFieldTextArea({
-            id: "submission-comment",
-            name: "comments",
-            label: "Description",
-            value: this.state.submissionInfo.comments,
-            required: false,
-            onChange: this.handleInputChange,
-            edit: component.isAdmin,
-            error: this.state.errors.comment,
-            errorMessage: "Required field",
-            readOnly: component.isViewer,
-          }),
+          div({
+            style: this.state.errors.comment ? errorBorderStyle : null
+          }, [
+            h(Editor, {
+              disabled: !component.isAdmin,
+              init: {
+                width: '100%',
+                menubar: false,
+                statusbar: false,
+                plugins: "paste",
+                paste_data_images: false
+              },
+              value: this.state.submissionInfo.comments,
+              onEditorChange: this.handleInputChange
+            })
+          ]),
+          small({ isRendered: this.state.errors.comment, className: "errorMessage" }, ['Required field'])
         ]),
         Panel({
           title: "Files"
