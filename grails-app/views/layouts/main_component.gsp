@@ -67,8 +67,6 @@
           <g:each status="count" in="${PreferredIrb.values()}" var="map">{ id:"${raw(map.key)}", value:"${raw(map.label)}"}<g:if test="${count < PreferredIrb.values().size() - 1}">,</g:if>
         </g:each>];
 
-      // TODO: Many of these should be static values directly accessible from the components directly.
-      // Look into moving these values out of
       // React Component dependencies that derive from native GSP/Grails functionality should be defined here.
 
       const component = {
@@ -92,25 +90,10 @@
       };
     </script>
 
-    %{-- Set context path for all scripts to use --}%
-    <script type="text/javascript">
-      window.appContext = '${request.contextPath}';
-    </script>
-
     %{-- TODO: A lot of this code should go away once react conversion is complete --}%
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-    <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-    <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
-    <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
     <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=kyknyn3xmeam53u8vyway2oxf18oecyfwkjoym1xcydpyfyh"></script>
 
     <g:layoutHead/>
@@ -123,16 +106,10 @@
 
 
 %{-- TODO: A lot of this code should go away once react conversion is complete --}%
-<asset:javascript src="jquery.fn.dataTablesExt.ticket.js"/>
-<asset:javascript src="jquery.fn.dataTablesExt.ticket.js"/>
 <asset:javascript src="chosen.jquery.min.js"/>
 <asset:javascript src="jasny-bootstrap.min.js"/>
 <asset:javascript src="jquery.validate.min.js"/>
 <asset:javascript src="jsrender.js"/>
-
-<asset:javascript src="jquery.file.upload-9.9.2/js/vendor/jquery.ui.widget.js"/>
-<asset:javascript src="jquery.file.upload-9.9.2/js/jquery.iframe-transport.js"/>
-<asset:javascript src="jquery.file.upload-9.9.2/js/jquery.fileupload.js"/>
 
 <script type="text/javascript">
   $(document).ready(function () {
@@ -141,38 +118,6 @@
     $('[data-toggle="tooltip"]').tooltip();
   });
 
-  function loadComments(url) {
-    $("#comments").load(
-      url,
-      function() {
-        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
-        $("#comments-table").DataTable({
-          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
-          language: { search: 'Filter:' },
-          pagingType: "full_numbers",
-          order: [1, "desc"]
-        });
-        initializeEditor();
-      }
-    );
-  }
-
-  function loadHistory(url) {
-    $("#history").load(
-      url,
-      function() {
-        $.fn.dataTable.moment( 'MM/DD/YYYY hh:mm:ss' );
-        $("#history-table").DataTable({
-          dom: '<"H"Tfr><"pull-right"B><div>t</div><"F"lp>',
-          buttons: [ 'excelHtml5', 'csvHtml5', 'print' ],
-          language: { search: 'Filter:' },
-          pagingType: "full_numbers",
-          order: [1, "desc"]
-        });
-      }
-    );
-  }
 
   // Toggle pattern for Jira-style objects. Relies on "-id" naming pattern
   function toggleContinueMessage(elementId, val1, val2) {
