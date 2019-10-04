@@ -12,9 +12,9 @@ import moment from 'moment';
 
 const styles = {
   projectWidth: '120px',
-  titleWidth: '372px',
-  expirationWidth: '120px',
-  updatedWidth: '130px',
+  titleWidth: '378px',
+  expirationWidth: '110px',
+  updatedWidth: '140px',
   typeWidth: '170px',
   statusWidth: '220px'
 };
