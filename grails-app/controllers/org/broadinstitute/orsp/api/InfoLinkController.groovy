@@ -12,10 +12,6 @@ import org.broadinstitute.orsp.StorageDocument
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class InfoLinkController extends AuthenticatedController {
 
-    def showInfoLink() {
-        render(view: "/infoLink/index", model: [projectKey: params.projectKey, consentKey: params.consentKey])
-    }
-
     def getProjectSampleCollections() {
         String consentCollectionId = params.cclId
         try {

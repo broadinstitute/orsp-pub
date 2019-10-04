@@ -144,7 +144,7 @@ export const Documents = hh(class Documents extends Component {
 
       Panel({
         title: "Data Use Limitation Record Request",
-        isRendered: this.props.isConsentGroup === true
+        isRendered: this.props.isConsentGroup === true && !component.isViewer
       }, [
           h(DataUseLetter, {
             userName: this.props.userName,

@@ -7,6 +7,7 @@ import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
+import { Storage } from '../util/Storage';
 
 const styles = {
   projectWidth: '120px',
@@ -77,7 +78,8 @@ const LandingPage = hh(class LandingPage extends Component{
     super(props);
     this.state = {
       projectList: [],
-      taskList: []
+      taskList: [],
+      logged: false
     };
   }
 
@@ -92,38 +94,40 @@ const LandingPage = hh(class LandingPage extends Component{
 
   init = async () => {
     this.props.showSpinner();
-    const [ projects, tasks, user ] = await Promise.all([
-      Issues.getIssueList('false', 5),
-      Issues.getIssueList('true', 5),
-      User.isAuthenticated()
-    ]).catch(error => {
-      this.props.hideSpinner();
-      this.setState(() => { throw error; });
-    });
+    let user = await User.isAuthenticated();
     let projectList = [];
     let taskList = [];
-
-    projects.data.forEach(issue => {
-      projectList.push({
-        project: issue.projectKey,
-        title: issue.summary,
-        status: projectStatus(issue),
-        type: issue.type,
-        updated: parseDate(issue.updateDate),
-        expiration: parseDate(issue.expirationDate)
+    if (user.data.session && component.isBroad) {
+      const [ projects, tasks ] = await Promise.all([
+        Issues.getIssueList('false', 5),
+        Issues.getIssueList('true', 5)
+      ]).catch(error => {
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
       });
-    });
 
-    tasks.data.forEach(issue => {
-      taskList.push({
-        project: issue.projectKey,
-        title: issue.summary,
-        status: projectStatus(issue),
-        type: issue.type,
-        updated: parseDate(issue.updateDate),
-        expiration: parseDate(issue.expirationDate)
+      projects.data.forEach(issue => {
+        projectList.push({
+          project: issue.projectKey,
+          title: issue.summary,
+          status: projectStatus(issue),
+          type: issue.type,
+          updated: parseDate(issue.updateDate),
+          expiration: parseDate(issue.expirationDate)
+        });
       });
-    });
+
+      tasks.data.forEach(issue => {
+        taskList.push({
+          project: issue.projectKey,
+          title: issue.summary,
+          status: projectStatus(issue),
+          type: issue.type,
+          updated: parseDate(issue.updateDate),
+          expiration: parseDate(issue.expirationDate)
+        });
+      });
+    }
 
     this.props.hideSpinner();
 
@@ -132,7 +136,8 @@ const LandingPage = hh(class LandingPage extends Component{
         projectList: projectList,
         taskList: taskList,
         logged: user.data.session
-      })
+      });
+      Storage.setUserIsLogged(user.data.session);
     }
   };
 
@@ -140,7 +145,7 @@ const LandingPage = hh(class LandingPage extends Component{
     return (
       div({}, [
         About(),
-        div({className: "row", isRendered: this.state.logged && component.isBroad}, [
+        div({className: "row", isRendered: component.isBroad}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},

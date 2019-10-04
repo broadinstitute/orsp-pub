@@ -1,13 +1,14 @@
 package org.broadinstitute.orsp
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.api.ExceptionHandler
 
 /**
  * Interceptor specific to API based services.
  *
  * Requires an active session to proceed.
  */
-class ApiInterceptor implements UserInfo  {
+class ApiInterceptor implements UserInfo, ExceptionHandler  {
 
     ApiInterceptor() {
         match controller: 'clarification'
@@ -34,10 +35,11 @@ class ApiInterceptor implements UserInfo  {
     boolean before() {
         if (!session.getAttribute("user")) {
             session.setAttribute("savedParams", params)
+            handleUnauthorized()
             render(view: "/mainContainer/index")
-            false
+        } else {
+            true
         }
-        true
     }
 
     def exception(Exception e) {
