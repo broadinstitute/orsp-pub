@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { a, button, div, h, h1, hh, small } from 'react-hyperscript-helpers';
+import { a, button, div, h, h1, hh, small, p } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { Files, ProjectMigration } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
@@ -357,23 +357,28 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             readOnly: component.isViewer,
             edit: false
           }),
-          div({
-            style: this.state.errors.comment ? errorBorderStyle : null
-          }, [
-            h(Editor, {
-              disabled: !component.isAdmin,
-              init: {
-                width: '100%',
-                menubar: false,
-                statusbar: false,
-                plugins: "paste",
-                paste_data_images: false
-              },
-              value: this.state.submissionInfo.comments,
-              onEditorChange: this.handleInputChange
-            })
-          ]),
-          small({ isRendered: this.state.errors.comment, className: "errorMessage" }, ['Required field'])
+          div({className: "inputField"}, [
+            p({ className: "inputFieldLabel" }, [
+              "Description"
+            ]),
+            div({
+              style: this.state.errors.comment ? errorBorderStyle : null
+            }, [
+              h(Editor, {
+                disabled: !component.isAdmin,
+                init: {
+                  width: '100%',
+                  menubar: false,
+                  statusbar: false,
+                  plugins: "paste",
+                  paste_data_images: false
+                },
+                value: this.state.submissionInfo.comments,
+                onEditorChange: this.handleInputChange
+              })
+            ]),
+            small({ isRendered: this.state.errors.comment, className: "errorMessage" }, ['Required field'])
+          ])
         ]),
         Panel({
           title: "Files"
@@ -398,12 +403,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           }),
           button({
             isRendered: !component.isViewer,
-            className: "btn buttonPrimary pull-right", style: {'marginTop':'30px', 'marginLeft':'12px'},
+            className: "btn buttonPrimary pull-right buttonContainer", style: {'marginTop':'30px', 'marginLeft':'12px'},
             onClick: this.submitSubmission,
           }, [edit ? "Save" : "Submit"]),
           button({
             isRendered: !component.isViewer && edit,
-            className: "btn buttonPrimary floatRight", style: {'marginTop':'30px'},
+            className: "btn buttonPrimary floatRight buttonContainer", style: {'marginTop':'30px'},
             onClick: this.removeSubmissionDialog
           }, ["Delete"])
         ]),
