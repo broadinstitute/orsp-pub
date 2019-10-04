@@ -15,13 +15,13 @@ function LoadingWrapper(WrappedComponent, fixed = false) {
     'top': '0',
     'zIndex': '1041'
   };
-
+  
   const containerStyleFixedTop = {
     'position': 'fixed',
-    'top': '51px',
+    'top': '62px',
     'zIndex': '1041'
   };
-
+  
   const spinnerStyle = {
     'position': 'absolute',
     'top': '30%',
