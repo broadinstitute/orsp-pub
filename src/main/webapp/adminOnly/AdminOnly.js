@@ -5,7 +5,7 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldRadio } from '../components/InputFieldRadio';
-import { compareNotEmptyObjects, createObjectCopy, isEmpty, ISSUE_TYPES, ISSUE_TYPES2 } from '../util/Utils';
+import { compareNotEmptyObjects, createObjectCopy, isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
 import 'regenerator-runtime/runtime';
 import { InputFieldSelect } from '../components/InputFieldSelect';
