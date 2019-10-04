@@ -34,11 +34,12 @@ class UtilityClass {
      */
     static void registerCommentMarshaller() {
         JSON.registerObjectMarshaller(Comment) {
+            SimpleDateFormat  sd = new SimpleDateFormat("yyyy-MM-dd HH:mm")
             LinkedHashMap output = [:]
             output['id'] = it.id
             output['author'] = it.author
             output['comment'] = it.description
-            output['date'] = it.created
+            output['date'] = sd.format(it.created)
             return output
         }
     }
