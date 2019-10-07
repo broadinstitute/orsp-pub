@@ -110,21 +110,18 @@ final class IssueUtils {
         null
     }
 
-    static Map<String, Object> generateArgumentsForRedirect(String type, String id, String tab) {
-        Map<String, Object> arguments = new HashMap<>()
+    static String generateLinkForRedirect(String type, String id, String tab) {
+        StringBuffer link = new StringBuffer()
         if (type == IssueType.CONSENT_GROUP.name) {
-            arguments.put("controller", "newConsentGroup")
-            arguments.put("action", "main")
-            tab != null ? arguments.put("params", [consentKey: id, tab: tab]) :
-                    arguments.put("params", [consentKey: id])
+            link.append('/newConsentGroup/main')
+            if (tab != null) { link.append('?consentKey=').append(id).append('&tab=').append(tab)
+            } else { link.append('?consentKey=').append(id) }
         } else {
-            arguments.put("controller", "project")
-            arguments.put("action", "main")
-            arguments.put("projectKey", id)
-            tab != null ? arguments.put("params", [projectKey: id, tab: tab]) :
-                    arguments.put("params", [projectKey: id])
+            link.append('/project/main')
+            if (tab != null) { link.append('?projectKey=').append(id).append('&tab=').append(tab) }
+            else { link.append('?projectKey=').append(id) }
         }
-        arguments
+        link.toString()
     }
 
     static String escapeQuote(String str) {

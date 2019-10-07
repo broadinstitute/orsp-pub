@@ -42,7 +42,6 @@ class UrlMappings {
         '/api/consent-group/sample-collections'(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')
         '/consent-group/name-search'(controller: 'consentGroup', action: 'getConsentGroups')
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
-        '/consent-group/use-existing'(controller:'newConsentGroup', action:'renderMainComponent')
         '/consent-group/new'(controller:'newConsentGroup', action:'renderMainComponent')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')

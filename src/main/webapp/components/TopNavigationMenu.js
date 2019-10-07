@@ -193,7 +193,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   handleSearchChange = (data, action) => {
     if (data != null && !data.linkDisabled) {
-      window.location.href = data.url;
+      this.props.history.push(data.url)
     }
   };
 

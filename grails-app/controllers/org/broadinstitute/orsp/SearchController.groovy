@@ -53,8 +53,7 @@ class SearchController implements UserInfo {
         Boolean isViewer = isViewer()
         Collection response = []
         queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
-            Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-            String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params:  arguments.get("params"), absolute: true])
+            String link = IssueUtils.generateLinkForRedirect(it.type, it.projectKey, null)
             response << [
                     id: it.id,
                     label: it.projectKey + " (" + it.summary + ")",
@@ -151,8 +150,7 @@ class SearchController implements UserInfo {
                 options.fundingInstitute ||
                 options.irbsOfRecord) {
             rows = queryService.findIssues(options).collect {
-                Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
-                String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+                String link = IssueUtils.generateLinkForRedirect(it.type, it.projectKey, null)
                 [
                         link: link,
                         key: it.projectKey,
