@@ -8,14 +8,16 @@ import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
 import { Storage } from '../util/Storage';
+import moment from 'moment';
 
 const styles = {
   projectWidth: '120px',
-  expirationWidth: '120px',
-  updatedWidth: '130px',
+  titleWidth: '378px',
+  expirationWidth: '110px',
+  updatedWidth: '140px',
   typeWidth: '170px',
   statusWidth: '220px'
-}
+};
 
 const columnsCopy = [{
   dataField: 'project',
@@ -31,6 +33,7 @@ const columnsCopy = [{
   dataField: 'title',
   text: 'Title',
   sort: true,
+  headerStyle: { width: styles.titleWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
       linkFormatter(row, row.title)
@@ -55,7 +58,7 @@ const columnsCopy = [{
   dataField: 'expiration',
   text: 'Expiration',
   sort: true,
-  headerStyle: { width: styles.expirationWidth }
+  formatter: (cell, row, rowIndex, colIndex) => cell ? moment(cell).format('MM/DD/YYYY') : ''
 }];
 
 const defaultSorted = [{

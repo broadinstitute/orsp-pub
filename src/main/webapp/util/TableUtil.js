@@ -81,7 +81,7 @@ export const parseDate = (date) => {
   let parsedDate = '';
   if (!isEmpty(date)) {
     const simpleDate = new Date(date);
-    parsedDate = format(simpleDate, 'M/D/YY h:m A');
+    parsedDate = format(simpleDate, 'MM/DD/YY h:mm A');
   }
   return parsedDate;
 };
