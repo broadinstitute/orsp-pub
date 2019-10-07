@@ -70,7 +70,9 @@ export const Submissions = hh(class Submissions extends Component {
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
     }, [!component.isViewer ? 'Edit': 'View']);
-    const submissionComment = span({style: styles.submissionComment}, [data.comments]);
+    const submissionComment = span({style: styles.submissionComment}, [
+      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
+    ]);
     return h(Fragment, {}, [indexButton, submissionComment]);
   };
 
