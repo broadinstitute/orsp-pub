@@ -351,7 +351,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         return prev;
       });
       this.props.hideSpinner();
-      this.props.history.push("/index");
+      this.props.history.push('/index');
     }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });

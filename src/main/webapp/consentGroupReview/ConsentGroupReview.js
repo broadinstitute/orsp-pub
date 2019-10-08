@@ -646,7 +646,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   getRedirectUrl(projectKey) {
-    if (projectKey === "") {
+    if (isEmpty(projectKey)) {
       return "/search/index";
     } else {
       return ["/project/main?projectKey=" + projectKey + "&tab=consent-groups"].join("/");

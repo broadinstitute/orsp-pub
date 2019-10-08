@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { a, div, h1, hh, span } from 'react-hyperscript-helpers';
+import { a, div, h1, hh, span, h } from 'react-hyperscript-helpers';
 import { Reports } from '../util/ajax';
 import { TableComponent } from '../components/TableComponent';
 import { CATEGORY_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { TABLE_ACTIONS } from '../util/TableUtil';
 import { handleRedirectToProject } from '../util/Utils';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { Link } from 'react-router-dom';
 
 const stylesHeader = {
   pageTitle: {
@@ -32,10 +33,17 @@ const columns = [
     headerStyle: (column, colIndex) => {
       return { width: styles.reviewCategories.projectKeyWidth};
     },
-    formatter: (cell, row, rowIndex, colIndex) =>
-    div({},[
-      a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
-    ]),
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.projectKey])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+        ])
+      }
+    }
   },
   {
     dataField: 'summary',
@@ -66,6 +74,13 @@ const columns = [
     span({title: row.reviewCategory},[row.reviewCategory]) 
   }
 ];
+
+export const linkFormatter = (row)  => {
+  if (row.type === "Consent Group") {
+    return h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.project, state: {issueType: 'consent-group', tab: 'review', consentKey: row.project}}}, [row.project])
+  }
+  return h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.project, state: {issueType: 'project', tab: 'review', projectKey: row.project}}}, [row.project])
+}
 
 const ReviewCategories = hh(class ReviewCategories extends Component {
 
