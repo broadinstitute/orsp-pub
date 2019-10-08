@@ -1,6 +1,6 @@
-import { dateParser, isEmpty } from "./Utils";
+import { dateParser, isEmpty } from './Utils';
 import { format } from 'date-fns';
-import { UrlConstants } from "./UrlConstants";
+import { UrlConstants } from './UrlConstants';
 
 export const EXPORT_FILE = {
   XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
@@ -13,6 +13,11 @@ export const TABLE_ACTIONS = {
   PAGINATION: "pagination",
   SORT: "sort"
 };
+
+export const DEFAULT_SORTED = [{
+  dataField: 'date',
+  order: 'desc'
+}];
 
 export const formatNullCell = (cell)  => {
   return cell === null ? '' : cell

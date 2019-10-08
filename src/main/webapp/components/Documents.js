@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { button, div, h, h3, hh, p } from 'react-hyperscript-helpers';
 import { Table } from './Table';
 import { Panel } from './Panel';
@@ -10,14 +10,39 @@ import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
 import { UrlConstants } from '../util/UrlConstants';
 import { Link } from 'react-router-dom';
+import { TableComponent } from './TableComponent';
+import { DEFAULT_SORTED } from '../util/TableUtil';
+import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import moment from 'moment';
+import { Btn } from './Btn';
 
 const styles = {
   buttonWithLink: {
     textDecoration: 'none',
     color: '#FFFFFF',
-    marginRight: '15px'
+    document: {
+      documentTypeWidth: '179px',
+      documentFileNameWidth: '323px',
+      documentCreatorWidth: '130px',
+      documentVersionWidth: '90px',
+      documentStatusWidth: '140px',
+      documentCreationDateWidth: '140px',
+      documentDeleteDocWidth: '80px'
+    }
   }
-}
+};
+
+const columnsStyles = {
+  document: {
+    documentTypeWidth: '179px',
+    documentFileNameWidth: '323px',
+    documentCreatorWidth: '130px',
+    documentVersionWidth: '90px',
+    documentStatusWidth: '140px',
+    documentCreationDateWidth: '140px'
+  }
+};
+
 const headers =
   [
     { name: 'Document Type', value: 'fileType' },
@@ -28,6 +53,103 @@ const headers =
     { name: 'Created', value: 'creationDate' },
     { name: '', value: 'removeFile' }
   ];
+
+const columns = (_this) => [{
+  dataField: 'id',
+  text: 'Id',
+  hidden: true,
+  csvExport : false
+}, {
+  dataField: 'fileType',
+  text: 'Document Type',
+  sort: true,
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentTypeWidth };
+  }
+}, {
+  dataField: 'fileName',
+  text: 'File Name',
+  sort: true,
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentFileNameWidth };
+  },
+  formatter: (cell, row, rowIndex, colIndex) => {
+    return h(Link, {to: '/'},[cell])
+  }
+}, {
+  dataField: 'creator',
+  text: 'Author',
+  sort: true,
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentCreatorWidth };
+  }
+
+}, {
+  dataField: 'docVersion',
+  text: 'Version',
+  sort: true,
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentVersionWidth };
+  }
+}, {
+  dataField: 'status',
+  text: 'Status',
+  sort: true,
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentStatusWidth };
+  },
+  formatter: (cell, row, rowIndex, colIndex) => {
+    if (row.status === 'Pending' && component.isAdmin) {
+      return h(ButtonToolbar, {}, [
+        h(DropdownButton, {
+          style:{ boxShadow: 'none', padding: '4px 10px', outline: 'none', marginLeft: '5px' },
+          bsStyle: 'default',
+          title: 'Pending',
+          key: 0,
+          id: `dropdown-basic-0`
+        },[
+          h(MenuItem, { onSelect: _this.actionApprove, eventKey: row.uuid },['Approve']),
+          h(MenuItem, { onSelect: _this.actionReject, eventKey: row.uuid },['Reject'])
+        ])
+      ])
+    } else {
+      return row.status;
+    }
+  }
+}, {
+  dataField: 'creationDate',
+  text: 'Created',
+  sort: true,
+  sortFunc: (a, b, order, dataField, rowA, rowB) => {
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    if (order === 'asc') {
+      return dateA > dateB ? -1 : dateA < dateB ? 1 : 0
+    }
+    else return dateB > dateA ? -1 : dateB < dateA ? 1 : 0
+  },
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentCreationDateWidth };
+  },
+  formatter: (cell, row, rowIndex, colIndex) => {
+    return moment(cell).format('MM/DD/YY')
+  }
+}, {
+  dataField: '',
+  text: '',
+  align: 'center',
+  headerStyle: (column, colIndex) => {
+    return { width: columnsStyles.document.documentDeleteDocWidth };
+  },
+  formatter: (cell, row, rowIndex, colIndex) => {
+    return Btn({
+      action: {
+        labelClass: "glyphicon glyphicon-remove",
+        handler: () => _this.remove(row)
+      }
+    })
+  }
+}];
 
 const associatedProjectsHeaders = [
   { name: 'Type', value: 'type' },
@@ -48,7 +170,7 @@ export const Documents = hh(class Documents extends Component {
       showRemoveDocuments: false,
       documentToRemove: null,
       error: false
-    }
+    };
     this.removeDocument = this.removeDocument.bind(this);
   }
 
@@ -98,6 +220,14 @@ export const Documents = hh(class Documents extends Component {
     return dulPresent;
   };
 
+  actionApprove = (uuid) => {
+    this.props.handleDialogConfirm(uuid, 'Approve');
+  };
+
+  actionReject = (uuid) => {
+    this.props.handleDialogConfirm(uuid, 'Reject');
+  };
+
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
@@ -128,17 +258,20 @@ export const Documents = hh(class Documents extends Component {
           onClick: this.addDocuments,
           isRendered: !component.isViewer,
         }, ["Add Document"]),
-        Table({
-          headers: headers,
+        TableComponent({
+          remoteProp: false,
           data: this.props.documents,
-          sizePerPage: 10,
-          paginationSize: 10,
-          handleDialogConfirm: this.props.handleDialogConfirm,
-          isAdmin: component.isAdmin,
-          isViewer: component.isViewer,
-          reviewFlow: true,
+          columns: columns(this),
+          keyField: 'id',
+          search: true,
+          fileName: 'ORSP',
+          showPrintButton: false,
+          printComments: this.printComments,
+          defaultSorted: DEFAULT_SORTED,
           pagination: true,
-          remove: this.remove
+          showExportButtons: false,
+          hideXlsxColumns: [],
+          showSearchBar: true
         })
       ]),
 
