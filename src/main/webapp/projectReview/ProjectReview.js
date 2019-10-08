@@ -794,7 +794,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   redirectToConsentGroupTab = async () => {
-    this.props.history.push('project/main?projectKey=' + this.props.projectKey + '&tab=consent-groups');
+    this.props.history.push('/project/main?projectKey=' + this.props.projectKey + '&tab=consent-groups');
   };
 
   handleAttestationCheck = (e) => {
