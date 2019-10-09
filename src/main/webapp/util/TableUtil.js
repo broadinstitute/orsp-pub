@@ -1,6 +1,8 @@
-import { dateParser, isEmpty } from './Utils';
+import { dateParser, downloadSelectedFile, isEmpty } from './Utils';
 import { format } from 'date-fns';
 import { UrlConstants } from './UrlConstants';
+import { h } from 'react-hyperscript-helpers';
+import { Link } from 'react-router-dom';
 
 export const EXPORT_FILE = {
   XLSX: { mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
@@ -89,4 +91,25 @@ export const parseDate = (date) => {
     parsedDate = format(simpleDate, 'MM/DD/YY h:mm A');
   }
   return parsedDate;
+};
+
+export const downloadUrlDocument = (cell, row) => {
+  let urlObject = {};
+  if (isEmpty(row.uuid)) {
+    urlObject = downloadSelectedFile(row.file);
+  }
+  return h(Link, {
+    to: isEmpty(row.uuid) ? urlObject :`${UrlConstants.downloadDocumentUrl}?uuid=${row.uuid}`,
+    target: '_blank',
+    title: row.fileName,
+    download: row.fileName,
+  }, [row.fileName]);
+};
+
+export const createLinkToProject = (cell, row) => {
+  const url = "/project/main?projectKey=" + row.projectKey + "&tab=review";
+  return h(Link,{
+    to: url,
+    target: '_blank'
+  }, [row.projectKey + ": " + row.summary]);
 };
