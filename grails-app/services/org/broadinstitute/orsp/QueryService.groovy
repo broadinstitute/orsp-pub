@@ -1277,7 +1277,8 @@ class QueryService implements Status {
                 ' from storage_document d ' +
                 ' where d.id not in (select distinct storage_document_id from submission_document) ' +
                 ' and d.project_key = :projectKey' +
-                ' and d.deleted = 0 '
+                ' and d.deleted = 0 ' +
+                ' and d.consent_collection_link_id is null'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
@@ -1312,7 +1313,8 @@ class QueryService implements Status {
                 ' from storage_document d ' +
                 ' where d.id not in (select distinct submission_document_id from submission_document) ' +
                 ' and d.project_key in :projectKeys ' +
-                ' and d.deleted = 0 '
+                ' and d.deleted = 0 ' +
+                ' and d.consent_collection_link_id is null'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final results = sqlQuery.with {
             addEntity(StorageDocument)
