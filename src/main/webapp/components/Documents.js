@@ -7,6 +7,7 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { DocumentHandler } from '../util/ajax';
 import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
+import './Table.css';
 import { UrlConstants } from '../util/UrlConstants';
 import { Link } from 'react-router-dom';
 import { TableComponent } from './TableComponent';
@@ -19,18 +20,30 @@ const styles = {
   buttonWithLink: {
     textDecoration: 'none',
     color: '#FFFFFF'
+  },
+  dropDownBtn: {
+    padding: '2px 10px'
   }
 };
 
-const columnsStyles = {
-  document: {
+const tableStyles = {
+  columns: {
     documentTypeWidth: '179px',
     documentFileNameWidth: '323px',
     documentCreatorWidth: '130px',
     documentVersionWidth: '90px',
     documentStatusWidth: '140px',
     documentCreationDateWidth: '140px'
+  },
+  buttonToolbarCell: {
+    position: 'absolute',
+    marginTop: '-2px'
   }
+};
+
+const buttonToolbarCell = {
+  position: 'absolute',
+  marginTop: '-2px'
 };
 
 const columns = (_this) => [
@@ -44,14 +57,14 @@ const columns = (_this) => [
     text: 'Document Type',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentTypeWidth };
+      return { width: tableStyles.columns.documentTypeWidth };
     }
   }, {
     dataField: 'fileName',
     text: 'File Name',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentFileNameWidth };
+      return { width: tableStyles.columns.documentFileNameWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
       return downloadUrlDocument(cell, row)
@@ -61,27 +74,27 @@ const columns = (_this) => [
     text: 'Author',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentCreatorWidth };
+      return { width: tableStyles.columns.documentCreatorWidth };
     }
   }, {
     dataField: 'docVersion',
     text: 'Version',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentVersionWidth };
+      return { width: tableStyles.columns.documentVersionWidth };
     }
   }, {
     dataField: 'status',
     text: 'Status',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentStatusWidth };
+      return { width: tableStyles.columns.documentStatusWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
       if (row.status === 'Pending' && component.isAdmin) {
-        return h(ButtonToolbar, {}, [
+        return h(ButtonToolbar, { style: buttonToolbarCell }, [
           h(DropdownButton, {
-            style:{ boxShadow: 'none', padding: '4px 10px', marginLeft: '5px' },
+            style: styles.dropDownBtn,
             title: 'Pending',
             key: 0,
             id: `dropdown-basic-0`
@@ -107,7 +120,7 @@ const columns = (_this) => [
       else return dateB > dateA ? -1 : dateB < dateA ? 1 : 0
     },
     headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentCreationDateWidth };
+      return { width: tableStyles.columns.documentCreationDateWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
       return moment(cell).format('MM/DD/YY')
@@ -116,9 +129,6 @@ const columns = (_this) => [
     dataField: '',
     text: '',
     align: 'center',
-    headerStyle: (column, colIndex) => {
-      return { width: columnsStyles.document.documentDeleteDocWidth };
-    },
     formatter: (cell, row, rowIndex, colIndex) => {
       return Btn({
         action: {
