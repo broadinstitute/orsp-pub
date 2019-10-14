@@ -80,19 +80,6 @@ class DataUseController extends AuthenticatedController {
         }
     }
 
-    def saveSdul() {
-        try {
-            DataUseRestriction restriction = dataUseLetterService.getRestrictionFromParams(request.JSON)
-            dataUseLetterService.saveRestriction(restriction, getUser()?.displayName)
-            response.status = 200
-            render(restriction: restriction as JSON)
-        } catch (IllegalArgumentException iae) {
-            handleIllegalArgumentException(iae)
-        } catch (Exception e) {
-           handleException(e)
-        }
-    }
-
     private String getConsentServiceUrl() {
         grailsApplication.config.consent.service.url
     }
