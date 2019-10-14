@@ -180,7 +180,7 @@ export const Documents = hh(class Documents extends Component {
                 }, ["Create Restriction"]),
                 h(Link, {
                   isRendered: this.props.restrictionId !== null && !component.isViewer, className: "btn buttonPrimary floatLeft",
-                  to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId + '&consentKey=' + this.props.projectKey }, style: styles.buttonWithLink
+                  to: { pathname: UrlConstants.restrictionUrl, search: '?restrictionId=' + this.props.restrictionId + '&consentKey=' + this.props.projectKey, state: { fromConsentGroup: true }}, style: styles.buttonWithLink
                 }, ["Edit Restriction"]),
                 h(Link, {
                   isRendered: this.props.restrictionId !== null, className: "btn buttonPrimary floatLeft",

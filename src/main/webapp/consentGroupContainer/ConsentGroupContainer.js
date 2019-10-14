@@ -7,6 +7,7 @@ import '../components/Wizard.css';
 import ConsentGroupDocuments from '../consentGroupDocuments/ConsentGroupDocuments';
 import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
 
@@ -26,6 +27,12 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   componentDidMount() {
     this._isMounted = true;
+    if (!isEmpty(this.props.tab)) {
+      this.setState(prev => {
+        prev.activeTab = this.props.tab;
+        return prev;
+      })
+    }
     this.getHistory();
     this.getComments();
   }
