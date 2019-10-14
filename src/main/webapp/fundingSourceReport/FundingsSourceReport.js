@@ -6,6 +6,7 @@ import { exportData, handleRedirectToProject } from '../util/Utils';
 import { FUNDING_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { projectStatus } from '../util/Utils';
 
 const stylesHeader = {
   pageTitle: {
@@ -158,6 +159,7 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
     this.props.showSpinner();
     Reports.getFundingsReports(query).then(result => {
       const lastPage = Math.ceil(result.data.recordsFiltered / query.length);
+      result.data.data.forEach(fundingSt => {fundingSt.status = projectStatus(fundingSt)});
       if (this._isMounted) {
         this.setState(prev => {
           prev.lastPage = lastPage;
