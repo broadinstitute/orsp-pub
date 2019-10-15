@@ -22,7 +22,6 @@ class DataUseController extends AuthenticatedController {
 
     ConsentService consentService
     ConsentExportService consentExportService
-    DataUseLetterService dataUseLetterService
 
     def findDataUseRestrictions() {
         PaginationParams pagination = new PaginationParams(

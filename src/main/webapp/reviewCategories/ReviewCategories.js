@@ -4,7 +4,6 @@ import { Reports } from '../util/ajax';
 import { TableComponent } from '../components/TableComponent';
 import { CATEGORY_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { TABLE_ACTIONS } from '../util/TableUtil';
-import { handleRedirectToProject } from '../util/Utils';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
 
@@ -74,13 +73,6 @@ const columns = [
     span({title: row.reviewCategory},[row.reviewCategory]) 
   }
 ];
-
-export const linkFormatter = (row)  => {
-  if (row.type === "Consent Group") {
-    return h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.project, state: {issueType: 'consent-group', tab: 'review', consentKey: row.project}}}, [row.project])
-  }
-  return h(Link, {to: {pathname:'/project/main', search: '?projectKey=' + row.project, state: {issueType: 'project', tab: 'review', projectKey: row.project}}}, [row.project])
-}
 
 const ReviewCategories = hh(class ReviewCategories extends Component {
 
