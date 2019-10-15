@@ -335,7 +335,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   rejectConsentGroup() {
     this.props.showSpinner();
     ConsentGroup.rejectConsent(this.props.consentKey).then(resp => {
-      window.location.href = this.getRedirectUrl(this.props.projectKey);
+      this.props.history.push(this.getRedirectUrl(this.props.projectKey));
       this.props.hideSpinner();
     }).catch(error => {
       this.props.hideSpinner();
@@ -646,10 +646,10 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   getRedirectUrl(projectKey) {
-    if (projectKey === "") {
-      return component.serverURL + "/search/index";
+    if (isEmpty(projectKey)) {
+      return "/search/index";
     } else {
-      return [component.serverURL, "project/main?projectKey=" + projectKey + "&tab=consent-groups"].join("/");
+      return ["/project/main?projectKey=" + projectKey + "&tab=consent-groups"].join("/");
     }
   }
 

@@ -3,7 +3,6 @@ import { div, hh, label, span } from 'react-hyperscript-helpers';
 import { SecurityReview } from "./SecurityReview";
 import { IntCohortsReview } from "./IntCohortsReview";
 import { isEmpty } from "../util/Utils";
-import { Documents } from "./Documents";
 import { Table } from "./Table";
 import { UrlConstants } from "../util/UrlConstants";
 

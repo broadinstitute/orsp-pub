@@ -122,6 +122,7 @@ class UtilityClass {
                         protocol: funding.issue.protocol,
                         summary: funding.issue.summary,
                         status: funding.issue.status,
+                        approvalStatus: funding.issue.approvalStatus,
                         source: funding.source,
                         name: funding.name,
                         awardNumber: funding.awardNumber,

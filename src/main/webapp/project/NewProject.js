@@ -90,7 +90,7 @@ const NewProject = hh(class NewProject extends Component {
         this.state.user.displayName,
         this.state.user.userName
         ).then(resp => {
-           window.location.href = [component.serverURL, "project", "main","?projectKey=" + resp.data.message.projectKey + "&tab=review&new"].join("/");
+          this.props.history.push('/project/main?projectKey=' + resp.data.message.projectKey + '&tab=review&new');
         }).catch(error => {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();

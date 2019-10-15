@@ -34,14 +34,6 @@ class NewConsentGroupController extends AuthenticatedController {
         render(view: "/newConsentGroup/index", model: [projectKey: params.projectKey])
     }
 
-    def main() {
-        render(view: "/mainContainer/index", model: [projectKey: params.projectKey, consentKey: params.consentKey, issueType: 'consent-group'])
-    }
-
-    def renderMainComponent() {
-        render(view: "/mainContainer/index", model: [projectKey: params.projectKey, issueType: 'project'])
-    }
-
     def downloadFillablePDF () {
         try {
             String fileName = 'Broad_DUL_Draft-Cover_Letter_Form_Fillable.pdf'
