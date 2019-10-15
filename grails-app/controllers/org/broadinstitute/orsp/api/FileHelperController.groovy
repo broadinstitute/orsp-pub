@@ -98,7 +98,6 @@ class FileHelperController extends AuthenticatedController{
         Collection<StorageDocument> documents = queryService.getAttachmentsForProject(params.issueKey)
         Boolean collectionDocsApproved = true
         if (CollectionUtils.isNotEmpty(collectionIds)) {
-            documents.addAll(queryService.findAllDocumentsBySampleCollectionIdList(collectionIds))
             collectionDocsApproved = consentService.collectionDocumentsApproved(collectionIds)
         }
         List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
