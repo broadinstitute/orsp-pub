@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpEncoders
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
@@ -502,7 +503,7 @@ class ConsentService implements Status {
             Issue issue = queryService.findByKey(projectKey)
             Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
             Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
-            Collection consentGroups = queryService.findByKeys(collectionLinksMap, projectKey)
+            Collection<Issue> consentGroups = findConsentGroupsAssociatedByConsentLink(collectionLinksMap)
             [
                 issue        : issue,
                 consentGroups: consentGroups?.sort { a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase() }
@@ -510,6 +511,26 @@ class ConsentService implements Status {
         } else {
             log.error("Error trying to get Project's Consent groups: Empty projectKey")
             throw new IllegalArgumentException("Error trying to get Project's Consent groups: Empty projectKey")
+        }
+    }
+
+    /**
+     * Find all consent groups associated to the specified consent collection links
+     *
+     * @param keys The consent group key and related consent collection link
+     * @return List of Consent Group that are related to the specified consent collection links
+     */
+    Collection<Issue> findConsentGroupsAssociatedByConsentLink(Map<String, ConsentCollectionLink> keys) {
+        if (keys && !keys.isEmpty()) {
+            List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())
+            issues.each { issue ->
+                // set all documents related to the specified consent group including its consent collection link documents
+                issue.setAttachments(queryService.getAttachmentsForProjects(keys.keySet()))
+                issue.setStatus(keys.get(issue.projectKey).status)
+            }
+            issues
+        } else {
+            Collections.emptyList()
         }
     }
 

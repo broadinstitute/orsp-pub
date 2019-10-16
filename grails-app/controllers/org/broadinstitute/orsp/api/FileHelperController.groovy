@@ -95,7 +95,8 @@ class FileHelperController extends AuthenticatedController{
     def attachedDocuments() {
         Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(params.issueKey)
         List<Long> collectionIds = collectionLinks?.collect{it.id}
-        Collection<StorageDocument> documents = queryService.getAttachmentsForProject(params.issueKey)
+        // set all documents related to the specified key
+        List<StorageDocument> documents = queryService.getAttachmentsForProject(params.issueKey)
         Boolean collectionDocsApproved = true
         if (CollectionUtils.isNotEmpty(collectionIds)) {
             collectionDocsApproved = consentService.collectionDocumentsApproved(collectionIds)

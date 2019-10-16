@@ -619,31 +619,6 @@ class QueryService implements Status {
         issue
     }
 
-    /**
-     * Find issues by keys
-     *
-     * @param keys The issue keys
-     * @return List of Issues that match the query
-     */
-    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
-        if (keys && !keys.isEmpty()) {
-            List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())
-            List<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
-            def docsByProject = documents.groupBy({d -> d.projectKey})
-            issues.each { issue ->
-                List<StorageDocument> docs = new ArrayList<>()
-                List<StorageDocument> projectDocuments = docsByProject.get(issue.projectKey)
-                if (CollectionUtils.isNotEmpty(projectDocuments)) {
-                    docs.addAll(projectDocuments)
-                }
-                issue.setAttachments(docs)
-                issue.setStatus(keys.get(issue.projectKey).status)
-            }
-            issues
-        } else {
-            Collections.emptyList()
-        }
-    }
 
     /**
      * Find paginated and filtered project issues
@@ -1298,7 +1273,7 @@ class QueryService implements Status {
         results
     }
 
-    private Collection<StorageDocument> getAttachmentsForProjects(Collection<String> projectKeys) {
+    Collection<StorageDocument> getAttachmentsForProjects(Collection<String> projectKeys) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =

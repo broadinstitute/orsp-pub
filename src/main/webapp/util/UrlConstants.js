@@ -31,7 +31,6 @@ export const UrlConstants = {
   approveConsentGroupUrl: context + '/api/consent-group/approve',
   getConsentGroup: context + '/api/consent-group/review',
   uploadModalUrl: context + '/api/consent-group/upload-modal',
-  allConsentGroupsUrl: context + '/api/consent-groups',
   collectionLinks: context + '/api/collection-links',
   exportConsent: context + '/api/consent/export',
   matchingName: context + '/api/consent-groups/matching-name',
