@@ -14,19 +14,40 @@
 }
 
 .navbar-brand {
+    position: absolute;
     margin: 0!important;
-    min-height: 60px !important;
+    min-height: 59px !important;
     line-height: 28px !important;
 }
 
 /* Navigation */
+.navbar-default {
+    border-radius: 0 !important;
+    min-height: 60px !important;
+}
+
+@media (max-width: 1200px) {
+    .navbar-default .container {
+        width: 100%;
+    }
+}
+
 .navbar-nav {
-    margin-top: 5px;
+    margin: 0 -15px;
+}
+
+.navbar-container {
+    display: inline-block;
 }
 
 .navbar-default .navbar-nav>li>a:active,
 .navbar-default .navbar-nav>li>a:focus {
     color: #FFFFFF;
+}
+
+.navbar-default .navbar-form {
+    border: none; 
+    box-shadow: none;
 }
 
 .navbar-form .select__indicators {
@@ -43,4 +64,101 @@
 .navbar .googleButton #signin > div {
     height: auto !important;
     width: auto !important;
+}
+  
+.navbar-nav li {
+    display: inline-block;
+    text-decoration: none;
+}
+  
+.navbar-nav li a {
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.navbar-nav li a:hover {
+    color: #94A5A6;
+}
+
+.navbar-form {
+    display: inline-block;
+    margin: 2px 5px;
+    text-align: left !important;
+}
+
+.navbar-form .select__menu,
+.navbar-form .select__menu-list { 
+    width: 218px;
+}
+
+.navbar-open-icon,
+.navbar-close-icon {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    width: 26px;
+    height: 26px;
+    transition: all 0.1s linear;
+}
+
+.navbar-open-icon {
+    background: url('./burger-icon.svg') no-repeat;  
+}
+
+.navbar-close-icon {
+    background: url('./close-icon.svg') no-repeat;  
+}
+  
+@media (min-width: 768px) {
+    .navbar-nav {
+        margin-top: 5px;
+    }
+    .obCBO {
+        padding: 0 0 0 120px;
+    }
+    .obCBO .navbar-container {
+        margin: 0 !important;
+        padding-left: 110px;
+        width: 100%;
+        float: right !important;
+        text-align: right;
+    }
+  }
+  
+@media (max-width: 767px) {
+    .navbar-nav {
+        margin-top: 0;
+    }
+    .navbar-default ul:first-child {
+        padding-top: 65px;
+    }
+    .navbar-default ul:last-child {
+        padding-bottom: 10px;
+    }
+    .navbar-nav li {
+        display: block;
+        padding: 15px 0 0 0;
+    }
+    .navbar-left li:first-child {
+        padding: 0;
+    }
+    .navbar-nav li a {
+        padding: 10px 30px;
+    }
+    .navbar-brand {
+        position: absolute;
+        top: 0;
+        left: 30px;
+    }
+    .navbar-form {
+        padding: 10px 25px 0;
+    }
+    .cTMEws {
+        width: 100%;
+    }
+    .cTMEws .navbar-container {
+        float: left;
+        text-align: left !important;
+        display: inline-block !important;
+    }
 }
