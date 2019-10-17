@@ -84,7 +84,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.PM,
             IssueExtraProperty.PI,
             IssueExtraProperty.SAMPLES,
-            IssueExtraProperty.DEGREE
+            IssueExtraProperty.DEGREE,
+            IssueExtraProperty.NO_CONSENT_FORM_REASON,
     ]
 
     /**
@@ -211,6 +212,9 @@ class IssueService implements UserInfo {
         }
         if (input.containsKey(IssueExtraProperty.PROJECT_STATUS) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
+        }
+        if (input.containsKey(IssueExtraProperty.NO_CONSENT_FORM_REASON) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.NO_CONSENT_FORM_REASON))) {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NO_CONSENT_FORM_REASON})
         }
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
@@ -373,6 +377,23 @@ class IssueService implements UserInfo {
         updatedIssue
     }
 
+    @Transactional
+    void removeNoConsentAnswer(Issue issue) {
+        Collection<IssueExtraProperty> iep = issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NO_CONSENT_FORM_REASON}
+        if (iep.size() > 0) {
+            iep.each {
+                issue.removeFromExtraProperties(it)
+                it.delete(hard: true, flush: true)
+            }
+
+            if (issue.hasErrors()) {
+                throw new DomainException(issue.getErrors())
+            } else {
+                issue.save(flush: true)
+            }
+        }
+    }
+
     void saveFundings(Issue issue, Collection<Funding> fundings) {
         fundings?.each {
             it.setCreated(new Date())
@@ -471,7 +492,7 @@ class IssueService implements UserInfo {
                     def value = input.get(name)
                     if (value && value instanceof String) {
                         Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
-                    } else {
+                    } else if (value && value instanceof List) {
                         ((List<String>) value).collect {
                             new IssueExtraProperty(issue: issue, name: name, value: it, projectKey: issue.projectKey)
                         }

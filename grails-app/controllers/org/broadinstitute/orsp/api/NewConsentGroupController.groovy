@@ -130,6 +130,13 @@ class NewConsentGroupController extends AuthenticatedController {
         render([message: 'Consent Group was updated'] as JSON)
     }
 
+    def deleteNoConsentReason() {
+        Issue issue = Issue.findByProjectKey(params.consentKey)
+        issueService.removeNoConsentAnswer(issue)
+        response.status = 200
+        render([message: 'Deleted No Consent Form reason'] as JSON)
+    }
+
     def findByUUID() {
         String uid = params.uuid
         DataUseLetter dul = DataUseLetter.findByUid(uid)

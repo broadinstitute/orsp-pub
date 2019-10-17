@@ -115,6 +115,10 @@ export const ConsentGroup = {
 
   getMatchingConsentByName(consentName) {
     return axios.get(UrlConstants.matchingName + '?consentName=' + consentName);
+  },
+
+  deleteNoReasonConsent(projectKey) {
+    return axios.delete(UrlConstants.deleteNoReasonConsent+ '?consentKey=' + projectKey);
   }
 };
 

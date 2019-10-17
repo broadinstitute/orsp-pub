@@ -70,6 +70,23 @@ class IssueReviewController extends AuthenticatedController {
         }
     }
 
+    def deleteNoConsentReasonEdited() {
+        Gson gson = new Gson()
+        IssueReview isr = issueReviewService.findByProjectKey(params.projectKey)
+        Map issueReview = gson.fromJson(isr.suggestions, Map.class)
+        List<Object> treeMap = new ArrayList<Object>()
+        treeMap.add(issueReview.consentExtraProps.findAll{it.key != "noConsentFormReason"})
+        issueReview.consentExtraProps = treeMap
+        isr.suggestions = gson.toJson(issueReview)
+        isr.save(flush: true)
+        if (issueReview == null) {
+            response.status = 204
+        } else {
+            response.status = 200
+            render(isr as JSON)
+        }
+    }
+
     private IssueReview parseIssueReview(String json) {
        new Gson().fromJson(json, IssueReview.class)
     }

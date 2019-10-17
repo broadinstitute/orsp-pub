@@ -43,6 +43,7 @@ class UrlMappings {
         '/consent-group/name-search'(controller: 'consentGroup', action: 'getConsentGroups')
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
         '/consent-group/new'(controller:'newConsentGroup', action:'renderMainComponent')
+        '/api/consent-group/delete-consent-reason'(controller:'newConsentGroup', action:'deleteNoConsentReason', method: 'DELETE')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
         '/api/consent-group/review'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
@@ -66,6 +67,7 @@ class UrlMappings {
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
+        '/api/issue-review/delete-consent-reason'(controller:'issueReview', action:'deleteNoConsentReasonEdited', method: 'DELETE')
 
         // Data use letter end points
         '/api/data-use-letter/save-dul'(controller: 'dataUseLetter', action: 'create', method: 'POST')
