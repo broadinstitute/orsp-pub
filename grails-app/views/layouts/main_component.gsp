@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ORSP Portal">
     <meta name="author" content="ORSP">
-    <meta name="google-signin-client_id" content="${grailsApplication.config.googleSignInClientId}">
     <meta charset="utf-8"/>
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
@@ -28,7 +27,6 @@
     <style type="text/css" title="TableTools">
     @import "${request.contextPath}/assets/media/css/TableTools.css";
     </style>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
 
     %{--

@@ -40,7 +40,11 @@
     margin-top: 12px;
 }
 
-.navbar .googleButton #signin > div {
-    height: auto !important;
-    width: auto !important;
+ .googleButton > div {
+    margin-right: 5px !important;
+    padding: 8px 5px 2px 10px !important;
+}
+
+ .googleButton span {
+    padding: 5px 10px 5px 0 !important;
 }

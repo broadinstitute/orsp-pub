@@ -1,11 +1,12 @@
-import { Component } from "react";
-import { a, hh, div, button, span, ul, li, b, h } from 'react-hyperscript-helpers';
+import { Component } from 'react';
+import { a, b, button, div, h, hh, li, span, ul } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
-import { User, Reports, Search } from "../util/ajax";
+import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
-import { UrlConstants } from "../util/UrlConstants";
+import { UrlConstants } from '../util/UrlConstants';
 import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import { GoogleLogout } from 'react-google-login';
 import LoadingWrapper from '../components/LoadingWrapper';
 import './TopNavigationMenu.css';
 
@@ -68,7 +69,7 @@ const styles = {
       borderRadius: '4px'
     })
   }
-}
+};
 
 const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
@@ -88,14 +89,6 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.init();
   };
 
-  handleUnauthorized() {
-    Storage.clearStorage();
-    if (window.gapi.auth2 != undefined) {
-      let auth2 = window.gapi.auth2.getAuthInstance();
-      auth2.signOut();
-    }
-    this.props.history.push(this.props.location);
-  }
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -121,21 +114,21 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       if (Storage.getLocationFrom() != null) {
         this.props.history.push(Storage.getLocationFrom());
         Storage.removeLocationFrom();
+        window.location.reload();
       } else {
         this.props.history.push("/index");
+        if (Storage.getLocationFrom()) {
+          Storage.removeLocationFrom();
+        }
+        window.location.reload();
       }
-      window.location.reload();
     });
   };
 
   signOut = async () => {
     this.props.showSpinner();
     Storage.clearStorage();
-    if (window.gapi.auth2 != undefined) {
-      let auth2 = window.gapi.auth2.getAuthInstance();
-      await auth2.signOut();
-      await User.signOut();
-    }
+    await User.signOut();
     this.setState({
       isLogged: false
     }, () => {
@@ -264,7 +257,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 edit: false
               })
             ]),
-            div({ isRendered: this.state.isLogged, className: "floatRight" }, [
+            div({ isRendered: Storage.userIsLogged(), className: "floatRight" }, [
               ul({ className: "nav navbar-nav" }, [
                 li({}, [
                   h(Link, { to: { pathname: UrlConstants.profileUrl } },
@@ -272,18 +265,19 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   )
                 ]),
                 li({}, [
-                  h(Link, { to: { pathname: '/' }, onClick: this.signOut },
-                    ["Sign out"]
-                  )
-                ]),
-              ]),
+                  h(GoogleLogout,{
+                    clientId: component.clientId,
+                    onLogoutSuccess: this.signOut,
+                    render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
+                  },[])
+                ])
+              ])
             ]),
-            div({ isRendered: !this.state.isLogged, className: "googleButton" }, [
-              GoogleLoginButton({
-                clientId: component.clientId,
-                onSuccess: this.onSuccess
-              })
-            ])
+            GoogleLoginButton({
+              isRendered: !Storage.userIsLogged(),
+              clientId: component.clientId,
+              onSuccess: this.onSuccess
+            })
           ])
         ])
       ])
