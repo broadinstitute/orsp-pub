@@ -1583,24 +1583,32 @@ class QueryService implements Status {
         where
     }
 
-    List<ConsentCollectionLink> findCollectionLinks() {
-        String query = 'select * from consent_collection_link where deleted = 0 '
-        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+    PaginatedResponse findAllCollectionLinks(PaginationParams pagination) {
+        // get total rows
+        String totalRowsQuery = 'select count(*) from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        SQLQuery query = getSessionFactory().currentSession.createSQLQuery(totalRowsQuery)
+        if (pagination.searchValue) query.setString('term', pagination.getLikeTerm())
+        Long totalRows = query.uniqueResult()
+
+        String queryCCL = 'select * from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        String orderColumn = getSampleCollectionOrderColumn(pagination.orderColumn)
+        queryCCL = queryCCL + ' order by ' + orderColumn + pagination.sortDirection
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(queryCCL)
         List<ConsentCollectionLink> links = sqlQuery.with {
+            if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
             addEntity(ConsentCollectionLink)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
             list()
         }
-        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
-        (links as Collection<ConsentCollectionLink>).each { link ->
-            if (link) {
-                if (link?.sampleCollectionId && collectionMap.containsKey(link?.sampleCollectionId)) {
-                    link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
-                }
-            }
-        }
-        links
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: totalRows,
+                recordsFiltered: totalRows,
+                data: links,
+                error: ""
+        )
     }
-
 
     List<DataUseRestriction> findDataUseRestrictionByConsentGroupKeyInList(List<String> consentGroupKeys) {
         String query = 'select * from data_use_restriction where consent_group_key IN :consentGroupKeys '
@@ -1624,4 +1632,73 @@ class QueryService implements Status {
         }
         orderField
     }
+
+    private String getCollectionOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " consent_group_key "
+                break
+            case 1:
+                orderField = " vault_export_date "
+                break
+        }
+        orderField
+    }
+
+    private String getSampleCollectionOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " project_key "
+                break
+            case 1:
+                orderField = " consent_key "
+                break
+            case 2:
+                orderField = " sample_collection_id "
+                break
+            case 3:
+                orderField = " status "
+                break
+        }
+        orderField
+    }
+
+    private  getCollectionLinksWhereClause(pagination) {
+        String query = ''
+        if (pagination.searchValue) {
+            query = ' and (consent_key LIKE :term OR project_key LIKE :term OR status LIKE :term OR sample_collection_id LIKE :term )'
+        }
+        query
+    }
+
+    PaginatedResponse findConsentCollectionLinks(PaginationParams pagination) {
+        // get total rows
+        String query = 'select count(id) from consent_collection_link '
+        String orderColumn = getCollectionOrderColumn(pagination.orderColumn)
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
+        Long totalRows = sqlQuery.uniqueResult()
+
+        // get DUR paginated
+        String durQuery =  'select * from consent_collection_link ' + getDURWhereClause(pagination) + " order by " + orderColumn + pagination.sortDirection
+        SQLQuery sqlDURQuery = getSessionFactory().currentSession.createSQLQuery(durQuery)
+
+        List<DataUseRestriction> results = sqlDURQuery.with {
+            if (pagination.searchValue) setString('term', pagination.getLikeTerm())
+            addEntity(DataUseRestriction)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            list()
+        }
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: totalRows,
+                recordsFiltered: totalRows,
+                data: results,
+                error: ""
+        )
+    }
+
 }

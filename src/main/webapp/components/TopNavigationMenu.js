@@ -245,6 +245,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["QA Event Report"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
+                  li({}, [h(Link, { to: { pathname: UrlConstants.sampleCollectionReportUrl } }, ["Sample Collection Report"])]),
                   li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                   li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                 ])
