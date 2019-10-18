@@ -55,13 +55,13 @@
     visibility: hidden;
 }
 
-.navbar .googleButton {
+.googleButton {
     float: right;
     overflow: hidden;
     margin-top: 12px;
 }
 
-.navbar .googleButton #signin > div {
+.googleButton #signin > div {
     height: auto !important;
     width: auto !important;
 }
@@ -82,13 +82,9 @@
 
 .navbar-form {
     display: inline-block;
-    margin: 2px 5px;
+    margin: 8px 5px 2px 5px;
+    float: left;
     text-align: left !important;
-}
-
-.navbar-form .select__menu,
-.navbar-form .select__menu-list { 
-    width: 218px;
 }
 
 .navbar-open-icon,
@@ -108,6 +104,15 @@
 .navbar-close-icon {
     background: url('./close-icon.svg') no-repeat;  
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .left-container {
+        width: 100%
+    }
+    .right-container {
+        float: right;
+    }
+  }
   
 @media (min-width: 768px) {
     .navbar-nav {
@@ -151,7 +156,7 @@
         left: 30px;
     }
     .navbar-form {
-        padding: 10px 25px 0;
+        padding: 0 0 20px 5px;
     }
     .cTMEws {
         width: 100%;

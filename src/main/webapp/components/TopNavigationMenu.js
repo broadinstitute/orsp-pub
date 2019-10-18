@@ -55,6 +55,14 @@ const styles = {
       height: '30px',
       top: '2px',
       lineHeight: '30px',
+    }),
+    menuList: () => ({	
+      width: '500px',	
+      zIndex: '3000',	
+      maxHeight: '400px',	
+      backgroundColor: '#FFFFFF',	
+      border: '1px solid #CCCCCC',	
+      borderRadius: '4px'	
     })
   }
 }
@@ -203,7 +211,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
             menuCloseButton: div({ className: "navbar-close-icon" }, []),
             menu:
               div({ className: "navbar-container" }, [
-                ul({ className: "nav navbar-nav navbar-left" }, [
+                ul({ className: "nav navbar-nav navbar-left " + (this.state.isLogged ? 'left-container' : ''), }, [
                   li({}, [
                     h(Link, { to: { pathname: UrlConstants.aboutUrl } },
                       ['About']
@@ -234,7 +242,9 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                       li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                       li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
                     ])
-                  ]),
+                  ])
+                ]),
+                div({ className: "right-container" }, [
                   div({ isRendered: component.isBroad, className: "navbar-form" }, [
                     MultiSelect({
                       id: "pk_select",
@@ -248,18 +258,18 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                       isMulti: false,
                       edit: false
                     })
-                  ])
-                ]),
-                ul({ isRendered: this.state.isLogged, className: "nav navbar-nav navbar-right" }, [
-                  li({}, [
-                    h(Link, { to: { pathname: UrlConstants.profileUrl } },
-                      [this.state.userSession.displayName]
-                    )
                   ]),
-                  li({}, [
-                    h(Link, { to: { pathname: '/' }, onClick: this.signOut },
-                      ["Sign out"]
-                    )
+                  ul({ isRendered: this.state.isLogged, className: "nav navbar-nav navbar-right" }, [
+                    li({}, [
+                      h(Link, { to: { pathname: UrlConstants.profileUrl } },
+                        [this.state.userSession.displayName]
+                      )
+                    ]),
+                    li({}, [
+                      h(Link, { to: { pathname: '/' }, onClick: this.signOut },
+                        ["Sign out"]
+                      )
+                    ])
                   ])
                 ]),
                 div({ isRendered: !this.state.isLogged, className: "googleButton" }, [
