@@ -1583,6 +1583,24 @@ class QueryService implements Status {
         where
     }
 
+    List<ConsentCollectionLink> findCollectionLinks() {
+        String query = 'select * from consent_collection_link where deleted = 0 '
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<ConsentCollectionLink> links = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            list()
+        }
+        Map<String, SampleCollection> collectionMap = getCollectionIdMap(links)
+        (links as Collection<ConsentCollectionLink>).each { link ->
+            if (link) {
+                if (link?.sampleCollectionId && collectionMap.containsKey(link?.sampleCollectionId)) {
+                    link.setSampleCollection(collectionMap.get(link.sampleCollectionId))
+                }
+            }
+        }
+        links
+    }
+
     PaginatedResponse findAllCollectionLinks(PaginationParams pagination) {
         // get total rows
         String totalRowsQuery = 'select count(*) from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
