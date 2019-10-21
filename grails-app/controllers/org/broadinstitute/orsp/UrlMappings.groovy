@@ -67,7 +67,6 @@ class UrlMappings {
         '/api/issue-review'(controller: 'issueReview', action: 'show', method: 'GET')
         '/api/issue-review'(controller: 'issueReview', action: 'save', method: 'POST')
         '/api/issue-review'(controller: 'issueReview', action: 'update', method: 'PUT')
-        '/api/issue-review/delete-consent-reason'(controller:'issueReview', action:'deleteNoConsentReasonEdited', method: 'DELETE')
 
         // Data use letter end points
         '/api/data-use-letter/save-dul'(controller: 'dataUseLetter', action: 'create', method: 'POST')

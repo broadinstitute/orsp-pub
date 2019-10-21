@@ -124,7 +124,6 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     subscriber.subscribe(v => {
       this.setState(prev => {
         prev.current.consentExtraProps.noConsentFormReason = v;
-        prev.formData.consentExtraProps.noConsentFormReason = v;
         return prev;
       });
     });
