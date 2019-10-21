@@ -30,6 +30,7 @@ const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
           onFailure={this.forbidden}
           cookiePolicy={'single_host_origin'}
           scope={'openid email profile'}
+          autoLoad={true}
         />
       </Fragment>
     );
