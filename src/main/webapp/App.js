@@ -17,7 +17,9 @@ export const App = hh(class App extends Component {
     }, (error) => {
       if (error.response.status === 401) {
         this.handleUnauthorized();
+        return null;
       } else {
+        Storage.clearStorage();
         return Promise.reject(error);
       }
     });

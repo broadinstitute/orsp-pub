@@ -266,6 +266,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ]),
                 li({}, [
                   h(GoogleLogout,{
+                    isRendered: Storage.userIsLogged(),
                     clientId: component.clientId,
                     onLogoutSuccess: this.signOut,
                     render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
