@@ -6,7 +6,7 @@ import { SAMPLE_COLLECTION_SORT_NAME_INDEX } from '../util/ReportConstants';
 import { TABLE_ACTIONS, formatDataPrintableFormat } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
-import { exportData } from '../util/Utils';
+import { exportData, isEmpty } from '../util/Utils';
 
 const stylesHeader = {
   pageTitle: {
@@ -49,14 +49,18 @@ const columns = [
   {
     dataField: 'sampleCollectionId',
     text: 'Sample Collection',
-    sort: true
+    sort: true,
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+     !isEmpty(cell) ? cell : ''
   }, 
   {
     dataField: 'status',
     text: 'Status',
     sort: true,
     formatter: (cell, row, rowIndex, colIndex) =>
-      span({ title: row.status }, [row.status])
+      span({ title: row.status }, [row.status]),
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+     !isEmpty(cell) ? cell : ''
   }
 ];
 
