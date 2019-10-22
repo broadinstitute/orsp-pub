@@ -619,6 +619,32 @@ class QueryService implements Status {
         issue
     }
 
+    /**
+     * Find issues by keys
+     *
+     * @param keys The issue keys
+     * @return List of Issues that match the query
+     */
+    Collection<ConsentLinkDTO> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
+        if (!keys?.isEmpty()) {
+            List<Issue> issues = findAllByProjectKeyInList(keys.keySet().toList(), null)
+            List<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
+            def docsByProject = documents.groupBy({d -> d.projectKey})
+            List<ConsentLinkDTO> consentLinkDTOList = new ArrayList<>()
+            issues.each { issue ->
+              consentLinkDTOList.add(
+                      new ConsentLinkDTO(issue.id,
+                                         issue.projectKey,
+                                         keys.get(issue.projectKey).status,
+                                         issue.summary,
+                                         issue.description,
+                                         docsByProject.get(issue.projectKey) != null ? docsByProject.get(issue.projectKey) : Collections.emptyList()))
+            }
+            consentLinkDTOList
+        } else {
+            Collections.emptyList()
+        }
+    }
 
     /**
      * Find paginated and filtered project issues
