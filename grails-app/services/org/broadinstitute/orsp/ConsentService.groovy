@@ -6,7 +6,6 @@ import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpEncoders
-import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
@@ -521,11 +520,12 @@ class ConsentService implements Status {
      * @return List of Consent Group that are related to the specified consent collection links
      */
     Collection<Issue> findConsentGroupsAssociatedByConsentLink(Map<String, ConsentCollectionLink> keys) {
-        if (keys && !keys.isEmpty()) {
-            List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())
+        if (!keys?.isEmpty()) {
+            List<Issue> issues = queryService.findAllByProjectKeyInList(keys.keySet().toList(), null)
+            List<StorageDocument> documents = queryService.getAttachmentsForProjects(keys.keySet())
+            def docsByProject = documents.groupBy({d -> d.projectKey})
             issues.each { issue ->
-                // set all documents related to the specified consent group including its consent collection link documents
-                issue.setAttachments(queryService.getAttachmentsForProjects(keys.keySet()))
+                issue.setAttachments(docsByProject.get(issue.projectKey))
                 issue.setStatus(keys.get(issue.projectKey).status)
             }
             issues
