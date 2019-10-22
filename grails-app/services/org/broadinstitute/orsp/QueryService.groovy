@@ -1691,32 +1691,4 @@ class QueryService implements Status {
         query
     }
 
-    PaginatedResponse findConsentCollectionLinks(PaginationParams pagination) {
-        // get total rows
-        String query = 'select count(id) from consent_collection_link '
-        String orderColumn = getCollectionOrderColumn(pagination.orderColumn)
-        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
-        if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
-        Long totalRows = sqlQuery.uniqueResult()
-
-        // get DUR paginated
-        String durQuery =  'select * from consent_collection_link ' + getDURWhereClause(pagination) + " order by " + orderColumn + pagination.sortDirection
-        SQLQuery sqlDURQuery = getSessionFactory().currentSession.createSQLQuery(durQuery)
-
-        List<DataUseRestriction> results = sqlDURQuery.with {
-            if (pagination.searchValue) setString('term', pagination.getLikeTerm())
-            addEntity(DataUseRestriction)
-            setFirstResult(pagination.start)
-            setMaxResults(pagination.length)
-            list()
-        }
-        new PaginatedResponse(
-                draw: pagination.draw,
-                recordsTotal: totalRows,
-                recordsFiltered: totalRows,
-                data: results,
-                error: ""
-        )
-    }
-
 }
