@@ -300,7 +300,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       consentGroupName = true;
     }
 
-    if (isEmpty(this.state.formData.consentExtraProps.noConsentFormReason) && !this.props.consentFormDocument) {
+    if (isEmpty(this.state.formData.consentExtraProps.noConsentFormReason) && !this.props.consentFormDocument && !this.state.reviewSuggestion) {
       noConsentAnswer = true;
     }
 
