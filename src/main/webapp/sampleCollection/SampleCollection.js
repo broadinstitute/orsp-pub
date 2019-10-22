@@ -181,14 +181,14 @@ const SampleCollection = hh(class SampleCollection extends Component {
     let cols = columns.filter(el => el.dataField !== 'id');
     let collections = formatDataPrintableFormat(this.state.collections, cols);
     const tableColumnsWidth = [100, 100,'*',80 ,'*','*','*','*','*'];
-    const titleText = "Sample Collection Report";
+    const titleText = "Consent Collection Links";
     exportData('print' , null, collections, titleText, '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   render() {
     return (
       div({}, [
-        h1({ style: stylesHeader.pageTitle }, ["Sample Collection Report"]),
+        h1({ style: stylesHeader.pageTitle }, ["Consent Collection Links"]),
         TableComponent({
           remoteProp: true,
           onTableChange: this.onTableChange,
@@ -196,7 +196,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
           columns: columns,
           keyField: 'id',
           search: true,
-          fileName: 'Sample Collection Report',
+          fileName: 'Consent Collection Links',
           showPrintButton: false,
           printComments: this.printContent,
           sizePerPageList: SIZE_PER_PAGE_LIST,
