@@ -59,10 +59,11 @@ const styles = {
     menuList: () => ({	
       width: '500px',	
       zIndex: '3000',	
-      maxHeight: '400px',	
+      maxHeight: '400px',
+      overflowY: 'auto',
       backgroundColor: '#FFFFFF',	
       border: '1px solid #CCCCCC',	
-      borderRadius: '4px'	
+      borderRadius: '4px'
     })
   }
 }
