@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { hh } from 'react-hyperscript-helpers';
 import GoogleLogin from 'react-google-login';
+import { Storage } from '../util/Storage'
 
 const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
 
@@ -30,7 +31,7 @@ const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
           onFailure={this.forbidden}
           cookiePolicy={'single_host_origin'}
           scope={'openid email profile'}
-          autoLoad={true}
+          autoLoad={Storage.getLocationFrom() != null}
         />
       </Fragment>
     );
