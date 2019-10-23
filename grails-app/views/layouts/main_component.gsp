@@ -15,6 +15,9 @@
     <meta name="google-signin-client_id" content="${grailsApplication.config.googleSignInClientId}">
     <meta charset="utf-8"/>
 
+    <link rel="shortcut icon" href="${resource(dir: 'assets', file: 'favicon.png')}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="${resource(dir: 'assets', file: 'apple-touch-icon.png')}">
+    <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <asset:stylesheet src="bootstrap-customizations.css"/>
