@@ -34,6 +34,7 @@ export const UrlConstants = {
   collectionLinks: context + '/api/collection-links',
   exportConsent: context + '/api/consent/export',
   matchingName: context + '/api/consent-groups/matching-name',
+  getConsentCollectionLinks: context + '/api/consent-collection-links',
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',
   attachedDocumentsUrl : context + '/api/files-helper/attached-documents',
@@ -100,6 +101,7 @@ export const UrlConstants = {
   reviewCategoryReportUrl: context + "/report/reviewCategories",
   qaEventReportViewUrl: context + "/statusEvent/qaEventReport",
   fundingReportUrl: context + "/admin/fundingReport",
+  sampleCollectionReportUrl: context + "/report/sampleCollections",
   metricsReportUrl: context + "/report/aahrppMetrics",
   rolesManagementUrl: context + "/user/rolesManagement",
   projectUrl:  context + "/project/pages"

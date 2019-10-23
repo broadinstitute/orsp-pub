@@ -97,7 +97,7 @@ class UrlMappings {
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
         '/api/qa-event-report'(controller: 'statusEvent', action: 'findQaEventReport', method: 'GET')
         '/api/qa-project-event-report'(controller: 'statusEvent', action: 'findProjectReport', method:'GET')
-
+        '/api/consent-collection-links'(controller: 'report', action: 'getAllConsentCollectionLinks')
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
