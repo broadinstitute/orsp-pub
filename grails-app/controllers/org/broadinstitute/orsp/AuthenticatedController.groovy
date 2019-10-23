@@ -337,9 +337,4 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
         getUser() ? permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isViewer()) : false
     }
 
-    def redirectToMainContainer() {
-      render(view: "/mainContainer/index")
-    }
-
-
 }

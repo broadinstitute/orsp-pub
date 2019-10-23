@@ -7,6 +7,8 @@ import '../components/Wizard.css';
 import ConsentGroupDocuments from '../consentGroupDocuments/ConsentGroupDocuments';
 import MultiTab from '../components/MultiTab';
 import { ProjectMigration, Review } from '../util/ajax';
+import { isEmpty } from '../util/Utils';
+import { scrollToTop } from "../util/Utils";
 
 export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Component {
 
@@ -26,6 +28,13 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   componentDidMount() {
     this._isMounted = true;
+    scrollToTop();
+    if (!isEmpty(this.props.tab)) {
+      this.setState(prev => {
+        prev.activeTab = this.props.tab;
+        return prev;
+      })
+    }
     this.getHistory();
     this.getComments();
   }
@@ -98,7 +107,8 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     changeInfoStatus: this.props.changeInfoStatus,
                     updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent,
-                    consentKey: this.props.consentKey
+                    consentKey: this.props.consentKey,
+                    history: this.props.history
                   })
                 ]),
               div({

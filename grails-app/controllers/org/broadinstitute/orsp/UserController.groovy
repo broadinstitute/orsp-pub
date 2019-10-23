@@ -38,10 +38,6 @@ class UserController extends AuthenticatedController {
         render syncedUsers as JSON
     }
 
-    def rolesManagement() {
-        render(view: "/mainContainer/index")
-    }
-
     def getOrspUsers() {
         UtilityClass.registerUserRolesMarshaller()
 

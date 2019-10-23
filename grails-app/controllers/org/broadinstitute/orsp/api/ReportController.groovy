@@ -51,10 +51,6 @@ class ReportController extends AuthenticatedController {
         response.outputStream << content
     }
 
-    def reviewCategories() {
-        render(view: "/mainContainer/index")
-    }
-
     def findReviewCategories() {
         UtilityClass.registerIssueMarshaller();
         PaginationParams pagination = new PaginationParams(

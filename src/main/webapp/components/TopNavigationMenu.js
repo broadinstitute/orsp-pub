@@ -1,5 +1,5 @@
-import { Component } from 'react';
-import { a, b, button, div, h, hh, li, span, ul } from 'react-hyperscript-helpers';
+import { Component } from "react";
+import { a, hh, div, button, span, ul, li, b, h, nav } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
 import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
@@ -8,10 +8,11 @@ import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import { GoogleLogout } from 'react-google-login';
 import LoadingWrapper from '../components/LoadingWrapper';
+import ResponsiveMenu from 'react-responsive-navbar';
 import './TopNavigationMenu.css';
 
 function ColorValue(isDisabled, isFocused) {
-  let color =  '#000000';
+  let color = '#000000';
   if (!isDisabled && isFocused) {
     color = '#337ab7';
   } else if (!isDisabled && !isFocused) {
@@ -41,13 +42,12 @@ const styles = {
     }),
     input: () => ({
       backgroundColor: '#FFFFFF',
-      paddingLeft: '15px',
-      width: '220px',
+      width: '200px',
       height: '30px',
       lineHeight: '30px',
       display: 'inline-block',
       margin: '0',
-      position:'relative',
+      position: 'relative',
       borderRadius: '3px !important'
     }),
     placeholder: () => ({
@@ -61,10 +61,8 @@ const styles = {
       width: '500px',
       zIndex: '3000',
       maxHeight: '400px',
-      backgroundColor: '#FFFFFF',
       overflowY: 'auto',
-      position: 'fixed',
-      top: '52px',
+      backgroundColor: '#FFFFFF',
       border: '1px solid #CCCCCC',
       borderRadius: '4px'
     })
@@ -86,7 +84,6 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   componentDidMount = async () => {
     this._isMounted = true;
-    this.init();
   };
 
   componentWillUnmount() {
@@ -113,15 +110,11 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.init().then(resp => {
       if (Storage.getLocationFrom() != null) {
         this.props.history.push(Storage.getLocationFrom());
-        Storage.removeLocationFrom();
-        window.location.reload();
       } else {
         this.props.history.push("/index");
-        if (Storage.getLocationFrom()) {
-          Storage.removeLocationFrom();
-        }
-        window.location.reload();
       }
+      Storage.removeLocationFrom();
+      window.location.reload();
     });
   };
 
@@ -173,7 +166,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     return label;
   }
 
-  createLabel (contact, label) {
+  createLabel(contact, label) {
     return h(span, { style: styles.listResultContainer }, [
       span({ style: styles.badgeContactAccess }, [
         ' Please contact ' + contact + ' for access'
@@ -192,94 +185,92 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   render() {
     return (
-      div({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
+
+      nav({ className: "navbar navbar-default navbar-fixed-top", role: "navigation" }, [
         div({ className: "container" }, [
-          div({ className: "navbar-header" }, [
-            button({ className: "navbar-toggle", type: "button" }, [
-              span({ className: "sr-only" }, ["Toggle navigation"]),
-              span({ className: "icon-bar" }, []),
-              span({ className: "icon-bar" }, []),
-              span({ className: "icon-bar" }, [])
-            ]),
-            h(Link, { className: "navbar-brand", to: { pathname: Storage.userIsLogged() ? UrlConstants.index : '/' } },
-              [
-                span({}, [
-                  "ORSP Portal ",
-                  span({ isRendered: component.env === 'development', className: "label label-danger" }, ["Dev"])
-                ])
-              ])
+          h(Link, { className: "navbar-brand", to: { pathname: Storage.userIsLogged() ? UrlConstants.index : '/' } }, [
+            span({}, [
+              "ORSP Portal ",
+              span({ isRendered: component.env === 'development', className: "label label-danger" }, ["Dev"])
+            ])
           ]),
-          div({ className: "navbar-collapse collapse" }, [
-            ul({ className: "nav navbar-nav" }, [
-              li({}, [
-                h(Link, { to: { pathname: UrlConstants.aboutUrl } },
-                  ['About']
-                )
-              ]),
-              li({ isRendered: component.isBroad }, [
-                h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
-                  ['Search']
-                )
-              ]),
-              li({ isRendered: component.isBroad && !component.isViewer, className: "dropdown" }, [
-                a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
-                  "New ", b({ className: "caret" }, [])
+          h(ResponsiveMenu, {
+            changeMenuOn: "767px",
+            menuOpenButton: div({ className: "navbar-open-icon" }, []),
+            menuCloseButton: div({ className: "navbar-close-icon" }, []),
+            menu:
+              div({ className: "navbar-container" }, [
+                ul({ className: "nav navbar-nav navbar-left " + (this.state.isLogged ? 'left-container' : ''), }, [
+                  li({}, [
+                    h(Link, { to: { pathname: UrlConstants.aboutUrl } },
+                      ['About']
+                    )
+                  ]),
+                  li({ isRendered: component.isBroad }, [
+                    h(Link, { to: { pathname: UrlConstants.viewSearchUrl } },
+                      ['Search']
+                    )
+                  ]),
+                  li({ isRendered: component.isBroad && !component.isViewer, className: "dropdown" }, [
+                    a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                      "New ", b({ className: "caret" }, [])
+                    ]),
+                    ul({ className: "dropdown-menu" }, [
+                      li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
+                    ])
+                  ]),
+                  li({ isRendered: component.isAdmin, className: "dropdown" }, [
+                    a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
+                      "Admin ", b({ className: "caret" }, [])
+                    ]),
+                    ul({ className: "dropdown-menu" }, [
+                      li({}, [h(Link, { to: { pathname: UrlConstants.dataUseListUrl } }, ["Data Use Restrictions"])]),
+                      li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
+                      li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["QA Event Report"])]),
+                      li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
+                      li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
+                      li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
+                    ])
+                  ])
                 ]),
-                ul({ className: "dropdown-menu" }, [
-                  li({}, [h(Link, { to: { pathname: UrlConstants.projectUrl } }, ["New Project"])])
-                ])
-              ]),
-              li({ isRendered: component.isAdmin, className: "dropdown" }, [
-                a({ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" }, [
-                  "Admin ", b({ className: "caret" }, [])
+                div({ className: "right-container" }, [
+                  div({ isRendered: component.isBroad, className: "navbar-form" }, [
+                    MultiSelect({
+                      id: "pk_select",
+                      label: "",
+                      styles: styles.customStyles,
+                      isDisabled: false,
+                      loadOptions: this.loadOptions,
+                      handleChange: this.handleSearchChange,
+                      value: this.state.searchValue,
+                      placeholder: "ORSP ID #",
+                      isMulti: false,
+                      edit: false
+                    })
+                  ]),
+                  ul({ isRendered: Storage.userIsLogged(), className: "nav navbar-nav navbar-right" }, [
+                    li({}, [
+                      h(Link, { to: { pathname: UrlConstants.profileUrl } },
+                        [this.state.userSession.displayName]
+                      )
+                    ]),
+                    li({}, [
+                      h(GoogleLogout,{
+                        isRendered: Storage.userIsLogged(),
+                        clientId: component.clientId,
+                        onLogoutSuccess: this.signOut,
+                        render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
+                      },[])
+                    ])
+                  ])
                 ]),
-                ul({ className: "dropdown-menu" }, [
-                  li({}, [h(Link, { to: { pathname: UrlConstants.dataUseListUrl } }, ["Data Use Restrictions"])]),
-                  li({}, [h(Link, { to: { pathname: UrlConstants.reviewCategoryReportUrl } }, ["Review Category Report"])]),
-                  li({}, [h(Link, { to: { pathname: UrlConstants.qaEventReportViewUrl } }, ["QA Event Report"])]),
-                  li({}, [h(Link, { to: { pathname: UrlConstants.fundingReportUrl } }, ["Funding Source Report"])]),
-                  li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
-                  li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])])
-                ])
-              ])
-            ]),
-            div({ isRendered: component.isBroad, className: "navbar-form navbar-left" }, [
-              MultiSelect({
-                id: "pk_select",
-                label: "",
-                styles: styles.customStyles,
-                isDisabled: false,
-                loadOptions: this.loadOptions,
-                handleChange: this.handleSearchChange,
-                value: this.state.searchValue,
-                placeholder: "ORSP ID #",
-                isMulti: false,
-                edit: false
-              })
-            ]),
-            div({ isRendered: Storage.userIsLogged(), className: "floatRight" }, [
-              ul({ className: "nav navbar-nav" }, [
-                li({}, [
-                  h(Link, { to: { pathname: UrlConstants.profileUrl } },
-                    [this.state.userSession.displayName]
-                  )
-                ]),
-                li({}, [
-                  h(GoogleLogout,{
-                    isRendered: Storage.userIsLogged(),
-                    clientId: component.clientId,
-                    onLogoutSuccess: this.signOut,
-                    render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
-                  },[])
-                ])
-              ])
-            ]),
-            GoogleLoginButton({
-              isRendered: !Storage.userIsLogged(),
-              clientId: component.clientId,
-              onSuccess: this.onSuccess
-            })
-          ])
+                GoogleLoginButton({
+                  isRendered: !Storage.userIsLogged(),
+                  clientId: component.clientId,
+                  onSuccess: this.onSuccess
+                })
+            ])
+          })
         ])
       ])
     )

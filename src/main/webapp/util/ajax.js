@@ -427,10 +427,6 @@ export const Reports = {
 
 export const ProjectMigration = {
 
-  getConsentGroups(id) {
-    return axios.get(UrlConstants.allConsentGroupsUrl + '?id=' + id);
-  },
-
   getHistory(id) {
     return axios.get(UrlConstants.historyUrl + '?id=' + id);
   },

@@ -188,23 +188,6 @@ class ConsentGroupController extends AuthenticatedController {
          tab: 'details']
     }
 
-    def projectConsentGroups() {
-        Issue issue = queryService.findByKey(params.id)
-        Collection<ConsentCollectionLink> collectionLinks = ConsentCollectionLink.findAllByProjectKey(issue.projectKey)
-        Map<String, ConsentCollectionLink> collectionLinksMap = collectionLinks?.collectEntries{[it.consentKey, it]}
-        Collection<Issue> consentGroups = queryService.findByKeys(collectionLinksMap, params.id)
-        render(
-                view: "/consentGroup/list",
-                model: [
-                        issue: issue,
-                        consentGroups: consentGroups?.sort {a, b -> a.summary?.toLowerCase() <=> b.summary?.toLowerCase()},
-                        attachmentTypes: PROJECT_DOC_TYPES,
-                        controller: IssueType.CONSENT_GROUP.controller
-                ]
-        )
-    }
-
-
     def attachDocument() {
         def issue = queryService.findByKey(params.id)
         try {

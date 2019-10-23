@@ -42,13 +42,11 @@ class UrlMappings {
         '/api/consent-group/sample-collections'(controller: 'consentGroup', action: 'getConsentGroupSampleCollections')
         '/consent-group/name-search'(controller: 'consentGroup', action: 'getConsentGroups')
         '/consent-group/sample-search'(controller: 'consentGroup', action: 'unConsentedSampleCollections')
-        '/consent-group/use-existing'(controller:'newConsentGroup', action:'renderMainComponent')
         '/consent-group/new'(controller:'newConsentGroup', action:'renderMainComponent')
         '/api/consent-group/approve'(controller: 'newConsentGroup', action: 'approveConsentGroup')
         '/api/consent-group'(controller: 'newConsentGroup', action: 'update', method: 'PUT')
         '/api/consent-group/review'(controller: 'consentGroup', action: 'getConsentGroup', method: 'GET')
         '/api/consent-group/upload-modal'(controller: 'consentGroup', action: 'loadModalWindow', method: 'GET')
-        '/api/consent-groups'(controller: 'consentGroup', action: 'projectConsentGroups', method: 'GET')
         '/api/consent-group/get-project-consent-groups'(controller:'newConsentGroup', action:'getProjectConsentGroups', method: 'GET')
         '/api/consent-groups/matching-name'(controller: 'newConsentGroup', action: 'matchConsentName', method: 'GET')
 
@@ -74,7 +72,7 @@ class UrlMappings {
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'create', method: 'POST')
         '/api/data-use-letter'(controller: 'dataUseLetter', action: 'getDul', method: 'GET')
         '/api/data-use-letter/pdf'(controller: 'dataUseLetter', action: 'createPdf', method: 'POST')
-        '/api/data-use/restriction/create'(controller: 'dataUse', action: 'saveSdul', method: 'POST')
+        '/api/data-use/restriction/create'(controller: 'dataUseLetter', action: 'saveSdul', method: 'POST')
 
         '/api/dul-email-notification'(controller: 'dulNotify', action: 'sendNotifications', method: 'POST')
         '/api/clarification-request/collection'(controller: 'clarification', action: 'collectionRequestClarification', method: 'POST')

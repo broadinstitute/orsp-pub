@@ -74,15 +74,6 @@ class AdminController extends AuthenticatedController {
         errors
     }
 
-    def reviewCategories() {
-        def issues = queryService.findByQueryOptions(new QueryOptions(issueTypeNames: [IssueType.IRB.name]))
-        render(view: "/admin/reviewCategories", model: [issues: issues])
-    }
-
-    def fundingReport() {
-        render(view: "/mainContainer/index")
-    }
-
     def close() {
         def issue = queryService.findByKey(params.id)
         transitionService.close(issue, params.comment, getUser()?.displayName)

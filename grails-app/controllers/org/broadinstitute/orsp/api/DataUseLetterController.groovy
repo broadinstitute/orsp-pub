@@ -6,6 +6,7 @@ import groovy.util.logging.Slf4j
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseLetterService
+import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.OntologyService
@@ -110,6 +111,19 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
             } else {
                 throw new MissingResourceException("Unable to upload empty Data Use Letter pdf.")
             }
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
+
+    def saveSdul() {
+        try {
+            DataUseRestriction restriction = dataUseLetterService.getRestrictionFromParams(request.JSON)
+            dataUseLetterService.saveRestriction(restriction, getUser()?.displayName)
+            response.status = 200
+            render(restriction: restriction as JSON)
+        } catch (IllegalArgumentException iae) {
+            handleIllegalArgumentException(iae)
         } catch (Exception e) {
             handleException(e)
         }

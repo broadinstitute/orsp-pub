@@ -147,11 +147,14 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
       restriction.diseaseRestrictions = this.getKeys(this.state.restriction.diseaseRestrictions)
       restriction.populationRestrictions = this.getKeys(this.state.restriction.populationRestrictions)
       DataUse.createRestriction(restriction).then(resp => {
-        this.props.history.push({
-          pathname: '/newConsentGroup/main',
-          search: '?consentKey=' + this.state.consentKey,
-          state: { issueType: 'consent-group', tab: 'documents', consentKey: this.state.consentKey }
-        })
+        const fromConsentGroup = this.props.location.state != null ? this.props.location.state.fromConsentGroup : false;
+        if (fromConsentGroup) {
+          this.props.history.push({
+            pathname: '/newConsentGroup/main',
+            search: '?consentKey=' + this.state.consentKey + '&tab=documents'});
+        } else {
+          this.props.history.goBack();
+        }        
       }).catch(error => {
         this.setState(() => { throw error; });
       });

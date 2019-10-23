@@ -16,7 +16,7 @@ import get from 'lodash/get';
 import head from 'lodash/head';
 import orderBy from 'lodash/orderBy';
 import isEmptyArray from 'lodash/isEmpty';
-import { isEmpty } from '../util/Utils';
+import { isEmpty, scrollToTop } from '../util/Utils';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -161,6 +161,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   init() {
+    scrollToTop();
     let current = {};
     let currentStr = {};
     let future = {};
@@ -350,7 +351,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         return prev;
       });
       this.props.hideSpinner();
-      window.location.href = [component.serverURL, "index"].join("/");
+      this.props.history.push('/index');
     }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });
