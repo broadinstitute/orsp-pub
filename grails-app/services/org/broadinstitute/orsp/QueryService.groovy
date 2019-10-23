@@ -1662,9 +1662,6 @@ class QueryService implements Status {
     private String getSampleCollectionOrderColumn(Integer orderColumn) {
         String orderField
         switch (orderColumn) {
-            case 0:
-                orderField = " project_key "
-                break
             case 1:
                 orderField = " consent_key "
                 break
@@ -1674,11 +1671,14 @@ class QueryService implements Status {
             case 3:
                 orderField = " status "
                 break
+            default:
+                orderField = "project_key "
+                break
         }
         orderField
     }
 
-    private  getCollectionLinksWhereClause(pagination) {
+    private String getCollectionLinksWhereClause(pagination) {
         String query = ''
         if (pagination.searchValue) {
             query = ' and (consent_key LIKE :term OR project_key LIKE :term OR status LIKE :term OR sample_collection_id LIKE :term )'
