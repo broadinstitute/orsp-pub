@@ -89,6 +89,7 @@
 
 .inputField .inputFieldSelect .select__placeholder {
   color: #999999;
+  width: 100%;
 }
 
 .inputField .inputFieldText, .inputField .inputFieldFile, .inputField .inputFieldTextarea, .inputField .inputFieldDatePicker, .fileNameContainer {
