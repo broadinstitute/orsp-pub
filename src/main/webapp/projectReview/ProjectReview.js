@@ -1172,7 +1172,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: 'federalFunding',
               value: this.state.formData.projectExtraProps.federalFunding,
               currentValue: this.state.current.projectExtraProps.federalFunding,
-              label: 'Is Broad receiving direct federal funding?',
+              label: 'Is Broad receiving direct federal funding (Is Broad the prime awardee of a federal grant) ?',
               readOnly: true,
               onChange: () => { }
             })

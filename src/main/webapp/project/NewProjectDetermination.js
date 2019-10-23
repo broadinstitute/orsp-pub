@@ -94,7 +94,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: 'Is Broad receiving direct federal funding?',
+      question: 'Is Broad receiving direct federal funding (Is Broad the prime awardee of a federal grant) ?',
       progress: 87,
       yesOutput: DETERMINATION.IRB,
       noOutput: DETERMINATION.NE,
