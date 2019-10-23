@@ -23,6 +23,7 @@ import Search from '../search/Search';
 import ProjectReport from '../qaReport/ProjectReport';
 import InfoLink from '../infoLink/InfoLink';
 import { Storage } from '../util/Storage';
+import SampleCollection from '../sampleCollection/SampleCollection';
 
 
 const Routes = ( props ) => (
@@ -32,6 +33,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/project/pages"} component={NewProject} props={props}/> }/>
     <AuthenticatedRoute path= {"/admin/fundingReport"} component={FundingsSourceReport} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/report/reviewCategories"} component={ReviewCategories} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/report/sampleCollections"} component={SampleCollection} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/statusEvent/qaEventReport"} component={QaReport} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {"/statusEvent/projectReport"} component={ProjectReport} props={props} admin={true} />
     <AuthenticatedRoute path= {"/dataUse/list"}  component={DataUseRestrictionIndex} props={props} admin={true}/> }/>

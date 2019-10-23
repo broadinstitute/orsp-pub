@@ -1596,6 +1596,32 @@ class QueryService implements Status {
         links
     }
 
+    PaginatedResponse findAllCollectionLinks(PaginationParams pagination) {
+        // get total rows
+        String totalRowsQuery = 'select count(*) from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        SQLQuery query = getSessionFactory().currentSession.createSQLQuery(totalRowsQuery)
+        if (pagination.searchValue) query.setString('term', pagination.getLikeTerm())
+        Long totalRows = query.uniqueResult()
+
+        String queryCCL = 'select * from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        String orderColumn = getSampleCollectionOrderColumn(pagination.orderColumn)
+        queryCCL = queryCCL + ' order by ' + orderColumn + pagination.sortDirection
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(queryCCL)
+        List<ConsentCollectionLink> links = sqlQuery.with {
+            if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
+            addEntity(ConsentCollectionLink)
+            setFirstResult(pagination.start)
+            setMaxResults(pagination.length)
+            list()
+        }
+        new PaginatedResponse(
+                draw: pagination.draw,
+                recordsTotal: totalRows,
+                recordsFiltered: totalRows,
+                data: links,
+                error: ""
+        )
+    }
 
     List<DataUseRestriction> findDataUseRestrictionByConsentGroupKeyInList(List<String> consentGroupKeys) {
         String query = 'select * from data_use_restriction where consent_group_key IN :consentGroupKeys '
@@ -1619,4 +1645,45 @@ class QueryService implements Status {
         }
         orderField
     }
+
+    private String getCollectionOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 0:
+                orderField = " consent_group_key "
+                break
+            case 1:
+                orderField = " vault_export_date "
+                break
+        }
+        orderField
+    }
+
+    private String getSampleCollectionOrderColumn(Integer orderColumn) {
+        String orderField
+        switch (orderColumn) {
+            case 1:
+                orderField = " consent_key "
+                break
+            case 2:
+                orderField = " sample_collection_id "
+                break
+            case 3:
+                orderField = " status "
+                break
+            default:
+                orderField = "project_key "
+                break
+        }
+        orderField
+    }
+
+    private String getCollectionLinksWhereClause(pagination) {
+        String query = ''
+        if (pagination.searchValue) {
+            query = ' and (consent_key LIKE :term OR project_key LIKE :term OR status LIKE :term OR sample_collection_id LIKE :term )'
+        }
+        query
+    }
+
 }

@@ -422,6 +422,18 @@ export const Reports = {
   },
   getQaEventReportForProject(projectKey) {
     return axios.get(UrlConstants.qaEventReportForProjectUrl + '?projectKey=' + projectKey)
+  },
+  getCollectionLinksReport(query) {
+    return axios.get(UrlConstants.getConsentCollectionLinks, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
   }
 };
 

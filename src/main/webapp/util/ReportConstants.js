@@ -22,6 +22,13 @@ export const CATEGORY_SORT_NAME_INDEX = {
   "status": 2
 };
 
+export const SAMPLE_COLLECTION_SORT_NAME_INDEX = {
+  "projectKey": 0,
+  "consentKey": 1,
+  "sampleCollectionId": 2,
+  "status": 3
+};
+
 export const RESTRICTION_SORT_NAME_INDEX = {
   "consentGroupKey": 0,
   "vaultExportDate": 1
