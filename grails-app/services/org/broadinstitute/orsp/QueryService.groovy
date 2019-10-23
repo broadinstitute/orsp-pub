@@ -625,27 +625,22 @@ class QueryService implements Status {
      * @param keys The issue keys
      * @return List of Issues that match the query
      */
-    Collection<Issue> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
-        if (keys && !keys.isEmpty()) {
-            List<Issue> issues = Issue.findAllByProjectKeyInList(keys.keySet().toList())
+    Collection<ConsentLinkDTO> findByKeys(Map<String, ConsentCollectionLink> keys, String projectKey) {
+        if (!keys?.isEmpty()) {
+            List<Issue> issues = findAllByProjectKeyInList(keys.keySet().toList(), null)
             List<StorageDocument> documents = getAttachmentsForProjects(keys.keySet())
-
             def docsByProject = documents.groupBy({d -> d.projectKey})
+            List<ConsentLinkDTO> consentLinkDTOList = new ArrayList<>()
             issues.each { issue ->
-                List<StorageDocument> docs = new ArrayList<>()
-                List<ConsentCollectionLink> links = findConsentCollectionLinksByProjectKeyAndConsentKey(projectKey, issue.projectKey)
-                List<StorageDocument> collectionDocuments = findAllDocumentsBySampleCollectionIdList(links?.collect{it.id})
-                List<StorageDocument> projectDocuments = docsByProject.get(issue.projectKey)
-                if (CollectionUtils.isNotEmpty(collectionDocuments)) {
-                    docs.addAll(collectionDocuments)
-                }
-                if (CollectionUtils.isNotEmpty(projectDocuments)) {
-                    docs.addAll(projectDocuments)
-                }
-                issue.setAttachments(docs)
-                issue.setStatus(keys.get(issue.projectKey).status)
+              consentLinkDTOList.add(
+                      new ConsentLinkDTO(issue.id,
+                                         issue.projectKey,
+                                         keys.get(issue.projectKey).status,
+                                         issue.summary,
+                                         issue.description,
+                                         docsByProject.get(issue.projectKey) != null ? docsByProject.get(issue.projectKey) : Collections.emptyList()))
             }
-            issues
+            consentLinkDTOList
         } else {
             Collections.emptyList()
         }
@@ -1304,7 +1299,7 @@ class QueryService implements Status {
         results
     }
 
-    private Collection<StorageDocument> getAttachmentsForProjects(Collection<String> projectKeys) {
+    Collection<StorageDocument> getAttachmentsForProjects(Collection<String> projectKeys) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =

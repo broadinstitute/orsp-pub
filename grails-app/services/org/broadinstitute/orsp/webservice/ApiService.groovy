@@ -54,7 +54,7 @@ class ApiService {
                     "key": it.projectKey,
                     "label": it.projectKey + " (" + it.summary + ")",
                     "type": it.type,
-                    "status": it.status,
+                    "status": it.getApprovalStatus(),
                     "description": it.description,
                     "url": link
             ]
