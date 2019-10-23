@@ -56,13 +56,13 @@ const styles = {
       top: '2px',
       lineHeight: '30px',
     }),
-    menuList: () => ({	
-      width: '500px',	
-      zIndex: '3000',	
+    menuList: () => ({
+      width: '500px',
+      zIndex: '3000',
       maxHeight: '400px',
       overflowY: 'auto',
-      backgroundColor: '#FFFFFF',	
-      border: '1px solid #CCCCCC',	
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #CCCCCC',
       borderRadius: '4px'
     })
   }
