@@ -6,7 +6,9 @@ import Comments from '../components/Comments';
 import '../components/Wizard.css';
 import ConsentGroupDocuments from '../consentGroupDocuments/ConsentGroupDocuments';
 import MultiTab from '../components/MultiTab';
-import { ProjectMigration, Review } from '../util/ajax';
+import { ConsentGroup, ProjectMigration, Review } from '../util/ajax';
+import { KeyDocumentsEnum } from "../util/KeyDocuments";
+import { subscriber } from "../services/messageService";
 import { isEmpty } from '../util/Utils';
 import { scrollToTop } from "../util/Utils";
 
@@ -22,7 +24,10 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
       history: [],
       comments: [],
       dialogContent: '',
-      activeTab: 'review'
+      activeTab: 'review',
+      isConsentFormPresent: false,
+      isConsentFormAnswered: false,
+      isConsentFormAnsweredEdit: false,
     };
   }
 
@@ -64,6 +69,14 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
     this.getHistory();
   };
 
+  consentFormDocument = (documents) => {
+    const consentDocPresent = documents.filter(doc => doc.fileType === KeyDocumentsEnum.CONSENT_DOCUMENT).length > 0;
+    this.setState(prev => {
+      prev.isConsentFormPresent = consentDocPresent;
+      return prev;
+    });
+  };
+
   // history
   getHistory() {
     ProjectMigration.getHistory(this.props.consentKey).then(resp => {
@@ -89,6 +102,37 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
     await this.setState({ activeTab: tab });
   };
 
+  noConsentFormAnswer = (isAnswered) => {
+    this.setState(prev => {
+      prev.isConsentFormAnswered = isAnswered;
+      return prev;
+    });
+  };
+
+  noConsentFormAnswerEdit = (isAnsweredEdited) => {
+    this.setState(prev => {
+      prev.isConsentFormAnsweredEdit = isAnsweredEdited;
+      return prev;
+    });
+  };
+
+  deleteNoConsentReason = async () => {
+    if (this.state.isConsentFormAnsweredEdit) {
+      this.setState(prev => {
+        prev.isConsentFormAnsweredEdit = false;
+        return prev;
+      });
+    }
+    if (this.state.isConsentFormAnswered) {
+      subscriber.next('');
+      await ConsentGroup.deleteNoReasonConsent(this.props.consentKey);
+      this.setState(prev => {
+        prev.isConsentFormAnswered = false;
+        return prev;
+      })
+    }
+  };
+
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
@@ -108,6 +152,9 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
                     updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent,
                     consentKey: this.props.consentKey,
+                    consentFormDocument: this.state.isConsentFormPresent,
+                    noConsentFormAnswer: this.noConsentFormAnswer,
+                    noConsentFormAnswerEdit: this.noConsentFormAnswerEdit,
                     history: this.props.history
                   })
                 ]),
@@ -117,7 +164,9 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
               }, [
                   h(ConsentGroupDocuments, {
                     updateDocumentsStatus: this.updateDocumentsStatus,
-                    consentKey: this.props.consentKey
+                    consentKey: this.props.consentKey,
+                    consentFormDocument: this.consentFormDocument,
+                    deleteNoConsentReason: this.deleteNoConsentReason
                   })
                 ]),
               div({

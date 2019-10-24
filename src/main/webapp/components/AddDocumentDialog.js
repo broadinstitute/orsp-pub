@@ -6,9 +6,10 @@ import { InputFieldFile } from './InputFieldFile';
 import { Files } from '../util/ajax';
 import './ConfirmationDialog.css';
 import LoadingWrapper from './LoadingWrapper';
+import { KeyDocumentsEnum } from "../util/KeyDocuments";
 
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
-    constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       alertMessage: '',
@@ -66,18 +67,21 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         if(this.props.projectKey !== undefined) {
           this.props.showSpinner();
           Files.upload(files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
-          .then(resp => {
-            this.props.hideSpinner();
-            this.setState(prev => {
-              prev.submit = false;
-              prev.disableBtn = false;
-              prev.file = { name: '' };
-              prev.type = '';
-              return prev;
-            });
-            this.props.handleLoadDocuments();
-            this.props.closeModal();
-          }).catch(error => {
+            .then(resp => {
+              if (this.props.deleteNoConsentReason !== undefined && file.fileKey === KeyDocumentsEnum.CONSENT_DOCUMENT) {
+                this.props.deleteNoConsentReason();
+              }
+              this.props.hideSpinner();
+              this.setState(prev => {
+                prev.submit = false;
+                prev.disableBtn = false;
+                prev.file = { name: '' };
+                prev.type = '';
+                return prev;
+              });
+              this.props.handleLoadDocuments();
+              this.props.closeModal();
+            }).catch(error => {
             this.props.hideSpinner();
             this.setState(prev => {
               prev.alertType = 'danger';
@@ -162,39 +166,39 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       h(Modal, {
         show: this.props.show
       },[
-          h(ModalHeader, {}, [
-            h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
-          ]),
-          h(ModalBody, { className: "dialogBody" }, [
-            InputFieldSelect({
-              label: "Type",
-              id: "documentType",
-              name: "documentType",
-              options: this.props.options,
-              value: this.state.type,
-              onChange: this.handleTypeSelect,
-              currentValue: this.state.currentValue,
-              error: this.state.typeError,
-              errorMessage: "Required field"
-            }),
-            InputFieldFile({
-              label: "File ",
-              moreInfo: "(Max file size 15.7 Mb)",
-              id: "documentFile",
-              name: "documentFile",
-              callback: this.setFilesToUpload(this.state.documents),
-              fileName: this.state.file.name,
-              required: true,
-              error: this.state.fileError,
-              errorMessage: "Required field",
-              removeHandler: () => this.removeFile(document)
-            }),
-          ]),
-          h(ModalFooter, {}, [
-            button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-            button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
-          ])
+        h(ModalHeader, {}, [
+          h(ModalTitle, { className: "dialogTitle" }, [this.props.projectKey !== undefined ? 'Add Document to ' + this.props.projectKey : 'Add Document'])
+        ]),
+        h(ModalBody, { className: "dialogBody" }, [
+          InputFieldSelect({
+            label: "Type",
+            id: "documentType",
+            name: "documentType",
+            options: this.props.options,
+            value: this.state.type,
+            onChange: this.handleTypeSelect,
+            currentValue: this.state.currentValue,
+            error: this.state.typeError,
+            errorMessage: "Required field"
+          }),
+          InputFieldFile({
+            label: "File ",
+            moreInfo: "(Max file size 15.7 Mb)",
+            id: "documentFile",
+            name: "documentFile",
+            callback: this.setFilesToUpload(this.state.documents),
+            fileName: this.state.file.name,
+            required: true,
+            error: this.state.fileError,
+            errorMessage: "Required field",
+            removeHandler: () => this.removeFile(document)
+          }),
+        ]),
+        h(ModalFooter, {}, [
+          button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
+          button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
         ])
+      ])
     )
   }
 });

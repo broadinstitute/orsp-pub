@@ -13,6 +13,7 @@ import { isEmpty } from '../util/Utils';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { subscriber } from "../services/messageService";
 
 const headers =
   [
@@ -28,6 +29,7 @@ const headers =
 const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   _isMounted = false;
+  removedAnswer = false;
 
   constructor(props) {
     super(props);
@@ -46,6 +48,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       reviewSuggestion: false,
       submitted: false,
       alertType: '',
+      showInputConsentAnswer: true,
       consentForm: {
         summary: '',
         approvalStatus: 'Pending'
@@ -79,7 +82,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         consentGroupName: false,
         collInst: false,
         institutionalSourcesName: false,
-        institutionalSourcesCountry: false
+        institutionalSourcesCountry: false,
+        noConsentAnswer: false,
       },
       editedForm: {},
       formData: {
@@ -117,10 +121,27 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     this.props.showSpinner();
     this._isMounted = true;
     this.init();
+    subscriber.subscribe(v => {
+      this.setState(prev => {
+        prev.current.consentExtraProps.noConsentFormReason = v;
+        return prev;
+      });
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+    subscriber.unsubscribe();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.showInputConsentAnswer !== this.props.showInputConsentAnswer) {
+      this.setState(prev => {
+        prev.current.consentExtraProps.noConsentFormReason = '';
+        prev.formData.consentExtraProps.noConsentFormReason = '';
+        return prev;
+      });
+    }
   }
 
   init = () => {
@@ -187,6 +208,10 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
                 futureCopy = JSON.parse(currentStr);
               }
 
+              if (!isEmpty(formData.consentExtraProps.noConsentFormReason)) {
+                this.props.noConsentFormAnswer(true);
+              }
+
               this.setState(prev => {
                 // prepare form data here, initially same as current ....
                 prev.sampleCollectionList = sampleCollectionList;
@@ -219,8 +244,12 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   }
 
   getReviewSuggestions = () => {
+    // get editions
     Review.getSuggestions(this.props.consentKey).then(data => {
       if (this._isMounted) {
+        if (!isEmpty(data.data.suggestions)) {
+          this.props.noConsentFormAnswerEdit(!isEmpty(JSON.parse(data.data.suggestions).consentExtraProps.noConsentFormReason));
+        }
         if (data.data !== '') {
           this.setState(prev => {
             prev.formData = JSON.parse(data.data.suggestions);
@@ -247,6 +276,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     let collInst = false;
     let endDate = false;
     let consentGroupName = false;
+    let noConsentAnswer = false;
 
     if (isEmpty(this.state.formData.consentExtraProps.consent)) {
       consent = true;
@@ -270,11 +300,16 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       consentGroupName = true;
     }
 
+    if (isEmpty(this.state.formData.consentExtraProps.noConsentFormReason) && !this.props.consentFormDocument && !this.state.reviewSuggestion) {
+      noConsentAnswer = true;
+    }
+
     const valid = !consent &&
       !this.institutionalSrcHasErrors() &&
       !protocol &&
       !collInst &&
-      !consentGroupName;
+      !consentGroupName &&
+      !noConsentAnswer;
 
     if (this._isMounted) {
       this.setState(prev => {
@@ -282,6 +317,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         prev.errors.protocol = protocol;
         prev.errors.collInst = collInst;
         prev.errors.consentGroupName = consentGroupName;
+        prev.errors.noConsentAnswer = noConsentAnswer;
         return prev;
       });
       this.setState({ errorSubmit: !valid });
@@ -296,6 +332,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       prev.errors.collInst = false;
       prev.errors.consentGroupName = false;
       prev.errors.instError = false;
+      prev.errors.noConsentAnswer = false;
       prev.errors.institutionalNameErrorIndex = [];
       prev.errors.institutionalCountryErrorIndex = [];
       return prev;
@@ -322,19 +359,20 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           prev.current.consentExtraProps.projectReviewApproved = true;
           prev.approveInfoDialog = false;
           return prev;
-        }, () => {      
+        }, () => {
           Project.getProject(this.props.consentKey).then(
             issue => {
               this.props.updateDetailsStatus(issue.data);
               this.props.hideSpinner();
             })
-          });
-        })
-    };
+        });
+      })
+  };
 
   rejectConsentGroup() {
     this.props.showSpinner();
     ConsentGroup.rejectConsent(this.props.consentKey).then(resp => {
+      this.props.noConsentFormAnswerEdit(false);
       this.props.history.push(this.getRedirectUrl(this.props.projectKey));
       this.props.hideSpinner();
     }).catch(error => {
@@ -354,6 +392,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     let consentGroup = this.getConsentGroup();
     consentGroup.editsApproved = true;
     ConsentGroup.updateConsent(consentGroup, this.props.consentKey).then(resp => {
+      this.removedAnswer = false;
       this.setState(prev => {
         prev.approveDialog = false;
         return prev;
@@ -361,10 +400,10 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       this.removeEdits('approve');
       this.props.updateContent();
     })
-    .catch(error => {
-      this.props.hideSpinner();
-      console.error(error);
-    });
+      .catch(error => {
+        this.props.hideSpinner();
+        console.error(error);
+      });
   };
 
   handleApproveDialog = async () => {
@@ -401,12 +440,31 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   enableEdit = (e) => () => {
     this.props.showSpinner();
     this.getReviewSuggestions();
+    this.removeAnswerOnEdit();
     this.setState(prev => {
       prev.readOnly = false;
       prev.resetIntCohorts = true;
       prev.isEdited = false;
       return prev;
     });
+  };
+
+  removeAnswerOnEdit = () => {
+    if(this.props.consentFormDocument &&
+      !isEmpty(this.state.current.consentExtraProps.noConsentFormReason) &&
+      !isEmpty(this.state.formData.consentExtraProps.noConsentFormReason)) {
+      this.setState(prev => {
+        prev.current.consentExtraProps.noConsentFormReason = '';
+        prev.formData.consentExtraProps.noConsentFormReason = '';
+        prev.showInputConsentAnswer = false;
+        return prev;
+      });
+    } else if (!this.props.consentFormDocument && !this.state.showInputConsentAnswer) {
+      this.setState(prev => {
+        prev.showInputConsentAnswer = true;
+        return prev;
+      });
+    }
   };
 
   toggleState = (e) => () => {
@@ -427,6 +485,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   submitEdit = (e) => async () => {
+    this.removedAnswer = true;
     this.props.showSpinner();
     let data = {};
     if (await this.isValid()) {
@@ -565,6 +624,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     consentGroup.institutionalSources = JSON.stringify(this.getInstitutionalSrc(this.state.formData.instSources));
     consentGroup.editDescription = this.state.formData.consentExtraProps.editDescription;
     consentGroup.describeEditType = this.state.formData.consentExtraProps.describeEditType;
+    consentGroup.noConsentFormReason = this.state.formData.consentExtraProps.noConsentFormReason;
     if (this.state.reviewSuggestion) {
       consentGroup.editsApproved = true;
     }
@@ -575,11 +635,12 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   removeEdits = (type) => {
     Review.deleteSuggestions(this.props.consentKey, type).then(
       resp => {
+        this.props.noConsentFormAnswerEdit(false);
         this.init();
         this.props.hideSpinner();
       }, () =>
         this.props.hideSpinner()
-      )
+    )
       .catch(error => {
         this.props.hideSpinner();
         console.error(error);
@@ -673,7 +734,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   }
 
 
-   consentGroupNameExists = async () =>  {
+  consentGroupNameExists = async () =>  {
     let exists = false;
     if (this.consentNameIsEdited()) {
       const groupName = [this.state.formData.consentExtraProps.consent, this.state.formData.consentExtraProps.protocol].join(" / ");
@@ -731,8 +792,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         this.toggleUnlinkDialog();
         this.init()
       }).catch(error => {
-        this.setState({}, () => { throw error })
-      })
+      this.setState({}, () => { throw error })
+    })
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
@@ -749,14 +810,86 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     });
   };
 
+  compareWithoutAnswer() {
+    let newValues = JSON.parse(JSON.stringify(this.state.formData.consentExtraProps));
+    newValues.noConsentFormReason = '';
+    Object.keys(newValues).forEach((key) => {
+      if (newValues[key] === true) newValues[key] = "true";
+      else if (newValues[key] === false) newValues[key] = "false";
+      return (newValues[key] === null) && delete newValues[key]
+
+    });
+    let currentValues = JSON.parse(JSON.stringify(this.state.current.consentExtraProps));
+    currentValues.noConsentFormReason = '';
+    Object.keys(currentValues).forEach((key) => {
+      if (currentValues[key] === true) currentValues[key] = "true";
+      else if (currentValues[key] === false)
+        return (currentValues[key] === null) && delete currentValues[key]
+    });
+    return JSON.stringify(currentValues) === JSON.stringify(newValues)
+  }
+
+  removeEditedAnswer = () => {
+    if (!isEmpty(this.state.formData.consentExtraProps.noConsentFormReason) && this.state.readOnly && this.removedAnswer) {
+      this.removedAnswer = false;
+      if (!this.compareWithoutAnswer()) {
+        const data = {};
+        const institutionalSourceArray = this.state.formData.instSources;
+        const newFormData = Object.assign({}, this.state.formData);
+        newFormData.consentExtraProps.noConsentFormReason = this.state.current.consentExtraProps.noConsentFormReason;
+        newFormData.instSources = institutionalSourceArray;
+        User.getUserSession().then(resp => {
+          data.projectKey = this.props.consentKey;
+          newFormData.editCreator = resp.data.userName;
+          data.suggestions = JSON.stringify(newFormData);
+          if (this.state.reviewSuggestion) {
+            Review.updateReview(this.props.consentKey, data).then(() => {
+              this.getReviewSuggestions();
+              this.props.updateContent();
+            }).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
+            });
+          } else {
+            Review.submitReview(data).then(() => {
+              this.getReviewSuggestions();
+              this.props.updateContent();
+            }).catch(error => {
+              this.getReviewSuggestions();
+              this.setState(prev => {
+                prev.submitted = true;
+                prev.errorSubmit = true;
+                prev.errorMessage = 'Something went wrong. Please try again later.';
+                return prev;
+              });
+            });
+          }
+        }).catch(error => {
+          this.setState(this.setState(() => { throw error; }));
+        });
+      } else {
+        this.removeEdits('reject');
+      }
+    }
+  };
+
   render() {
+    if (this.props.consentFormDocument) {
+      this.removeEditedAnswer();
+    }
     const {
       consent = '',
       protocol = '',
       collInst = '',
       collContact = '',
       describeEditType = null,
-      editDescription = null
+      editDescription = null,
+      noConsentFormReason = ''
     } = get(this.state.formData, 'consentExtraProps', '');
     const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
     return (
@@ -871,7 +1004,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             id: "inputInvestigatorLastName",
             name: "consent",
             label: "Last Name of Investigator Listed on the Consent Form",
-            moreInfo: " (or, if no consent form, last name of individual providing samples/data to Broad)*",
+            moreInfo: " (or, if no consent form, name of individual/vendor providing samples/data to Broad)*",
             value: consent,
             currentValue: this.state.current.consentExtraProps.consent,
             onChange: this.handleExtraPropsInputChange,
@@ -913,6 +1046,19 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             onChange: this.handleExtraPropsInputChange,
             readOnly: this.state.readOnly,
             valueEdited: !isEmpty(collContact) === isEmpty(this.state.current.consentExtraProps.collContact)
+          }),
+          InputFieldText({
+            isRendered: !this.props.consentFormDocument && this.state.showInputConsentAnswer,
+            id: "inputNoConsentFormReason",
+            name: "noConsentFormReason",
+            label: "If a Consent Form is not available, please describe the reason below",
+            value: noConsentFormReason,
+            currentValue: this.state.current.consentExtraProps.noConsentFormReason,
+            onChange: this.handleExtraPropsInputChange,
+            readOnly: this.state.readOnly,
+            valueEdited: !isEmpty(noConsentFormReason) === isEmpty(this.state.current.consentExtraProps.noConsentFormReason),
+            error: this.state.errors.noConsentAnswer,
+            errorMessage: "Required field"
           })
         ]),
 
