@@ -153,6 +153,9 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     });
   };
 
+  validateNumber = () => {
+  };
+
   handleSelectChange = (field) => () => (value) => {
     this.setState(prev => {
       if (field === "selectedType") {
@@ -199,7 +202,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   validateSubmission = () => {
-    if (isEmpty(this.state.submissionInfo.comments)) {
+    if (isEmpty(this.state.submissionInfo.comments) && this.validateNumber()) {
       this.setState(prev => {
         prev.errors.comment = true;
         return prev;

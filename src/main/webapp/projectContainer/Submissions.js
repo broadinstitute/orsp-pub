@@ -52,7 +52,8 @@ export const Submissions = hh(class Submissions extends Component {
       amendmentDocuments: [],
       otherDocuments: [],
       submissions: {},
-      activeTab: 'Amendment'
+      activeTab: 'Amendment',
+      numbers: []
     };
   }
 
@@ -82,6 +83,7 @@ export const Submissions = hh(class Submissions extends Component {
       submissions = resp.data.groupedSubmissions;
 
       _.map(submissions, (data, title) => {
+        console.log(data);
         data.forEach(submisionData => {
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(resp => {

@@ -1,6 +1,7 @@
 const CurrentUser = "CurrentUser";
 const UserIsLogged = "isLogged";
 const URLFrom = "URLFrom";
+const SubmissionNumbers = "SubmissionNumbers";
 
 export const Storage = {
 
@@ -34,5 +35,13 @@ export const Storage = {
 
   removeLocationFrom: () => {
     return localStorage.removeItem(URLFrom);
+  },
+
+  setSubmissionNumbers: value => {
+    localStorage.setItem(SubmissionNumbers, JSON.stringify(value));
+  },
+
+  getSubmissionNumbers: () => {
+    return localStorage.getItem(SubmissionNumbers);
   }
 };
