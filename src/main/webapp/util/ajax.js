@@ -19,7 +19,7 @@ export const Search = {
   },
 
   getMatchingIssues(query) {
-    return axios.get(UrlConstants.matchingCollectionsUrl + '?term=' + query);
+    return axios.get(UrlConstants.matchingIssueUrl + '?term=' + query);
   }
 };
 
