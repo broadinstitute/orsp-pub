@@ -145,7 +145,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             id: "inputInvestigatorLastName",
             name: "investigatorLastName",
             label: "Last Name of Investigator Listed on the Consent Form",
-            moreInfo:" (or, if no consent form, last name of individual providing samples/data to Broad)*",
+            moreInfo:" (or, if no consent form, name of individual/vendor providing samples/data to Broad)*",
             value: this.state.formData.investigatorLastName,
             disabled: false,
             required: true,
