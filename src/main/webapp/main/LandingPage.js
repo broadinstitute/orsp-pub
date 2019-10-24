@@ -43,6 +43,7 @@ const columnsCopy = [{
   dataField: 'status',
   text: 'Status',
   sort: true,
+  formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
   headerStyle: { width: styles.statusWidth }
 }, {
   dataField: 'type',

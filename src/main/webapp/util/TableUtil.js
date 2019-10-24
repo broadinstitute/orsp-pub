@@ -73,6 +73,9 @@ function parseDataElements(el, key) {
       (dateObj.months > 0 ? dateObj.months + ' months ' : '') +
       (dateObj.months > 0 || dateObj.years > 0 ? ' and ': '') + dateObj.days + ' days';
   }
+  if (key === 'status') {
+    result = el.type === 'Consent Group' ? '' : el.status;
+  }
   return result;
 }
 
