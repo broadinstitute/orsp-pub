@@ -120,8 +120,8 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   signOut = async () => {
     this.props.showSpinner();
-    Storage.clearStorage();
     await User.signOut();
+    Storage.clearStorage();
     this.setState({
       isLogged: false
     }, () => {
