@@ -756,6 +756,7 @@ class QueryService implements Status {
                 ' left outer join issue_extra_property p on p.issue_id = i.id ' +
                 ' left outer join user u on p.value = u.user_name ' +
                 ' left outer join funding f on f.project_key = i.project_key ' +
+                ' left outer join consent_collection_link ccl on ccl.consent_key =  i.project_key ' +
                 ' where '
 
         // TODO: Streamline the parameterization here, perhaps with a QueryOptions utility method
@@ -802,6 +803,11 @@ class QueryService implements Status {
             options.getIrbsOfRecord().eachWithIndex { it, index ->
                 params.put("irbOfRecord" + (index + 1), it)
             }
+        }
+        if (options.getCollection()) {
+            def q = ' ccl.sample_collection_id like :collection '
+            query = andIfyQstring(query, q, params)
+            params.put('collection', "%" + options.getCollection() + "%")
         }
 
         def rows = getSqlConnection().rows(query, params)

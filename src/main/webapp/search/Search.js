@@ -2,10 +2,13 @@ import React from "react";
 import { Typeahead, Menu, MenuItem } from "react-bootstrap-typeahead";
 import axios from "axios";
 
+import { MultiSelect } from '../components/MultiSelect';
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
 import { UrlConstants } from "../util/UrlConstants";
+import { SampleCollections } from "../util/ajax";
+import { isEmpty } from '../util/Utils';
 import "./style.css";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
@@ -41,7 +44,8 @@ class Search extends React.Component {
       funding: this.getLocalStorageState("funding", "string"),
       types: this.getLocalStorageState("types", "array"),
       statuses: this.getLocalStorageState("statuses", "array"),
-      irb: this.getLocalStorageState("irb", "array")
+      irb: this.getLocalStorageState("irb", "array"),
+      collection: ''
     };
   }
 
@@ -106,7 +110,8 @@ class Search extends React.Component {
       irb: [],
       data: [],
       loading: false,
-      loaded: false
+      loaded: false,
+      collection: ''
     }));
     this.userAutocomplete.clear();
     this.projectAutocomplete.clear();
@@ -127,6 +132,31 @@ class Search extends React.Component {
     this.saveStateToLocalStorage();
   }
 
+  handleSampleCollectionChange = (data) => {
+    this.setState(prev => {
+      prev.collection = data;
+      return prev;
+    });
+  };
+
+  loadSampleCollectionOptions = (query, callback) => {
+    if (query.length > 2) {
+      SampleCollections.getMatchingCollections(query)
+        .then(response => {
+          let options = response.data.map(function (item) {
+            return {
+              key: item.id,
+              value: item.value,
+              label: item.label
+            };
+          });
+          callback(options);
+        }).catch(error => {
+        this.setState(() => { throw error; });
+      });
+    }
+  };
+
   handleSubmit(event) {
     event.preventDefault();
     // these state changes do not need to be persisted for the user
@@ -137,13 +167,14 @@ class Search extends React.Component {
     params.append("projectKey", this.state.projectKey);
     params.append("funding", this.state.funding);
     params.append("userName", this.state.userName);
-    this.state.types.map(function(type, index) {
+    params.append("collection", !isEmpty(this.state.collection) ? this.state.collection.key : '');
+    this.state.types.map(function (type, index) {
       params.append("type", type);
     });
-    this.state.statuses.map(function(status, index) {
+    this.state.statuses.map(function (status, index) {
       params.append("status", status);
     });
-    this.state.irb.map(function(irb, index) {
+    this.state.irb.map(function (irb, index) {
       params.append("irb", irb.id);
     });
     axios.post(UrlConstants.searchUrl, params).then(response => {
@@ -166,16 +197,18 @@ class Search extends React.Component {
         {"New Status"}
       </Menu.Header>,
       results.map((status, idx) => {
-        return !!(newStatuses.indexOf(status) !== -1) && <MenuItem key={`legacy-`+idx} option={status} position={idx}>
+        return !!(newStatuses.indexOf(status) !== -1) && <MenuItem key={`legacy-` + idx} option={status} position={idx}>
           {status}
-        </MenuItem>}),
+        </MenuItem>
+      }),
       <Menu.Header key={`new-status-header`}>
         {"Legacy Status"}
       </Menu.Header>,
       results.map((status, idx) => {
-        return !!(newStatuses.indexOf(status) === -1) && <MenuItem key={`new-`+idx} option={status} position={idx}>
+        return !!(newStatuses.indexOf(status) === -1) && <MenuItem key={`new-` + idx} option={status} position={idx}>
           {status}
-        </MenuItem>})
+        </MenuItem>
+      })
     );
     return <Menu {...menuProps} id={"menu-item"}>{items}</Menu>
   };
@@ -187,8 +220,8 @@ class Search extends React.Component {
         <hr />
         <form onSubmit={this.handleSubmit}>
           <div className="row">
-            <div className={"form-group col-md-6"}>
-              <label>ORSP Identification #</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">ORSP Identification #</label>
               <ProjectAutocomplete
                 ref={el => {
                   this.projectAutocomplete = el;
@@ -213,8 +246,8 @@ class Search extends React.Component {
                 defaultSelected={this.state.defaultProjectSelected}
               />
             </div>
-            <div className={"form-group col-md-6"}>
-              <label>Type</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">Type</label>
               <Typeahead
                 ref={"issueType"}
                 align={"left"}
@@ -229,8 +262,8 @@ class Search extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className={"form-group col-md-6"}>
-              <label>Broad Staff Member</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">Broad Staff Member</label>
               <UserAutocomplete
                 ref={el => {
                   this.userAutocomplete = el;
@@ -256,8 +289,8 @@ class Search extends React.Component {
                 defaultSelected={this.state.defaultUserSelected}
               />
             </div>
-            <div className={"form-group col-md-6"}>
-              <label>Status</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">Status</label>
               <Typeahead
                 ref={"issueStatus"}
                 align={"left"}
@@ -273,8 +306,8 @@ class Search extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className={"form-group col-md-6"}>
-              <label>Text or Number</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">Text or Number</label>
               <input
                 name={"freeText"}
                 className={"form-control"}
@@ -283,8 +316,8 @@ class Search extends React.Component {
                 value={this.state.freeText}
               />
             </div>
-            <div className={"form-group col-md-6"}>
-              <label>IRB of Record</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">IRB of Record</label>
               <Typeahead
                 ref={"irbOfRecord"}
                 align={"left"}
@@ -300,8 +333,8 @@ class Search extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className={"form-group col-md-6"}>
-              <label>Funding</label>
+            <div className="form-group col-md-6">
+              <label className="inputFieldLabel">Funding</label>
               <input
                 ref={"funding"}
                 name={"funding"}
@@ -311,10 +344,22 @@ class Search extends React.Component {
                 value={this.state.funding}
               />
             </div>
+            <div className="form-group col-md-6">
+              <MultiSelect
+                id = {"sc_select"}
+                label = {"Sample Collection"}
+                name = {'sc'}
+                loadOptions = {this.loadSampleCollectionOptions}
+                handleChange = {this.handleSampleCollectionChange}
+                value = {this.state.collection}
+                isMulti = {false}
+                edit = {false}>
+              </MultiSelect>
+            </div>
           </div>
 
-          <div className={"row"}>
-            <div className={"form-group col-md-6"}>
+          <div className="row">
+            <div className="form-group col-md-6">
               <input
                 type={"submit"}
                 className={"btn btn-primary"}
