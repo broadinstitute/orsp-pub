@@ -56,6 +56,7 @@ const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
     DocumentHandler.attachedDocuments(this.props.consentKey).then(resp => {
       User.getUserSession().then(user => {
         if (this._isMounted) {
+          this.props.consentFormDocument(JSON.parse(resp.data.documents));
           this.setState(prev => {
               prev.documents = JSON.parse(resp.data.documents);
               prev.user = user.data;
@@ -168,6 +169,7 @@ const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
         restrictionId: this.state.restrictionId,
         isConsentGroup: true,
         associatedProjects: this.state.associatedProjects,
+        deleteNoConsentReason: this.props.deleteNoConsentReason,
         docsClarification: "Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."
       }),
       AlertMessage({
