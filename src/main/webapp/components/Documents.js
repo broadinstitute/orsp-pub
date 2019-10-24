@@ -242,7 +242,7 @@ export const Documents = hh(class Documents extends Component {
         handleLoadDocuments: this.props.handleLoadDocuments,
         userName: this.props.userName,
         isConsentGroup: this.props.isConsentGroup,
-        deleteNoConsentReason: this.props.deleteNoConsentReason,
+        deleteNoConsentReason: this.props.deleteNoConsentReason
       }),
       ConfirmationDialog({
         closeModal: this.closeRemoveModal,
