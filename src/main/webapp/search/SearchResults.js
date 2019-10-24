@@ -97,7 +97,7 @@ class SearchResults extends Component {
         { value: project.key, style: { font: { sz: "10" } } },
         { value: project.title, style: { font: { sz: "10" } } },
         { value: project.type, style: { font: { sz: "10" } } },
-        { value: project.status, style: { font: { sz: "10" } } },
+        { value: project.type === 'Consent Group' ? '' : project.status, style: { font: { sz: "10" } } },
         {
           value: project.updated,
           style: { font: { sz: "10" }, numFmt: "mm/dd/yyyy" }
@@ -117,7 +117,7 @@ class SearchResults extends Component {
             ? project.title.replace(/,/g, " ")
             : project.title,
         type: project.type,
-        status: project.status,
+        status: project.type === 'Consent Group' ? '' : project.status,
         updated: project.updated,
         expiration: project.expiration,
         reporter: project.reporter,

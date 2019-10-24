@@ -11,6 +11,7 @@ class ConsentGroupExtraProperties {
     Boolean projectReviewApproved
     String editDescription
     String describeEditType
+    String noConsentFormReason
 
 
     ConsentGroupExtraProperties(Issue consentGroup) {
@@ -24,5 +25,6 @@ class ConsentGroupExtraProperties {
         this.setProjectReviewApproved(consentGroup.getProjectReviewApproved() ?: false)
         this.setEditDescription(consentGroup.getEditDescription() ?: "")
         this.setDescribeEditType(consentGroup.getDescribeEditType() ?: "")
+        this.setNoConsentFormReason(consentGroup.getNoConsentFormReason() ?: "")
     }
 }
