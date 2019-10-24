@@ -25,6 +25,7 @@ class UtilityClass {
     public static final String HISTORY = 'history'
     public static final String SAMPLES = 'samples'
     public static final String CONSENT_COLLECTION = 'consentCollectionReport'
+    public static final String CONSENT_LINK_REPORT = 'consentLinkReport'
 
     UtilityClass(QueryService queryService) {
         this.queryService = queryService
@@ -167,6 +168,20 @@ class UtilityClass {
                         sampleCollectionId: link.sampleCollectionId ?: '',
                         creationDate: link.creationDate,
                         sampleCollectionName: link.sampleCollection ? link.sampleCollection.name : ''
+                ]
+            }
+        }
+    }
+
+    static void registerConsentLinkReportMarshaller() {
+        JSON.createNamedConfig(CONSENT_LINK_REPORT) {
+            it.registerObjectMarshaller( ConsentCollectionLink ) { ConsentCollectionLink link ->
+                return [
+                        id: link.id,
+                        projectKey: link.projectKey,
+                        consentKey: link.consentKey,
+                        sampleCollectionId: link.sampleCollectionId,
+                        status: link.status
                 ]
             }
         }

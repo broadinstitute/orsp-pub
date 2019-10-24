@@ -83,4 +83,21 @@ class ReportController extends AuthenticatedController {
         }
     }
 
+    def getAllConsentCollectionLinks() {
+        UtilityClass.registerConsentLinkReportMarshaller()
+        try {
+            PaginationParams pagination = new PaginationParams(
+                    draw: params.getInt("draw") ?: 1,
+                    start: params.getInt("start") ?: 0,
+                    length: params.getInt("length") ?: 50,
+                    orderColumn: params.getInt("orderColumn") ?: 0,
+                    sortDirection: params.get("sortDirection")?.toString() ?: "asc",
+                    searchValue: params.get("searchValue")?.toString() ?: null)
+            JSON.use(UtilityClass.CONSENT_LINK_REPORT) {
+                render queryService.findAllCollectionLinks(pagination) as JSON
+            }
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
 }

@@ -1004,7 +1004,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             id: "inputInvestigatorLastName",
             name: "consent",
             label: "Last Name of Investigator Listed on the Consent Form",
-            moreInfo: " (or, if no consent form, last name of individual providing samples/data to Broad)*",
+            moreInfo: " (or, if no consent form, name of individual/vendor providing samples/data to Broad)*",
             value: consent,
             currentValue: this.state.current.consentExtraProps.consent,
             onChange: this.handleExtraPropsInputChange,
