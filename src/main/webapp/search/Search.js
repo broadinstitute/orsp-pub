@@ -13,6 +13,16 @@ import "./style.css";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
 
+const styles = {
+  inputStyle: {
+    borderRadius: '0',
+    minHeight: '38px',
+  },
+  headStyle: {
+    marginTop: '1rem',
+  }
+};
+
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -219,7 +229,7 @@ class Search extends React.Component {
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>
-          <div className="row">
+          <div className="row" style={styles.headStyle}>
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">ORSP Identification #</label>
               <ProjectAutocomplete
@@ -311,6 +321,7 @@ class Search extends React.Component {
               <input
                 name={"freeText"}
                 className={"form-control"}
+                style={styles.inputStyle}
                 type={"text"}
                 onChange={this.handleChange}
                 value={this.state.freeText}
@@ -339,6 +350,7 @@ class Search extends React.Component {
                 ref={"funding"}
                 name={"funding"}
                 className={"form-control"}
+                style={styles.inputStyle}
                 type={"text"}
                 onChange={this.handleChange}
                 value={this.state.funding}
