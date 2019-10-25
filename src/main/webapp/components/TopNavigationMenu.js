@@ -10,6 +10,7 @@ import { GoogleLogout } from 'react-google-login';
 import LoadingWrapper from '../components/LoadingWrapper';
 import ResponsiveMenu from 'react-responsive-navbar';
 import './TopNavigationMenu.css';
+import get from 'lodash/get';
 
 function ColorValue(isDisabled, isFocused) {
   let color = '#000000';
@@ -84,6 +85,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   componentDidMount = async () => {
     this._isMounted = true;
+    this.init();
   };
 
   componentWillUnmount() {
@@ -92,6 +94,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   async init() {
     let user = await User.isAuthenticated();
+    Storage.setUserIsLogged(get(user, 'data.session', false));
     if (user != null && user.data.session) {
       let resp = await User.getUserSession();
       Storage.setCurrentUser(resp.data);
@@ -106,7 +109,6 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   onSuccess = async (token) => {
     await User.signIn(token);
-    Storage.setUserIsLogged(true);
     this.init().then(resp => {
       if (Storage.getLocationFrom() != null) {
         this.props.history.push(Storage.getLocationFrom());
@@ -257,7 +259,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                     ]),
                     li({}, [
                       h(GoogleLogout,{
-                        isRendered: Storage.userIsLogged(),
+                        isRendered: this.state.isLogged,
                         clientId: component.clientId,
                         onLogoutSuccess: this.signOut,
                         render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
@@ -266,7 +268,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ])
                 ]),
                 GoogleLoginButton({
-                  isRendered: !Storage.userIsLogged(),
+                  isRendered: !this.state.isLogged,
                   clientId: component.clientId,
                   onSuccess: this.onSuccess
                 })
