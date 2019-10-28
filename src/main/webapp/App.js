@@ -36,7 +36,7 @@ export const App = hh(class App extends Component {
       div({}, [
         h(TopNavigationMenu, { history: this.props.history, cProps: component }),
         div({ className: "container" }, [
-          h(ErrorHandler, {}, [
+          h(ErrorHandler, {history: this.props.history}, [
             Routes({}, []),
           ]),
           Footer()

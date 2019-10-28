@@ -159,15 +159,10 @@ const LandingPage = hh(class LandingPage extends Component{
   };
 
   render() {
-    // console.log("render Landing Page", this.props, this.state, component);
-    let mostrar = (component.isBroad === true);
-    // console.log("Mostrar ? ", mostrar);
-    // console.log("isBroad ? ", component.isBroad);
-
-    return (
+     return (
       div({}, [
         About(),
-        div({className: "row", isRendered: mostrar}, [
+        div({className: "row", isRendered: component.isBroad === true}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},

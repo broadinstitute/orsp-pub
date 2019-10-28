@@ -30,6 +30,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   _isMounted = false;
   removedAnswer = false;
+  subscription;
 
   constructor(props) {
     super(props);
@@ -121,7 +122,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     this.props.showSpinner();
     this._isMounted = true;
     this.init();
-    subscriber.subscribe(v => {
+    this.subscription = subscriber.subscribe(v => {
       this.setState(prev => {
         prev.current.consentExtraProps.noConsentFormReason = v;
         return prev;
@@ -131,7 +132,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    subscriber.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   componentDidUpdate(prevProps, prevState) {
