@@ -27,13 +27,14 @@ export const App = hh(class App extends Component {
 
   handleUnauthorized() {
     Storage.clearStorage();
+    Storage.setLocationFrom(this.props.history.location);
     window.location.reload();
   }
 
   render() {
     return (
       div({}, [
-        h(TopNavigationMenu, { history: this.props.history }),
+        h(TopNavigationMenu, { history: this.props.history, cProps: component }),
         div({ className: "container" }, [
           h(ErrorHandler, {}, [
             Routes({}, []),

@@ -9,6 +9,7 @@ import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
 import { Storage } from '../util/Storage';
 import moment from 'moment';
+import get from 'lodash/get';
 
 const styles = {
   projectWidth: '120px',
@@ -99,15 +100,22 @@ const LandingPage = hh(class LandingPage extends Component{
   init = async () => {
     this.props.showSpinner();
     let user = await User.isAuthenticated();
+    let resp = {};
     let projectList = [];
     let taskList = [];
+    if (user != null && user.data.session) {
+      resp = await User.getUserSession();
+    }
+    component.isBroad = get(resp.data, 'isBroad', false);
+    component.isAdmin = get(resp.data, 'isAdmin', false);
+    component.isViewer = get(resp.data, 'isViewer', false);
     if (user.data.session && component.isBroad) {
       const [ projects, tasks ] = await Promise.all([
         Issues.getIssueList('false', 5),
         Issues.getIssueList('true', 5)
       ]).catch(error => {
         this.props.hideSpinner();
-        this.setState(() => { throw error; });
+        throw error
       });
 
       projects.data.forEach(issue => {
@@ -131,25 +139,35 @@ const LandingPage = hh(class LandingPage extends Component{
           expiration: parseDate(issue.expirationDate)
         });
       });
-    }
-
-    this.props.hideSpinner();
-
-    if (this._isMounted) {
-      this.setState({
-        projectList: projectList,
-        taskList: taskList,
-        logged: user.data.session
-      });
-      Storage.setUserIsLogged(user.data.session);
+      if (this._isMounted) {
+        this.setState({
+          projectList: projectList,
+          taskList: taskList,
+          logged: user.data.session
+        });
+        Storage.setUserIsLogged(user.data.session);
+        this.props.hideSpinner();
+      }
+    } else {
+      this.props.hideSpinner();
+      Storage.clearStorage();
+      component.isBroad = null;
+      component.isAdmin = null;
+      component.isViewer = null;
+      this.props.history.push('/');
     }
   };
 
   render() {
+    // console.log("render Landing Page", this.props, this.state, component);
+    let mostrar = (component.isBroad === true);
+    // console.log("Mostrar ? ", mostrar);
+    // console.log("isBroad ? ", component.isBroad);
+
     return (
       div({}, [
         About(),
-        div({className: "row", isRendered: component.isBroad}, [
+        div({className: "row", isRendered: mostrar}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},

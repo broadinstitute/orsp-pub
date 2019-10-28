@@ -21,11 +21,7 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
 };
 
 const verifyUser = (admin, props) => {
-  Storage.setLocationFrom(props.history.location);
   let hasAccess = admin ? Storage.getCurrentUser() != null && Storage.getCurrentUser().isAdmin : Storage.userIsLogged();
-  if (!hasAccess) {
-    window.location.reload();
-  }
   return hasAccess
 };
 

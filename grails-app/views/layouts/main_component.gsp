@@ -54,7 +54,6 @@
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
         issueType: "${issueType}",
         restrictionId: "${restrictionId}",

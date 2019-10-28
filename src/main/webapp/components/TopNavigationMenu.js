@@ -98,6 +98,10 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     if (user != null && user.data.session) {
       let resp = await User.getUserSession();
       Storage.setCurrentUser(resp.data);
+      component.isBroad = get(resp.data, 'isBroad', false);
+      component.isAdmin = get(resp.data, 'isAdmin', false);
+      component.isViewer = get(resp.data, 'isViewer', false);
+
       if (this._isMounted) {
         this.setState({
           isLogged: true,
@@ -116,19 +120,20 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
         this.props.history.push("/index");
       }
       Storage.removeLocationFrom();
-      window.location.reload();
     });
   };
 
   signOut = async () => {
-    this.props.showSpinner();
     await User.signOut();
     Storage.clearStorage();
-    this.setState({
+    component.isBroad = null;
+    component.isAdmin = null;
+    component.isViewer = null;
+    await this.setState({
       isLogged: false
     }, () => {
-      window.location.reload();
-    });
+      this.props.history.push('/')
+     });
   };
 
   openMetricsReport() {
@@ -166,7 +171,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       label = this.createLabel(item.reporter, item.label);
     }
     return label;
-  }
+  };
 
   createLabel(contact, label) {
     return h(span, { style: styles.listResultContainer }, [
@@ -259,7 +264,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                     ]),
                     li({}, [
                       h(GoogleLogout,{
-                        isRendered: this.state.isLogged,
+                        isRendered: this.state.isLogged || Storage.userIsLogged(),
                         clientId: component.clientId,
                         onLogoutSuccess: this.signOut,
                         render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
@@ -268,10 +273,14 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   ])
                 ]),
                 GoogleLoginButton({
-                  isRendered: !this.state.isLogged,
+                  isRendered: !this.state.isLogged || !Storage.userIsLogged(),
                   clientId: component.clientId,
                   onSuccess: this.onSuccess
-                })
+                }),
+                button({onClick: async () => {
+                  console.log("-----Session Killed-----");
+                  await User.signOut();
+                  }},['Kill Session'])
             ])
           })
         ])
