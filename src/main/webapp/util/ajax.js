@@ -31,6 +31,10 @@ export const SampleCollections = {
 
   getCollectionsCGLinked(consentKey) {
     return axios.get(UrlConstants.linkedSampleCollectionsUrl + '?consentKey=' + consentKey);
+  },
+
+  getMatchingCollections(query) {
+    return axios.get(UrlConstants.matchingCollectionsUrl + '?term=' + query);
   }
 };
 
