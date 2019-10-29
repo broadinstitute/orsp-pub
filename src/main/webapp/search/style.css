@@ -63,6 +63,16 @@
     height: auto;
 }
 
+.form-control.rbt-input-multi,
+.form-control.rbt-input {
+    border-radius: 0;
+    min-height: 38px;
+}
+
+.form-control.rbt-input-multi {
+    padding: 8px 12px 0 12px;
+}
+
 .rbt-input-multi .rbt-input-wrapper {
     margin-bottom: -4px;
     margin-top: -1px;

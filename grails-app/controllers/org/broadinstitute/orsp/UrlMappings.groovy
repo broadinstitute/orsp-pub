@@ -93,6 +93,7 @@ class UrlMappings {
         '/search/general-table-json'(controller: 'search', action: 'generalReactTablesJsonSearch')
         '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
         '/search/matching-issues'(controller:'search', action:'getMatchingIssues')
+        '/search/matching-collections'(controller:'search', action:'getMatchingCollections')
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')

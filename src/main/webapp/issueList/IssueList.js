@@ -82,6 +82,8 @@ const columns = [
   }, {
     dataField: 'status',
     text: 'Status',
+    formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     sort: false
   }, {
     dataField: 'updateDate',
