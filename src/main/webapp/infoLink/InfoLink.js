@@ -56,7 +56,6 @@ const InfoLink = hh(class InfoLink extends Component {
     this.props.showSpinner();
     ProjectInfoLink.getProjectSampleCollections(params.get("cclId")).then(
       data => {
-        if (!isEmpty(data)) {
           JSON.parse(data.data.sampleCollections).map(sampleCollection => {
             sampleCollectionsIds.push(sampleCollection);
           });
@@ -72,7 +71,6 @@ const InfoLink = hh(class InfoLink extends Component {
               return prev;
             }, () => this.props.hideSpinner());
           }
-        }
     }).catch(error => {
       if (error.response != null && error.response.status === 401) {
         handleUnauthorized(this.props.history.location)

@@ -346,14 +346,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
   rejectProject() {
     this.props.showSpinner();
     Project.rejectProject(this.props.projectKey).then(resp => {
-      if (resp != null) {
         this.setState(prev => {
           prev.rejectProjectDialog = !this.state.rejectProjectDialog;
           return prev;
         });
         this.props.hideSpinner();
         this.props.history.push('/index');
-      }
     }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });

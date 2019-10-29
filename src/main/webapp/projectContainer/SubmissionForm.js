@@ -176,9 +176,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       };
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
-        if (resp != null) {
-          this.backToProject();
-        }
+        this.backToProject();      
       }).catch(error => {
         this.props.hideSpinner();
         console.error(error);
@@ -281,10 +279,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   deleteSubmission = () => {
     this.props.showSpinner();
     ProjectMigration.deleteSubmission(this.state.params.submissionId).then(prev => {
-      if (prev != null) {
-        this.props.history.goBack();
-        this.props.hideSpinner();
-      }
+      this.props.history.goBack();
+      this.props.hideSpinner();
     }).catch(error => {
       this.props.hideSpinner();
       console.error(error);

@@ -160,7 +160,6 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
           resp => {
-            if (!isEmpty(resp) && !isEmpty(element)) {
               if (this._isMounted) {
                 sampleCollections = resp.data.map(item => {
                   return {
@@ -226,7 +225,6 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
                   return prev;
                 }, () => this.props.hideSpinner());
               }
-            }
           }
         );
       }).catch((error) => {
@@ -380,11 +378,9 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   rejectConsentGroup() {
     this.props.showSpinner();
     ConsentGroup.rejectConsent(this.props.consentKey).then(resp => {
-      if (resp != null) {
         this.props.noConsentFormAnswerEdit(false);
         this.props.history.push(this.getRedirectUrl(this.props.projectKey));
         this.props.hideSpinner();
-      }
     }).catch(error => {
       this.props.hideSpinner();
       console.error(error);

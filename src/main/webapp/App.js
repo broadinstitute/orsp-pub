@@ -18,7 +18,7 @@ export const App = hh(class App extends Component {
     }, (error) => {
       if (error.response.status === 401) {
         handleUnauthorized(this.props.history.location);
-        return null;
+        return Promise.reject(error);
       } else {
         Storage.clearStorage();
         return Promise.reject(error);
