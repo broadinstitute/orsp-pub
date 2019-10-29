@@ -9,11 +9,16 @@ import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
+import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.OntologyService
 import org.broadinstitute.orsp.PersistenceService
+import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.StorageProviderService
+import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.UserInfo
+import org.broadinstitute.orsp.UserService
 import org.broadinstitute.orsp.dataUseLetter.DataUseLetterFields
 import org.broadinstitute.orsp.utils.DulPdfParser
 import org.broadinstitute.orsp.utils.IssueUtils
@@ -27,6 +32,8 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
     OntologyService ontologyService
     PersistenceService persistenceService
     StorageProviderService storageProviderService
+    UserService userService
+    QueryService queryService
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def create () {
@@ -145,6 +152,24 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
         String term = params.q ?: params.term
         List<OntologyTerm> matches = ontologyService.getDiseaseMatches(term)
         render(text: matches as JSON, contentType: "application/json")
+    }
+
+
+    def findByUUID() {
+        String uid = params.uuid
+        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        Map<String, String> consent = new HashMap<>()
+        if(dul != null) {
+            User user = userService.findUser(dul.getCreator())
+            Issue issue = queryService.findByKey(dul.getConsentGroupKey())
+            consent.put("dataManagerName", user.getDisplayName())
+            consent.put("dataManagerEmail", user.getEmailAddress())
+            consent.put("consentGroupKey", issue.getProjectKey())
+            consent.put(IssueExtraProperty.SUMMARY, issue.getSummary())
+            consent.put(IssueExtraProperty.PROTOCOL, IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PROTOCOL).getValue())
+        }
+        response.status = 200
+        render([consent: consent] as JSON)
     }
 
 }
