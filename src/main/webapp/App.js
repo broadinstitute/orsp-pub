@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { Storage } from './util/Storage';
+import { handleUnauthorized } from './util/Utils';
 import '../webapp/index.css';
 
 export const App = hh(class App extends Component {
@@ -16,19 +17,13 @@ export const App = hh(class App extends Component {
       return response;
     }, (error) => {
       if (error.response.status === 401) {
-        this.handleUnauthorized();
+        handleUnauthorized();
         return null;
       } else {
         Storage.clearStorage();
         return Promise.reject(error);
       }
     });
-  }
-
-  handleUnauthorized() {
-    Storage.clearStorage();
-    Storage.setLocationFrom(this.props.history.location);
-    window.location.reload();
   }
 
   render() {
