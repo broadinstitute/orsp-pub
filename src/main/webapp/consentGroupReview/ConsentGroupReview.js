@@ -159,70 +159,72 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         let sampleCollections = [];
         SampleCollections.getSampleCollections().then(
           resp => {
-            if (this._isMounted) {
-              sampleCollections = resp.data.map(item => {
-                return {
-                  key: item.id,
-                  value: item.collectionId,
-                  label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
-                };
-              });
-              sampleCollectionList = sampleCollections;
-
-              current.consentExtraProps = element.data.extraProperties;
-              if (element.data.collectionLinks !== undefined) {
-                current.sampleCollectionLinks = element.data.collectionLinks;
-              }
-
-              if (element.data.sampleCollections !== undefined) {
-                current.sampleCollections = element.data.sampleCollections.map(sample => {
-                  sampleCollectionList.push({
-                    key: sample.id,
-                    value: sample.collectionId,
-                    label: sample.collectionId + ": " + sample.name + " ( " + sample.category + " )"
-                  });
-                  return ({
-                    key: sample.id,
-                    value: sample.collectionId,
-                    label: sample.collectionId + ": " + sample.name + " ( " + sample.category + " )"
-                  });
+            if (!isEmpty(resp) && !isEmpty(element)) {
+              if (this._isMounted) {
+                sampleCollections = resp.data.map(item => {
+                  return {
+                    key: item.id,
+                    value: item.collectionId,
+                    label: item.collectionId + ": " + item.name + " ( " + item.category + " )"
+                  };
                 });
-              }
+                sampleCollectionList = sampleCollections;
 
-              if (element.data.extraProperties.institutionalSources !== undefined) {
-                current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources));
-              }
-              this.props.initStatusBoxInfo(element.data);
-              current.consentForm = element.data.issue;
-              currentStr = JSON.stringify(current);
-              this.getReviewSuggestions();
-              let edits = null;
+                current.consentExtraProps = element.data.extraProperties;
+                if (element.data.collectionLinks !== undefined) {
+                  current.sampleCollectionLinks = element.data.collectionLinks;
+                }
 
-              if (edits != null) {
-                future.consentExtraProps = edits.data.extraProperties;
-                futureStr = JSON.stringify(future);
-                formData = JSON.parse(futureStr);
-                futureCopy = JSON.parse(futureStr);
-              } else {
-                formData = JSON.parse(currentStr);
-                future = JSON.parse((currentStr));
-                futureCopy = JSON.parse(currentStr);
-              }
+                if (element.data.sampleCollections !== undefined) {
+                  current.sampleCollections = element.data.sampleCollections.map(sample => {
+                    sampleCollectionList.push({
+                      key: sample.id,
+                      value: sample.collectionId,
+                      label: sample.collectionId + ": " + sample.name + " ( " + sample.category + " )"
+                    });
+                    return ({
+                      key: sample.id,
+                      value: sample.collectionId,
+                      label: sample.collectionId + ": " + sample.name + " ( " + sample.category + " )"
+                    });
+                  });
+                }
 
-              if (!isEmpty(formData.consentExtraProps.noConsentFormReason)) {
-                this.props.noConsentFormAnswer(true);
-              }
+                if (element.data.extraProperties.institutionalSources !== undefined) {
+                  current.instSources = this.parseInstSources(JSON.parse(element.data.extraProperties.institutionalSources));
+                }
+                this.props.initStatusBoxInfo(element.data);
+                current.consentForm = element.data.issue;
+                currentStr = JSON.stringify(current);
+                this.getReviewSuggestions();
+                let edits = null;
 
-              this.setState(prev => {
-                // prepare form data here, initially same as current ....
-                prev.sampleCollectionList = sampleCollectionList;
-                prev.formData = formData;
-                prev.current = current;
-                prev.future = future;
-                prev.futureCopy = futureCopy;
-                prev.isAdmin = component.isAdmin;
-                return prev;
-              }, () => this.props.hideSpinner());
+                if (edits != null) {
+                  future.consentExtraProps = edits.data.extraProperties;
+                  futureStr = JSON.stringify(future);
+                  formData = JSON.parse(futureStr);
+                  futureCopy = JSON.parse(futureStr);
+                } else {
+                  formData = JSON.parse(currentStr);
+                  future = JSON.parse((currentStr));
+                  futureCopy = JSON.parse(currentStr);
+                }
+
+                if (!isEmpty(formData.consentExtraProps.noConsentFormReason)) {
+                  this.props.noConsentFormAnswer(true);
+                }
+
+                this.setState(prev => {
+                  // prepare form data here, initially same as current ....
+                  prev.sampleCollectionList = sampleCollectionList;
+                  prev.formData = formData;
+                  prev.current = current;
+                  prev.future = future;
+                  prev.futureCopy = futureCopy;
+                  prev.isAdmin = component.isAdmin;
+                  return prev;
+                }, () => this.props.hideSpinner());
+              }
             }
           }
         );
@@ -798,7 +800,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
-    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
+    return ["/infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
 
   toggleUnlinkDialog = (data) => {
