@@ -149,12 +149,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
   submit = () => {
     this.props.showSpinner();
     const parsedForm = this.getParsedForm();
-    console.log('show submission alert--------',this.state.showSubmissionAlert);
-    console.log('alert message-------------',this.state.alertMessage);
     Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
       response => {
-        console.log('sccesss pero no se porque grrrrrrrrrrrrrrrrrrrrrrrrrr', response);
-  
         this.props.hideSpinner();
         this.setState(prev => {
           prev.initial = createObjectCopy(this.state.formData);
