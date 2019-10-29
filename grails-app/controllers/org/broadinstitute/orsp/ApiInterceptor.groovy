@@ -31,6 +31,7 @@ class ApiInterceptor implements UserInfo, ExceptionHandler  {
         match controller: 'user'
         match controller: 'newConsentGroup'
         match controller: 'statusEvent'
+        match controller: 'comments'
     }
 
     @Override
