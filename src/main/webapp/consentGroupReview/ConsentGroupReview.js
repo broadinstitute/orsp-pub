@@ -380,9 +380,11 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   rejectConsentGroup() {
     this.props.showSpinner();
     ConsentGroup.rejectConsent(this.props.consentKey).then(resp => {
-      this.props.noConsentFormAnswerEdit(false);
-      this.props.history.push(this.getRedirectUrl(this.props.projectKey));
-      this.props.hideSpinner();
+      if (resp != null) {
+        this.props.noConsentFormAnswerEdit(false);
+        this.props.history.push(this.getRedirectUrl(this.props.projectKey));
+        this.props.hideSpinner();
+      }
     }).catch(error => {
       this.props.hideSpinner();
       console.error(error);

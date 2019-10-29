@@ -4,7 +4,7 @@ import { Panel } from '../components/Panel';
 import { ProjectInfoLink } from '../util/ajax';
 import { SampleCollectionWizard } from '../components/SampleCollectionWizard';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
-import { isEmpty } from '../util/Utils';
+import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
 import LoadingWrapper from '../components/LoadingWrapper';
 
@@ -74,8 +74,12 @@ const InfoLink = hh(class InfoLink extends Component {
           }
         }
     }).catch(error => {
-      this.props.hideSpinner();
-      this.setState(() => { throw error; });
+      if (error.response != null && error.response.status === 401) {
+        handleUnauthorized(this.props.history.location)
+      } else {
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
+      }
     });
   };
 
