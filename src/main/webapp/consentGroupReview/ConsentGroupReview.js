@@ -14,6 +14,7 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { subscriber } from "../services/messageService";
+import { handleUnauthorized } from '../util/Utils';
 
 const headers =
   [
@@ -226,8 +227,12 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             }
           }
         );
-      }).catch(() => {
-      this.props.hideSpinner();
+      }).catch((error) => {
+        if(error.response != null && error.response.status === 401) {
+          handleUnauthorized(this.props.history.location)
+        } else {
+          this.props.hideSpinner();
+        }      
     });
   };
 
