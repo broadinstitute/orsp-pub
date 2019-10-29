@@ -11,6 +11,7 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Editor } from '@tinymce/tinymce-react';
+import { Storage } from "../util/Storage";
 
 const errorBorderStyle = {
   border: "1px solid red",
@@ -154,6 +155,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   validateNumber = () => {
+    console.log(JSON.parse(Storage.getSubmissionNumbers()));
+    return true;
   };
 
   handleSelectChange = (field) => () => (value) => {

@@ -43,5 +43,9 @@ export const Storage = {
 
   getSubmissionNumbers: () => {
     return localStorage.getItem(SubmissionNumbers);
+  },
+
+  removeSubmissionNumbers: () => {
+    return localStorage.removeItem(SubmissionNumbers);
   }
 };
