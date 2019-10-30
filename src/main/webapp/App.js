@@ -20,7 +20,6 @@ export const App = hh(class App extends Component {
         handleUnauthorized(this.props.history.location);
         return Promise.reject(error);
       } else {
-        Storage.clearStorage();
         return Promise.reject(error);
       }
     });
