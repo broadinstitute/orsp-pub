@@ -227,7 +227,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     }
 
     if (this.state.submissionInfo.editedNumber != this.state.submissionInfo.number) {
-      const validNumber = await ProjectMigration.getSubmissionValidateNumber(this.state.params.projectKey, this.state.params.type, this.state.submissionInfo.editedNumber);
+      console.log(this.state.submissionInfo.selectedType.value);
+      const validNumber = await ProjectMigration.getSubmissionValidateNumber(
+        this.state.params.projectKey,
+        this.state.submissionInfo.selectedType.value,
+        this.state.submissionInfo.editedNumber);
       if (!validNumber.data.valid) {
         this.setState(prev => {
           prev.errors.number = true;
