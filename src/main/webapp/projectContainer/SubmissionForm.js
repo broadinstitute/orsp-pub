@@ -227,7 +227,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       comment = false;
     }
 
-    if (this.state.submissionInfo.editedNumber != this.state.submissionInfo.number) {
+    if (this.state.submissionInfo.selectedType.value !== this.getTypeSelected().value
+      || this.state.submissionInfo.editedNumber != this.state.submissionInfo.number) {
       const validNumber = await ProjectMigration.getSubmissionValidateNumber(
         this.state.params.projectKey,
         this.state.submissionInfo.selectedType.value,
@@ -242,9 +243,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       }
     }
 
-    if (numberError && comment) {
-      return true;
-    }
+    return numberError && comment;
   };
 
   removeFileDialog = (data) => {

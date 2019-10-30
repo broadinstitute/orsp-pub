@@ -1,7 +1,6 @@
 const CurrentUser = "CurrentUser";
 const UserIsLogged = "isLogged";
 const URLFrom = "URLFrom";
-const SubmissionNumbers = "SubmissionNumbers";
 
 export const Storage = {
 

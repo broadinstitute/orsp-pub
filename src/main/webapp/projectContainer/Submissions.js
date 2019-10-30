@@ -7,7 +7,6 @@ import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
 import { UrlConstants } from "../util/UrlConstants";
-import { Storage } from "../util/Storage";
 
 const headers =
   [

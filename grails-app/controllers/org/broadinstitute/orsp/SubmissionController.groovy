@@ -165,7 +165,7 @@ class SubmissionController extends AuthenticatedController {
 
         if (!projectKey && !type && !number) {
             response.status = 400
-            render([error: "Unable to find number"] as JSON)
+            handleIllegalArgumentException(new IllegalArgumentException("invalid params"))
         }
 
         Collection<Integer> numbers = queryService.getSubmissionNumber(projectKey, type, number)

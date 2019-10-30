@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty } from "../util/Utils";
+import { isEmpty } from '../util/Utils';
 
 const InputFieldNumber = (props) => {
   const onChange = event => {
