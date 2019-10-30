@@ -3,6 +3,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import get from 'lodash/get';
+import { Storage } from './Storage';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -129,4 +130,10 @@ export const downloadSelectedFile = (file) => {
   fileReader.readAsDataURL(file);
   const blob = new Blob([file], { 'content-type': 'multipart/form-data' });
   return window.URL.createObjectURL(blob);
+};
+
+export const handleUnauthorized = (location) => {
+  Storage.clearStorage();
+  Storage.setLocationFrom(location);
+  window.location.reload();
 };

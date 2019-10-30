@@ -236,9 +236,9 @@ const LinkWizard = hh( class LinkWizard extends Component {
         this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
       }).catch(error => {
         console.error(error);
-        this.props.hideSpinner();
         this.toggleSubmitError();
         this.changeSubmitState();
+        this.props.hideSpinner();
       });
     } else {
       if (this._isMount) {

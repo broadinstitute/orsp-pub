@@ -9,6 +9,7 @@ import { downloadSelectedFile, handleRedirectToProject } from "../util/Utils";
 import { formatRoleName } from "../util/roles";
 import { UrlConstants } from "../util/UrlConstants";
 import { isEmpty } from "../util/Utils";
+import { Link } from 'react-router-dom';
 
 const styles = { 
   statusWidth: '140',
@@ -138,9 +139,9 @@ export const Table = hh(class Table extends Component {
 
   redirectToInfoLink = (cell, row) => {
     const url = this.props.handleRedirectToInfoLink(row.id, row.linkedProjectKey);
-    return a({
-      href: url,
-      target: '_blank'
+    return h(Link, {
+      to: url,
+      target:"_blank"
     }, ["Info Link"])
   };
 

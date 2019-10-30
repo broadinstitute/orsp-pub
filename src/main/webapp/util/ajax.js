@@ -20,6 +20,14 @@ export const Search = {
 
   getMatchingIssues(query) {
     return axios.get(UrlConstants.matchingIssueUrl + '?term=' + query);
+  },
+
+  getMatchingUsers(query) {
+    return axios.get(UrlConstants.userNameSearchUrl + '?term=' + query);
+  },
+
+  getMatchingProject(query) {
+    return axios.get(UrlConstants.projectKeySearchUrl + '?term=' + query);
   }
 };
 

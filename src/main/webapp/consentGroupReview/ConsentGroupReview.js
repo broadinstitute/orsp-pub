@@ -14,6 +14,7 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { subscriber } from "../services/messageService";
+import { handleUnauthorized } from '../util/Utils';
 
 const headers =
   [
@@ -30,6 +31,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   _isMounted = false;
   removedAnswer = false;
+  subscription;
 
   constructor(props) {
     super(props);
@@ -121,7 +123,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     this.props.showSpinner();
     this._isMounted = true;
     this.init();
-    subscriber.subscribe(v => {
+    this.subscription = subscriber.subscribe(v => {
       this.setState(prev => {
         prev.current.consentExtraProps.noConsentFormReason = v;
         return prev;
@@ -131,7 +133,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    subscriber.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -225,10 +227,19 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             }
           }
         );
-      }).catch(() => {
-      this.props.hideSpinner();
+      }).catch((error) => {
+        this.handleUnauthorizedError(error)
     });
   };
+
+  handleUnauthorizedError(error) {
+    if (error.response != null && error.response.status === 401) {
+      handleUnauthorized(this.props.history.location);
+    } else {
+      this.props.hideSpinner();
+      console.error(error);
+    }
+  }
 
   parseInstSources(instSources) {
     let instSourcesArray = [];
@@ -401,8 +412,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       this.props.updateContent();
     })
       .catch(error => {
-        this.props.hideSpinner();
-        console.error(error);
+        this.handleUnauthorizedError(error)
       });
   };
 
@@ -642,8 +652,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         this.props.hideSpinner()
     )
       .catch(error => {
-        this.props.hideSpinner();
-        console.error(error);
+        this.handleUnauthorizedError(error)
       });
   };
 
@@ -797,7 +806,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
-    return [component.serverURL, "infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
+    return ["/infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
 
   toggleUnlinkDialog = (data) => {
