@@ -164,7 +164,6 @@ class SubmissionController extends AuthenticatedController {
         String number = params?.number
 
         if (!projectKey && !type && !number) {
-            response.status = 400
             handleIllegalArgumentException(new IllegalArgumentException("invalid params"))
         }
 
