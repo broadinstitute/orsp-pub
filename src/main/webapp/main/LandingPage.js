@@ -149,12 +149,12 @@ const LandingPage = hh(class LandingPage extends Component{
         this.props.hideSpinner();
       }
     } else {
-      this.props.hideSpinner();
       Storage.clearStorage();
       component.isBroad = null;
       component.isAdmin = null;
       component.isViewer = null;
       this.props.history.push('/');
+      this.props.hideSpinner();
     }
   };
 

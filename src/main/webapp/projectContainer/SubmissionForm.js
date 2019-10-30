@@ -176,7 +176,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       };
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
-        this.backToProject();      
+        this.backToProject();
       }).catch(error => {
         this.props.hideSpinner();
         console.error(error);
