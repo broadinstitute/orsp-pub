@@ -1,14 +1,16 @@
 import { Component } from "react";
-import { a, hh, div, button, span, ul, li, b, h, nav } from 'react-hyperscript-helpers';
+import { a, hh, div, span, ul, li, b, h, nav, button } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
-import { User, Reports, Search } from "../util/ajax";
+import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
-import { UrlConstants } from "../util/UrlConstants";
+import { UrlConstants } from '../util/UrlConstants';
 import { MultiSelect } from '../components/MultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import { GoogleLogout } from 'react-google-login';
 import LoadingWrapper from '../components/LoadingWrapper';
 import ResponsiveMenu from 'react-responsive-navbar';
 import './TopNavigationMenu.css';
+import get from 'lodash/get';
 
 function ColorValue(isDisabled, isFocused) {
   let color = '#000000';
@@ -66,7 +68,7 @@ const styles = {
       borderRadius: '4px'
     })
   }
-}
+};
 
 const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
@@ -86,23 +88,20 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
     this.init();
   };
 
-  handleUnauthorized() {
-    Storage.clearStorage();
-    if (window.gapi.auth2 != undefined) {
-      let auth2 = window.gapi.auth2.getAuthInstance();
-      auth2.signOut();
-    }
-    this.props.history.push(this.props.location);
-  }
   componentWillUnmount() {
     this._isMounted = false;
   }
 
   async init() {
     let user = await User.isAuthenticated();
+    Storage.setUserIsLogged(get(user, 'data.session', false));
     if (user != null && user.data.session) {
       let resp = await User.getUserSession();
       Storage.setCurrentUser(resp.data);
+      component.isBroad = get(resp.data, 'isBroad', false);
+      component.isAdmin = get(resp.data, 'isAdmin', false);
+      component.isViewer = get(resp.data, 'isViewer', false);
+
       if (this._isMounted) {
         this.setState({
           isLogged: true,
@@ -114,31 +113,27 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
 
   onSuccess = async (token) => {
     await User.signIn(token);
-    Storage.setUserIsLogged(true);
     this.init().then(resp => {
       if (Storage.getLocationFrom() != null) {
         this.props.history.push(Storage.getLocationFrom());
-        Storage.removeLocationFrom();
       } else {
         this.props.history.push("/index");
       }
-      window.location.reload();
+      Storage.removeLocationFrom();
     });
   };
 
   signOut = async () => {
-    this.props.showSpinner();
+    await User.signOut();
     Storage.clearStorage();
-    if (window.gapi.auth2 != undefined) {
-      let auth2 = window.gapi.auth2.getAuthInstance();
-      await auth2.signOut();
-      await User.signOut();
-    }
-    this.setState({
+    component.isBroad = null;
+    component.isAdmin = null;
+    component.isViewer = null;
+    await this.setState({
       isLogged: false
     }, () => {
-      window.location.reload();
-    });
+      this.props.history.push('/')
+     });
   };
 
   openMetricsReport() {
@@ -176,7 +171,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
       label = this.createLabel(item.reporter, item.label);
     }
     return label;
-  }
+  };
 
   createLabel(contact, label) {
     return h(span, { style: styles.listResultContainer }, [
@@ -268,18 +263,20 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                       )
                     ]),
                     li({}, [
-                      h(Link, { to: { pathname: '/' }, onClick: this.signOut },
-                        ["Sign out"]
-                      )
+                      h(GoogleLogout,{
+                        isRendered: this.state.isLogged || Storage.userIsLogged(),
+                        clientId: component.clientId,
+                        onLogoutSuccess: this.signOut,
+                        render: () => h(Link, { to: { pathname: '/' }, onClick: this.signOut },["Sign out"])
+                      },[])
                     ])
                   ])
                 ]),
-                div({ isRendered: !this.state.isLogged, className: "googleButton" }, [
-                  GoogleLoginButton({
-                    clientId: component.clientId,
-                    onSuccess: this.onSuccess
-                  })
-                ])
+                GoogleLoginButton({
+                  isRendered: !this.state.isLogged || !Storage.userIsLogged(),
+                  clientId: component.clientId,
+                  onSuccess: this.onSuccess
+                }), button({onClick:async () => {await User.signOut(); console.log("---Session terminated---")} },["End Session"])
               ])
           })
         ])

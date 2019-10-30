@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { Storage } from './util/Storage';
+import { handleUnauthorized } from './util/Utils';
 import '../webapp/index.css';
 
 export const App = hh(class App extends Component {
@@ -16,24 +17,21 @@ export const App = hh(class App extends Component {
       return response;
     }, (error) => {
       if (error.response.status === 401) {
-        this.handleUnauthorized();
+        handleUnauthorized(this.props.history.location);
+        return Promise.reject(error);
       } else {
+        Storage.clearStorage();
         return Promise.reject(error);
       }
     });
   }
 
-  handleUnauthorized() {
-    Storage.clearStorage();
-    window.location.reload();
-  }
-
   render() {
     return (
       div({}, [
-        h(TopNavigationMenu, { history: this.props.history }),
+        h(TopNavigationMenu, { history: this.props.history, cProps: component }),
         div({ className: "container" }, [
-          h(ErrorHandler, {}, [
+          h(ErrorHandler, {history: this.props.history}, [
             Routes({}, []),
           ]),
           Footer()

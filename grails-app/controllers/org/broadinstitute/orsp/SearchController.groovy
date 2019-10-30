@@ -139,6 +139,7 @@ class SearchController implements UserInfo {
         if (params.type) options.getIssueTypeNames().addAll(params.type)
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
+        if (params.collection) options.setCollection(params.collection)
         Collection rows = []
         Boolean isAdmin = isAdmin()
         Boolean isViewer = isViewer()
@@ -149,7 +150,8 @@ class SearchController implements UserInfo {
                 options.freeText ||
                 options.userName ||
                 options.fundingInstitute ||
-                options.irbsOfRecord) {
+                options.irbsOfRecord ||
+                options.collection) {
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])

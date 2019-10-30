@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { hh } from 'react-hyperscript-helpers';
+import GoogleLogin from 'react-google-login';
+import { Storage } from '../util/Storage'
 
 const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
 
@@ -8,24 +10,31 @@ const GoogleLoginButton = hh(class GoogleLoginButton extends Component {
     this.onSuccess = this.onSuccess.bind(this);
   }
 
-  componentDidMount() {
-    window.gapi.load('auth2', () => {
-        window.gapi.auth2.init({
-    }).then(() => {
-        window.gapi.signin2.render('signin', {
-          onsuccess: this.onSuccess
-        })
-      }) 
-    })    
-  }
-
   onSuccess (googleUser) {
     const token = googleUser.getAuthResponse().id_token;
     this.props.onSuccess(token);
   }
 
+  forbidden = (response) => {
+    Storage.clearStorage();
+  };
+
   render() {
-    return (<div id="signin"/>);
+    return (
+      <Fragment>
+        <GoogleLogin
+          id={'signin'}
+          className={'googleButton'}
+          clientId={component.clientId}
+          buttonText="Sign in"
+          onSuccess={this.onSuccess}
+          onFailure={this.forbidden}
+          cookiePolicy={'single_host_origin'}
+          scope={'openid email profile'}
+          autoLoad={Storage.getLocationFrom() != null}
+        />
+      </Fragment>
+    );
   }
 });
 
