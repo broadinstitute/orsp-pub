@@ -256,7 +256,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                       edit: false
                     })
                   ]),
-                  ul({ isRendered: Storage.userIsLogged(), className: "nav navbar-nav navbar-right" }, [
+                  ul({ isRendered: this.state.isLogged, className: "nav navbar-nav navbar-right" }, [
                     li({}, [
                       h(Link, { to: { pathname: UrlConstants.profileUrl } },
                         [this.state.userSession.displayName]
@@ -277,7 +277,6 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   clientId: component.clientId,
                   onSuccess: this.onSuccess
                 })
-            ])
           })
         ])
       ])
