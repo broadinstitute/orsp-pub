@@ -52,7 +52,8 @@ export const Submissions = hh(class Submissions extends Component {
       amendmentDocuments: [],
       otherDocuments: [],
       submissions: {},
-      activeTab: 'Amendment'
+      activeTab: 'Amendment',
+      numbers: []
     };
   }
 

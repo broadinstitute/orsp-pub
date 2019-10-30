@@ -104,6 +104,7 @@ class UrlMappings {
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
 
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
+        '/api/submissions/validate-number'(controller: 'submission', action: 'validateSubmissionNumber', method: 'GET')
         '/api/submissions'(controller: 'submission', action: 'delete', method: 'DELETE')
         '/api/submissions/display'(controller: 'submission', action: 'getSubmissions', method: 'GET')
         '/api/submissions/info'(controller: 'submission', action: 'index', method: 'GET')

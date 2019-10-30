@@ -502,6 +502,10 @@ export const ProjectMigration = {
 
   deleteSubmission(submissionId) {
     return axios.delete(UrlConstants.submissionsUrl + '?submissionId=' + submissionId);
+  },
+
+  getSubmissionValidateNumber(projectKey, type, number) {
+    return axios.get(UrlConstants.submissionValidateNumberUrl + '?projectKey=' + projectKey + '&type=' + type + '&number=' + number);
   }
 };
 

@@ -80,6 +80,7 @@ export const UrlConstants = {
   submissionSaveUrl: context + '/api/submissions/save-new',
   submissionDisplayUrl: context + '/api/submissions/display',
   submissionRemoveFileUrl: context + '/api/submission/remove-file',
+  submissionValidateNumberUrl: context + '/api/submissions/validate-number',
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',

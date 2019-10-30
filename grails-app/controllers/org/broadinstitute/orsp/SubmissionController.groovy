@@ -84,6 +84,7 @@ class SubmissionController extends AuthenticatedController {
                 submission = Submission.findById(params?.submissionId)
                 submission.comments = dataSubmission[0].comments.value
                 submission.type = dataSubmission[0].type.value
+                submission.number = dataSubmission[0].number.value?.toInteger()
             } else {
                 submission = getJson(Submission.class, dataSubmission[0])
                 submission.createDate = new Date()
@@ -155,6 +156,23 @@ class SubmissionController extends AuthenticatedController {
 
         response.status = 200
         render (['message': 'document deleted'] as JSON)
+    }
+
+    def validateSubmissionNumber() {
+        String projectKey = params?.projectKey
+        String type = params?.type
+        String number = params?.number
+
+        if (!projectKey && !type && !number) {
+            handleIllegalArgumentException(new IllegalArgumentException("invalid params"))
+        }
+
+        Collection<Integer> numbers = queryService.getSubmissionNumber(projectKey, type, number)
+        response.status = 200
+        if (numbers.size() > 0) {
+            render(['valid': false] as JSON)
+        }
+        render(['valid': true] as JSON)
     }
 
     private static getJson(Class type, Object json) {
