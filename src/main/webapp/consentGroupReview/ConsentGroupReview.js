@@ -228,13 +228,18 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           }
         );
       }).catch((error) => {
-        if(error.response != null && error.response.status === 401) {
-          handleUnauthorized(this.props.history.location)
-        } else {
-          this.props.hideSpinner();
-        }      
+        this.handleUnauthorizedError(error)
     });
   };
+
+  handleUnauthorizedError(error) {
+    if (error.response != null && error.response.status === 401) {
+      handleUnauthorized(this.props.history.location);
+    } else {
+      this.props.hideSpinner();
+      console.error(error);
+    }
+  }
 
   parseInstSources(instSources) {
     let instSourcesArray = [];
@@ -407,8 +412,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       this.props.updateContent();
     })
       .catch(error => {
-        this.props.hideSpinner();
-        console.error(error);
+        this.handleUnauthorizedError(error)
       });
   };
 
@@ -648,8 +652,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         this.props.hideSpinner()
     )
       .catch(error => {
-        this.props.hideSpinner();
-        console.error(error);
+        this.handleUnauthorizedError(error)
       });
   };
 

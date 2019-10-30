@@ -24,7 +24,7 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
 const verifyUser = (admin, props) => {
   let hasAccess = admin ? Storage.getCurrentUser() != null && Storage.getCurrentUser().isAdmin : Storage.userIsLogged();
   if (!hasAccess) {
-    handleUnauthorized(props.history.location);
+    Storage.setLocationFrom(props.history.location);
   }
   return hasAccess
 };
