@@ -227,7 +227,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     }
 
     if (this.state.submissionInfo.editedNumber != this.state.submissionInfo.number) {
-      console.log(this.state.submissionInfo.selectedType.value);
       const validNumber = await ProjectMigration.getSubmissionValidateNumber(
         this.state.params.projectKey,
         this.state.submissionInfo.selectedType.value,
