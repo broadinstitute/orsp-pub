@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { a, hh, div, button, span, ul, li, b, h, nav } from 'react-hyperscript-helpers';
+import { a, hh, div, span, ul, li, b, h, nav } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
 import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
@@ -277,6 +277,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   clientId: component.clientId,
                   onSuccess: this.onSuccess
                 })
+              ])
           })
         ])
       ])
