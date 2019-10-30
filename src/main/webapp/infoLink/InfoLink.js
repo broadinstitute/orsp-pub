@@ -56,21 +56,21 @@ const InfoLink = hh(class InfoLink extends Component {
     this.props.showSpinner();
     ProjectInfoLink.getProjectSampleCollections(params.get("cclId")).then(
       data => {
-          JSON.parse(data.data.sampleCollections).map(sampleCollection => {
-            sampleCollectionsIds.push(sampleCollection);
-          });
-          if (this._isMounted) {
-            this.setState(prev => {
-              prev.documents = JSON.parse(data.data.documents);
-              prev.sampleCollections = sampleCollectionsIds;
-              prev.consentName = sampleCollectionsIds[0].consentName;
-              prev.projectName = sampleCollectionsIds[0].projectName;
-              prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
-              prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
-              prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
-              return prev;
-            }, () => this.props.hideSpinner());
-          }
+        JSON.parse(data.data.sampleCollections).map(sampleCollection => {
+          sampleCollectionsIds.push(sampleCollection);
+        });
+        if (this._isMounted) {
+          this.setState(prev => {
+            prev.documents = JSON.parse(data.data.documents);
+            prev.sampleCollections = sampleCollectionsIds;
+            prev.consentName = sampleCollectionsIds[0].consentName;
+            prev.projectName = sampleCollectionsIds[0].projectName;
+            prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
+            prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
+            prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
+            return prev;
+          }, () => this.props.hideSpinner());
+        }
     }).catch(error => {
       if (error.response != null && error.response.status === 401) {
         handleUnauthorized(this.props.history.location)
