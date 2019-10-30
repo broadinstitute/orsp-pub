@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { Storage } from '../util/Storage';
+import { handleUnauthorized } from '../util/Utils';
 
 const AuthenticatedRoute = ({ component: Component, props: componentProps, admin, ...rest }) => {
 
@@ -22,6 +23,9 @@ const AuthenticatedRoute = ({ component: Component, props: componentProps, admin
 
 const verifyUser = (admin, props) => {
   let hasAccess = admin ? Storage.getCurrentUser() != null && Storage.getCurrentUser().isAdmin : Storage.userIsLogged();
+  if (!hasAccess) {
+    handleUnauthorized(props.history.location);
+  }
   return hasAccess
 };
 
