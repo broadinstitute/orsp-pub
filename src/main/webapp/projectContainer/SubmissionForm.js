@@ -210,7 +210,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   validateSubmission = async () => {
     let numberError = true;
     let comment = true;
-    if (isEmpty(this.state.submissionInfo.number)) {
+    if (isEmpty(this.state.submissionInfo.editedNumber)) {
       this.setState(prev => {
         prev.errors.number = true;
         prev.errors.numberType = 'Required field';
