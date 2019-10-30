@@ -232,10 +232,8 @@ const LinkWizard = hh( class LinkWizard extends Component {
       const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
       ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
-        if (resp != null) {
-          this.props.hideSpinner();
-          this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
-        }
+        this.props.hideSpinner();
+        this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
       }).catch(error => {
         console.error(error);
         this.toggleSubmitError();

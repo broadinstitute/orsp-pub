@@ -161,6 +161,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
         this.successNotification('showSubmissionAlert', 'Project information has been successfully updated.', 8000);
       }).catch(
       error => {
+        console.log(error, "viendo que puta pasa....***");
         this.props.hideSpinner();
         this.init();
         this.setState(prev => {
