@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { a, hh, div, span, ul, li, b, h, nav } from 'react-hyperscript-helpers';
+import { a, hh, div, span, ul, li, b, h, nav, button } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
 import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
@@ -276,7 +276,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   isRendered: !this.state.isLogged || !Storage.userIsLogged(),
                   clientId: component.clientId,
                   onSuccess: this.onSuccess
-                })
+                }), button({onClick:async () => {await User.signOut(); console.log("---Session terminated---")} },["End Session"])
               ])
           })
         ])
