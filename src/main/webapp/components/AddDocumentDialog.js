@@ -8,6 +8,8 @@ import './ConfirmationDialog.css';
 import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
 
+const MAX_SIZE = 15700000;
+
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   constructor(props) {
     super(props);
@@ -23,6 +25,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       type: '',
       error: false,
       alertType: 'success',
+      errorMessage: '',
       file: {
         name: ''
       },
@@ -110,9 +113,11 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   isValid() {
     let typeError = false;
     let fileError = false;
+    let errorMessage = '';
     if (this.state.submit) {
       if (this.state.file.name === '') {
         fileError = true;
+        errorMessage = 'Required File';
       }
       if (this.state.type === '') {
         typeError = true;
@@ -120,6 +125,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       this.setState(prev => {
         prev.typeError = typeError;
         prev.fileError = fileError;
+        prev.errorMessage = errorMessage;
         return prev;
       });
     }
@@ -141,14 +147,25 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   setFilesToUpload = () => (e) => {
     let selectedFile = e.target.files[0];
     e.target.value = '';
-    this.setState(prev => {
-      prev.alertMessage = '';
-      prev.disableBtn = false;
-      prev.showAlert = false;
-      prev.fileError = false;
-      prev.file = selectedFile;
-      return prev;
-    });
+    if(selectedFile.size > MAX_SIZE) {
+      this.setState(prev => {
+        prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
+        prev.fileError = true;
+        prev.file = { name: '' };
+        return prev;
+      });
+    } else {      
+      this.setState(prev => {
+        prev.alertMessage = '';
+        prev.errorMessage = '';
+        prev.disableBtn = false;
+        prev.showAlert = false;
+        prev.fileError = false;
+        prev.file = selectedFile;
+        return prev;
+      });
+    }
+    
   };
 
   removeFile() {
@@ -190,7 +207,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             fileName: this.state.file.name,
             required: true,
             error: this.state.fileError,
-            errorMessage: "Required field",
+            errorMessage: this.state.errorMessage,
             removeHandler: () => this.removeFile(document)
           }),
         ]),
