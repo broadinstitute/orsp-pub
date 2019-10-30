@@ -13,10 +13,18 @@ const styles = {
 
 export default class ErrorHandler extends Component {
   constructor(props) {
-    super(props)
-    this.state = { 
+    super(props);
+    this.state = {
       hasError: false,
-    }
+    };
+
+    this.props.history.listen((location, action) => {
+      if (this.state.hasError) {
+        this.setState({
+          hasError: false,
+        });
+      }
+    });
   }
  
   componentDidCatch(error, info) {
@@ -27,7 +35,7 @@ export default class ErrorHandler extends Component {
   }
 
   render() {
-   return this.state.hasError ?  
+   return this.state.hasError ?
     div({},[
       h1({ style: styles.errorTitle }, ['Something went wrong. Please try again.']),
       h3({ style: styles.errorText }, [

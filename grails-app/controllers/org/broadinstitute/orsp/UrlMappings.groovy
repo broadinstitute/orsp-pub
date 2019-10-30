@@ -15,7 +15,6 @@ class UrlMappings {
         "/api/report/get-all-fundings"(controller: 'report', action: "getAllFundings", method: 'GET')
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
-        '/'(controller: 'index', action: 'index')
 
         // Project end points
         '/api/project'(resource: 'project')
@@ -35,7 +34,7 @@ class UrlMappings {
         '/api/consent-group/associated-projects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
         '/api/consent-group/unlink-associated-projects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
         '/api/consent-group/unlink-associated-sample-collection'(controller: 'newConsentGroup', action: 'unlinkAssociatedSampleCollection', method: 'PUT')
-        '/api/consent-group/find-by-uuid'(controller: 'newConsentGroup', action: 'findByUUID')
+        '/api/consent-group/find-by-uuid'(controller: 'dataUseLetter', action: 'findByUUID')
         '/api/consent-group/create'(controller:'newConsentGroup', action: 'save', method: 'POST')
         '/api/consent-group/get-fillable-pdf'(controller: 'newConsentGroup', action: 'downloadFillablePDF', method: 'GET')
         '/aip/consent-group/use-restriction'(controller:'newConsentGroup', action: 'getDataUseRestriction')

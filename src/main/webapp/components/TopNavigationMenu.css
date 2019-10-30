@@ -61,6 +61,15 @@
     margin-top: 12px;
 }
 
+.googleButton > div {
+    margin-right: 5px !important;
+    padding: 8px 5px 2px 10px !important;
+}
+
+.googleButton span {
+    padding: 5px 10px 5px 0 !important;
+}
+
 .googleButton #signin > div {
     height: auto !important;
     width: auto !important;
@@ -165,5 +174,8 @@
         float: left;
         text-align: left !important;
         display: inline-block !important;
+    }
+    .googleButton {
+        margin-bottom: 15px;
     }
 }

@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ORSP Portal">
     <meta name="author" content="ORSP">
-    <meta name="google-signin-client_id" content="${grailsApplication.config.googleSignInClientId}">
     <meta charset="utf-8"/>
 
     <link rel="shortcut icon" href="${resource(dir: 'assets', file: 'favicon.png')}" type="image/x-icon">
@@ -31,7 +30,6 @@
     <style type="text/css" title="TableTools">
     @import "${request.contextPath}/assets/media/css/TableTools.css";
     </style>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
 
     %{--
@@ -56,7 +54,6 @@
         issueTypes: issueTypes,
         issueStatuses: issueStatuses,
         irbs: irbs,
-        loadingImage: "${resource(dir: 'images', file: 'loading-indicator.svg')}",
         projectKey: "${projectKey}",
         issueType: "${issueType}",
         restrictionId: "${restrictionId}",

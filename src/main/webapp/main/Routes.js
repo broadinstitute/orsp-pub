@@ -46,7 +46,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/submissions/add-new"} component={SubmissionForm} props={props} /> }/>
     <AuthenticatedRoute path= {"/infoLink/showInfoLink"} component={InfoLink} props={props}/> }/>
     <AuthenticatedRoute path= {["/index/profile", "/profile"]} component={Profile} props={props}/>  }/>
-    <Route path= {"/index"} exact component={LandingPage} props={props}/> }/>
+    <AuthenticatedRoute path= {"/index"} exact component = {LandingPage} props= {props}/> }/>
     <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/view"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>

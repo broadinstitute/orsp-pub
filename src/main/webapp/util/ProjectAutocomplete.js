@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { UrlConstants } from "./UrlConstants";
+import { Search } from './ajax';
 
 class ProjectAutocomplete extends React.Component {
     constructor(props) {
@@ -48,12 +49,13 @@ class ProjectAutocomplete extends React.Component {
                     onChange={this.state.onChange}
                     onSearch={query => {
                         this.setState(() => ({isLoading: true}));
-                        fetch(UrlConstants.projectKeySearchUrl + "?term=" + query, { credentials: 'include' })
-                            .then(resp => resp.json())
-                            .then(json => this.setState(() => ({
+                        Search.getMatchingProject(query)
+                            .then(response => {
+                              this.setState(() => ({
                                 isLoading: false,
-                                options: json,
-                            })));
+                                options: response.data,
+                            }))
+                            });
                     }}
                     options={this.state.options}/>
             </div>
