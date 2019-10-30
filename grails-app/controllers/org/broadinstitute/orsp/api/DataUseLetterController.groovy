@@ -156,16 +156,15 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
 
 
     def findByUUID() {
-        String uid = params.uuid
-        DataUseLetter dul = DataUseLetter.findByUid(uid)
+        DataUseLetter dul = DataUseLetter.findByUid(params.uuid)
         Map<String, String> consent = new HashMap<>()
         if(dul != null) {
             User user = userService.findUser(dul.getCreator())
             Issue issue = queryService.findByKey(dul.getConsentGroupKey())
-            consent.put("dataManagerName", user.getDisplayName())
-            consent.put("dataManagerEmail", user.getEmailAddress())
-            consent.put("consentGroupKey", issue.getProjectKey())
-            consent.put(IssueExtraProperty.SUMMARY, issue.getSummary())
+            consent.put("dataManagerName", user?.getDisplayName())
+            consent.put("dataManagerEmail", user?.getEmailAddress())
+            consent.put("consentGroupKey", issue?.getProjectKey())
+            consent.put(IssueExtraProperty.SUMMARY, issue?.getSummary())
             consent.put(IssueExtraProperty.PROTOCOL, IssueExtraProperty.findByProjectKeyAndName(dul.getConsentGroupKey(), IssueExtraProperty.PROTOCOL).getValue())
         }
         response.status = 200
