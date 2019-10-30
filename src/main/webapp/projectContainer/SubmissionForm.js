@@ -168,6 +168,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         const maxNumber = this.maximumNumber(prev.submissionInfo.submissionNumberMaximums, value.value, this.state.params.submissionId);
         prev.submissionInfo.number =  maxNumber;
         prev.submissionInfo.submissionNumber = maxNumber;
+        prev.errors.number = false;
       }
       prev.submissionInfo[field] = value;
       return prev;
