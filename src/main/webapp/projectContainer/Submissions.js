@@ -80,14 +80,11 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDisplaySubmissions = () => {
     let submissions = {};
-    let numbers = {};
     ProjectMigration.getDisplaySubmissions(this.props.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
 
       _.map(submissions, (data, title) => {
-        numbers[title] = [];
         data.forEach(submisionData => {
-          numbers[title].push(submisionData.number);
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(resp => {
               document.document = resp.data.document;
@@ -95,8 +92,6 @@ export const Submissions = hh(class Submissions extends Component {
           });
         });
       });
-
-      Storage.setSubmissionNumbers(numbers);
 
       if (this._isMounted) {
         this.setState(prev => {

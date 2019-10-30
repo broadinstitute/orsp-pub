@@ -1180,6 +1180,21 @@ class QueryService implements Status {
         Submission.findAllByProjectKey(projectKey)
     }
 
+    Collection<Integer> getSubmissionNumber(String projectKey, String  type, String number) {
+        final session = sessionFactory.currentSession
+        final String query =
+                'select number from submission where project_key = :projectKey and type = :type and number = :number'
+
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            setString('projectKey', projectKey)
+            setString('type', type)
+            setString('number', number)
+            list()
+        }
+        results as Collection<Integer>
+    }
+
     /**
      * Collection of Consent group key, Summary string, list of sample collection ids, and whether
      * the consent group has a data use letter or not (useful for knowing the DUR status).

@@ -35,17 +35,5 @@ export const Storage = {
 
   removeLocationFrom: () => {
     return localStorage.removeItem(URLFrom);
-  },
-
-  setSubmissionNumbers: value => {
-    localStorage.setItem(SubmissionNumbers, JSON.stringify(value));
-  },
-
-  getSubmissionNumbers: () => {
-    return localStorage.getItem(SubmissionNumbers);
-  },
-
-  removeSubmissionNumbers: () => {
-    return localStorage.removeItem(SubmissionNumbers);
   }
 };

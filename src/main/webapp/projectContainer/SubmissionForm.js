@@ -11,7 +11,6 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Editor } from '@tinymce/tinymce-react';
-import { Storage } from "../util/Storage";
 
 const errorBorderStyle = {
   border: "1px solid red",
@@ -52,6 +51,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         submissionNumberMaximums: {},
         selectedType: '',
         number: 1,
+        editedNumber: 0,
         comments: '',
       },
       showAddDocuments: false,
@@ -65,7 +65,9 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       action: '',
       errors: {
         comment: false,
-        serverError: false
+        serverError: false,
+        number: false,
+        numberType: 'Required field'
       },
     };
   }
@@ -116,7 +118,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           prev.submissionInfo.comments = submissionInfo.submission !== null ? submissionInfo.submission.comments : '';
           prev.submissionInfo.submissionNumber = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
           prev.submissionInfo.submissionNumberMaximums = submissionInfo.submissionNumberMaximums;
-          prev.submissionInfo.number = this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId);
+          prev.submissionInfo.number = isEmpty(submissionInfo.submission) ?
+            this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId) :
+            submissionInfo.submission.number;
+          prev.submissionInfo.editedNumber = isEmpty(submissionInfo.submission) ?
+            this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId) :
+            submissionInfo.submission.number;
           prev.docTypes = this.loadOptions(submissionInfo.docTypes);
           prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
           return prev;
@@ -149,14 +156,10 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
 
   handleUpdate = (value) => {
     this.setState(prev => {
-      prev.submissionInfo.number = value;
+      prev.submissionInfo.editedNumber = value;
+      prev.errors.number = false;
       return prev;
     });
-  };
-
-  validateNumber = () => {
-    console.log(JSON.parse(Storage.getSubmissionNumbers()));
-    return true;
   };
 
   handleSelectChange = (field) => () => (value) => {
@@ -171,12 +174,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     });
   };
 
-  submitSubmission = () => {
-    if(this.validateSubmission()) {
+  submitSubmission = async () => {
+    if(await this.validateSubmission()) {
       this.props.showSpinner();
       const submissionData = {
         type: this.state.submissionInfo.selectedType.value,
-        number: this.state.submissionInfo.number,
+        number: this.state.submissionInfo.editedNumber !== this.state.submissionInfo.number ? this.state.submissionInfo.editedNumber : this.state.submissionInfo.number,
         comments: this.state.submissionInfo.comments,
         projectKey: this.state.submissionInfo.projectKey
       };
@@ -204,15 +207,40 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     }
   };
 
-  validateSubmission = () => {
-    if (isEmpty(this.state.submissionInfo.comments) && this.validateNumber()) {
+  validateSubmission = async () => {
+    let numberError = true;
+    let comment = true;
+    if (isEmpty(this.state.submissionInfo.number)) {
+      this.setState(prev => {
+        prev.errors.number = true;
+        prev.errors.numberType = 'Required field';
+        return prev;
+      });
+      numberError = false;
+    }
+    if (isEmpty(this.state.submissionInfo.comments)) {
       this.setState(prev => {
         prev.errors.comment = true;
         return prev;
       });
-      return false;
+      comment = false;
     }
-    return true;
+
+    if (this.state.submissionInfo.editedNumber != this.state.submissionInfo.number) {
+      const validNumber = await ProjectMigration.getSubmissionValidateNumber(this.state.params.projectKey, this.state.params.type, this.state.submissionInfo.editedNumber);
+      if (!validNumber.data.valid) {
+        this.setState(prev => {
+          prev.errors.number = true;
+          prev.errors.numberType = 'This number is already used';
+          return prev;
+        });
+        numberError = false;
+      }
+    }
+
+    if (numberError && comment) {
+      return true;
+    }
   };
 
   removeFileDialog = (data) => {
@@ -353,16 +381,18 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             readOnly: component.isViewer,
             edit: false
           }),
-          InputFieldNumber({
-            name: "submissionNumber",
-            handleChange: this.handleUpdate,
-            value: this.state.submissionInfo.number,
-            label: "Submission Number",
-            min: minimunNumber,
-            showLabel: true,
-            readOnly: component.isViewer,
-            edit: false
-          }),
+            InputFieldNumber({
+              name: "submissionNumber",
+              handleChange: this.handleUpdate,
+              value: this.state.submissionInfo.editedNumber,
+              label: "Submission Number",
+              min: minimunNumber,
+              showLabel: true,
+              readOnly: component.isViewer,
+              edit: false,
+              error: this.state.errors.number
+            }),
+            small({ isRendered: this.state.errors.number, className: "errorMessage" }, [this.state.errors.numberType]),
           div({className: "inputField"}, [
             p({ className: "inputFieldLabel" }, [
               "Description"

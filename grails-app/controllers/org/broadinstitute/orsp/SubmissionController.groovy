@@ -158,6 +158,24 @@ class SubmissionController extends AuthenticatedController {
         render (['message': 'document deleted'] as JSON)
     }
 
+    def validateSubmissionNumber() {
+        String projectKey = params?.projectKey
+        String type = params?.type
+        String number = params?.number
+
+        if (!projectKey && !type && !number) {
+            response.status = 400
+            render([error: "Unable to find number"] as JSON)
+        }
+
+        Collection<Integer> numbers = queryService.getSubmissionNumber(projectKey, type, number)
+        response.status = 200
+        if (numbers.size() > 0) {
+            render(['valid': false] as JSON)
+        }
+        render(['valid': true] as JSON)
+    }
+
     private static getJson(Class type, Object json) {
         Gson gson = new Gson()
         gson.fromJson(gson.toJson(json), type)
