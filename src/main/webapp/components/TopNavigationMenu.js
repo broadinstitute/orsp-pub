@@ -276,7 +276,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                   isRendered: !this.state.isLogged || !Storage.userIsLogged(),
                   clientId: component.clientId,
                   onSuccess: this.onSuccess
-                }), button({onClick:async () => {await User.signOut(); console.log("---Session terminated---")} },["End Session"])
+                })
               ])
           })
         ])
