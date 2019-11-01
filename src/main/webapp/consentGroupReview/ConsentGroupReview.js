@@ -1026,7 +1026,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             id: "inputInstitutionProtocolNumber",
             name: "protocol",
             label: "Collaborating Institution's Protocol Number",
-            moreInfo: " (enter N/A if not applicable)*",
+            moreInfo: " (or other unique identifier, if no protocol number)*",
             value: protocol,
             currentValue: this.state.current.consentExtraProps.protocol,
             onChange: this.handleExtraPropsInputChange,
