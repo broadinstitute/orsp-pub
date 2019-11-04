@@ -7,6 +7,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
@@ -28,6 +29,9 @@ class SampleConsentLinkController extends AuthenticatedController {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
+            Issue consentGroup = Issue.findByProjectKey(consentCollectionLink.consentKey)
+            Issue project = Issue.findByProjectKey(consentCollectionLink.projectKey)
+            notifyService.sendAddedCGToProjectNotification(consentGroup, project)
             if (!files?.isEmpty()) {
                 files.forEach {
                     storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink)

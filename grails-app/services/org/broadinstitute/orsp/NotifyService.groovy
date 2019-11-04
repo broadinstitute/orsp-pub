@@ -733,4 +733,22 @@ class NotifyService implements SendgridSupport, Status {
                 )
         )
     }
+
+    Map<Boolean, String> sendAddedCGToProjectNotification(Issue consentGroup, Issue project) {
+        Map<String, String> values = new HashMap<>()
+        values.put("projectLink", getShowIssueLink(project))
+        values.put("projectSummary", project.summary)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: consentGroup.projectKey + " - Your ORSP Review is Required",
+                        user: userService.findUser(consentGroup.reporter),
+                        issue: consentGroup,
+                        values: values)
+
+        arguments.view = "/notify/addExistingCG"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
 }
