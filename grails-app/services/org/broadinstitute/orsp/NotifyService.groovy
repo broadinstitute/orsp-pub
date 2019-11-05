@@ -733,4 +733,21 @@ class NotifyService implements SendgridSupport, Status {
                 )
         )
     }
+
+    Map<Boolean, String> sendRejectLinkNotification(Issue issue) {
+        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
+                        user: user,
+                        issue: issue)
+
+        arguments.view = "/notify/editsDisapproved"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
 }
