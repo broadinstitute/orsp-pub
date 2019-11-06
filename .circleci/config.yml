@@ -194,6 +194,14 @@ jobs:
           host_ip: "orsp-pub-prod-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
           orsp_config_map: "orsp-config"
+  deploy-production:
+      executor: cloud-sdk
+      steps:
+        - checkout
+        - run:
+            name: Call remote deploy job
+            command: |
+              curl -X POST https://circleci.com/api/v1.1/project/gh/broadinstitute/orsp-pub-deploy/tree/master?circle-token=${USER_TOKEN}
 
 workflows:
   version: 2
@@ -213,3 +221,9 @@ workflows:
           filters:
             branches:
               only: master
+      - deploy-production:
+                filters:
+                  tags:
+                    only: /^prodtest.*/
+                  branches:
+                    ignore: /.*/
