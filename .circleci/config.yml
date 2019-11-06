@@ -172,28 +172,7 @@ jobs:
           host_ip: "orsp-pub-staging-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
           orsp_config_map: "orsp-config-staging"
-  deploy-prod:
-    executor: cloud-sdk
-    steps:
-      - checkout
-      - build-env:
-          sa_key_name: "GCLOUD_ORSP_DEV"
-          env: "prod"
-          repo_name: "orsp-pub"
-          google_project: "orsp-dev"
-      - deploy-env:
-          sa_key_name: "GCLOUD_ORSP_DEV"
-          env: "prod"
-          namespace: "orsp"
-          repo_name: "orsp-pub"
-          google_project: "orsp-dev"
-          google_zone: "us-central1-a"
-          google_cluster: "orsp-pub-prod"
-          commit: ${COMMIT}
-          host_name: "prod.dsp-orsp-dev.broadinstitute.org"
-          host_ip: "orsp-pub-prod-ip"
-          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
-          orsp_config_map: "orsp-config"
+
   deploy-production:
       executor: cloud-sdk
       steps:
@@ -217,13 +196,10 @@ workflows:
               only: /^staging.*/
             branches:
               ignore: /.*/
-      - deploy-prod:
-          filters:
-            branches:
-              only: master
+
       - deploy-production:
-                filters:
-                  tags:
-                    only: /^prodtest.*/
-                  branches:
-                    ignore: /.*/
+          filters:
+            tags:
+              only: /^prodtest.*/
+            branches:
+              ignore: /.*/
