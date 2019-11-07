@@ -741,7 +741,7 @@ class NotifyService implements SendgridSupport, Status {
         User user = userService.findUser(project.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: [user?.emailAddress],
+                        toAddresses: getUserApplicantSubmitter(project),
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
                         subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been disapproved",
@@ -760,10 +760,10 @@ class NotifyService implements SendgridSupport, Status {
         User user = userService.findUser(project.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: [user?.emailAddress],
+                        toAddresses: getUserApplicantSubmitter(project),
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
-                        subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been disapproved",
+                        subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been approved",
                         user: user,
                         issue: consentGroup)
 
@@ -772,4 +772,10 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
+    List<String> getUserApplicantSubmitter(Issue issue) {
+        List<String> toAddresses = new ArrayList<>()
+        toAddresses.addAll(userService.findUser(issue.getReporter())?.collect {it.emailAddress})
+        toAddresses.addAll(getOrspSpecialRecipients())
+        toAddresses
+    }
 }
