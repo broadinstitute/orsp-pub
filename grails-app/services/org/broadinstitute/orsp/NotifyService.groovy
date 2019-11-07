@@ -734,20 +734,42 @@ class NotifyService implements SendgridSupport, Status {
         )
     }
 
-    Map<Boolean, String> sendRejectLinkNotification(Issue issue) {
-        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
-        User user = userService.findUser(issue.reporter)
+    Map<Boolean, String> sendRejectLinkNotification(Issue project, Issue consentGroup) {
+        Map<String, String> values = new HashMap<>()
+        values.put("projectLink", getShowIssueLink(project))
+        values.put("projectSummary", project.summary)
+        User user = userService.findUser(project.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(user.emailAddress),
-                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
+                        toAddresses: [user?.emailAddress],
+                        ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
+                        subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been disapproved",
                         user: user,
-                        issue: issue)
+                        issue: consentGroup)
 
-        arguments.view = "/notify/editsDisapproved"
+        arguments.view = "/notify/rejectLink"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
+
+    Map<Boolean, String> sendApproveLinkNotification(Issue project, Issue consentGroup) {
+        Map<String, String> values = new HashMap<>()
+        values.put("projectLink", getShowIssueLink(project))
+        values.put("projectSummary", project.summary)
+        User user = userService.findUser(project.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: [user?.emailAddress],
+                        ccAddresses: [],
+                        fromAddress: getDefaultFromAddress(),
+                        subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been disapproved",
+                        user: user,
+                        issue: consentGroup)
+
+        arguments.view = "/notify/approveLink"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
 }
