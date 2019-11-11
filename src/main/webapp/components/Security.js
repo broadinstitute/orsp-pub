@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { hh, h1, span, a, div, p } from 'react-hyperscript-helpers';
+import { hh, h1, span, a, div, p, b } from 'react-hyperscript-helpers';
 
 import { WizardStep } from './WizardStep';
 import { InputFieldText } from './InputFieldText';
@@ -176,6 +176,8 @@ export const Security = hh(class Security extends Component {
     }
     return (
       div({ className: "questionnaireContainerLight" }, [
+        p({}, ["The following questions help the Broad Risk Management and Information Security teams understand where sensitive data types are stored and how that data is shared with external collaborators. Please answer the questions to the best of your ability. "]),
+        p({style: {'marginBottom':'25px'}}, [b({}, ["Note: "]), "The Information Security or Risk Management team may reach out to understand more about your project but your answers to these questions will not stop your project from moving forward. You do not need to wait for a response from the Risk Management or Information Security teams before continuing work."]),
         InputFieldRadio({
           id: "radioPII",
           name: "pii",
