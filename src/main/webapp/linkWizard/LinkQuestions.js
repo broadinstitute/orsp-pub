@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1, span } from 'react-hyperscript-helpers';
+import { hh, h1, span, a, i } from 'react-hyperscript-helpers';
 import { WizardStep } from "../components/WizardStep";
 import { Panel } from "../components/Panel";
 import { InternationalCohorts } from "../components/InternationalCohorts";
@@ -94,7 +94,10 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
             error: this.props.errors.requireMta && this.props.generalError,
             errorMessage: "Required field",
             edit: false
-          })
+          }),
+          span({isRendered: this.props.requireMta === "true"}, [i({}, ["Upon receipt of the MTA from the provider, please visit "]), 
+              a({href: "converge.broadinstitute.org"},["converge.broadinstitute.org"]), span({}, [i({}, [" to submit your MTA request."])])
+          ])
         ])
       ]))
   }
