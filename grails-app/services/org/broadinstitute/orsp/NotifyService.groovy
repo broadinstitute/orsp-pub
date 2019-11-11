@@ -753,8 +753,10 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendApproveLinkNotification(Issue project, Issue consentGroup) {
+    Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved) {
         Map<String, String> values = new HashMap<>()
+        Issue project = Issue.findByProjectKey(projectKey)
+        Issue consent = Issue.findByProjectKey(consentKey)
         values.put("projectLink", getShowIssueLink(project))
         values.put("projectSummary", project.summary)
         User user = userService.findUser(project.reporter)
@@ -763,11 +765,12 @@ class NotifyService implements SendgridSupport, Status {
                         toAddresses: getUserApplicantSubmitter(project),
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
-                        subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been approved",
+                        subject: consent.projectKey + " - Your ORSP Consent Group added to " +
+                                project.projectKey + isApproved ? " has been approved" : " has been disapproved",
                         user: user,
-                        issue: consentGroup)
+                        issue: consent)
 
-        arguments.view = "/notify/approveLink"
+        arguments.view = isApproved ? "/notify/approveLink" : "/notify/rejectLink"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
