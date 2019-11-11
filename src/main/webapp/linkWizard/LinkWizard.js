@@ -4,7 +4,7 @@ import { Wizard } from '../components/Wizard';
 import { SelectSampleConsent } from './SelectSampleConsent';
 import { LinkQuestions } from './LinkQuestions';
 import { ConsentCollectionLink, User } from '../util/ajax';
-import { isEmpty } from '../util/Utils';
+import { handleUnauthorized, isEmpty } from '../util/Utils';
 import '../index.css';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
