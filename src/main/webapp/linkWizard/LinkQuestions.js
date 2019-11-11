@@ -95,8 +95,8 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
             errorMessage: "Required field",
             edit: false
           }),
-          span({isRendered: this.props.requireMta === "true"}, [i({}, ["Upon receipt of the MTA from the provider, please visit "]), 
-              a({href: "converge.broadinstitute.org"},["converge.broadinstitute.org"]), span({}, [i({}, [" to submit your MTA request."])])
+          span({ isRendered: this.props.requireMta === "true" }, [i({}, ["Upon receipt of the MTA from the provider, please visit "]),
+            a({ href: "https://converge.broadinstitute.org", target: "_blank", className: "link" }, ["converge.broadinstitute.org"]), span({}, [i({}, [" to submit your MTA request."])])
           ])
         ])
       ]))
