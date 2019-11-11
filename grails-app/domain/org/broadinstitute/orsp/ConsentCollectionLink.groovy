@@ -18,6 +18,13 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     String textSharingType
     String textCompliance
     String internationalCohorts
+    String publiclyAvailable
+    String store
+    String externalAvailability
+    String textStore
+    String piiDt
+    String phi
+    String genomicData
     Date startDate
     Date endDate
     Boolean onGoingProcess
@@ -42,6 +49,14 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         endDate nullable: true
         onGoingProcess nullable: true
         status nullable: true
+        publiclyAvailable nullable: true
+        store nullable: true
+        externalAvailability nullable: true
+        textStore nullable: true
+        piiDt nullable: true
+        phi nullable: true
+        genomicData nullable: true
+
     }
 
     static transients = ['linkedProject', 'sampleCollection', 'restriction']
