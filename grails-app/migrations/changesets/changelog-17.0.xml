@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="changelog-17.0-1" author="vvicario">
+        <sql>
+            UPDATE issue_extra_property SET name = 'broadInvestigator' WHERE name = 'research';
+            UPDATE issue_extra_property SET name = 'subjectsDeceased' WHERE name = 'deceased';
+            UPDATE issue_extra_property SET name = 'sensitiveInformationSource' WHERE name = 'identifiable';
+            UPDATE issue_extra_property SET name = 'interactionSource' WHERE name = 'collHasIdentity';
+            UPDATE issue_extra_property SET name = 'isCoPublishing' WHERE name = 'collPublication';
+            UPDATE issue_extra_property SET value = 'true' WHERE value = 10124;
+            UPDATE issue_extra_property SET value = 'false' WHERE value = 10125;
+            UPDATE issue_extra_property SET value = 'true' WHERE value = 10069;
+            UPDATE issue_extra_property SET value = 'false' WHERE value = 10070;
+            UPDATE issue_extra_property SET value = 'true' WHERE value = 10102;
+            UPDATE issue_extra_property SET value = 'false' WHERE value = 10103;
+            UPDATE issue_extra_property SET value = 'true' WHERE value = 10106;
+            UPDATE issue_extra_property SET value = 'false' WHERE value = 10107;
+            UPDATE issue_extra_property SET value = 'true' WHERE value = 10126;
+            UPDATE issue_extra_property SET value = 'false' WHERE value = 10127;
+            UPDATE issue_extra_property SET value = 'true' WHERE value = 10028;
+            UPDATE issue_extra_property SET value = 'false' WHERE value = 10029;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
