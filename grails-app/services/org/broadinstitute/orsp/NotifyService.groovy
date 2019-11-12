@@ -734,25 +734,6 @@ class NotifyService implements SendgridSupport, Status {
         )
     }
 
-    Map<Boolean, String> sendRejectLinkNotification(Issue project, Issue consentGroup) {
-        Map<String, String> values = new HashMap<>()
-        values.put("projectLink", getShowIssueLink(project))
-        values.put("projectSummary", project.summary)
-        User user = userService.findUser(project.reporter)
-        NotifyArguments arguments =
-                new NotifyArguments(
-                        toAddresses: getUserApplicantSubmitter(project),
-                        ccAddresses: [],
-                        fromAddress: getDefaultFromAddress(),
-                        subject: consentGroup.projectKey + " - Your ORSP Consent Group added to " + project.projectKey + " has been disapproved",
-                        user: user,
-                        issue: consentGroup)
-
-        arguments.view = "/notify/rejectLink"
-        Mail mail = populateMailFromArguments(arguments)
-        sendMail(mail, getApiKey(), getSendGridUrl())
-    }
-
     Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved) {
         Map<String, String> values = new HashMap<>()
         Issue project = Issue.findByProjectKey(projectKey)
@@ -762,7 +743,7 @@ class NotifyService implements SendgridSupport, Status {
         User user = userService.findUser(project.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: getUserApplicantSubmitter(project),
+                        toAddresses: getUserApplicantSubmitter(project, consent),
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
                         subject: consent.projectKey + " - Your ORSP Consent Group added to " +
@@ -776,9 +757,10 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    List<String> getUserApplicantSubmitter(Issue issue) {
+    List<String> getUserApplicantSubmitter(Issue project, Issue consent) {
         List<String> toAddresses = new ArrayList<>()
-        toAddresses.addAll(userService.findUser(issue.getReporter())?.collect {it.emailAddress})
+        toAddresses.addAll(userService.findUser(project.getReporter())?.collect {it.emailAddress})
+        toAddresses.addAll(userService.findUser(consent.getReporter())?.collect {it.emailAddress})
         toAddresses.addAll(getOrspSpecialRecipients())
         toAddresses
     }
