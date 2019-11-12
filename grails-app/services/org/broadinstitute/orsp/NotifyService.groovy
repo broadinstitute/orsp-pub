@@ -734,8 +734,10 @@ class NotifyService implements SendgridSupport, Status {
         )
     }
 
-    Map<Boolean, String> sendAddedCGToProjectNotification(Issue consentGroup, Issue project) {
+    Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey) {
         Map<String, String> values = new HashMap<>()
+        Issue consent = Issue.findByProjectKey(consentKey)
+        Issue project = Issue.findByProjectKey(projectKey)
         values.put("projectLink", getShowIssueLink(project))
         values.put("projectSummary", project.summary)
         NotifyArguments arguments =
@@ -743,7 +745,7 @@ class NotifyService implements SendgridSupport, Status {
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
                         subject: consentGroup.projectKey + " - Your ORSP Review is Required",
-                        user: userService.findUser(consentGroup.reporter),
+                        user: userService.findUser(consent.reporter),
                         issue: consentGroup,
                         values: values)
 
