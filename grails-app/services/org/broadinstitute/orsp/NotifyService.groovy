@@ -766,9 +766,10 @@ class NotifyService implements SendgridSupport, Status {
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
                         subject: consent.projectKey + " - Your ORSP Consent Group added to " +
-                                project.projectKey + isApproved ? " has been approved" : " has been disapproved",
+                                project.projectKey + (isApproved ? " has been approved" : " has been disapproved"),
                         user: user,
-                        issue: consent)
+                        issue: consent,
+                        values: values)
 
         arguments.view = isApproved ? "/notify/approveLink" : "/notify/rejectLink"
         Mail mail = populateMailFromArguments(arguments)
