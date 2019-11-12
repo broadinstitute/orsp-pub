@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="vvicario" id="changelog-18.0">
+        <addColumn tableName="consent_collection_link">
+            <column name="publicly_available" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="store" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="external_availability" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="text_store" type="LONGTEXT"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="pii_dt" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="phi" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="genomic_data" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

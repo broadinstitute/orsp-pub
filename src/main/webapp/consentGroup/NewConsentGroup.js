@@ -180,6 +180,13 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
     consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
     consentCollectionLink.status = "Pending";
+    consentCollectionLink.publiclyAvailable = this.state.securityInfoFormData.publiclyAvailable;
+    consentCollectionLink.store = isEmpty(this.state.securityInfoFormData.store) ? null : this.state.securityInfoFormData.store;
+    consentCollectionLink.externalAvailability = isEmpty(this.state.securityInfoFormData.externalAvailability) ? null : this.state.securityInfoFormData.externalAvailability;
+    consentCollectionLink.textStore = isEmpty(this.state.securityInfoFormData.textStore) ? null : this.state.securityInfoFormData.textStore;
+    consentCollectionLink.piiDt = this.state.securityInfoFormData.piiDt;
+    consentCollectionLink.phi = this.state.securityInfoFormData.phi;
+    consentCollectionLink.genomicData = this.state.securityInfoFormData.genomicData;
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {

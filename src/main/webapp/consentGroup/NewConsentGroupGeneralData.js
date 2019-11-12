@@ -159,7 +159,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             id: "inputInstitutionProtocolNumber",
             name: "institutionProtocolNumber",
             label: "Collaborating Institution's Protocol Number",
-            moreInfo: " (enter N/A if not applicable)*",
+            moreInfo: " (or other unique identifier, if no protocol number)*",
             value: this.state.formData.institutionProtocolNumber,
             disabled: false,
             required: true,
