@@ -758,10 +758,12 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     List<String> getUserApplicantSubmitter(Issue project, Issue consent) {
-        List<String> toAddresses = new ArrayList<>()
+        Set<String> toAddresses = new HashSet<>()
         toAddresses.addAll(userService.findUser(project.getReporter())?.collect {it.emailAddress})
         toAddresses.addAll(userService.findUser(consent.getReporter())?.collect {it.emailAddress})
         toAddresses.addAll(getAdminRecipient())
-        toAddresses
+        List<String> mails = new ArrayList<>()
+        mails.addAll(toAddresses)
+        mails
     }
 }
