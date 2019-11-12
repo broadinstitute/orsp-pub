@@ -761,7 +761,7 @@ class NotifyService implements SendgridSupport, Status {
         List<String> toAddresses = new ArrayList<>()
         toAddresses.addAll(userService.findUser(project.getReporter())?.collect {it.emailAddress})
         toAddresses.addAll(userService.findUser(consent.getReporter())?.collect {it.emailAddress})
-        toAddresses.addAll(getOrspSpecialRecipients())
+        toAddresses.addAll(getAdminRecipient())
         toAddresses
     }
 }
