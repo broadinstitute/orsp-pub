@@ -714,6 +714,39 @@ class NotifyService implements SendgridSupport, Status {
         )
     }
 
+    Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved) {
+        Map<String, String> values = new HashMap<>()
+        Issue project = Issue.findByProjectKey(projectKey)
+        Issue consent = Issue.findByProjectKey(consentKey)
+        values.put("projectLink", getShowIssueLink(project))
+        values.put("projectSummary", project.summary)
+        User user = userService.findUser(project.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: getUserApplicantSubmitter(project, consent),
+                        ccAddresses: [],
+                        fromAddress: getDefaultFromAddress(),
+                        subject: consent.projectKey + " - Your ORSP Consent Group added to " +
+                                project.projectKey + (isApproved ? " has been approved" : " has been disapproved"),
+                        user: user,
+                        issue: consent,
+                        values: values)
+
+        arguments.view = isApproved ? "/notify/approveLink" : "/notify/rejectLink"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    List<String> getUserApplicantSubmitter(Issue project, Issue consent) {
+        Set<String> toAddresses = new HashSet<>()
+        toAddresses.addAll(userService.findUser(project.getReporter())?.collect {it.emailAddress})
+        toAddresses.addAll(userService.findUser(consent.getReporter())?.collect {it.emailAddress})
+        toAddresses.addAll(getAdminRecipient())
+        List<String> mails = new ArrayList<>()
+        mails.addAll(toAddresses)
+        mails
+    }
+
     Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey) {
         Map<String, String> values = new HashMap<>()
         Issue consent = Issue.findByProjectKey(consentKey)

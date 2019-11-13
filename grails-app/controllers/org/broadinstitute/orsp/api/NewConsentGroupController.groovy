@@ -220,6 +220,7 @@ class NewConsentGroupController extends AuthenticatedController {
         try {
             boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, CollectionLinkStatus.APPROVED.name)
             List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
+            notifyService.sendApproveRejectLinkNotification(params.projectKey.toString(), params.consentKey.toString(), true)
             if (!isUpdated) {
               response.status = 400
               render([message: 'Error updating collection links, please check specified parameters.'] as JSON)
