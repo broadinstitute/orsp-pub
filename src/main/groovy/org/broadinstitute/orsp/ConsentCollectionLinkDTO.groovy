@@ -22,6 +22,12 @@ class ConsentCollectionLinkDTO {
     Date startDate
     Date endDate
     Boolean onGoingProcess
+    String phi
+    String piiDt
+    String textStore
+    String publiclyAvailable
+    String store
+
 
     void setId(Number id) {
         this.id = id
