@@ -6,7 +6,6 @@ import ErrorHandler from './components/ErrorHandler';
 import Footer from './components/Footer';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
-import { Storage } from './util/Storage';
 import { handleUnauthorized } from './util/Utils';
 import '../webapp/index.css';
 
