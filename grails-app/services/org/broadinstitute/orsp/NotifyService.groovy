@@ -552,25 +552,6 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
-    Map<Boolean, String> sendRequirementsInfoConsentGroup(Issue issue, User user, ConsentCollectionLink consentCollectionLink) {
-        Map<Boolean, String> result = new HashMap<>()
-
-        if (Boolean.valueOf(consentCollectionLink.requireMta)) {
-            NotifyArguments arguments =
-                    new NotifyArguments(
-                            toAddresses: Collections.singletonList(getAgreementsRecipient()),
-                            fromAddress: getDefaultFromAddress(),
-                            ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                            subject: issue.projectKey + " - Required OSAP Follow-up",
-                            user: user,
-                            issue: issue)
-            arguments.view = "/notify/requirements"
-            Mail mail = populateMailFromArguments(arguments)
-            result = sendMail(mail, getApiKey(), getSendGridUrl())
-        }
-        result
-    }
-
     /**
      * Send message to admins when project or consent group is created
      *
@@ -715,7 +696,6 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendRequirementsInfoConsentGroup(issue, user, consentCollectionLink)
         sendSecurityInfo(issue, user, consentCollectionLink)
     }
 
@@ -765,5 +745,25 @@ class NotifyService implements SendgridSupport, Status {
         List<String> mails = new ArrayList<>()
         mails.addAll(toAddresses)
         mails
+    }
+
+    Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey) {
+        Map<String, String> values = new HashMap<>()
+        Issue consent = Issue.findByProjectKey(consentKey)
+        Issue project = Issue.findByProjectKey(projectKey)
+        values.put("projectLink", getShowIssueLink(project))
+        values.put("projectSummary", project.summary)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: consentGroup.projectKey + " - Your ORSP Review is Required",
+                        user: userService.findUser(consent.reporter),
+                        issue: consentGroup,
+                        values: values)
+
+        arguments.view = "/notify/addExistingCG"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
     }
 }
