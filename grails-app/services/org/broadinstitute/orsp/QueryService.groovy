@@ -1602,7 +1602,7 @@ class QueryService implements Status {
     }
 
     List<ConsentCollectionLink> findCollectionLinks() {
-        String query = 'select ccl.* from consent_collection_link ccl inner join issue i on i.project_key = ccl.consent_key where ccl.deleted = 0 and i.deleted = 0'
+        String query = 'select * from consent_collection_link where deleted = 0 '
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<ConsentCollectionLink> links = sqlQuery.with {
             addEntity(ConsentCollectionLink)
@@ -1621,9 +1621,13 @@ class QueryService implements Status {
 
     PaginatedResponse findAllCollectionLinks(PaginationParams pagination) {
         // get total rows
-        String totalRowsQuery = 'select count(ccl.id) from consent_collection_link ccl ' +
-                ' left join issue project on project.project_key = ccl.project_key left join issue c on c.project_key = ccl.consent_key ' +
-                ' where ccl.deleted = 0 and project.deleted = 0 and c.deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        String totalRowsQuery =
+                ' select count(ccl.id) from consent_collection_link ccl ' +
+                ' left join issue project on project.project_key = ccl.project_key ' +
+                ' left join issue c on c.project_key = ccl.consent_key ' +
+                ' where ccl.deleted = 0 ' +
+                ' and project.deleted = 0 ' +
+                ' and c.deleted = 0 ' + getCollectionLinksWhereClause(pagination)
         SQLQuery query = getSessionFactory().currentSession.createSQLQuery(totalRowsQuery)
         if (pagination.searchValue) query.setString('term', pagination.getLikeTerm())
         Long totalRows = query.uniqueResult()

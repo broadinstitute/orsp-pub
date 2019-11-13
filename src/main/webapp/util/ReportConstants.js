@@ -53,7 +53,7 @@ export const styles = {
   },
   consentCollection: { 
     consentKeyWidth: '140px',
-    collectionsWidth: '750px'
+    collectionsWidth: '650px'
   }
 };
 
