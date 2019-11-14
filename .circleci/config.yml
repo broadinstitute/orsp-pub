@@ -74,7 +74,7 @@ commands:
         default: "wildcard.dsp-orsp-dev.broadinstitute.org"
       orsp_config_map:
         type: string
-        default: "orsp-config-dev"       
+        default: "orsp-config-dev"
       repo_name:
         type: string
         default: "orsp-pub"
@@ -125,7 +125,7 @@ commands:
             kubectl apply -f ${HOME}/patched_k8s.yml
             kubectl apply -f ${HOME}/patched_service.yml
             kubectl apply -f ${HOME}/patched_ingress.yml
-            kubectl rollout status deployment/${REPO_NAME} 
+            kubectl rollout status deployment/${REPO_NAME}
 
 jobs:
   deploy-dev:
@@ -172,29 +172,14 @@ jobs:
           host_ip: "orsp-pub-staging-ip"
           tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
           orsp_config_map: "orsp-config-staging"
-  deploy-prod:
+  deploy-production:
     executor: cloud-sdk
     steps:
       - checkout
-      - build-env:
-          sa_key_name: "GCLOUD_ORSP_DEV"
-          env: "prod"
-          repo_name: "orsp-pub"
-          google_project: "orsp-dev"
-      - deploy-env:
-          sa_key_name: "GCLOUD_ORSP_DEV"
-          env: "prod"
-          namespace: "orsp"
-          repo_name: "orsp-pub"
-          google_project: "orsp-dev"
-          google_zone: "us-central1-a"
-          google_cluster: "orsp-pub-prod"
-          commit: ${COMMIT}
-          host_name: "prod.dsp-orsp-dev.broadinstitute.org"
-          host_ip: "orsp-pub-prod-ip"
-          tls_cert_secret: "wildcard.dsp-orsp-dev.broadinstitute.org"
-          orsp_config_map: "orsp-config"
-
+      - run:
+          name: Call remote deploy job
+          command: |
+            curl -X POST https://circleci.com/api/v1.1/project/gh/broadinstitute/orsp-pub-deploy/tree/master?circle-token=${ORSP_USER_TOKEN}
 workflows:
   version: 2
   build-deploy:
@@ -209,7 +194,9 @@ workflows:
               only: /^staging.*/
             branches:
               ignore: /.*/
-      - deploy-prod:
+      - deploy-production:
           filters:
+            tags:
+              only: /^production.*/
             branches:
-              only: master
+              ignore: /.*/
