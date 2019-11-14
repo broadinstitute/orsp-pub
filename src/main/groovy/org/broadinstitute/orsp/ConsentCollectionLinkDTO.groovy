@@ -27,6 +27,7 @@ class ConsentCollectionLinkDTO {
     String textStore
     String publiclyAvailable
     String store
+    String externalAvailability
 
 
     void setId(Number id) {

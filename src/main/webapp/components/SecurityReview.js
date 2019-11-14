@@ -38,17 +38,25 @@ export const SecurityReview = hh(class SecurityReview extends Component {
   };
 
   render() {
+    console.log(this.props.sample);
     const {
       textSharingType = '',
       sharingType = '',
       textCompliance = '',
       compliance = '',
-      pii = ''
+      pii = '',
+      phi = '',
     } = this.props.sample;
 
     if (this.props.currentStep === this.props.step) {
       return(
         div({}, [
+          div({ className: "answerWrapper" }, [
+            label({}, ["Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data?",
+              span({ className: "normal" }, ["For a list of what constitutes PII and PHI, visit this link."])]),
+            div({
+            }, [this.stringAnswer(phi)]),
+          ]),
           div({ className: "answerWrapper" }, [
             label({}, ["Will your project make data available to external collaborators over the internet and/or involve personally identifiable information (PII) or protected health information (PHI)?* ",
               span({ className: "normal" }, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."])]),
