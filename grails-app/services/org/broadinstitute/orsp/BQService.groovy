@@ -22,6 +22,21 @@ class BQService {
     private GoogleCredentials credential
 
     /**
+     * Sync Broadies from BigQuery Broad users table
+     * Only adds new users 
+     * @return List of BroadUser from BigQuery
+     */
+    public void syncBroadies() {
+        List<User> syncedUsers = BQService.findMissingUsers().collect {
+            userService.findOrCreateUser(
+                    it.userName,
+                    it.email,
+                    it.displayName
+            )
+        }
+    }
+
+    /**
      * Find all users that exist in Broad's users (BigQuery) 
      *
      * @return List of BroadUser objects
