@@ -71,13 +71,16 @@ class ReportController extends AuthenticatedController {
         List<ConsentCollectionLink> links = queryService.findCollectionLinks()
         def result = []
         Collection<DataUseRestriction> durs = queryService.findDataUseRestrictionByConsentGroupKeyInList(links.collect {it.consentKey})
+        List<Issue> consentGroup = queryService.findAllByProjectKeyInList(links.collect {it.consentKey}, null)
         links.groupBy { it.consentKey }.each { key, scLinks ->
             DataUseRestriction restriction = durs.find { it?.consentGroupKey == key }
             result.add([consentGroupKey: key,
                         collections    : scLinks,
-                        restriction    : restriction
+                        restriction    : restriction,
+                        deleted        : consentGroup.find{ it.projectKey == key } == null
             ])
         }
+
         JSON.use(UtilityClass.CONSENT_COLLECTION) {
             render result as JSON
         }
