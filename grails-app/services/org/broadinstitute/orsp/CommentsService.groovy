@@ -48,7 +48,7 @@ class CommentsService implements UserInfo {
                 log.error("Issue " + issue.projectKey + " has empty PMs.")
                 toAddresses.addAll(notifyService.getOrspSpecialRecipients())
             }
-
+            toAddresses.add(notifyService.getAdminRecipient())
             notifyService.sendComment(
                     new NotifyArguments(
                             toAddresses: toAddresses,
