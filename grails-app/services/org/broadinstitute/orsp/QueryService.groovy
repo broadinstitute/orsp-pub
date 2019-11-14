@@ -366,7 +366,7 @@ class QueryService implements Status {
         final String query =
             ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
                     ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
-                    ' c.phi phi, c.pii_dt piiDt, c.text_store textStore, c.publicly_available publiclyAvailable, c.store store, c.external_availability externalAvailability ' +
+                    ' c.phi phi, c.pii_dt piiDt, c.text_store textStore, c.publicly_available publiclyAvailable, c.store store, c.external_availability externalAvailability, ' +
                     ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
                     ' ip.type projectType, c.start_date startDate, c.end_date endDate, c.on_going_process onGoingProcess from consent_collection_link c ' +
                     ' inner join issue ic on ic.project_key = c.consent_key ' +
