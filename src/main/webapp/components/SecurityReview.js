@@ -74,8 +74,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             }, [this.stringAnswer(pii)]),
           ]),
           div({ className: "answerWrapper", isRendered: !isEmpty(pii) && pii === "true" }, [
-            label({}, ["Which of these types of data does your project involve? ",
-              span({ className: "normal" }, ["Select all that apply."])]),
+            label({}, ["Which of these types of data does your project involve? "]),
             ul({key: "involvedPII"}, [
               li({key: "pii"}, [
                 span({className: "bold"}, ['PII']), ': ' ,  this.stringAnswer(piiDt)
