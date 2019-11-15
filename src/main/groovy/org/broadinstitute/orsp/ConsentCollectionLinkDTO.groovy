@@ -28,6 +28,7 @@ class ConsentCollectionLinkDTO {
     String publiclyAvailable
     String store
     String externalAvailability
+    String genomicData
 
 
     void setId(Number id) {
