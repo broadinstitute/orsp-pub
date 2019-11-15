@@ -22,9 +22,7 @@ const columns = [
       return { width:  styles.consentCollection.consentKeyWidth};
     },
     formatter: (cell, row, rowIndex, colIndex) =>
-      div({}, [
-        h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.consentGroupKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.consentGroupKey}}}, [row.consentGroupKey])
-      ])
+      div({}, [ getConsentKey(row) ])
   },
   {
     dataField: 'id',
@@ -49,6 +47,13 @@ const columns = [
   }
 ];
 
+function getConsentKey(row) {
+  let consentKey = row.consentGroupKey;
+  if (!row.deleted) {
+    consentKey = h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.consentGroupKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.consentGroupKey}}}, [row.consentGroupKey])
+  } 
+  return consentKey;
+}
 function getValue(row) {
   let lis = [];
   row.collections.map(collection => {

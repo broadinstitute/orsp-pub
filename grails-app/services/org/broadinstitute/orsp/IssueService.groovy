@@ -437,6 +437,7 @@ class IssueService implements UserInfo {
             issueExtraProperties?.each { it.delete(flush: true) }
         }
         issue.delete(flush: true)
+        notifyService.sendRejectionProjectNotification(issue)
     }
 
     @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])

@@ -129,6 +129,7 @@ class ConsentGroupController extends AuthenticatedController {
             queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, params.type == "unlink" ? CollectionLinkStatus.UNLINKED.name : CollectionLinkStatus.REJECTED.name)
             List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
             deleteCollectionLinks(links)
+            notifyService.sendApproveRejectLinkNotification(params.projectKey?.toString(), params.consentKey?.toString(), false)
             response.status = 200
             render([message: "Links with the following ids: " + links.collect{it.sampleCollectionId}.join(",")  +
                     " for the specified consent key: " + params.consentKey + " and project key " + params.projectKey + " have been deleted"] as JSON)

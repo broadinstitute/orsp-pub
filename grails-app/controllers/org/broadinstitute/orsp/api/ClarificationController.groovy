@@ -46,7 +46,7 @@ class ClarificationController extends AuthenticatedController {
                 log.error("Issue " + issue.projectKey + " has empty PMs.")
                 toAddresses.addAll(notifyService.getOrspSpecialRecipients())
             }
-
+            toAddresses.add(notifyService.getAdminRecipient())
             try {
                 notifyService.sendClarificationRequest(
                         new NotifyArguments(
@@ -71,15 +71,16 @@ class ClarificationController extends AuthenticatedController {
         Issue consent = queryService.findByKey(params.consentKey)
         if (params.comment) {
             Comment comment = persistenceService.saveComment(issue.projectKey,  getUser()?.displayName, params.comment)
-            String toAddresses = userService.findUser(params.pm)?.collect {it.emailAddress}
+            String toAddress = userService.findUser(params.pm)?.emailAddress
             String fromAddress = getUser()?.emailAddress
+            List<String> toAddresses = Arrays.asList(toAddress, notifyService.getAdminRecipient())
             try {
                 Map<String, String> values = new HashMap<>()
                 values.put("isLink", "true")
                 values.put("summary", consent.getSummary())
                 notifyService.sendClarificationRequest(
                         new NotifyArguments(
-                                toAddresses: [toAddresses],
+                                toAddresses: toAddresses,
                                 fromAddress: fromAddress,
                                 subject: "Clarification Requested: " + issue.projectKey,
                                 comment: comment.description,

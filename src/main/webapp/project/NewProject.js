@@ -6,7 +6,7 @@ import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from '../util/TypeDescription';
 import { Project, User } from '../util/ajax';
-import { isEmpty } from '../util/Utils';
+import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { hh } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -92,10 +92,14 @@ const NewProject = hh(class NewProject extends Component {
         ).then(resp => {
           this.props.history.push('/project/main?projectKey=' + resp.data.message.projectKey + '&tab=review&new');
         }).catch(error => {
+        if (error.response != null && error.response.status === 401) {
+          handleUnauthorized(this.props.history.location);
+        } else {
           this.changeStateSubmitButton();
           this.toggleTrueSubmitError();
           this.props.hideSpinner();
           console.error(error);
+        }
       });
     } else {
       this.setState(prev => {

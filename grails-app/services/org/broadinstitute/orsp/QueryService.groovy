@@ -713,7 +713,7 @@ class QueryService implements Status {
      */
     List<Issue> findAllByProjectKeyInList(List<String> projectKeys, Integer max) {
         if (CollectionUtils.isEmpty(projectKeys)) { return  Collections.emptyList() }
-        String query = 'select * from issue where project_key IN (:projectKeys) order by update_date desc '
+        String query = 'select * from issue where project_key IN (:projectKeys) and deleted = 0 order by update_date desc '
         if (max) { query = query + ' limit ' + max }
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> issues = sqlQuery.with {
@@ -1115,12 +1115,12 @@ class QueryService implements Status {
         query.append(' where i.type = :type ' +
                 ' and i.deleted = 0 ')
         if (pagination.searchValue) {
-            query.append("and i.project_key LIKE :term ")
+            query.append("and (i.project_key LIKE :term ")
                     .append("or i.summary LIKE :term ")
                     .append("or i.status LIKE :term ")
                     .append("or ((ie.name = :initialReviewType ")
                     .append("or ie.name = :reviewCategory ) ")
-                    .append("and ie.value LIKE :term ) ")
+                    .append("and ie.value LIKE :term ))")
         }
         SQLQuery sqlQuery = session.createSQLQuery(query.toString())
         sqlQuery.setString('type', type)
@@ -1566,14 +1566,14 @@ class QueryService implements Status {
 
     PaginatedResponse findDataUseRestrictions(PaginationParams pagination) {
         // get total rows
-        String query = 'select count(id) from data_use_restriction ' + getDURWhereClause(pagination)
+        String query = 'select count(du.id) from data_use_restriction du inner join issue i on i.project_key = du.consent_group_key ' + getDURWhereClause(pagination)
         String orderColumn = getRestrictionOrderColumn(pagination.orderColumn)
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         if (pagination.searchValue) sqlQuery.setString('term', pagination.getLikeTerm())
         Long totalRows = sqlQuery.uniqueResult()
 
         // get DUR paginated
-        String durQuery =  'select * from data_use_restriction ' + getDURWhereClause(pagination) + " order by " + orderColumn + pagination.sortDirection
+        String durQuery =  'select * from data_use_restriction du inner join issue i on i.project_key = du.consent_group_key ' + getDURWhereClause(pagination) + " order by " + orderColumn + pagination.sortDirection
         SQLQuery sqlDURQuery = getSessionFactory().currentSession.createSQLQuery(durQuery)
 
         List<DataUseRestriction> results = sqlDURQuery.with {
@@ -1593,9 +1593,11 @@ class QueryService implements Status {
     }
 
     private String getDURWhereClause(PaginationParams pagination) {
-        String where = ''
+        String where
         if (pagination.searchValue) {
-            where = ' where consent_group_key LIKE :term OR vault_export_date LIKE :term '
+            where = ' where (du.consent_group_key LIKE :term OR du.vault_export_date LIKE :term) and i.deleted = 0 '
+        } else {
+            where = ' where i.deleted = 0 '
         }
         where
     }
@@ -1620,12 +1622,20 @@ class QueryService implements Status {
 
     PaginatedResponse findAllCollectionLinks(PaginationParams pagination) {
         // get total rows
-        String totalRowsQuery = 'select count(*) from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        String totalRowsQuery =
+                ' select count(ccl.id) from consent_collection_link ccl ' +
+                ' left join issue project on project.project_key = ccl.project_key ' +
+                ' left join issue c on c.project_key = ccl.consent_key ' +
+                ' where ccl.deleted = 0 ' +
+                ' and project.deleted = 0 ' +
+                ' and c.deleted = 0 ' + getCollectionLinksWhereClause(pagination)
         SQLQuery query = getSessionFactory().currentSession.createSQLQuery(totalRowsQuery)
         if (pagination.searchValue) query.setString('term', pagination.getLikeTerm())
         Long totalRows = query.uniqueResult()
 
-        String queryCCL = 'select * from consent_collection_link where deleted = 0 ' + getCollectionLinksWhereClause(pagination)
+        String queryCCL = 'select ccl.* from consent_collection_link ccl ' +
+                ' left join issue project on project.project_key = ccl.project_key left join issue c on c.project_key = ccl.consent_key ' +
+                ' where ccl.deleted = 0 and project.deleted = 0 and c.deleted = 0 ' + getCollectionLinksWhereClause(pagination)
         String orderColumn = getSampleCollectionOrderColumn(pagination.orderColumn)
         queryCCL = queryCCL + ' order by ' + orderColumn + pagination.sortDirection
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(queryCCL)
@@ -1646,7 +1656,7 @@ class QueryService implements Status {
     }
 
     List<DataUseRestriction> findDataUseRestrictionByConsentGroupKeyInList(List<String> consentGroupKeys) {
-        String query = 'select * from data_use_restriction where consent_group_key IN :consentGroupKeys '
+        String query = 'select du.* from data_use_restriction du inner join issue i on i.project_key = du.consent_group_key where consent_group_key IN :consentGroupKeys and i.deleted = 0'
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         sqlQuery.with {
             addEntity(DataUseRestriction)
@@ -1703,7 +1713,7 @@ class QueryService implements Status {
     private String getCollectionLinksWhereClause(pagination) {
         String query = ''
         if (pagination.searchValue) {
-            query = ' and (consent_key LIKE :term OR project_key LIKE :term OR status LIKE :term OR sample_collection_id LIKE :term )'
+            query = ' and (ccl.consent_key LIKE :term OR ccl.project_key LIKE :term OR ccl.status LIKE :term OR ccl.sample_collection_id LIKE :term )'
         }
         query
     }
