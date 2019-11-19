@@ -757,9 +757,9 @@ class NotifyService implements SendgridSupport, Status {
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: consentGroup.projectKey + " - Your ORSP Review is Required",
+                        subject: consent.projectKey + " - Your ORSP Review is Required",
                         user: userService.findUser(consent.reporter),
-                        issue: consentGroup,
+                        issue: consent,
                         values: values)
 
         arguments.view = "/notify/addExistingCG"
