@@ -20,6 +20,7 @@ import { isEmpty, scrollToTop } from '../util/Utils';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
+import sanitizeHtml from 'sanitize-html';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -172,7 +173,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
         current.approvalStatus = issue.data.issue.approvalStatus;
-        current.description = isEmpty(issue.data.issue.description) ? '' : issue.data.issue.description.replace(/<\/?[^>]+(>|$)/g, "");
+        current.description = isEmpty(issue.data.issue.description) ? '' : sanitizeHtml(issue.data.issue.description, { allowedTags: [] });
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),

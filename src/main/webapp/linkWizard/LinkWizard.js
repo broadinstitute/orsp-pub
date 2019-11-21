@@ -4,7 +4,7 @@ import { Wizard } from '../components/Wizard';
 import { SelectSampleConsent } from './SelectSampleConsent';
 import { LinkQuestions } from './LinkQuestions';
 import { ConsentCollectionLink, User } from '../util/ajax';
-import { isEmpty } from '../util/Utils';
+import { handleUnauthorized, isEmpty } from '../util/Utils';
 import '../index.css';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -204,6 +204,13 @@ const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.textCompliance = isEmpty(this.state.securityInfoFormData.textCompliance) ? null : this.state.securityInfoFormData.textCompliance;
     consentCollectionLink.sharingType = this.state.securityInfoFormData.sharingType;
     consentCollectionLink.textSharingType = isEmpty(this.state.securityInfoFormData.textSharingType) ? null : this.state.securityInfoFormData.textSharingType;
+    consentCollectionLink.publiclyAvailable = this.state.securityInfoFormData.publiclyAvailable;
+    consentCollectionLink.store = isEmpty(this.state.securityInfoFormData.store) ? null : this.state.securityInfoFormData.store;
+    consentCollectionLink.externalAvailability = isEmpty(this.state.securityInfoFormData.externalAvailability) ? null : this.state.securityInfoFormData.externalAvailability;
+    consentCollectionLink.textStore = isEmpty(this.state.securityInfoFormData.textStore) ? null : this.state.securityInfoFormData.textStore;
+    consentCollectionLink.piiDt = this.state.securityInfoFormData.piiDt;
+    consentCollectionLink.phi = this.state.securityInfoFormData.phi;
+    consentCollectionLink.genomicData = this.state.securityInfoFormData.genomicData;
     // date range
     consentCollectionLink.startDate = this.state.startDate;
     consentCollectionLink.endDate = this.state.endDate;
@@ -235,10 +242,14 @@ const LinkWizard = hh( class LinkWizard extends Component {
         this.props.hideSpinner();
         this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
       }).catch(error => {
-        console.error(error);
-        this.toggleSubmitError();
-        this.changeSubmitState();
-        this.props.hideSpinner();
+        if (error.response != null && error.response.status === 401) {
+          handleUnauthorized(this.props.history.location);
+        } else {
+          console.error(error);
+          this.toggleSubmitError();
+          this.changeSubmitState();
+          this.props.hideSpinner();
+        }
       });
     } else {
       if (this._isMount) {
