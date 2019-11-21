@@ -25,22 +25,34 @@ class SampleConsentLinkController extends AuthenticatedController {
         User user = getUser()
         log.info(request.parameterMap["dataConsentCollection"].toString())
         ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["dataConsentCollection"].toString())[0])
-        log.info(consentCollectionLink.projectKey.toString())
+        log.info(consentCollectionLink.projectKey)
         try {
+            log.info("----------------------------------- 001 -------------------------");
             consentCollectionLink.creationDate = new Date()
+            log.info("----------------------------------- 002 -------------------------");
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+            log.info("----------------------------------- 003 -------------------------");
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
+            log.info("----------------------------------- 004 -------------------------");
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
+            log.info("----------------------------------- 005 -------------------------");
             notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey)
+            log.info("----------------------------------- 006 -------------------------");
             if (!files?.isEmpty()) {
+                log.info("----------------------------------- 007 files -------------------------");
                 files.forEach {
                     storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink)
                 }
             }
+            log.info("----------------------------------- 008 -------------------------");
             response.status = 201
+            log.info("----------------------------------- 009 -------------------------");
             render([message: consentCollectionLink] as JSON)
         } catch (Exception e) {
+            log.info("----------------------------------- 010 ------------------------- " + e.getLocalizedMessage());
+            e.printStackTrace()
             persistenceService.deleteCollectionLink(consentCollectionLink)
+            log.info("----------------------------------- 011 -------------------------");
             handleException(e)
         }
     }

@@ -46,7 +46,10 @@ class PersistenceService {
     }
 
     ConsentCollectionLink saveConsentCollectionLink(ConsentCollectionLink consentCollectionLink) {
+        log.info("----------------------------------- before ------------------------- " );
+        log.info(" projectKey "+ consentCollectionLink.projectKey );
         consentCollectionLink.save(flush: true)
+        log.info("----------------------------------- after save -------------------------");
     }
 
     void deleteCollectionLink(ConsentCollectionLink consentCollectionLink) {
