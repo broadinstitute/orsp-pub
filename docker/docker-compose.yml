@@ -15,7 +15,7 @@ services:
     network_mode: host
 
 # use this config if you are going to use a local image from cloud database.
-#sqlproxy:
+# sqlproxy:
 #  image: mysql:5.6
 #  container_name: sqlproxy
 #  ports:
