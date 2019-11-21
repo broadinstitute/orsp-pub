@@ -940,6 +940,7 @@ class QueryService implements Status {
                     // For backwards compatibility with existing "ORSP" prefixes, ignore the prefix and like-clause on the identifier
                     like("projectKey", getIssueNumberFromString(options.projectKey))
                 }
+                eq("deleted",false)
                 if (options.sortField && options.sortOrder) order(options.sortField, options.sortOrder.name())
                 resultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
             }
