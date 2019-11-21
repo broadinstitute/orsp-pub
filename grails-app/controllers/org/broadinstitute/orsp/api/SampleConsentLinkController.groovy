@@ -23,9 +23,9 @@ class SampleConsentLinkController extends AuthenticatedController {
     def save() {
         JsonParser parser = new JsonParser()
         User user = getUser()
-        log.info("============> dataConsentCollection", parser.parse(request.parameterMap["dataConsentCollection"].toString()))
+        log.info(request.parameterMap["dataConsentCollection"].toString())
         ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["dataConsentCollection"].toString())[0])
-        log.info("============> SampleConsentLinkController " + consentCollectionLink)
+        log.info(consentCollectionLink.projectKey.toString())
         try {
             consentCollectionLink.creationDate = new Date()
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
