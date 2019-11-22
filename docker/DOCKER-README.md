@@ -27,7 +27,7 @@ In this case you need to make the next changes:
 This will initialize a local instance of docker running in a container, and accessible through `https://localhost:8080` 
 by default.
 
-For further information please check this document:
+For further information about database please check this document:
 https://docs.google.com/document/d/1WpAmG_mnajChvRmReMr0u_uxXwk1LRHO70sBzqHOfAk/edit?usp=sharing
 
 **Note**:
