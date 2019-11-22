@@ -29,7 +29,7 @@ class SampleConsentLinkController extends AuthenticatedController {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
-            notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey)
+            notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey, consentCollectionLink)
             if (!files?.isEmpty()) {
                 files.forEach {
                     storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink)
