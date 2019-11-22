@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  app:
+    image: orsp-pub-local:latest
+    volumes:
+
+    - ~/.../orsp-pub/orsp-config:/orsp-config
+    ports:
+    - 8443:8443
+    - 8080:8080
+    - 5005:5005 # debugger
+
+    network_mode: host
+
+# use this config if you are going to use a local image from cloud database.
+# sqlproxy:
+#  image: mysql:5.6
+#  container_name: sqlproxy
+#  ports:
+#    - 3306:3306
+#  volumes:
+#    - ./<your bucket sql export>.sql:/docker-entrypoint-initdb.d/dump.sql
+#  environment:
+#    MYSQL_ROOT_PASSWORD: secret
+#    MYSQL_DATABASE: bussys_dev
+#    MYSQL_USER:
+#    MYSQL_PASSWORD:
