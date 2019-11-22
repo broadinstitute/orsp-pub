@@ -21,6 +21,7 @@ import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
 import sanitizeHtml from 'sanitize-html';
+import he from 'he';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
@@ -173,11 +174,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
         current.approvalStatus = issue.data.issue.approvalStatus;
-        current.description = isEmpty(issue.data.issue.description) ? '' : sanitizeHtml(issue.data.issue.description, { allowedTags: [] });
+        current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
-        current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb),
-        current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations),
+        current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
+        current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations);
         current.piList = this.getUsersArray(issue.data.pis);
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
