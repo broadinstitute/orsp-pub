@@ -497,8 +497,7 @@ class NotifyService implements SendgridSupport, Status {
         Boolean sendEmail = false
         if (getValue(consentCollectionLink.getPii()) == YES ||
                 getValue(consentCollectionLink.getCompliance()) == YES ||
-                getValue(consentCollectionLink.getCompliance()) == UNCERTAIN ||
-                consentCollectionLink.getSharingType() == TEXT_SHARING_OPEN || consentCollectionLink.getSharingType() == TEXT_SHARING_BOTH) {
+                getValue(consentCollectionLink.getPubliclyAvailable()) == YES) {
             sendEmail = true
         }
         if (sendEmail) {
