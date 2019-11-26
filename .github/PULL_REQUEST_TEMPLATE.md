@@ -11,6 +11,6 @@ Describe for the reviewer how to test the specifics of this PR, both positive an
 
 - [ ] **Submitter**: Verify all tests go green, including CI tests
 - [ ] **Submitter**: Get a thumb from Belatrix
-- [ ] **Submitter**: Get a thumb from @rushtong
+- [ ] **Submitter**: Get a thumb from ORSP representative
 - [ ] **Submitter**: Merge to develop using github's "Squash and Merge" feature
 - [ ] **Submitter**: Delete branch after merge
