@@ -11,7 +11,8 @@ class AboutPage extends Component {
   render() {
     return (
         About({
-            showAccessDetails : true
+            showAccessDetails : true,
+            showWarning: true
         })
     );
   }
