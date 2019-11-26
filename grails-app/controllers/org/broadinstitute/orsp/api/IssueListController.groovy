@@ -23,7 +23,7 @@ class IssueListController extends AuthenticatedController {
                     id               : it.id,
                     projectKey       : it.projectKey,
                     summary          : IssueUtils.escapeQuote(it.summary),
-                    status           : it.type.equals(IssueType.CONSENT_GROUP.getName()) ? '' : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                    status           : IssueUtils.escapeQuote(it.getApprovalStatus()),
                     type             : IssueUtils.escapeQuote(it.type),
                     updateDate       : it.updateDate ? sd.format(it.updateDate) : '',
                     actors           : queryService.findUsersInUserNameList(it.getActorUsernames())?.collect { it.displayName }

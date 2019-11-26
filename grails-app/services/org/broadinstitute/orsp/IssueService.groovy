@@ -407,7 +407,9 @@ class IssueService implements UserInfo {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
-        newIssue.setApprovalStatus("Pending ORSP Admin Review")
+        if (type == IssueType.CONSENT_GROUP) {
+            newIssue.setApprovalStatus("Pending ORSP Admin Review")
+        }
         newIssue.type = type.name
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null
