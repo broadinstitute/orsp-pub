@@ -5,6 +5,7 @@ import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.utils.IssueUtils
 
@@ -22,7 +23,7 @@ class IssueListController extends AuthenticatedController {
                     id               : it.id,
                     projectKey       : it.projectKey,
                     summary          : IssueUtils.escapeQuote(it.summary),
-                    status           : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                    status           : it.type.equals(IssueType.CONSENT_GROUP.getName()) ? '' : IssueUtils.escapeQuote(it.getApprovalStatus()),
                     type             : IssueUtils.escapeQuote(it.type),
                     updateDate       : it.updateDate ? sd.format(it.updateDate) : '',
                     actors           : queryService.findUsersInUserNameList(it.getActorUsernames())?.collect { it.displayName }
