@@ -778,7 +778,7 @@ class QueryService implements Status {
             params.put('funding', "%" + options.getFundingInstitute() + "%")
         }
         if (options.userName) {
-            def q = ' u.user_name like :userName or i.reporter like :userName'
+            def q = ' (u.user_name like :userName or i.reporter like :userName)'
             query = andIfyQstring(query, q, params)
             params.put('userName', "%" + options.userName + "%")
         }
