@@ -161,7 +161,7 @@ const LandingPage = hh(class LandingPage extends Component{
   render() {
      return (
       div({}, [
-        About(),
+        About({showWarning: false}),
         div({className: "row", isRendered: component.isBroad === true}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
