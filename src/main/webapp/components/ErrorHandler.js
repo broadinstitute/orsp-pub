@@ -37,7 +37,8 @@ export default class ErrorHandler extends Component {
       unauthorized = true;
     }
     this.setState({ 
-      hasError: true
+      hasError: true,
+      unauthorized: unauthorized
     })
   }
 
