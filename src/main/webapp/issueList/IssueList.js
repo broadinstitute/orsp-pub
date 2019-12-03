@@ -84,11 +84,11 @@ const columns = [
     text: 'Status',
     formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
-    sort: false
+    sort: true
   }, {
     dataField: 'updateDate',
     text: 'Updated',
-    sort: false,
+    sort: true,
     classes: 'ellipsis-column'
   },
   {

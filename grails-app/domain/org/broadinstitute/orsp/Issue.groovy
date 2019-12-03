@@ -36,7 +36,7 @@ class Issue implements LogicalDelete<Issue> {
         requestDate nullable: false
         updateDate nullable: true
         expirationDate nullable: true
-        approvalStatus blank: false, nullable: false
+        approvalStatus blank: true, nullable: true
     }
 
     // Transients
