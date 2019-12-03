@@ -11,6 +11,7 @@ export const UrlConstants = {
   updateExtraPropertiesUrl: context + '/api/project/update-properties',
   updateAdminOnlyPropsUrl: context + '/api/project/update-admin-props',
   userProjectUrl: context + '/api/user/projects',
+  removeAssignedAdmin: context + '/api/project/remove-assigned-admin',
 
   // Consent Group
   updateConsentGroupUrl: context + '/api/consent-group',
@@ -60,6 +61,7 @@ export const UrlConstants = {
   searchUrl: context + '/search/general-table-json',
   matchingIssueUrl: context + '/search/matching-issues',
   matchingCollectionsUrl: context + '/search/matching-collections',
+  orspAdminsSearchUrl: context + '/search/orsp-admins',
 
   downloadDocumentUrl: context + '/api/user/authenticated/download-document',
   saveCommentUrl: context + '/api/comments/save',
@@ -71,6 +73,7 @@ export const UrlConstants = {
   getAllUsersUrl: context + '/api/get-users',
   dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
+  isORSPAdmin: context + '/api/user/is-orsp-admin',
  
   infoLinkUrl: context + '/api/info-link',
   showRestrictionsUrl: context + '/api/dur',

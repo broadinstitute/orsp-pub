@@ -72,4 +72,10 @@ class UserController extends AuthenticatedController {
             render([error: e.message] as JSON)
         }
     }
+
+
+    def isORSPAdmin() {
+        List<String> orspAdminUserNames = Arrays.asList(grailsApplication.config.getProperty('orspAdmins')?.split(","))
+        render (["isORSPAdmin": orspAdminUserNames.find {getUser().userName.equals(it)}?.length() > 0] as JSON)
+    }
 }

@@ -71,7 +71,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.INITIAL_REVIEW_TYPE,
             IssueExtraProperty.IRB_EXPIRATION_DATE,
             IssueExtraProperty.BIO_MEDICAL,
-            IssueExtraProperty.PROJECT_STATUS
+            IssueExtraProperty.PROJECT_STATUS,
+            IssueExtraProperty.ASSIGNED_ADMIN
     ]
 
 
@@ -360,6 +361,17 @@ class IssueService implements UserInfo {
             saveExtraProperties(issue, extraPropertiesList)
         }
         issue.extraProperties.addAll(extraPropertiesList)
+        issue
+    }
+
+    @SuppressWarnings(["GroovyAssignabilityCheck"])
+    Issue removeAssignedAdmin(String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        IssueExtraProperty property = issue.getExtraProperties().find { it.name == IssueExtraProperty.ASSIGNED_ADMIN}
+        if(property != null) {
+           issue.removeFromExtraProperties(property)
+           property.delete(hard: true, flush: true)
+        }
         issue
     }
 

@@ -27,6 +27,7 @@ class UrlMappings {
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
         '/api/user/projects'(controller: 'issueList', action: 'getProjectsForUser')
+        '/api/project/remove-assigned-admin'(controller: 'project', action:'removeAssignedAdmin')
 
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')
@@ -84,6 +85,7 @@ class UrlMappings {
         '/api/user/authenticated/user-session'(controller: 'authenticated', action: 'hasSession')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
+        '/api/user/is-orsp-admin'(controller: 'user', action: 'isORSPAdmin')
 
         // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')
@@ -93,6 +95,7 @@ class UrlMappings {
         '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
         '/search/matching-issues'(controller:'search', action:'getMatchingIssues')
         '/search/matching-collections'(controller:'search', action:'getMatchingCollections')
+        '/search/orsp-admins'(controller: 'search', action: 'getORSPAdmins')
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')
