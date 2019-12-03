@@ -87,15 +87,12 @@ const columns = (ref) => [
     text: 'Status',
     formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
-    sort: false
+    sort: true
   }, {
     dataField: 'updateDate',
     text: 'Updated',
-    sort: false,
-    classes: 'ellipsis-column',
-    headerStyle: (column, colIndex) => {
-      return { width: '100px' };
-    }
+    sort: true,
+    classes: 'ellipsis-column'
   },
   {
     dataField: 'actors',
