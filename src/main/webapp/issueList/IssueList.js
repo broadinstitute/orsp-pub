@@ -229,10 +229,6 @@ const IssueList = hh(class IssueList extends Component {
     this.tableHandler(offset, sizePerPage, this.state.search, this.state.sort, page);
   };
 
-  isORSPAdmin() {
-    return true;
-  }
-
   onSizePerPageListHandler = (size) => {
     this.setState(prev => {
       prev.query.length = size;

@@ -2,7 +2,6 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
-import org.broadinstitute.orsp.config.NotifyConfiguration
 
 import java.sql.SQLException
 
@@ -11,7 +10,6 @@ class UserService {
     QueryService queryService
 
     private static String BROAD = "@broadinstitute.org"
-    NotifyConfiguration notifyConfiguration
 
     /**
      * Find all userNames.

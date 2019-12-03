@@ -1,9 +1,7 @@
 import { Component } from 'react';
 import { button, div, h, hh } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
-import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldSelect } from '../components/InputFieldSelect';
-import { AlertMessage } from './AlertMessage';
 import { Project, Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
 import './ConfirmationDialog.css';
@@ -49,7 +47,7 @@ const UserListDialog = hh(class UserListDialog extends Component {
 
   handleClose = () => {
     this.setState(prev => {
-      prev.assignedAdmin = { key: '', value: '', label: '' }
+      prev.assignedAdmin = null;
       return prev;
     })
     this.props.closeModal();
@@ -94,18 +92,12 @@ const UserListDialog = hh(class UserListDialog extends Component {
             placeholder: "Select...",
             readOnly: false,
             edit: false
-          }),
-          div({ style: { 'marginTop': '15px' } }, [
-            AlertMessage({
-              msg: this.state.alertMessage,
-              show: this.state.showAlert
-            }),
-          ])
+          })
         ]),
 
         h(ModalFooter, {}, [
-          button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
-          button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.submit }, ["Submit"])
+          button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Cancel"]),
+          button({ className: "btn buttonPrimary", disabled: isEmpty(this.state.assignedAdmin), onClick: this.submit }, ["Submit"])
         ])
       ])
     )
