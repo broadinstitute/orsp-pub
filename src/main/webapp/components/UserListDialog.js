@@ -3,9 +3,9 @@ import { button, div, h, hh } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { Project, Search } from '../util/ajax';
-import { isEmpty } from '../util/Utils';
 import './ConfirmationDialog.css';
 import LoadingWrapper from './LoadingWrapper';
+import isEmpty from 'lodash/isEmpty';
 
 const UserListDialog = hh(class UserListDialog extends Component {
 

@@ -4,12 +4,13 @@ import { TableComponent } from '../components/TableComponent';
 import { Btn } from '../components/Btn';
 import { Project, User } from '../util/ajax';
 import { formatDataPrintableFormat } from '../util/TableUtil';
-import { exportData, handleUnauthorized, isEmpty } from '../util/Utils';
+import { exportData, handleUnauthorized } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
 import LoadingWrapper from '../components/LoadingWrapper';
 import UserListDialog from '../components/UserListDialog';
+import isEmpty from 'lodash/isEmpty';
 import '../components/Btn.css';
 
 const stylesHeader = {
@@ -114,11 +115,9 @@ const columns = (ref) => [
     sort: true,
     sortFunc: (a, b, order) => {
       let result = 0;
-      if(isEmpty(a) || isEmpty(b)) {
-        return 0;
-      }
       if (order === 'asc') {
-        if (a < b) return -1;
+        if (isEmpty(a)) return 1;
+        if (isEmpty(b) || a < b) return -1;
         if (b > a) return 1;
       } else {
         if (a > b) return -1;
