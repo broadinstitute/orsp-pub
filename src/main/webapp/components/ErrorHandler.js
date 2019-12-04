@@ -1,6 +1,6 @@
 import { Component, React } from 'react';
 import { h1, div, h3, a } from 'react-hyperscript-helpers';
-import { isEmpty } from '../util/Utils';
+import _ from 'lodash';
 
 
 const styles = {
@@ -33,7 +33,7 @@ export default class ErrorHandler extends Component {
   componentDidCatch(error, info) {
     console.error(error);
     let unauthorized = false;
-    if(!isEmpty(error.message) && error.message.includes("401")) {
+    if(!_.isEmpty(error.message) && error.message.includes("401")) {
       unauthorized = true;
     }
     this.setState({ 
