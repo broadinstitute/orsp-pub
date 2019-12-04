@@ -1,5 +1,6 @@
 import { Component, React } from 'react';
 import { h1, div, h3, a } from 'react-hyperscript-helpers';
+import _ from 'lodash';
 
 
 const styles = {
@@ -16,12 +17,14 @@ export default class ErrorHandler extends Component {
     super(props);
     this.state = {
       hasError: false,
+      unauthorized: false
     };
 
     this.props.history.listen((location, action) => {
       if (this.state.hasError) {
         this.setState({
           hasError: false,
+          unauthorized: false
         });
       }
     });
@@ -29,19 +32,29 @@ export default class ErrorHandler extends Component {
  
   componentDidCatch(error, info) {
     console.error(error);
+    let unauthorized = false;
+    if(!_.isEmpty(error.message) && error.message.includes("401")) {
+      unauthorized = true;
+    }
     this.setState({ 
-      hasError: true
+      hasError: true,
+      unauthorized: unauthorized
     })
   }
 
   render() {
-   return this.state.hasError ?
-    div({},[
-      h1({ style: styles.errorTitle }, ['Something went wrong. Please try again.']),
-      h3({ style: styles.errorText }, [
-        'If problem persists, please contact support: ',
-        a({ href: "orsp-portal@broadinstitute.org", className: "link" }, 'orsp-portal@broadinstitute.org')
-      ])
-    ]) : this.props.children
-  }
-}
+    return this.state.hasError ?
+     div({},[
+       div({isRendered: !this.state.unauthorized}, [
+         h1({ style: styles.errorTitle }, ['Something went wrong. Please try again.'])
+       ]),
+       div({isRendered: this.state.unauthorized}, [
+         h1({ style: styles.errorTitle }, ['Your session has expired, please sign in again.']),
+       ]),
+       h3({isRendered: !this.state.unauthorized, style: styles.errorText }, [
+         'If problem persists, please contact support: ',
+         a({ href: "orsp-portal@broadinstitute.org", className: "link" }, 'orsp-portal@broadinstitute.org')
+       ])
+     ]) : this.props.children
+   }
+ }
