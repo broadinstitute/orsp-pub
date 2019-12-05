@@ -50,7 +50,7 @@ const columns = (ref) => [
     formatter: (cell, row, rowIndex, colIndex) => {
       if (row.type === "Consent Group") {
         return div({}, [
-          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.projectKey])
+          h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: { issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey } } }, [row.projectKey])
         ])
       } else {
         return div({}, [
@@ -63,19 +63,19 @@ const columns = (ref) => [
     text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return {width: styles.project.titleWidth};
+      return { width: styles.project.titleWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
       if (row.type === "Consent Group") {
         return div({}, [
-          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.summary])
+          h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: { issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey } } }, [row.summary])
         ])
       } else {
         return div({}, [
-          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey} } }, [row.summary])
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.summary])
         ])
       }
-  }
+    }
   }, {
     dataField: 'type',
     text: 'Type',
@@ -105,11 +105,11 @@ const columns = (ref) => [
       ]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       !isNil(row.actors) ? row.actors.join(", ") : ''
-  }, 
-  
+  },
+
   {
     dataField: 'assignedAdmin',
-    csvExport: ref.state.isORSPAdmin,
+    csvExport: true,
     text: 'Assigned Admin',
     csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : cell,
     sort: true,
@@ -125,29 +125,28 @@ const columns = (ref) => [
       }
       return 0;
     },
-    hidden: !ref.state.isORSPAdmin,
     headerStyle: (column, colIndex) => {
       return { width: '180px' };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
-     if(!isEmpty(row.assignedAdmin)) {
-      return div({}, [
-        span({style: {display:'block', marginRight:'10px', float: 'left'}}, [row.assignedAdmin]),
-       div({className: 'floatRight'},[
-         button({
-           id: "assignedBtn",
-           className: "btnPrimary",
-           style: {backgroundColor: 'transparent'},
-           onClick: () => ref.removeAssignedAdmin(row.projectKey)
-         }, [
-           span({ className: "glyphicon glyphicon-remove", style: {color: '#95a5a6' }}, []),
-         ])
-     ])])
-     } else {
-      return div({style: {textAlign: 'center'}}, [
-        button({onClick: () => ref.assignAdmin(row.projectKey), className: 'btn btn-default btn-sm'},["Assing Admin"])
-      ]);
-     }
+      if (!isEmpty(row.assignedAdmin) || !component.isAdmin) {
+        return div({}, [
+          span({ style: { display: 'block', marginRight: '10px', float: 'left' } }, [row.assignedAdmin]),
+          div({ isRendered: component.isAdmin, className: 'floatRight' }, [
+            button({
+              id: "assignedBtn",
+              className: "btnPrimary",
+              style: { backgroundColor: 'transparent' },
+              onClick: () => ref.removeAssignedAdmin(row.projectKey)
+            }, [
+              span({ className: "glyphicon glyphicon-remove", style: { color: '#95a5a6' } }, []),
+            ])
+          ])])
+      } else {
+        return div({ style: { textAlign: 'center' } }, [
+          button({ onClick: () => ref.assignAdmin(row.projectKey), className: 'btn btn-default btn-sm' }, ["Assing Admin"])
+        ]);
+      }
     }
   }
 ];
@@ -164,7 +163,6 @@ const IssueList = hh(class IssueList extends Component {
       sizePerPage: 10,
       search: null,
       issueKey: null,
-      isORSPAdmin: false,
       sort: {
         sortDirection: 'asc',
         orderColumn: null
@@ -184,36 +182,31 @@ const IssueList = hh(class IssueList extends Component {
     this._isMounted = false;
   }
 
-  init = async() => {
+  init = async () => {
     this.props.showSpinner();
     this.tableHandler();
   };
 
-  tableHandler = async() => {
-      User.isORSPAdmin().then(response => {
-        Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
-          if(this._isMounted) {
-            this.setState(prev => {
-              prev.issues = result.data;
-              prev.isORSPAdmin = response.data.isORSPAdmin;
-              return prev;
-            }, () => this.props.hideSpinner())
-          }
-        }).catch(error => {
-            this.handleError(error);
-        });
-      }).catch(error => {
-        this.handleError(error);
-    });      
+  tableHandler = async () => {
+    Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.issues = result.data;
+          return prev;
+        }, () => this.props.hideSpinner())
+      }
+    }).catch(error => {
+      this.handleError(error);
+    });
   };
 
-  handleError(error){
+  handleError(error) {
     if (error.response != null && error.response.status === 401) {
       handleUnauthorized(this.props.history.location);
     } else {
       this.props.hideSpinner();
       this.setState(() => { throw error });
-    } 
+    }
   }
 
   onSearchChange = (search) => {
@@ -264,8 +257,7 @@ const IssueList = hh(class IssueList extends Component {
   };
 
   printContent = () => {
-    let cols = this.state.isORSPAdmin ? columns(this).filter(el => el.dataField !== 'id') : 
-               columns(this).filter(el => el.dataField !== 'id' && el.dataField !== 'assignedAdmin');
+    let cols = columns(this).filter(el => el.dataField !== 'id');
     let issues = formatDataPrintableFormat(this.state.issues, cols);
     const tableColumnsWidth = [100, 100, '*', 80, '*', '*'];
     exportData(issues, '', issues, tableColumnsWidth, '');

@@ -9,8 +9,6 @@ import isEmpty from 'lodash/isEmpty';
 
 const UserListDialog = hh(class UserListDialog extends Component {
 
-  _isMounted = false;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -21,12 +19,7 @@ const UserListDialog = hh(class UserListDialog extends Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
     this.loadORSPAdmins();
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   loadORSPAdmins() {

@@ -364,7 +364,6 @@ class IssueService implements UserInfo {
         issue
     }
 
-    @SuppressWarnings(["GroovyAssignabilityCheck"])
     Issue removeAssignedAdmin(String projectKey) {
         Issue issue = queryService.findByKey(projectKey)
         IssueExtraProperty property = issue.getExtraProperties().find { it.name == IssueExtraProperty.ASSIGNED_ADMIN}
@@ -373,20 +372,6 @@ class IssueService implements UserInfo {
            property.delete(hard: true, flush: true)
         }
         issue
-    }
-
-    // Todo This method doesn't handle funding changes. We should handle it when implementing edit functions
-    @SuppressWarnings(["GroovyMissingReturnStatement"])
-    Issue modifyIssueProperties (Issue issue, Object input) {
-        Issue updatedIssue = issue
-        input.collect { element ->
-            if (issue.getProperties().get(element.key) != null && element.key != "fundings") {
-                updatedIssue.(element.key) = element.value
-                updatedIssue.setUpdateDate(new Date())
-            }
-        }
-        updatedIssue.save(flush:true)
-        updatedIssue
     }
 
     @Transactional

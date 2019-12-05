@@ -218,8 +218,7 @@ class SearchController implements UserInfo {
 
     def getORSPAdmins() {
         def response = []
-        userService.findUsers(Arrays.asList(grailsApplication.config.getProperty('orspAdmins')?.split(",")))
-        .each {
+        userService.findUsers(Arrays.asList(grailsApplication.config.getProperty('orspAdmins')?.split(","))).each {
             response << [
                     "id": it.userName,
                     "label": it.displayName + " (" + it.emailAddress + ")",
