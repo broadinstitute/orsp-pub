@@ -113,7 +113,7 @@ export const Submissions = hh(class Submissions extends Component {
     return div({
       key: title, title: this.tabTitle(title, data.length) },[
       a({
-        isRendered:  component.isAdmin,
+        isRendered: component.isAdmin,
         onClick: this.redirectNewSubmission,
         className: "btn btn-primary",
         style: styles.addSubmission,
