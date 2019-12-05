@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="changelog-20" author="vvicario">
+        <sql>
+            UPDATE storage_document AS sd
+            INNER JOIN consent_collection_link AS ccl
+            ON sd.consent_collection_link_id = ccl.id
+            AND sd.project_key is null
+            SET sd.project_key = ccl.consent_key;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
