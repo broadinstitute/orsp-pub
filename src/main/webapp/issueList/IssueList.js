@@ -259,8 +259,8 @@ const IssueList = hh(class IssueList extends Component {
   printContent = () => {
     let cols = columns(this).filter(el => el.dataField !== 'id');
     let issues = formatDataPrintableFormat(this.state.issues, cols);
-    const tableColumnsWidth = [100, 100, '*', 80, '*', '*'];
-    exportData(issues, '', issues, tableColumnsWidth, '');
+    const tableColumnsWidth = [100, 100, '*', 80, '*', '*', '*'];
+    exportData('print', '', issues, '', '', tableColumnsWidth, 'A3', 'landscape');
   };
 
   assignAdmin = (issueKey) => {
