@@ -85,7 +85,6 @@ class UrlMappings {
         '/api/user/authenticated/user-session'(controller: 'authenticated', action: 'hasSession')
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
-        '/api/user/is-orsp-admin'(controller: 'user', action: 'isORSPAdmin')
 
         // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')

@@ -302,11 +302,8 @@ export const User = {
 
   signOut() {
     return axios.get(UrlConstants.signOutUrl);
-  },
-
-  isORSPAdmin() {
-    return axios.get(UrlConstants.isORSPAdmin);
   }
+  
 };
 
 export const Review = {

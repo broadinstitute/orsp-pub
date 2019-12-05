@@ -73,7 +73,6 @@ export const UrlConstants = {
   getAllUsersUrl: context + '/api/get-users',
   dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
-  isORSPAdmin: context + '/api/user/is-orsp-admin',
  
   infoLinkUrl: context + '/api/info-link',
   showRestrictionsUrl: context + '/api/dur',
