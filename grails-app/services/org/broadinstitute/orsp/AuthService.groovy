@@ -33,6 +33,7 @@ class AuthService implements UserInfo {
         String email = payload.getEmail()
         String userName = email?.substring(0, email?.indexOf("@"))
         User user = userService.findOrCreateAuthenticatedUser(userName, email, displayName)
+        session.setMaxInactiveInterval(3360)
         if (user) {
             List<String> roles = user?.roles*.role
             log.info("User login: " + email)
