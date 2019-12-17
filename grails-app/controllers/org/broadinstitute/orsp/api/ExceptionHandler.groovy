@@ -30,4 +30,9 @@ trait ExceptionHandler {
         response.status = 401
     }
 
+    def handleForbidden() {
+        log.error("Forbidden")
+        response.status = 403
+    }
+
 }

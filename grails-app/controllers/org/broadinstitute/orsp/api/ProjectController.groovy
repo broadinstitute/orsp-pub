@@ -69,6 +69,20 @@ class ProjectController extends AuthenticatedController {
         }
     }
 
+
+    def removeAssignedAdmin() {
+        String projectKey = params.projectKey
+        try {
+            if (!isAdmin()) {
+                handleForbidden()
+            }
+            Issue updatedIssue = issueService.removeAssignedAdmin(projectKey)
+            render([message: updatedIssue] as JSON)
+        } catch(Exception e) {
+            handleException(e)
+        }
+    }
+
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def getProject() {
         try {
