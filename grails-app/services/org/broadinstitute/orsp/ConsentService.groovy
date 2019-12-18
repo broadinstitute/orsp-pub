@@ -35,6 +35,7 @@ class ConsentService implements Status {
     private static final String YES = "Yes"
     private static final String FEMALE = "Female"
     private static final String MALE = "Male"
+    private static final String GENETIC_STUDIES_ONLY_TERM = "http://purl.obolibrary.org/obo/DUO_0000016"
 
     /**
      * Consent Codes come in three flavors, *_POS, *_NEG, and *_NA for when a DUR question is
@@ -62,6 +63,7 @@ class ConsentService implements Status {
     public static final String DATE_POS = "Data distributor must verify that data from samples collected before %s will not be shared."
     public static final String AGGREGATE_POS = "Aggregate level data for general research use is prohibited."
     public static final String MANUAL_REVIEW = "Data access requests will require manual review."
+    public static final String GENETIC_STUDIES_ONLY = "Future use is limited to genetic studies only [GSO]"
 
     // Terms of use/notes
     public static final String RECONTACT_MAY = "Subject re-contact may occur in certain circumstances, as specified: %s"
@@ -294,6 +296,11 @@ class ConsentService implements Status {
             resource.useRestriction = useRestriction.asJsonObject
         }
         resource.requiresManualReview = dataUseRestriction.manualReview
+        resource.collaborationInvestigators = dataUseRestriction.collaborationInvestigators
+        resource.publicationResults = dataUseRestriction.publicationResults
+        resource.genomicResults = dataUseRestriction.genomicResults
+        resource.genomicSummaryResults = dataUseRestriction.genomicSummaryResults
+        resource.geneticStudiesOnly = dataUseRestriction.geneticStudiesOnly ? GENETIC_STUDIES_ONLY_TERM : null
         resource
     }
 
@@ -444,6 +451,7 @@ class ConsentService implements Status {
         if (dataUseRestriction.geographicalRestrictions && !dataUseRestriction.geographicalRestrictions.isEmpty()) summary.add(sprintf(GEO_RESTRICTION, dataUseRestriction.geographicalRestrictions))
         if (dataUseRestriction.other && !dataUseRestriction.other.isEmpty()) summary.add(sprintf(OTHER_POS, stripTextOfHtml(dataUseRestriction.other)))
         if (dataUseRestriction.manualReview) summary.add(MANUAL_REVIEW)
+        if (dataUseRestriction.geneticStudiesOnly) summary.add(GENETIC_STUDIES_ONLY)
         summary
     }
 

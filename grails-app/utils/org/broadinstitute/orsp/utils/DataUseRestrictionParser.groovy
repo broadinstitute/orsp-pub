@@ -66,6 +66,7 @@ class DataUseRestrictionParser {
         dataUseRestriction.collaborationInvestigators = IssueUtils.getBooleanForParam(params.collaborationInvestigators)
         dataUseRestriction.publicationResults = IssueUtils.getBooleanForParam(params.publicationResults)
         dataUseRestriction.genomicResults = IssueUtils.getBooleanForParam(params.genomicResults)
+        dataUseRestriction.geneticStudiesOnly = IssueUtils.getBooleanForParam(params.geneticStudiesOnly)
         if (dataUseRestriction.genomicResults) {
             dataUseRestriction.genomicSummaryResults = (String)params.genomicSummaryResults
         } else {
