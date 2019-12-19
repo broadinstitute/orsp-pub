@@ -275,21 +275,25 @@ const IssueList = hh(class IssueList extends Component {
   removeAssignedAdmin = async (row) => {
     this.props.showSpinner();
     Project.removeAssignedAdmin(row.projectKey).then(resp => {
-      let issues = this.state.issues;
-      var index = findIndex(issues, { projectKey: row.projectKey });
-      issues[index].assignedAdmin = null;
-      this.setState(prev => {
-        prev.issues = issues;
-        return prev;
-      });
+      this.setAdmin(null, row.projectKey);
       this.props.hideSpinner();
     }).catch(error => {
       this.handleError(error);
-    });    
+    });
   }
 
-  success = () => {
-    this.init();
+  success = (issueKey, assignedAdmin) => {
+    this.setAdmin(assignedAdmin, issueKey);
+  }
+
+  setAdmin(assignedAdmin, projectKey) {
+    let issues = this.state.issues;
+    var index = findIndex(issues, { projectKey: projectKey });
+    issues[index].assignedAdmin = assignedAdmin;
+    this.setState(prev => {
+      prev.issues = issues;
+      return prev;
+    });
   }
 
   render() {
