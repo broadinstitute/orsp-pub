@@ -11,6 +11,7 @@ import '../index.css';
 import LoadingWrapper from '../components/LoadingWrapper';
 import UserListDialog from '../components/UserListDialog';
 import isEmpty from 'lodash/isEmpty';
+import findIndex from 'lodash/findIndex';
 import '../components/Btn.css';
 
 const stylesHeader = {
@@ -137,7 +138,7 @@ const columns = (ref) => [
               id: "assignedBtn",
               className: "btnPrimary",
               style: { backgroundColor: 'transparent' },
-              onClick: () => ref.removeAssignedAdmin(row.projectKey)
+              onClick: () => ref.removeAssignedAdmin(row)
             }, [
               span({ className: "glyphicon glyphicon-remove", style: { color: '#95a5a6' } }, []),
             ])
@@ -271,9 +272,20 @@ const IssueList = hh(class IssueList extends Component {
     });
   };
 
-  removeAssignedAdmin = async (projectKey) => {
-    await Project.removeAssignedAdmin(projectKey);
-    this.init();
+  removeAssignedAdmin = async (row) => {
+    this.props.showSpinner();
+    Project.removeAssignedAdmin(row.projectKey).then(resp => {
+      let issues = this.state.issues;
+      var index = findIndex(issues, { projectKey: row.projectKey });
+      issues[index].assignedAdmin = null;
+      this.setState(prev => {
+        prev.issues = issues;
+        return prev;
+      });
+      this.props.hideSpinner();
+    }).catch(error => {
+      this.handleError(error);
+    });    
   }
 
   success = () => {

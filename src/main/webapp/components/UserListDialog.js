@@ -51,10 +51,11 @@ const UserListDialog = hh(class UserListDialog extends Component {
       prev.submit = true;
       return prev;
     });
-    const data = { assignedAdmin: this.state.assignedAdmin.key };
+    const assignedAdmin = this.state.assignedAdmin.key;
+    const data = { assignedAdmin: assignedAdmin};
     await Project.addExtraProperties(this.props.issueKey, data);
     this.handleClose();
-    this.props.success();
+    this.props.success(assignedAdmin);
   }
 
 
