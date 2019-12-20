@@ -110,6 +110,7 @@ const columns = (ref) => [
 
   {
     dataField: 'assignedAdmin',
+    hidden: ref.paramsContext.get('header') === 'My Projects',
     csvExport: true,
     text: 'Assigned Admin',
     csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : cell,
@@ -145,7 +146,7 @@ const columns = (ref) => [
           ])])
       } else {
         return div({ style: { textAlign: 'center' } }, [
-          button({ onClick: () => ref.assignAdmin(row.projectKey), className: 'btn btn-default btn-sm' }, ["Assing Admin"])
+          button({ onClick: () => ref.assignAdmin(row.projectKey), className: 'btn btn-default btn-sm' }, ["Assign Admin"])
         ]);
       }
     }
