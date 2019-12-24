@@ -1179,7 +1179,16 @@ class QueryService implements Status {
 
     Collection<Submission> getSubmissionsByProject(String projectKey) {
         if (!projectKey) return Collections.emptyList()
-        Submission.findAllByProjectKey(projectKey)
+        final session = sessionFactory.currentSession
+        final String query =
+                'select * from submission where project_key = :projectKey ORDER BY number DESC'
+
+        final sqlQuery = session.createSQLQuery(query)
+        sqlQuery.with {
+            setString('projectKey', projectKey)
+            addEntity(Submission)
+            list()
+        }
     }
 
     Collection<Integer> getSubmissionNumber(String projectKey, String  type, String number) {
