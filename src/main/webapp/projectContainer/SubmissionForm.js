@@ -452,7 +452,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           }, ["Delete"])
         ]),
         AlertMessage({
-          msg: "Something went wrong in the server. Please verify that you don't exceed 150Mb total in files to upload.",
+          msg: "Something went wrong in the server. Please verify that you don't exceed 100Mb total in files to upload.",
           show: this.state.errors.serverError
         })
       ])
