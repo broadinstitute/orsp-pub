@@ -32,7 +32,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
     if(!this.props.showErrorInfoSecurity && !this.props.showErrorIntCohorts && !this.props.errors.requireMta && this.props.generalError) {
       errorMessage = 'Please check previous steps';
     } else if (this.props.submitError) {
-      errorMessage =  'Something went wrong. Please try again.';
+      errorMessage = "Something went wrong in the server. Please verify that you don't exceed 150Mb total in files to upload.";
     } else {
       errorMessage = 'Please complete all required fields';
     }

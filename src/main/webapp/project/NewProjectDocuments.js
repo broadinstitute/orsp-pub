@@ -100,7 +100,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     if(!this.props.errors.attestation && this.props.generalError) {
       errorMessage = 'Please check previous steps';
     } else if (this.props.submitError) {
-      errorMessage =  'Something went wrong. Please try again.';
+      errorMessage = "Something went wrong in the server. Please verify that you don't exceed 150Mb total in files to upload.";
     } else {
       errorMessage = 'Please complete all required fields';
     }
