@@ -38,6 +38,26 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: "/index"
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 3
+          successThreshold: 1
+          failureThreshold: 10
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: "/index"
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 1
+          timeoutSeconds: 1
         volumeMounts:
         - mountPath: "/orsp-config"
           name: orsp-config

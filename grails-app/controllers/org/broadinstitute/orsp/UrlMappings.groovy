@@ -27,6 +27,7 @@ class UrlMappings {
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
         '/api/user/projects'(controller: 'issueList', action: 'getProjectsForUser')
+        '/api/project/remove-assigned-admin'(controller: 'project', action:'removeAssignedAdmin')
 
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')
@@ -93,6 +94,7 @@ class UrlMappings {
         '/search/matching-population-ontologies'(controller: 'search', action: 'getMatchingPopulationOntologies')
         '/search/matching-issues'(controller:'search', action:'getMatchingIssues')
         '/search/matching-collections'(controller:'search', action:'getMatchingCollections')
+        '/search/orsp-admins'(controller: 'search', action: 'getORSPAdmins')
 
         '/api/dur'(controller: 'dataUse', action:'findDataUseRestrictions')
         '/api/collection-links'(controller: 'report', action: 'findCollectionLinks')

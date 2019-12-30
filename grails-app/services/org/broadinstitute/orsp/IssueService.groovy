@@ -71,7 +71,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.INITIAL_REVIEW_TYPE,
             IssueExtraProperty.IRB_EXPIRATION_DATE,
             IssueExtraProperty.BIO_MEDICAL,
-            IssueExtraProperty.PROJECT_STATUS
+            IssueExtraProperty.PROJECT_STATUS,
+            IssueExtraProperty.ASSIGNED_ADMIN
     ]
 
 
@@ -363,18 +364,14 @@ class IssueService implements UserInfo {
         issue
     }
 
-    // Todo This method doesn't handle funding changes. We should handle it when implementing edit functions
-    @SuppressWarnings(["GroovyMissingReturnStatement"])
-    Issue modifyIssueProperties (Issue issue, Object input) {
-        Issue updatedIssue = issue
-        input.collect { element ->
-            if (issue.getProperties().get(element.key) != null && element.key != "fundings") {
-                updatedIssue.(element.key) = element.value
-                updatedIssue.setUpdateDate(new Date())
-            }
+    Issue removeAssignedAdmin(String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        IssueExtraProperty property = issue.getExtraProperties().find { it.name == IssueExtraProperty.ASSIGNED_ADMIN}
+        if(property != null) {
+           issue.removeFromExtraProperties(property)
+           property.delete(hard: true, flush: true)
         }
-        updatedIssue.save(flush:true)
-        updatedIssue
+        issue
     }
 
     @Transactional

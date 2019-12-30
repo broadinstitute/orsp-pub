@@ -28,6 +28,10 @@ export const Search = {
 
   getMatchingProject(query) {
     return axios.get(UrlConstants.projectKeySearchUrl + '?term=' + query);
+  },
+
+  getORSPAdmins() {
+    return axios.get(UrlConstants.orspAdminsSearchUrl);
   }
 };
 
@@ -232,6 +236,11 @@ export const Project = {
   getProjectByUser(assignee, max) {
     let maxParam = !isNil(max) ? '&max=' + max : ''
     return axios.get(UrlConstants.userProjectUrl + '?assignee=' + assignee + maxParam);
+  },
+
+  removeAssignedAdmin(projectKey) {
+    return axios.delete(UrlConstants.removeAssignedAdmin + '?projectKey=' + projectKey);
+
   }
 };
 
@@ -294,6 +303,7 @@ export const User = {
   signOut() {
     return axios.get(UrlConstants.signOutUrl);
   }
+  
 };
 
 export const Review = {

@@ -1,13 +1,18 @@
 import { Component } from 'react';
-import { div, h, h1, hh } from 'react-hyperscript-helpers';
+import { div, h, h1, hh, button, span } from 'react-hyperscript-helpers';
 import { TableComponent } from '../components/TableComponent';
-import { Project } from '../util/ajax';
+import { Btn } from '../components/Btn';
+import { Project, User } from '../util/ajax';
 import { formatDataPrintableFormat } from '../util/TableUtil';
-import { exportData } from '../util/Utils';
+import { exportData, handleUnauthorized } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
 import LoadingWrapper from '../components/LoadingWrapper';
+import UserListDialog from '../components/UserListDialog';
+import isEmpty from 'lodash/isEmpty';
+import findIndex from 'lodash/findIndex';
+import '../components/Btn.css';
 
 const stylesHeader = {
   pageTitle: {
@@ -19,8 +24,8 @@ const styles = {
   project: {
     projectKeyWidth: '140px',
     projectWidth: '750px',
-    titleWidth: '280px',
-    typeWidth: '193px'
+    titleWidth: '200px',
+    typeWidth: '150px'
   }
 }
 
@@ -30,7 +35,7 @@ const SIZE_PER_PAGE_LIST = [
   { text: '50', value: 50 },
   { text: '100', value: 100 }];
 
-const columns = [
+const columns = (ref) => [
   {
     dataField: 'id',
     text: 'Id',
@@ -46,7 +51,7 @@ const columns = [
     formatter: (cell, row, rowIndex, colIndex) => {
       if (row.type === "Consent Group") {
         return div({}, [
-          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.projectKey])
+          h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: { issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey } } }, [row.projectKey])
         ])
       } else {
         return div({}, [
@@ -59,19 +64,19 @@ const columns = [
     text: 'Title',
     sort: true,
     headerStyle: (column, colIndex) => {
-      return {width: styles.project.titleWidth};
+      return { width: styles.project.titleWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
       if (row.type === "Consent Group") {
         return div({}, [
-          h(Link, {to: { pathname:'/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey}}}, [row.summary])
+          h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: { issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey } } }, [row.summary])
         ])
       } else {
         return div({}, [
-          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: {issueType: 'project', projectKey: row.projectKey} } }, [row.summary])
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.summary])
         ])
       }
-  }
+    }
   }, {
     dataField: 'type',
     text: 'Type',
@@ -101,19 +106,65 @@ const columns = [
       ]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       !isNil(row.actors) ? row.actors.join(", ") : ''
+  },
+
+  {
+    dataField: 'assignedAdmin',
+    hidden: ref.paramsContext.get('header') === 'My Projects',
+    csvExport: true,
+    text: 'Assigned Admin',
+    csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : cell,
+    sort: true,
+    sortFunc: (a, b, order) => {
+      let result = 0;
+      if (order === 'asc') {
+        if (isEmpty(a)) return 1;
+        if (isEmpty(b) || a < b) return -1;
+        if (b > a) return 1;
+      } else {
+        if (a > b) return -1;
+        if (b < a) return 1;
+      }
+      return 0;
+    },
+    headerStyle: (column, colIndex) => {
+      return { width: '180px' };
+    },
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (!isEmpty(row.assignedAdmin) || !component.isAdmin) {
+        return div({}, [
+          span({ style: { display: 'block', marginRight: '10px', float: 'left' } }, [row.assignedAdmin]),
+          div({ isRendered: component.isAdmin, className: 'floatRight' }, [
+            button({
+              id: "assignedBtn",
+              className: "btnPrimary",
+              style: { backgroundColor: 'transparent' },
+              onClick: () => ref.removeAssignedAdmin(row)
+            }, [
+              span({ className: "glyphicon glyphicon-remove", style: { color: '#95a5a6' } }, []),
+            ])
+          ])])
+      } else {
+        return div({ style: { textAlign: 'center' } }, [
+          button({ onClick: () => ref.assignAdmin(row.projectKey), className: 'btn btn-default btn-sm' }, ["Assign Admin"])
+        ]);
+      }
+    }
   }
 ];
 
 const IssueList = hh(class IssueList extends Component {
-  
+
   paramsContext = new URLSearchParams();
   _isMounted = false;
 
   constructor(props) {
     super(props);
     this.state = {
+      showAssignAdmin: false,
       sizePerPage: 10,
       search: null,
+      issueKey: null,
       sort: {
         sortDirection: 'asc',
         orderColumn: null
@@ -133,25 +184,33 @@ const IssueList = hh(class IssueList extends Component {
     this._isMounted = false;
   }
 
-  init = () => {
+  init = async () => {
     this.props.showSpinner();
     this.tableHandler();
   };
 
-  tableHandler = () => {
-      Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
-        if(this._isMounted) {
-          this.setState(prev => {
-            prev.issues = result.data;
-            return prev;
-          }, () => this.props.hideSpinner())
-        }   
-      }).catch(error => {
-        this.props.hideSpinner();
-        this.setState(() => { throw error });
-      });  
+  tableHandler = async () => {
+    Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.issues = result.data;
+          return prev;
+        }, () => this.props.hideSpinner())
+      }
+    }).catch(error => {
+      this.handleError(error);
+    });
   };
-  
+
+  handleError(error) {
+    if (error.response != null && error.response.status === 401) {
+      handleUnauthorized(this.props.history.location);
+    } else {
+      this.props.hideSpinner();
+      this.setState(() => { throw error });
+    }
+  }
+
   onSearchChange = (search) => {
     this.tableHandler(0, this.state.sizePerPage, search, this.state.sort, 1);
   };
@@ -200,11 +259,43 @@ const IssueList = hh(class IssueList extends Component {
   };
 
   printContent = () => {
-    let cols = columns.filter(el => el.dataField !== 'id');
+    let cols = columns(this).filter(el => el.dataField !== 'id');
     let issues = formatDataPrintableFormat(this.state.issues, cols);
-    const tableColumnsWidth = [100, 100, '*', 80, '*', '*'];
-    exportData(issues, '', issues, tableColumnsWidth, '');
+    const tableColumnsWidth = [100, 100, '*', 80, '*', '*', '*'];
+    exportData('print', '', issues, '', '', tableColumnsWidth, 'A3', 'landscape');
   };
+
+  assignAdmin = (issueKey) => {
+    this.setState(prev => {
+      prev.showAssignAdmin = !prev.showAssignAdmin;
+      prev.issueKey = issueKey;
+      return prev;
+    });
+  };
+
+  removeAssignedAdmin = async (row) => {
+    this.props.showSpinner();
+    Project.removeAssignedAdmin(row.projectKey).then(resp => {
+      this.setAdmin(null, row.projectKey);
+      this.props.hideSpinner();
+    }).catch(error => {
+      this.handleError(error);
+    });
+  }
+
+  success = (issueKey, assignedAdmin) => {
+    this.setAdmin(assignedAdmin, issueKey);
+  }
+
+  setAdmin(assignedAdmin, projectKey) {
+    let issues = this.state.issues;
+    var index = findIndex(issues, { projectKey: projectKey });
+    issues[index].assignedAdmin = assignedAdmin;
+    this.setState(prev => {
+      prev.issues = issues;
+      return prev;
+    });
+  }
 
   render() {
     return (
@@ -213,7 +304,7 @@ const IssueList = hh(class IssueList extends Component {
         TableComponent({
           remoteProp: false,
           data: this.state.issues,
-          columns: columns,
+          columns: columns(this),
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
@@ -223,7 +314,13 @@ const IssueList = hh(class IssueList extends Component {
           showSearchBar: true,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           pagination: true
-        })
+        }),
+        h(UserListDialog, {
+          closeModal: this.assignAdmin,
+          show: this.state.showAssignAdmin,
+          issueKey: this.state.issueKey,
+          success: this.success
+        }),
       ])
     )
   }
