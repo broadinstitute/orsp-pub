@@ -15,7 +15,7 @@ export const App = hh(class App extends Component {
     axios.interceptors.response.use(function (response) {
       return response;
     }, (error) => {
-      if (error.response.status === 401) {
+      if (error.response != undefined && error.response.status === 401) {
         handleUnauthorized(this.props.history.location);
         return Promise.reject(error);
       } else {
