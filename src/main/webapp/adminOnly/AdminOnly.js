@@ -253,13 +253,14 @@ const AdminOnly = hh(class AdminOnly extends Component {
             name: "projectStatus",
             label: "Project Status",
             value: this.state.formData.projectStatus,
-            optionValues: ['Approved', 'Disapproved', 'Withdrawn', 'Closed', 'Abandoned'],
+            optionValues: ['Approved', 'Disapproved', 'Withdrawn', 'Closed', 'Abandoned', 'On Hold'],
             optionLabels: [
               "Approved",
               "Disapproved",
               "Withdrawn",
               "Closed",
-              "Abandoned"
+              "Abandoned",
+              "On Hold"
             ],
             onChange: this.radioBtnHandler,
             readOnly: !this.state.isAdmin
