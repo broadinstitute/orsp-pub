@@ -65,111 +65,117 @@ export const DUR_QUESTIONS = [
     id: 10
   },
   {
+    question: 'Future use is limited to genetic studies only',
+    boolean: true,
+    fieldName: 'geneticStudiesOnly',
+    id: 11
+  },
+  {
     question: 'Future use is limited to research involving a particular gender',
     boolean: false,
     fieldName: 'gender',
-    id: 11
+    id: 12
   },
   {
     question: 'Future use is limited to pediatric research',
     boolean: true,
     fieldName: 'pediatricLimited',
-    id: 12
+    id: 13
   },
   {
     question: 'Future use is limited to research involving a specific population',
     boolean: false,
     fieldName: 'populationRestrictions',
-    id: 13
+    id: 14
   },
   {
     question: 'Future use is limited to data generated from samples collected after the following consent form date',
     boolean: false,
     fieldName: 'dateRestriction',
-    id: 14
+    id: 15
   },
   {
     question: 'Subject re-contact <strong> may </strong> occur in certain circumstances, as specified ',
     boolean: false,
     fieldName: 'recontactMay',
-    id: 15
+    id: 16
   },
   {
     question: 'Subject re-contact <strong> must </strong> occur in certain circumstances, as specified ',
     boolean: false,
     fieldName: 'recontactMust',
-    id: 16
+    id: 17
   },
   {
     question: 'Participants genomic and phenotypic data is available for future research and broad sharing ',
     boolean: false,
     fieldName: 'genomicPhenotypicData',
-    id: 17
+    id: 18
   },
   {
     question: 'Collaboration with the primary study investigators required',
     boolean: true,
     fieldName: 'collaborationInvestigators',
-    id: 18
+    id: 19
   },
   {
     question: 'Data storage on the cloud is prohibited',
     boolean: false,
     fieldName: 'cloudStorage',
-    id: 19
+    id: 20
   },
   {
     question: 'Ethics committee approval is required',
     boolean: true,
     fieldName: 'irb',
-    id: 20
+    id: 21
   },
   {
     question: 'Publication of results of studies using the data is required ',
     boolean: true,
     fieldName: 'publicationResults',
-    id: 21
+    id: 22
   },
   {
     question: 'Genomic summary results from this study are available only through controlled-access',
     boolean: true,
     fieldName: 'genomicResults',
-    id: 22
+    id: 23
   },
   {
     question: 'Genomic summary',
     boolean: false,
     fieldName: 'genomicSummaryResults',
-    id: 23
+    id: 24
   },
   {
     question: 'Geographical restrictions',
     boolean: false,
     fieldName: 'geographicalRestrictions',
-    id: 24
+    id: 25
   },
   {
     question: 'Other Restrictions',
     boolean: false,
     fieldName: 'other',
-    id: 25
+    id: 26
   },
   {
     question: 'Future use of this data requires manual review',
     boolean: true,
     fieldName: 'manualReview',
-    id: 26
+    id: 27
   },
   {
     question: 'ORSP Comments',
     boolean: false,
     fieldName: 'comments',
-    id: 27
+    id: 28
   },
   {
     question: 'DUOS Export',
     boolean: false,
     fieldName: 'vaultExportDate',
-    id: 28
+    id: 29
   }
 ];

@@ -42,6 +42,7 @@ class DataUseRestriction {
     Boolean publicationResults
     Boolean genomicResults
     String genomicSummaryResults
+    Boolean geneticStudiesOnly
 
     static constraints = {
         consentGroupKey nullable: false, unique: true
@@ -79,6 +80,7 @@ class DataUseRestriction {
         vaultExportDate nullable: true
         vaultConsentId nullable: true
         vaultConsentLocation nullable: true
+        geneticStudiesOnly nullable: true
     }
 
     static hasMany = [diseaseRestrictions: String, populationRestrictions: String]

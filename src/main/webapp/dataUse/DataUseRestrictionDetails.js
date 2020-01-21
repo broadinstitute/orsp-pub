@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 import { UrlConstants } from '../util/UrlConstants';
 import LoadingWrapper from '../components/LoadingWrapper';
 
-
 const styles = {
   tableList: {
     padding: '0',
@@ -121,7 +120,7 @@ const DataUseRestrictionDetails = hh(class DataUseRestrictionDetails extends Com
     }
     let style = index % 2 == 0 ? styles.tableListRowOdd : styles.tableListRow;
     return li({ style: style, key: index }, [
-        span({ style: styles.tableListColLeft }, [p({ style: styles.tableListItem }, [columnLeft])]),
+        span({ style: styles.tableListColLeft }, [p({ style: styles.tableListItem, dangerouslySetInnerHTML: { __html: columnLeft }}, [])]),
         span({ style: styles.tableListColRight }, [contentRight])
       ]);
   }
@@ -226,18 +225,18 @@ const DataUseRestrictionDetails = hh(class DataUseRestrictionDetails extends Com
                   return this.createRowList(rd.question, this.state.restriction[rd.fieldName], idx);
                 }
                 // date format
-                else if (idx === 14) {
+                else if (idx === 15) {
                   return this.createRow(rd.question, !isEmpty(this.state.restriction[rd.fieldName]) ? format(new Date(this.state.restriction[rd.fieldName]), 'MM/DD/YYYY') : '', idx);
                 }
-                else if (idx === 15 || idx === 16) {
+                else if (idx === 16 || idx === 17) {
                   if (this.state.restriction['recontactingDataSubjects']) {
                     return this.createRow(rd.question, this.state.restriction[rd.fieldName], idx);
                   }
                 }
-                else if (idx === 23) {
+                else if (idx === 24) {
                   return this.createRow(rd.question, this.state.restriction[rd.fieldName] ? this.state.restriction[rd.fieldName] : "--", idx);
                 }
-                else if(idx === 28) {
+                else if(idx === 29) {
                   return this.createDuosExportRow('DUOS Export', idx);
                 }
                 else {

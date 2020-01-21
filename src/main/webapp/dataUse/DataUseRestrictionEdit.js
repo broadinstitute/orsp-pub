@@ -86,7 +86,8 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
       populationRestrictions: restriction != null ? this.getAutocompleteData(restriction.populationRestrictions) : [],
       genomicSummaryResults: restriction != null && !isEmpty(restriction.genomicSummaryResults) ? restriction.genomicSummaryResults : '',
       genomicPhenotypicData: restriction != null && !isEmpty(restriction.genomicPhenotypicData) ? restriction.genomicPhenotypicData : '',
-      consentPIName: get(restriction, 'consentPIName','')
+      consentPIName: get(restriction, 'consentPIName',''),
+      geneticStudiesOnly: get(restriction, 'geneticStudiesOnly')
     };
     return resp;
   }
@@ -683,6 +684,18 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
             span({ className: "radioCheck" }, []),
             span({ className: "radioLabel" }, ["Unspecified"])
           ])
+        ]),
+        div({ style: styles.borderedContainer, className: "radioContainer" }, [
+          div({ style: styles.inputGroup }, [
+            InputYesNo({
+              id: "radioGeneticStudies",
+              name: "geneticStudiesOnly",
+              value: this.state.restriction.geneticStudiesOnly,
+              label: "Future use is limited to genetic studies only [GSO]",
+              readOnly: false,
+              onChange: this.handleRadioChange
+            })
+          ]),
         ]),
         div({ style: styles.borderedContainer, className: "radioContainer" }, [
           label({ className: "inputFieldLabel" }, ["Future use is limited to research involving a particular gender [RS-M] / [RS-FM]"]),
