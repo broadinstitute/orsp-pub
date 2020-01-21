@@ -11,7 +11,7 @@ import { SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import "./style.css";
 
-const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "Disapproved"];
+const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
 const styles = {
   inputStyle: {
