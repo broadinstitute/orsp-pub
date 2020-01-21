@@ -1056,7 +1056,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             readOnly: this.state.readOnly,
             valueEdited: !isEmpty(collContact) === isEmpty(this.state.current.consentExtraProps.collContact)
           }),
-          InputFieldText({
+          InputFieldTextArea({
             isRendered: !this.props.consentFormDocument && this.state.showInputConsentAnswer,
             id: "inputNoConsentFormReason",
             name: "noConsentFormReason",

@@ -9,6 +9,7 @@ import { InstitutionalSource } from '../components/InstitutionalSource';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { NewConsentGroupDocuments } from './NewConsentGroupDocuments'
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
 
 export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData extends Component {
 
@@ -275,7 +276,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             options: this.props.documentOptions,
             files: this.props.files
           }),
-          InputFieldText({
+          InputFieldTextArea({
             isRendered: !this.props.isConsentFormPresent,
             id: "inputNoConsentFormReason",
             name: "noConsentFormReason",
@@ -285,7 +286,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
             required: true,
             onChange: this.handleInputChange,
             error: this.props.errors.noConsentFormReason,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            rows: "2"
           })
         ])
       ])
