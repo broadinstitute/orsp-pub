@@ -91,8 +91,9 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
               edit: false
             }),
             span({ isRendered: this.props.requireMta === "true" }, [i({}, ["Upon receipt of the MTA from the provider, please visit "]),
-              a({ href: "https://converge.broadinstitute.org", target:"_blank", className: "link" }, ["converge.broadinstitute.org"]), span({}, [i({}, [" to submit your MTA request."])])
-            ])
+              a({ href: "https://converge.broadinstitute.org", target:"_blank", className: "link" }, ["converge.broadinstitute.org"]), span({}, [i({}, [", to submit for review and approval by OSAP."])])
+            ]),
+            span({ isRendered: this.props.requireMta === "uncertain" }, [i({}, ["Please contact your collaborator to determine if an MTA is required by their institution."])])
           ])
         ]))
   }
