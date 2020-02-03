@@ -152,8 +152,6 @@ const NewProject = hh(class NewProject extends Component {
     extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
     extraProperties.push({name: 'irb', value: isEmpty(this.state.generalDataFormData.irb.value) ? null : JSON.stringify(this.state.generalDataFormData.irb)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
-   // extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
-
     let pis = this.state.generalDataFormData.piNames;
     if (pis !== null && pis.length > 0) {
       pis.map((pi, idx) => {
@@ -176,7 +174,6 @@ const NewProject = hh(class NewProject extends Component {
     }
 
     project.extraProperties = extraProperties;
-    console.log('extraProperties*****', extraProperties);
     return project;
   }
 
