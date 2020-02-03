@@ -144,7 +144,6 @@ const NewProject = hh(class NewProject extends Component {
     let extraProperties = [];
 
     extraProperties.push({name: 'pm', value: this.state.generalDataFormData.projectManager !== '' ? this.state.generalDataFormData.projectManager.key : null});
-    extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
     extraProperties.push({name: 'affiliations', value: isEmpty(this.state.generalDataFormData.affiliations.value) ? null : JSON.stringify(this.state.generalDataFormData.affiliations)});
     extraProperties.push({name: 'affiliationOther', value: this.state.generalDataFormData.affiliationOther !== '' ? this.state.generalDataFormData.affiliationOther : null});
     extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
@@ -153,7 +152,14 @@ const NewProject = hh(class NewProject extends Component {
     extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
     extraProperties.push({name: 'irb', value: isEmpty(this.state.generalDataFormData.irb.value) ? null : JSON.stringify(this.state.generalDataFormData.irb)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
+   // extraProperties.push({name: 'pi', value: this.state.generalDataFormData.piName.value !== '' ? this.state.generalDataFormData.piName.key : null});
 
+    let pis = this.state.generalDataFormData.piNames;
+    if (pis !== null && pis.length > 0) {
+      pis.map((pi, idx) => {
+        extraProperties.push({ name: 'pi', value: pi.key });
+      });
+    }
     let collaborators = this.state.generalDataFormData.collaborators;
     if (collaborators !== null && collaborators.length > 0) {
       collaborators.map((collaborator, idx) => {
@@ -170,6 +176,7 @@ const NewProject = hh(class NewProject extends Component {
     }
 
     project.extraProperties = extraProperties;
+    console.log('extraProperties*****', extraProperties);
     return project;
   }
 

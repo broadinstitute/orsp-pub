@@ -32,7 +32,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.state = {
       formData: {
         projectManager: '',
-        piName: '',
+        piNames: [],
         affiliations: '',
         affiliationOther: '',
         studyDescription: '',
@@ -44,7 +44,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       },
       formerData: {
         projectManager: '',
-        piName: '',
+        piNames: [],
         affiliations: '',
         affiliationOther: '',
         studyDescription: '',
@@ -142,9 +142,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
-      prev.formData.piName = data;
+      prev.formData.piNames = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'piName'));
+    }, () => this.props.updateForm(this.state.formData, 'piNames'));
   };
 
   render() {
@@ -189,9 +189,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
-            value: this.state.formData.piName,
+            value: this.state.formData.piNames,
             placeholder: "Start typing the PI Name",
-            isMulti: false,
+            isMulti: true,
             edit: false
           }),
           InputFieldSelect({
