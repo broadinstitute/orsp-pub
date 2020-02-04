@@ -619,7 +619,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   handlePIChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
-        prev.formData.piList = [data];
+        prev.formData.piList = data;
         prev.formData.projectExtraProps.pi = data.key;
       } else {
         prev.formData.piList = [];
@@ -957,7 +957,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             handleChange: this.handlePIChange,
             value: this.state.formData.piList,
             currentValue: this.state.current.piList,
-            isMulti: false
+            isMulti: true
           }),
 
           InputFieldSelect({
