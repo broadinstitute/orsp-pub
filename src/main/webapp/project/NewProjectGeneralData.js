@@ -185,12 +185,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
           MultiSelect({
             id: "pi_select",
-            label: "Broad PI",
+            label: "Broad PIs",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
             value: this.state.formData.piNames,
-            placeholder: "Start typing the PI Name",
+            placeholder: "Start typing the PI Names",
             isMulti: true,
             edit: false
           }),

@@ -950,7 +950,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         Panel({ title: "Principal Investigator" }, [
           MultiSelect({
             id: "pi_select",
-            label: "Broad PI",
+            label: "Broad PIs",
             name: 'piList',
             readOnly: this.state.readOnly,
             loadOptions: this.loadUsersOptions,
