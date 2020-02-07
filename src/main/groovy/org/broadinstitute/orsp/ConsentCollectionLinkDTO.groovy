@@ -29,7 +29,26 @@ class ConsentCollectionLinkDTO {
     String store
     String externalAvailability
     String genomicData
-
+    String names
+    String dates
+    String telephone
+    String geographicData
+    String fax
+    String socialSecurityNumber
+    String emailAddresses
+    String medicalNumbers
+    String accountNumbers
+    String healthPlanNumbers
+    String licenseNumbers
+    String vehicleIdentifiers
+    String webUrls
+    String deviceIdentifiers
+    String internetProtocolAddresses
+    String facePhotos
+    String biometricIdentifiers
+    String uniqueIdentifying
+    String otherIdentifier
+    String textOtherIdentifier
 
     void setId(Number id) {
         this.id = id

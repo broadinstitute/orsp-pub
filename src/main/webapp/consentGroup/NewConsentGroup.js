@@ -3,13 +3,13 @@ import { Wizard } from '../components/Wizard';
 import { div, hh } from 'react-hyperscript-helpers';
 import { NewConsentGroupGeneralData } from './NewConsentGroupGeneralData';
 import { ConsentGroup, Files, SampleCollections, User } from '../util/ajax';
-import { isEmpty } from '../util/Utils';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { NewLinkCohortData } from './NewLinkCohortData';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
 import defaultTo from 'lodash/defaultTo';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 const LAST_STEP = 1;
 const NEXT_INDICATOR = 0;
@@ -187,6 +187,26 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentCollectionLink.piiDt = this.state.securityInfoFormData.piiDt;
     consentCollectionLink.phi = this.state.securityInfoFormData.phi;
     consentCollectionLink.genomicData = this.state.securityInfoFormData.genomicData;
+    consentCollectionLink.names = this.state.securityInfoFormData.names;
+    consentCollectionLink.dates = this.state.securityInfoFormData.dates;
+    consentCollectionLink.telephone = this.state.securityInfoFormData.telephone;
+    consentCollectionLink.geographicData = this.state.securityInfoFormData.geographicData;
+    consentCollectionLink.fax = this.state.securityInfoFormData.fax;
+    consentCollectionLink.socialSecurityNumber = this.state.securityInfoFormData.socialSecurityNumber;
+    consentCollectionLink.emailAddresses = this.state.securityInfoFormData.emailAddresses;
+    consentCollectionLink.medicalNumbers = this.state.securityInfoFormData.medicalNumbers;
+    consentCollectionLink.accountNumbers = this.state.securityInfoFormData.accountNumbers;
+    consentCollectionLink.healthPlanNumbers = this.state.securityInfoFormData.healthPlanNumbers;
+    consentCollectionLink.licenseNumbers = this.state.securityInfoFormData.licenseNumbers;
+    consentCollectionLink.vehicleIdentifiers = this.state.securityInfoFormData.vehicleIdentifiers;
+    consentCollectionLink.webUrls =  this.state.securityInfoFormData.webUrls;
+    consentCollectionLink.deviceIdentifiers = this.state.securityInfoFormData.deviceIdentifiers;
+    consentCollectionLink.internetProtocolAddresses = this.state.securityInfoFormData.internetProtocolAddresses;
+    consentCollectionLink.facePhotos = this.state.securityInfoFormData.facePhotos;
+    consentCollectionLink.biometricIdentifiers = this.state.securityInfoFormData.biometricIdentifiers;
+    consentCollectionLink.uniqueIdentifying = this.state.securityInfoFormData.uniqueIdentifying;
+    consentCollectionLink.otherIdentifier = this.state.securityInfoFormData.otherIdentifier;
+    consentCollectionLink.textOtherIdentifier = isEmpty(this.state.securityInfoFormData.textOtherIdentifier) ? null : this.state.securityInfoFormData.textOtherIdentifier;
     // cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {

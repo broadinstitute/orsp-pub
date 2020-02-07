@@ -25,6 +25,26 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     String piiDt
     String phi
     String genomicData
+    String names
+    String dates
+    String telephone
+    String geographicData
+    String fax
+    String socialSecurityNumber
+    String emailAddresses
+    String medicalNumbers
+    String accountNumbers
+    String healthPlanNumbers
+    String licenseNumbers
+    String vehicleIdentifiers
+    String webUrls
+    String deviceIdentifiers
+    String internetProtocolAddresses
+    String facePhotos
+    String biometricIdentifiers
+    String uniqueIdentifying
+    String otherIdentifier
+    String textOtherIdentifier
     Date startDate
     Date endDate
     Boolean onGoingProcess
@@ -56,6 +76,26 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         piiDt nullable: true
         phi nullable: true
         genomicData nullable: true
+        names nullable: true
+        dates nullable: true
+        telephone nullable: true
+        geographicData nullable: true
+        fax nullable: true
+        socialSecurityNumber nullable: true
+        emailAddresses nullable: true
+        medicalNumbers nullable: true
+        accountNumbers nullable: true
+        healthPlanNumbers nullable: true
+        licenseNumbers nullable: true
+        vehicleIdentifiers nullable: true
+        webUrls nullable: true
+        deviceIdentifiers nullable: true
+        internetProtocolAddresses nullable: true
+        facePhotos nullable: true
+        biometricIdentifiers nullable: true
+        uniqueIdentifying nullable: true
+        otherIdentifier nullable: true
+        textOtherIdentifier nullable: true
 
     }
 
