@@ -1,0 +1,68 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="vvicario" id="changelog-15.0">
+        <addColumn tableName="consent_collection_link">
+            <column name="names" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="dates" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="telephone" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="geographic_data" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="fax" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="social_security_number" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="email_addresses" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="medical_numbers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="account_numbers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="health_plan_numbers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="license_numbers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="vehicle_identifiers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="web_urls" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="device_identifiers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="internet_protocol_addresses" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="face_photos" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="biometric_identifiers" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="unique_identifying" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="other_identifier" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="consent_collection_link">
+            <column name="text_other_identifier" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
