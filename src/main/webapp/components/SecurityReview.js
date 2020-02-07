@@ -83,11 +83,11 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       textOtherIdentifier = ''
     } = this.props.sample;
 
-    const labelStore = !isEmpty(this.storeOptions(store)) ? this.storeOptions(store) : this.props.sample.textStore;
-    
+    const labelStore = !isEmpty(this.storeOptions(store)) ? this.storeOptions(store) : this.props.sample.textStore; 
     if (this.props.currentStep === this.props.step) {
       return(
         div({}, [
+
           div({ className: "answerWrapper" }, [
             label({}, ["Where will the data for this project be processed, handled, and stored?"]),
             div({
@@ -98,7 +98,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
               span({ className: "normal" }, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."])]),
             div({
             }, [this.stringAnswer(pii)]),
-          ]),          
+          ]),
           div({ className: "answerWrapper", isRendered: !isEmpty(pii) && pii === "true" }, [
             label({}, ["Which of these types of data does your project involve? "]),
             ul({key: "involvedPII"}, [
