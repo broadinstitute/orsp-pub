@@ -22,11 +22,6 @@ class ConsentResource {
     Timestamp sortDate
     String translatedUseRestriction
     DataUseDTO dataUse
-    Boolean geneticStudiesOnly
-    Boolean publicationResults
-    Boolean genomicResults
-    String genomicSummaryResults
-    Boolean collaborationInvestigators
 
     @Override
     String toString() {
