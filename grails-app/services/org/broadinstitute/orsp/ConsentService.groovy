@@ -137,7 +137,7 @@ class ConsentService implements Status {
     def postDataUseLetter(String consentLocation, InputStream inputStream, String fileName) {
         String url = consentLocation + "/dul"
         HttpBuilder http = getMultipartBuilder(url)
-        String fileType = MediaType.APPLICATION_OCTET_STREAM_VALUE
+        String fileType = MediaType.APPLICATION_OCTET_STREAM_VALUEc
         http.post(Boolean) {
             // "data" is the expected form field name in the consent service
             request.body = multipart {
@@ -298,11 +298,6 @@ class ConsentService implements Status {
             resource.useRestriction = useRestriction.asJsonObject
         }
         resource.requiresManualReview = dataUseRestriction.manualReview
-        resource.collaborationInvestigators = dataUseRestriction.collaborationInvestigators
-        resource.publicationResults = dataUseRestriction.publicationResults
-        resource.genomicResults = dataUseRestriction.genomicResults
-        resource.genomicSummaryResults = dataUseRestriction.genomicSummaryResults
-        resource.geneticStudiesOnly = dataUseRestriction.geneticStudiesOnly ? GENETIC_STUDIES_ONLY_TERM : null
         resource
     }
 
@@ -394,6 +389,26 @@ class ConsentService implements Status {
 
         if (dataUseRestriction.other) {
             dataUseDTO.setOther(stripTextOfHtml(dataUseRestriction.other).trim())
+        }
+
+        if (dataUseRestriction.collaborationInvestigators) {
+            dataUseDTO.collaborationInvestigators = true
+        }
+
+        if (dataUseRestriction.publicationResults) {
+            dataUseDTO.publicationResults = true
+        }
+
+        if (dataUseRestriction.genomicResults) {
+            dataUseDTO.genomicResults = true
+        }
+
+        if (dataUseRestriction.genomicSummaryResults) {
+            dataUseDTO.setGenomicSummaryResults(dataUseRestriction.genomicSummaryResults)
+        }
+
+        if (dataUseRestriction.geneticStudiesOnly) {
+            dataUseDTO.geneticStudiesOnly = true
         }
 
         dataUseDTO

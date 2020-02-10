@@ -22,7 +22,7 @@ class ConsentResource {
     Timestamp sortDate
     String translatedUseRestriction
     DataUseDTO dataUse
-    String geneticStudiesOnly
+    Boolean geneticStudiesOnly
     Boolean publicationResults
     Boolean genomicResults
     String genomicSummaryResults
