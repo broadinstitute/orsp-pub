@@ -298,11 +298,6 @@ class ConsentService implements Status {
             resource.useRestriction = useRestriction.asJsonObject
         }
         resource.requiresManualReview = dataUseRestriction.manualReview
-        resource.collaborationInvestigators = dataUseRestriction.collaborationInvestigators
-        resource.publicationResults = dataUseRestriction.publicationResults
-        resource.genomicResults = dataUseRestriction.genomicResults
-        resource.genomicSummaryResults = dataUseRestriction.genomicSummaryResults
-        resource.geneticStudiesOnly = dataUseRestriction.geneticStudiesOnly ? GENETIC_STUDIES_ONLY_TERM : null
         resource
     }
 
@@ -394,6 +389,26 @@ class ConsentService implements Status {
 
         if (dataUseRestriction.other) {
             dataUseDTO.setOther(stripTextOfHtml(dataUseRestriction.other).trim())
+        }
+
+        if (dataUseRestriction.collaborationInvestigators) {
+            dataUseDTO.collaborationInvestigators = true
+        }
+
+        if (dataUseRestriction.publicationResults) {
+            dataUseDTO.publicationResults = true
+        }
+
+        if (dataUseRestriction.genomicResults) {
+            dataUseDTO.genomicResults = true
+        }
+
+        if (dataUseRestriction.genomicSummaryResults) {
+            dataUseDTO.setGenomicSummaryResults(dataUseRestriction.genomicSummaryResults)
+        }
+
+        if (dataUseRestriction.geneticStudiesOnly) {
+            dataUseDTO.geneticStudiesOnly = true
         }
 
         dataUseDTO

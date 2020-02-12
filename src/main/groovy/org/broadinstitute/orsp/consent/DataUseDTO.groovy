@@ -32,4 +32,9 @@ class DataUseDTO {
     Boolean vulnerablePopulations
     Boolean psychologicalTraits
     Boolean nonBiomedical
+    Boolean geneticStudiesOnly
+    Boolean publicationResults
+    Boolean genomicResults
+    String genomicSummaryResults
+    Boolean collaborationInvestigators
 }
