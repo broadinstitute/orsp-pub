@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { hh, h1, span, a, div, p, b, u } from 'react-hyperscript-helpers';
+import { hh, h1, span, a, div, p, b, u, small } from 'react-hyperscript-helpers';
 
 import { WizardStep } from './WizardStep';
 import { InputFieldText } from './InputFieldText';
@@ -60,7 +60,10 @@ export const Security = hh(class Security extends Component {
         store: true,
         textStore: true,
         publiclyAvailable: true,
-        textOtherIdentifier: true
+        textOtherIdentifier: true,
+        identifiers: true,
+        dataType: true,
+        textSharingType: true
       },
       openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
       controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
@@ -75,7 +78,7 @@ export const Security = hh(class Security extends Component {
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
-      if (field === 'store' && value !== 'other' ) {
+      if (field === 'store' && value !== 'other') {
         prev.formData.textStore = '';
       }
       return prev;
@@ -91,7 +94,7 @@ export const Security = hh(class Security extends Component {
     this.setState(prev => {
       if (field === 'otherIdentifier' && !value) {
         prev.formData.textOtherIdentifier = '';
-      } 
+      }
       prev.formData[field] = value;
       return prev;
     }, () => {
@@ -123,6 +126,9 @@ export const Security = hh(class Security extends Component {
     let textStore = false;
     let publiclyAvailable = false;
     let textOtherIdentifier = false;
+    let identifiers = false;
+    let dataType = false;
+    let textSharingType = false;
 
     if (isEmpty(this.state.formData.pii)) {
       pii = true;
@@ -170,6 +176,40 @@ export const Security = hh(class Security extends Component {
       sharingType = true;
       isValid = false;
     }
+    if (this.props.securityInfoData.pii === "true" &&
+      !this.state.formData.piiDt &&
+      !this.state.formData.phi &&
+      !this.state.formData.genomicData) {
+      dataType = true;
+      isValid = false;
+    }
+    if (TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType && isEmpty(this.state.formData.textSharingType))) {
+      textSharingType = true;
+      isValid = false;
+    }
+    if ((this.state.formData.piiDt || this.state.formData.phi) &&
+      (!this.state.formData.names &&
+        !this.state.formData.dates &&
+        !this.state.formData.telephone &&
+        !this.state.formData.geographicData &&
+        !this.state.formData.fax &&
+        !this.state.formData.socialSecurityNumber &&
+        !this.state.formData.emailAddresses &&
+        !this.state.formData.medicalNumbers &&
+        !this.state.formData.accountNumbers &&
+        !this.state.formData.healthPlanNumbers &&
+        !this.state.formData.licenseNumbers &&
+        !this.state.formData.vehicleIdentifiers &&
+        !this.state.formData.webUrls &&
+        !this.state.formData.deviceIdentifiers &&
+        !this.state.formData.internetProtocolAddresses &&
+        !this.state.formData.facePhotos &&
+        !this.state.formData.biometricIdentifiers &&
+        !this.state.formData.uniqueIdentifying &&
+        !this.state.formData.otherIdentifier)) {
+      identifiers = true;
+      isValid = false;
+    }
     if (field === undefined || field === null || field === 3) {
       this.setState(prev => {
         prev.errors.pii = pii;
@@ -181,6 +221,9 @@ export const Security = hh(class Security extends Component {
         prev.errors.publiclyAvailable = publiclyAvailable;
         prev.errors.store = store;
         prev.errors.textOtherIdentifier = textOtherIdentifier;
+        prev.errors.identifiers = identifiers;
+        prev.errors.dataType = dataType;
+        prev.errors.textSharingType = textSharingType;
         return prev;
       });
     }
@@ -205,7 +248,7 @@ export const Security = hh(class Security extends Component {
     return (
       div({ className: "questionnaireContainerLight" }, [
         p({}, ["The following questions help the Broad Risk Management and Information Security teams understand where sensitive data types are stored and how that data is shared with external collaborators. ", b({}, ["Please answer the questions to the best of your ability. "])]),
-        p({style: {'marginBottom':'25px'}}, [b({}, ["Note: "]), "The Information Security or Risk Management team may reach out to understand more about your project but your answers to these questions will not stop your project from moving forward. You do not need to wait for a response from the Risk Management or Information Security teams before continuing work."]),
+        p({ style: { 'marginBottom': '25px' } }, [b({}, ["Note: "]), "The Information Security or Risk Management team may reach out to understand more about your project but your answers to these questions will not stop your project from moving forward. You do not need to wait for a response from the Risk Management or Information Security teams before continuing work."]),
         InputFieldRadio({
           id: "radioStore",
           name: "store",
@@ -239,11 +282,11 @@ export const Security = hh(class Security extends Component {
             error: this.state.errors.textStore && this.props.generalError,
             errorMessage: "Required field"
           })
-        ]),        
+        ]),
         InputFieldRadio({
           id: "radioPII",
           name: "pii",
-          label: "Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data?* ",
+          label: "Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",
           moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."]),
           value: this.props.securityInfoData.pii,
           optionValues: ["true", "false", "uncertain"],
@@ -285,8 +328,11 @@ export const Security = hh(class Security extends Component {
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Genomic Data']),
             checked: this.state.formData.genomicData,
-            readOnly: this.state.readOnly
-          })
+            readOnly: this.state.readOnly,
+            error: this.state.errors.textOtherIdentifier && this.props.generalError,
+            errorMessage: "Required field"
+          }),
+          small({ isRendered: this.state.errors.dataType && this.props.generalError, className: "errorMessage" }, ['Required Fields']),
         ]),
         div({ isRendered: this.props.securityInfoData.piiDt === true || this.props.securityInfoData.phi === true, style: { 'marginBottom': '20px' } }, [
           p({ className: "inputFieldLabel" }, [
@@ -444,7 +490,8 @@ export const Security = hh(class Security extends Component {
             label: span({ className: "normal" }, ['Other']),
             checked: this.state.formData.otherIdentifier,
             readOnly: this.state.readOnly
-          })
+          }),
+          small({ isRendered: this.state.errors.identifiers && this.props.generalError, className: "errorMessage" }, ['Required Fields'])
         ]),
 
         div({ style: { 'marginBottom': '20px' } }, [
@@ -460,8 +507,8 @@ export const Security = hh(class Security extends Component {
             error: this.state.errors.textOtherIdentifier && this.props.generalError,
             errorMessage: "Required field"
           })
-        ]), 
-        div({ isRendered: this.props.securityInfoData.piiDt === true || this.props.securityInfoData.phi === true  || this.props.securityInfoData.genomicData === true, style: { 'marginBottom': '20px' } }, [
+        ]),
+        div({ isRendered: this.props.securityInfoData.piiDt === true || this.props.securityInfoData.phi === true || this.props.securityInfoData.genomicData === true, style: { 'marginBottom': '20px' } }, [
           InputFieldRadio({
             id: "radioFirecloud",
             name: "externalAvailability",
@@ -483,7 +530,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioPubliclyAvailable",
           name: "publiclyAvailable",
-          label: span({}, ["Will your project make ", u({},["any data that is not publicly available"]), " accessible to external collaborators over the internet?"]),
+          label: span({}, ["Will your project make ", u({}, ["any data that is not publicly available"]), " accessible to external collaborators over the internet?"]),
           moreInfo: " This includes, for example, putting data in Google Cloud Platform and making it available to external parties, a custom application facing the public internet, or another digital file sharing service.",
           value: this.props.securityInfoData.publiclyAvailable,
           optionValues: ["true", "false", "uncertain"],
@@ -497,11 +544,11 @@ export const Security = hh(class Security extends Component {
           error: this.state.errors.publiclyAvailable && this.props.generalError,
           errorMessage: "Required field",
           edit: false
-        }),      
+        }),
         InputFieldRadio({
           id: "radioCompliance",
           name: "compliance",
-          label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?*"]),
+          label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?"]),
           moreInfo: "Information security compliance requirements should be described in project award letters, contracts, or other agreements. If no agreement exists for a project, Broad has not agreed to meet a specific compliance requirement.",
           value: this.props.securityInfoData.compliance,
           optionValues: ["true", "false", "uncertain"],
@@ -521,7 +568,7 @@ export const Security = hh(class Security extends Component {
             isRendered: this.props.securityInfoData.compliance === "true",
             id: "inputCompliance",
             name: "textCompliance",
-            label: "Please specify which regulations must be adhered to below:*",
+            label: "Please specify which regulations must be adhered to below:",
             value: this.props.securityInfoData.textCompliance,
             disabled: false,
             required: false,
@@ -533,7 +580,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioAccessible",
           name: "sharingType",
-          label: span({}, ["Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: *"]),
+          label: span({}, ["Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: "]),
           value: this.props.securityInfoData.sharingType,
           optionLabels: [
             "An open/unrestricted repository (such as GEO)",
@@ -564,6 +611,8 @@ export const Security = hh(class Security extends Component {
           disabled: false,
           required: false,
           onChange: this.handleInputChange,
+          errorMessage: "Required field",
+          error: this.state.errors.textSharingType && this.props.generalError,
         })
       ])
     )
