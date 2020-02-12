@@ -3,13 +3,17 @@ package org.broadinstitute.orsp
 
 import com.google.gson.Gson
 import grails.converters.JSON
+import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.webservice.ApiService
 import org.broadinstitute.orsp.webservice.DataBioOntologyService
 import org.broadinstitute.orsp.webservice.Ontology
 
+import java.time.LocalDateTime
+
 /**
  * Generic, unauthenticated API endpoint
  */
+@Slf4j
 class ApiController {
 
     ApiService apiService
@@ -37,7 +41,9 @@ class ApiController {
 
     // Summary of all data use projects
     def projects() {
+        log.info(LocalDateTime.now().toString() + " Project API -> Retrieving information for the following term: ", params.get("term"))
         render apiService.getProjectSummaries((String) params.get("term")) as JSON
+        log.info(LocalDateTime.now().toString() + " Project API -> Project information has been sent.*")
     }
 
     // Summary of all samples in use
