@@ -548,7 +548,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioCompliance",
           name: "compliance",
-          label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?"]),
+          label: span({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "? "]),
           moreInfo: "Information security compliance requirements should be described in project award letters, contracts, or other agreements. If no agreement exists for a project, Broad has not agreed to meet a specific compliance requirement.",
           value: this.props.securityInfoData.compliance,
           optionValues: ["true", "false", "uncertain"],

@@ -94,7 +94,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             }, [labelStore]),
           ]),
           div({ className: "answerWrapper" }, [
-            label({}, ["Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? * ",
+            label({}, ["Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",
               span({ className: "normal" }, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."])]),
             div({
             }, [this.stringAnswer(pii)]),
@@ -193,7 +193,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
           ]),
         
           div({ className: "answerWrapper" }, [
-            label({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "?*"]),
+            label({}, ["Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "? "]),
             div({
             }, [this.stringAnswer(compliance)]),
           ]),
@@ -204,7 +204,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
           ]),
 
           div({ className: "answerWrapper" }, [
-            label({}, ["Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: *"]),
+            label({}, ["Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: "]),
             div({}, [this.sharingTypeAnswer(sharingType)]),
           ]),
 
