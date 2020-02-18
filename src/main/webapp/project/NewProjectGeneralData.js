@@ -129,11 +129,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.collaborators = data;
       return prev;
-    }, () => {
-      this.props.updateForm(this.state.formData, 'collaborators');
-      this.props.removeErrorMessage();
-    }
-  )};
+    }, () => this.props.updateForm(this.state.formData, 'collaborators'));
+  };
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
