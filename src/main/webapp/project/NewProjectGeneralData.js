@@ -31,7 +31,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
     this.state = {
       formData: {
-        projectManager: '',
+        projectManagers: [],
         piNames: [],
         affiliations: '',
         affiliationOther: '',
@@ -43,7 +43,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         collaborators: []
       },
       formerData: {
-        projectManager: '',
+        projectManager: [],
         piNames: [],
         affiliations: '',
         affiliationOther: '',
@@ -90,14 +90,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.props.removeErrorMessage();
   };
 
-  handleProjectManagerChange = (data, action) => {
-    this.setState(prev => {
-      prev.formData.projectManager = data;
-      return prev;
-    }, () => this.props.updateForm(this.state.formData, 'projectManager'));
-    this.props.removeErrorMessage();
-  };
-
   handleSelectChange = (field) => () => (selectedOption) => {
     this.setState(prev => {
         prev.formData[field] = selectedOption;
@@ -137,14 +129,25 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.collaborators = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'collaborators'));
-  };
+    }, () => {
+      this.props.updateForm(this.state.formData, 'collaborators');
+      this.props.removeErrorMessage();
+    }
+  )};
 
   handlePIChange = (data, action) => {
     this.setState(prev => {
       prev.formData.piNames = data;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'piNames'));
+  };
+
+  handlePMChange = (data, action) => {
+    this.setState(prev => {
+      prev.formData.projectManagers = data;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'projectManagers')
+    );
   };
 
   render() {
@@ -218,13 +221,13 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           MultiSelect({
             id: "inputProjectManager",
-            label: "Broad Project Manager",
+            label: "Broad Project Managers",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
-            handleChange: this.handleProjectManagerChange,
-            value: this.state.formData.projectManager,
+            handleChange: this.handlePMChange,
+            value: this.state.formData.projectManagers,
             placeholder: "Start typing the Project Manager Name",
-            isMulti: false,
+            isMulti: true,
             edit: false
           }),
         ]),
