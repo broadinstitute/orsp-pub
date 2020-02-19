@@ -631,7 +631,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
-        prev.formData.pmList = [data];
+        prev.formData.pmList = data;
         prev.formData.projectExtraProps.pm = data.key;
       } else {
         prev.formData.pmList = [];
@@ -988,14 +988,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
           MultiSelect({
             id: "inputProjectManager",
-            label: "Broad Project Manager",
+            label: "Broad Project Managers",
             name: 'pmList',
             readOnly: this.state.readOnly,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handleProjectManagerChange,
             value: this.state.formData.pmList,
             currentValue: this.state.current.pmList,
-            isMulti: false
+            isMulti: true
           })
         ]),
         Panel({ title: "Funding" }, [
