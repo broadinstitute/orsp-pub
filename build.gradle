@@ -142,7 +142,7 @@ dependencies {
     clover 'org.openclover:clover:4.3.1'
 
     // Slf4j startup error handling
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 
 }
 
