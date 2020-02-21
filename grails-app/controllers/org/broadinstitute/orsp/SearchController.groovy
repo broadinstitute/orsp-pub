@@ -52,16 +52,20 @@ class SearchController implements UserInfo {
         Boolean isAdmin = isAdmin()
         Boolean isViewer = isViewer()
         Collection response = []
-        queryService.findIssuesBySearchTermAsProjectKey(params.term).each {
+        List<Issue> issues = queryService.findIssuesBySearchTermAsProjectKey(params.term)
+        List<Issue> consentGroups = issues.findAll { it.type == IssueType.CONSENT_GROUP.name }
+        Map<String, Boolean>  isCollaboratorInRelatedProjects = queryService.isCollaboratorInRelatedProjects(consentGroups?.collect { it.projectKey }, userName)
+        issues.each {
             Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
             String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params:  arguments.get("params"), absolute: true])
+            Boolean isCollaborator = isCollaboratorInRelatedProjects.containsKey(it.projectKey) ? isCollaboratorInRelatedProjects.get(it.projectKey) : false
             response << [
                     id: it.id,
                     label: it.projectKey + " (" + it.summary + ")",
                     value: it.projectKey,
                     url: link,
                     reporter: userService.findUser(it.reporter).displayName,
-                    linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
+                    linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer, isCollaborator),
                     pm: it.pm,
                     actor: it.actor
             ]
@@ -152,14 +156,19 @@ class SearchController implements UserInfo {
                 options.fundingInstitute ||
                 options.irbsOfRecord ||
                 options.collection) {
+            Set<Issue> issues = queryService.findIssues(options)
+            Collection<Issue> consentGroups = issues.findAll { it.type == IssueType.CONSENT_GROUP.name }
+            Map<String, Boolean>  isCollaboratorInRelatedProjects = queryService.isCollaboratorInRelatedProjects(consentGroups?.collect { it.projectKey }, userName)
+
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])
+                Boolean isCollaborator = isCollaboratorInRelatedProjects.containsKey(it.projectKey) ? isCollaboratorInRelatedProjects.get(it.projectKey) : false
                 [
                         link: link,
                         key: it.projectKey,
                         reporter: it.reporter,
-                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer),
+                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer, isCollaborator),
                         title: it.summary,
                         type: it.type,
                         status: it.getApprovalStatus(),

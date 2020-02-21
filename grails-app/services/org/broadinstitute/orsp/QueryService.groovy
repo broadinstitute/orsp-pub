@@ -1385,6 +1385,46 @@ class QueryService implements Status {
         projectKey ? Funding.findAllByProjectKey(projectKey) : Collections.emptyList()
     }
 
+    Map<String, Boolean> isCollaboratorInRelatedProjects(Collection<String> consentKeyList, String userName) {
+        if (CollectionUtils.isEmpty(consentKeyList)) return new HashMap<String, List<Issue>>()
+        StringBuffer query = new StringBuffer(
+                'select consent_key, project_key from consent_collection_link where ')
+        consentKeyList.eachWithIndex { it, index ->
+            query.append(index == 0 ? 'consent_key = + \'' + it + '\'' : ' OR consent_key = \'' + it + '\'')
+        }
+        Map<String, List<String>> associatedProjects = new HashMap<>()
+        getSqlConnection().rows(query.toString()).forEach({
+            if (associatedProjects.containsKey(it.get("consent_key"))) {
+                List<String> projectKeys = associatedProjects.get(it.get("consent_key"))
+                projectKeys.add(it.get("project_key")?.toString())
+                associatedProjects.put(it.get("consent_key")?.toString(), projectKeys)
+            } else {
+                associatedProjects.put(it.get("consent_key")?.toString(), new ArrayList<String>(Arrays.asList(it.get("project_key").toString())))
+            }
+        })
+        Map<String, Boolean> projectsCollaborator = new HashMap<>()
+        associatedProjects?.each {
+            projectsCollaborator.put(it.key, isUserCollaborator(it.value, userName))
+        }
+        projectsCollaborator
+    }
+
+    private Boolean isUserCollaborator(List<String> projectsKey, String userName) {
+        final session = sessionFactory.currentSession
+        final String query = ' select * from issue_extra_property where ' +
+                ' name = :name and ' +
+                ' project_key in :projectsKey and' +
+                ' value = :userName'
+        final sqlQuery = session.createSQLQuery(query)
+        final results = sqlQuery.with {
+            setParameterList('projectsKey', projectsKey)
+            setParameter('name', IssueExtraProperty.COLLABORATOR)
+            setParameter('userName', userName)
+            list()
+        }
+        results?.size() > 0
+    }
+
     private static generateILikeTerm(String term) {
         ("%" + term.replaceAll(";", "") + "%").toLowerCase()
     }
