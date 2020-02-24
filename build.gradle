@@ -139,7 +139,7 @@ dependencies {
     compile group: 'org.webjars', name: 'swagger-ui', version: '2.2.10-1'
 
     // Code Coverage
-    clover 'org.openclover:clover:4.3.1'
+    clover 'org.openclover:clover:4.4.1'
 
     // Slf4j startup error handling
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
