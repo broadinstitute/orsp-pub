@@ -467,7 +467,7 @@ class QueryService implements Status {
     }
 
     Collection<ConsentCollectionLink> findCollectionLinksWithSamples() {
-        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAllBySampleCollectionIdIsNotNull()
+        Collection<ConsentCollectionLink> links = ConsentCollectionLink.findAll()
         Collection<SampleCollection> sampleCollections = SampleCollection.
                 findAllByCollectionIdInList(links.collect { it.sampleCollectionId }.findAll { it && !it.isEmpty()})
         Collection<Issue> projects = Issue.findAllByProjectKeyInList(links.collect { it.projectKey })
