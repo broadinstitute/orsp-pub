@@ -33,12 +33,13 @@ class PermissionService implements UserInfo {
     // verifies if logged user belongs to some user list ....
     Boolean issueIsForbidden(Issue issue, String userName, boolean isAdmin, boolean isViewer) {
         Map<String, List<String>> extraProperties = issue.extraPropertiesMap
-        userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer)
+        userHasIssueAccess(issue.reporter, extraProperties, userName, isAdmin, isViewer, false)
     }
 
-    Boolean userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer) {
+    Boolean userHasIssueAccess(String reporter, Map<String, List<String>> extraProperties, String userName, boolean isAdmin, boolean isViewer, Boolean isCollaboratorInRelatedProject) {
         boolean userHasAccess = (reporter == userName
                 || getIssueCollaborators(extraProperties)?.contains(userName)
+                || isCollaboratorInRelatedProject
                 || getIssuePMs(extraProperties).contains(userName)
                 || getIssuePIs(extraProperties).contains(userName)
                 || isAdmin
