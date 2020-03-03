@@ -29,6 +29,8 @@ class ProjectExtraProperties {
     String isIdReceive
     String isCoPublishing
     String federalFunding
+    String irbReviewedProtocol
+    String humanSubjects
 
     // Attestation
     String attestation
@@ -73,6 +75,8 @@ class ProjectExtraProperties {
         this.setIsIdReceive(project.getIsIdReceive() ?: "")
         this.setIsCoPublishing(project.getIsCoPublishing() ?: "")
         this.setFederalFunding(project.getFederalFunding() ?: "")
+        this.setIrbReviewedProtocol(project.getReviewedProtocol() ?: "")
+        this.setHumanSubjects(project.getHumanSubjects() ?: "")
 
         // Attestation
         this.setAttestation(project.attestation() ?: null)

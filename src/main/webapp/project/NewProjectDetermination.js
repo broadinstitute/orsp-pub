@@ -22,7 +22,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     let questions = [];
     questions.push({
       question: 'Is this a "fee-for-service" project? ',
-      moreInfo: '(commercial service only, no Broad publication privileges)',
+      moreInfo: '(commercial service only, no direct federal award to the Broad)',
       progress: 0,
       yesOutput: DETERMINATION.NE,
       noOutput: 2,
@@ -32,8 +32,8 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     });
 
     questions.push({
-      question: 'Is a Broad investigator conducting research ',
-      moreInfo: '(generating, contributing to generalizable knowledge)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects.',
+      question: 'Is a Broad investigator(s) conducting research ',
+      moreInfo: '(generating, contributing to generalizable knowledge, with the intention to publish results)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects',
       progress: 12,
       yesOutput: 3,
       noOutput: DETERMINATION.NHSR,
@@ -52,55 +52,77 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       id: 3
     });
 
+    // TODO
     questions.push({
-      question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
-      moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
+      question: 'Is the Broad investigator(s) being added as study staff to an IRB-reviewed protocol? ',
+      moreInfo: '',
       progress: 37,
       yesOutput: DETERMINATION.IRB,
       noOutput: 5,
       answer: null,
-      key: 'sensitiveInformationSource',
+      key: 'irbReviewedProtocol',
       id: 4
     });
 
     questions.push({
-      question: 'Are samples/data being provided by an investigator who has access to identifiers or obtains samples through an intervention or interaction? ',
-      progress: 50,
+      question: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
+      moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
+      progress: 37,
       yesOutput: 6,
-      noOutput: DETERMINATION.NHSR,
+      noOutput: 7,
       answer: null,
-      key: 'interactionSource',
+      key: 'sensitiveInformationSource',
       id: 5
+    });
+    //TODO
+    questions.push({
+      question: 'Will the only involvement of human subjects be either as a) survey/interview/focus group participants, or b) data/sample contributors to a secondary use study, with information recorded in such a way that a subject’s identity cannot be readily ascertained (directly or indirectly through a code) AND the investigator will not try to re-identify subjects?',
+      progress: 50,
+      yesOutput: DETERMINATION.EX,
+      noOutput: DETERMINATION.IRB,
+      answer: null,
+      key: 'humanSubjects',
+      id: 6
     });
 
     questions.push({
-      question: 'Is the Broad receiving subject identifiers?',
+      question: 'Are samples/data being provided by an investigator who a) has access to identifiers or b) obtains samples through an intervention or interaction? ',
+      progress: 50,
+      yesOutput: 8,
+      noOutput: DETERMINATION.NHSR,
+      answer: null,
+      key: 'interactionSource',
+      id: 7
+    });
+
+    questions.push({
+      question: 'Is the Broad researcher receiving subject identifiers?',
       progress: 62,
-      yesOutput: DETERMINATION.IRB,
-      noOutput: 7,
+      yesOutput: DETERMINATION.NHSR,
+      noOutput: 9,
       answer: null,
       key: 'isIdReceive',
-      id: 6
+      id: 8
     });
 
     questions.push({
       question: 'Is the Broad researcher co-publishing or doing joint analysis with investigator who has access to identifiers?',
       progress: 75,
-      yesOutput: 8,
+      yesOutput: 10,
       noOutput: DETERMINATION.NHSR,
       answer: null,
       key: 'isCoPublishing',
-      id: 7
+      id: 9
     });
 
     questions.push({
-      question: 'Is Broad receiving direct federal funding (Is Broad the prime awardee of a federal grant) ?',
+      question: 'Is Broad receiving direct federal funding (Is Broad the prime awardee of a federal grant)?',
       progress: 87,
       yesOutput: DETERMINATION.IRB,
       noOutput: DETERMINATION.NE,
       answer: null,
       key: 'federalFunding',
-      id: 8
+      id: 10
     });
     return {
       questions: questions

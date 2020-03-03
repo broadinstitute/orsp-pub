@@ -7,6 +7,7 @@ export const DETERMINATION = {
   RA : 700,
   CTC : 800,
   OSAP : 900,
+  EX : 1000
 };
 
 export const PREFERRED_IRB = [

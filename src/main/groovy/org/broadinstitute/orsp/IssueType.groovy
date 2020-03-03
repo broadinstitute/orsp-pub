@@ -5,7 +5,8 @@ enum IssueType {
     IRB("IRB Project", "IRB Protocol", "irb", "IRB"),
     NE("'Not Engaged' Project", "'Not Engaged' Project", "ne", "NE"),
     NHSR("NHSR Project", "Not Human Subjects Research", "nhsr", "NHSR"),
-    CONSENT_GROUP("Consent Group", "Consent Group Record", "consentGroup", "CG")
+    CONSENT_GROUP("Consent Group", "Consent Group Record", "consentGroup", "CG"),
+    EX("Exempt Project", "Exempt", "ex", "EX")
 
     String name
     String label

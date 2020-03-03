@@ -118,6 +118,10 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getFederalFunding() { getExtraProperties().find { it.name == IssueExtraProperty.FEDERAL_FUNDING }?.value }
 
+    transient String getReviewedProtocol() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_REVIEWED_PROTOCOL }?.value }
+
+    transient String getHumanSubjects() { getExtraProperties().find { it.name == IssueExtraProperty.HUMAN_SUBJECTS }?.value }
+
     // Attestation
     transient String attestation() { getExtraProperties().find { it.name == IssueExtraProperty.ATTESTATION }?.value }
 
