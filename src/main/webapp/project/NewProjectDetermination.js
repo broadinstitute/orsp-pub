@@ -52,7 +52,6 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       id: 3
     });
 
-    // TODO
     questions.push({
       question: 'Is the Broad investigator(s) being added as study staff to an IRB-reviewed protocol? ',
       moreInfo: '',
@@ -74,7 +73,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       key: 'sensitiveInformationSource',
       id: 5
     });
-    //TODO
+
     questions.push({
       question: 'Will the only involvement of human subjects be either as a) survey/interview/focus group participants, or b) data/sample contributors to a secondary use study, with information recorded in such a way that a subject’s identity cannot be readily ascertained (directly or indirectly through a code) AND the investigator will not try to re-identify subjects?',
       progress: 50,
