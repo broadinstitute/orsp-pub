@@ -1040,7 +1040,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
             placeholder: "Start typing names for project access",
             isMulti: true
           }),
-
           InputFieldText({
             id: "inputPTitle",
             name: "projectTitle",
@@ -1093,7 +1092,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               id: "radioPII",
               name: "radioPII",
               label: 'Is this a "fee-for-service" project? ',
-              moreInfo: '(commercial service only, no Broad publication privileges)',
+              moreInfo: '(commercial service only, no direct federal award to the Broad)',
               value: this.state.formData.projectExtraProps.feeForService,
               currentValue: this.state.current.projectExtraProps.feeForService,
               readOnly: true,
@@ -1106,8 +1105,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "broadInvestigator",
               value: this.state.formData.projectExtraProps.broadInvestigator,
               currentValue: this.state.current.projectExtraProps.broadInvestigator,
-              moreInfo: '(generating, contributing to generalizable knowledge)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects.',
-              label: 'Is a Broad investigator conducting research ',
+              moreInfo: '(generating, contributing to generalizable knowledge, with the intention to publish results)? Examples of projects that DO NOT contribute to generalizable knowledge include case studies, internal technology development projects',
+              label: 'Is a Broad investigator(s) conducting research ',
               readOnly: true,
               onChange: () => { }
             })
@@ -1123,6 +1122,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) }, [
+            InputYesNo({
+              id: "irbReviewedProtocol",
+              name: "irbReviewedProtocol",
+              value: this.state.formData.projectExtraProps.irbReviewedProtocol,
+              currentValue: this.state.current.projectExtraProps.irbReviewedProtocol,
+              moreInfo: '',
+              label: 'Is the Broad investigator(s) being added as study staff to an IRB-reviewed protocol? ',
+              readOnly: true,
+              onChange: () => { }
+            })
+          ]),
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
             InputYesNo({
               id: "sensitiveInformationSource",
@@ -1131,6 +1142,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
               currentValue: this.state.current.projectExtraProps.sensitiveInformationSource,
               moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
               label: 'Is Broad investigator/staff a) obtaining information or biospecimens through an interaction with living human subjects or, b) obtaining/analyzing/generating identifiable private information or identifiable biospecimens ',
+              readOnly: true,
+              onChange: () => { }
+            })
+          ]),
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.humanSubjects) }, [
+            InputYesNo({
+              id: "humanSubjects",
+              name: "humanSubjects",
+              value: this.state.formData.projectExtraProps.humanSubjects,
+              currentValue: this.state.current.projectExtraProps.humanSubjects,
+              moreInfo: '(Coded data are considered identifiable if researcher has access to key)',
+              label: 'Will the only involvement of human subjects be either as a) survey/interview/focus group participants, or b) data/sample contributors to a secondary use study, with information recorded in such a way that a subject’s identity cannot be readily ascertained (directly or indirectly through a code) AND the investigator will not try to re-identify subjects? ',
               readOnly: true,
               onChange: () => { }
             })

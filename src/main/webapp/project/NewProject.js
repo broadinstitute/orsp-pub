@@ -209,6 +209,9 @@ const NewProject = hh(class NewProject extends Component {
     else if (this.state.determination.projectType === DETERMINATION.IRB) {
       type = 'IRB';
     }
+    else if (this.state.determination.projectType === DETERMINATION.EX) {
+      type = 'EX';
+    }
     return type;
   }
 
