@@ -203,7 +203,16 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
 
+    transient String getCategoryTwo() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_TWO }?.value }
+
+    transient String getCategoryFour() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_FOUR }?.value }
+
+    transient String getOtherCategory() { getExtraProperties().find { it.name == IssueExtraProperty.OTHER_CATEGORY }?.value }
+
+    transient String getTextOtherCategory() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_OTHER_CATEGORY }?.value }
+
     transient String getApproval() { getExtraProperties().find { it.name == IssueExtraProperty.APPROVAL }?.value }
+
 
     // Some query-able properties reference keys in static maps with string values.
     // We need to pull those out for text-based searches.
