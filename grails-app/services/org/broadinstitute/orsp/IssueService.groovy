@@ -72,7 +72,11 @@ class IssueService implements UserInfo {
             IssueExtraProperty.IRB_EXPIRATION_DATE,
             IssueExtraProperty.BIO_MEDICAL,
             IssueExtraProperty.PROJECT_STATUS,
-            IssueExtraProperty.ASSIGNED_ADMIN
+            IssueExtraProperty.ASSIGNED_ADMIN,
+            IssueExtraProperty.CATEGORY_FOUR,
+            IssueExtraProperty.CATEGORY_TWO,
+            IssueExtraProperty.TEXT_OTHER_CATEGORY,
+            IssueExtraProperty.OTHER_CATEGORY
     ]
 
 

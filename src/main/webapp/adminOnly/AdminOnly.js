@@ -1,9 +1,10 @@
 import { Component } from 'react';
-import { button, div, h2, hh } from 'react-hyperscript-helpers';
+import { button, div, h2, hh, p, span, small } from 'react-hyperscript-helpers';
 import { Project } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
+import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { compareNotEmptyObjects, createObjectCopy, isEmpty } from '../util/Utils';
 import { format } from 'date-fns';
@@ -27,6 +28,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
     super(props);
     this.state = {
       showSubmissionAlert: false,
+      showSubmissionError: false,
+      textOtherCategoryError: false,
       alertMessage: '',
       isAdmin: false,
       initial: {},
@@ -44,7 +47,11 @@ const AdminOnly = hh(class AdminOnly extends Component {
         initialReviewType: '',
         bioMedical: '',
         irbExpirationDate: null,
-        projectStatus: ''
+        projectStatus: '',
+        textOtherCategory: 'vasd',
+        categoryTwo: false,
+        categoryFour: false,
+        otherCategory: false
       }
     };
     this.addNewDegree = this.addNewDegree.bind(this)
@@ -79,6 +86,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
       formData.bioMedical = issue.data.extraProperties.bioMedical;
       formData.irbExpirationDate = issue.data.extraProperties.irbExpirationDate;
       formData.projectStatus = issue.data.extraProperties.projectStatus;
+      formData.categoryTwo = issue.data.extraProperties.categoryTwo  === 'true' ? true : false;
+      formData.categoryFour = issue.data.extraProperties.categoryFour === 'true' ? true : false;
+      formData.otherCategory = issue.data.extraProperties.otherCategory === 'true' ? true : false;
+      formData.textOtherCategory = issue.data.extraProperties.textOtherCategory;
       initial = createObjectCopy(formData);
       if (this._isMounted) {
         this.setState(prev => {
@@ -122,6 +133,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
     this.setState(prev => {
       prev.formData[field] = value;
       return prev;
+    }, () => {
+      if (field === 'textOtherCategory') {
+        this.isValid();
+      }
     });
   };
 
@@ -149,29 +164,48 @@ const AdminOnly = hh(class AdminOnly extends Component {
   submit = () => {
     this.props.showSpinner();
     const parsedForm = this.getParsedForm();
-    Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
-      response => {
-        this.props.hideSpinner();
-        this.setState(prev => {
-          prev.initial = createObjectCopy(this.state.formData);
-          prev.showSubmissionError = false;
-          return prev;
-        });
-        this.props.updateAdminOnlyStatus({ projectStatus : this.state.initial.projectStatus });
-        this.successNotification('showSubmissionAlert', 'Project information has been successfully updated.', 8000);
-      }).catch(
-      error => {
-        this.props.hideSpinner();
-        this.init();
-        this.setState(prev => {
-          prev.showSubmissionError = true;
-          prev.alertMessage = 'Something went wrong. Please try again.';
-          return prev;
-        });
-      }
-    );
+    if (this.isValid()) {
+      Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
+        response => {
+          this.props.hideSpinner();
+          this.setState(prev => {
+            prev.initial = createObjectCopy(this.state.formData);
+            prev.showSubmissionError = false;
+            return prev;
+          });
+          this.props.updateAdminOnlyStatus({ projectStatus : this.state.initial.projectStatus });
+          this.successNotification('showSubmissionAlert', 'Project information has been successfully updated.', 8000);
+        }).catch(
+        error => {
+          this.props.hideSpinner();
+          this.init();
+          this.setState(prev => {
+            prev.showSubmissionError = true;
+            prev.alertMessage = 'Something went wrong. Please try again.';
+            return prev;
+          });
+        }
+      );
+    } else {
+      this.props.hideSpinner();
+    }
   };
 
+  isValid() {
+    if (this.state.formData.otherCategory && isEmpty(this.state.formData.textOtherCategory)) {
+       this.setState(prev => {
+         prev.textOtherCategoryError = true;
+         return prev;
+       });
+       return false;
+    } else {
+      this.setState(prev => {
+        prev.textOtherCategoryError = false;
+        return prev;
+      });
+      return true;
+    }
+  }
   successNotification = (type, message, time) => {
     setTimeout(this.clearAlertMessage(type), time, null);
     this.init();
@@ -201,7 +235,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.bioMedical = this.state.formData.bioMedical;
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
-
+    form.categoryTwo = this.state.formData.categoryTwo;
+    form.categoryFour = this.state.formData.categoryFour;
+    form.otherCategory = this.state.formData.otherCategory;
+    form.textOtherCategory = this.state.formData.textOtherCategory;
     let degrees = [];
     if (this.state.formData.degrees !== null && this.state.formData.degrees.length > 0) {
       this.state.formData.degrees.map((degree, idx) => {
@@ -241,6 +278,22 @@ const AdminOnly = hh(class AdminOnly extends Component {
         return prev;
       });
     }
+  };
+
+  handleChange = (e) => {
+    const value = e.target.checked;
+    const field = e.target.name;
+    this.setState(prev => {
+      if (field === 'otherCategory' && !value) {
+        prev.formData.textOtherCategory = '';
+      }
+      prev.formData[field] = value;
+      return prev;
+    }, () => {
+      if (field === 'otherCategory') {
+        this.isValid();
+      }
+    });
   };
 
   render() {
@@ -362,6 +415,52 @@ const AdminOnly = hh(class AdminOnly extends Component {
             onChange: this.handleSelect("initialReviewType"),
             placeholder: "Select..."
           }),
+          div({ isRendered: this.state.formData.initialReviewType.value === 'Exempt', style: { 'marginTop': '20px' } }, [
+            p({ className: "inputFieldLabel" }, [
+              "Exempt Categories. ",
+              span({ className: "normal" }, ["Select all that apply."])
+            ]),
+            InputFieldCheckbox({
+              id: "ckb_category_two",
+              name: "categoryTwo",
+              onChange: this.handleChange,
+              label: span({ className: "normal" }, ['Category 2']),
+              checked: this.state.formData.categoryTwo,
+              readOnly: this.state.readOnly
+            }),
+            InputFieldCheckbox({
+              id: "ckb_categoryFour",
+              name: "categoryFour",
+              onChange: this.handleChange,
+              label: span({ className: "normal" }, ['Category 4']),
+              checked: this.state.formData.categoryFour,
+              readOnly: this.state.readOnly
+            }),
+            InputFieldCheckbox({
+              id: "ckb_other_category",
+              name: "otherCategory",
+              onChange: this.handleChange,
+              label: span({ className: "normal" }, ['Other']),
+              checked: this.state.formData.otherCategory,
+              readOnly: this.state.readOnly
+            }),
+          ]),
+
+          div({ style: { 'marginBottom': '20px' } }, [
+            InputFieldText({
+              isRendered: this.state.formData.otherCategory === true,
+              id: "inputTextOtherCategory",
+              name: "textOtherCategory",
+              label: " Please describe “other”:",
+              value: this.state.formData.textOtherCategory,
+              disabled: false,
+              required: true,
+              onChange: this.textHandler,
+              error: this.state.textOtherCategoryError,
+              errorMessage: "Required field"
+            })
+          ]),
+
           InputFieldRadio({
             id: "bioMedical",
             name: "bioMedical",

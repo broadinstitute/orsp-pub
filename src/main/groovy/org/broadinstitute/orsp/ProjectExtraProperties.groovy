@@ -45,6 +45,10 @@ class ProjectExtraProperties {
     String bioMedical
     String irbExpirationDate
     String projectStatus
+    String categoryTwo
+    String categoryFour
+    String otherCategory
+    String textOtherCategory
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -91,5 +95,9 @@ class ProjectExtraProperties {
         this.setBioMedical(project.getBioMedical() ?: "")
         this.setIrbExpirationDate(project.getIrbExpirationDate() ?: null)
         this.setProjectStatus(project.getProjectStatus() ?: "")
+        this.setCategoryTwo(project.getCategoryTwo() ?: "")
+        this.setCategoryFour(project.getCategoryFour() ?: "")
+        this.setOtherCategory(project.getOtherCategory() ?: "")
+        this.setTextOtherCategory(project.getTextOtherCategory() ?: "")
     }
 }
