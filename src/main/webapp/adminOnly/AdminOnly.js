@@ -444,7 +444,6 @@ const AdminOnly = hh(class AdminOnly extends Component {
               checked: this.state.formData.otherCategory,
               readOnly: this.state.readOnly
             }),
-      //      small({ isRendered: this.state.errors.identifiers && this.props.generalError, className: "errorMessage" }, ['Required Fields'])
           ]),
 
           div({ style: { 'marginBottom': '20px' } }, [
