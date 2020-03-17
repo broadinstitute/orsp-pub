@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { div, hh, button, label, input, h1, span, p, small } from 'react-hyperscript-helpers';
 import { InputYesNo } from './InputYesNo';
+import { InputFieldRadio } from './InputFieldRadio';
 import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
 import './QuestionnaireWorkflow.css';
 
@@ -100,6 +101,41 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
   };
 
+  evaluateRadioAnswer = (answer) => {
+    let result = this.state.questions[this.state.currentQuestionIndex].outputs.find(value => value.key === answer);
+    let value = result !== null ? result.value : null;
+    let nextQuestionIndex = null;
+    let projectType = null;
+    let endState = false;
+    if (answer === null) {
+      nextQuestionIndex = null;
+      projectType = null;
+      endState = true;
+    }
+    else if (value < 100) {
+      nextQuestionIndex = value - 1;
+      projectType = null;
+      endState = false;
+    } 
+    else {
+      nextQuestionIndex = null;
+      projectType = value;
+      if (this.props.edit === true) {
+        this.props.cleanQuestionsUnanswered(this.state);
+      }
+      endState = true;
+    }
+    this.setState(prev => {
+      prev.nextQuestionIndex = nextQuestionIndex;
+      prev.projectType = projectType;
+      prev.requiredError = false;
+      prev.endState = endState;
+      return prev
+    }, () => {
+      this.props.handler(this.state);
+    });
+  }
+
   evaluateAnswer = (answer) => {
     let onYes = this.state.questions[this.state.currentQuestionIndex].yesOutput;
     let onNo = this.state.questions[this.state.currentQuestionIndex].noOutput;
@@ -177,6 +213,16 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       this.evaluateAnswer(value);
     });
   }
+
+  handleRadioChange = (e, field, value) => {
+    this.setState(prev => {
+      prev.questions[prev.currentQuestionIndex].answer = value;
+      return prev;
+    }, () => {
+      this.evaluateRadioAnswer(value);
+    });
+  }
+
   render() {
 
     if (this.state.hasError) {
@@ -196,16 +242,29 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             p({}, [(this.state.endState === true ? "100%" : this.state.questions[currentQuestionIndex].progress + "%")]),
             QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
         ]),
+        div({isRendered: this.state.questions[currentQuestionIndex].isYesNo === true}, [
+          InputYesNo({            
+            id: this.state.questions[currentQuestionIndex].id,
+            value: this.state.questions[currentQuestionIndex].answer,
+            label: this.state.questions[currentQuestionIndex].question,
+            moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
+            onChange: this.handleChange,
+            required: false
+          }),
+        ]),
 
-        InputYesNo({
-          id: this.state.questions[currentQuestionIndex].id,
-          value: this.state.questions[currentQuestionIndex].answer,
-          label: this.state.questions[currentQuestionIndex].question,
-          moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
-          onChange: this.handleChange,
-          required: false
-        }),
-
+        div({isRendered: this.state.questions[currentQuestionIndex].isRadio === true }, [
+          InputFieldRadio({
+            id:  this.state.questions[currentQuestionIndex].id,
+            label: this.state.questions[currentQuestionIndex].question,
+            value: this.state.questions[currentQuestionIndex].answer,
+            onChange: this.handleRadioChange,
+            optionValues: this.state.questions[currentQuestionIndex].optionValues,
+            optionLabels: this.state.questions[currentQuestionIndex].optionLabels,
+            required: false,
+            edit: false
+          })
+        ]),
         small({ isRendered: this.state.requiredError === true, className: "errorMessage" }, ["Required field"]),
 
         div({ className: "buttonContainer" }, [
