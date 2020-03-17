@@ -30,7 +30,8 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       answer: null,
       progress: 0,
       key: 'individualDataSourced',
-      id: 1
+      id: 1,
+      isYesNo: true
     });
 
     questions.push({
@@ -40,7 +41,8 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       answer: null,
       progress: 20,
       key: 'isLinkMaintained',
-      id: 2
+      id: 2,
+      isYesNo: true
     });
 
     questions.push({
@@ -50,7 +52,8 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       answer: null,
       progress: 40,
       key: this.props.origin === 'newProject' ? 'feeForServiceWork' : 'feeForService',
-      id: 3
+      id: 3,
+      isYesNo: true
     });
 
     questions.push({
@@ -60,7 +63,8 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       answer: null,
       progress: 60,
       key: 'areSamplesComingFromEEAA',
-      id: 4
+      id: 4,
+      isYesNo: true
     });
 
     questions.push({
@@ -70,7 +74,8 @@ export const InternationalCohorts = hh(class InternationalCohorts extends Compon
       answer: null,
       progress: 80,
       key: 'isCollaboratorProvidingGoodService',
-      id: 5
+      id: 5,
+      isYesNo: true
     });
 
     return {
