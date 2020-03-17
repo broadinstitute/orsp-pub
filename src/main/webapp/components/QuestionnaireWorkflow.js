@@ -87,8 +87,11 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
         return prev;
       }, () => {
         let answer = this.state.questions[this.state.currentQuestionIndex].answer;
-        if (answer !== null) {
+        if (answer !== null && typeof answer === 'boolean') {
           this.evaluateAnswer(answer);
+        } 
+        else if(answer !== null && typeof answer === 'string') {
+          this.evaluateRadioAnswer(answer);
         }
       });
     } else {

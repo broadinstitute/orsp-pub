@@ -71,7 +71,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       isYesNo: true,
       question: 'Is this a project in which Broad 1) will obtain coded private information or biospecimen from another institution that retains a link to individually identifying information, AND 2) will be UNABLE to readily ascertain the identity of subjects, AND 3) is NOT the recipient of a direct federal grant/award ',
-      progress: 37,
+      progress: 47,
       yesOutput: DETERMINATION.NE,
       noOutput: 6,
       answer: null,
