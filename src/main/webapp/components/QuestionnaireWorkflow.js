@@ -211,6 +211,9 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].answer = value;
+      for(let i = prev.currentQuestionIndex + 1; i < prev.questions.length -1; i++) {
+        prev.questions[i].answer = null;
+      }
       return prev;
     }, () => {
       this.evaluateAnswer(value);
@@ -220,6 +223,9 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
   handleRadioChange = (e, field, value) => {
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].answer = value;
+      for(let i = prev.currentQuestionIndex + 1; i < prev.questions.length; i++) {
+        prev.questions[i].answer = null;
+      }
       return prev;
     }, () => {
       this.evaluateRadioAnswer(value);
