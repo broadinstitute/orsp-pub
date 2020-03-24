@@ -211,6 +211,10 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].answer = value;
+      let totalQuestions = prev.questions.length;
+      for(let i = prev.currentQuestionIndex + 1; i < prev.questions.length -1; i++) {
+        prev.questions[i].answer = null;
+      }
       return prev;
     }, () => {
       this.evaluateAnswer(value);

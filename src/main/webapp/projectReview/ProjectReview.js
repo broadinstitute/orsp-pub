@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, h2, hh, p } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh, p, b, span } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -1093,7 +1093,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "broadInvestigator",
               value: this.state.formData.projectExtraProps.broadInvestigator,
               currentValue: this.state.current.projectExtraProps.broadInvestigator,
-              moreInfo: 'Examples of projects that DO NOT contribute to generalizable knowledge include small case studies and internal technology development/validation projects ',
+              moreInfo: div(['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
               label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
               readOnly: true,
               onChange: () => { }
@@ -1106,31 +1106,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "subjectsDeceased",
               value: this.state.formData.projectExtraProps.subjectsDeceased,
               currentValue: this.state.current.projectExtraProps.subjectsDeceased,
-              label: 'Does this project  involve only specimens or data from deceased individuals? ',
-              readOnly: true,
-              onChange: () => { }
-            })
-          ]),
-          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
-            InputYesNo({
-              id: "isCoPublishing",
-              name: 'isCoPublishing',
-              value: this.state.formData.projectExtraProps.isCoPublishing,
-              currentValue: this.state.current.projectExtraProps.isCoPublishing,
-              label: 'Will specimens or data be provided without identifiable information by someone without any role in this study except provision of samples/data ',
-              moreInfo: '(no joint analysis, no co-publishing)',
-              readOnly: true,
-              onChange: () => { }
-            })
-          ]),
-          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
-            InputYesNo({
-              id: "radioPII",
-              name: "radioPII",
-              label: 'Is this a "fee-for-service" project? ',
-              moreInfo: '(Commercial service only, no direct federal funding, no data analysis/storage/dbGaP deposition by Broad)',
-              value: this.state.formData.projectExtraProps.feeForService,
-              currentValue: this.state.current.projectExtraProps.feeForService,
+              label: 'Does this project  involve only specimens or data from deceased individuals?',
               readOnly: true,
               onChange: () => { }
             })
@@ -1141,19 +1117,60 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "sensitiveInformationSource",
               value: this.state.formData.projectExtraProps.sensitiveInformationSource,
               currentValue: this.state.current.projectExtraProps.sensitiveInformationSource,
-              label: 'Is this a project in which Broad 1) will obtain coded private information or biospecimen from another institution that retains a link to individually identifying information, AND 2) will be UNABLE to readily ascertain the identity of subjects, AND 3) is NOT the recipient of a direct federal grant/award ',
+              label: span(['Will specimens or data be provided ', b(['without ']), 'identifiable information? ']),
               readOnly: true,
               onChange: () => { }
             })
           ]),
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
+            InputYesNo({
+              id: "isIdReceive",
+              name: 'isIdReceive',
+              value: this.state.formData.projectExtraProps.isIdReceive,
+              currentValue: this.state.current.projectExtraProps.isIdReceive,
+              label: 'Does the sample provider have access to identifiers?',
+              readOnly: true,
+              onChange: () => { }
+            })
+          ]),
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
+            InputYesNo({
+              id: "isCoPublishing",
+              name: 'isCoPublishing',
+              value: this.state.formData.projectExtraProps.isCoPublishing,
+              currentValue: this.state.current.projectExtraProps.isCoPublishing,
+              label: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider?',
+              moreInfo: '(no joint analysis, no co-publishing)',
+              readOnly: true,
+              onChange: () => { }
+            })
+          ]),
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
+            InputYesNo({
+              id: "radioPII",
+              name: "radioPII",
+              label: 'Is this a “fee for service” project? ',
+              moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
+              value: this.state.formData.projectExtraProps.feeForService,
+              currentValue: this.state.current.projectExtraProps.feeForService,
+              readOnly: true,
+              onChange: () => { }
+            })
+          ]),
+
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) &&  (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol')}, [
             InputFieldRadio({
               id:  "irbReviewedProtocol",
               label: 'Please select the option which best describes your research ',
               value: this.state.formData.projectExtraProps.irbReviewedProtocol,
               onChange: () => { },
-              optionValues: ['irbReviewedProtocol', 'sensitiveInformationSource', 'secondaryResearch'],
-              optionLabels: ['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.', 'This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used', 'This project is secondary research using data or biospecimens not collected specifically for this study'],
+              optionValues: ['irbReviewedProtocol', 'sensitiveInformationSource', 'secondaryResearch', 'privateInformation'],
+              optionLabels: [
+                span(['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.']), 
+                span(['This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used.']), 
+                span(['This project is secondary research using data or biospecimens not collected specifically for this study.']),
+                span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'not receive a direct federal grant/award at Broad.'])
+              ],              
               required: false,
               edit: false,
               readOnly: true
@@ -1165,7 +1182,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "humanSubjects",
               value: this.state.formData.projectExtraProps.humanSubjects,
               currentValue: this.state.current.projectExtraProps.humanSubjects,
-              label: "Is this a project only includes interactions involving surveys or  interview procedures (including visual or auditory recording) IF AT LEAST ONE OF THE FOLLOWING IS TRUE: (i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained; OR (ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation",
+              label: "",
+              moreInfo: div([
+                div(["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                div(["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
+                div([b(["OR"])]), 
+                div(["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
+              ]),
               readOnly: true,
               onChange: () => { }
             })
@@ -1176,9 +1199,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "interactionSource",
               value: this.state.formData.projectExtraProps.interactionSource,
               currentValue: this.state.current.projectExtraProps.interactionSource,
-              label: "Does the following statement accurately describe your study: I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) has recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained directly or indirectly through identifiers linked to the subjects.  ",
-              moreInfo: '(For example, your collaborator will provide specimens that are no longer linked to subject identifiers). Additionally, no one on the research team will attempt to contact or re-identify subjects',
-              readOnly: true,
+              label: "Does the statement below accurately describe your project?",
+              moreInfo: div(["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
+              b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]),              readOnly: true,
               onChange: () => { }
             })
           ])
