@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1, b, div, span } from 'react-hyperscript-helpers';
+import { hh, h1, b, span } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { DETERMINATION } from "../util/TypeDescription";
@@ -24,7 +24,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       isYesNo: true,
       question: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
-      moreInfo: div(['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
+      moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
       progress: 0,
       yesOutput: 2,
       noOutput: DETERMINATION.NHSR,
@@ -110,11 +110,11 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       isYesNo: true,
       question: " ",
-      moreInfo: div([
-                  div(["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
-                  div(["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
-                  div([b(["OR"])]), 
-                  div(["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
+      moreInfo: span([
+                  span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                  span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
+                  span({style: { 'display': 'block' }}, [b(["OR"])]), 
+                  span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
                 ]),
       progress: 78,
       yesOutput: DETERMINATION.EX,
@@ -127,7 +127,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
     questions.push({
       isYesNo: true,
       question: "Does the statement below accurately describe your project?",
-      moreInfo: div(["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
+      moreInfo: span({style: { 'display': 'block' }}, ["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
                   b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]),
       progress: 88,
       yesOutput: DETERMINATION.EX,

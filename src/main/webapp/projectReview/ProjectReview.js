@@ -1093,7 +1093,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               name: "broadInvestigator",
               value: this.state.formData.projectExtraProps.broadInvestigator,
               currentValue: this.state.current.projectExtraProps.broadInvestigator,
-              moreInfo: div(['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
+              moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
               label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
               readOnly: true,
               onChange: () => { }
@@ -1158,7 +1158,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             })
           ]),
 
-          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) &&  (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol')}, [
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) &&  (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'privateInformation')}, [
             InputFieldRadio({
               id:  "irbReviewedProtocol",
               label: 'Please select the option which best describes your research ',
@@ -1183,11 +1183,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
               value: this.state.formData.projectExtraProps.humanSubjects,
               currentValue: this.state.current.projectExtraProps.humanSubjects,
               label: "",
-              moreInfo: div([
-                div(["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
-                div(["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
-                div([b(["OR"])]), 
-                div(["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
+              moreInfo: span([
+                span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
+                span({style: { 'display': 'block' }}, [b(["OR"])]), 
+                span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
               ]),
               readOnly: true,
               onChange: () => { }
@@ -1200,7 +1200,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               value: this.state.formData.projectExtraProps.interactionSource,
               currentValue: this.state.current.projectExtraProps.interactionSource,
               label: "Does the statement below accurately describe your project?",
-              moreInfo: div(["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
+              moreInfo: span({style: { 'display': 'block' }}, ["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
               b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]),              readOnly: true,
               onChange: () => { }
             })
