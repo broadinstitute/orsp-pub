@@ -1087,6 +1087,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
               show: true
             })
           ]),
+          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
+            InputYesNo({
+              id: "radioPII",
+              name: "radioPII",
+              label: 'Is this a “fee for service” project? ',
+              moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
+              value: this.state.formData.projectExtraProps.feeForService,
+              currentValue: this.state.current.projectExtraProps.feeForService,
+              readOnly: true,
+              onChange: () => { }
+            })
+          ]),
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [
             InputYesNo({
               id: "broadInvestigator",
@@ -1145,19 +1157,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               onChange: () => { }
             })
           ]),
-          div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
-            InputYesNo({
-              id: "radioPII",
-              name: "radioPII",
-              label: 'Is this a “fee for service” project? ',
-              moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
-              value: this.state.formData.projectExtraProps.feeForService,
-              currentValue: this.state.current.projectExtraProps.feeForService,
-              readOnly: true,
-              onChange: () => { }
-            })
-          ]),
-
+          
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) &&  (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'privateInformation')}, [
             InputFieldRadio({
               id:  "irbReviewedProtocol",

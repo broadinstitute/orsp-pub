@@ -19,76 +19,73 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
   }
 
   initQuestions() {
-    let questions = [];
-    
+    let questions = [];   
+    questions.push({
+      isYesNo: true,
+      question: 'Is this a “fee for service” project? ',
+      moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
+      progress: 0,
+      yesOutput: DETERMINATION.NE,
+      noOutput: 2,
+      answer: null,
+      key: 'feeForService',
+      id: 1
+    });
     questions.push({
       isYesNo: true,
       question: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
       moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
-      progress: 0,
-      yesOutput: 2,
+      progress: 12,
+      yesOutput: 3,
       noOutput: DETERMINATION.NHSR,
       answer: null,
       key: 'broadInvestigator',
-      id: 1
+      id: 2
     });
 
     questions.push({
       isYesNo: true,
       question: 'Does this project  involve only specimens or data from deceased individuals?',
-      progress: 12,
+      progress: 25,
       yesOutput: DETERMINATION.NHSR,
-      noOutput: 3,
+      noOutput: 4,
       answer: null,
       key: 'subjectsDeceased',
-      id: 2
+      id: 3
     });
     
     questions.push({
       isYesNo: true,
       question: span(['Will specimens or data be provided ', b(['without ']), 'identifiable information? ']),
-      progress: 25,
-      yesOutput: 4,
-      noOutput: 6,
-      answer: null,
-      key: 'sensitiveInformationSource',
-      id: 3
-    });
-
-    questions.push({
-      isYesNo: true,
-      question: 'Does the sample provider have access to identifiers?',
       progress: 36,
       yesOutput: 5,
-      noOutput: DETERMINATION.NHSR,
+      noOutput: 7,
       answer: null,
-      key: 'isIdReceive',
+      key: 'sensitiveInformationSource',
       id: 4
     });
 
     questions.push({
       isYesNo: true,
-      question: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider?',
-      progress: 47,
+      question: 'Does the sample provider have access to identifiers?',
+      progress: 46,
       yesOutput: 6,
       noOutput: DETERMINATION.NHSR,
       answer: null,
-      key: 'isCoPublishing',
+      key: 'isIdReceive',
       id: 5
     });
-   
+
     questions.push({
       isYesNo: true,
-      question: 'Is this a “fee for service” project? ',
-      moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
+      question: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider?',
       progress: 57,
-      yesOutput: DETERMINATION.NE,
-      noOutput: 7,
+      yesOutput: 7,
+      noOutput: DETERMINATION.NHSR,
       answer: null,
-      key: 'feeForService',
+      key: 'isCoPublishing',
       id: 6
     });
-
     questions.push({
       isRadio: true,
       question: 'Please select the option which best describes your research: ',
