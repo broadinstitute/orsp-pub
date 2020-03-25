@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, h2, hh, p, b, span } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh, p, b, span, i } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { MultiSelect } from '../components/MultiSelect';
@@ -1124,14 +1124,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
             })
           ]),
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
-            InputYesNo({
-              id: "sensitiveInformationSource",
-              name: "sensitiveInformationSource",
+            InputFieldRadio({
+              id:  "sensitiveInformationSource",
+              label: span(['Will specimens or data be provided ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
               value: this.state.formData.projectExtraProps.sensitiveInformationSource,
-              currentValue: this.state.current.projectExtraProps.sensitiveInformationSource,
-              label: span(['Will specimens or data be provided ', b(['without ']), 'identifiable information? ']),
-              readOnly: true,
-              onChange: () => { }
+              onChange: () => { },
+              optionValues: ['false', 'true', 'na'],
+              optionLabels: [
+                span(['No']), 
+                span(['Yes']), 
+                span(['N/A (for example research with direct interaction with participants) '])
+              ],  
+              required: false,
+              edit: false,
+              readOnly: true
             })
           ]),
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
