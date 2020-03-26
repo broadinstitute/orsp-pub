@@ -266,6 +266,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
           InputFieldRadio({
             id:  this.state.questions[currentQuestionIndex].id,
             label: this.state.questions[currentQuestionIndex].question,
+            moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
             value: this.state.questions[currentQuestionIndex].answer,
             onChange: this.handleRadioChange,
             optionValues: this.state.questions[currentQuestionIndex].optionValues,

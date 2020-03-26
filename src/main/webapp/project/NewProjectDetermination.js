@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { hh, h1, b, span } from 'react-hyperscript-helpers';
+import { hh, h1, b, span, i } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { DETERMINATION } from "../util/TypeDescription";
@@ -31,6 +31,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       key: 'feeForService',
       id: 1
     });
+
     questions.push({
       isYesNo: true,
       question: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
@@ -42,7 +43,6 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       key: 'broadInvestigator',
       id: 2
     });
-
     questions.push({
       isYesNo: true,
       question: 'Does this project  involve only specimens or data from deceased individuals?',
@@ -52,16 +52,22 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       answer: null,
       key: 'subjectsDeceased',
       id: 3
-    });
-    
+    });   
     questions.push({
-      isYesNo: true,
-      question: span(['Will specimens or data be provided ', b(['without ']), 'identifiable information? ']),
-      progress: 36,
-      yesOutput: 5,
-      noOutput: 7,
+      isRadio: true,
+      moreInfo: '',
+      question: span(['Will specimens or data be provided ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
+      progress: 37,
+      value: 'sensitiveInformationSource',
       answer: null,
       key: 'sensitiveInformationSource',
+      optionLabels: [
+            span(['Yes']), 
+            span(['No']), 
+            span(['N/A (for example research with direct interaction with participants) '])
+          ],
+      optionValues: ['true', 'false', 'na'],
+      outputs: [{key: 'true', value: 5}, {key: 'false', value: 7}, {key: 'na', value: 7}],
       id: 4
     });
 
@@ -86,6 +92,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
       key: 'isCoPublishing',
       id: 6
     });
+
     questions.push({
       isRadio: true,
       question: 'Please select the option which best describes your research: ',
