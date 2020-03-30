@@ -75,7 +75,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
       controlSetOption: get(restriction, 'controlSetOption', ''),
       gender: get(restriction, 'gender', ''),
       pediatric: get(restriction, 'pediatricLimited', ''),
-      collaborationInvestigators: get(restriction, 'collaborationInvestigators', ''),
+      collaboratorRequired: get(restriction, 'collaboratorRequired', ''),
       irb: get(restriction, 'irb', ''),
       publicationResults: restriction != null && !isEmpty(restriction.publicationResults) ? restriction.publicationResults : '',
       genomicResults: get(restriction, 'genomicResults', ''),
@@ -762,9 +762,9 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
         ]),
         div({ style: styles.borderedContainer }, [
           InputYesNo({
-            id: "radioCollaborationInvestigators",
-            name: "collaborationInvestigators",
-            value: this.state.restriction.collaborationInvestigators,
+            id: "radioCollaboratorRequireds",
+            name: "collaboratorRequired",
+            value: this.state.restriction.collaboratorRequired,
             label: "Collaboration with the primary study investigators required [COL-XX]",
             readOnly: false,
             onChange: this.handleRadioChange

@@ -63,7 +63,7 @@ class DataUseRestrictionParser {
             dataUseRestriction.generalUse = true
         }
 
-        dataUseRestriction.collaborationInvestigators = IssueUtils.getBooleanForParam(params.collaborationInvestigators)
+        dataUseRestriction.collaboratorRequired = IssueUtils.getBooleanForParam(params.collaboratorRequired)
         dataUseRestriction.publicationResults = IssueUtils.getBooleanForParam(params.publicationResults)
         dataUseRestriction.genomicResults = IssueUtils.getBooleanForParam(params.genomicResults)
         dataUseRestriction.geneticStudiesOnly = IssueUtils.getBooleanForParam(params.geneticStudiesOnly)

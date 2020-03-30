@@ -115,7 +115,7 @@ export const DUR_QUESTIONS = [
   {
     question: 'Collaboration with the primary study investigators required',
     boolean: true,
-    fieldName: 'collaborationInvestigators',
+    fieldName: 'collaboratorRequired',
     id: 19
   },
   {

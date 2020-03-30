@@ -38,7 +38,7 @@ class DataUseRestriction {
     String vaultConsentId
     String vaultConsentLocation
     Boolean noRestriction
-    Boolean collaborationInvestigators
+    Boolean collaboratorRequired
     Boolean publicationResults
     Boolean genomicResults
     String genomicSummaryResults
@@ -72,7 +72,7 @@ class DataUseRestriction {
         manualReview nullable: true
         comments nullable: true
         noRestriction nullable: true
-        collaborationInvestigators nullable: true
+        collaboratorRequired nullable: true
         publicationResults nullable: true
         genomicResults nullable: true
         genomicSummaryResults nullable: true
