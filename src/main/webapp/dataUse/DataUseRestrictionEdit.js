@@ -762,7 +762,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
         ]),
         div({ style: styles.borderedContainer }, [
           InputYesNo({
-            id: "radioCollaboratorRequireds",
+            id: "radioCollaboratorRequired",
             name: "collaboratorRequired",
             value: this.state.restriction.collaboratorRequired,
             label: "Collaboration with the primary study investigators required [COL-XX]",
