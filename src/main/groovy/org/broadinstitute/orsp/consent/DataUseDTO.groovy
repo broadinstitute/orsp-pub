@@ -36,5 +36,5 @@ class DataUseDTO {
     Boolean publicationResults
     Boolean genomicResults
     String genomicSummaryResults
-    Boolean collaborationInvestigators
+    Boolean collaboratorRequired
 }

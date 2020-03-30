@@ -64,7 +64,7 @@ class ConsentService implements Status {
     public static final String AGGREGATE_POS = "Aggregate level data for general research use is prohibited."
     public static final String MANUAL_REVIEW = "Data access requests will require manual review."
     public static final String GENETIC_STUDIES_ONLY = "Future use is limited to genetic studies only [GSO]"
-    public static final String COLLABORATION_INVESTIGATOR = "Collaboration with the primary study investigators required"
+    public static final String COLLABORATOR_REQUIRED = "Collaboration with the primary study investigators required"
     public static final String GENOMIC_RESULTS = "Genomic summary results from this study are available only through controlled-access"
 
     // Terms of use/notes
@@ -391,8 +391,8 @@ class ConsentService implements Status {
             dataUseDTO.setOther(stripTextOfHtml(dataUseRestriction.other).trim())
         }
 
-        if (dataUseRestriction.collaborationInvestigators) {
-            dataUseDTO.collaborationInvestigators = true
+        if (dataUseRestriction.collaboratorRequired) {
+            dataUseDTO.collaboratorRequired = true
         }
 
         if (dataUseRestriction.publicationResults) {
@@ -469,7 +469,7 @@ class ConsentService implements Status {
         if (dataUseRestriction.other && !dataUseRestriction.other.isEmpty()) summary.add(sprintf(OTHER_POS, stripTextOfHtml(dataUseRestriction.other)))
         if (dataUseRestriction.manualReview) summary.add(MANUAL_REVIEW)
         if (dataUseRestriction.geneticStudiesOnly) summary.add(GENETIC_STUDIES_ONLY)
-        if (dataUseRestriction.collaborationInvestigators) summary.add(COLLABORATION_INVESTIGATOR)
+        if (dataUseRestriction.collaboratorRequired) summary.add(COLLABORATOR_REQUIRED)
         if (dataUseRestriction.genomicResults) summary.add(GENOMIC_RESULTS)
         summary
     }
