@@ -32,7 +32,18 @@ class ApiController {
         // whereas the grails JSON converter does not
         Gson gson = new Gson()
         Object status = gson.fromJson(gson.toJson(statusService.status()), Object.class)
+        if (!status.getAt("ok")) {
+            response.status = 500
+        } else {
+            response.status = 200
+        }
         render status as JSON
+    }
+
+    // Just for testing  health checks purpose
+    def errorStatus() {
+        response.status = 500
+        render new SystemStatus(ok: false, systems: null) as JSON
     }
 
     // Summary of all data use projects

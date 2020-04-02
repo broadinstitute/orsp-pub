@@ -41,7 +41,6 @@ class StatusService {
             statusMap.put('DataBioOntology', { getCachedSubsystem('DataBioOntology', databio) })
             statusMap.put('DUOS', { getCachedSubsystem('DUOS', consent) })
             statusMap.put('GCS', { getCachedSubsystem('GCS', gcs) })
-            statusMap.put('Notifications', { getCachedSubsystem('Notifications', notify) })
             statusMap.put('Ontology', { getCachedSubsystem('Ontology', ontology) })
             Map<String, SubsystemStatus> subsystems = statusMap.get()
             new SystemStatus(
