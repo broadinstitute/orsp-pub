@@ -1380,7 +1380,25 @@ class QueryService implements Status {
     }
 
     Collection<Event> getEventsForProject(String projectKey) {
-        projectKey ? Event.findAllByProjectKey(projectKey) : Collections.emptyList()
+        if (StringUtils.isEmpty(projectKey)) {
+            Collections.emptyList()
+        }
+        else {
+            SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+            final session = sessionFactory.currentSession
+            final String query =
+                    ' select * ' +
+                            ' from event ' +
+                            ' where project_key = ?' +
+                            ' order by created desc '
+            final SQLQuery sqlQuery = session.createSQLQuery(query)
+            sqlQuery.setString(0, projectKey)
+            final events = sqlQuery.with {
+                addEntity(Event)
+                list()
+            }
+            events
+        }
     }
 
     Collection<Funding> findFundingsByProject(String projectKey) {
@@ -1601,7 +1619,7 @@ class QueryService implements Status {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query =
-                ' select * from comment where project_key = :issueId'
+                ' select * from comment where project_key = :issueId order by created desc'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         Collection<Comment> results = Collections.emptyList()
         try {
