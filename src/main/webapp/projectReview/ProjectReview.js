@@ -1175,7 +1175,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 span(['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.']), 
                 span(['This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used.']), 
                 span(['This project is secondary research using data or biospecimens not collected specifically for this study.']),
-                span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'not receive a direct federal grant/award at Broad.'])
+                span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'will not receive a direct federal grant/award at Broad.'])
               ],              
               required: false,
               edit: false,
