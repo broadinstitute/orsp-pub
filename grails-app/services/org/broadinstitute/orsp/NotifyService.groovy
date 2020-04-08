@@ -505,7 +505,7 @@ class NotifyService implements SendgridSupport, Status {
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
                     ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                    subject: issue.projectKey + " - Required InfoSec Follow-up",
+                    subject: user.displayName + " added " + issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
                     issue: issue)
             arguments.view = "/notify/generalInfo"
@@ -558,13 +558,14 @@ class NotifyService implements SendgridSupport, Status {
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
     Map<Boolean, String> sendAdminNotification(String type, Issue issue) {
+        User user = userService.findUser(issue.reporter);
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        subject: user.displayName + " created " + issue.projectKey + " - Your ORSP Review is Required",
                         details: type,
-                        user: userService.findUser(issue.reporter),
+                        user: user,
                         issue: issue)
         arguments.view = "/notify/creation"
         Mail mail = populateMailFromArguments(arguments)
@@ -638,12 +639,13 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsSubmissionNotification(Issue issue) {
+        User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your ORSP Review is Required",
-                        user: userService.findUser(issue.reporter),
+                        subject: user.displayName + " edited " + issue.projectKey + " - Your ORSP Review is Required",
+                        user: user,
                         issue: issue)
 
         arguments.view = "/notify/edits"
@@ -757,8 +759,8 @@ class NotifyService implements SendgridSupport, Status {
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: consent.projectKey + " - Your ORSP Review is Required",
-                        user: userService.findUser(consent.reporter),
+                        subject: user.displayName + " added " + consent.projectKey + " - Your ORSP Review is Required",
+                        user: user,
                         issue: consent,
                         values: values)
 

@@ -53,7 +53,7 @@ class CommentsService implements UserInfo {
                     new NotifyArguments(
                             toAddresses: toAddresses,
                             fromAddress: fromAddress,
-                            subject: "Comment Entered: " + issue.projectKey,
+                            subject: getUser().displayName " added a comment Entered: " + issue.projectKey,
                             comment: comment.description,
                             user: getUser(),
                             issue: issue))
