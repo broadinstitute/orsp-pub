@@ -7,9 +7,9 @@ class IssueReviewService {
     NotifyService notifyService
 
     @Transactional
-    IssueReview create(IssueReview issueReview) throws DomainException {
+    IssueReview create(IssueReview issueReview, User user) throws DomainException {
         issueReview.save(flush: true)
-        notifyService.sendEditsSubmissionNotification(Issue.findByProjectKey(issueReview.projectKey))
+        notifyService.sendEditsSubmissionNotification(Issue.findByProjectKey(issueReview.projectKey), user)
         issueReview
     }
 

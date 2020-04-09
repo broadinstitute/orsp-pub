@@ -24,7 +24,7 @@ class IssueReviewController extends AuthenticatedController {
             if (issue == null) {
                 handleNotFound("Project key does not exist")
             } else {
-                issueReviewService.create(issueReview)
+                issueReviewService.create(issueReview, getUser())
                 persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
                 transitionService.handleIntake(issue, [])
                 response.status = 201
@@ -44,7 +44,7 @@ class IssueReviewController extends AuthenticatedController {
         }
         IssueReview ir = parseIssueReview(gson.toJson(request.JSON))
         issueReviewFormer.suggestions = ir.suggestions
-        issueReviewService.create(issueReviewFormer)
+        issueReviewService.create(issueReviewFormer, getUser())
         response.status = 200
         render([issueReviewFormer] as JSON)
     }
