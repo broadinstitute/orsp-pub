@@ -558,7 +558,7 @@ class NotifyService implements SendgridSupport, Status {
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
     Map<Boolean, String> sendAdminNotification(String type, Issue issue) {
-        User user = userService.findUser(issue.reporter);
+        User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
