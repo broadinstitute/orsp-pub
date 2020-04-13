@@ -75,21 +75,18 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         editTypeError: false,
         editDescriptionError: false,
         instError: false,
-        institutionalSourceNameError: false,
         institutionalSourceCountryError: false,
-        institutionalNameErrorIndex: [],
         institutionalCountryErrorIndex: [],
         consent: false,
         protocol: false,
         consentGroupName: false,
         collInst: false,
-        institutionalSourcesName: false,
         institutionalSourcesCountry: false,
         noConsentAnswer: false,
       },
       editedForm: {},
       formData: {
-        currentInstSources: [{ name: '', country: '' }],
+        currentInstSources: [{ country: '' }],
         consentExtraProps: {},
         consentForm: {},
         sampleCollections: []
@@ -101,7 +98,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         consentForm: {}
       },
       futureCopy: {
-        instSources: [{ name: '', country: '' }],
+        instSources: [{ country: '' }],
       },
       suggestions: {},
       suggestionsCopy: {},
@@ -246,8 +243,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     if (instSources !== undefined && instSources !== null && instSources.length > 0) {
       instSources.map(instSource => {
         instSourcesArray.push({
-          current: { name: instSource.name, country: instSource.country },
-          future: { name: instSource.name, country: instSource.country }
+          current: { country: instSource.country },
+          future: { country: instSource.country }
         });
       });
     }
@@ -554,35 +551,24 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   institutionalSrcHasErrors = () => {
-    const instSources = this.state.formData.instSources == undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
-    let institutionalNameErrorIndex = [];
+    const instSources = this.state.formData.instSources == undefined ? [{ current: { country: '' }, future: { country: '' } }] : this.state.formData.instSources;
     let institutionalCountryErrorIndex = [];
     let institutionalError = instSources.filter((obj, idx) => {
       let response = false;
-      // Error if Name is missing
-      if (isEmpty(obj.current.name) && isEmpty(obj.future.name)
-        || isEmpty(obj.future.name) && !isEmpty(obj.future.country)
-      ) {
-        institutionalNameErrorIndex.push(idx);
-        response = true;
-      }
       // Error if Country is missing
       if (isEmpty(obj.future.country) && isEmpty(obj.current.country)
-        || isEmpty(obj.future.country) && !isEmpty(obj.future.name)
       ) {
         institutionalCountryErrorIndex.push(idx);
         response = true;
       }
       // Error if all elements are empty
-      if (!instSources.filter(element => !isEmpty(element.future.name) && !isEmpty(element.future.country)).length > 0) {
-        institutionalNameErrorIndex.push(0);
+      if (!instSources.filter(element => !isEmpty(element.future.country)).length > 0) {
         institutionalCountryErrorIndex.push(0);
         response = true;
       }
       return response;
     }).length > 0;
     this.setState(prev => {
-      prev.errors.institutionalNameErrorIndex = institutionalNameErrorIndex;
       prev.errors.institutionalCountryErrorIndex = institutionalCountryErrorIndex;
       prev.errors.instError = institutionalError;
       return prev;
@@ -613,8 +599,8 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     let institutionalSourcesList = [];
     if (institutionalSources !== null && institutionalSources.length > 0) {
       institutionalSources.map((f) => {
-        if (!isEmpty(f.future.name) && !isEmpty(f.future.country)) {
-          institutionalSourcesList.push({ name: f.future.name, country: f.future.country });
+        if (!isEmpty(f.future.country)) {
+          institutionalSourcesList.push({ country: f.future.country });
         }
       });
     }
@@ -900,7 +886,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       editDescription = null,
       noConsentFormReason = ''
     } = get(this.state.formData, 'consentExtraProps', '');
-    const instSources = this.state.formData.instSources === undefined ? [{ current: { name: '', country: '' }, future: { name: '', country: '' } }] : this.state.formData.instSources;
+    const instSources = this.state.formData.instSources === undefined ? [{ current: { country: '' }, future: { country: '' } }] : this.state.formData.instSources;
     return (
       div({}, [
         h2({ className: "stepTitle" }, [" Sample/Data Cohort: " + this.props.consentKey]),
@@ -1090,7 +1076,6 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
             readOnly: this.state.readOnly,
             edit: true,
             errorHandler: this.setInstitutionalError,
-            institutionalNameErrorIndex: this.state.errors.institutionalNameErrorIndex,
             institutionalCountryErrorIndex: this.state.errors.institutionalCountryErrorIndex,
             error: this.state.errors.instError
           })

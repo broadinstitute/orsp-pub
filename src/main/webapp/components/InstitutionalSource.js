@@ -12,7 +12,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.addInstitutionalSources = this.addInstitutionalSources.bind(this);
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
     this.state = {
-      institutionalSources: [{ name: '', country: '' }]
+      institutionalSources: [{ country: '' }]
     };
   };
 

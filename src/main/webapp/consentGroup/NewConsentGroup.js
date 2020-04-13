@@ -56,7 +56,6 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         consentGroupName: false,
         collaboratingInstitution: false,
         requireMta: false,
-        institutionalSourcesName: false,
         institutionalSourcesCountry: false,
         pii: false,
         compliance: false,
@@ -331,7 +330,6 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     let institutionProtocolNumber = false;
     let consentGroupName = false;
     let collaboratingInstitution = false;
-    let institutionalSourcesName = false;
     let institutionalSourcesCountry = false;
     let noConsentFormReason = false;
     let isValid = true;
@@ -357,15 +355,10 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
       isValid = false;
     }
     if (this.state.generalDataFormData.institutionalSources === undefined) {
-      institutionalSourcesName = true;
       institutionalSourcesCountry = true;
       isValid = false;
     } else {
       this.state.generalDataFormData.institutionalSources.forEach(institutionalSource => {
-        if (isEmpty(institutionalSource.name)) {
-          institutionalSourcesName = true;
-          isValid = false;
-        }
         if (isEmpty(institutionalSource.country)) {
           institutionalSourcesCountry = true;
           isValid = false;
@@ -379,7 +372,6 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         prev.errors.institutionProtocolNumber = institutionProtocolNumber;
         prev.errors.consentGroupName = consentGroupName;
         prev.errors.collaboratingInstitution = collaboratingInstitution;
-        prev.errors.institutionalSourcesName = institutionalSourcesName;
         prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         prev.errors.noConsentFormReason = noConsentFormReason;
         prev.errors.isValid = isValid;
@@ -390,7 +382,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
     else if (field === 'investigatorLastName' || field === 'institutionProtocolNumber' ||
       field === 'consentGroupName' || field === 'collaboratingInstitution' ||
-      field === 'nameInstitutional' || field === 'countryInstitutional' || field === 'noConsentFormReason') {
+      field === 'countryInstitutional' || field === 'noConsentFormReason') {
 
       this.setState(prev => {
         if (field === 'investigatorLastName') {
@@ -401,8 +393,6 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
           prev.errors.consentGroupName = consentGroupName;
         } else if (field === 'collaboratingInstitution') {
           prev.errors.collaboratingInstitution = collaboratingInstitution;
-        } else if (field === 'nameInstitutional') {
-          prev.errors.institutionalSourcesName = institutionalSourcesName;
         } else if (field === 'countryInstitutional') {
           prev.errors.institutionalSourcesCountry = institutionalSourcesCountry;
         } else if (field === 'noConsentFormReason') {
