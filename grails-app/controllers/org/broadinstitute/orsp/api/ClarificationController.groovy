@@ -52,7 +52,7 @@ class ClarificationController extends AuthenticatedController {
                         new NotifyArguments(
                                 toAddresses: toAddresses,
                                 fromAddress: fromAddress,
-                                subject: "Clarification Requested: " + issue.projectKey,
+                                subject: "Clarification Requested By " + getUser()?.displayName + ": " + issue.projectKey,
                                 comment: comment.description,
                                 user: getUser(),
                                 issue: issue))
@@ -82,7 +82,7 @@ class ClarificationController extends AuthenticatedController {
                         new NotifyArguments(
                                 toAddresses: toAddresses,
                                 fromAddress: fromAddress,
-                                subject: "Clarification Requested: " + issue.projectKey,
+                                subject: "Clarification Requested By " + getUser()?.displayName + ": " + issue.projectKey,
                                 comment: comment.description,
                                 user: getUser(),
                                 issue: issue,

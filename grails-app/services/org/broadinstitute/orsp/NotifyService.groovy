@@ -492,7 +492,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink, String subjectDisplayName) {
         Map<Boolean, String> result = new HashMap<>()
         Boolean sendEmail = false
         if (getValue(consentCollectionLink.getPii()) == YES ||
@@ -505,7 +505,7 @@ class NotifyService implements SendgridSupport, Status {
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
                     ccAddresses: Collections.singletonList(user.getEmailAddress()),
-                    subject: issue.projectKey + " - Required InfoSec Follow-up",
+                    subject: subjectDisplayName + " added " + issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
                     issue: issue)
             arguments.view = "/notify/generalInfo"
@@ -558,13 +558,14 @@ class NotifyService implements SendgridSupport, Status {
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
     Map<Boolean, String> sendAdminNotification(String type, Issue issue) {
+        User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        subject: user.displayName + " created " + issue.projectKey + " - Your ORSP Review is Required",
                         details: type,
-                        user: userService.findUser(issue.reporter),
+                        user: user,
                         issue: issue)
         arguments.view = "/notify/creation"
         Mail mail = populateMailFromArguments(arguments)
@@ -637,12 +638,12 @@ class NotifyService implements SendgridSupport, Status {
         result
     }
 
-    Map<Boolean, String> sendEditsSubmissionNotification(Issue issue) {
+    Map<Boolean, String> sendEditsSubmissionNotification(Issue issue, User user) {
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your ORSP Review is Required",
+                        subject: user.displayName + " edited " + issue.projectKey + " - Your ORSP Review is Required",
                         user: userService.findUser(issue.reporter),
                         issue: issue)
 
@@ -695,7 +696,7 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
-        sendSecurityInfo(issue, user, consentCollectionLink)
+        sendSecurityInfo(issue, user, consentCollectionLink, user.displayName)
     }
 
     Map<Boolean, String> projectCreation(Issue issue) {
@@ -746,7 +747,7 @@ class NotifyService implements SendgridSupport, Status {
         mails
     }
 
-    Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey, ConsentCollectionLink consentCollectionLink) {
+    Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey, ConsentCollectionLink consentCollectionLink, String subjectDisplayName) {
         Map<String, String> values = new HashMap<>()
         Issue consent = Issue.findByProjectKey(consentKey)
         Issue project = Issue.findByProjectKey(projectKey)
@@ -757,14 +758,14 @@ class NotifyService implements SendgridSupport, Status {
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getAdminRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: consent.projectKey + " - Your ORSP Review is Required",
-                        user: userService.findUser(consent.reporter),
+                        subject: subjectDisplayName + " added " + consent.projectKey + " - Your ORSP Review is Required",
+                        user: user,
                         issue: consent,
                         values: values)
 
         arguments.view = "/notify/addExistingCG"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
-        sendSecurityInfo(consent, user, consentCollectionLink)
+        sendSecurityInfo(consent, user, consentCollectionLink, subjectDisplayName)
     }
 }
