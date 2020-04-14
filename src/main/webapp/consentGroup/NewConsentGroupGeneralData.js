@@ -25,7 +25,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
         primaryContact: '',
         sampleCollections: [],
         requireMta: '',
-        institutionalSources: [{ name: '', country: '' }],
+        institutionalSources: [{country: '' }],
         startDate: null,
         endDate: null,
         onGoingProcess: false,
@@ -133,7 +133,6 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           this.props.errors.primaryContact ||
           this.props.errors.requireMta ||
           this.props.errors.consentGroupName ||
-          this.props.errors.institutionalSourcesName ||
           this.props.errors.institutionalSourcesCountry ||
           this.props.errors.startDate ||
           this.props.errors.endDate ||
@@ -259,11 +258,10 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           ])
         ]),
 
-        Panel({ title: "Institutional Source of Data/Samples and Location*" }, [
+        Panel({ title: "Country Where Samples/Data were Collected*" }, [
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: this.state.formData.institutionalSources,
-            errorName: this.props.errors.institutionalSourcesName,
             errorCountry: this.props.errors.institutionalSourcesCountry,
             errorMessage: "Required field",
             edit: false

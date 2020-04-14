@@ -12,7 +12,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
     this.addInstitutionalSources = this.addInstitutionalSources.bind(this);
     this.removeInstitutionalSources = this.removeInstitutionalSources.bind(this);
     this.state = {
-      institutionalSources: [{ name: '', country: '' }]
+      institutionalSources: [{ country: '' }]
     };
   };
 
@@ -25,8 +25,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   checkEmptySrc(elementPostition) {
-    return (get(this.props.institutionalSources[elementPostition], 'future.name') !== '' && get(this.props.institutionalSources[elementPostition], 'future.country') !== '')
-      || (!isEmpty(this.props.institutionalSources[elementPostition].current.name) && !isEmpty(this.props.institutionalSources[elementPostition].current.country));
+    return get(this.props.institutionalSources[elementPostition], 'future.country') !== ''
+      || !isEmpty(this.props.institutionalSources[elementPostition].current.country);
   }
 
   addInstitutionalSources() {
@@ -35,8 +35,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         this.setState(prev => {
           let institutionalSources = this.props.institutionalSources;
           institutionalSources.splice(0, 0, {
-            current: { name: null, country: null },
-            future: { name: '', country: '' }
+            current: { country: null },
+            future: { country: '' }
           });
           prev.institutionalSources = institutionalSources;
           this.props.error && this.props.edit ? this.props.errorHandler() : prev.error = false;
@@ -46,16 +46,16 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         });
       } else if (this.checkEmptySrc(0) && this.checkEmptySrc(1)) {
         this.props.updateInstitutionalSource([{
-          current: { name: null, country: null },
-          future: { name: '', country: '' }
+          current: { country: null },
+          future: { country: '' }
         }])
       }
     } else {
       // For new Projects
-      if (this.props.institutionalSources !== undefined && this.props.institutionalSources[0].name !== '' && this.props.institutionalSources[0].country !== '') {
+      if (this.props.institutionalSources !== undefined && this.props.institutionalSources[0].country !== '') {
         this.setState(prev => {
           let institutionalSources = this.state.institutionalSources;
-          institutionalSources.splice(0, 0, { name: '', country: '' });
+          institutionalSources.splice(0, 0, { country: '' });
           prev.institutionalSources = institutionalSources;
           prev.error = false;
           return prev
@@ -71,7 +71,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
       if (this.isEmpty(this.props.institutionalSources[index].current.name)) {
         institutionalSources.splice(index, 1);
       } else {
-        institutionalSources[index].future = { name: '', country: '' }
+        institutionalSources[index].future = { country: '' }
       }
       this.setState(prev => {
         prev.institutionalSources = institutionalSources;
@@ -136,10 +136,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row" }, [
-              div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Name"])
-              ]),
-              div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
+              div({ className: "col-lg-12 col-md-12 col-sm-12 col-12" }, [
                 label({ className: "inputFieldLabel noMargin" }, ["Country"])
               ])
             ])
@@ -159,25 +156,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
-                    InputFieldText({
-                      index: index,
-                      id: index + "name",
-                      name: "name",
-                      label: "",
-                      value: this.props.edit ? rd.future.name : rd.name,
-                      currentValue: this.props.edit ? rd.current.name : rd.name,
-                      required: true,
-                      onChange: this.handleInstitutionalChange,
-                      error: this.props.edit ? this.getError(index, "name") : this.props.errorName && index === 0 && this.isEmpty(rd.name),
-                      disabled: (index > 0) && !this.props.edit,
-                      errorMessage: this.props.errorMessage,
-                      readOnly: this.props.readOnly,
-                      edited: this.props.readOnly,
-                      edit: this.props.edit
-                    })
-                  ]),
-                  div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
+                  div({ className: "col-lg-12 col-md-12 col-sm-12 col-12" }, [
                     InputFieldText({
                       id: index + "country",
                       index: index,
