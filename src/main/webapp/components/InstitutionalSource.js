@@ -25,8 +25,8 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
   }
 
   checkEmptySrc(elementPostition) {
-    return (get(this.props.institutionalSources[elementPostition], 'future.name') !== '' && get(this.props.institutionalSources[elementPostition], 'future.country') !== '')
-      || (!isEmpty(this.props.institutionalSources[elementPostition].current.name) && !isEmpty(this.props.institutionalSources[elementPostition].current.country));
+    return get(this.props.institutionalSources[elementPostition], 'future.country') !== ''
+      || !isEmpty(this.props.institutionalSources[elementPostition].current.country);
   }
 
   addInstitutionalSources() {
@@ -71,7 +71,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
       if (this.isEmpty(this.props.institutionalSources[index].current.name)) {
         institutionalSources.splice(index, 1);
       } else {
-        institutionalSources[index].future = { name: '', country: '' }
+        institutionalSources[index].future = { country: '' }
       }
       this.setState(prev => {
         prev.institutionalSources = institutionalSources;
