@@ -136,7 +136,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
         div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row" }, [
-              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
+              div({ className: "col-lg-12 col-md-12 col-sm-12 col-12" }, [
                 label({ className: "inputFieldLabel noMargin" }, ["Country"])
               ])
             ])
@@ -156,7 +156,7 @@ export const InstitutionalSource = hh(class InstitutionalSource extends Componen
             div({ className: "row" }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
+                  div({ className: "col-lg-12 col-md-12 col-sm-12 col-12" }, [
                     InputFieldText({
                       id: index + "country",
                       index: index,
