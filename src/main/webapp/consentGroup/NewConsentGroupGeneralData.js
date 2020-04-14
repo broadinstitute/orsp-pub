@@ -258,7 +258,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           ])
         ]),
 
-        Panel({ title: "Institutional Source of Data/Samples and Location*" }, [
+        Panel({ title: "Country Where Samples/Data were Collected*" }, [
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: this.state.formData.institutionalSources,

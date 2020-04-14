@@ -1069,7 +1069,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           })
         ]),
 
-        Panel({ title: "Institutional Source of Data/Samples and Location" }, [
+        Panel({ title: "Country Where Samples/Data were Collected" }, [
           InstitutionalSource({
             updateInstitutionalSource: this.handleUpdateinstitutionalSources,
             institutionalSources: instSources,
