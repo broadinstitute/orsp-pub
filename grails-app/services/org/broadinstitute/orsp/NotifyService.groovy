@@ -572,14 +572,14 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendApprovedNotification(Issue issue) {
+    Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
         Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: [],
-                subject: issue.projectKey + " - Your ORSP submission has been approved",
+                subject: issue.projectKey + " - Your ORSP submission has been approved by " + sessionUsername,
                 issue: issue,
                 user:  userService.findUser(issue.reporter)
         )
@@ -588,14 +588,14 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendRejectionProjectNotification(Issue issue) {
+    Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
         Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: [],
-                subject: issue.projectKey + " - Your ORSP submission has been disapproved",
+                subject: issue.projectKey + " - Your ORSP submission has been disapproved by " + sessionUsername,
                 issue: issue,
                 user:  userService.findUser(issue.reporter)
         )
@@ -618,11 +618,11 @@ class NotifyService implements SendgridSupport, Status {
         sendClosed(arguments)
     }
 
-    def sendProjectStatusNotification(String type, Issue issue) {
+    def sendProjectStatusNotification(String type, Issue issue, String sessionUsername) {
         if (type?.equals(APPROVED)) {
-            sendApprovedNotification(issue)
+            sendApprovedNotification(issue, sessionUsername)
         } else if (type?.equals(DISAPPROVED)) {
-            sendRejectionProjectNotification(issue)
+            sendRejectionProjectNotification(issue, sessionUsername)
         } else if (type?.equals(CLOSED)) {
             sendClosedProjectNotification(issue)
         }
@@ -652,7 +652,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName) {
+    Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
         String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
@@ -660,7 +660,7 @@ class NotifyService implements SendgridSupport, Status {
                         toAddresses: Collections.singletonList(user.emailAddress),
                         ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved",
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been approved by " + sessionUsername,
                         user: user,
                         issue: issue)
 
@@ -669,7 +669,7 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
-    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName) {
+    Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
         String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
@@ -677,7 +677,7 @@ class NotifyService implements SendgridSupport, Status {
                         toAddresses: Collections.singletonList(user.emailAddress),
                         ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
                         fromAddress: getDefaultFromAddress(),
-                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved",
+                        subject: issue.projectKey + " - Your edits to this ORSP " + type + " have been disapproved by" + sessionUsername,
                         user: user,
                         issue: issue)
 
@@ -714,7 +714,7 @@ class NotifyService implements SendgridSupport, Status {
         )
     }
 
-    Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved) {
+    Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved, String sessionUsername) {
         Map<String, String> values = new HashMap<>()
         Issue project = Issue.findByProjectKey(projectKey)
         Issue consent = Issue.findByProjectKey(consentKey)
@@ -727,7 +727,8 @@ class NotifyService implements SendgridSupport, Status {
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
                         subject: consent.projectKey + " - Your ORSP Consent Group added to " +
-                                project.projectKey + (isApproved ? " has been approved" : " has been disapproved"),
+                                project.projectKey + (isApproved ? " has been approved" : " has been disapproved")
+                                + " by " + sessionUsername,
                         user: user,
                         issue: consent,
                         values: values)
