@@ -35,15 +35,8 @@ class ApiService {
         queryService.findByQueryOptions(options).collect{it.projectKey}.unique().sort()
     }
 
-    Collection<Map<String, Object>> getProjectSummaries(String term) {
-        QueryOptions options = new QueryOptions()
-        if (term) options.freeText = term
-        options.issueTypeNames.addAll(
-                [IssueType.IRB.name,
-                 IssueType.NHSR.name,
-                 IssueType.NE.name,
-                 IssueType.CONSENT_GROUP.name])
-        filterUnique(queryService.findByQueryOptions(options).collect {
+    Collection<Map<String, Object>> getProjectSummaries() {
+        filterUnique(queryService.findIssues().collect {
             String link = ""
             if (it.type == IssueType.CONSENT_GROUP.name) {
                 link = getTagLib().createLink([controller: 'newConsentGroup', action: 'main', absolute: true, params: [consentKey: it.projectKey]])

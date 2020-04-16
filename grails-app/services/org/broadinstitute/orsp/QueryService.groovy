@@ -917,6 +917,26 @@ class QueryService implements Status {
         (params.size() > 0) ? query + " AND ${q} " : query + q
     }
 
+
+
+    /**
+     * Find all issue
+     *
+     * @param queryOptions A QueryOptions object that has desired fields populated.
+     * @return List of Issues
+     */
+    List<Issue> findIssues() {
+        final String query = 'SELECT * FROM issue ' +
+                ' WHERE deleted = 0 '
+        final session = sessionFactory.currentSession
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final List<Issue> results = sqlQuery.with {
+            addEntity(Issue)
+            list()
+        }
+        results
+    }
+
     /**
      * Find all issue using a populated QueryOptions object.
      * All fields in QueryOptions can be used in a search.
@@ -925,7 +945,8 @@ class QueryService implements Status {
      * @return List of JiraIssues that match the query
      */
     List<Issue> findByQueryOptions(QueryOptions options) {
-        Collection<Issue> results = Issue.withSession {
+        Collection<Issue> results = Issue.withSession { session ->
+
             Issue.withCriteria {
 
                 if (options.issueTypeNames && !options.issueTypeNames.isEmpty()) {
@@ -949,6 +970,8 @@ class QueryService implements Status {
                 if (options.sortField && options.sortOrder) order(options.sortField, options.sortOrder.name())
                 resultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
             }
+            session.flush()
+            session.clear()
         } as Collection<Issue>
 
         // Apply Assignee restrictions
@@ -974,8 +997,8 @@ class QueryService implements Status {
             results.retainAll {
                 issue ->
                     issue.getFundings()*.source?.any { it?.equalsIgnoreCase(options.fundingInstitute) } ||
-                    issue.getFundings()*.name?.any { it?.equalsIgnoreCase(options.fundingInstitute) } ||
-                    issue.getFundings()*.awardNumber?.any { it?.equalsIgnoreCase(options.fundingInstitute) }
+                            issue.getFundings()*.name?.any { it?.equalsIgnoreCase(options.fundingInstitute) } ||
+                            issue.getFundings()*.awardNumber?.any { it?.equalsIgnoreCase(options.fundingInstitute) }
             }
         }
 
