@@ -48,7 +48,7 @@ class ApiController {
 
     // Summary of all data use projects
     def projects() {
-        render apiService.getProjectSummaries() as JSON
+        render apiService.getProjectSummaries((String) params.get("term")) as JSON
     }
 
     // Summary of all samples in use

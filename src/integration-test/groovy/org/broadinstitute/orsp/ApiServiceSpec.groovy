@@ -74,7 +74,7 @@ class ApiServiceSpec extends Specification {
     void "Test Project Summaries"() {
         given:
         mockData()
-        def summaries = apiService.getProjectSummaries()
+        def summaries = apiService.getProjectSummaries(null)
 
         expect:
         !summaries.isEmpty()

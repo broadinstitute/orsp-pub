@@ -35,8 +35,8 @@ class ApiService {
         queryService.findByQueryOptions(options).collect{it.projectKey}.unique().sort()
     }
 
-    Collection<Map<String, Object>> getProjectSummaries() {
-        filterUnique(queryService.findIssueSummaries().collect {
+    Collection<Map<String, Object>> getProjectSummaries(String term) {
+        filterUnique(queryService.findIssueSummaries(term).collect {
             String link = ""
             if (it.type == IssueType.CONSENT_GROUP.name) {
                 link = getTagLib().createLink([controller: 'newConsentGroup', action: 'main', absolute: true, params: [consentKey: it.projectKey]])
