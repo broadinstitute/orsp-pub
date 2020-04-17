@@ -36,7 +36,7 @@ class ApiService {
     }
 
     Collection<Map<String, Object>> getProjectSummaries() {
-        filterUnique(queryService.findIssues().collect {
+        filterUnique(queryService.findIssueSummaries().collect {
             String link = ""
             if (it.type == IssueType.CONSENT_GROUP.name) {
                 link = getTagLib().createLink([controller: 'newConsentGroup', action: 'main', absolute: true, params: [consentKey: it.projectKey]])
@@ -47,7 +47,7 @@ class ApiService {
                     "key": it.projectKey,
                     "label": it.projectKey + " (" + it.summary + ")",
                     "type": it.type,
-                    "status": it.getApprovalStatus(),
+                    "status":  it.approvalStatus != IssueStatus.Legacy.name ? it.approvalStatus : it.status,
                     "description": it.description,
                     "url": link
             ]

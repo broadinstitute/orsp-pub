@@ -918,18 +918,13 @@ class QueryService implements Status {
     }
 
     /**
-     * Find all issues
-     * @return List of Issues
+     * Find all issue summaries
+     * @return List of Issues Summaries
      */
-    List<Issue> findIssues() {
-        final String query = 'SELECT * FROM issue WHERE deleted = 0'
-        final session = sessionFactory.currentSession
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final List<Issue> results = sqlQuery.with {
-            addEntity(Issue)
-            list()
-        }
-        results
+    List findIssueSummaries() {
+        final String query = 'SELECT project_key projectKey, summary, type, approval_status approvalStatus, description, status ' +
+                             'FROM issue WHERE deleted = 0'
+        getSqlConnection().rows(query)
     }
 
     /**
