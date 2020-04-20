@@ -918,6 +918,29 @@ class QueryService implements Status {
     }
 
     /**
+     * Find all issue summaries
+     * @return List of Issues Summaries
+     */
+    List findIssueSummaries(String term) {
+        StringBuilder query = new StringBuilder('SELECT i.project_key projectKey, i.summary, i.type, i.approval_status approvalStatus, i.description, i.status FROM issue i ')
+
+        if (term) {
+            Map<String, String> params = new HashMap<>()
+            query.append(' LEFT JOIN issue_extra_property iep ON (iep.project_key = i.project_key) ')
+            query.append(' WHERE i.deleted = 0 AND')
+            query.append(' ( iep.value like :term OR ')
+            query.append(' i.summary like :term OR ')
+            query.append(' i.description like :term OR ')
+            query.append(' i.project_key like :term )')
+            params.put('term', "%" + term + "%")
+            getSqlConnection().rows(query.toString(), params)
+        } else {
+            query.append(' WHERE i.deleted = 0')
+            getSqlConnection().rows(query.toString())
+        }
+    }
+
+    /**
      * Find all issue using a populated QueryOptions object.
      * All fields in QueryOptions can be used in a search.
      *
