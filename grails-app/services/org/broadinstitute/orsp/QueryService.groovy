@@ -927,15 +927,17 @@ class QueryService implements Status {
         if (term) {
             Map<String, String> params = new HashMap<>()
             query.append(' LEFT JOIN issue_extra_property iep ON (iep.project_key = i.project_key) ')
-            query.append(' WHERE i.deleted = 0 AND')
+            query.append(' WHERE i.deleted = 0 AND i.status <> :status AND ')
             query.append(' ( iep.value like :term OR ')
             query.append(' i.summary like :term OR ')
             query.append(' i.description like :term OR ')
             query.append(' i.project_key like :term )')
             params.put('term', "%" + term + "%")
+            params.put('status', IssueStatus.Abandoned.name)
             getSqlConnection().rows(query.toString(), params)
         } else {
-            query.append(' WHERE i.deleted = 0')
+            query.append(' WHERE i.deleted = 0 AND i.status <> :status')
+            params.put('status', IssueStatus.Abandoned.name)
             getSqlConnection().rows(query.toString())
         }
     }
