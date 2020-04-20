@@ -923,9 +923,9 @@ class QueryService implements Status {
      */
     List findIssueSummaries(String term) {
         StringBuilder query = new StringBuilder('SELECT i.project_key projectKey, i.summary, i.type, i.approval_status approvalStatus, i.description, i.status FROM issue i ')
+        Map<String, String> params = new HashMap<>()
 
         if (term) {
-            Map<String, String> params = new HashMap<>()
             query.append(' LEFT JOIN issue_extra_property iep ON (iep.project_key = i.project_key) ')
             query.append(' WHERE i.deleted = 0 AND i.status <> :status AND ')
             query.append(' ( iep.value like :term OR ')
@@ -933,13 +933,11 @@ class QueryService implements Status {
             query.append(' i.description like :term OR ')
             query.append(' i.project_key like :term )')
             params.put('term', "%" + term + "%")
-            params.put('status', IssueStatus.Abandoned.name)
-            getSqlConnection().rows(query.toString(), params)
         } else {
             query.append(' WHERE i.deleted = 0 AND i.status <> :status')
-            params.put('status', IssueStatus.Abandoned.name)
-            getSqlConnection().rows(query.toString())
         }
+        params.put('status', IssueStatus.Abandoned.name)
+        getSqlConnection().rows(query.toString(), params)
     }
 
     /**
