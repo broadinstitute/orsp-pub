@@ -41,7 +41,7 @@ spec:
         readinessProbe:
           httpGet:
             port: 8080
-            path: "/index"
+            path: "/api/status"
             scheme: HTTP
           initialDelaySeconds: 60
           periodSeconds: 3
@@ -51,7 +51,7 @@ spec:
         livenessProbe:
           httpGet:
             port: 8080
-            path: "/index"
+            path: "/api/status"
             scheme: HTTP
           initialDelaySeconds: 120
           periodSeconds: 5
