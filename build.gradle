@@ -92,7 +92,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+    testRuntime "net.sourceforge.htmlunit:htmlunit:2.39.1"
 
     // Application Specific dependencies
     compile 'javax.ws.rs:jsr311-api:1.1.1'
