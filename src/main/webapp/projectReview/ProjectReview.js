@@ -557,6 +557,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       this.setState(prev => {
         prev.readOnly = true;
         prev.errorSubmit = false;
+        prev.enabledQuestionsWizard = false;
         if (get(prev.formData.projectExtraProps, 'affiliations.value', '') !== 'other') {
           prev.formData.projectExtraProps.affiliationOther = '';
         }
