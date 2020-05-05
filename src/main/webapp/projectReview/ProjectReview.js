@@ -410,6 +410,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
+    project.broadInvestigator = this.state.formData.projectExtraProps.broadInvestigator;
+    project.subjectsDeceased = this.state.formData.projectExtraProps.subjectsDeceased;
+    project.interactionSource = this.state.formData.projectExtraProps.interactionSource;
+    project.sensitiveInformationSource = this.state.formData.projectExtraProps.sensitiveInformationSource;
+    project.isIdReceive = this.state.formData.projectExtraProps.isIdReceive;
+    project.isCoPublishing = this.state.formData.projectExtraProps.isCoPublishing;
+    project.irbReviewedProtocol = this.state.formData.projectExtraProps.irbReviewedProtocol;
+    project.humanSubjects = this.state.formData.projectExtraProps.humanSubjects;
     project.feeForServiceWork = this.state.formData.projectExtraProps.feeForServiceWork;
     project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
@@ -518,7 +526,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
-  enableEditQuestions = (e) => () => {
+  enableEditResponses = (e) => () => {
     //this.props.showSpinner();
     //this.getReviewSuggestions();
     this.setState(prev => {
@@ -528,13 +536,37 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   };
 
-  cancelEditQuestions = (e) => () => {
+  cancelEditResponses = (e) => () => {
     //this.props.showSpinner();
     //this.getReviewSuggestions();
     this.setState(prev => {
       prev.enabledQuestionsWizard = false;
       return prev
     });
+  };
+
+  submitEditResponses = (e) => () => {
+    
+    this.setState(prev => {
+      //prev.formData.projectExtraProps[field] = value;
+
+      let questions = this.state.determination.questions;
+      if (questions.length > 1) {
+        questions.map(q => {
+          if (q.answer !== null) {
+            prev.formData.projectExtraProps[q.key] = q.answer;
+          } else {
+            prev.formData.projectExtraProps[q.key] = '';
+          }
+        });
+      }
+      prev.enabledQuestionsWizard = false;
+      return prev;
+    },
+      () => {
+        if (this.state.errorSubmit === true) this.isValid()
+      });
+
   };
 
   cancelEdit = (e) => () => {
@@ -1251,9 +1283,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
           div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
-              onClick: this.enableEditQuestions(),
+              onClick: this.enableEditResponses(),
               isRendered: this.state.readOnly === false && !component.isViewer
-            }, ["Edit Determination Questions"])
+            }, ["Edit Responses"])
           ]),
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
@@ -1385,7 +1417,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
           div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
             button({
               className: "btn buttonPrimary floatLeft",
-              onClick: this.cancelEditQuestions(),
+              onClick: this.submitEditResponses(),
+              disabled: !this.state.determination.endState,
+              isRendered: this.state.readOnly === false && !component.isViewer
+
+            }, ["Submit"]),
+            button({
+              className: "btn buttonPrimary floatLeft",
+              onClick: this.cancelEditResponses(),
               isRendered: this.state.readOnly === false && !component.isViewer
             }, ["Cancel"])
           ]),
