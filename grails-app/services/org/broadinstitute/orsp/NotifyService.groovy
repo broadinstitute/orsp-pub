@@ -578,7 +578,7 @@ class NotifyService implements SendgridSupport, Status {
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
-                ccAddresses: [],
+                ccAddresses: Collections.singletonList(getAdminRecipient()),
                 subject: issue.projectKey + " - Your ORSP submission has been approved by " + sessionUsername,
                 issue: issue,
                 user:  userService.findUser(issue.reporter)
@@ -594,7 +594,7 @@ class NotifyService implements SendgridSupport, Status {
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
-                ccAddresses: [],
+                ccAddresses: Collections.singletonList(getAdminRecipient()),
                 subject: issue.projectKey + " - Your ORSP submission has been disapproved by " + sessionUsername,
                 issue: issue,
                 user:  userService.findUser(issue.reporter)
