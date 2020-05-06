@@ -403,6 +403,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   getProject() {
     let project = {};
+    project.type = this.getProjectType(project);
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
@@ -469,6 +470,23 @@ const ProjectReview = hh(class ProjectReview extends Component {
       project.collaborator = collaboratorList;
     }
     return project;
+  }
+
+  getProjectType() {
+    let type = '';
+    if (this.state.determination.projectType === DETERMINATION.NE) {
+      type = 'NE';
+    }
+    else if (this.state.determination.projectType === DETERMINATION.NHSR) {
+      type = 'NHSR';
+    }
+    else if (this.state.determination.projectType === DETERMINATION.IRB) {
+      type = 'IRB';
+    }
+    else if (this.state.determination.projectType === DETERMINATION.EX) {
+      type = 'EX';
+    }
+    return type;
   }
 
   getAffiliation(affiliations) {

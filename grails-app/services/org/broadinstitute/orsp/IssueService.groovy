@@ -146,6 +146,11 @@ class IssueService implements UserInfo {
             issue.setExpirationDate(null)
         }
 
+        if (input.containsKey("type") && StringUtils.isNotBlank(input.get("type"))) {
+            def issueType = IssueType.valueOfPrefix(input.get("type"))
+            issue.setType(issueType.getName())
+        }
+
         // Handle native associations.
 
         // Funding:
