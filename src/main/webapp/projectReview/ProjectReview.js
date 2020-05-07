@@ -1430,22 +1430,23 @@ const ProjectReview = hh(class ProjectReview extends Component {
             })
           ])
         ]),
-        Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions" }, [
-          QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler }),
-          div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
-            button({
-              className: "btn buttonPrimary floatLeft",
-              onClick: this.submitEditResponses(),
-              disabled: !this.state.determination.endState,
-              isRendered: this.state.readOnly === false && !component.isViewer
-
-            }, ["Submit"]),
-            button({
-              className: "btn buttonPrimary floatLeft",
-              onClick: this.cancelEditResponses(),
-              isRendered: this.state.readOnly === false && !component.isViewer
-            }, ["Cancel"])
-          ]),
+        Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions"}, [
+          div({ style: { 'marginTop': '55px' }}, [
+            QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler }),
+              div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+                button({
+                  className: "btn buttonSecondary",
+                  onClick: this.cancelEditResponses(),
+                  isRendered: this.state.readOnly === false && !component.isViewer
+                }, ["Cancel"]),
+                button({
+                  className: "btn buttonPrimary floatRight",
+                  onClick: this.submitEditResponses(),
+                  disabled: !this.state.determination.endState,
+                  isRendered: this.state.readOnly === false && !component.isViewer
+                }, ["Submit"])
+              ]),
+          ])
         ]),
         Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
           p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
