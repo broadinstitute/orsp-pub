@@ -146,11 +146,6 @@ class IssueService implements UserInfo {
             issue.setExpirationDate(null)
         }
 
-        if (input.containsKey("type") && StringUtils.isNotBlank(input.get("type"))) {
-            def issueType = IssueType.valueOfPrefix(input.get("type"))
-            issue.setType(issueType.getName())
-        }
-
         // Handle native associations.
 
         // Funding:
@@ -272,6 +267,30 @@ class IssueService implements UserInfo {
         }
 
         issue.setUpdateDate(new Date())
+
+        // update projectKey and type if response to determination questions changed
+        if (input.containsKey("type") && StringUtils.isNotBlank(input.get("type"))) {
+            def issueType = IssueType.valueOfPrefix(input.get("type"))
+            if (issue.getType() != issueType.getName()) {
+                String oldProjectKey = issue.projectKey
+
+                // update Issue projectKey
+                issue = updateProjectKey(issueType, issue)
+
+                // update IssueReview projectKey
+                IssueReview issueReview = issueReviewService.findByProjectKey(oldProjectKey)
+                issueReview.setProjectKey(issue.getProjectKey())
+                issueReviewService.update(issueReview)
+
+                // update Funding projectKey
+                List<Funding> fundingList = queryService.findFundingsByProject(oldProjectKey)
+                fundingList?.each {
+                    it.setProjectKey(issue.getProjectKey())
+                    it.delete(flush: true)
+                }
+            }
+        }
+
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
@@ -556,5 +575,11 @@ class IssueService implements UserInfo {
         Collection<String> accessContacts = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
         accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
         accessContacts
+    }
+
+    private Issue updateProjectKey(IssueType issueType, Issue issue) {
+        issue.setType(issueType.getName())
+        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + issueType.prefix + "-" + issue.id)
+        issue
     }
 }

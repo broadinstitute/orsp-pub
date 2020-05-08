@@ -1298,7 +1298,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               show: true
             })
           ]),*/
-          div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+          div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
               onClick: this.enableEditResponses(),
@@ -1483,8 +1483,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
             disabled: isEmpty(this.state.editedForm) ?
-              !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
-              : this.compareObj("formData", "editedForm"),
+              (!this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")) || this.state.enabledQuestionsWizard
+              : this.compareObj("formData", "editedForm") || this.state.enabledQuestionsWizard,
             isRendered: this.state.readOnly === false && !component.isViewer
           }, ["Submit Edits"]),
 
