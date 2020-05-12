@@ -24,7 +24,7 @@ export const Security = hh(class Security extends Component {
         textSharingType: '',
         textCompliance: '',
         publiclyAvailable: '',
-        store: '',
+        store: [],
         terra: false,
         bgp: false,
         gcp: false,
@@ -84,9 +84,6 @@ export const Security = hh(class Security extends Component {
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
-      if (field === 'store' && value !== 'other') {
-        prev.formData.textStore = '';
-      }
       return prev;
     }, () => {
       this.props.handleSecurityValidity(this.validate());
@@ -104,7 +101,21 @@ export const Security = hh(class Security extends Component {
       if (field === 'otherStore' && !value) {
         prev.formData.textStore = '';
       }
+
       prev.formData[field] = value;
+
+      if (field === 'terra' ||
+        field === 'bgp' ||
+        field === 'gcp' ||
+        field === 'bop' ||
+        field === 'aws') {
+          prev.formData.store = [];
+          prev.formData.terra ? prev.formData.store.push('terra') : null;
+          prev.formData.bgp ? prev.formData.store.push('bgp') : null;
+          prev.formData.gcp ? prev.formData.store.push('gcp') : null;
+          prev.formData.bop ? prev.formData.store.push('bop') : null;
+          prev.formData.aws ? prev.formData.store.push('aws') : null;
+      }
       return prev;
     }, () => {
       this.props.handleSecurityValidity(this.validate());
@@ -261,93 +272,75 @@ export const Security = hh(class Security extends Component {
       div({ className: "questionnaireContainerLight" }, [
         p({}, ["The following questions help the Broad Risk Management and Information Security teams understand where sensitive data types are stored and how that data is shared with external collaborators. ", b({}, ["Please answer the questions to the best of your ability. "])]),
         p({ style: { 'marginBottom': '25px' } }, [b({}, ["Note: "]), "The Information Security or Risk Management team may reach out to understand more about your project but your answers to these questions will not stop your project from moving forward. You do not need to wait for a response from the Risk Management or Information Security teams before continuing work."]),
-        /*InputFieldRadio({
-          id: "radioStore",
-          name: "store",
-          label: span({}, ["Where will the data for this project be processed, handled, and stored?"]),
-          value: this.props.securityInfoData.store,
-          optionValues: ["terra", "bgp", "gcp", "aws", "bop", "other"],
-          optionLabels: [
-            "Terra",
-            "Broad Genomics Platform",
-            "Google Cloud Platform (without Terra)",
-            "Amazon Web Services",
-            "Broad on-prem",
-            "Other"
-          ],
-          onChange: this.handleRadio2Change,
-          required: true,
-          error: this.state.errors.store && this.props.generalError,
-          errorMessage: "Required field",
-          edit: false
-        }),*/
-        p({ className: "inputFieldLabel" }, [
-          "Where will the data for this project be processed, handled, and stored? ",
-          span({ className: "normal" }, ["Select all that apply."])
-        ]),
-        InputFieldCheckbox({
-          id: "ckb_terra",
-          name: "terra",
-          onChange: this.handleDataTypesChange,
-          label: span({ className: "normal" }, ['Terra']),
-          checked: this.state.formData.terra,
-          readOnly: this.state.readOnly
-        }),
-        InputFieldCheckbox({
-          id: "ckb_bgp",
-          name: "bgp",
-          onChange: this.handleDataTypesChange,
-          label: span({ className: "normal" }, ['Broad Genomics Platform']),
-          checked: this.state.formData.bgp,
-          readOnly: this.state.readOnly
-        }),
-        InputFieldCheckbox({
-          id: "ckb_gcp",
-          name: "gcp",
-          onChange: this.handleDataTypesChange,
-          label: span({ className: "normal" }, ['Google Cloud Platform (without Terra)']),
-          checked: this.state.formData.gcp,
-          readOnly: this.state.readOnly
-        }),
-        InputFieldCheckbox({
-          id: "ckb_aws",
-          name: "aws",
-          onChange: this.handleDataTypesChange,
-          label: span({ className: "normal" }, ['Amazon Web Services']),
-          checked: this.state.formData.aws,
-          readOnly: this.state.readOnly
-        }),
-        InputFieldCheckbox({
-          id: "ckb_bop",
-          name: "bop",
-          onChange: this.handleDataTypesChange,
-          label: span({ className: "normal" }, ['Broad on-prem']),
-          checked: this.state.formData.bop,
-          readOnly: this.state.readOnly
-        }),
-        InputFieldCheckbox({
-          id: "ckb_other",
-          name: "otherStore",
-          onChange: this.handleDataTypesChange,
-          label: span({ className: "normal" }, ['Other']),
-          checked: this.state.formData.otherStore,
-          readOnly: this.state.readOnly
-        }),
         div({ style: { 'marginBottom': '20px' } }, [
-          InputFieldText({
-            isRendered: this.props.securityInfoData.otherStore === true,
-            id: "inputOther",
-            name: "textStore",
-            label: " Please describe “other”:",
-            value: this.props.securityInfoData.textStore,
-            disabled: false,
-            required: false,
-            onChange: this.handleInputChange,
-            error: this.state.errors.textStore && this.props.generalError,
-            errorMessage: "Required field"
-          })
+          p({ className: "inputFieldLabel" }, [
+            "Where will the data for this project be processed, handled, and stored? ",
+            span({ className: "normal" }, ["Select all that apply."])
+          ]),
+          InputFieldCheckbox({
+            id: "ckb_terra",
+            name: "terra",
+            onChange: this.handleDataTypesChange,
+            label: span({ className: "normal" }, ['Terra']),
+            checked: this.state.formData.terra,
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "ckb_bgp",
+            name: "bgp",
+            onChange: this.handleDataTypesChange,
+            label: span({ className: "normal" }, ['Broad Genomics Platform']),
+            checked: this.state.formData.bgp,
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "ckb_gcp",
+            name: "gcp",
+            onChange: this.handleDataTypesChange,
+            label: span({ className: "normal" }, ['Google Cloud Platform (without Terra)']),
+            checked: this.state.formData.gcp,
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "ckb_aws",
+            name: "aws",
+            onChange: this.handleDataTypesChange,
+            label: span({ className: "normal" }, ['Amazon Web Services']),
+            checked: this.state.formData.aws,
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "ckb_bop",
+            name: "bop",
+            onChange: this.handleDataTypesChange,
+            label: span({ className: "normal" }, ['Broad on-prem']),
+            checked: this.state.formData.bop,
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "ckb_other",
+            name: "otherStore",
+            onChange: this.handleDataTypesChange,
+            label: span({ className: "normal" }, ['Other']),
+            checked: this.state.formData.otherStore,
+            readOnly: this.state.readOnly
+          }),
+          div({}, [
+            InputFieldText({
+              isRendered: this.props.securityInfoData.otherStore === true,
+              id: "inputOther",
+              name: "textStore",
+              label: " Please describe “other”:",
+              value: this.props.securityInfoData.textStore,
+              disabled: false,
+              required: false,
+              onChange: this.handleInputChange,
+              error: this.state.errors.textStore && this.props.generalError,
+              errorMessage: "Required field"
+            })
+          ]),
+          small({ isRendered: this.state.errors.store && this.props.generalError, className: "errorMessage" }, ['Required Fields']),
         ]),
-        small({ isRendered: this.state.errors.store && this.props.generalError, className: "errorMessage" }, ['Required Fields']),
         InputFieldRadio({
           id: "radioPII",
           name: "pii",
