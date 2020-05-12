@@ -97,7 +97,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       labelStore = labelStore.substring(0,labelStore.length - 2);
     }
 
-    //const labelStore = !isEmpty(this.storeOptions(store)) ? this.storeOptions(store) : this.props.sample.textStore; 
     if (this.props.currentStep === this.props.step) {
       return(
         div({}, [
