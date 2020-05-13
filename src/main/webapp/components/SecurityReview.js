@@ -83,7 +83,20 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       textOtherIdentifier = ''
     } = this.props.sample;
 
-    const labelStore = !isEmpty(this.storeOptions(store)) ? this.storeOptions(store) : this.props.sample.textStore; 
+    let stores = store.split(",");
+    let labelStore = '';
+    stores.forEach(item => {
+      if (!isEmpty(this.storeOptions(item))) {
+        labelStore = labelStore.concat(this.storeOptions(item),", ");
+      }
+    });
+    
+    if (!isEmpty(this.props.sample.textStore)) {
+      labelStore = labelStore.concat(this.props.sample.textStore);
+    } else if (!isEmpty(store)) {
+      labelStore = labelStore.substring(0,labelStore.length - 2);
+    }
+
     if (this.props.currentStep === this.props.step) {
       return(
         div({}, [
