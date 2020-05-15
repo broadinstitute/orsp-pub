@@ -23,6 +23,7 @@ class UrlMappings {
         '/api/project/get-type'(controller: 'project', action: 'getProjectType', method: 'GET')
         '/api/project/reject'(controller: 'project', action: 'delete', method: 'DELETE')
         '/api/project/update'(controller: 'project', action: 'update', method: 'PUT')
+        '/api/project/updateKey'(controller: 'project', action: 'updateKey', method: 'PUT')
         '/api/project/extra-properties'(controller: 'project', action: 'modifyExtraProperties', method: 'POST')
         '/api/project/update-properties'(controller: 'project', action: 'update')
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')

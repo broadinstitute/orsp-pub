@@ -14,12 +14,6 @@ class IssueReviewService {
     }
 
     @Transactional
-    IssueReview update(IssueReview issueReview) throws DomainException {
-        issueReview.save(flush: true)
-        issueReview
-    }
-
-    @Transactional
     void delete(String projectKey, String type, String sessionUsername) throws DomainException {
         IssueReview ir = findByProjectKey(projectKey)
         if (ir != null) {

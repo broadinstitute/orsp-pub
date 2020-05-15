@@ -7,6 +7,7 @@ export const UrlConstants = {
   projectTypeUrl: context + '/api/project/get-type',
   rejectProjectUrl: context + '/api/project/reject',
   updateProjectUrl: context + '/api/project/update',
+  updateProjectkeyUrl: context + '/api/project/updateKey',
   addExtraPropertiesUrl: context + '/api/project/extra-properties',
   updateExtraPropertiesUrl: context + '/api/project/update-properties',
   updateAdminOnlyPropsUrl: context + '/api/project/update-admin-props',

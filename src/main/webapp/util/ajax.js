@@ -221,6 +221,10 @@ export const Project = {
     return axios.put(UrlConstants.updateProjectUrl + '?projectKey=' + projectKey, data);
   },
 
+  updateProjectkey(data, projectKey) {
+    return axios.put(UrlConstants.updateProjectkeyUrl + '?projectKey=' + projectKey, data);
+  },
+
   updateAdminOnlyProps(data, projectKey) {
     return axios.put(UrlConstants.updateAdminOnlyPropsUrl + '?projectKey=' + projectKey, data);
   },

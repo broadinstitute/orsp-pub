@@ -268,29 +268,6 @@ class IssueService implements UserInfo {
 
         issue.setUpdateDate(new Date())
 
-        // update projectKey and type if response to determination questions changed
-        if (input.containsKey("type") && StringUtils.isNotBlank(input.get("type"))) {
-            def issueType = IssueType.valueOfPrefix(input.get("type"))
-            if (issue.getType() != issueType.getName()) {
-                String oldProjectKey = issue.projectKey
-
-                // update Issue projectKey
-                issue = updateProjectKey(issueType, issue)
-
-                // update IssueReview projectKey
-                IssueReview issueReview = issueReviewService.findByProjectKey(oldProjectKey)
-                issueReview.setProjectKey(issue.getProjectKey())
-                issueReviewService.update(issueReview)
-
-                // update Funding projectKey
-                List<Funding> fundingList = queryService.findFundingsByProject(oldProjectKey)
-                fundingList?.each {
-                    it.setProjectKey(issue.getProjectKey())
-                    it.delete(flush: true)
-                }
-            }
-        }
-
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
@@ -300,6 +277,50 @@ class IssueService implements UserInfo {
             notifyService.sendEditsApprovedNotification(issue, issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName(), getUser()?.displayName)
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
+        issue
+    }
+
+    /**
+     * Handles the update of project key to an existing issue.
+     *
+     * @param issue The existing issue to update.
+     * @param input Map of form arguments that come from any of the various update forms
+     * @return Persisted issue
+     */
+    @Transactional
+    Issue updateProjectkey(Issue issue, Map<String, Object> input) throws DomainException {
+        // update projectKey and type if response to determination questions changed
+            def issueType = IssueType.valueOfPrefix(input.get("type"))
+            if (issue.getType() != issueType.getName()) {
+                String oldProjectKey = issue.projectKey
+                String newProjectKey = QueryService.PROJECT_KEY_PREFIX + issueType.prefix + "-" + issue.id
+
+                IssueReview issueReview = issueReviewService.findByProjectKey(oldProjectKey)
+                issueReview.delete(flush: true)
+
+                def extraProperties = issue.getExtraProperties()
+                extraProperties?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update Issue projectKey
+                issue.setType(issueType.getName())
+                issue.setProjectKey(newProjectKey)
+
+                // update Funding projectKey
+                List<Funding> fundingList = queryService.findFundingsByProject(oldProjectKey)
+                fundingList?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                if (issue.hasErrors()) {
+                    throw new DomainException(issue.getErrors())
+                } else {
+                    issue.save(flush: true)
+                }
+            }
         issue
     }
 
@@ -577,9 +598,4 @@ class IssueService implements UserInfo {
         accessContacts
     }
 
-    private Issue updateProjectKey(IssueType issueType, Issue issue) {
-        issue.setType(issueType.getName())
-        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + issueType.prefix + "-" + issue.id)
-        issue
-    }
 }

@@ -380,12 +380,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.editsApproved = true;
     Project.updateProject(project, this.props.projectKey).then(
       resp => {
-        this.removeEdits('approve');
-
+        //this.removeEdits('approve')
+        this.updateProjectkey();
       }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });
-      });
+      })
   };
 
   removeEdits(type) {
@@ -393,6 +393,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
       resp => {
         this.props.updateContent();
         this.init();
+        this.props.hideSpinner();
+      })
+      .catch(error => {
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
+      });
+  }
+
+  updateProjectkey() {
+    Project.updateProjectkey(this.getProject(), this.props.projectKey).then(
+      resp => {
+        this.reloadProject(resp.data.message);
         this.props.hideSpinner();
       })
       .catch(error => {
@@ -877,6 +889,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   redirectToConsentGroupTab = async () => {
     window.location.href = [component.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
+  };
+
+  reloadProject = async (projectKey) => {
+    window.location.href = [component.serverURL, "project", "main?projectKey=" + projectKey].join("/");
   };
 
   handleAttestationCheck = (e) => {
