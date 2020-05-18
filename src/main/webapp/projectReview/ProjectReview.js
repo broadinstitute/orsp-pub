@@ -341,7 +341,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       let project = this.getProject();
       Project.updateProject(project, this.props.projectKey).then(
         resp => {
-          this.removeEdits('approve');
+          this.verifyProjectkeyChanged(project.type);
         })
         .catch(error => {
           this.props.hideSpinner();
@@ -380,13 +380,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.editsApproved = true;
     Project.updateProject(project, this.props.projectKey).then(
       resp => {
-        //this.removeEdits('approve')
-        this.updateProjectkey();
+        this.verifyProjectkeyChanged(project.type);
       }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });
       })
   };
+
+  verifyProjectkeyChanged(type) {
+    let projectKey = this.props.projectKey.split('-');
+    const projectType = projectKey[projectKey.length-2];
+
+    if (!isEmpty(projectType) && !isEmpty(type) &&
+      projectType !== type) {
+      this.updateProjectkey();
+    } else {
+      this.removeEdits('approve');
+    }
+  }
 
   removeEdits(type) {
     Review.deleteSuggestions(this.props.projectKey, type).then(
@@ -415,7 +426,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   getProject() {
     let project = {};
-    project.type = this.getProjectType(project);
+    project.type = this.getProjectType();
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);

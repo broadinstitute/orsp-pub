@@ -320,6 +320,20 @@ class IssueService implements UserInfo {
                 } else {
                     issue.save(flush: true)
                 }
+
+                List<Event> events = queryService.getEventsForProject(oldProjectKey)
+                events?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+                List<ConsentCollectionLink> consents = queryService.findCollectionLinksByProjectKey(oldProjectKey)
+                consents?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project Key Updated", EventType.APPROVE_EDITS)
             }
         issue
     }
