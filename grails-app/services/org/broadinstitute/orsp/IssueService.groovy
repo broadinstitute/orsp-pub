@@ -20,6 +20,7 @@ class IssueService implements UserInfo {
     PersistenceService persistenceService
     NotifyService notifyService
     IssueReviewService issueReviewService
+    StorageProviderService storageProviderService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -331,7 +332,18 @@ class IssueService implements UserInfo {
                     it.setProjectKey(newProjectKey)
                     it.save(flush: true)
                 }
+                List<Comment> comments = queryService.getCommentsByIssueId(oldProjectKey)
+                comments?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
 
+                List<StorageDocument> documents = queryService.getAttachmentsForProject(oldProjectKey)
+                documents?.each {
+                    storageProviderService.renameStorageDocument(it, newProjectKey)
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
 
                 persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project Key Updated", EventType.APPROVE_EDITS)
             }

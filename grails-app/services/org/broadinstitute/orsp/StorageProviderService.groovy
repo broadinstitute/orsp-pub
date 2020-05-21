@@ -11,6 +11,7 @@ import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.storage.StorageScopes
+import grails.web.http.HttpHeaders
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
@@ -437,6 +438,18 @@ class StorageProviderService implements Status {
     }
 
     /**
+     * Create a POST request
+     *
+     * @param url The URL
+     * @param content The content to POST
+     * @return The HttpRequest
+     */
+    private HttpRequest buildHttpPostRequest(GenericUrl url, HttpContent content) {
+        HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(getCredential())
+        requestFactory.buildPostRequest(url, content)
+    }
+
+    /**
      *
      * @return A GoogleCredential from json secrets.
      */
@@ -453,6 +466,42 @@ class StorageProviderService implements Status {
 
     void setCredential(GoogleCredential credential) {
         this.credential = credential
+    }
+
+    void renameStorageDocument(StorageDocument document, String newProjectkey) {
+
+        HttpRequest request
+        HttpResponse response = null
+        try {
+            StringBuilder url = new StringBuilder()
+            url.append(storageConfiguration.url)
+            url.append(storageConfiguration.bucket)
+            url.append("o/")
+            url.append(document.projectKey)
+            url.append("/")
+            url.append(document.uuid)
+            url.append("/rewriteTo/b/")
+            url.append(storageConfiguration.bucket)
+            url.append("o/")
+            url.append(newProjectkey)
+            url.append("/")
+            url.append(document.uuid)
+            request = buildHttpPostRequest(new GenericUrl(url.toString()), null)
+            request.getHeaders().put(org.apache.http.HttpHeaders.CONTENT_LENGTH, "0")
+
+            response = request.execute()
+            if (response.getStatusCode() != 200) {
+                log.error("Error updating contents: " + response.getStatusMessage())
+            }
+        } finally {
+            if (null != response) {
+                try {
+                    response.disconnect()
+                } catch (IOException e) {
+                    log.error("Error disconnecting response.", e)
+                }
+            }
+        }
     }
 
 }
