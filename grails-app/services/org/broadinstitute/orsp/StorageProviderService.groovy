@@ -1,28 +1,22 @@
 package org.broadinstitute.orsp
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
-import com.google.api.client.http.GenericUrl
-import com.google.api.client.http.HttpContent
-import com.google.api.client.http.HttpRequest
-import com.google.api.client.http.HttpRequestFactory
-import com.google.api.client.http.HttpResponse
-import com.google.api.client.http.HttpStatusCodes
-import com.google.api.client.http.HttpTransport
-import com.google.api.client.http.InputStreamContent
+import com.google.api.client.http.*
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.storage.StorageScopes
-import grails.web.http.HttpHeaders
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.storage.Blob
+import com.google.cloud.storage.CopyWriter
+import com.google.cloud.storage.Storage
+import com.google.cloud.storage.StorageOptions
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.config.StorageConfiguration
-import org.grails.io.support.GrailsResourceUtils
 import org.springframework.web.multipart.MultipartFile
 
 import java.nio.charset.Charset
 import java.security.GeneralSecurityException
-import java.text.SimpleDateFormat
-
 /**
  * TODO: Move all transactions to persistence service
  */
@@ -44,6 +38,7 @@ class StorageProviderService implements Status {
     private final static HttpTransport HTTP_TRANSPORT = new NetHttpTransport()
 
     private GoogleCredential credential
+    private GoogleCredentials credentials
 
     private final lock = new Object()
 
@@ -438,18 +433,6 @@ class StorageProviderService implements Status {
     }
 
     /**
-     * Create a POST request
-     *
-     * @param url The URL
-     * @param content The content to POST
-     * @return The HttpRequest
-     */
-    private HttpRequest buildHttpPostRequest(GenericUrl url, HttpContent content) {
-        HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(getCredential())
-        requestFactory.buildPostRequest(url, content)
-    }
-
-    /**
      *
      * @return A GoogleCredential from json secrets.
      */
@@ -468,40 +451,34 @@ class StorageProviderService implements Status {
         this.credential = credential
     }
 
-    void renameStorageDocument(StorageDocument document, String newProjectkey) {
+    /**
+     *
+     * @return GoogleCredentials for google storage client libraries use
+     */
+    private GoogleCredentials getCredentials() {
 
-        HttpRequest request
-        HttpResponse response = null
-        try {
-            StringBuilder url = new StringBuilder()
-            url.append(storageConfiguration.url)
-            url.append(storageConfiguration.bucket)
-            url.append("o/")
-            url.append(document.projectKey)
-            url.append("/")
-            url.append(document.uuid)
-            url.append("/rewriteTo/b/")
-            url.append(storageConfiguration.bucket)
-            url.append("o/")
-            url.append(newProjectkey)
-            url.append("/")
-            url.append(document.uuid)
-            request = buildHttpPostRequest(new GenericUrl(url.toString()), null)
-            request.getHeaders().put(org.apache.http.HttpHeaders.CONTENT_LENGTH, "0")
-
-            response = request.execute()
-            if (response.getStatusCode() != 200) {
-                log.error("Error updating contents: " + response.getStatusMessage())
-            }
-        } finally {
-            if (null != response) {
-                try {
-                    response.disconnect()
-                } catch (IOException e) {
-                    log.error("Error disconnecting response.", e)
-                }
-            }
+        if (!credentials) {
+            File configFile = new File(storageConfiguration.config)
+            setCredentials(GoogleCredentials.fromStream(new FileInputStream(configFile))
+                    .createScoped(Collections.singletonList(StorageScopes.DEVSTORAGE_FULL_CONTROL)))
         }
+        credentials
+    }
+
+    void setCredentials(GoogleCredentials credentials) {
+        this.credentials = credentials
+    }
+
+    void renameStorageDocument(StorageDocument document, String newProjectkey) {
+        String bucket = storageConfiguration.config.replace("/", "")
+        Storage storage = StorageOptions.newBuilder().setCredentials(getCredentials()).build().getService()
+        Blob blob = storage.get(bucket, document.projectKey + "/" + document.uuid)
+        // Write a copy of the object to the target bucket
+        CopyWriter copyWriter = blob.copyTo(bucket, newProjectkey + "/" + document.uuid)
+        Blob copiedBlob = copyWriter.getResult()
+        // Delete the original blob now that we've copied to where we want it, finishing the "move"
+        // operation
+        blob.delete()
     }
 
 }
