@@ -129,7 +129,7 @@ class ProjectController extends AuthenticatedController {
         Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
         Issue issue = Issue.findByProjectKey(params.projectKey)
         try {
-            issue = issueService.updateIssue(issue, project)
+            issueService.updateIssue(issue, project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
         } catch(Exception e) {
