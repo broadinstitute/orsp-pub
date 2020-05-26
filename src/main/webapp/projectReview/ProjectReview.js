@@ -553,8 +553,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   enableEditResponses = (e) => () => {
-    //this.props.showSpinner();
-    //this.getReviewSuggestions();
     this.setState(prev => {
       prev.enabledQuestionsWizard = true;
       return prev
@@ -563,8 +561,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   cancelEditResponses = (e) => () => {
-    //this.props.showSpinner();
-    //this.getReviewSuggestions();
     this.setState(prev => {
       prev.enabledQuestionsWizard = false;
       return prev
@@ -572,7 +568,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   submitEditResponses = (e) => () => {
-    
     this.setState(prev => {
       let questions = this.state.determination.questions;
       if (questions.length > 1) {
@@ -1178,13 +1173,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
         ]),
         
         Panel({ isRendered: this.state.enabledQuestionsWizard === false, title: "Determination Questions" }, [
-          /*div({ isRendered: this.state.readOnly === false }, [
-            AlertMessage({
-              type: 'info',
-              msg: "If changes need to be made to any of these questions, please submit a new project request",
-              show: true
-            })
-          ]),*/
           div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
