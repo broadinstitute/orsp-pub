@@ -470,7 +470,7 @@ class StorageProviderService implements Status {
     }
 
     void renameStorageDocument(StorageDocument document, String newProjectkey) {
-        String bucket = storageConfiguration.config.replace("/", "")
+        String bucket = storageConfiguration.bucket.replace("/", "")
         Storage storage = StorageOptions.newBuilder().setCredentials(getCredentials()).build().getService()
         Blob blob = storage.get(bucket, document.projectKey + "/" + document.uuid)
         // Write a copy of the object to the target bucket

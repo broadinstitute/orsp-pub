@@ -101,6 +101,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       futureCopy: {},
       current: {
         approvalStatus: '',
+        projectType: '',
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -427,7 +428,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   getProject() {
     let project = {};
-    project.type = getProjectType(this.state.determination.projectType);
+    project.type = getProjectType(this.state.formData.projectType);
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
@@ -573,8 +574,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
   submitEditResponses = (e) => () => {
     
     this.setState(prev => {
-      //prev.formData.projectExtraProps[field] = value;
-
       let questions = this.state.determination.questions;
       if (questions.length > 1) {
         questions.map(q => {
@@ -584,6 +583,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
             prev.formData.projectExtraProps[q.key] = '';
           }
         });
+      }
+      if (this.state.determination.endState) {
+        prev.formData.projectType = this.state.determination.projectType
       }
       prev.enabledQuestionsWizard = false;
       return prev;
