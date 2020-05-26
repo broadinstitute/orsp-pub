@@ -10,7 +10,7 @@ export const NewProjectDetermination = hh(class NewProjectDetermination extends 
 
   constructor(props) {
     super(props);
-    this.state = initQuestions();
+    this.state.questions = initQuestions();
   }
 
   static getDerivedStateFromError(error) {

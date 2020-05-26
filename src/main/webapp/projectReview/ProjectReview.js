@@ -19,7 +19,7 @@ import head from 'lodash/head';
 import orderBy from 'lodash/orderBy';
 import isEmptyArray from 'lodash/isEmpty';
 import { isEmpty, scrollToTop } from '../util/Utils';
-import { initQuestions } from '../util/DeterminationQuestions';
+import { initQuestions, getProjectType } from '../util/DeterminationQuestions';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -427,7 +427,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   getProject() {
     let project = {};
-    project.type = this.getProjectType();
+    project.type = getProjectType(this.state.determination.projectType);
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
@@ -494,23 +494,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
       project.collaborator = collaboratorList;
     }
     return project;
-  }
-
-  getProjectType() {
-    let type = '';
-    if (this.state.determination.projectType === DETERMINATION.NE) {
-      type = 'NE';
-    }
-    else if (this.state.determination.projectType === DETERMINATION.NHSR) {
-      type = 'NHSR';
-    }
-    else if (this.state.determination.projectType === DETERMINATION.IRB) {
-      type = 'IRB';
-    }
-    else if (this.state.determination.projectType === DETERMINATION.EX) {
-      type = 'EX';
-    }
-    return type;
   }
 
   getAffiliation(affiliations) {

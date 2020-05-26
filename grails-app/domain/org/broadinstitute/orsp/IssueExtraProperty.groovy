@@ -38,7 +38,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String FEE_FOR_SERVICE_WORK = "feeForServiceWork"
     public static final String BROAD_INVESTIGATOR = "broadInvestigator"
     public static final String SUBJECTS_DECEASED = "subjectsDeceased"
-        public static final String INTERACTION_SOURCE = "interactionSource"
+    public static final String INTERACTION_SOURCE = "interactionSource"
     public static final String IS_ID_RECEIVE = "isIdReceive"
     public static final String IS_CO_PUBLISHING = "isCoPublishing"
     public static final String FEDERAL_FUNDING = "federalFunding"

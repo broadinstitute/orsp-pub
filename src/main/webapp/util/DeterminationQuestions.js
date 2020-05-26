@@ -127,3 +127,20 @@ export const initQuestions = () => {
 
   return questions
 };
+
+export const getProjectType = (projectType) => {
+  let type = '';
+  if (projectType === DETERMINATION.NE) {
+    type = 'NE';
+  }
+  else if (projectType === DETERMINATION.NHSR) {
+    type = 'NHSR';
+  }
+  else if (projectType === DETERMINATION.IRB) {
+    type = 'IRB';
+  }
+  else if (projectType === DETERMINATION.EX) {
+    type = 'EX';
+  }
+  return type;
+}
