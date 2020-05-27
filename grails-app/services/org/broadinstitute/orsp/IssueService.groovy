@@ -344,13 +344,13 @@ class IssueService implements UserInfo {
 
                 // update Submission projectKey
                 List<Submission> submissions = queryService.getSubmissionsByProject(oldProjectKey)
-                comments?.each {
+                submissions?.each {
                     it.setProjectKey(newProjectKey)
                     it.save(flush: true)
                 }
 
                 // update StorageDocument projectKey
-                List<StorageDocument> documents = queryService.getAttachmentsForProject(oldProjectKey)
+                List<StorageDocument> documents = queryService.getDocumentsForProject(oldProjectKey)
                 documents?.each {
                     storageProviderService.renameStorageDocument(it, newProjectKey)
                     it.setProjectKey(newProjectKey)
