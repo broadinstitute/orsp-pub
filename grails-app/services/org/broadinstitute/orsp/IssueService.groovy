@@ -305,10 +305,6 @@ class IssueService implements UserInfo {
                     it.save(flush: true)
                 }
 
-                // update Issue projectKey
-                issue.setType(issueType.getName())
-                issue.setProjectKey(newProjectKey)
-
                 // update Funding projectKey
                 List<Funding> fundingList = queryService.findFundingsByProject(oldProjectKey)
                 fundingList?.each {
@@ -316,28 +312,44 @@ class IssueService implements UserInfo {
                     it.save(flush: true)
                 }
 
+                // update Issue projectKey
+                issue.setType(issueType.getName())
+                issue.setProjectKey(newProjectKey)
                 if (issue.hasErrors()) {
                     throw new DomainException(issue.getErrors())
                 } else {
                     issue.save(flush: true)
                 }
 
+                // update Event projectKey
                 List<Event> events = queryService.getEventsForProject(oldProjectKey)
                 events?.each {
                     it.setProjectKey(newProjectKey)
                     it.save(flush: true)
                 }
+
+                // update ConsentCollectionLink projectKey
                 List<ConsentCollectionLink> consents = queryService.findCollectionLinksByProjectKey(oldProjectKey)
                 consents?.each {
                     it.setProjectKey(newProjectKey)
                     it.save(flush: true)
                 }
+
+                // update Comment projectKey
                 List<Comment> comments = queryService.getCommentsByIssueId(oldProjectKey)
                 comments?.each {
                     it.setProjectKey(newProjectKey)
                     it.save(flush: true)
                 }
 
+                // update Submission projectKey
+                List<Submission> submissions = queryService.getSubmissionsByProject(oldProjectKey)
+                comments?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update StorageDocument projectKey
                 List<StorageDocument> documents = queryService.getAttachmentsForProject(oldProjectKey)
                 documents?.each {
                     storageProviderService.renameStorageDocument(it, newProjectKey)
