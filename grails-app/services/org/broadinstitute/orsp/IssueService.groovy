@@ -297,6 +297,7 @@ class IssueService implements UserInfo {
                 String newProjectKey = QueryService.PROJECT_KEY_PREFIX + issueType.prefix + "-" + issue.id
 
                 IssueReview issueReview = issueReviewService.findByProjectKey(oldProjectKey)
+                String editCreatorName = issueReview.editCreatorName
                 issueReview.delete(flush: true)
 
                 def extraProperties = issue.getExtraProperties()
@@ -357,7 +358,8 @@ class IssueService implements UserInfo {
                     it.save(flush: true)
                 }
 
-                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project Key Updated", EventType.APPROVE_EDITS)
+                notifyService.sendDeterminationRevisedNotification(issue, editCreatorName, oldProjectKey)
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Determination revised", EventType.APPROVE_EDITS)
             }
         issue
     }

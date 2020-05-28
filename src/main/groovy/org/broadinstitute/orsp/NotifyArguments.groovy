@@ -7,6 +7,7 @@ class NotifyArguments {
     String comment
     String subject
     String view
+    String oldProjectkey
     List<String> toAddresses
     List<String> ccAddresses
     String fromAddress
@@ -24,6 +25,7 @@ class NotifyArguments {
                 comment this.comment
                 subject this.subject
                 view this.view
+                oldProjectkey this.oldProjectkey
                 toAddresses this.toAddresses?.join(", ")
                 ccAddresses this.ccAddresses?.join(", ")
                 fromAddress this.fromAddress
