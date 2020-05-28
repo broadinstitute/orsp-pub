@@ -472,13 +472,20 @@ class StorageProviderService implements Status {
     void renameStorageDocument(StorageDocument document, String newProjectkey) {
         String bucket = storageConfiguration.bucket.replace("/", "")
         Storage storage = StorageOptions.newBuilder().setCredentials(getCredentials()).build().getService()
-        Blob blob = storage.get(bucket, document.projectKey + "/" + document.uuid)
-        // Write a copy of the object to the target bucket
-        CopyWriter copyWriter = blob.copyTo(bucket, newProjectkey + "/" + document.uuid)
-        Blob copiedBlob = copyWriter.getResult()
-        // Delete the original blob now that we've copied to where we want it, finishing the "move"
-        // operation
-        blob.delete()
+
+        try {
+            Blob blob = storage.get(bucket, document.projectKey + "/" + document.uuid)
+            // Write a copy of the object to the target bucket
+            CopyWriter copyWriter = blob.copyTo(bucket, newProjectkey + "/" + document.uuid)
+            Blob copiedBlob = copyWriter.getResult()
+            // Delete the original blob now that we've copied to where we want it, finishing the "move"
+            // operation
+            blob.delete()
+        } catch (Exception e) {
+            System.out.println("Error renaming storage object: " + e)
+            log.error("Error renaming storage object")
+        }
+
     }
 
 }
