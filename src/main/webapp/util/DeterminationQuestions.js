@@ -129,18 +129,16 @@ export const initQuestions = () => {
 };
 
 export const getProjectType = (projectType) => {
-  let type = '';
-  if (projectType === DETERMINATION.NE) {
-    type = 'NE';
+  switch (projectType) {
+    case DETERMINATION.NE:
+      return 'NE';
+    case DETERMINATION.NHSR:
+      return 'NHSR';
+    case DETERMINATION.IRB:
+      return 'IRB';
+    case DETERMINATION.EX:
+      return 'EX';
+    default:
+      return '';
   }
-  else if (projectType === DETERMINATION.NHSR) {
-    type = 'NHSR';
-  }
-  else if (projectType === DETERMINATION.IRB) {
-    type = 'IRB';
-  }
-  else if (projectType === DETERMINATION.EX) {
-    type = 'EX';
-  }
-  return type;
-}
+};

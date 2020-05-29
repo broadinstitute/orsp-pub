@@ -390,7 +390,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   verifyProjectkeyChanged(type) {
-    let projectKey = this.props.projectKey.split('-');
+    const projectKey = this.props.projectKey.split('-');
     const projectType = projectKey[projectKey.length-2];
 
     if (!isEmpty(projectType) && !isEmpty(type) &&

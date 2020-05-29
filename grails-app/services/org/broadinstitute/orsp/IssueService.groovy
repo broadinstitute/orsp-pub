@@ -291,7 +291,7 @@ class IssueService implements UserInfo {
     @Transactional
     Issue updateProjectkey(Issue issue, Map<String, Object> input) throws DomainException {
         // update projectKey and type if response to determination questions changed
-            def issueType = IssueType.valueOfPrefix(input.get("type"))
+            IssueType issueType = IssueType.valueOfPrefix(input.get("type"))
             if (issue.getType() != issueType.getName()) {
                 String oldProjectKey = issue.projectKey
                 String newProjectKey = QueryService.PROJECT_KEY_PREFIX + issueType.prefix + "-" + issue.id
@@ -300,7 +300,7 @@ class IssueService implements UserInfo {
                 String editCreatorName = issueReview.editCreatorName
                 issueReview.delete(flush: true)
 
-                def extraProperties = issue.getExtraProperties()
+                Collection<IssueExtraProperty> extraProperties = issue.getExtraProperties()
                 extraProperties?.each {
                     it.setProjectKey(newProjectKey)
                     it.save(flush: true)
