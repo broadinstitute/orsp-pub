@@ -162,21 +162,21 @@ const ProjectReview = hh(class ProjectReview extends Component {
   componentDidMount() {
     this._isMounted = true;
     this.props.showSpinner();
-    this.init();
+    this.init(this.props.projectKey);
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  init() {
+  init(projectKey) {
     scrollToTop();
     let current = {};
     let currentStr = {};
     let future = {};
     let futureCopy = {};
     let formData = {};
-    Project.getProject(this.props.projectKey).then(
+    Project.getProject(projectKey).then(
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
@@ -196,7 +196,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         futureCopy = JSON.parse(currentStr);
         this.projectType = issue.data.issue.type;
 
-        Review.getSuggestions(this.props.projectKey).then(
+        Review.getSuggestions(projectKey).then(
           data => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('new') && urlParams.get('tab') === 'review') {
@@ -243,7 +243,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   getReviewSuggestions() {
-    this.init();
+    this.init(this.props.projectKey);
       Review.getSuggestions(this.props.projectKey).then(
       data => {
         if (this._isMounted) {
@@ -405,7 +405,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     Review.deleteSuggestions(this.props.projectKey, type).then(
       resp => {
         this.props.updateContent();
-        this.init();
+        this.init(this.props.projectKey);
         this.props.hideSpinner();
       })
       .catch(error => {
@@ -417,7 +417,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
   updateProjectkey() {
     Project.updateProjectkey(this.getProject(), this.props.projectKey).then(
       resp => {
-        this.reloadProject(resp.data.message);
+        //this.reloadProject(resp.data.message);
+        this.init(resp.data.message);
         this.props.hideSpinner();
       })
       .catch(error => {
@@ -592,7 +593,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   cancelEdit = (e) => () => {
-    this.init();
+    this.init(this.props.projectKey);
     this.setState(prev => {
       prev.formData = this.state.futureCopy;
       prev.current = this.state.futureCopy;
@@ -861,7 +862,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   successNotification = (type, message, time) => {
     setTimeout(this.clearAlertMessage(type), time, null);
     this.props.updateContent();
-    this.init();
+    this.init(this.props.projectKey);
     this.setState(prev => {
       prev[type] = true;
       prev.alertMessage = message;
