@@ -172,7 +172,8 @@ class NotifyService implements SendgridSupport, Status {
                 arguments.comment,
                 arguments.details,
                 recipients,
-                arguments.values)
+                arguments.values,
+                arguments.oldProjectkey)
 
         // If entered by ORSP, then all email should only go to the ORSP team
         if (arguments.issue.isFlagSet(IssueExtraProperty.ORSP_ENTERED_FLAG)) {
@@ -260,7 +261,8 @@ class NotifyService implements SendgridSupport, Status {
             String comment,
             String details,
             List<String> recipients,
-            Map<String, String> values) {
+            Map<String, String> values,
+            String oldProjectkey) {
         if (issue.isFlagSet(IssueExtraProperty.ORSP_ENTERED_FLAG)) {
             details +=
                     "This project is only being sent to ORSP because it has been entered by ORSP. " +
@@ -273,7 +275,8 @@ class NotifyService implements SendgridSupport, Status {
                         comment  : comment,
                         details  : details,
                         issueLink: issueLink,
-                        values   : values])
+                        values   : values,
+                        oldProjectkey: oldProjectkey])
         content
     }
 
@@ -665,6 +668,23 @@ class NotifyService implements SendgridSupport, Status {
                         issue: issue)
 
         arguments.view = "/notify/editsApproved"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+    Map<Boolean, String> sendDeterminationRevisedNotification(Issue issue, String editCreatorName, String oldProjectKey) {
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        ccAddresses: editCreatorName != null ? Collections.singletonList(userService.findUser(editCreatorName).emailAddress) : Collections.emptyList(),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: "ORSP has revised your project determination",
+                        user: user,
+                        issue: issue)
+
+        arguments.view = "/notify/determinationRevised"
+        arguments.oldProjectkey = oldProjectKey
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }

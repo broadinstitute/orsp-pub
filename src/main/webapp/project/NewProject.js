@@ -7,6 +7,7 @@ import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from '../util/TypeDescription';
 import { Project, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
+import { getProjectType } from '../util/DeterminationQuestions';
 import { hh } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -135,7 +136,7 @@ const NewProject = hh(class NewProject extends Component {
 
   getProject() {
     let project = {};
-    project.type = this.getProjectType(project);
+    project.type = getProjectType(this.state.determination.projectType);
     project.summary = this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null;
     project.reporter = this.state.user.userName;
     project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
@@ -196,23 +197,6 @@ const NewProject = hh(class NewProject extends Component {
       });
     }
     return fundingList;
-  }
-
-  getProjectType() {
-    let type = '';
-    if (this.state.determination.projectType === DETERMINATION.NE) {
-      type = 'NE';
-    }
-    else if (this.state.determination.projectType === DETERMINATION.NHSR) {
-      type = 'NHSR';
-    }
-    else if (this.state.determination.projectType === DETERMINATION.IRB) {
-      type = 'IRB';
-    }
-    else if (this.state.determination.projectType === DETERMINATION.EX) {
-      type = 'EX';
-    }
-    return type;
   }
 
   stepChanged = (newStep) => {

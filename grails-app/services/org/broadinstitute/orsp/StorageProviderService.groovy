@@ -11,17 +11,19 @@ import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.storage.StorageScopes
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.storage.Blob
+import com.google.cloud.storage.CopyWriter
+import com.google.cloud.storage.Storage
+import com.google.cloud.storage.StorageOptions
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.config.StorageConfiguration
-import org.grails.io.support.GrailsResourceUtils
 import org.springframework.web.multipart.MultipartFile
 
 import java.nio.charset.Charset
 import java.security.GeneralSecurityException
-import java.text.SimpleDateFormat
-
 /**
  * TODO: Move all transactions to persistence service
  */
@@ -43,6 +45,7 @@ class StorageProviderService implements Status {
     private final static HttpTransport HTTP_TRANSPORT = new NetHttpTransport()
 
     private GoogleCredential credential
+    private GoogleCredentials credentials
 
     private final lock = new Object()
 
@@ -453,6 +456,43 @@ class StorageProviderService implements Status {
 
     void setCredential(GoogleCredential credential) {
         this.credential = credential
+    }
+
+    /**
+     *
+     * @return GoogleCredentials for google storage client libraries use
+     */
+    private GoogleCredentials getCredentials() {
+
+        if (!credentials) {
+            File configFile = new File(storageConfiguration.config)
+            setCredentials(GoogleCredentials.fromStream(new FileInputStream(configFile))
+                    .createScoped(Collections.singletonList(StorageScopes.DEVSTORAGE_FULL_CONTROL)))
+        }
+        credentials
+    }
+
+    void setCredentials(GoogleCredentials credentials) {
+        this.credentials = credentials
+    }
+
+    void renameStorageDocument(StorageDocument document, String newProjectkey) {
+        String bucket = storageConfiguration.bucket.replace("/", "")
+        Storage storage = StorageOptions.newBuilder().setCredentials(getCredentials()).build().getService()
+
+        try {
+            Blob blob = storage.get(bucket, document.projectKey + "/" + document.uuid)
+            // Write a copy of the object to the target bucket
+            CopyWriter copyWriter = blob.copyTo(bucket, newProjectkey + "/" + document.uuid)
+            Blob copiedBlob = copyWriter.getResult()
+            // Delete the original blob now that we've copied to where we want it, finishing the "move"
+            // operation
+            blob.delete()
+        } catch (Exception e) {
+            System.out.println("Error renaming storage object: " + e)
+            log.error("Error renaming storage object")
+        }
+
     }
 
 }

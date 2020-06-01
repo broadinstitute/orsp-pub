@@ -125,7 +125,6 @@ class ProjectController extends AuthenticatedController {
         }
     }
 
-
     def update() {
         Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
         Issue issue = Issue.findByProjectKey(params.projectKey)
@@ -133,6 +132,20 @@ class ProjectController extends AuthenticatedController {
             issueService.updateIssue(issue, project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
+        } catch(Exception e) {
+            handleException(e)
+        }
+    }
+
+    def updateKey() {
+        Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
+        Issue issue = Issue.findByProjectKey(params.projectKey)
+        try {
+            if (project.containsKey("type") && StringUtils.isNotBlank(project.get("type"))) {
+                issueService.updateProjectkey(issue, project)
+            }
+            response.status = 200
+            render([message: issue.projectKey] as JSON)
         } catch(Exception e) {
             handleException(e)
         }

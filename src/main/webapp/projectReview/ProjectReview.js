@@ -6,6 +6,8 @@ import { MultiSelect } from '../components/MultiSelect';
 import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
+import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
+import { DETERMINATION } from "../util/TypeDescription";
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
@@ -17,6 +19,7 @@ import head from 'lodash/head';
 import orderBy from 'lodash/orderBy';
 import isEmptyArray from 'lodash/isEmpty';
 import { isEmpty, scrollToTop } from '../util/Utils';
+import { initQuestions, getProjectType } from '../util/DeterminationQuestions';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -98,6 +101,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       futureCopy: {},
       current: {
         approvalStatus: '',
+        projectType: '',
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -144,8 +148,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
         currentQuestionIndex: 0,
         nextQuestionIndex: 1,
         endState: false
-      }
+      },
+      questions: null,
+      enabledQuestionsWizard: false
     };
+    this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
     this.approveEdits = this.approveEdits.bind(this);
     this.removeEdits = this.removeEdits.bind(this);
@@ -336,7 +343,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       let project = this.getProject();
       Project.updateProject(project, this.props.projectKey).then(
         resp => {
-          this.removeEdits('approve');
+          this.verifyProjectkeyChanged(project.type);
         })
         .catch(error => {
           this.props.hideSpinner();
@@ -375,13 +382,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.editsApproved = true;
     Project.updateProject(project, this.props.projectKey).then(
       resp => {
-        this.removeEdits('approve');
-
+        this.verifyProjectkeyChanged(project.type);
       }).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });
-      });
+      })
   };
+
+  verifyProjectkeyChanged(type) {
+    const projectKey = this.props.projectKey.split('-');
+    const projectType = projectKey[projectKey.length-2];
+
+    if (!isEmpty(projectType) && !isEmpty(type) &&
+      projectType !== type) {
+      this.updateProjectkey();
+    } else {
+      this.removeEdits('approve');
+    }
+  }
 
   removeEdits(type) {
     Review.deleteSuggestions(this.props.projectKey, type).then(
@@ -396,8 +414,21 @@ const ProjectReview = hh(class ProjectReview extends Component {
       });
   }
 
+  updateProjectkey() {
+    Project.updateProjectkey(this.getProject(), this.props.projectKey).then(
+      resp => {
+        this.reloadProject(resp.data.message);
+        this.props.hideSpinner();
+      })
+      .catch(error => {
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
+      });
+  }
+
   getProject() {
     let project = {};
+    project.type = getProjectType(this.state.formData.projectType);
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
@@ -405,6 +436,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
+    project.broadInvestigator = this.state.formData.projectExtraProps.broadInvestigator;
+    project.subjectsDeceased = this.state.formData.projectExtraProps.subjectsDeceased;
+    project.interactionSource = this.state.formData.projectExtraProps.interactionSource;
+    project.sensitiveInformationSource = this.state.formData.projectExtraProps.sensitiveInformationSource;
+    project.isIdReceive = this.state.formData.projectExtraProps.isIdReceive;
+    project.isCoPublishing = this.state.formData.projectExtraProps.isCoPublishing;
+    project.irbReviewedProtocol = this.state.formData.projectExtraProps.irbReviewedProtocol;
+    project.humanSubjects = this.state.formData.projectExtraProps.humanSubjects;
     project.feeForServiceWork = this.state.formData.projectExtraProps.feeForServiceWork;
     project.projectTitle = this.state.formData.projectExtraProps.projectTitle;
     project.projectAvailability = this.state.formData.projectExtraProps.projectAvailability;
@@ -513,6 +552,45 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
+  enableEditResponses = (e) => () => {
+    this.setState(prev => {
+      prev.enabledQuestionsWizard = true;
+      return prev
+    });
+
+  };
+
+  cancelEditResponses = (e) => () => {
+    this.setState(prev => {
+      prev.enabledQuestionsWizard = false;
+      return prev
+    });
+  };
+
+  submitEditResponses = (e) => () => {
+    this.setState(prev => {
+      let questions = this.state.determination.questions;
+      if (questions.length > 1) {
+        questions.map(q => {
+          if (q.answer !== null) {
+            prev.formData.projectExtraProps[q.key] = q.answer;
+          } else {
+            prev.formData.projectExtraProps[q.key] = '';
+          }
+        });
+      }
+      if (this.state.determination.endState) {
+        prev.formData.projectType = this.state.determination.projectType
+      }
+      prev.enabledQuestionsWizard = false;
+      return prev;
+    },
+      () => {
+        if (this.state.errorSubmit === true) this.isValid()
+      });
+
+  };
+
   cancelEdit = (e) => () => {
     this.init();
     this.setState(prev => {
@@ -533,6 +611,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       this.setState(prev => {
         prev.readOnly = true;
         prev.errorSubmit = false;
+        prev.enabledQuestionsWizard = false;
         if (get(prev.formData.projectExtraProps, 'affiliations.value', '') !== 'other') {
           prev.formData.projectExtraProps.affiliationOther = '';
         }
@@ -804,6 +883,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
     window.location.href = [component.serverURL, "project", "main?projectKey=" + this.props.projectKey + "&tab=consent-groups"].join("/");
   };
 
+  reloadProject = async (projectKey) => {
+    window.location.href = [component.serverURL, "project", "main?projectKey=" + projectKey].join("/");
+  };
+
   handleAttestationCheck = (e) => {
     const checked = e.target.checked;
     this.setState(prev => {
@@ -815,6 +898,16 @@ const ProjectReview = hh(class ProjectReview extends Component {
   removeErrorMessage = () => {
     this.setState(prev => {
       prev.generalError = false;
+      return prev;
+    });
+  };
+
+  determinationHandler = (determination) => {
+    this.setState(prev => {
+      prev.determination = determination;
+      if (prev.determination.projectType !== null && prev.showErrorDeterminationQuestions === true) {
+        prev.showErrorDeterminationQuestions = false;
+      }
       return prev;
     });
   };
@@ -1078,14 +1171,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
             edit: true
           })
         ]),
-
-        Panel({ title: "Determination Questions" }, [
-          div({ isRendered: this.state.readOnly === false }, [
-            AlertMessage({
-              type: 'info',
-              msg: "If changes need to be made to any of these questions, please submit a new project request",
-              show: true
-            })
+        
+        Panel({ isRendered: this.state.enabledQuestionsWizard === false, title: "Determination Questions" }, [
+          div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+            button({
+              className: "btn buttonPrimary floatRight",
+              onClick: this.enableEditResponses(),
+              isRendered: this.state.readOnly === false && !component.isViewer
+            }, ["Edit Responses"])
           ]),
           div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
             InputYesNo({
@@ -1212,6 +1305,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
             })
           ])
         ]),
+        Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions"}, [
+          div({ style: { 'marginTop': '55px' }}, [
+            QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler }),
+              div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+                button({
+                  className: "btn buttonSecondary",
+                  onClick: this.cancelEditResponses(),
+                  isRendered: this.state.readOnly === false && !component.isViewer
+                }, ["Cancel"]),
+                button({
+                  className: "btn buttonPrimary floatRight",
+                  onClick: this.submitEditResponses(),
+                  disabled: !this.state.determination.endState,
+                  isRendered: this.state.readOnly === false && !component.isViewer
+                }, ["Submit"])
+              ]),
+          ])
+        ]),
         Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
           p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
           p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
@@ -1247,8 +1358,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
             className: "btn buttonPrimary floatRight",
             onClick: this.submitEdit(),
             disabled: isEmpty(this.state.editedForm) ?
-              !this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")
-              : this.compareObj("formData", "editedForm"),
+              (!this.compareObj("formData", "editedForm") && this.compareObj("formData", "current")) || this.state.enabledQuestionsWizard
+              : this.compareObj("formData", "editedForm") || this.state.enabledQuestionsWizard,
             isRendered: this.state.readOnly === false && !component.isViewer
           }, ["Submit Edits"]),
 

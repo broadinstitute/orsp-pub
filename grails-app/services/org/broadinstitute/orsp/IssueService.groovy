@@ -3,6 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.BooleanUtils
 import org.apache.commons.lang.StringUtils
 
 /**
@@ -19,6 +20,7 @@ class IssueService implements UserInfo {
     PersistenceService persistenceService
     NotifyService notifyService
     IssueReviewService issueReviewService
+    StorageProviderService storageProviderService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -76,7 +78,15 @@ class IssueService implements UserInfo {
             IssueExtraProperty.CATEGORY_FOUR,
             IssueExtraProperty.CATEGORY_TWO,
             IssueExtraProperty.TEXT_OTHER_CATEGORY,
-            IssueExtraProperty.OTHER_CATEGORY
+            IssueExtraProperty.OTHER_CATEGORY,
+            IssueExtraProperty.FEE_FOR_SERVICE,
+            IssueExtraProperty.BROAD_INVESTIGATOR,
+            IssueExtraProperty.SUBJECTS_DECEASED,
+            IssueExtraProperty.INTERACTION_SOURCE,
+            IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE,
+            IssueExtraProperty.IS_ID_RECEIVE,
+            IssueExtraProperty.IRB_REVIEWED_PROTOCOL,
+            IssueExtraProperty.HUMAN_SUBJECTS
     ]
 
 
@@ -221,6 +231,33 @@ class IssueService implements UserInfo {
         if (input.containsKey(IssueExtraProperty.NO_CONSENT_FORM_REASON) && StringUtils.isNotEmpty(input.get(IssueExtraProperty.NO_CONSENT_FORM_REASON))) {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.NO_CONSENT_FORM_REASON})
         }
+
+        // handle determination questions update
+        if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR })
+        }
+        if (input.containsKey(IssueExtraProperty.SUBJECTS_DECEASED) && input.get(IssueExtraProperty.SUBJECTS_DECEASED) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SUBJECTS_DECEASED })
+        }
+        if (input.containsKey(IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE) && input.get(IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE })
+        }
+        if (input.containsKey(IssueExtraProperty.INTERACTION_SOURCE) && input.get(IssueExtraProperty.INTERACTION_SOURCE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.INTERACTION_SOURCE })
+        }
+        if (input.containsKey(IssueExtraProperty.IS_ID_RECEIVE) && input.get(IssueExtraProperty.IS_ID_RECEIVE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_ID_RECEIVE })
+        }
+        if (input.containsKey(IssueExtraProperty.IS_CO_PUBLISHING) && input.get(IssueExtraProperty.IS_CO_PUBLISHING) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IS_CO_PUBLISHING })
+        }
+        if (input.containsKey(IssueExtraProperty.IRB_REVIEWED_PROTOCOL) && input.get(IssueExtraProperty.IRB_REVIEWED_PROTOCOL) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.IRB_REVIEWED_PROTOCOL })
+        }
+        if (input.containsKey(IssueExtraProperty.HUMAN_SUBJECTS) && input.get(IssueExtraProperty.HUMAN_SUBJECTS) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.HUMAN_SUBJECTS })
+        }
+
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
             it.delete(hard: true)
@@ -231,6 +268,7 @@ class IssueService implements UserInfo {
         }
 
         issue.setUpdateDate(new Date())
+
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
@@ -240,6 +278,89 @@ class IssueService implements UserInfo {
             notifyService.sendEditsApprovedNotification(issue, issueReviewService.findByProjectKey(issue.projectKey)?.getEditCreatorName(), getUser()?.displayName)
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Edits Approved", EventType.APPROVE_EDITS)
         }
+        issue
+    }
+
+    /**
+     * Handles the update of project key to an existing issue.
+     *
+     * @param issue The existing issue to update.
+     * @param input Map of form arguments that come from any of the various update forms
+     * @return Persisted issue
+     */
+    @Transactional
+    Issue updateProjectkey(Issue issue, Map<String, Object> input) throws DomainException {
+        // update projectKey and type if response to determination questions changed
+            IssueType issueType = IssueType.valueOfPrefix(input.get("type"))
+            if (issue.getType() != issueType.getName()) {
+                String oldProjectKey = issue.projectKey
+                String newProjectKey = QueryService.PROJECT_KEY_PREFIX + issueType.prefix + "-" + issue.id
+
+                IssueReview issueReview = issueReviewService.findByProjectKey(oldProjectKey)
+                String editCreatorName = issueReview.editCreatorName
+                issueReview.delete(flush: true)
+
+                Collection<IssueExtraProperty> extraProperties = issue.getExtraProperties()
+                extraProperties?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update Funding projectKey
+                List<Funding> fundingList = queryService.findFundingsByProject(oldProjectKey)
+                fundingList?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update Issue projectKey
+                issue.setType(issueType.getName())
+                issue.setProjectKey(newProjectKey)
+                if (issue.hasErrors()) {
+                    throw new DomainException(issue.getErrors())
+                } else {
+                    issue.save(flush: true)
+                }
+
+                // update Event projectKey
+                List<Event> events = queryService.getEventsForProject(oldProjectKey)
+                events?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update ConsentCollectionLink projectKey
+                List<ConsentCollectionLink> consents = queryService.findCollectionLinksByProjectKey(oldProjectKey)
+                consents?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update Comment projectKey
+                List<Comment> comments = queryService.getCommentsByIssueId(oldProjectKey)
+                comments?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update Submission projectKey
+                List<Submission> submissions = queryService.getSubmissionsByProject(oldProjectKey)
+                submissions?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                // update StorageDocument projectKey
+                List<StorageDocument> documents = queryService.getDocumentsForProject(oldProjectKey)
+                documents?.each {
+                    storageProviderService.renameStorageDocument(it, newProjectKey)
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
+                notifyService.sendDeterminationRevisedNotification(issue, editCreatorName, oldProjectKey)
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Determination revised", EventType.APPROVE_EDITS)
+            }
         issue
     }
 
@@ -516,4 +637,5 @@ class IssueService implements UserInfo {
         accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
         accessContacts
     }
+
 }
