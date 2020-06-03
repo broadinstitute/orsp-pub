@@ -564,6 +564,25 @@ class IssueService implements UserInfo {
         notifyService.sendRejectionProjectNotification(issue, getUser()?.displayName)
     }
 
+    void hardDeleteIssue(String projectKey) {
+        Issue issue = queryService.findByKey(projectKey)
+        if (issue != null) {
+
+            List<Comment> comments = Comment.findAllByProjectKey(projectKey)
+            comments?.each { it.delete(hard: true) }
+
+            List<ConsentCollectionLink> links = ConsentCollectionLink.findAllByConsentKey(projectKey)
+            links?.each { it.delete(hard: true) }
+
+            Collection<StorageDocument> documents = queryService.getDocumentsForProject(projectKey)
+            documents?.each { it.delete(hard: true) }
+
+            Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
+            issueExtraProperties?.each { it.delete(hard: true) }
+        }
+        issue.delete(hard: true)
+    }
+
     @SuppressWarnings(["GroovyMissingReturnStatement", "GroovyAssignabilityCheck"])
     private Collection<IssueExtraProperty> findPropsForDeleting(Issue issue, Map<String, Object> input) {
         Collection<IssueExtraProperty> props = multiValuedPropertyKeys.collect {

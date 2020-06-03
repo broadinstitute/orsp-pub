@@ -241,4 +241,16 @@ class NewConsentGroupController extends AuthenticatedController {
             handleException(error)
         }
     }
+
+    def hardDelete() {
+        Issue issue = queryService.findByKey(params.consentKey)
+        if(issue != null) {
+            issueService.hardDeleteIssue(params.consentKey)
+            response.status = 200
+            render([message: 'Consent Group was deleted'] as JSON)
+        } else {
+            handleNotFound('Consent Group not found')
+        }
+
+    }
 }
