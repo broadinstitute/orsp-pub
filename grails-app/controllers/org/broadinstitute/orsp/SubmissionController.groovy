@@ -18,7 +18,9 @@ class SubmissionController extends AuthenticatedController {
 
     def getSubmissions() {
         Issue issue = queryService.findByKey(params.id)
-        if (issueIsForbidden(issue)) {
+        if (issue == null) {
+            handleNotFound('Project not found')
+        } else if (issue != null && issueIsForbidden(issue)) {
             response.status = 403
             render([error: "Issue is forbidden."] as JSON)
         }
