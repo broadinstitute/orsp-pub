@@ -168,18 +168,24 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def getProjectConsentGroups() {
-        UtilityClass.registerIssueMarshaller()
-        try {
-            LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
-            response.status = 200
-            JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
-                render( consentGroups as JSON)
+        Issue issue = queryService.findByKey(params.projectKey)
+        if (issue != null) {
+            UtilityClass.registerIssueMarshaller()
+            try {
+                LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
+                response.status = 200
+                JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
+                    render( consentGroups as JSON)
+                }
+            } catch(IllegalArgumentException e) {
+                handleIllegalArgumentException(e)
+            } catch(Exception e) {
+                handleException(e)
             }
-        } catch(IllegalArgumentException e) {
-            handleIllegalArgumentException(e)
-        } catch(Exception e) {
-            handleException(e)
+        } else {
+            handleNotFound('Project not found')
         }
+
     }
 
     /**

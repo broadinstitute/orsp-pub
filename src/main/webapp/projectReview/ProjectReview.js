@@ -1173,7 +1173,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         ]),
         
         Panel({ isRendered: this.state.enabledQuestionsWizard === false, title: "Determination Questions" }, [
-          div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+          div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved' && this.state.formData.approvalStatus != 'Completed', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
             button({
               className: "btn buttonPrimary floatRight",
               onClick: this.enableEditResponses(),
