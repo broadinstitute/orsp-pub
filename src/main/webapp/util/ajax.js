@@ -134,7 +134,11 @@ export const ConsentGroup = {
   },
 
   deleteNoReasonConsent(projectKey) {
-    return axios.delete(UrlConstants.deleteNoReasonConsent+ '?consentKey=' + projectKey);
+    return axios.delete(UrlConstants.deleteNoReasonConsent + '?consentKey=' + projectKey);
+  },
+
+  hardDeleteConsentGroup(consentKey) {
+    return axios.delete(UrlConstants.hardDeleteConsentGroup + '?consentKey=' + consentKey);
   }
 };
 

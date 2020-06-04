@@ -43,6 +43,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       approveInfoDialog: false,
       rejectProjectDialog: false,
       unlinkDialog: false,
+      deleteDialog: false,
       requestClarification: false,
       readOnly: true,
       isAdmin: false,
@@ -791,6 +792,16 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     })
   };
 
+  deleteConsentGroup = () => {
+    ConsentGroup.hardDeleteConsentGroup(this.props.consentKey).then(
+      () => {
+        this.toggleDeleteDialog();
+        this.init()
+      }).catch(error => {
+      this.setState({}, () => { throw error })
+    })
+  };
+
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
     return ["/infoLink", "showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + this.props.consentKey].join("/");
   };
@@ -801,6 +812,13 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       if (data !== undefined) {
         prev.unlinkDataRow = data;
       }
+      return prev;
+    });
+  };
+
+  toggleDeleteDialog = (data) => {
+    this.setState(prev => {
+      prev.deleteDialog = !this.state.deleteDialog;
       return prev;
     });
   };
@@ -897,11 +915,26 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           isRendered: this.state.readOnly === true && !component.isViewer,
         }, ["Edit Information"]),
         button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.toggleDeleteDialog,
+          disabled: !isEmpty(this.state.current.sampleCollectionLinks),
+          isRendered: this.state.readOnly === true && this.state.isAdmin,
+        }, ["Delete Consent Group"]),
+        button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.cancelEdit(),
           isRendered: this.state.readOnly === false
         }, ["Cancel"]),
+        ConfirmationDialog({
+          closeModal: this.toggleState('deleteDialog'),
+          show: this.state.deleteDialog,
+          handleOkAction: this.deleteConsentGroup,
+          title: 'Delete Consent Group',
+          bodyText: 'Are you sure you want to permanently delete this consent group? All associated information will also be deleted.',
+          actionLabel: 'Yes'
+        }),
         ConfirmationDialog({
           closeModal: this.toggleState('unlinkDialog'),
           show: this.state.unlinkDialog,

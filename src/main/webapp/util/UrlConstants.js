@@ -38,6 +38,7 @@ export const UrlConstants = {
   matchingName: context + '/api/consent-groups/matching-name',
   deleteNoReasonConsent: context +'/api/consent-group/delete-consent-reason',
   getConsentCollectionLinks: context + '/api/consent-collection-links',
+  hardDeleteConsentGroup: context + '/api/consent-group/hard-delete',
 
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',
