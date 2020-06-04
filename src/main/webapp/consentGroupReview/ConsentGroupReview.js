@@ -236,6 +236,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     } else {
       this.props.hideSpinner();
       console.error(error);
+      this.setState(() => { throw error; });
     }
   }
 

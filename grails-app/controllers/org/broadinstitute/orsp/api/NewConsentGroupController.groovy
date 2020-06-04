@@ -162,9 +162,13 @@ class NewConsentGroupController extends AuthenticatedController {
 
     Collection<ConsentCollectionLink> getConsentCollectionLinks() {
         Issue issue = queryService.findByKey(params.consentKey)
-        Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
-        render([collectionLinks: collectionLinks.linkedProject] as JSON)
-        collectionLinks
+        if (issue != null) {
+            Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
+            render([collectionLinks: collectionLinks.linkedProject] as JSON)
+            collectionLinks
+        } else {
+            handleNotFound('Consent Group not found')
+        }
     }
 
     def getProjectConsentGroups() {
