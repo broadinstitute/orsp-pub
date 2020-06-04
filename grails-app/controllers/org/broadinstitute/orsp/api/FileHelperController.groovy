@@ -93,19 +93,23 @@ class FileHelperController extends AuthenticatedController{
     }
 
     def attachedDocuments() {
-        Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(params.issueKey)
-        List<Long> collectionIds = collectionLinks?.collect{it.id}
-        // set all documents related to the specified key
-        List<StorageDocument> documents = queryService.getAttachmentsForProject(params.issueKey)
-        Boolean collectionDocsApproved = true
-        if (CollectionUtils.isNotEmpty(collectionIds)) {
-            collectionDocsApproved = consentService.collectionDocumentsApproved(collectionIds)
+        Issue issue = queryService.findByKey(params.issueKey)
+        if (issue != null) {
+            Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(params.issueKey)
+            List<Long> collectionIds = collectionLinks?.collect{it.id}
+            // set all documents related to the specified key
+            List<StorageDocument> documents = queryService.getAttachmentsForProject(params.issueKey)
+            Boolean collectionDocsApproved = true
+            if (CollectionUtils.isNotEmpty(collectionIds)) {
+                collectionDocsApproved = consentService.collectionDocumentsApproved(collectionIds)
+            }
+            List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
+            Gson gson = new Gson()
+            String doc = gson.toJson(results)
+            render ([documents : doc, attachmentsApproved: issue.attachmentsApproved() && collectionDocsApproved] as JSON)
+        } else {
+            handleNotFound('Project not found')
         }
-        List<StorageDocument> results = storageProviderService.processStorageDocuments(documents)
-        Boolean attachmentsApproved = queryService.findByKey(params.issueKey).attachmentsApproved()
-        Gson gson = new Gson()
-        String doc = gson.toJson(results)
-        render ([documents : doc, attachmentsApproved: attachmentsApproved && collectionDocsApproved] as JSON)
     }
 
     def updateDocumentsVersion() {

@@ -89,7 +89,7 @@ class ProjectController extends AuthenticatedController {
             String projectKey = params.id
             if (!StringUtils.isEmpty(projectKey)) {
                 Issue issue = queryService.findByKey(projectKey)
-                if (!issueIsForbidden(issue)) {
+                if (issue != null && !issueIsForbidden(issue)) {
                     Collection<Funding> fundingList = issue.getFundings()
                     ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
                     Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
@@ -102,11 +102,13 @@ class ProjectController extends AuthenticatedController {
                             collaborators     : colls,
                             attachmentsApproved: issue.attachmentsApproved()
                     ] as JSON)
-                } else {
+                } else if (issue != null) {
                     response.status = 403
+                } else {
+                    handleNotFound('Project not found')
                 }
             } else {
-             handleIllegalArgumentException(new IllegalArgumentException("project key is requiered"))
+             handleIllegalArgumentException(new IllegalArgumentException("project key is required"))
             }
         } catch (Exception e) {
             handleException(e)
