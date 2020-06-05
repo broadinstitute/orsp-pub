@@ -253,6 +253,10 @@ class NewConsentGroupController extends AuthenticatedController {
     }
 
     def hardDelete() {
+        Boolean isAdmin = isAdmin()
+        if (!isAdmin) {
+            handleForbidden()
+        }
         Issue issue = queryService.findByKey(params.consentKey)
         if(issue != null) {
             issueService.hardDeleteIssue(params.consentKey)
