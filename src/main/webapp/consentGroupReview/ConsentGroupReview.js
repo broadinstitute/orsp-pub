@@ -797,7 +797,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     ConsentGroup.hardDeleteConsentGroup(this.props.consentKey).then(
       () => {
         this.toggleDeleteDialog();
-        this.init()
+        this.props.history.push("/index");
       }).catch(error => {
       this.setState({}, () => { throw error })
     })
