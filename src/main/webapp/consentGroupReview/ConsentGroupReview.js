@@ -44,6 +44,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       rejectProjectDialog: false,
       unlinkDialog: false,
       deleteDialog: false,
+      showAlertDeleteConsentGroup: false,
       requestClarification: false,
       readOnly: true,
       isAdmin: false,
@@ -797,10 +798,15 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     ConsentGroup.hardDeleteConsentGroup(this.props.consentKey).then(
       () => {
         this.toggleDeleteDialog();
-        this.props.history.push("/index");
+        this.toggleDeleteAlert();
+        setTimeout(this.redirectToIndexPage, 3000, null);
       }).catch(error => {
       this.setState({}, () => { throw error })
     })
+  };
+
+  redirectToIndexPage = () =>  {
+    this.props.history.push("/index");
   };
 
   handleRedirectToInfoLink = (consentCollectionId, projectKey) => {
@@ -820,6 +826,13 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   toggleDeleteDialog = (data) => {
     this.setState(prev => {
       prev.deleteDialog = !this.state.deleteDialog;
+      return prev;
+    });
+  };
+
+  toggleDeleteAlert = (data) => {
+    this.setState(prev => {
+      prev.showAlertDeleteConsentGroup = !this.state.showAlertDeleteConsentGroup;
       return prev;
     });
   };
@@ -982,6 +995,11 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           bodyText: 'Are you sure you want to remove this Sample/Data Cohort?',
           actionLabel: 'Yes'
         }, []),
+        AlertMessage({
+          msg: "Consent group was successfully deleted. You will be redirected to index page.",
+          show: this.state.showAlertDeleteConsentGroup,
+          type: 'success'
+        }),
         Panel({ title: "Notes to ORSP",
           isRendered: !this.state.readOnly || !isEmpty(this.state.formData.consentExtraProps.editDescription) || !isEmpty(this.state.formData.consentExtraProps.describeEditType)
         }, [

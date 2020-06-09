@@ -578,14 +578,14 @@ class IssueService implements UserInfo {
             List<Event> events = Event.findAllByProjectKey(projectKey)
             events?.each { it.delete(hard: true, flush: true) }
 
-            List<ConsentCollectionLink> links = queryService.findAllConsentCollectionLink(projectKey)
-            links?.each { it.delete(hard: true, flush: true) }
-
             Collection<StorageDocument> documents = queryService.getDocumentsForProject(projectKey)
             documents?.each {
                 storageProviderService.removeStorageDocument(it, getUser()?.displayName)
                 it.delete(hard: true, flush: true)
             }
+
+            List<ConsentCollectionLink> links = queryService.findAllConsentCollectionLink(projectKey)
+            links?.each { it.delete(hard: true, flush: true) }
 
             Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
             issueExtraProperties?.each { it.delete(hard: true) }
