@@ -41,7 +41,8 @@ export default class ErrorHandler extends Component {
     }
     if(!_.isEmpty(error.response.data.error)
       && !_.isEmpty(error.message)
-      && error.response.data.error.includes("Project not found")
+      && (error.response.data.error.includes("Project not found") ||
+      error.response.data.error.includes("Consent Group not found"))
       && error.message.includes("404")) {
       notFound = true;
     }

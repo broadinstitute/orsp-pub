@@ -162,9 +162,13 @@ class NewConsentGroupController extends AuthenticatedController {
 
     Collection<ConsentCollectionLink> getConsentCollectionLinks() {
         Issue issue = queryService.findByKey(params.consentKey)
-        Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
-        render([collectionLinks: collectionLinks.linkedProject] as JSON)
-        collectionLinks
+        if (issue != null) {
+            Collection<ConsentCollectionLink> collectionLinks = queryService.findCollectionLinksByConsentKey(issue.projectKey)
+            render([collectionLinks: collectionLinks.linkedProject] as JSON)
+            collectionLinks
+        } else {
+            handleNotFound('Consent Group not found')
+        }
     }
 
     def getProjectConsentGroups() {
@@ -246,5 +250,21 @@ class NewConsentGroupController extends AuthenticatedController {
         } catch(Exception error) {
             handleException(error)
         }
+    }
+
+    def hardDelete() {
+        Boolean isAdmin = isAdmin()
+        if (!isAdmin) {
+            handleForbidden()
+        }
+        Issue issue = queryService.findByKey(params.consentKey)
+        if(issue != null) {
+            issueService.hardDeleteIssue(params.consentKey)
+            response.status = 200
+            render([message: 'Consent Group was deleted'] as JSON)
+        } else {
+            handleNotFound('Consent Group not found')
+        }
+
     }
 }

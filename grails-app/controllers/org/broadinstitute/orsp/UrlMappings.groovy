@@ -33,6 +33,7 @@ class UrlMappings {
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')
         '/api/consent-group/delete'(controller: 'newConsentGroup', action: 'delete', method: 'DELETE')
+        '/api/consent-group/hard-delete'(controller: 'newConsentGroup', action: 'hardDelete', method: 'DELETE')
         '/api/consent-group/associated-projects'(controller: 'newConsentGroup', action: 'getConsentCollectionLinks', method: 'GET')
         '/api/consent-group/unlink-associated-projects'(controller: 'newConsentGroup', action: 'unlinkAssociatedProjects', method: 'PUT')
         '/api/consent-group/unlink-associated-sample-collection'(controller: 'newConsentGroup', action: 'unlinkAssociatedSampleCollection', method: 'PUT')

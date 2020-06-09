@@ -1763,6 +1763,17 @@ class QueryService implements Status {
         }
     }
 
+    List<ConsentCollectionLink> findAllConsentCollectionLink(String consentKey) {
+        String query = 'select * from consent_collection_link where consent_key = :consentKey '
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<ConsentCollectionLink> links = sqlQuery.with {
+            addEntity(ConsentCollectionLink)
+            setString('consentKey', consentKey)
+            list()
+        }
+        links
+    }
+
     private String getRestrictionOrderColumn(Integer orderColumn) {
         String orderField
         switch (orderColumn) {
