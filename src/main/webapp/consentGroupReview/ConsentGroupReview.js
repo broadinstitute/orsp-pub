@@ -795,13 +795,16 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
   };
 
   deleteConsentGroup = () => {
+    this.props.showSpinner();
     ConsentGroup.hardDeleteConsentGroup(this.props.consentKey).then(
       () => {
         this.toggleDeleteDialog();
         this.toggleDeleteAlert();
+        this.props.hideSpinner();
         setTimeout(this.redirectToIndexPage, 3000, null);
       }).catch(error => {
-      this.setState({}, () => { throw error })
+        this.props.hideSpinner();
+        this.setState({}, () => { throw error })
     })
   };
 
