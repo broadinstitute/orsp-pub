@@ -44,6 +44,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       rejectProjectDialog: false,
       unlinkDialog: false,
       deleteDialog: false,
+      exported: false,
       showAlertDeleteConsentGroup: false,
       requestClarification: false,
       readOnly: true,
@@ -122,6 +123,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     this.props.showSpinner();
     this._isMounted = true;
     this.init();
+    this.getExportedConsentGroup();
     this.subscription = subscriber.subscribe(v => {
       this.setState(prev => {
         prev.current.consentExtraProps.noConsentFormReason = v;
@@ -229,6 +231,17 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       }).catch((error) => {
         this.handleUnauthorizedError(error)
     });
+  };
+
+  getExportedConsentGroup = () => {
+    ConsentGroup.getExportedConsentGroup(this.props.consentKey).then(resp => {
+      if (resp.data) {
+        this.setState(prev => {
+          prev.exported = resp.data.vaultExportDate && resp.data.vaultConsentId;
+          return prev;
+        });
+      }
+    }).catch( () => {});
   };
 
   handleUnauthorizedError(error) {
@@ -935,7 +948,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.toggleDeleteDialog,
-          disabled: !isEmpty(this.state.current.sampleCollectionLinks),
+          disabled: !isEmpty(this.state.current.sampleCollectionLinks) || this.state.exported,
           isRendered: this.state.readOnly === true && this.state.isAdmin,
         }, ["Delete Consent Group"]),
         button({
