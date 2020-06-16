@@ -859,13 +859,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       return prev;
     });
   };
-
-  dismissHandler = () => {
-    this.setState({
-      tooltipVisible: false
-    });
-  }
-
+  
   toggleDeleteAlert = (data) => {
     this.setState(prev => {
       prev.showAlertDeleteConsentGroup = !this.state.showAlertDeleteConsentGroup;
