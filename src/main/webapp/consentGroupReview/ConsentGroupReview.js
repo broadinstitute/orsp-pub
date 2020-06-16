@@ -44,6 +44,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       rejectProjectDialog: false,
       unlinkDialog: false,
       deleteDialog: false,
+      showAlertMessage: false,
       exported: false,
       showAlertDeleteConsentGroup: false,
       requestClarification: false,
@@ -839,12 +840,31 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     });
   };
 
-  toggleDeleteDialog = (data) => {
+  clearShowAlertMessage = () => {
     this.setState(prev => {
-      prev.deleteDialog = !this.state.deleteDialog;
+      prev.showAlertMessage = false;
       return prev;
     });
   };
+
+  toggleDeleteDialog = (data) => {
+    this.setState(prev => {
+      if (this.state.exported) {
+        prev.showAlertMessage = true;
+        setTimeout(this.clearShowAlertMessage, 5000, null);
+      } else {
+        prev.deleteDialog = !this.state.deleteDialog;
+      }
+
+      return prev;
+    });
+  };
+
+  dismissHandler = () => {
+    this.setState({
+      tooltipVisible: false
+    });
+  }
 
   toggleDeleteAlert = (data) => {
     this.setState(prev => {
@@ -937,6 +957,10 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     const instSources = this.state.formData.instSources === undefined ? [{ current: { country: '' }, future: { country: '' } }] : this.state.formData.instSources;
     return (
       div({}, [
+        AlertMessage({
+          msg: "This consent group has been exported to DUOS and cannot be deleted",
+          show: this.state.showAlertMessage
+        }),
         h2({ className: "stepTitle" }, [" Sample/Data Cohort: " + this.props.consentKey]),
         button({
           className: "btn buttonPrimary floatRight",
@@ -948,7 +972,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.toggleDeleteDialog,
-          disabled: !isEmpty(this.state.current.sampleCollectionLinks) || this.state.exported,
+          disabled: !isEmpty(this.state.current.sampleCollectionLinks),
           isRendered: this.state.readOnly === true && this.state.isAdmin,
         }, ["Delete Consent Group"]),
         button({
