@@ -160,6 +160,11 @@ class NewConsentGroupController extends AuthenticatedController {
         render([restriction: duSummary, restrictionId: restriction?.id] as JSON)
     }
 
+    def getExportedConsentGroup() {
+        DataUseRestriction restriction = DataUseRestriction.findByConsentGroupKey(params.consentKey)
+        render([vaultConsentId: restriction?.vaultConsentId, vaultConsentLocation: restriction?.vaultConsentLocation, vaultExportDate: restriction?.vaultExportDate] as JSON)
+    }
+
     Collection<ConsentCollectionLink> getConsentCollectionLinks() {
         Issue issue = queryService.findByKey(params.consentKey)
         if (issue != null) {

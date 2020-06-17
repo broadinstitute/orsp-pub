@@ -107,6 +107,10 @@ export const ConsentGroup = {
     return axios.get(UrlConstants.useRestrictionUrl + '?consentKey=' + consentKey);
   },
 
+  getExportedConsentGroup(consentKey) {
+    return axios.get(UrlConstants.exportedConsentGroupUrl + '?consentKey=' + consentKey);
+  },
+
   getConsentCollectionLinks(consentKey) {
     return axios.get(UrlConstants.associatedProjects + '?consentKey=' + consentKey);
   },
