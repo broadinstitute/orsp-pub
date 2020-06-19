@@ -123,7 +123,7 @@ dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.4.15'
 
     compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.12'
     compile 'org.grails.plugins:gorm-logical-delete:2.0.0.M2'
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
