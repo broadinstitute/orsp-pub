@@ -851,7 +851,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
     this.setState(prev => {
       if (this.state.exported) {
         prev.showAlertMessage = true;
-        setTimeout(this.clearShowAlertMessage, 5000, null);
+        setTimeout(this.clearShowAlertMessage, 10000, null);
       } else {
         prev.deleteDialog = !this.state.deleteDialog;
       }
