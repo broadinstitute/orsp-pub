@@ -21,6 +21,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
     this.state = {
       readOnly: false,
       submit: false,
+      save: false,
       showSampleCollectionWarning: true,
       formData: {
         otherDiseasesID: [],
@@ -121,6 +122,39 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
           prev.formData.startDate = dulInfo.startDate;
           prev.formData.endDate = dulInfo.endDate;
           prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
+          prev.formData.consentFormTitle = dulInfo.consentFormTitle;
+          prev.formData.principalInvestigator = dulInfo.principalInvestigator;
+          prev.formData.primaryRestrictions = dulInfo.primaryRestrictions;
+          if (dulInfo.diseaseRestrictedOptions) {
+            prev.formData.diseaseRestrictedOptions.parasiticDisease = dulInfo.diseaseRestrictedOptions.parasiticDisease;
+            prev.formData.diseaseRestrictedOptions.cancer = dulInfo.diseaseRestrictedOptions.cancer;
+            prev.formData.diseaseRestrictedOptions.mentalDisorder = dulInfo.diseaseRestrictedOptions.mentalDisorder;
+            prev.formData.diseaseRestrictedOptions.nervousDisease = dulInfo.diseaseRestrictedOptions.nervousDisease;
+            prev.formData.diseaseRestrictedOptions.cardiovascularDisease = dulInfo.diseaseRestrictedOptions.cardiovascularDisease;
+            prev.formData.diseaseRestrictedOptions.respiratoryDisease = dulInfo.diseaseRestrictedOptions.respiratoryDisease;
+            prev.formData.diseaseRestrictedOptions.digestiveDisease = dulInfo.diseaseRestrictedOptions.digestiveDisease;
+            prev.formData.diseaseRestrictedOptions.otherDisease = dulInfo.diseaseRestrictedOptions.otherDisease;
+            prev.formData.diseaseRestrictedOptions.diseaseDOID = dulInfo.diseaseRestrictedOptions.diseaseDOID;
+          }
+          prev.formData.commercialPurposes = dulInfo.commercialPurposes;
+          prev.formData.methodsResearch = dulInfo.methodsResearch;
+          prev.formData.noPopulationRestricted = dulInfo.noPopulationRestricted;
+          prev.formData.under18 = dulInfo.under18;
+          prev.formData.onlyMen = dulInfo.onlyMen;
+          prev.formData.onlyWomen = dulInfo.onlyWomen;
+          prev.formData.ethnic = dulInfo.ethnic;
+          prev.formData.ethnicSpecify = dulInfo.ethnicSpecify;
+          prev.formData.otherRestrictions = dulInfo.otherRestrictions;
+          prev.formData.dataSubmissionProhibition = dulInfo.dataSubmissionProhibition;
+          prev.formData.dataUseConsent = dulInfo.dataUseConsent;
+          prev.formData.dataDepositionDescribed = dulInfo.dataDepositionDescribed;
+          prev.formData.repositoryType = dulInfo.repositoryType;
+          prev.formData.GSRAvailability = dulInfo.GSRAvailability;
+          prev.formData.GSRAvailabilitySpecify = dulInfo.GSRAvailabilitySpecify;
+          prev.formData.signature = dulInfo.signature;
+          prev.formData.printedName = dulInfo.printedName;
+          prev.formData.position = dulInfo.position;
+          prev.formData.institution = dulInfo.institution;
         }
         return prev;
       });
@@ -386,6 +420,25 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
         }, (reject) => {
           this.showDulError();
         })
+      }).catch(error => {
+         this.showDulError();
+      });
+    }
+  };
+
+  saveDUL() {
+    this.setState(prev => {
+      prev.save = true;
+      prev.dulError = false;
+      return prev;
+    });
+    if (this.validateForm() === false) {
+      this.props.showSpinner();
+      const id = window.location.href.split('id=')[1];
+      let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
+      DUL.updateDUL(form).then(resp => {
+        
+        
       }).catch(error => {
          this.showDulError();
       });
@@ -1141,7 +1194,12 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
               className: "btn buttonPrimary floatRight",
               onClick: this.submitDUL,
               disabled: this.state.submit
-            }, ["Submit"])
+            }, ["Submit"]),
+            button({
+              className: "btn buttonPrimary floatRight",
+              onClick: this.saveDUL,
+              disabled: this.state.save
+            }, ["Save"])
           ])
         ])
       ])
