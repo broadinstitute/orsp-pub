@@ -22,6 +22,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       readOnly: false,
       submit: false,
       save: false,
+      showSuccessAlert: false,
       showSampleCollectionWarning: true,
       formData: {
         otherDiseasesID: [],
@@ -98,6 +99,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.submitDUL = this.submitDUL.bind(this);
+    this.saveDUL = this.saveDUL.bind(this);
     this.getRestriction = this.getRestriction.bind(this);
   }
 
@@ -134,8 +136,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             prev.formData.diseaseRestrictedOptions.respiratoryDisease = dulInfo.diseaseRestrictedOptions.respiratoryDisease;
             prev.formData.diseaseRestrictedOptions.digestiveDisease = dulInfo.diseaseRestrictedOptions.digestiveDisease;
             prev.formData.diseaseRestrictedOptions.otherDisease = dulInfo.diseaseRestrictedOptions.otherDisease;
-            prev.formData.diseaseRestrictedOptions.diseaseDOID = dulInfo.diseaseRestrictedOptions.diseaseDOID;
           }
+          prev.formData.otherDiseasesID = dulInfo.otherDiseasesID;
           prev.formData.commercialPurposes = dulInfo.commercialPurposes;
           prev.formData.methodsResearch = dulInfo.methodsResearch;
           prev.formData.noPopulationRestricted = dulInfo.noPopulationRestricted;
@@ -432,17 +434,22 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       prev.dulError = false;
       return prev;
     });
-    if (this.validateForm() === false) {
+    //if (this.validateForm() === false) {
       this.props.showSpinner();
       const id = window.location.href.split('id=')[1];
       let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
       DUL.updateDUL(form).then(resp => {
-        
-        
+        setTimeout(this.clearAlertMessage, 8000, null);
+        this.initFormData();
+        this.props.hideSpinner();
+        this.setState(prev => {
+          prev.showSuccessAlert = true;
+          return prev;
+        });
       }).catch(error => {
          this.showDulError();
       });
-    }
+    //}
   };
 
   showDulError() {
@@ -656,6 +663,13 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
     return pediatricLimited;
   }
 
+  clearAlertMessage = () => {
+    this.setState(prev => {
+      prev.showSuccessAlert = false;
+      return prev;
+    });
+  };
+
   render() {
 
     const noPopulationRestrictedValidation = this.state.readOnly || this.state.formData.under18 === true || this.state.formData.onlyMen === true || this.state.formData.onlyWomen === true || this.state.formData.ethnic === true;
@@ -670,6 +684,11 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             "Version 5.21.2018"
           ])
         ]),
+        AlertMessage({
+          msg: 'Data Use Limitation Record form was saved successfully',
+          show: this.state.showSuccessAlert,
+          type: 'success'
+        }),
         div({ className: "pageContainer" }, [
           div({ style: { 'marginBottom': '20px' } }, [
             InputFieldText({
