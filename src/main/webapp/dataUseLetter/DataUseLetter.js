@@ -23,6 +23,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
     this.state = {
       readOnly: false,
       submit: false,
+      save: false,
       showSuccessAlert: false,
       showSampleCollectionWarning: true,
       formData: {
@@ -445,6 +446,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
 
   saveDUL() {
     this.setState(prev => {
+      prev.save = true;
       prev.dulError = false;
       return prev;
     });
@@ -459,7 +461,6 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       });
 
       this.initFormData();
-      //this.props.init(id);
       this.props.hideSpinner();
       setTimeout(this.clearAlertMessage, 8000, null);
       
@@ -470,6 +471,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
 
   clearAlertMessage = () => {
     this.setState(prev => {
+      prev.save = false;
       prev.showSuccessAlert = false;
       return prev;
     });
@@ -1232,7 +1234,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             }, ["Submit"]),
             button({
               className: "btn buttonPrimary floatRight",
-              onClick: this.saveDUL
+              onClick: this.saveDUL,
+              disabled: this.state.save
             }, ["Save"])
           ])
         ])
