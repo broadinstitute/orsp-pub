@@ -16,11 +16,15 @@ import LoadingWrapper from '../components/LoadingWrapper';
 
 const DataUseLetter = hh(class DataUseLetter extends Component {
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
       readOnly: false,
       submit: false,
+      save: false,
+      showSuccessAlert: false,
       showSampleCollectionWarning: true,
       formData: {
         otherDiseasesID: [],
@@ -97,11 +101,16 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
     this.handleDatePickerChange = this.handleDatePickerChange.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.submitDUL = this.submitDUL.bind(this);
+    this.saveDUL = this.saveDUL.bind(this);
     this.getRestriction = this.getRestriction.bind(this);
   }
 
   componentDidMount() {
     this.initFormData();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   initFormData = () => {
@@ -115,17 +124,79 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
         prev.formData.dataManagerEmail = consentGroup.data.consent.dataManagerEmail !== undefined ? consentGroup.data.consent.dataManagerEmail : '';
         prev.formData.consentGroupKey =  consentGroup.data.consent.consentGroupKey;
         prev.formData.consentPIName = consentGroup.data.consent.consentPIName !== undefined ? consentGroup.data.consent.consentPIName : '';
-        if (this.props.dul !== undefined && this.props.dul !== null && !isEmpty(this.props.dul.dulInfo)) {
-          let dulInfo = JSON.parse(this.props.dul.dulInfo);
-          prev.formData.onGoingProcess = dulInfo.onGoingProcess;
-          prev.formData.startDate = dulInfo.startDate;
-          prev.formData.endDate = dulInfo.endDate;
-          prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
-        }
         return prev;
       });
+
+        DUL.getDULInfo(uuid).then(resp => {
+          let dulInfo = JSON.parse(resp.data.dul.dulInfo);
+          this.setState(prev => {
+            prev.formData.onGoingProcess = dulInfo.onGoingProcess;
+            prev.formData.startDate = dulInfo.startDate;
+            prev.formData.endDate = dulInfo.endDate;
+            prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
+            prev.formData.consentFormTitle = dulInfo.consentFormTitle ? dulInfo.consentFormTitle : '';
+            prev.formData.principalInvestigator = dulInfo.principalInvestigator ? dulInfo.principalInvestigator : '';
+            prev.formData.primaryRestrictions = dulInfo.primaryRestrictions ? dulInfo.primaryRestrictions : '';
+            if (dulInfo.diseaseRestrictedOptions) {
+              prev.formData.diseaseRestrictedOptions.parasiticDisease = dulInfo.diseaseRestrictedOptions.parasiticDisease;
+              prev.formData.diseaseRestrictedOptions.cancer = dulInfo.diseaseRestrictedOptions.cancer;
+              prev.formData.diseaseRestrictedOptions.mentalDisorder = dulInfo.diseaseRestrictedOptions.mentalDisorder;
+              prev.formData.diseaseRestrictedOptions.nervousDisease = dulInfo.diseaseRestrictedOptions.nervousDisease;
+              prev.formData.diseaseRestrictedOptions.cardiovascularDisease = dulInfo.diseaseRestrictedOptions.cardiovascularDisease;
+              prev.formData.diseaseRestrictedOptions.respiratoryDisease = dulInfo.diseaseRestrictedOptions.respiratoryDisease;
+              prev.formData.diseaseRestrictedOptions.digestiveDisease = dulInfo.diseaseRestrictedOptions.digestiveDisease;
+              prev.formData.diseaseRestrictedOptions.otherDisease = dulInfo.diseaseRestrictedOptions.otherDisease;
+              prev.formData.diseaseRestrictedOptions.diseaseDOID = dulInfo.diseaseRestrictedOptions.diseaseDOID;
+            }
+            prev.formData.otherDiseasesID = dulInfo.otherDiseasesID ? dulInfo.otherDiseasesID : '';
+            prev.formData.commercialPurposes = dulInfo.commercialPurposes ? dulInfo.commercialPurposes : '';
+            prev.formData.methodsResearch = dulInfo.methodsResearch ? dulInfo.methodsResearch : '';
+            prev.formData.noPopulationRestricted = dulInfo.noPopulationRestricted ? dulInfo.noPopulationRestricted : '';
+            prev.formData.under18 = dulInfo.under18 ? dulInfo.under18 : '';
+            prev.formData.onlyMen = dulInfo.onlyMen ? dulInfo.onlyMen : '';
+            prev.formData.onlyWomen = dulInfo.onlyWomen ? dulInfo.onlyWomen : '';
+            prev.formData.ethnic = dulInfo.ethnic ? dulInfo.ethnic : '';
+            prev.formData.ethnicSpecify = dulInfo.ethnicSpecify ? dulInfo.ethnicSpecify : '';
+            prev.formData.otherRestrictions = dulInfo.otherRestrictions ? dulInfo.otherRestrictions : '';
+            prev.formData.dataSubmissionProhibition = dulInfo.dataSubmissionProhibition ? dulInfo.dataSubmissionProhibition : '';
+            prev.formData.dataUseConsent = dulInfo.dataUseConsent ? dulInfo.dataUseConsent : '';
+            prev.formData.dataDepositionDescribed = dulInfo.dataDepositionDescribed ? dulInfo.dataDepositionDescribed : '';
+            prev.formData.repositoryType = dulInfo.repositoryType ? dulInfo.repositoryType : '';
+            prev.formData.GSRAvailability = dulInfo.GSRAvailability ? dulInfo.GSRAvailability : '';
+            prev.formData.GSRAvailabilitySpecify = dulInfo.GSRAvailabilitySpecify ? dulInfo.GSRAvailabilitySpecify : '';
+            prev.formData.signature = dulInfo.signature ? dulInfo.signature : '';
+            prev.formData.printedName = dulInfo.printedName ? dulInfo.printedName : '';
+            prev.formData.position = dulInfo.position ? dulInfo.position : '';
+            prev.formData.institution = dulInfo.institution ? dulInfo.institution : '';
+            return prev;
+          });
+        }).catch(error => {
+          this.setState(() => { throw error; });
+        });
     }).catch(error => {
       this.setState(() => { throw error; });
+    });
+
+    this.setState(prev => {
+      prev.errors.errorForm = false;
+      prev.errors.errorPi = false;
+      prev.errors.errorSampleCollectionDateRange = false;
+      prev.errors.errorPrimaryRestrictionsChecks = false;
+      prev.errors.errorDiseaseRestrictedOptions = false;
+      prev.errors.errorOtherDiseaseSpecify = false;
+
+      prev.errors.errorSignature = false;
+      prev.errors.errorPrintedName = false;
+      prev.errors.errorPosition = false;
+      prev.errors.errorInstitution = false;
+
+      prev.errors.errorGSRAvailability = false;
+      prev.errors.errorDataSubmissionProhibition = false;
+      prev.errors.errorRepositoryType = false;
+      prev.errors.errorDataDepositionDescribed = false;
+      prev.errors.errorDataUseConsent = false;
+
+      return prev;
     });
   };
 
@@ -390,6 +461,39 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
          this.showDulError();
       });
     }
+  };
+
+  saveDUL() {
+    this.setState(prev => {
+      prev.save = true;
+      prev.dulError = false;
+      return prev;
+    });
+    this.props.showSpinner();
+    const id = window.location.href.split('id=')[1];
+    let form = { dulInfo: JSON.stringify(this.state.formData), uid: id };
+    DUL.updateDUL(form).then(resp => {
+      
+      this.setState(prev => {
+        prev.showSuccessAlert = true;
+        return prev;
+      });
+
+      this.initFormData();
+      this.props.hideSpinner();
+      setTimeout(this.clearAlertMessage, 8000, null);
+      
+    }).catch(error => {
+       this.showDulError();
+    });
+  };
+
+  clearAlertMessage = () => {
+    this.setState(prev => {
+      prev.save = false;
+      prev.showSuccessAlert = false;
+      return prev;
+    });
   };
 
   showDulError() {
@@ -1067,18 +1171,6 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
           ]),
 
           InputFieldText({
-            id: "inputSignature",
-            name: "signature",
-            label: "Signature*",
-            disabled: false,
-            required: true,
-            value: this.state.formData.signature,
-            onChange: this.handleFormDataTextChange,
-            readOnly: this.state.readOnly,
-            error: this.state.errors.errorSignature,
-            errorMessage: 'Required Field'
-          }),
-          InputFieldText({
             id: "inputPrintedName",
             name: "printedName",
             label: "Printed Name*",
@@ -1088,6 +1180,18 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             onChange: this.handleFormDataTextChange,
             readOnly: this.state.readOnly,
             error: this.state.errors.errorPrintedName,
+            errorMessage: 'Required Field'
+          }),
+          InputFieldText({
+            id: "inputSignature",
+            name: "signature",
+            label: "Email*",
+            disabled: false,
+            required: true,
+            value: this.state.formData.signature,
+            onChange: this.handleFormDataTextChange,
+            readOnly: this.state.readOnly,
+            error: this.state.errors.errorSignature,
             errorMessage: 'Required Field'
           }),
           InputFieldText({
@@ -1134,6 +1238,11 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             AlertMessage({
               msg: this.state.dulMsg,
               show: this.state.dulError
+            }),
+            AlertMessage({
+              msg: 'Data Use Limitation Record form was saved successfully',
+              show: this.state.showSuccessAlert,
+              type: 'success'
             })
           ]),
           div({ className: "buttonContainer", style: { 'margin': '20px 0 40px 0' } }, [
@@ -1141,7 +1250,12 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
               className: "btn buttonPrimary floatRight",
               onClick: this.submitDUL,
               disabled: this.state.submit
-            }, ["Submit"])
+            }, ["Submit"]),
+            button({
+              className: "btn buttonPrimary floatRight",
+              onClick: this.saveDUL,
+              disabled: this.state.save
+            }, ["Save"])
           ])
         ])
       ])
