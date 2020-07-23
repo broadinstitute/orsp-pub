@@ -120,7 +120,7 @@ dependencies {
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json
-    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.4.15'
+    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.5'
 
     compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
