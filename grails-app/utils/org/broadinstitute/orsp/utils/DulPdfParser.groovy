@@ -107,8 +107,11 @@ class DulPdfParser {
                 case DataUseLetterFields.OTHER_RESTRICTIONS.abbreviation:
                     field.setValue(getDefaultValue(dulInfoObj[DataUseLetterFields.OTHER_RESTRICTIONS.abbreviation] as String, dul.uid))
                     break
-                case DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation:
-                    field.setValue(dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.DATA_SUBMISSION_PROHIBITION.abbreviation].toString())
+                case DataUseLetterFields.CONTROLLED_ACCESS_DATA_SUBMISSION_PROHIBITION.abbreviation:
+                    field.setValue(dulInfoObj[DataUseLetterFields.CONTROLLED_ACCESS_DATA_SUBMISSION_PROHIBITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.CONTROLLED_ACCESS_DATA_SUBMISSION_PROHIBITION.abbreviation].toString())
+                    break
+                case DataUseLetterFields.OPEN_ACCESS_DATA_SUBMISSION_PROHIBITION.abbreviation:
+                    field.setValue(dulInfoObj[DataUseLetterFields.OPEN_ACCESS_DATA_SUBMISSION_PROHIBITION.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.OPEN_ACCESS_DATA_SUBMISSION_PROHIBITION.abbreviation].toString())
                     break
                 case DataUseLetterFields.DATA_USE_CONSENT.abbreviation:
                     field.setValue(dulInfoObj[DataUseLetterFields.DATA_USE_CONSENT.abbreviation].toString().isEmpty() ? 'Off' : dulInfoObj[DataUseLetterFields.DATA_USE_CONSENT.abbreviation].toString())
