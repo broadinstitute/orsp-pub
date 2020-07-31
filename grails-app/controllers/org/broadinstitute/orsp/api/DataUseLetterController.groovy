@@ -11,6 +11,7 @@ import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
+import org.broadinstitute.orsp.NotifyService
 import org.broadinstitute.orsp.OntologyService
 import org.broadinstitute.orsp.PersistenceService
 import org.broadinstitute.orsp.QueryService
@@ -34,6 +35,7 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
     StorageProviderService storageProviderService
     UserService userService
     QueryService queryService
+    NotifyService notifyService
 
     @SuppressWarnings(["GroovyAssignabilityCheck"])
     def create () {
@@ -80,6 +82,9 @@ class DataUseLetterController implements ExceptionHandler, UserInfo {
                 dulDOC.save(output)
                 String fileName = JSON.parse(dul.dulInfo)[DataUseLetterFields.PROTOCOL_TITLE.abbreviation].replaceAll(' / ','_').concat("_DataUseLetter.pdf")
                 uploadDataUseLetter(dul,new ByteArrayInputStream(output.toByteArray()), fileName)
+
+                Issue issue = queryService.findByKey(dul.consentGroupKey)
+                notifyService.sendDulSubmitNotification(issue)
 
                 dul.setSubmitted(true)
                 dul.setSubmitDate(new Date())

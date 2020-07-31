@@ -784,7 +784,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
                   name: "dataManagerName",
                   label: "Data Manager Name",
                   value: this.state.formData.dataManagerName,
-                  onChange: this.handleExtraPropsInputChange,
+                  onChange: this.handleFormDataTextChange,
                   readOnly: false
                 })
               ]),
@@ -794,7 +794,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
                   name: "dataManagerEmail",
                   label: "Data Manager Email",
                   value: this.state.formData.dataManagerEmail,
-                  onChange: this.handleExtraPropsInputChange,
+                  onChange: this.handleFormDataTextChange,
                   readOnly: false
                 })
               ])
