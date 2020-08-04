@@ -712,6 +712,21 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
+    Map<Boolean, String> sendDulSubmitNotification(Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getDefaultRecipient()),
+                        ccAddresses: [],
+                        fromAddress: getDefaultFromAddress(),
+                        subject: issue.projectKey + " - A Data Use Letter has been generated",
+                        user: user,
+                        issue: issue)
+        arguments.view = "/notify/dulSubmit"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
 
     Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
         User user = userService.findUser(issue.reporter)

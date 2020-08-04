@@ -62,7 +62,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
 
         otherRestrictions: '',
 
-        dataSubmissionProhibition: '',
+        controlledAccessDataSubmissionProhibition: '',
+        openAccessDataSubmissionProhibition: '',
         dataUseConsent: '',
         dataDepositionDescribed: '',
         repositoryType: '',
@@ -89,7 +90,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
         errorInstitution: false,
 
         errorGSRAvailability: false,
-        errorDataSubmissionProhibition: false,
+        errorControlledAccessDataSubmissionProhibition: false,
+        errorOpenAccessDataSubmissionProhibition: false,
         errorRepositoryType: false,
         errorDataDepositionDescribed: false,
         errorDataUseConsent: false
@@ -158,7 +160,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             prev.formData.ethnic = dulInfo.ethnic ? dulInfo.ethnic : '';
             prev.formData.ethnicSpecify = dulInfo.ethnicSpecify ? dulInfo.ethnicSpecify : '';
             prev.formData.otherRestrictions = dulInfo.otherRestrictions ? dulInfo.otherRestrictions : '';
-            prev.formData.dataSubmissionProhibition = dulInfo.dataSubmissionProhibition ? dulInfo.dataSubmissionProhibition : '';
+            prev.formData.controlledAccessDataSubmissionProhibition = dulInfo.controlledAccessDataSubmissionProhibition ? dulInfo.controlledAccessDataSubmissionProhibition : '';
+            prev.formData.openAccessDataSubmissionProhibition = dulInfo.openAccessDataSubmissionProhibition ? dulInfo.openAccessDataSubmissionProhibition : '';
             prev.formData.dataUseConsent = dulInfo.dataUseConsent ? dulInfo.dataUseConsent : '';
             prev.formData.dataDepositionDescribed = dulInfo.dataDepositionDescribed ? dulInfo.dataDepositionDescribed : '';
             prev.formData.repositoryType = dulInfo.repositoryType ? dulInfo.repositoryType : '';
@@ -191,7 +194,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       prev.errors.errorInstitution = false;
 
       prev.errors.errorGSRAvailability = false;
-      prev.errors.errorDataSubmissionProhibition = false;
+      prev.errors.errorControlledAccessDataSubmissionProhibition = false;
+      prev.errors.errorOpenAccessDataSubmissionProhibition = false;
       prev.errors.errorRepositoryType = false;
       prev.errors.errorDataDepositionDescribed = false;
       prev.errors.errorDataUseConsent = false;
@@ -520,7 +524,9 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
     let errorInstitution = false;
 
     let errorGSRAvailability = false;
-    let errorDataSubmissionProhibition = false;
+    let errorControlledAccessDataSubmissionProhibition = false;
+    let errorOpenAccessDataSubmissionProhibition = false;
+
     let errorRepositoryType = false;
     let errorDataDepositionDescribed = false;
     let errorDataUseConsent = false;
@@ -569,9 +575,13 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       errorInstitution = true;
     }
     if (this.state.formData.repositoryDeposition === true) {
-      if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.dataSubmissionProhibition)) {
+      if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.controlledAccessDataSubmissionProhibition)) {
         errorForm = true;
-        errorDataSubmissionProhibition = true;
+        errorControlledAccessDataSubmissionProhibition = true;
+      }
+      if (this.startsBefore("1/25/2015") && this.isEmpty(this.state.formData.openAccessDataSubmissionProhibition)) {
+        errorForm = true;
+        errorOpenAccessDataSubmissionProhibition = true;
       }
       if (this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015")) {
         if (this.isEmpty(this.state.formData.dataUseConsent)) {
@@ -607,7 +617,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
       prev.errors.errorInstitution = errorInstitution;
 
       prev.errors.errorGSRAvailability = errorGSRAvailability;
-      prev.errors.errorDataSubmissionProhibition = errorDataSubmissionProhibition;
+      prev.errors.errorControlledAccessDataSubmissionProhibition = errorControlledAccessDataSubmissionProhibition;
+      prev.errors.errorOpenAccessDataSubmissionProhibition = errorOpenAccessDataSubmissionProhibition;
       prev.errors.errorRepositoryType = errorRepositoryType;
       prev.errors.errorDataDepositionDescribed = errorDataDepositionDescribed;
       prev.errors.errorDataUseConsent = errorDataUseConsent;
@@ -772,9 +783,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
                   id: "inputDataManagerName",
                   name: "dataManagerName",
                   label: "Data Manager Name",
-                  disabled: true,
                   value: this.state.formData.dataManagerName,
-                  onChange: this.handleExtraPropsInputChange,
+                  onChange: this.handleFormDataTextChange,
                   readOnly: false
                 })
               ]),
@@ -783,9 +793,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
                   id: "inputDataManagerEmail",
                   name: "dataManagerEmail",
                   label: "Data Manager Email",
-                  disabled: true,
                   value: this.state.formData.dataManagerEmail,
-                  onChange: this.handleExtraPropsInputChange,
+                  onChange: this.handleFormDataTextChange,
                   readOnly: false
                 })
               ])
@@ -1050,18 +1059,33 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             div({ isRendered: !(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) }, [
               div({ isRendered: this.startsBefore("1/25/2015") }, [
                 InputFieldRadio({
-                  id: "radioDataSubmissionProhibition",
-                  name: "dataSubmissionProhibition",
-                  label: "Is data submission not inconsistent with (not prohibited by) the informed consent provided by the research participant?*",
-                  value: this.state.formData.dataSubmissionProhibition,
+                  id: "radioControlledAccessDataSubmissionProhibition",
+                  name: "controlledAccessDataSubmissionProhibition",
+                  label: "Is data submission into a controlled-access database not inconsistent with (not prohibited by) the informed consent provided by the research participant?*",
+                  value: this.state.formData.controlledAccessDataSubmissionProhibition,
                   optionValues: ["allowed", "prohibited"],
                   optionLabels: [
-                    span({}, ["Yes, data submission is ", span({ className: "bold" }, ["not inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
-                    span({}, ["No, data submission is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
+                    span({}, ["Yes, data submission into a controlled-access database is ", span({ className: "bold" }, ["not inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
+                    span({}, ["No, data submission into a controlled-access database is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
                   ],
                   onChange: this.handleRadioChange,
                   readOnly: this.state.readOnly,
-                  error: this.state.errors.errorDataSubmissionProhibition,
+                  error: this.state.errors.errorControlledAccessDataSubmissionProhibition,
+                  errorMessage: "Required Field"
+                }),
+                InputFieldRadio({
+                  id: "radioOpenAccessDataSubmissionProhibition",
+                  name: "openAccessDataSubmissionProhibition",
+                  label: "Is data submission into an open-access (public) database not inconsistent with (not prohibited by) the informed consent provided by the research participant?*",
+                  value: this.state.formData.openAccessDataSubmissionProhibition,
+                  optionValues: ["allowed", "prohibited"],
+                  optionLabels: [
+                    span({}, ["Yes, data submission into an open-access (public) is ", span({ className: "bold" }, ["not inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is permitted)"])]),
+                    span({}, ["No, data submission into an open-access (public) is ", span({ className: "bold" }, ["inconsistent "]), "with the consent. ", span({ className: "normal italic" }, ["(Data submission is not permitted)"])]),
+                  ],
+                  onChange: this.handleRadioChange,
+                  readOnly: this.state.readOnly,
+                  error: this.state.errors.errorOpenAccessDataSubmissionProhibition,
                   errorMessage: "Required Field"
                 })
               ]),
