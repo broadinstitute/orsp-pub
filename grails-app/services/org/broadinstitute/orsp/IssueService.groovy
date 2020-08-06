@@ -585,7 +585,7 @@ class IssueService implements UserInfo {
             }
 
             List<ConsentCollectionLink> links = queryService.findAllConsentCollectionLink(projectKey)
-            links?.each { it.delete(hard: true) }
+            links?.each { it.delete(hard: true, flush: true) }
 
             Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
             issueExtraProperties?.each { it.delete(hard: true) }
