@@ -1058,6 +1058,9 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             // If SC Date Range starts before 1/25/2015 (OK)
             div({ isRendered: !(this.state.formData.startDate === null || (this.state.formData.onGoingProcess === false && this.state.formData.endDate === null)) }, [
               div({ isRendered: this.startsBefore("1/25/2015") }, [
+                h2({ className: "pageSubtitle" }, [
+                  small({}, ["(For samples collected BEFORE 1/25/2015)"])
+                ]),
                 InputFieldRadio({
                   id: "radioControlledAccessDataSubmissionProhibition",
                   name: "controlledAccessDataSubmissionProhibition",
@@ -1092,6 +1095,9 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
 
               // If SC Date Range ends after (or that same) 1/25/2015 (OK)
               div({ isRendered: this.state.formData.onGoingProcess === true || this.endsEqualOrAfter("1/25/2015") }, [
+                h2({ className: "pageSubtitle" }, [
+                  small({}, ["(For samples collected AFTER 1/25/2015)"])
+                ]),
                 InputYesNo({
                   id: "radioDataUseConsent",
                   name: "dataUseConsent",
