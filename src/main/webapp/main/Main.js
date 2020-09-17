@@ -98,7 +98,7 @@ class Main extends Component {
 
   render() {
     return (
-      div({ className: "headerBoxContainer", id: "headerBoxContainer" }, [
+      div({ className: "headerBoxContainer" }, [
         StatusBox({
           issueType: this.state.issueType,
           status: this.state.status

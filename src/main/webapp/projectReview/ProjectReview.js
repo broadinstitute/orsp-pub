@@ -21,12 +21,13 @@ import isEmptyArray from 'lodash/isEmpty';
 import { isEmpty, scrollToTop } from '../util/Utils';
 import { initQuestions, getProjectType } from '../util/DeterminationQuestions';
 import { InputFieldSelect } from '../components/InputFieldSelect';
+import { ExportButton } from '../components/ExportButton';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
 import sanitizeHtml from 'sanitize-html';
 import he from 'he';
-import html2canvas from 'html2canvas';
-import jsPDF from "jspdf";
+//import html2canvas from 'html2canvas';
+//import jsPDF from "jspdf";
 
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
@@ -554,7 +555,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       return prev
     });
   };
-
+/*
   exportPdf = (e) => () => {
 
     this.props.showSpinner();
@@ -636,7 +637,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           })
         });
         
-/*
+
         fetch('/article/promise-chaining/user.json')
         .then(response => response.json())
         .then(user => fetch(`https://api.github.com/users/${user.name}`))
@@ -654,12 +655,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
         }))
         // triggers after 3 seconds
         .then(githubUser => alert(`Finished showing ${githubUser.name}`));
-*/
+
        
       
   };
-
-  canvasRatio
 
   canvasToPdf(canvas, doc, totalHeight ) {
     const imgData = canvas.toDataURL('image/png');
@@ -686,7 +685,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   canvasRatio(canvas, doc ) {
     return (doc.internal.pageSize.getWidth() - 2) / canvas.width;
   };
-
+*/
   enableEditResponses = (e) => () => {
     this.setState(prev => {
       prev.enabledQuestionsWizard = true;
@@ -1053,12 +1052,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
-        button({
+        /*button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.exportPdf(),
           isRendered: this.state.readOnly === true && !component.isViewer
-        }, ["Export"]),
+        }, ["Export"]),*/
+        ExportButton({ isRendered: this.state.readOnly === true && !component.isViewer }, []),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
