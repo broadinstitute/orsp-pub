@@ -1,7 +1,9 @@
 import { Component } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { button, div, h, h1, hh, p, small } from 'react-hyperscript-helpers';
+import { button, div, h, h1, hh, p, small, span } from 'react-hyperscript-helpers';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
+import { InputYesNo } from '../components/InputYesNo';
+import { InputFieldRadio } from '../components/InputFieldRadio';
 import { Panel } from '../components/Panel';
 import { Table } from '../components/Table';
 import AddDocumentDialog from '../components/AddDocumentDialog'
@@ -29,10 +31,16 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     super(props);
     this.state = {
       formData: {
-        attestation: false
+        attestation: false,
+        financialRelationshipSponsor: '',
+        financialRelationshipBusiness: '',
+        otherFinancialRelationship: ''
       },
       errors: {
-        attestation: false
+        attestation: false,
+        errorFinancialRelationshipSponsor: false,
+        errorFinancialRelationshipBusiness: false,
+        errorOtherFinancialRelationship: false
       },
       documents: [],
       showAddDocuments: false
@@ -88,6 +96,14 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
     this.setState({ showAddDocuments: !this.state.showAddDocuments });
   };
 
+  handleRadioChange = (e, field, value) => {
+    this.setState(prev => {
+      prev.formData[field] = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, field));
+    this.props.removeErrorMessage();
+  };
+
   render() {
 
     if (this.state.hasError) {
@@ -141,6 +157,59 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               reviewFlow: false,
               pagination: false
             }),
+            div({ style: { 'marginTop': '25px' }}, [
+              Panel({ title: "Conflicts of Interest*" }, [
+                InputFieldRadio({
+                  id: "radioFinancialRelationshipSponsor",
+                  name: "financialRelationshipSponsor",
+                  value: this.state.formData.financialRelationshipSponsor,
+                  label: "Does the Principal Investigator/Co-Investigator have a role and/or financial relationship with the sponsor of this research? (e.g., consulting fees, employment, stock/equity, etc.)*",
+                  readOnly: this.state.readOnly,
+                  onChange: this.handleRadioChange,
+                  optionValues: ["yes", "no", "maybe"],
+                  optionLabels: [
+                    span({}, ["Yes"]),
+                    span({}, ["No"]),
+                    span({}, ["Maybe"])
+                  ],
+                  error: this.props.errors.errorFinancialRelationshipSponsor,
+                  errorMessage: "Required Field",
+                  required: true
+                }),
+                InputFieldRadio({
+                  id: "radioFinancialRelationshipBusiness",
+                  name: "financialRelationshipBusiness",
+                  value: this.state.formData.financialRelationshipBusiness,
+                  label: "Does the Principal Investigator/Co-Investigator have a role and/or financial relationship with a business whose technology is being studied as part of this research?*",
+                  readOnly: this.state.readOnly,
+                  onChange: this.handleRadioChange,
+                  optionValues: ["yes", "no", "maybe"],
+                  optionLabels: [
+                    span({}, ["Yes"]),
+                    span({}, ["No"]),
+                    span({}, ["Maybe"])
+                  ],
+                  error: this.props.errors.errorFinancialRelationshipBusiness,
+                  errorMessage: "Required Field"
+                }),
+                InputFieldRadio({
+                  id: "radioOtherFinancialRelationship",
+                  name: "otherFinancialRelationship",
+                  value: this.state.formData.otherFinancialRelationship,
+                  label: "Does the Principal Investigator/Co-Investigator have any other financial interest that could directly benefit from the outcomes of this research?*",
+                  readOnly: this.state.readOnly,
+                  onChange: this.handleRadioChange,
+                  optionValues: ["yes", "no", "maybe"],
+                  optionLabels: [
+                    span({}, ["Yes"]),
+                    span({}, ["No"]),
+                    span({}, ["Maybe"])
+                  ],
+                  error: this.props.errors.errorOtherFinancialRelationship,
+                  errorMessage: "Required Field"
+                }),
+              ])
+            ]),
             div({ style: { 'marginTop': '25px' }}, [
               Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
                 p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),

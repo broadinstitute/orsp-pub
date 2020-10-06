@@ -40,7 +40,10 @@ const NewProject = hh(class NewProject extends Component {
       },
       generalDataFormData: {},
       attestationFormData: {
-        attestation: false
+        attestation: false,
+        financialRelationshipSponsor: '',
+        financialRelationshipBusiness: '',
+        otherFinancialRelationship: ''
       },
       currentStep: 0,
       files: [],
@@ -49,6 +52,9 @@ const NewProject = hh(class NewProject extends Component {
         pTitle: false,
         fundings: false,
         attestation: false,
+        errorFinancialRelationshipSponsor: false,
+        errorFinancialRelationshipBusiness: false,
+        errorOtherFinancialRelationship: false,
         fundingAwardNumber: false
       },
       formerProjectType: null,
@@ -150,6 +156,9 @@ const NewProject = hh(class NewProject extends Component {
     extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
     extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
+    extraProperties.push({name: 'financialRelationshipSponsor', value: this.state.attestationFormData.financialRelationshipSponsor !== '' ? this.state.attestationFormData.financialRelationshipSponsor : null});
+    extraProperties.push({name: 'financialRelationshipBusiness', value: this.state.attestationFormData.financialRelationshipBusiness !== '' ? this.state.attestationFormData.financialRelationshipBusiness : null});
+    extraProperties.push({name: 'otherFinancialRelationship', value: this.state.attestationFormData.otherFinancialRelationship !== '' ? this.state.attestationFormData.otherFinancialRelationship : null});
     extraProperties.push({name: 'irb', value: isEmpty(this.state.generalDataFormData.irb.value) ? null : JSON.stringify(this.state.generalDataFormData.irb)});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
     let pis = this.state.generalDataFormData.piNames;
@@ -238,7 +247,28 @@ const NewProject = hh(class NewProject extends Component {
 
   validateAttestationForm(field) {
     let attestation = false;
+    let errorFinancialRelationshipSponsor = false;
+    let errorFinancialRelationshipBusiness = false;
+    let errorOtherFinancialRelationship = false;
     let isValid = true;
+
+    if (this.state.attestationFormData.financialRelationshipSponsor === undefined ||
+      this.state.attestationFormData.financialRelationshipSponsor === '') {
+      errorFinancialRelationshipSponsor = true;
+      isValid = false;
+    }
+
+    if (this.state.attestationFormData.financialRelationshipBusiness === undefined ||
+      this.state.attestationFormData.financialRelationshipBusiness === '') {
+      errorFinancialRelationshipBusiness = true;
+      isValid = false;
+    }
+
+    if (this.state.attestationFormData.otherFinancialRelationship === undefined ||
+      this.state.attestationFormData.otherFinancialRelationship === '') {
+      errorOtherFinancialRelationship = true;
+      isValid = false;
+    }
 
     if (this.state.attestationFormData.attestation === undefined ||
       this.state.attestationFormData.attestation === '' ||
@@ -250,6 +280,9 @@ const NewProject = hh(class NewProject extends Component {
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.attestation = attestation;
+        prev.errors.errorFinancialRelationshipSponsor = errorFinancialRelationshipSponsor;
+        prev.errors.errorFinancialRelationshipBusiness = errorFinancialRelationshipBusiness;
+        prev.errors.errorOtherFinancialRelationship = errorOtherFinancialRelationship;
         return prev;
       });
     }
@@ -262,6 +295,34 @@ const NewProject = hh(class NewProject extends Component {
         return prev;
       });
     }
+    else if (field === 'financialRelationshipSponsor') {
+
+      this.setState(prev => {
+        if (field === 'financialRelationshipSponsor') {
+          prev.errors.errorFinancialRelationshipSponsor = errorFinancialRelationshipSponsor;
+        }
+        return prev;
+      });
+    }
+    else if (field === 'financialRelationshipBusiness') {
+
+      this.setState(prev => {
+        if (field === 'financialRelationshipBusiness') {
+          prev.errors.errorFinancialRelationshipBusiness = errorFinancialRelationshipBusiness;
+        }
+        return prev;
+      });
+    }
+    else if (field === 'otherFinancialRelationship') {
+
+      this.setState(prev => {
+        if (field === 'otherFinancialRelationship') {
+          prev.errors.errorOtherFinancialRelationship = errorOtherFinancialRelationship;
+        }
+        return prev;
+      });
+    }
+    
     return isValid;
   }
 
