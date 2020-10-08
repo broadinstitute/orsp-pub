@@ -1039,8 +1039,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           style: { 'marginTop': '15px' },
           onClick: this.exportPdf(),
           isRendered: this.state.readOnly === true && !component.isViewer && isEmpty(this.state.editedForm)
-        }, ["Export"]),
-        //ExportButton({ isRendered: this.state.readOnly === true && !component.isViewer }, []),
+        }, ["Print PDF"]),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
