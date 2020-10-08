@@ -10,6 +10,7 @@ import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
 import { DETERMINATION } from "../util/TypeDescription";
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
+import { InputField } from '../components/InputField';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
@@ -21,13 +22,13 @@ import isEmptyArray from 'lodash/isEmpty';
 import { isEmpty, scrollToTop } from '../util/Utils';
 import { initQuestions, getProjectType } from '../util/DeterminationQuestions';
 import { InputFieldSelect } from '../components/InputFieldSelect';
-import { ExportButton } from '../components/ExportButton';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import LoadingWrapper from '../components/LoadingWrapper';
 import sanitizeHtml from 'sanitize-html';
 import he from 'he';
-//import html2canvas from 'html2canvas';
-//import jsPDF from "jspdf";
+import html2canvas from 'html2canvas';
+import jsPDF from "jspdf";
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
@@ -555,10 +556,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
       return prev
     });
   };
-/*
+
   exportPdf = (e) => () => {
 
     this.props.showSpinner();
+    const main = document.getElementById('main');
+    disableBodyScroll(main);
+
     const headerBox = document.getElementById('headerBox');
     const notesToORSP = document.getElementById('notesToORSP');
     const requestor = document.getElementById('requestor');
@@ -568,8 +572,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     const determinationQuestions = document.getElementById('determinationQuestions');
 
     let totalHeight = 0;
-    window.scrollTo(0,0);
-
+    scrollToTop();
 
         html2canvas(headerBox)
         .then((canvas) => {  
@@ -627,8 +630,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     html2canvas(determinationQuestions).then((canvas) => {
                       
                       doc = this.canvasToPdf(canvas, doc, totalHeight);
-                      doc.save('test.pdf');
+                      doc.save(`${this.props.projectKey}.pdf`);
                       this.props.hideSpinner();
+                      enableBodyScroll(main);
                     })
                   })
                 })
@@ -636,28 +640,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
             })
           })
         });
-        
-
-        fetch('/article/promise-chaining/user.json')
-        .then(response => response.json())
-        .then(user => fetch(`https://api.github.com/users/${user.name}`))
-        .then(response => response.json())
-        .then(githubUser => new Promise(function(resolve, reject) { // (*)
-          let img = document.createElement('img');
-          img.src = githubUser.avatar_url;
-          img.className = "promise-avatar-example";
-          document.body.append(img);
-
-          setTimeout(() => {
-            img.remove();
-            resolve(githubUser); // (**)
-          }, 3000);
-        }))
-        // triggers after 3 seconds
-        .then(githubUser => alert(`Finished showing ${githubUser.name}`));
-
-       
-      
   };
 
   canvasToPdf(canvas, doc, totalHeight ) {
@@ -685,7 +667,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   canvasRatio(canvas, doc ) {
     return (doc.internal.pageSize.getWidth() - 2) / canvas.width;
   };
-*/
+
   enableEditResponses = (e) => () => {
     this.setState(prev => {
       prev.enabledQuestionsWizard = true;
@@ -1052,13 +1034,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return (
       div({}, [
         h2({ className: "stepTitle" }, ["Project Information"]),
-        /*button({
+        button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.exportPdf(),
-          isRendered: this.state.readOnly === true && !component.isViewer
-        }, ["Export"]),*/
-        ExportButton({ isRendered: this.state.readOnly === true && !component.isViewer }, []),
+          isRendered: this.state.readOnly === true && !component.isViewer && isEmpty(this.state.editedForm)
+        }, ["Export"]),
+        //ExportButton({ isRendered: this.state.readOnly === true && !component.isViewer }, []),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
@@ -1146,18 +1128,26 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   errorMessage: "Required field"
                 })
               ]),
-              InputFieldTextArea({
-                id: "inputDescribeEdits",
-                name: "editDescription",
-                label: "You may use this space to add additional information or clarifications related to your edits below",
-                currentValue: this.state.current.projectExtraProps.editDescription,
-                value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
-                readOnly: this.state.readOnly,
-                required: true,
-                onChange: this.handleProjectExtraPropsChange,
-                error: this.state.editDescriptionError,
-                errorMessage: "Required field"
-              })
+              div({ isRendered: (this.state.formData.projectExtraProps.editDescription != this.state.current.projectExtraProps.editDescription) || !this.state.readOnly }, [
+                InputFieldTextArea({
+                  id: "inputDescribeEdits",
+                  name: "editDescription",
+                  label: "You may use this space to add additional information or clarifications related to your edits below",
+                  currentValue: this.state.current.projectExtraProps.editDescription,
+                  value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
+                  readOnly: this.state.readOnly,
+                  required: true,
+                  onChange: this.handleProjectExtraPropsChange,
+                  error: this.state.editDescriptionError,
+                  errorMessage: "Required field"
+                })
+              ]),
+              div({ isRendered: this.state.readOnly && (this.state.formData.projectExtraProps.editDescription == this.state.current.projectExtraProps.editDescription) }, [
+                p({ className: "inputFieldLabel" }, "You may use this space to add additional information or clarifications related to your edits below"),
+                div({ className: "inputFieldReadOnly" }, [
+                  p({ className: "inputFieldText" }, this.state.current.projectExtraProps.editDescription)
+                ])
+              ])
             ])
           ]),
 
@@ -1259,20 +1249,28 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
         div({ id: "projectSummary" }, [
           Panel({ title: "Project Summary" }, [
-            div({id: "projectSummaryInputTextArea"}, [
-              InputFieldTextArea({
-                id: "inputStudyActivitiesDescription",
-                name: "description",
-                label: "Broad study activities",
-                value: this.state.formData.description,
-                currentValue: this.state.current.description,
-                readOnly: this.state.readOnly,
-                readonly: true,
-                required: true,
-                onChange: this.handleInputChange,
-                error: this.state.descriptionError,
-                errorMessage: "Required field"
-              })
+            div({ id: "projectSummaryInputTextArea" }, [
+              div({ isRendered: (this.state.formData.description != this.state.current.description) || !this.state.readOnly }, [
+                InputFieldTextArea({
+                  id: "inputStudyActivitiesDescription",
+                  name: "description",
+                  label: "Broad study activities",
+                  value: this.state.formData.description,
+                  currentValue: this.state.current.description,
+                  readOnly: this.state.readOnly,
+                  readonly: true,
+                  required: true,
+                  onChange: this.handleInputChange,
+                  error: this.state.descriptionError,
+                  errorMessage: "Required field"
+                })
+              ]),
+              div({ isRendered: this.state.readOnly && (this.state.formData.description == this.state.current.description) }, [
+                p({ className: "inputFieldLabel" }, "Broad study activities"),
+                div({ className: "inputFieldReadOnly" }, [
+                  p({ className: "inputFieldText" }, this.state.current.description)
+                ])
+              ])
             ]),
 
             MultiSelect({

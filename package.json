@@ -46,6 +46,7 @@
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-polyfill": "6.26.0",
     "babel-register": "6.26.0",
+    "body-scroll-lock": "^3.1.5",
     "bootstrap": "4.4.1",
     "classnames": "^2.2.6",
     "date-fns": "1.30.1",
