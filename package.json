@@ -40,7 +40,6 @@
     "webpack": "4.43.0"
   },
   "dependencies": {
-    "@react-pdf/renderer": "^1.6.10",
     "@tinymce/tinymce-react": "3.2.0",
     "axios": "0.19.0",
     "babel-plugin-transform-class-properties": "6.24.1",
