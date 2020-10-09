@@ -630,7 +630,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     html2canvas(determinationQuestions).then((canvas) => {
                       
                       doc = this.canvasToPdf(canvas, doc, totalHeight);
-                      doc.save(`${this.props.projectKey}.pdf`);
+                      doc.save(`${this.props.projectKey}_ProjectInformation.pdf`);
                       this.props.hideSpinner();
                       enableBodyScroll(main);
                     })
@@ -651,9 +651,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
     if (canvas.height > 0) {
       if ((totalHeight + (canvas.height * ratio)) > pageHeight ) {
         doc.addPage();
-        doc.addImage(imgData, "PNG", 0, 0, canvas.width * ratio, canvas.height * ratio);
+        doc.addImage(imgData, "PNG", 2, 2, canvas.width * ratio, canvas.height * ratio);
       } else {
-        doc.addImage(imgData, "PNG", 0, totalHeight + 2, canvas.width * ratio, canvas.height * ratio);
+        doc.addImage(imgData, "PNG", 2, totalHeight + 2, canvas.width * ratio, canvas.height * ratio);
       }
     }
     
@@ -661,11 +661,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   canvasHeight(canvas, doc ) {
-    return canvas.height * this.canvasRatio(canvas, doc);
+    return canvas.height * this.canvasRatio(canvas, doc) + 2;
   };
 
   canvasRatio(canvas, doc ) {
-    return (doc.internal.pageSize.getWidth() - 2) / canvas.width;
+    return (doc.internal.pageSize.getWidth() - 4) / canvas.width;
   };
 
   enableEditResponses = (e) => () => {
