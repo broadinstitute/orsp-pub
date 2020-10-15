@@ -1132,7 +1132,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   errorMessage: "Required field"
                 })
               ]),
-              div({ isRendered: (this.state.formData.projectExtraProps.editDescription != this.state.current.projectExtraProps.editDescription) || !this.state.readOnly }, [
                 InputFieldTextArea({
                   id: "inputDescribeEdits",
                   name: "editDescription",
@@ -1145,13 +1144,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   error: this.state.editDescriptionError,
                   errorMessage: "Required field"
                 })
-              ]),
-              div({ isRendered: this.state.readOnly && (this.state.formData.projectExtraProps.editDescription == this.state.current.projectExtraProps.editDescription) }, [
-                p({ className: "inputFieldLabel" }, "You may use this space to add additional information or clarifications related to your edits below"),
-                div({ className: "inputFieldReadOnly" }, [
-                  p({ className: "inputFieldText" }, this.state.current.projectExtraProps.editDescription)
-                ])
-              ])
             ])
           ]),
 
