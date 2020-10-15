@@ -21,9 +21,7 @@ export const PREFERRED_IRB = [
   { label: 'Harvard School of Public Health', value: 'harvardSchoolPublicHealth' },
   { label: 'Harvard Faculty of Arts & Sciences', value: 'harvardFacultyArtsAndSciences' },
   { label: 'Joslin Diabetes Center', value: 'joslinDiabetesCenter' },
-  { label: 'Mass. Eye and Ear', value: 'massEyeAndEar' },
-  { label: 'McLean Hospital', value: 'mcLeanHosp' },
-  { label: 'Spaulding Rehabilitation Hospital', value: 'spauldingRehabilitationHosp' },
+  { label: 'Mass General Brigham', value: 'massGeneralBrigham' },
   { label: 'Other', value: 'other' }
 ];
 
