@@ -564,7 +564,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     disableBodyScroll(main);
 
     const headerBox = document.getElementById('headerBox');
-    const notesToORSP = document.getElementById('notesToORSP');
     const requestor = document.getElementById('requestor');
     const principalInvestigator = document.getElementById('principalInvestigator');
     const funding = document.getElementById('funding');
@@ -581,15 +580,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
           totalHeight += this.canvasHeight(canvas, doc);
           return doc;
         })
-        .then((doc) => {
-          html2canvas(notesToORSP).then((canvas) => {
-            doc = this.canvasToPdf(canvas, doc, totalHeight);
-            if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight() ) {
-              totalHeight = 0;
-            } 
-            totalHeight += this.canvasHeight(canvas, doc);
-            return doc;
-          })
           .then((doc) => {
             html2canvas(requestor).then((canvas) => {
               doc = this.canvasToPdf(canvas, doc, totalHeight);
@@ -633,13 +623,28 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       doc.save(`${this.props.projectKey}_ProjectInformation.pdf`);
                       this.props.hideSpinner();
                       enableBodyScroll(main);
+                    }).catch(error => {
+                      this.props.hideSpinner();
+                      enableBodyScroll(main);
                     })
+                  }).catch(error => {
+                    this.props.hideSpinner();
+                    enableBodyScroll(main);
                   })
+                }).catch(error => {
+                  this.props.hideSpinner();
+                  enableBodyScroll(main);
                 })
+              }).catch(error => {
+                this.props.hideSpinner();
+                enableBodyScroll(main);
               })
+            }).catch(error => {
+              this.props.hideSpinner();
+              enableBodyScroll(main);
             })
-          })
         });
+        
   };
 
   canvasToPdf(canvas, doc, totalHeight ) {
