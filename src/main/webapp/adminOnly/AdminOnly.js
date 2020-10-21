@@ -438,9 +438,9 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 value: this.state.formData.exemptCategoryTwo,
                 optionValues: ['i', 'ii', 'iii'],
                 optionLabels: [
-                  "The information obtained is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained, directly or through identifiers linked to the subjects.",
-                  "Any disclosure of the human subjects responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects financial standing, employability, educational advancement, or reputation.",
-                  "The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)",
+                  "(i) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained, directly or through identifiers linked to the subjects.",
+                  "(ii) Any disclosure of the human subjects responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects financial standing, employability, educational advancement, or reputation.",
+                  "(iii)The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)",
                 ],
                 onChange: this.radioBtnHandler,
                 readOnly: !this.state.isAdmin
@@ -462,10 +462,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 value: this.state.formData.exemptCategoryFour,
                 optionValues: ['i', 'ii', 'iii','iiii'],
                 optionLabels: [
-                  "The identifiable private information or identifiable biospecimens are publicly available.",
-                  "Information, which may include information about biospecimens, is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained directly or through identifiers linked to the subjects, the investigator does not contact the subjects, and the investigator will not re-identify subjects.",
-                  "The research involves only information collection and analysis involving the investigator's use of identifiable health information when that use is regulated under 45 CFR parts 160 and 164, subparts A and E, for the purposes of “health care operations” or “research” as those terms are defined at 45 CFR 164.501 or for “public health activities and purposes” as described under 45 CFR 164.512(b).",
-                  "The research is conducted by, or on behalf of, a Federal department or agency using government-generated or government-collected information obtained for nonresearch activities, if the research generates identifiable private information that is or will be maintained on information technology that is subject to and in compliance with section 208(b) of the E-Government Act of 2002, 44 U.S.C. 3501 note, if all of the identifiable private information collected, used, or generated as part of the activity will be maintained in systems of records subject to the Privacy Act of 1974, 5 U.S.C. 552a, and, if applicable, the information used in the research was collected subject to the Paperwork Reduction Act of 1995, 44 U.S.C. 3501 et seq."
+                  "(i) The identifiable private information or identifiable biospecimens are publicly available.",
+                  "(ii) Information, which may include information about biospecimens, is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained directly or through identifiers linked to the subjects, the investigator does not contact the subjects, and the investigator will not re-identify subjects.",
+                  "(iii) The research involves only information collection and analysis involving the investigator's use of identifiable health information when that use is regulated under 45 CFR parts 160 and 164, subparts A and E, for the purposes of “health care operations” or “research” as those terms are defined at 45 CFR 164.501 or for “public health activities and purposes” as described under 45 CFR 164.512(b).",
+                  "(iv) The research is conducted by, or on behalf of, a Federal department or agency using government-generated or government-collected information obtained for nonresearch activities, if the research generates identifiable private information that is or will be maintained on information technology that is subject to and in compliance with section 208(b) of the E-Government Act of 2002, 44 U.S.C. 3501 note, if all of the identifiable private information collected, used, or generated as part of the activity will be maintained in systems of records subject to the Privacy Act of 1974, 5 U.S.C. 552a, and, if applicable, the information used in the research was collected subject to the Paperwork Reduction Act of 1995, 44 U.S.C. 3501 et seq."
                 ],
                 onChange: this.radioBtnHandler,
                 readOnly: !this.state.isAdmin
@@ -500,8 +500,20 @@ const AdminOnly = hh(class AdminOnly extends Component {
             p({ className: "inputFieldLabel" }, [
               "Not Engaged Categories. ",
               span({ className: "normal" }, ["Select all that apply."])
-            ])
-            
+            ]),
+            InputFieldRadio({
+              
+              id: "radioNotEngaged",
+              name: "exemptCategoryFour",
+              value: this.state.formData.exemptCategoryFour,
+              optionValues: ['i', 'ii', 'iii'],
+              optionLabels: [
+                
+                'Other'
+              ],
+              onChange: this.radioBtnHandler,
+              readOnly: !this.state.isAdmin
+            })
             
           ]),
 
