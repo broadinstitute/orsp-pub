@@ -11,7 +11,7 @@ export const DETERMINATION = {
 };
 
 export const PREFERRED_IRB = [
-  { label: 'Partners Health Care', value: 'healthCare' },
+  { label: 'Mass General Brigham', value: 'massGeneralBrigham' },
   { label: 'MIT', value: 'mit' },
   { label: 'Dana-Farber Cancer Institute', value: 'danaFarberCancerInst' },
   { label: 'Beth Israel Deaconess', value: 'bethIsraelDeaconess' },
@@ -21,9 +21,6 @@ export const PREFERRED_IRB = [
   { label: 'Harvard School of Public Health', value: 'harvardSchoolPublicHealth' },
   { label: 'Harvard Faculty of Arts & Sciences', value: 'harvardFacultyArtsAndSciences' },
   { label: 'Joslin Diabetes Center', value: 'joslinDiabetesCenter' },
-  { label: 'Mass. Eye and Ear', value: 'massEyeAndEar' },
-  { label: 'McLean Hospital', value: 'mcLeanHosp' },
-  { label: 'Spaulding Rehabilitation Hospital', value: 'spauldingRehabilitationHosp' },
   { label: 'Other', value: 'other' }
 ];
 
