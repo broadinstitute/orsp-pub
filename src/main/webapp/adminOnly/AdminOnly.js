@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h2, hh, p, span, small } from 'react-hyperscript-helpers';
+import { button, div, h2, hh, p, span, ul, li } from 'react-hyperscript-helpers';
 import { Project } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -499,17 +499,35 @@ const AdminOnly = hh(class AdminOnly extends Component {
           div({ isRendered: this.state.formData.initialReviewType.value === 'Not Engaged', style: { 'marginTop': '20px' } }, [
             p({ className: "inputFieldLabel" }, [
               "Not Engaged Categories. ",
-              span({ className: "normal" }, ["Select all that apply."])
+              span({ className: "normal" }, ["Select one."])
             ]),
             InputFieldRadio({
-              
               id: "radioNotEngaged",
               name: "exemptCategoryFour",
               value: this.state.formData.exemptCategoryFour,
               optionValues: ['i', 'ii', 'iii'],
               optionLabels: [
-                
-                'Other'
+                span({ className: "bold" }, ["Fee-for-Service (B1) ", span({ className: "normal italic" }, [
+                  p({}, ["Institutions whose employees or agents perform commercial or other services for investigators provided that all of the following conditions also are met:"]),
+                  ul({}, [
+                  li({}, ["The services performed do not merit professional recognition or publication privileges;"]),
+                  li({}, ["The services performed are typically performed by those institutions for non-research purposes; and"]),
+                  li({}, ["The institution’s employees or agents do not administer any study intervention being tested or evaluated under the protocol."])
+                ])]) ]),
+                span({ className: "bold" }, ["Not Engaged (B7) ", span({ className: "normal italic" }, [
+                  p({}, ["Institutions whose employees or agents:"]),
+                  ul({}, [
+                    li({}, ["Obtain coded private information or human biological specimens from another institution involved in the research that retains a link to individually identifying information (such as name or social security number); and"]),
+                    li({}, ["Are unable to readily ascertain the identity of the subjects to whom the coded information or specimens pertain because, for example:",
+                    ul({}, [
+                      li({}, ["the institution’s employees or agents and the holder of the key enter into an agreement prohibiting the release of the key to the those employees or agents under any circumstances;"]),
+                      li({}, ["the releasing institution has IRB-approved written policies and operating procedures applicable to the research project that prohibit the release of the key to the institution’s employees or agents under any circumstances; or"]),
+                      li({}, ["there are other legal requirements prohibiting the release of the key to the institution’s employees or agents"])
+                    ])
+                    ])
+                  ])
+                ])]),
+                span({ className: "bold" }, ["Other "]),
               ],
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
