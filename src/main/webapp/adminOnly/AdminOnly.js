@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h2, hh, p, span, ul, li } from 'react-hyperscript-helpers';
+import { button, div, h2, hh, p, span, ul, li, small } from 'react-hyperscript-helpers';
 import { Project } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -30,6 +30,9 @@ const AdminOnly = hh(class AdminOnly extends Component {
       showSubmissionAlert: false,
       showSubmissionError: false,
       textOtherCategoryError: false,
+      textOtherNotEngagedCategoryError: false,
+      textCategoryTwoError: false,
+      textCategoryFourError: false,
       alertMessage: '',
       isAdmin: false,
       initial: {},
@@ -50,9 +53,16 @@ const AdminOnly = hh(class AdminOnly extends Component {
         projectStatus: '',
         textOtherCategory: 'vasd',
         categoryTwo: false,
-        exemptCategoryTwo: '',
         categoryFour: false,
-        exemptCategoryFour: '',
+        exemptCategoryFourI: false,
+        exemptCategoryFourII: false,
+        exemptCategoryFourIII: false,
+        exemptCategoryFourIV: false,
+        exemptCategoryTwoI: false,
+        exemptCategoryTwoII: false,
+        exemptCategoryTwoIII: false,
+        notEngagedCategories: '',
+        textOtherNotEngagedCategory: '',
         otherCategory: false
       }
     };
@@ -92,6 +102,15 @@ const AdminOnly = hh(class AdminOnly extends Component {
       formData.categoryFour = issue.data.extraProperties.categoryFour === 'true' ? true : false;
       formData.otherCategory = issue.data.extraProperties.otherCategory === 'true' ? true : false;
       formData.textOtherCategory = issue.data.extraProperties.textOtherCategory;
+      formData.exemptCategoryFourI = issue.data.extraProperties.exemptCategoryFourI  === 'true' ? true : false;
+      formData.exemptCategoryFourII = issue.data.extraProperties.exemptCategoryFourII  === 'true' ? true : false;
+      formData.exemptCategoryFourIII = issue.data.extraProperties.exemptCategoryFourIII  === 'true' ? true : false;
+      formData.exemptCategoryFourIV = issue.data.extraProperties.exemptCategoryFourIV  === 'true' ? true : false;
+      formData.exemptCategoryTwoI = issue.data.extraProperties.exemptCategoryTwoI  === 'true' ? true : false;
+      formData.exemptCategoryTwoII = issue.data.extraProperties.exemptCategoryTwoII  === 'true' ? true : false;
+      formData.exemptCategoryTwoIII = issue.data.extraProperties.exemptCategoryTwoIII  === 'true' ? true : false;
+      formData.notEngagedCategories = issue.data.extraProperties.notEngagedCategories;
+      formData.textOtherNotEngagedCategory = issue.data.extraProperties.textOtherNotEngagedCategory;
       initial = createObjectCopy(formData);
       if (this._isMounted) {
         this.setState(prev => {
@@ -194,20 +213,73 @@ const AdminOnly = hh(class AdminOnly extends Component {
   };
 
   isValid() {
+    let isValidExempt = true;
+    let isValidCategoryTwo = true;
+    let isValidNotEngaged = true;
+    let isValidCategoryFour = true;
+
     if (this.state.formData.otherCategory && isEmpty(this.state.formData.textOtherCategory)) {
        this.setState(prev => {
          prev.textOtherCategoryError = true;
          return prev;
        });
-       return false;
+       isValidExempt = false;
     } else {
       this.setState(prev => {
         prev.textOtherCategoryError = false;
         return prev;
       });
-      return true;
+      isValidExempt = true;
     }
+
+    if (this.state.formData.categoryTwo && !this.state.formData.exemptCategoryTwoI
+      && !this.state.formData.exemptCategoryTwoII && !this.state.formData.exemptCategoryTwoIII) {
+      this.setState(prev => {
+        prev.textCategoryTwoError = true;
+        return prev;
+      });
+      isValidCategoryTwo = false;
+    } else {
+      this.setState(prev => {
+        prev.textCategoryTwoError = false;
+        return prev;
+      });
+      isValidCategoryTwo = true;
+    }
+
+   if (this.state.formData.categoryFour && !this.state.formData.exemptCategoryFourI
+    && !this.state.formData.exemptCategoryFourII && !this.state.formData.exemptCategoryFourIII
+    && !this.state.formData.exemptCategoryFourIV) {
+      this.setState(prev => {
+        prev.textCategoryFourError = true;
+        return prev;
+      });
+      isValidCategoryFour = false;
+    } else {
+      this.setState(prev => {
+        prev.textCategoryFourError = false;
+        return prev;
+      });
+      isValidCategoryFour = true;
+    }
+
+    if (this.state.formData.notEngagedCategories === 'other' && isEmpty(this.state.formData.textOtherNotEngagedCategory)) {
+      this.setState(prev => {
+        prev.textOtherNotEngagedCategoryError = true;
+        return prev;
+      });
+      isValidNotEngaged = false;
+   } else {
+     this.setState(prev => {
+       prev.textOtherNotEngagedCategoryError = false;
+       return prev;
+     });
+     isValidNotEngaged = true;
+   }
+
+    return isValidExempt && isValidNotEngaged && isValidCategoryTwo && isValidCategoryFour;
   }
+
   successNotification = (type, message, time) => {
     setTimeout(this.clearAlertMessage(type), time, null);
     this.init();
@@ -241,6 +313,15 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.categoryFour = this.state.formData.categoryFour;
     form.otherCategory = this.state.formData.otherCategory;
     form.textOtherCategory = this.state.formData.textOtherCategory;
+    form.exemptCategoryFourI = this.state.formData.exemptCategoryFourI;
+    form.exemptCategoryFourII = this.state.formData.exemptCategoryFourII;
+    form.exemptCategoryFourIII = this.state.formData.exemptCategoryFourIII;
+    form.exemptCategoryFourIV = this.state.formData.exemptCategoryFourIV;
+    form.exemptCategoryTwoI = this.state.formData.exemptCategoryTwoI;
+    form.exemptCategoryTwoII = this.state.formData.exemptCategoryTwoII;
+    form.exemptCategoryTwoIII = this.state.formData.exemptCategoryTwoIII;
+    form.notEngagedCategories = this.state.formData.notEngagedCategories;
+    form.textOtherNotEngagedCategory = this.state.formData.textOtherNotEngagedCategory;
     let degrees = [];
     if (this.state.formData.degrees !== null && this.state.formData.degrees.length > 0) {
       this.state.formData.degrees.map((degree, idx) => {
@@ -292,9 +373,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
       prev.formData[field] = value;
       return prev;
     }, () => {
-      if (field === 'otherCategory') {
+      this.isValid();
+      /*if (field === 'otherCategory') {
         this.isValid();
-      }
+      }*/
     });
   };
 
@@ -426,74 +508,110 @@ const AdminOnly = hh(class AdminOnly extends Component {
               id: "ckb_category_two",
               name: "categoryTwo",
               onChange: this.handleChange,
-              label: span({ className: "normal" }, ['Category 2 - Research that only includes interactions involving educational tests (cognitive, diagnostic, aptitude, achievement), survey procedures, interview procedures, or observation of public behavior (including visual or auditory recording) if at least one of the following criteria is met']),
+              label: span({ className: "bold" }, ["Category 2", span({ className: "normal italic" }, [" (Research that only includes interactions involving educational tests (cognitive, diagnostic, aptitude, achievement), survey procedures, interview procedures, or observation of public behavior (including visual or auditory recording) if at least one of the following criteria is met:)"])]),
               checked: this.state.formData.categoryTwo,
               readOnly: this.state.readOnly
             }),
             div({ style: { 'marginLeft': '20px' } }, [
-              InputFieldRadio({
+              small({ isRendered: this.state.textCategoryTwoError, className: "errorMessage" }, ['At least one selected option is required']),
+              InputFieldCheckbox({
                 isRendered: this.state.formData.categoryTwo === true,
-                id: "radioCategoryTwo",
-                name: "exemptCategoryTwo",
-                value: this.state.formData.exemptCategoryTwo,
-                optionValues: ['i', 'ii', 'iii'],
-                optionLabels: [
-                  "(i) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained, directly or through identifiers linked to the subjects.",
-                  "(ii) Any disclosure of the human subjects responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects financial standing, employability, educational advancement, or reputation.",
-                  "(iii)The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)",
-                ],
-                onChange: this.radioBtnHandler,
-                readOnly: !this.state.isAdmin
+                id: "ckb_categoryTwo_i",
+                name: "exemptCategoryTwoI",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ['(i) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained, directly or through identifiers linked to the subjects.']),
+                checked: this.state.formData.exemptCategoryTwoI,
+                readOnly: this.state.readOnly
               }),
+              InputFieldCheckbox({
+                isRendered: this.state.formData.categoryTwo === true,
+                id: "ckb_categoryTwo_iI",
+                name: "exemptCategoryTwoII",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ['(ii) Any disclosure of the human subjects responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects financial standing, employability, educational advancement, or reputation.']),
+                checked: this.state.formData.exemptCategoryTwoII,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                isRendered: this.state.formData.categoryTwo === true,
+                id: "ckb_categoryTwo_iii",
+                name: "exemptCategoryTwoIII",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ['(iii)The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)']),
+                checked: this.state.formData.exemptCategoryTwoIII,
+                readOnly: this.state.readOnly
+              })
             ]),
             InputFieldCheckbox({
               id: "ckb_categoryFour",
               name: "categoryFour",
               onChange: this.handleChange,
-              label: span({ className: "normal" }, ['Category 4 - Secondary research for which consent is not required: Secondary research uses of identifiable private information or identifiable biospecimens, if at least one of the following criteria is met:']),
+              label: span({ className: "bold" }, ["Category 4", span({ className: "normal italic" }, [" (Secondary research for which consent is not required: Secondary research uses of identifiable private information or identifiable biospecimens, if at least one of the following criteria is met:)"])]),
               checked: this.state.formData.categoryFour,
               readOnly: this.state.readOnly
             }),
-            div({ style: { 'marginLeft': '20px' } }, [
-              InputFieldRadio({
+            div({ style: { 'marginLeft': '20px', isRendered: this.state.formData.categoryFour === true } }, [
+              small({ isRendered: this.state.textCategoryFourError, className: "errorMessage" }, ['At least one selected option is required']),
+              InputFieldCheckbox({
                 isRendered: this.state.formData.categoryFour === true,
-                id: "radioCategoryFour",
-                name: "exemptCategoryFour",
-                value: this.state.formData.exemptCategoryFour,
-                optionValues: ['i', 'ii', 'iii','iiii'],
-                optionLabels: [
-                  "(i) The identifiable private information or identifiable biospecimens are publicly available.",
-                  "(ii) Information, which may include information about biospecimens, is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained directly or through identifiers linked to the subjects, the investigator does not contact the subjects, and the investigator will not re-identify subjects.",
-                  "(iii) The research involves only information collection and analysis involving the investigator's use of identifiable health information when that use is regulated under 45 CFR parts 160 and 164, subparts A and E, for the purposes of “health care operations” or “research” as those terms are defined at 45 CFR 164.501 or for “public health activities and purposes” as described under 45 CFR 164.512(b).",
-                  "(iv) The research is conducted by, or on behalf of, a Federal department or agency using government-generated or government-collected information obtained for nonresearch activities, if the research generates identifiable private information that is or will be maintained on information technology that is subject to and in compliance with section 208(b) of the E-Government Act of 2002, 44 U.S.C. 3501 note, if all of the identifiable private information collected, used, or generated as part of the activity will be maintained in systems of records subject to the Privacy Act of 1974, 5 U.S.C. 552a, and, if applicable, the information used in the research was collected subject to the Paperwork Reduction Act of 1995, 44 U.S.C. 3501 et seq."
-                ],
-                onChange: this.radioBtnHandler,
-                readOnly: !this.state.isAdmin
+                id: "ckb_categoryFour_i",
+                name: "exemptCategoryFourI",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ['(i) The identifiable private information or identifiable biospecimens are publicly available.']),
+                checked: this.state.formData.exemptCategoryFourI,
+                readOnly: this.state.readOnly
               }),
+              InputFieldCheckbox({
+                isRendered: this.state.formData.categoryFour === true,
+                id: "ckb_categoryFour_ii",
+                name: "exemptCategoryFourII",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ['(ii) Information, which may include information about biospecimens, is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained directly or through identifiers linked to the subjects, the investigator does not contact the subjects, and the investigator will not re-identify subjects.']),
+                checked: this.state.formData.exemptCategoryFourII,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                isRendered: this.state.formData.categoryFour === true,
+                id: "ckb_categoryFour_iii",
+                name: "exemptCategoryFourIII",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ["(iii) The research involves only information collection and analysis involving the investigator's use of identifiable health information when that use is regulated under 45 CFR parts 160 and 164, subparts A and E, for the purposes of “health care operations” or “research” as those terms are defined at 45 CFR 164.501 or for “public health activities and purposes” as described under 45 CFR 164.512(b)."]),
+                checked: this.state.formData.exemptCategoryFourIII,
+                readOnly: this.state.readOnly
+              }),
+              InputFieldCheckbox({
+                isRendered: this.state.formData.categoryFour === true,
+                id: "ckb_categoryFour_iv",
+                name: "exemptCategoryFourIV",
+                onChange: this.handleChange,
+                label: span({ className: "normal" }, ["(iv) The research is conducted by, or on behalf of, a Federal department or agency using government-generated or government-collected information obtained for nonresearch activities, if the research generates identifiable private information that is or will be maintained on information technology that is subject to and in compliance with section 208(b) of the E-Government Act of 2002, 44 U.S.C. 3501 note, if all of the identifiable private information collected, used, or generated as part of the activity will be maintained in systems of records subject to the Privacy Act of 1974, 5 U.S.C. 552a, and, if applicable, the information used in the research was collected subject to the Paperwork Reduction Act of 1995, 44 U.S.C. 3501 et seq."]),
+                checked: this.state.formData.exemptCategoryFourIV,
+                readOnly: this.state.readOnly
+              })
             ]),
             InputFieldCheckbox({
               id: "ckb_other_category",
               name: "otherCategory",
               onChange: this.handleChange,
-              label: span({ className: "normal" }, ['Other']),
+              label: span({ className: "bold" }, ['Other']),
               checked: this.state.formData.otherCategory,
               readOnly: this.state.readOnly
             }),
-          ]),
 
-          div({ style: { 'marginBottom': '20px' } }, [
-            InputFieldText({
-              isRendered: this.state.formData.otherCategory === true,
-              id: "inputTextOtherCategory",
-              name: "textOtherCategory",
-              label: " Please describe “other”:",
-              value: this.state.formData.textOtherCategory,
-              disabled: false,
-              required: true,
-              onChange: this.textHandler,
-              error: this.state.textOtherCategoryError,
-              errorMessage: "Required field"
-            })
+            div({ style: { 'marginBottom': '20px' } }, [
+              InputFieldText({
+                isRendered: this.state.formData.otherCategory === true,
+                id: "inputTextOtherCategory",
+                name: "textOtherCategory",
+                label: " Please describe “other”:",
+                value: this.state.formData.textOtherCategory,
+                disabled: false,
+                required: true,
+                onChange: this.textHandler,
+                error: this.state.textOtherCategoryError,
+                errorMessage: "Required field"
+              })
+            ])
           ]),
 
           div({ isRendered: this.state.formData.initialReviewType.value === 'Not Engaged', style: { 'marginTop': '20px' } }, [
@@ -503,9 +621,9 @@ const AdminOnly = hh(class AdminOnly extends Component {
             ]),
             InputFieldRadio({
               id: "radioNotEngaged",
-              name: "exemptCategoryFour",
-              value: this.state.formData.exemptCategoryFour,
-              optionValues: ['i', 'ii', 'iii'],
+              name: "notEngagedCategories",
+              value: this.state.formData.notEngagedCategories,
+              optionValues: ['b1', 'b7', 'other'],
               optionLabels: [
                 span({ className: "bold" }, ["Fee-for-Service (B1) ", span({ className: "normal italic" }, [
                   p({}, ["Institutions whose employees or agents perform commercial or other services for investigators provided that all of the following conditions also are met:"]),
@@ -531,7 +649,22 @@ const AdminOnly = hh(class AdminOnly extends Component {
               ],
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
-            })
+            }),
+
+            div({ style: { 'marginBottom': '20px' } }, [
+              InputFieldText({
+                isRendered: this.state.formData.notEngagedCategories === 'other',
+                id: "inputTextOtherNotEngagedCategory",
+                name: "textOtherNotEngagedCategory",
+                label: " Please describe “other”:",
+                value: this.state.formData.textOtherNotEngagedCategory,
+                disabled: false,
+                required: true,
+                onChange: this.textHandler,
+                error: this.state.textOtherNotEngagedCategoryError,
+                errorMessage: "Required field"
+              })
+            ])
             
           ]),
 

@@ -49,6 +49,15 @@ class ProjectExtraProperties {
     String categoryFour
     String otherCategory
     String textOtherCategory
+    String exemptCategoryTwoI;
+    String exemptCategoryTwoII;
+    String exemptCategoryTwoIII;
+    String exemptCategoryFourI;
+    String exemptCategoryFourII;
+    String exemptCategoryFourIII;
+    String exemptCategoryFourIV;
+    String notEngagedCategories;
+    String textOtherNotEngagedCategory;
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -99,5 +108,14 @@ class ProjectExtraProperties {
         this.setCategoryFour(project.getCategoryFour() ?: "")
         this.setOtherCategory(project.getOtherCategory() ?: "")
         this.setTextOtherCategory(project.getTextOtherCategory() ?: "")
+        this.setExemptCategoryTwoI(project.getExemptCategoryTwoI() ?: "")
+        this.setExemptCategoryTwoII(project.getExemptCategoryTwoII() ?: "")
+        this.setExemptCategoryTwoIII(project.getExemptCategoryTwoIII() ?: "")
+        this.setExemptCategoryFourI(project.getExemptCategoryFourI() ?: "")
+        this.setExemptCategoryFourII(project.getExemptCategoryFourII() ?: "")
+        this.setExemptCategoryFourIII(project.getExemptCategoryFourIII() ?: "")
+        this.setExemptCategoryFourIV(project.getExemptCategoryFourIV() ?: "")
+        this.setNotEngagedCategories(project.getNotEngagedCategories() ?: "")
+        this.setTextOtherNotEngagedCategory(project.getTextOtherNotEngagedCategory() ?: "")
     }
 }
