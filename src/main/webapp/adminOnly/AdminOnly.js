@@ -218,64 +218,66 @@ const AdminOnly = hh(class AdminOnly extends Component {
     let isValidNotEngaged = true;
     let isValidCategoryFour = true;
 
-    if (this.state.formData.otherCategory && isEmpty(this.state.formData.textOtherCategory)) {
+    if (this.state.formData.initialReviewType.value === 'Exempt') {
+      if (this.state.formData.otherCategory && isEmpty(this.state.formData.textOtherCategory)) {
+        this.setState(prev => {
+          prev.textOtherCategoryError = true;
+          return prev;
+        });
+        isValidExempt = false;
+     } else {
        this.setState(prev => {
-         prev.textOtherCategoryError = true;
+         prev.textOtherCategoryError = false;
          return prev;
        });
-       isValidExempt = false;
-    } else {
-      this.setState(prev => {
-        prev.textOtherCategoryError = false;
-        return prev;
-      });
-      isValidExempt = true;
-    }
-
-    if (this.state.formData.categoryTwo && !this.state.formData.exemptCategoryTwoI
-      && !this.state.formData.exemptCategoryTwoII && !this.state.formData.exemptCategoryTwoIII) {
-      this.setState(prev => {
-        prev.textCategoryTwoError = true;
-        return prev;
-      });
-      isValidCategoryTwo = false;
-    } else {
-      this.setState(prev => {
-        prev.textCategoryTwoError = false;
-        return prev;
-      });
-      isValidCategoryTwo = true;
-    }
-
-   if (this.state.formData.categoryFour && !this.state.formData.exemptCategoryFourI
-    && !this.state.formData.exemptCategoryFourII && !this.state.formData.exemptCategoryFourIII
-    && !this.state.formData.exemptCategoryFourIV) {
-      this.setState(prev => {
-        prev.textCategoryFourError = true;
-        return prev;
-      });
-      isValidCategoryFour = false;
-    } else {
-      this.setState(prev => {
-        prev.textCategoryFourError = false;
-        return prev;
-      });
-      isValidCategoryFour = true;
-    }
-
-    if (this.state.formData.notEngagedCategories === 'other' && isEmpty(this.state.formData.textOtherNotEngagedCategory)) {
-      this.setState(prev => {
-        prev.textOtherNotEngagedCategoryError = true;
-        return prev;
-      });
-      isValidNotEngaged = false;
-   } else {
-     this.setState(prev => {
-       prev.textOtherNotEngagedCategoryError = false;
-       return prev;
-     });
-     isValidNotEngaged = true;
-   }
+       isValidExempt = true;
+     }
+ 
+     if (this.state.formData.categoryTwo && !this.state.formData.exemptCategoryTwoI
+       && !this.state.formData.exemptCategoryTwoII && !this.state.formData.exemptCategoryTwoIII) {
+       this.setState(prev => {
+         prev.textCategoryTwoError = true;
+         return prev;
+       });
+       isValidCategoryTwo = false;
+     } else {
+       this.setState(prev => {
+         prev.textCategoryTwoError = false;
+         return prev;
+       });
+       isValidCategoryTwo = true;
+     }
+ 
+    if (this.state.formData.categoryFour && !this.state.formData.exemptCategoryFourI
+     && !this.state.formData.exemptCategoryFourII && !this.state.formData.exemptCategoryFourIII
+     && !this.state.formData.exemptCategoryFourIV) {
+       this.setState(prev => {
+         prev.textCategoryFourError = true;
+         return prev;
+       });
+       isValidCategoryFour = false;
+     } else {
+       this.setState(prev => {
+         prev.textCategoryFourError = false;
+         return prev;
+       });
+       isValidCategoryFour = true;
+     }
+    } else if (this.state.formData.initialReviewType.value === 'Not Engaged') {
+      if (this.state.formData.notEngagedCategories === 'other' && isEmpty(this.state.formData.textOtherNotEngagedCategory)) {
+        this.setState(prev => {
+          prev.textOtherNotEngagedCategoryError = true;
+          return prev;
+        });
+        isValidNotEngaged = false;
+     } else {
+       this.setState(prev => {
+         prev.textOtherNotEngagedCategoryError = false;
+         return prev;
+       });
+       isValidNotEngaged = true;
+     }
+    }   
 
     return isValidExempt && isValidNotEngaged && isValidCategoryTwo && isValidCategoryFour;
   }
@@ -309,19 +311,24 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.bioMedical = this.state.formData.bioMedical;
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
-    form.categoryTwo = this.state.formData.categoryTwo;
-    form.categoryFour = this.state.formData.categoryFour;
-    form.otherCategory = this.state.formData.otherCategory;
-    form.textOtherCategory = this.state.formData.textOtherCategory;
-    form.exemptCategoryFourI = this.state.formData.exemptCategoryFourI;
-    form.exemptCategoryFourII = this.state.formData.exemptCategoryFourII;
-    form.exemptCategoryFourIII = this.state.formData.exemptCategoryFourIII;
-    form.exemptCategoryFourIV = this.state.formData.exemptCategoryFourIV;
-    form.exemptCategoryTwoI = this.state.formData.exemptCategoryTwoI;
-    form.exemptCategoryTwoII = this.state.formData.exemptCategoryTwoII;
-    form.exemptCategoryTwoIII = this.state.formData.exemptCategoryTwoIII;
-    form.notEngagedCategories = this.state.formData.notEngagedCategories;
-    form.textOtherNotEngagedCategory = this.state.formData.textOtherNotEngagedCategory;
+
+    if (this.state.formData.initialReviewType.value === 'Exempt') {
+      form.categoryTwo = this.state.formData.categoryTwo;
+      form.categoryFour = this.state.formData.categoryFour;
+      form.otherCategory = this.state.formData.otherCategory;
+      form.textOtherCategory = this.state.formData.textOtherCategory;
+      form.exemptCategoryFourI = this.state.formData.exemptCategoryFourI;
+      form.exemptCategoryFourII = this.state.formData.exemptCategoryFourII;
+      form.exemptCategoryFourIII = this.state.formData.exemptCategoryFourIII;
+      form.exemptCategoryFourIV = this.state.formData.exemptCategoryFourIV;
+      form.exemptCategoryTwoI = this.state.formData.exemptCategoryTwoI;
+      form.exemptCategoryTwoII = this.state.formData.exemptCategoryTwoII;
+      form.exemptCategoryTwoIII = this.state.formData.exemptCategoryTwoIII;
+    } else if (this.state.formData.initialReviewType.value === 'Not Engaged') {
+      form.notEngagedCategories = this.state.formData.notEngagedCategories;
+      form.textOtherNotEngagedCategory = this.state.formData.textOtherNotEngagedCategory;
+    }
+    
     let degrees = [];
     if (this.state.formData.degrees !== null && this.state.formData.degrees.length > 0) {
       this.state.formData.degrees.map((degree, idx) => {
@@ -374,9 +381,6 @@ const AdminOnly = hh(class AdminOnly extends Component {
       return prev;
     }, () => {
       this.isValid();
-      /*if (field === 'otherCategory') {
-        this.isValid();
-      }*/
     });
   };
 
@@ -537,7 +541,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 id: "ckb_categoryTwo_iii",
                 name: "exemptCategoryTwoIII",
                 onChange: this.handleChange,
-                label: span({ className: "normal" }, ['(iii)The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)']),
+                label: span({ className: "normal" }, ['(iii) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)']),
                 checked: this.state.formData.exemptCategoryTwoIII,
                 readOnly: this.state.readOnly
               })
