@@ -204,8 +204,18 @@ class Issue implements LogicalDelete<Issue> {
     transient Collection<String> getNotResearch() { getExtraProperties().findAll { it.name == IssueExtraProperty.NOT_RESEARCH }.collect { it.value } }
 
     transient String getCategoryTwo() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_TWO }?.value }
+    transient String getExemptCategoryTwoI() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_TWO_I }?.value }
+    transient String getExemptCategoryTwoII() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_TWO_II }?.value }
+    transient String getExemptCategoryTwoIII() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_TWO_III }?.value }
 
     transient String getCategoryFour() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_FOUR }?.value }
+    transient String getExemptCategoryFourI() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_FOUR_I }?.value }
+    transient String getExemptCategoryFourII() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_FOUR_II }?.value }
+    transient String getExemptCategoryFourIII() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_FOUR_III }?.value }
+    transient String getExemptCategoryFourIV() { getExtraProperties().find { it.name == IssueExtraProperty.CATEGORY_FOUR_IV }?.value }
+
+    transient String getNotEngagedCategories() { getExtraProperties().find { it.name == IssueExtraProperty.NOT_ENGAGED_CATEGORY }?.value }
+    transient String getTextOtherNotEngagedCategory() { getExtraProperties().find { it.name == IssueExtraProperty.TEXT_OTHER_NOT_ENGAGED_CATEGORY }?.value }
 
     transient String getOtherCategory() { getExtraProperties().find { it.name == IssueExtraProperty.OTHER_CATEGORY }?.value }
 
