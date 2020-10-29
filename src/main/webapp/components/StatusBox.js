@@ -19,7 +19,7 @@ export const StatusBox = hh(class StatusBox extends Component {
       attachmentsApproved = ''
     } = this.props.status;
     return(
-      div({className: "headerBox"}, [
+      div({className: "headerBox", id: "headerBox"}, [
         p({className: "issue-type"}, [type]),
         h1({className: "projectTitle"}, [
           span({className: "projectKey"}, [projectKey+": " ]),

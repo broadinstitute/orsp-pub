@@ -6,7 +6,7 @@ import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldRadio } from '../components/InputFieldRadio';
-import { compareNotEmptyObjects, createObjectCopy, isEmpty } from '../util/Utils';
+import { compareNotEmptyObjects, createObjectCopy, isEmpty, scrollToTop } from '../util/Utils';
 import { format } from 'date-fns';
 import 'regenerator-runtime/runtime';
 import { InputFieldSelect } from '../components/InputFieldSelect';
@@ -17,6 +17,9 @@ import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import get from 'lodash/get';
 import moment from 'moment';
+import html2canvas from 'html2canvas';
+import jsPDF from "jspdf";
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 const IRB = 'IRB Project';
 
@@ -384,319 +387,406 @@ const AdminOnly = hh(class AdminOnly extends Component {
     });
   };
 
+  exportPdf = (e) => () => {
+
+    this.props.showSpinner();
+    const main = document.getElementById('main');
+    disableBodyScroll(main);
+
+    const headerBox = document.getElementById('headerBox');
+    const projectDetails1 = document.getElementById('projectDetails1');
+    const projectDetails2 = document.getElementById('projectDetails2');
+
+    let totalHeight = 0;
+    scrollToTop();
+
+        html2canvas(headerBox)
+        .then((canvas) => {  
+          var doc = new jsPDF();
+          doc = this.canvasToPdf(canvas, doc, totalHeight);
+          totalHeight += this.canvasHeight(canvas, doc);
+          return doc;
+        })
+          .then((doc) => {
+            html2canvas(projectDetails1).then((canvas) => {
+              doc = this.canvasToPdf(canvas, doc, totalHeight);
+              if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight() ) {
+                totalHeight = 0;
+              }
+              totalHeight += this.canvasHeight(canvas, doc);
+              return doc;
+            })
+                  .then((doc) => {
+                    html2canvas(projectDetails2).then((canvas) => {
+                      
+                      doc = this.canvasToPdf(canvas, doc, totalHeight);
+                      doc.save(`${this.props.projectKey}_AdminOnly.pdf`);
+                      this.props.hideSpinner();
+                      enableBodyScroll(main);
+                    }).catch(error => {
+                      this.props.hideSpinner();
+                      enableBodyScroll(main);
+                    })
+                  }).catch(error => {
+                    this.props.hideSpinner();
+                    enableBodyScroll(main);
+                  })
+        });
+
+  };
+
+  canvasToPdf(canvas, doc, totalHeight ) {
+    const imgData = canvas.toDataURL('image/png');
+
+    var pageHeight = doc.internal.pageSize.getHeight() - 2;
+    let ratio = this.canvasRatio(canvas, doc);
+
+    if (canvas.height > 0) {
+      if ((totalHeight + (canvas.height * ratio)) > pageHeight ) {
+        doc.addPage();
+        doc.addImage(imgData, "PNG", 2, 2, canvas.width * ratio, canvas.height * ratio);
+      } else {
+        doc.addImage(imgData, "PNG", 2, totalHeight + 2, canvas.width * ratio, canvas.height * ratio);
+      }
+    }
+
+    return doc;
+  };
+
+  canvasHeight(canvas, doc ) {
+    return canvas.height * this.canvasRatio(canvas, doc) + 2;
+  };
+
+  canvasRatio(canvas, doc ) {
+    return (doc.internal.pageSize.getWidth() - 4) / canvas.width;
+  };
+
   render() {
     return(
       div({},[
         h2({ className: "stepTitle" }, ["Admin Only"]),
-        Panel({ title: "Project Details" }, [
-          InputFieldRadio({
-            id: "radioProjectStatus",
-            name: "projectStatus",
-            label: "Project Status",
-            value: this.state.formData.projectStatus,
-            optionValues: ['Approved', 'Disapproved', 'Withdrawn', 'Closed', 'Abandoned', 'On Hold'],
-            optionLabels: [
-              "Approved",
-              "Disapproved",
-              "Withdrawn",
-              "Closed",
-              "Abandoned",
-              "On Hold"
-            ],
-            onChange: this.radioBtnHandler,
-            readOnly: !this.state.isAdmin
-          }),
-          InputFieldSelect({
-            label: "IRB",
-            id: "preferredIrb",
-            name: "preferredIrb",
-            options: PREFERRED_IRB,
-            value: this.state.formData.preferredIrb,
-            onChange: this.handleSelect("preferredIrb"),
-            readOnly: true,
-            placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
-            edit: false
-          }),
-          InputFieldText({
-            id: "preferredIrbText",
-            name: "preferredIrbText",
-            label: "Please specify IRB",
-            readOnly: !this.state.isAdmin,
-            isRendered: this.state.formData.preferredIrb.value === "other",
-            value: this.state.formData.preferredIrbText,
-            onChange: this.textHandler,
-          }),
-          InputFieldText({
-            id: "investigatorFirstName",
-            name: "investigatorFirstName",
-            label: "First Name of Investigator",
-            readOnly: !this.state.isAdmin,
-            value: this.state.formData.investigatorFirstName,
-            onChange: this.textHandler,
-          }),
-          InputFieldText({
-            id: "investigatorLastName",
-            name: "investigatorLastName",
-            label: "Last Name of Investigator",
-            readOnly: !this.state.isAdmin,
-            value: this.state.formData.investigatorLastName,
-            onChange: this.textHandler,
-          }),
-          InputTextList({
-            id: "degrees",
-            name: "degrees",
-            label: "Degree(s) of Investigator",
-            value: this.state.formData.degrees,
-            textHandler: this.degreesHandler,
-            add: this.addNewDegree,
-            remove: this.removeDegree,
-            isReadOnly: !this.state.isAdmin
-          }),
-          InputFieldText({
-            id: "trackingNumber",
-            name: "trackingNumber",
-            label: "Protocol Number",
-            readOnly: true,
-            value: this.state.formData.trackingNumber,
-            onChange: this.textHandler,
-          }),
-          InputFieldText({
-            id: "projectKey",
-            name: "projectKey",
-            label: "ORSP Number",
-            readOnly: true,
-            value: this.state.formData.projectKey,
-            onChange: this.textHandler,
-          }),
-          InputFieldText({
-            id: "projectTitle",
-            name: "projectTitle",
-            label: "Title",
-            readOnly: true,
-            value: this.state.formData.projectTitle,
-            onChange: this.textHandler,
-          }),
-          InputFieldDatePicker({
-            selected: this.state.formData.initialDate,
-            value: isEmpty(this.state.formData.initialDate) ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
-            name: "initialDate",
-            label: "Initial Approval Date",
-            onChange: this.datePickerHandler,
-            placeholder: "Enter date...",
-            readOnly: !this.state.isAdmin,
-          }),
-          div({ style: { 'marginTop': '20px' }}, [
-            Fundings({
-              fundings: this.state.formData.sponsor,
-              current: this.state.formData.sponsor,
-              readOnly: true,
-              edit: false
-            })
-          ]),
-          InputFieldSelect({
-            id: "initialReviewType",
-            name: "initialReviewType",
-            label: "Type of Initial Review",
-            options: INITIAL_REVIEW,
-            readOnly: !this.state.isAdmin,
-            value: this.state.formData.initialReviewType,
-            onChange: this.handleSelect("initialReviewType"),
-            placeholder: "Select..."
-          }),
-          div({ isRendered: this.state.formData.initialReviewType.value === 'Exempt', style: { 'marginTop': '20px' } }, [
-            p({ className: "inputFieldLabel" }, [
-              "Exempt Categories. ",
-              span({ className: "normal" }, ["Select all that apply."])
-            ]),
-            InputFieldCheckbox({
-              id: "ckb_category_two",
-              name: "categoryTwo",
-              onChange: this.handleChange,
-              label: span({ className: "bold" }, ["Category 2", span({ className: "normal italic" }, [" (Research that only includes interactions involving educational tests (cognitive, diagnostic, aptitude, achievement), survey procedures, interview procedures, or observation of public behavior (including visual or auditory recording) if at least one of the following criteria is met:)"])]),
-              checked: this.state.formData.categoryTwo,
-              readOnly: this.state.readOnly
-            }),
-            div({ style: { 'marginLeft': '20px' } }, [
-              small({ isRendered: this.state.textCategoryTwoError, className: "errorMessage" }, ['At least one selected option is required']),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryTwo === true,
-                id: "ckb_categoryTwo_i",
-                name: "exemptCategoryTwoI",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ['(i) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained, directly or through identifiers linked to the subjects.']),
-                checked: this.state.formData.exemptCategoryTwoI,
-                readOnly: this.state.readOnly
-              }),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryTwo === true,
-                id: "ckb_categoryTwo_iI",
-                name: "exemptCategoryTwoII",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ['(ii) Any disclosure of the human subjects responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects financial standing, employability, educational advancement, or reputation.']),
-                checked: this.state.formData.exemptCategoryTwoII,
-                readOnly: this.state.readOnly
-              }),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryTwo === true,
-                id: "ckb_categoryTwo_iii",
-                name: "exemptCategoryTwoIII",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ['(iii) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)']),
-                checked: this.state.formData.exemptCategoryTwoIII,
-                readOnly: this.state.readOnly
-              })
-            ]),
-            InputFieldCheckbox({
-              id: "ckb_categoryFour",
-              name: "categoryFour",
-              onChange: this.handleChange,
-              label: span({ className: "bold" }, ["Category 4", span({ className: "normal italic" }, [" (Secondary research for which consent is not required: Secondary research uses of identifiable private information or identifiable biospecimens, if at least one of the following criteria is met:)"])]),
-              checked: this.state.formData.categoryFour,
-              readOnly: this.state.readOnly
-            }),
-            div({ style: { 'marginLeft': '20px', isRendered: this.state.formData.categoryFour === true } }, [
-              small({ isRendered: this.state.textCategoryFourError, className: "errorMessage" }, ['At least one selected option is required']),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryFour === true,
-                id: "ckb_categoryFour_i",
-                name: "exemptCategoryFourI",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ['(i) The identifiable private information or identifiable biospecimens are publicly available.']),
-                checked: this.state.formData.exemptCategoryFourI,
-                readOnly: this.state.readOnly
-              }),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryFour === true,
-                id: "ckb_categoryFour_ii",
-                name: "exemptCategoryFourII",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ['(ii) Information, which may include information about biospecimens, is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained directly or through identifiers linked to the subjects, the investigator does not contact the subjects, and the investigator will not re-identify subjects.']),
-                checked: this.state.formData.exemptCategoryFourII,
-                readOnly: this.state.readOnly
-              }),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryFour === true,
-                id: "ckb_categoryFour_iii",
-                name: "exemptCategoryFourIII",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ["(iii) The research involves only information collection and analysis involving the investigator's use of identifiable health information when that use is regulated under 45 CFR parts 160 and 164, subparts A and E, for the purposes of “health care operations” or “research” as those terms are defined at 45 CFR 164.501 or for “public health activities and purposes” as described under 45 CFR 164.512(b)."]),
-                checked: this.state.formData.exemptCategoryFourIII,
-                readOnly: this.state.readOnly
-              }),
-              InputFieldCheckbox({
-                isRendered: this.state.formData.categoryFour === true,
-                id: "ckb_categoryFour_iv",
-                name: "exemptCategoryFourIV",
-                onChange: this.handleChange,
-                label: span({ className: "normal" }, ["(iv) The research is conducted by, or on behalf of, a Federal department or agency using government-generated or government-collected information obtained for nonresearch activities, if the research generates identifiable private information that is or will be maintained on information technology that is subject to and in compliance with section 208(b) of the E-Government Act of 2002, 44 U.S.C. 3501 note, if all of the identifiable private information collected, used, or generated as part of the activity will be maintained in systems of records subject to the Privacy Act of 1974, 5 U.S.C. 552a, and, if applicable, the information used in the research was collected subject to the Paperwork Reduction Act of 1995, 44 U.S.C. 3501 et seq."]),
-                checked: this.state.formData.exemptCategoryFourIV,
-                readOnly: this.state.readOnly
-              })
-            ]),
-            InputFieldCheckbox({
-              id: "ckb_other_category",
-              name: "otherCategory",
-              onChange: this.handleChange,
-              label: span({ className: "bold" }, ['Other']),
-              checked: this.state.formData.otherCategory,
-              readOnly: this.state.readOnly
-            }),
-
-            div({ style: { 'marginBottom': '20px' } }, [
-              InputFieldText({
-                isRendered: this.state.formData.otherCategory === true,
-                id: "inputTextOtherCategory",
-                name: "textOtherCategory",
-                label: " Please describe “other”:",
-                value: this.state.formData.textOtherCategory,
-                disabled: false,
-                required: true,
-                onChange: this.textHandler,
-                error: this.state.textOtherCategoryError,
-                errorMessage: "Required field"
-              })
-            ])
-          ]),
-
-          div({ isRendered: this.state.formData.initialReviewType.value === 'Not Engaged', style: { 'marginTop': '20px' } }, [
-            p({ className: "inputFieldLabel" }, [
-              "Not Engaged Categories. ",
-              span({ className: "normal" }, ["Select one."])
-            ]),
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.exportPdf(),
+          isRendered: !component.isViewer 
+        }, ["Print PDF"]),
+        div({ id: "projectDetails1" }, [
+          Panel({ title: "Project Details" }, [
             InputFieldRadio({
-              id: "radioNotEngaged",
-              name: "notEngagedCategories",
-              value: this.state.formData.notEngagedCategories,
-              optionValues: ['b1', 'b7', 'other'],
+              id: "radioProjectStatus",
+              name: "projectStatus",
+              label: "Project Status",
+              value: this.state.formData.projectStatus,
+              optionValues: ['Approved', 'Disapproved', 'Withdrawn', 'Closed', 'Abandoned', 'On Hold'],
               optionLabels: [
-                span({ className: "bold" }, ["Fee-for-Service (B1) ", span({ className: "normal italic" }, [
-                  p({}, ["Institutions whose employees or agents perform commercial or other services for investigators provided that all of the following conditions also are met:"]),
-                  ul({}, [
-                  li({}, ["The services performed do not merit professional recognition or publication privileges;"]),
-                  li({}, ["The services performed are typically performed by those institutions for non-research purposes; and"]),
-                  li({}, ["The institution’s employees or agents do not administer any study intervention being tested or evaluated under the protocol."])
-                ])]) ]),
-                span({ className: "bold" }, ["Not Engaged (B7) ", span({ className: "normal italic" }, [
-                  p({}, ["Institutions whose employees or agents:"]),
-                  ul({}, [
-                    li({}, ["Obtain coded private information or human biological specimens from another institution involved in the research that retains a link to individually identifying information (such as name or social security number); and"]),
-                    li({}, ["Are unable to readily ascertain the identity of the subjects to whom the coded information or specimens pertain because, for example:",
-                    ul({}, [
-                      li({}, ["the institution’s employees or agents and the holder of the key enter into an agreement prohibiting the release of the key to the those employees or agents under any circumstances;"]),
-                      li({}, ["the releasing institution has IRB-approved written policies and operating procedures applicable to the research project that prohibit the release of the key to the institution’s employees or agents under any circumstances; or"]),
-                      li({}, ["there are other legal requirements prohibiting the release of the key to the institution’s employees or agents"])
-                    ])
-                    ])
-                  ])
-                ])]),
-                span({ className: "bold" }, ["Other "]),
+                "Approved",
+                "Disapproved",
+                "Withdrawn",
+                "Closed",
+                "Abandoned",
+                "On Hold"
               ],
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-
-            div({ style: { 'marginBottom': '20px' } }, [
-              InputFieldText({
-                isRendered: this.state.formData.notEngagedCategories === 'other',
-                id: "inputTextOtherNotEngagedCategory",
-                name: "textOtherNotEngagedCategory",
-                label: " Please describe “other”:",
-                value: this.state.formData.textOtherNotEngagedCategory,
-                disabled: false,
-                required: true,
-                onChange: this.textHandler,
-                error: this.state.textOtherNotEngagedCategoryError,
-                errorMessage: "Required field"
-              })
-            ])
-            
+            InputFieldSelect({
+              label: "IRB",
+              id: "preferredIrb",
+              name: "preferredIrb",
+              options: PREFERRED_IRB,
+              value: this.state.formData.preferredIrb,
+              onChange: this.handleSelect("preferredIrb"),
+              readOnly: true,
+              placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
+              edit: false
+            }),
+            InputFieldText({
+              id: "preferredIrbText",
+              name: "preferredIrbText",
+              label: "Please specify IRB",
+              readOnly: !this.state.isAdmin,
+              isRendered: this.state.formData.preferredIrb.value === "other",
+              value: this.state.formData.preferredIrbText,
+              onChange: this.textHandler,
+            }),
+            InputFieldText({
+              id: "investigatorFirstName",
+              name: "investigatorFirstName",
+              label: "First Name of Investigator",
+              readOnly: !this.state.isAdmin,
+              value: this.state.formData.investigatorFirstName,
+              onChange: this.textHandler,
+            }),
+            InputFieldText({
+              id: "investigatorLastName",
+              name: "investigatorLastName",
+              label: "Last Name of Investigator",
+              readOnly: !this.state.isAdmin,
+              value: this.state.formData.investigatorLastName,
+              onChange: this.textHandler,
+            }),
+            InputTextList({
+              id: "degrees",
+              name: "degrees",
+              label: "Degree(s) of Investigator",
+              value: this.state.formData.degrees,
+              textHandler: this.degreesHandler,
+              add: this.addNewDegree,
+              remove: this.removeDegree,
+              isReadOnly: !this.state.isAdmin
+            }),
+            InputFieldText({
+              id: "trackingNumber",
+              name: "trackingNumber",
+              label: "Protocol Number",
+              readOnly: true,
+              value: this.state.formData.trackingNumber,
+              onChange: this.textHandler,
+            }),
+            InputFieldText({
+              id: "projectKey",
+              name: "projectKey",
+              label: "ORSP Number",
+              readOnly: true,
+              value: this.state.formData.projectKey,
+              onChange: this.textHandler,
+            }),
+            InputFieldText({
+              id: "projectTitle",
+              name: "projectTitle",
+              label: "Title",
+              readOnly: true,
+              value: this.state.formData.projectTitle,
+              onChange: this.textHandler,
+            }),
+            InputFieldDatePicker({
+              selected: this.state.formData.initialDate,
+              value: isEmpty(this.state.formData.initialDate) ? format(new Date(this.state.formData.initialDate), 'MM/DD/YYYY') : null,
+              name: "initialDate",
+              label: "Initial Approval Date",
+              onChange: this.datePickerHandler,
+              placeholder: "Enter date...",
+              readOnly: !this.state.isAdmin,
+            }),
           ]),
+        ]),
+        div({ id: "projectDetails2" }, [
+          Panel({ title: "Project Details" }, [
+            div({ style: { 'marginTop': '20px' }}, [
+              Fundings({
+                fundings: this.state.formData.sponsor,
+                current: this.state.formData.sponsor,
+                readOnly: true,
+                edit: false
+              })
+            ]),
+            InputFieldSelect({
+              id: "initialReviewType",
+              name: "initialReviewType",
+              label: "Type of Initial Review",
+              options: INITIAL_REVIEW,
+              readOnly: !this.state.isAdmin,
+              value: this.state.formData.initialReviewType,
+              onChange: this.handleSelect("initialReviewType"),
+              placeholder: "Select..."
+            }),
+            div({ isRendered: this.state.formData.initialReviewType.value === 'Exempt', style: { 'marginTop': '20px' } }, [
+              p({ className: "inputFieldLabel" }, [
+                "Exempt Categories. ",
+                span({ className: "normal" }, ["Select all that apply."])
+              ]),
+              InputFieldCheckbox({
+                id: "ckb_category_two",
+                name: "categoryTwo",
+                onChange: this.handleChange,
+                label: span({ className: "bold" }, ["Category 2", span({ className: "normal italic" }, [" (Research that only includes interactions involving educational tests (cognitive, diagnostic, aptitude, achievement), survey procedures, interview procedures, or observation of public behavior (including visual or auditory recording) if at least one of the following criteria is met:)"])]),
+                checked: this.state.formData.categoryTwo,
+                readOnly: this.state.readOnly
+              }),
+              div({ style: { 'marginLeft': '20px' } }, [
+                small({ isRendered: this.state.textCategoryTwoError, className: "errorMessage" }, ['At least one selected option is required']),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryTwo === true,
+                  id: "ckb_categoryTwo_i",
+                  name: "exemptCategoryTwoI",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ['(i) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained, directly or through identifiers linked to the subjects.']),
+                  checked: this.state.formData.exemptCategoryTwoI,
+                  readOnly: this.state.readOnly
+                }),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryTwo === true,
+                  id: "ckb_categoryTwo_iI",
+                  name: "exemptCategoryTwoII",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ['(ii) Any disclosure of the human subjects responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects financial standing, employability, educational advancement, or reputation.']),
+                  checked: this.state.formData.exemptCategoryTwoII,
+                  readOnly: this.state.readOnly
+                }),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryTwo === true,
+                  id: "ckb_categoryTwo_iii",
+                  name: "exemptCategoryTwoIII",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ['(iii) The information obtained is recorded by the investigator in such a manner that the identity of the human subjects can readily be ascertained, directly or through identifiers linked to the subjects, and an IRB conducts a limited IRB review to make the determination required by §46.111(a)(7)']),
+                  checked: this.state.formData.exemptCategoryTwoIII,
+                  readOnly: this.state.readOnly
+                })
+              ]),
+              InputFieldCheckbox({
+                id: "ckb_categoryFour",
+                name: "categoryFour",
+                onChange: this.handleChange,
+                label: span({ className: "bold" }, ["Category 4", span({ className: "normal italic" }, [" (Secondary research for which consent is not required: Secondary research uses of identifiable private information or identifiable biospecimens, if at least one of the following criteria is met:)"])]),
+                checked: this.state.formData.categoryFour,
+                readOnly: this.state.readOnly
+              }),
+              div({ style: { 'marginLeft': '20px', isRendered: this.state.formData.categoryFour === true } }, [
+                small({ isRendered: this.state.textCategoryFourError, className: "errorMessage" }, ['At least one selected option is required']),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryFour === true,
+                  id: "ckb_categoryFour_i",
+                  name: "exemptCategoryFourI",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ['(i) The identifiable private information or identifiable biospecimens are publicly available.']),
+                  checked: this.state.formData.exemptCategoryFourI,
+                  readOnly: this.state.readOnly
+                }),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryFour === true,
+                  id: "ckb_categoryFour_ii",
+                  name: "exemptCategoryFourII",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ['(ii) Information, which may include information about biospecimens, is recorded by the investigator in such a manner that the identity of the human subjects cannot readily be ascertained directly or through identifiers linked to the subjects, the investigator does not contact the subjects, and the investigator will not re-identify subjects.']),
+                  checked: this.state.formData.exemptCategoryFourII,
+                  readOnly: this.state.readOnly
+                }),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryFour === true,
+                  id: "ckb_categoryFour_iii",
+                  name: "exemptCategoryFourIII",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ["(iii) The research involves only information collection and analysis involving the investigator's use of identifiable health information when that use is regulated under 45 CFR parts 160 and 164, subparts A and E, for the purposes of “health care operations” or “research” as those terms are defined at 45 CFR 164.501 or for “public health activities and purposes” as described under 45 CFR 164.512(b)."]),
+                  checked: this.state.formData.exemptCategoryFourIII,
+                  readOnly: this.state.readOnly
+                }),
+                InputFieldCheckbox({
+                  isRendered: this.state.formData.categoryFour === true,
+                  id: "ckb_categoryFour_iv",
+                  name: "exemptCategoryFourIV",
+                  onChange: this.handleChange,
+                  label: span({ className: "normal" }, ["(iv) The research is conducted by, or on behalf of, a Federal department or agency using government-generated or government-collected information obtained for nonresearch activities, if the research generates identifiable private information that is or will be maintained on information technology that is subject to and in compliance with section 208(b) of the E-Government Act of 2002, 44 U.S.C. 3501 note, if all of the identifiable private information collected, used, or generated as part of the activity will be maintained in systems of records subject to the Privacy Act of 1974, 5 U.S.C. 552a, and, if applicable, the information used in the research was collected subject to the Paperwork Reduction Act of 1995, 44 U.S.C. 3501 et seq."]),
+                  checked: this.state.formData.exemptCategoryFourIV,
+                  readOnly: this.state.readOnly
+                })
+              ]),
+              InputFieldCheckbox({
+                id: "ckb_other_category",
+                name: "otherCategory",
+                onChange: this.handleChange,
+                label: span({ className: "bold" }, ['Other']),
+                checked: this.state.formData.otherCategory,
+                readOnly: this.state.readOnly
+              }),
 
-          InputFieldRadio({
-            id: "bioMedical",
-            name: "bioMedical",
-            label: "Biomedical or Non-Biomedical Study",
-            value: this.state.formData.bioMedical,
-            onChange: this.radioBtnHandler,
-            optionValues: ["biomedical", "nonBiomedical"],
-            optionLabels: [
-              "Biomedical",
-              "Non-Biomedical"
-            ],
-            readOnly: !this.state.isAdmin,
-            required: false,
-            edit: false
-          }),
-          InputFieldDatePicker({
-            isRendered: this.state.formData.projectType === IRB,
-            selected: this.state.formData.irbExpirationDate,
-            value: isEmpty(this.state.formData.irbExpirationDate) ? format(new Date(this.state.formData.irbExpirationDate), 'MM/DD/YYYY') : null,
-            name: "irbExpirationDate",
-            label: "Expiration Date",
-            onChange: this.datePickerHandler,
-            placeholder: "Enter date...",
-            readOnly: !this.state.isAdmin,
-          })
+              div({ style: { 'marginBottom': '20px' } }, [
+                InputFieldText({
+                  isRendered: this.state.formData.otherCategory === true,
+                  id: "inputTextOtherCategory",
+                  name: "textOtherCategory",
+                  label: " Please describe “other”:",
+                  value: this.state.formData.textOtherCategory,
+                  disabled: false,
+                  required: true,
+                  onChange: this.textHandler,
+                  error: this.state.textOtherCategoryError,
+                  errorMessage: "Required field"
+                })
+              ])
+            ]),
+
+            div({ isRendered: this.state.formData.initialReviewType.value === 'Not Engaged', style: { 'marginTop': '20px' } }, [
+              p({ className: "inputFieldLabel" }, [
+                "Not Engaged Categories. ",
+                span({ className: "normal" }, ["Select one."])
+              ]),
+              InputFieldRadio({
+                id: "radioNotEngaged",
+                name: "notEngagedCategories",
+                value: this.state.formData.notEngagedCategories,
+                optionValues: ['b1', 'b7', 'other'],
+                optionLabels: [
+                  span({ className: "bold" }, ["Fee-for-Service (B1) ", span({ className: "normal italic" }, [
+                    p({}, ["Institutions whose employees or agents perform commercial or other services for investigators provided that all of the following conditions also are met:"]),
+                    ul({}, [
+                    li({}, ["The services performed do not merit professional recognition or publication privileges;"]),
+                    li({}, ["The services performed are typically performed by those institutions for non-research purposes; and"]),
+                    li({}, ["The institution’s employees or agents do not administer any study intervention being tested or evaluated under the protocol."])
+                  ])]) ]),
+                  span({ className: "bold" }, ["Not Engaged (B7) ", span({ className: "normal italic" }, [
+                    p({}, ["Institutions whose employees or agents:"]),
+                    ul({}, [
+                      li({}, ["Obtain coded private information or human biological specimens from another institution involved in the research that retains a link to individually identifying information (such as name or social security number); and"]),
+                      li({}, ["Are unable to readily ascertain the identity of the subjects to whom the coded information or specimens pertain because, for example:",
+                      ul({}, [
+                        li({}, ["the institution’s employees or agents and the holder of the key enter into an agreement prohibiting the release of the key to the those employees or agents under any circumstances;"]),
+                        li({}, ["the releasing institution has IRB-approved written policies and operating procedures applicable to the research project that prohibit the release of the key to the institution’s employees or agents under any circumstances; or"]),
+                        li({}, ["there are other legal requirements prohibiting the release of the key to the institution’s employees or agents"])
+                      ])
+                      ])
+                    ])
+                  ])]),
+                  span({ className: "bold" }, ["Other "]),
+                ],
+                onChange: this.radioBtnHandler,
+                readOnly: !this.state.isAdmin
+              }),
+
+              div({ style: { 'marginBottom': '20px' } }, [
+                InputFieldText({
+                  isRendered: this.state.formData.notEngagedCategories === 'other',
+                  id: "inputTextOtherNotEngagedCategory",
+                  name: "textOtherNotEngagedCategory",
+                  label: " Please describe “other”:",
+                  value: this.state.formData.textOtherNotEngagedCategory,
+                  disabled: false,
+                  required: true,
+                  onChange: this.textHandler,
+                  error: this.state.textOtherNotEngagedCategoryError,
+                  errorMessage: "Required field"
+                })
+              ])
+              
+            ]),
+
+            InputFieldRadio({
+              id: "bioMedical",
+              name: "bioMedical",
+              label: "Biomedical or Non-Biomedical Study",
+              value: this.state.formData.bioMedical,
+              onChange: this.radioBtnHandler,
+              optionValues: ["biomedical", "nonBiomedical"],
+              optionLabels: [
+                "Biomedical",
+                "Non-Biomedical"
+              ],
+              readOnly: !this.state.isAdmin,
+              required: false,
+              edit: false
+            }),
+            InputFieldDatePicker({
+              isRendered: this.state.formData.projectType === IRB,
+              selected: this.state.formData.irbExpirationDate,
+              value: isEmpty(this.state.formData.irbExpirationDate) ? format(new Date(this.state.formData.irbExpirationDate), 'MM/DD/YYYY') : null,
+              name: "irbExpirationDate",
+              label: "Expiration Date",
+              onChange: this.datePickerHandler,
+              placeholder: "Enter date...",
+              readOnly: !this.state.isAdmin,
+            })
+
+          ]),
         ]),
         AlertMessage({
           msg: this.state.alertMessage,
