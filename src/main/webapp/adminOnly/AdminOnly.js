@@ -572,7 +572,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
           ]),
         ]),
         div({ id: "projectDetails2" }, [
-          Panel({ title: "Project Details" }, [
+          Panel({ title: "Project Details (continued)" }, [
             div({ style: { 'marginTop': '20px' }}, [
               Fundings({
                 fundings: this.state.formData.sponsor,
