@@ -150,7 +150,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
               prev.formData.diseaseRestrictedOptions.otherDisease = dulInfo.diseaseRestrictedOptions.otherDisease;
               prev.formData.diseaseRestrictedOptions.diseaseDOID = dulInfo.diseaseRestrictedOptions.diseaseDOID;
             }
-            prev.formData.otherDiseasesID = dulInfo.otherDiseasesID ? dulInfo.otherDiseasesID : '';
+            prev.formData.otherDiseasesID = dulInfo.otherDiseasesID ? dulInfo.otherDiseasesID : [];
             prev.formData.commercialPurposes = dulInfo.commercialPurposes ? dulInfo.commercialPurposes : '';
             prev.formData.methodsResearch = dulInfo.methodsResearch ? dulInfo.methodsResearch : '';
             prev.formData.noPopulationRestricted = dulInfo.noPopulationRestricted ? dulInfo.noPopulationRestricted : '';
