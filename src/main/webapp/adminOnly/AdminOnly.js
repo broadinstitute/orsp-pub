@@ -420,7 +420,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
                     html2canvas(projectDetails2).then((canvas) => {
                       
                       doc = this.canvasToPdf(canvas, doc, totalHeight);
-                      doc.save(`${this.props.projectKey}_AdminOnly.pdf`);
+                      doc.save(`${this.props.projectKey} Determination.pdf`);
                       this.props.hideSpinner();
                       enableBodyScroll(main);
                     }).catch(error => {

@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { React } from 'react';
 import { hh, textarea, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
