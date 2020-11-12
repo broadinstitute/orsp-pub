@@ -620,7 +620,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     html2canvas(determinationQuestions).then((canvas) => {
                       
                       doc = this.canvasToPdf(canvas, doc, totalHeight);
-                      doc.save(`${this.props.projectKey}_ProjectInformation.pdf`);
+                      doc.save(`${this.props.projectKey} Application.pdf`);
                       this.props.hideSpinner();
                       enableBodyScroll(main);
                     }).catch(error => {
