@@ -28,13 +28,19 @@ export const initQuestions = () => {
     id: 2
   });
   questions.push({
-    isYesNo: true,
+    isRadio: true,
+    moreInfo: '',
     question: 'Does this project  involve only specimens or data from deceased individuals?',
     progress: 25,
-    yesOutput: DETERMINATION.NHSR,
-    noOutput: 4,
+    value: 'subjectsDeceased',
     answer: null,
     key: 'subjectsDeceased',
+    optionLabels: [
+          span(['Yes']), 
+          span(['No/Unknown'])
+        ],
+    optionValues: ['true', 'false'],
+    outputs: [{key: 'true', value: DETERMINATION.NHSR}, {key: 'false', value: 4}],
     id: 3
   });   
   questions.push({
