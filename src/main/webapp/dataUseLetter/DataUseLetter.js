@@ -138,6 +138,8 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
             prev.formData.repositoryDeposition = dulInfo.repositoryDeposition;
             prev.formData.consentFormTitle = dulInfo.consentFormTitle ? dulInfo.consentFormTitle : '';
             prev.formData.principalInvestigator = dulInfo.principalInvestigator ? dulInfo.principalInvestigator : '';
+            prev.formData.dataManagerName = dulInfo.dataManagerName ? dulInfo.dataManagerName : '';
+            prev.formData.dataManagerEmail = dulInfo.dataManagerEmail ? dulInfo.dataManagerEmail : '';
             prev.formData.primaryRestrictions = dulInfo.primaryRestrictions ? dulInfo.primaryRestrictions : '';
             if (dulInfo.diseaseRestrictedOptions) {
               prev.formData.diseaseRestrictedOptions.parasiticDisease = dulInfo.diseaseRestrictedOptions.parasiticDisease;
