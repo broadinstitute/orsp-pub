@@ -1360,6 +1360,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 id:  "subjectsDeceased",
                 label: 'Does this project  involve only specimens or data from deceased individuals?',
                 value: this.state.formData.projectExtraProps.subjectsDeceased,
+                currentValue: this.state.current.projectExtraProps.subjectsDeceased,
                 onChange: () => { },
                 optionValues: ['true', 'false'],
                 optionLabels: [
