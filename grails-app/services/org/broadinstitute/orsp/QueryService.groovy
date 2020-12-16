@@ -1130,7 +1130,7 @@ class QueryService implements Status {
 
     Long matchingIssueNamesCount(String issueName) {
         final session = sessionFactory.currentSession
-        final String query = 'select count(id) from issue where summary = :issueName'
+        final String query = 'select count(id) from issue where summary = :issueName and deleted = false'
         SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setString('issueName', issueName)
         sqlQuery.uniqueResult() as Long
