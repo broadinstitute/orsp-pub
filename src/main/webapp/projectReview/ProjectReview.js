@@ -1356,14 +1356,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
             ]),
 
             div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
-              InputYesNo({
-                id: "subjectsDeceased",
-                name: "subjectsDeceased",
+              InputFieldRadio({
+                id:  "subjectsDeceased",
+                label: 'Does this project  involve only specimens or data from deceased individuals?',
                 value: this.state.formData.projectExtraProps.subjectsDeceased,
                 currentValue: this.state.current.projectExtraProps.subjectsDeceased,
-                label: 'Does this project  involve only specimens or data from deceased individuals?',
-                readOnly: true,
-                onChange: () => { }
+                onChange: () => { },
+                optionValues: ['true', 'false'],
+                optionLabels: [
+                  span(['Yes']), 
+                  span(['No/Unknown'])
+                ],  
+                required: false,
+                edit: false,
+                readOnly: true
               })
             ]),
             div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
