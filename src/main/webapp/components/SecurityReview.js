@@ -198,8 +198,8 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             }, [this.stringAnswer(externalAvailability)]),
           ]),
           div({ className: "answerWrapper" }, [
-            label({}, ["Will your project make ", u({},[" any data that is not publicly available"]), " accessible to external collaborators over the internet?", span({ className: 'normal'}, [
-              " This includes, for example, putting data in Google Cloud Platform and making it available to external parties, a custom application facing the public internet, or another digital file sharing service."
+            label({}, ["Will your project make ", u({},[" any data that is not publicly available"]), " accessible to external collaborators over the internet (but not using Terra)?", span({ className: 'normal'}, [
+              " This includes, for example, putting data in a Google Cloud Platform bucket outside of Terra and making it available to external parties. Another example is a custom application facing the public internet, or another digital file sharing service."
             ])]),
             div({
             }, [this.stringAnswer(publiclyAvailable)]),
