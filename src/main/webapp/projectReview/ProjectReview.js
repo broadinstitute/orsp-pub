@@ -54,6 +54,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       fundingAwardNumberError: false,
       showDialog: false,
       approveInfoDialog: false,
+      projectSubmittedDialog: false,
       discardEditsDialog: false,
       approveDialog: false,
       rejectProjectDialog: false,
@@ -207,7 +208,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             if (urlParams.has('new') && urlParams.get('tab') === 'review') {
               // next line should be temporary, its function is to remove the 'new' flag from the url
               history.pushState({}, null, window.location.href.split('&')[0]);
-              this.successNotification('showSubmissionAlert', 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.', 8000);
+              this.handleProjectSubmittedDialog();
             }
             if (this._isMounted) {
               if (data.data !== '') {
@@ -893,6 +894,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
+  handleProjectSubmittedDialog = () => {
+    this.setState((state, props) => {
+      return {
+        projectSubmittedDialog: !state.projectSubmittedDialog,
+        errorSubmit: false
+      }
+    });
+  };
+
   handleSelect = (field) => () => (selectedOption) => {
     this.setState(prev => {
       prev.formData.projectExtraProps[field] = selectedOption;
@@ -1097,17 +1107,22 @@ const ProjectReview = hh(class ProjectReview extends Component {
           bodyText: 'Are you sure you want to approve Project Information?',
           actionLabel: 'Yes'
         }, []),
+        ConfirmationDialog({
+          closeModal: this.handleProjectSubmittedDialog,
+          show: this.state.projectSubmittedDialog,
+          handleOkAction: this.redirectToConsentGroupTab,
+          title: 'Project submitted',
+          bodyText: [
+            p('Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.'),
+            p({ className: "bold" }, 'Please be sure to add your corresponding sample/data cohorts. Do you want to add them now?'),
+          ],
+          actionLabel: 'Yes, add now.'
+        }, []),
         h(RequestClarificationDialog,{
           closeModal: this.toggleState('requestClarification'),
           show: this.state.requestClarification,
           issueKey: this.props.projectKey,
           successClarification: this.successNotification,
-        }),
-
-        AlertMessage({
-          msg: 'Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.',
-          show: this.state.showSubmissionAlert,
-          type: 'success'
         }),
 
         div({ id: "notesToORSP" }, [
