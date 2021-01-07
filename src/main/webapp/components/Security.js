@@ -588,8 +588,8 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioPubliclyAvailable",
           name: "publiclyAvailable",
-          label: span({}, ["Will your project make ", u({}, ["any data that is not publicly available"]), " accessible to external collaborators over the internet?"]),
-          moreInfo: " This includes, for example, putting data in Google Cloud Platform and making it available to external parties, a custom application facing the public internet, or another digital file sharing service.",
+          label: span({}, ["Will your project make ", u({}, ["any data that is not publicly available"]), " accessible to external collaborators over the internet (but not using Terra)?"]),
+          moreInfo: " This includes, for example, putting data in a Google Cloud Platform bucket outside of Terra and making it available to external parties. Another example is a custom application facing the public internet, or another digital file sharing service.",
           value: this.props.securityInfoData.publiclyAvailable,
           optionValues: ["true", "false", "uncertain"],
           optionLabels: [
