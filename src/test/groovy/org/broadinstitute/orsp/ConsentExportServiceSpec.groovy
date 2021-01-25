@@ -103,7 +103,7 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         1 * consentService.postConsent(*_) >> "location"
         0 * consentService.updateConsent(*_) >> true
         1 * consentService.postConsentAssociations(*_) >> true
-        3 * persistenceService.saveEvent(*_) >> new Event()
+        2 * persistenceService.saveEvent(*_) >> new Event()
         resource != null
     }
 
@@ -176,7 +176,7 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         0 * consentService.postConsent(*_) >> "location"
         1 * consentService.updateConsent(*_) >> true
         1 * consentService.postConsentAssociations(*_) >> true
-        3 * persistenceService.saveEvent(*_) >> new Event()
+        2 * persistenceService.saveEvent(*_) >> new Event()
         resource != null
     }
 
