@@ -7,11 +7,9 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentExportService
 import org.broadinstitute.orsp.ConsentService
-import org.broadinstitute.orsp.DataUseLetterService
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SampleCollection
-import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -59,17 +57,11 @@ class DataUseController extends AuthenticatedController {
         try {
             DataUseRestriction restriction = DataUseRestriction.findById(params.id)
             Collection<String> sampleCollectionIds = queryService.findAllSampleCollectionIdsForConsent(restriction.getConsentGroupKey())
-            StorageDocument dataUseLetter = null
-            List<StorageDocument> duls = queryService.getDataUseLettersForConsent(restriction.getConsentGroupKey())
             Issue consent = queryService.findByKey(restriction.consentGroupKey)
-            if (duls && duls.size() > 0) {
-                dataUseLetter = storageProviderService.populateDocumentFileContent(duls.get(0))
-            }
             ConsentResource resource = consentExportService.exportConsent(
                     getUser(),
                     restriction,
                     sampleCollectionIds,
-                    dataUseLetter,
                     consent.summary)
             response.status = 200
             render([message: "Consent successfully exported to DUOS: $resource.name"] as JSON)

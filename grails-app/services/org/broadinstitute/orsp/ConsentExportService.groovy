@@ -6,8 +6,6 @@ import org.broadinstitute.orsp.consent.AssociationType
 import org.broadinstitute.orsp.consent.ConsentAssociation
 import org.broadinstitute.orsp.consent.ConsentResource
 
-import java.sql.Timestamp
-
 /**
  * Specialized service class that handles the create/update of a consent in DUOS.
  */
@@ -25,17 +23,13 @@ class ConsentExportService {
      *   If the consent does not exist,
      *      create consent,
      *      upload sample associations,
-     *      upload dul
      *   If the consent does exist:
      *      get full consent object from DUOS
      *      update consent resource with new values from ORSP's data use restriction
-     *          if dul is new, then post with no value so current version is archived/deleted
      *      update sample associations      (fewer operations if we always update instead of querying, then updating if newer)
-     *      update dul only if newer        (we don't want to always put new ones so we don't end up with duplicate GCS files)
      *
      * @param restriction
      * @param sampleCollectionIds
-     * @param dataUseLetter
      * @param consentGroupName
      * @return Updated/Created Consent in the form of a ConsentResource
      */
@@ -43,19 +37,18 @@ class ConsentExportService {
             User user,
             DataUseRestriction restriction,
             Collection<String> sampleCollectionIds,
-            StorageDocument dataUseLetter,
             String consentGroupName) {
         ConsentResource newConsent
         if (restriction.vaultConsentId) {
             // double check that we really do have a consent in DUOS since ORSP might have inaccurate data, especially in dev.
             ConsentResource resource = consentService.getConsent(getConsentLocation(restriction))
             if (resource) {
-                newConsent = update(user, restriction, sampleCollectionIds, dataUseLetter, resource, consentGroupName)
+                newConsent = update(user, restriction, sampleCollectionIds, resource, consentGroupName)
             } else {
-                newConsent = create(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+                newConsent = create(user, restriction, sampleCollectionIds, consentGroupName)
             }
         } else {
-            newConsent = create(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+            newConsent = create(user, restriction, sampleCollectionIds, consentGroupName)
         }
         newConsent.setGroupName(consentGroupName)
         newConsent
@@ -72,22 +65,10 @@ class ConsentExportService {
             User user,
             DataUseRestriction restriction,
             Collection<String> sampleCollectionIds,
-            StorageDocument dataUseLetter,
             ConsentResource resource,
             String consentGroupName) {
         updateDuosConsent(user, restriction, resource, consentGroupName)
         uploadConsentAssociations(user, sampleCollectionIds, restriction)
-        if (dataUseLetter) {
-            // Erring on the side of safety. In the absence of good data, assume that ORSP's Data Use Letter
-            // is more recent than the version of the consent in DUOS
-            Date now = new Date()
-            Timestamp dulTimestamp = (dataUseLetter?.createDate ?: now).toTimestamp()
-            Timestamp consentTimestamp = (resource?.lastUpdate ?: now - 1).toTimestamp()
-            Boolean filesChanged = !dataUseLetter.fileName.equalsIgnoreCase(resource.dulName)
-            if (filesChanged || dulTimestamp.after(consentTimestamp)) {
-                uploadDataUseLetter(user, dataUseLetter, restriction)
-            }
-        }
         consentService.getConsent(getConsentLocation(restriction))
     }
 
@@ -98,11 +79,9 @@ class ConsentExportService {
             User user,
             DataUseRestriction restriction,
             Collection<String> sampleCollectionIds,
-            StorageDocument dataUseLetter,
             String consentGroupName) {
         createDuosConsent(user, restriction, consentGroupName)
         uploadConsentAssociations(user, sampleCollectionIds, restriction)
-        uploadDataUseLetter(user, dataUseLetter, restriction)
         consentService.getConsent(getConsentLocation(restriction))
     }
 
@@ -154,22 +133,6 @@ class ConsentExportService {
                 persistenceService.saveEvent(restriction.consentGroupKey, user.displayName, "Consent Sample Association Exported to DUOS", EventType.DUOS_CONSENT_SAMPLES_EXPORT)
             } else {
                 consentService.throwConsentException("Unable to upload sample collections [${sampleCollectionIds.join(", ")}] for Consent Group: ${restriction.getConsentGroupKey()}")
-            }
-        }
-    }
-
-    /**
-     * Handler for uploading a DUL to the DUOS
-     */
-    def uploadDataUseLetter(User user, StorageDocument dataUseLetter, DataUseRestriction restriction) {
-        if (dataUseLetter) {
-            if (consentService.postDataUseLetter(
-                    getConsentLocation(restriction),
-                    dataUseLetter.inputStream,
-                    dataUseLetter.fileName)) {
-                persistenceService.saveEvent(restriction.consentGroupKey, user.displayName, "Consent Data Use Letter Exported to DUOS", EventType.DUOS_CONSENT_DUL_EXPORT)
-            } else {
-                consentService.throwConsentException("Unable to post data use letter to DUOS for Consent Group: ${restriction.getConsentGroupKey()}")
             }
         }
     }

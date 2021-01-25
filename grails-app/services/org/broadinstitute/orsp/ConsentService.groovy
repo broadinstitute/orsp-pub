@@ -5,7 +5,6 @@ import com.google.gson.JsonElement
 import groovy.util.logging.Slf4j
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
-import groovyx.net.http.OkHttpEncoders
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentAssociation
@@ -19,8 +18,6 @@ import org.springframework.http.MediaType
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-
-import static groovyx.net.http.MultipartContent.multipart
 
 /**
  * Service to handle all requests to the DUOS consent service.
@@ -75,10 +72,6 @@ class ConsentService implements Status {
     public static final String GEO_RESTRICTION = "Geographical restrictions: %s."
     public static final String OTHER_POS = "Other restrictions: %s."
 
-    private static Boolean isSuccess(int status) {
-        status >= 200 && status < 300
-    }
-
     static String stripTextOfHtml(String text) {
         (!text || text.isEmpty()) ? "" : new HtmlToPlainText().getPlainText(Jsoup.parse(text)).trim()
     }
@@ -126,38 +119,6 @@ class ConsentService implements Status {
         }
         consentResource
     }
-
-    /**
-     * Upload a data use letter for a consent resource.
-     *
-     * @param consentLocation The location of the consent. Should be a full url
-     * @param inputStream The input stream of the upload file
-     * @return True if successful, false otherwise.
-     */
-    def postDataUseLetter(String consentLocation, InputStream inputStream, String fileName) {
-        String url = consentLocation + "/dul"
-        HttpBuilder http = getMultipartBuilder(url)
-        String fileType = MediaType.APPLICATION_OCTET_STREAM_VALUE
-        http.post(Boolean) {
-            // "data" is the expected form field name in the consent service
-            request.body = multipart {
-                field 'fileName', fileName
-                part 'data', fileName, fileType, inputStream
-
-            }
-            request.encoder MediaType.MULTIPART_FORM_DATA_VALUE, OkHttpEncoders.&multipart
-            response.success { FromServer fs ->
-                isSuccess(fs.statusCode)
-            }
-            response.failure { FromServer fs ->
-                throwConsentException("Error posting data use letter: ${fs.getMessage()}")
-            }
-            response.exception { t ->
-                throwConsentException("Exception posting data use letter: ${t.getMessage()}")
-            }
-        }
-    }
-
 
     /**
      * Create or replace associations for a consent.
@@ -266,15 +227,6 @@ class ConsentService implements Status {
         HttpBuilder.configure {
             request.uri = url
             request.contentType = MediaType.APPLICATION_JSON_VALUE
-            request.headers['Accept'] = MediaType.APPLICATION_JSON_VALUE
-            request.auth.basic consentConfiguration.username, consentConfiguration.password
-        }
-    }
-
-    private HttpBuilder getMultipartBuilder(String url) {
-        HttpBuilder.configure {
-            request.uri = url
-            request.contentType = MediaType.MULTIPART_FORM_DATA_VALUE
             request.headers['Accept'] = MediaType.APPLICATION_JSON_VALUE
             request.auth.basic consentConfiguration.username, consentConfiguration.password
         }

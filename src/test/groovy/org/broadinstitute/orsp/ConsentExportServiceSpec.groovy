@@ -5,7 +5,6 @@ import com.google.gson.JsonParser
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import groovy.util.logging.Slf4j
-import org.apache.commons.io.IOUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentResource
 import spock.lang.Shared
@@ -23,7 +22,6 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
     Collection<String> sampleCollectionIds = ["1", "2", "3"]
     @Shared User user
     @Shared DataUseRestriction restriction
-    @Shared StorageDocument dataUseLetter
     @Shared ConsentService consentService
     @Shared PersistenceService persistenceService
     String consentGroupName ="Test / 5555555"
@@ -66,16 +64,6 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
                 generalUse: true,
                 vaultConsentId: null,
                 vaultExportDate: null)
-        dataUseLetter = new StorageDocument(
-                projectKey: "ORSP-TEST-1234",
-                uuid: UUID.randomUUID().toString(),
-                fileName: "test.txt",
-                fileType: ConsentGroupController.DU_LETTER,
-                mimeType: "text/plain",
-                creator: user.displayName,
-                username: user.userName,
-                createDate: now,
-                inputStream: IOUtils.toInputStream("Test", "UTF-8"))
     }
 
     def cleanup() {
@@ -86,7 +74,7 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         consentService.postConsent(_) >> { throw new ConsentException("Error") }
 
         when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         def e = thrown(ConsentException)
@@ -98,28 +86,16 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         consentService.postConsentAssociations(*_) >> { throw new ConsentException() }
 
         when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         def e = thrown(ConsentException)
         e.message == "Unable to create DUOS consent for Consent Group: ORSP-TEST-1234"
     }
 
-    void "Export new Consent fails to post data use letter to DUOS"() {
-        given:
-        consentService.postDataUseLetter(*_) >> { throw new ConsentException() }
-
+    void "Export new Consent with samples"() {
         when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
-
-        then:
-        def e = thrown(ConsentException)
-        e.message == "Unable to create DUOS consent for Consent Group: ORSP-TEST-1234"
-    }
-
-    void "Export new Consent with samples and data use letter"() {
-        when:
-        ConsentResource resource = service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        ConsentResource resource = service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         1 * consentService.getConsent(*_) >> consentResource
@@ -127,21 +103,19 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         1 * consentService.postConsent(*_) >> "location"
         0 * consentService.updateConsent(*_) >> true
         1 * consentService.postConsentAssociations(*_) >> true
-        1 * consentService.postDataUseLetter(*_) >> true
         3 * persistenceService.saveEvent(*_) >> new Event()
         resource != null
     }
 
-    void "Export new Consent with no samples and no data use letter"() {
+    void "Export new Consent with no samples"() {
         when:
-        ConsentResource resource = service.exportConsent(user, restriction, null, null, null)
+        ConsentResource resource = service.exportConsent(user, restriction, null, null)
 
         then:
         1 * consentService.getConsent(*_) >> consentResource
         1 * consentService.buildConsentResource(*_) >> consentResource
         1 * consentService.postConsent(*_) >> "location"
         0 * consentService.postConsentAssociations(*_) >> true
-        0 * consentService.postDataUseLetter(*_) >> true
         1 * persistenceService.saveEvent(*_) >> new Event()
         resource != null
     }
@@ -153,7 +127,7 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         consentService.getConsent(_) >> { throw new ConsentException("Error") }
 
         when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         def e = thrown(ConsentException)
@@ -167,7 +141,7 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         consentService.postConsent(_) >> { throw new ConsentException("Error") }
 
         when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         def e = thrown(ConsentException)
@@ -181,34 +155,20 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         consentService.postConsentAssociations(*_) >> { throw new ConsentException() }
 
         when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         def e = thrown(ConsentException)
         e.message == "Unable to create DUOS consent for Consent Group: ORSP-TEST-1234"
     }
 
-    void "Export updated Consent fails to post data use letter to DUOS"() {
-        given:
-        restriction.setVaultConsentId(UUID.randomUUID().toString())
-        restriction.setVaultExportDate(now)
-        consentService.postDataUseLetter(*_) >> { throw new ConsentException() }
-
-        when:
-        service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
-
-        then:
-        def e = thrown(ConsentException)
-        e.message == "Unable to create DUOS consent for Consent Group: ORSP-TEST-1234"
-    }
-
-    void "Export updated Consent with samples and data use letter"() {
+    void "Export updated Consent with samples"() {
         given:
         restriction.setVaultConsentId(UUID.randomUUID().toString())
         restriction.setVaultExportDate(now)
 
         when:
-        ConsentResource resource = service.exportConsent(user, restriction, sampleCollectionIds, dataUseLetter, consentGroupName)
+        ConsentResource resource = service.exportConsent(user, restriction, sampleCollectionIds, consentGroupName)
 
         then:
         2 * consentService.getConsent(*_) >> consentResource
@@ -216,18 +176,17 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         0 * consentService.postConsent(*_) >> "location"
         1 * consentService.updateConsent(*_) >> true
         1 * consentService.postConsentAssociations(*_) >> true
-        1 * consentService.postDataUseLetter(*_) >> true
         3 * persistenceService.saveEvent(*_) >> new Event()
         resource != null
     }
 
-    void "Export updated Consent with no samples and no data use letter"() {
+    void "Export updated Consent with no samples"() {
         given:
         restriction.setVaultConsentId(UUID.randomUUID().toString())
         restriction.setVaultExportDate(now)
 
         when:
-        ConsentResource resource = service.exportConsent(user, restriction, null, null, null)
+        ConsentResource resource = service.exportConsent(user, restriction, null, null)
 
         then:
         2 * consentService.getConsent(*_) >> consentResource
@@ -235,7 +194,6 @@ class ConsentExportServiceSpec extends Specification implements DataTest, Servic
         0 * consentService.postConsent(*_) >> "location"
         1 * consentService.updateConsent(*_) >> true
         0 * consentService.postConsentAssociations(*_) >> true
-        0 * consentService.postDataUseLetter(*_) >> true
         1 * persistenceService.saveEvent(*_) >> new Event()
         resource != null
     }
