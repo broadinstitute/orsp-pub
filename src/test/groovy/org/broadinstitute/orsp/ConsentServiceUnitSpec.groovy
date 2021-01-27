@@ -5,13 +5,11 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import grails.testing.services.ServiceUnitTest
 import groovy.util.logging.Slf4j
-import org.apache.commons.io.IOUtils
 import org.broadinstitute.orsp.config.ConsentConfiguration
 import org.broadinstitute.orsp.consent.ConsentResource
 import org.broadinstitute.orsp.consent.DataUseDTO
 import org.broadinstitute.orsp.webservice.OntologyTerm
 import org.junit.Rule
-import spock.lang.Ignore
 
 import java.text.SimpleDateFormat
 
@@ -57,41 +55,6 @@ class ConsentServiceUnitSpec extends BaseSpec implements ServiceUnitTest<Consent
 
         then:
         assertNotNull(location)
-    }
-
-    /**
-     * TODO: See:
-     * https://stackoverflow.com/questions/18020437/no-multipartconfig-for-servlet-error-from-jetty-using-scalatra
-     * Getting this error from missing a config in the jetty that gets spun up for wiremock.
-     * ...
-     * WARN [09/12/2018 06:44:49.918] org.eclipse.jetty.server.HttpChannel - /consent/consent-id/dul
-     * java.lang.IllegalStateException: No multipart config for servlet
-     * 	at org.eclipse.jetty.server.Request.getParts(Request.java:2331)
-     * 	at org.eclipse.jetty.server.Request.getParts(Request.java:2319)
-     * 	at com.github.tomakehurst.wiremock.servlet.WireMockHttpServletRequestAdapter.safelyGetRequestParts(WireMockHttpServletRequestAdapter.java:295)
-     */
-    @Ignore
-    void "Post a Data Use Letter"() {
-        given:
-        String consentUrl = "http://localhost:${wireMockRule.port()}/consent"
-        String consentLocation = consentUrl + "/consent-id"
-        service.consentConfiguration.url = consentUrl
-        wireMockRule.resetAll()
-        // Post Consent Data Use Letter endpoint
-        stubFor(post(urlEqualTo("/consent/consent-id/dul"))
-                .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withHeader("Location", consentLocation)
-                .withBody()))
-        InputStream is = IOUtils.toInputStream("Test", "UTF-8")
-        String fileName = "test.txt"
-
-        when:
-        def dulResponse = service.postDataUseLetter(consentLocation, is, fileName)
-
-        then:
-        assertNotNull(dulResponse)
     }
 
     void "ConsentService.stripTextOfHtml works in covered cases"() {

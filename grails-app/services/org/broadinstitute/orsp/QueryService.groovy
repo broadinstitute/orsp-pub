@@ -1298,32 +1298,6 @@ class QueryService implements Status {
         ]
     }
 
-    /**
-     * Find all data use documents for a consent, ordered by most recent first.
-     *
-     * @param consentKey The consent group's project key
-     * @return Ordered list of storage documents of the DUL type.
-     */
-    List<StorageDocument> getDataUseLettersForConsent(String consentKey) {
-        final String query =
-                ' select d.* ' +
-                ' from storage_document d ' +
-                ' where d.project_key = :projectKey ' +
-                ' and d.file_type = :fileType ' +
-                ' and d.deleted = 0 '+
-                ' order by d.creation_date desc '
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final results = sqlQuery.with {
-            addEntity(StorageDocument)
-            setString('projectKey', consentKey)
-            setString('fileType', ConsentGroupController.DU_LETTER)
-            list()
-        }
-        results
-    }
-
     Collection<StorageDocument> getAttachmentsForProject(String projectKey) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
