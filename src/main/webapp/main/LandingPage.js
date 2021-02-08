@@ -61,6 +61,11 @@ const columnsCopy = [{
   text: 'Expiration',
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) => cell ? moment(cell).format('MM/DD/YYYY') : ''
+}, {
+  dataField: 'actor',
+  text: 'Assigned reviewer',
+  sort: true,
+  headerStyle: { width: styles.typeWidth }
 }];
 
 const defaultSorted = [{
