@@ -167,7 +167,7 @@ const LandingPage = hh(class LandingPage extends Component{
      return (
       div({}, [
         About({showWarning: false}),
-        div({className: "row", isRendered: component.isBroad === true}, [
+        div({className: "row", isRendered: component.isBroad === true && component.isAdmin === false}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},
@@ -205,6 +205,30 @@ const LandingPage = hh(class LandingPage extends Component{
               showExportButtons: false,
               showSearchBar: false
             })
+          ])
+        ]),
+
+        div({className: "row", isRendered: component.isAdmin === true}, [
+          div({className: "col-xs-12"}, [
+            h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
+              a({ style: {'fontWeight' : 'normal'},
+                href: '/issueList/list?assignee=true&header=My+Task+List'
+              }, ["(show all)"])
+            ]),
+            TableComponent({
+              remoteProp: false,
+              data: this.state.taskList,
+              columns: columnsCopy,
+              keyField: 'project',
+              fileName: 'TaskList',
+              search: false,
+              showPrintButton: false,
+              defaultSorted: defaultSorted,
+              pagination: false,
+              showExportButtons: false,
+              showSearchBar: false
+            })
+            
           ])
         ])
       ])

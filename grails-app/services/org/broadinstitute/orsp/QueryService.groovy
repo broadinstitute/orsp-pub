@@ -709,6 +709,13 @@ class QueryService implements Status {
         findAllByProjectKeyInList(keys, max)
     }
 
+    List<Issue> findByAssignedAdmin(Collection<String> userNames, Integer max) {
+        if (userNames.isEmpty()) { return Collections.emptyList() }
+        List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ASSIGNED_ADMIN, userNames.asList(), [:])?.collect { it.projectKey }
+        if (keys.isEmpty()) { return Collections.emptyList() }
+        findAllByProjectKeyInList(keys, max)
+    }
+
     /**
      * Find all issues by project key and optionally limit by max
      *
