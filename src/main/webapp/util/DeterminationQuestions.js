@@ -74,7 +74,7 @@ export const initQuestions = () => {
 
   questions.push({
     isYesNo: true,
-    question: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider?',
+    question: 'Will the Broad investigator be co-publishing or jointly analyzing data with a sample provider who has access to identifiable information about the original sample donor?',
     progress: 57,
     yesOutput: 7,
     noOutput: DETERMINATION.NHSR,
