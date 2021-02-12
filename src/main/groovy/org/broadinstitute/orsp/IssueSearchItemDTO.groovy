@@ -15,6 +15,7 @@ class IssueSearchItemDTO {
     String approvalStatus
     Date expirationDate
     Date updateDate
+    String assignedAdmin
 
     Map<String, Set<String>> contactNames = new HashMap<String, Set<String>>()
     Map<String, Set<String>> extraProperties = new HashMap<String, Set<String>>()
@@ -35,6 +36,7 @@ class IssueSearchItemDTO {
         this.approvalStatus = result.get("approvalStatus")?.toString()
         this.expirationDate = result.get("expirationDate")
         this.updateDate = result.get("updated")
+        this.assignedAdmin = result.get("assignedAdmin")
 
         if (result.get("type") != IssueType.CONSENT_GROUP.name) {
             this.setExtraProperty(result.get("name").toString(), result.get("value").toString())

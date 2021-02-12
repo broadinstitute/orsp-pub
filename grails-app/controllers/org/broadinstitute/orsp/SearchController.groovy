@@ -174,7 +174,8 @@ class SearchController implements UserInfo {
                         status: it.getApprovalStatus(),
                         updated: it.updateDate ? format.format(it.updateDate): "",
                         expiration: it.expirationDate ? format.format(it.expirationDate) : "",
-                        projectAccessContact: it.accessContacts
+                        projectAccessContact: it.accessContacts,
+                        assignedAdmin:  userService.findUser(it.assignedAdmin)?.displayName
                 ]
             }
         }
