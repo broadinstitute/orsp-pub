@@ -24,7 +24,8 @@ class UserController extends AuthenticatedController {
     QueryService queryService
 
     def index() {
-        render BQService.findMissingUsers() as JSON
+        UtilityClass.registerBroadUserMarshaller()
+        render(BQService.findMissingUsers() as JSON)
     }
 
     def sync() {

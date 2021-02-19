@@ -3,6 +3,7 @@ package org.broadinstitute.orsp.utils
 import grails.converters.JSON
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
+import org.broadinstitute.orsp.BroadUser
 import org.broadinstitute.orsp.Comment
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.Event
@@ -61,6 +62,20 @@ class UtilityClass {
             output['roles'] = it.roles.collect{r -> r.getRole()}
             return output
         }
+    }
+
+    static void registerBroadUserMarshaller() {
+        JSON.registerObjectMarshaller(BroadUser) {
+            return it.properties.findAll {k,v -> k != 'class'}
+        }
+        /*JSON.registerObjectMarshaller(BroadUser) {
+            LinkedHashMap output = [:]
+            output['userName'] = it.userName
+            output['firstName'] = it.firstName
+            output['displayName'] = it.displayName
+            output['emailAddress'] = it.emailAddress
+            return output
+        }*/
     }
 
     /**
