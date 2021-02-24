@@ -8,7 +8,8 @@ const projectTypes = [
   { value: 'all', label: 'All' },
   { value: 'irb', label: 'IRB Project' },
   { value: 'ne', label: "'Not Engaged' Project" },
-  { value: 'nhsr', label: 'NHSR Project' }
+  { value: 'nhsr', label: 'NHSR Project' },
+  { value: 'ex', label: 'Exempt Project' }
 ];
 
 const selectWithLabels = {
