@@ -1,4 +1,4 @@
-import { dateParser, downloadSelectedFile, isEmpty } from './Utils';
+import { getDays, downloadSelectedFile, isEmpty } from './Utils';
 import { format } from 'date-fns';
 import { UrlConstants } from './UrlConstants';
 import { h } from 'react-hyperscript-helpers';
@@ -68,10 +68,8 @@ function parseDataElements(el, key) {
     result = el[key];
   }
   if (key === 'age') {
-    const dateObj = dateParser(el[key]);
-    result =  (dateObj.years > 0 ? dateObj.years + ' years, ' : '') +
-      (dateObj.months > 0 ? dateObj.months + ' months ' : '') +
-      (dateObj.months > 0 || dateObj.years > 0 ? ' and ': '') + dateObj.days + ' days';
+    const dateObj = getDays(el[key]);
+    result = dateObj + ' days';
   }
   if (key === 'status') {
     result = el.type === 'Consent Group' ? '' : el.status;
