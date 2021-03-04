@@ -34,8 +34,11 @@ class IssueListController extends AuthenticatedController {
     }
 
     def issueItems() {
-        if (session.user) {
+        if (session.user && !isAdmin()) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
+            render(issues as JSON)
+        } else if (session.user && isAdmin()) {
+            List<Issue> issues = projectsForAdmin((String) params.assignee, (String) params.max)
             render(issues as JSON)
         }
     }
@@ -63,6 +66,18 @@ class IssueListController extends AuthenticatedController {
         } else {
             queryService.findByUserNames(users, limit)
         }
+    }
+
+    private List<Issue> projectsForAdmin(String assignee, String max) {
+        Collection<String> users = new ArrayList<>([getUser().getUserName()])
+        users.addAll([SupplementalRole.ORSP, SupplementalRole.ADMIN])
+
+        Integer limit = null
+        if (!max?.isEmpty()) {
+            limit = max?.toInteger()
+        }
+
+        queryService.findByAssignedAdmin(users, limit)
     }
 
 }
