@@ -176,5 +176,5 @@ export const SIZE_PER_PAGE_LIST_PROJECT = [
 
 let formatAge = (row) => {
   const result = getDays(row);
-  return result + ' days'
+  return result
 };
