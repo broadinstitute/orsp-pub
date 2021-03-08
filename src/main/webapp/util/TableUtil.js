@@ -69,7 +69,7 @@ function parseDataElements(el, key) {
   }
   if (key === 'age') {
     const dateObj = getDays(el[key]);
-    result = dateObj + ' days';
+    result = dateObj;
   }
   if (key === 'status') {
     result = el.type === 'Consent Group' ? '' : el.status;
