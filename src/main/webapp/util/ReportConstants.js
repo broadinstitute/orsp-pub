@@ -1,4 +1,4 @@
-import { dateParser } from "./Utils";
+import { getDays } from "./Utils";
 import { h } from 'react-hyperscript-helpers';
 import { Link } from 'react-router-dom'
 
@@ -85,7 +85,7 @@ export const QA_REPORT_COLUMNS = [{
   sort: true
 }, {
   dataField: 'age',
-  text: 'Age',
+  text: 'Days since approval',
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) =>
     formatAge(row.age),
@@ -175,8 +175,6 @@ export const SIZE_PER_PAGE_LIST_PROJECT = [
 // Common Utilities
 
 let formatAge = (row) => {
-  const result = dateParser(row);
-  return  (result.years > 0 ? result.years + ' years, ' : '') +
-    (result.months > 0 ? result.months + ' months ' : '') +
-    (result.months > 0 || result.years > 0 ? ' and ': '') + result.days + ' days'
+  const result = getDays(row);
+  return result
 };

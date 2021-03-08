@@ -67,6 +67,10 @@ export const dateParser = (milliseconds) => {
   return moment.duration(milliseconds, 'milliseconds')._data;
 }
 
+export const getDays = (milliseconds) => {
+  return Math.floor(moment.duration(milliseconds, 'milliseconds').asDays());
+}
+
 // columns headers should be included in the first row in data array.
 // Eg of data : [['header1', 'header2', 'header3'],
 //               ['row1value1', 'row1value2', 'row1value3'],
