@@ -24,7 +24,7 @@ class StatusEventController extends AuthenticatedController {
     def findQaEventReport() {
         UtilityClass.registerQaReportIssueMarshaller()
         Collection<String> issueTypeNames = (params?.tab == NO_IRB) ?
-                EnumSet.of(IssueType.NE, IssueType.NHSR)*.getName() :
+                EnumSet.of(IssueType.NE, IssueType.NHSR, IssueType.EX)*.getName() :
                 EnumSet.of(IssueType.IRB)*.getName()
         try {
             JSON.use(UtilityClass.ISSUE_FOR_QA) {

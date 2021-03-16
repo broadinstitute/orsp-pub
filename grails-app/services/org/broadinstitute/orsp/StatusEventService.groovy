@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory
 class StatusEventService {
 
     private final List<EventType> TYPES =
-            EnumSet.range(EventType.INITIAL_STATE, EventType.REQUEST_CLARIFICATION).toList()
+            EnumSet.range(EventType.INITIAL_STATE, EventType.REJECT_PROJECT).toList()
 
     private final List<EventType> TERMINAL_TYPES =
             EnumSet.of(
