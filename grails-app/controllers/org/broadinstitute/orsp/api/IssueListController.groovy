@@ -22,11 +22,11 @@ class IssueListController extends AuthenticatedController {
                     id               : it.id,
                     projectKey       : it.projectKey,
                     summary          : IssueUtils.escapeQuote(it.summary),
-                    status           : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                    status           : IssueUtils.escapeQuote(it.approvalStatus),
                     type             : IssueUtils.escapeQuote(it.type),
                     updateDate       : it.updateDate ? sd.format(it.updateDate) : '',
-                    actors           : queryService.findUsersInUserNameList(it.getActorUsernames())?.collect { it.displayName },
-                    assignedAdmin    : userService.findUser(it.assignedAdmin)?.displayName
+                    actors           : queryService.findUsersInUserNameList(it.actors)?.collect { it.displayName },
+                    assignedAdmin    : it.assignedAdmin
             ]} as JSON
         } catch(Exception e) {
             handleException(e)
@@ -38,7 +38,7 @@ class IssueListController extends AuthenticatedController {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
             render(issues as JSON)
         } else if (session.user && isAdmin()) {
-            List<Issue> issues = projectsForAdmin((String) params.assignee, (String) params.max)
+            List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
             render(issues as JSON)
         }
     }

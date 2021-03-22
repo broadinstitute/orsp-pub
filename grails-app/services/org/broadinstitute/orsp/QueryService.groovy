@@ -1,11 +1,13 @@
 package org.broadinstitute.orsp
 
+import grails.converters.JSON
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -730,10 +732,20 @@ class QueryService implements Status {
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> issues = sqlQuery.with {
             setParameterList('projectKeys', projectKeys)
-            addEntity(Issue)
+            addEntity("i", Issue)
             list()
         }
-        issues
+
+        issues.collect{ it -> [
+                id               : it.id,
+                projectKey       : it.projectKey,
+                summary          : IssueUtils.escapeQuote(it.summary),
+                approvalStatus   : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                type             : IssueUtils.escapeQuote(it.type),
+                updateDate       : it.updateDate,
+                assignedAdmin    : userService.findUser(it.getAssignedAdmin())?.displayName,
+                actors           : it.getActorUsernames()
+        ]} as List<Issue>
     }
 
     /**

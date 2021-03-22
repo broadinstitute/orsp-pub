@@ -62,7 +62,7 @@ const columnsCopy = [{
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) => cell ? moment(cell).format('MM/DD/YYYY') : ''
 }, {
-  dataField: 'actor',
+  dataField: 'assignedAdmin',
   text: 'Assigned reviewer',
   sort: true,
   headerStyle: { width: styles.typeWidth }
@@ -117,7 +117,7 @@ const LandingPage = hh(class LandingPage extends Component{
     if (user.data.session && component.isBroad) {
       const [ projects, tasks ] = await Promise.all([
         Issues.getIssueList('false', 5),
-        Issues.getIssueList('true', 5)
+        Issues.getIssueList('true', 10)
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
@@ -141,7 +141,8 @@ const LandingPage = hh(class LandingPage extends Component{
           status: projectStatus(issue),
           type: issue.type,
           updated: parseDate(issue.updateDate),
-          expiration: parseDate(issue.expirationDate)
+          expiration: parseDate(issue.expirationDate),
+          assignedAdmin: issue.assignedAdmin
         });
       });
       if (this._isMounted) {
