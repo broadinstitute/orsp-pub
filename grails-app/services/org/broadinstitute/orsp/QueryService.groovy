@@ -743,7 +743,7 @@ class QueryService implements Status {
                 approvalStatus   : IssueUtils.escapeQuote(it.getApprovalStatus()),
                 type             : IssueUtils.escapeQuote(it.type),
                 updateDate       : it.updateDate,
-                assignedAdmin    : userService.findUser(it.getAssignedAdmin())?.displayName,
+                assignedAdmin    : it.getAssignedAdmin(),
                 actors           : it.getActorUsernames()
         ]} as List<Issue>
     }

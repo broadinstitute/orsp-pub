@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { button, div, h2, hh, p, span, ul, li, small } from 'react-hyperscript-helpers';
-import { Project } from '../util/ajax';
+import { Project, Search } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
@@ -30,6 +30,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      orspAdmins: [],
       showSubmissionAlert: false,
       showSubmissionError: false,
       textOtherCategoryError: false,
@@ -66,7 +67,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
         exemptCategoryTwoIII: false,
         notEngagedCategories: '',
         textOtherNotEngagedCategory: '',
-        otherCategory: false
+        otherCategory: false,
+        assignedReviewer: ''
       }
     };
     this.addNewDegree = this.addNewDegree.bind(this)
@@ -74,7 +76,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.init()
+    this.loadORSPAdmins();
+    this.init();
   }
 
   componentWillUnmount() {
@@ -114,6 +117,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
       formData.exemptCategoryTwoIII = issue.data.extraProperties.exemptCategoryTwoIII  === 'true' ? true : false;
       formData.notEngagedCategories = issue.data.extraProperties.notEngagedCategories;
       formData.textOtherNotEngagedCategory = issue.data.extraProperties.textOtherNotEngagedCategory;
+      formData.assignedReviewer = isEmpty(issue.data.extraProperties.assignedAdmin) ? '' : JSON.parse(issue.data.extraProperties.assignedAdmin);
       initial = createObjectCopy(formData);
       if (this._isMounted) {
         this.setState(prev => {
@@ -314,6 +318,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.bioMedical = this.state.formData.bioMedical;
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
+    form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
 
     if (this.state.formData.initialReviewType.value === 'Exempt') {
       form.categoryTwo = this.state.formData.categoryTwo;
@@ -461,6 +466,22 @@ const AdminOnly = hh(class AdminOnly extends Component {
     return (doc.internal.pageSize.getWidth() - 4) / canvas.width;
   };
 
+  loadORSPAdmins() {
+    Search.getORSPAdmins().then(response => {
+      let orspAdmins = response.data.map(function (item) {
+        return {
+          key: item.id,
+          value: item.value,
+          label: item.label
+        };
+      })
+      this.setState(prev => {
+        prev.orspAdmins = orspAdmins;
+        return prev;
+      })
+    });
+  }
+
   render() {
     return(
       div({},[
@@ -473,6 +494,17 @@ const AdminOnly = hh(class AdminOnly extends Component {
         }, ["Print PDF"]),
         div({ id: "projectDetails1" }, [
           Panel({ title: "Project Details" }, [
+            InputFieldSelect({
+              label: "Assigned reviewer:",
+              id: "assignedAdmin",
+              name: "assignedAdmin",
+              options: this.state.orspAdmins,
+              value: this.state.formData.assignedReviewer,
+              onChange: this.handleSelect("assignedReviewer"),
+              placeholder: "Select...",
+              readOnly: false,
+              edit: false
+            }),
             InputFieldRadio({
               id: "radioProjectStatus",
               name: "projectStatus",

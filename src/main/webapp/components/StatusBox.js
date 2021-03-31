@@ -1,4 +1,5 @@
 import { Component, React } from 'react';
+import { isEmpty } from '../util/Utils';
 import { hh, h1, span, div, p} from 'react-hyperscript-helpers';
 import './QuestionnaireWorkflow.css';
 
@@ -15,6 +16,7 @@ export const StatusBox = hh(class StatusBox extends Component {
       summary = '',
       status= '',
       actor= '',
+      assignedAdmin= '',
       projectReviewApproved= '',
       attachmentsApproved = ''
     } = this.props.status;
@@ -40,6 +42,10 @@ export const StatusBox = hh(class StatusBox extends Component {
         p({className: "headerBoxStatus"}, [
           span({className: "bold"}, ["Documents Sub-Status: "]),
           span({className: "italic"}, [attachmentsApproved ? 'Approved' : 'Pending'])
+        ]),
+        p({isRendered: !isEmpty(assignedAdmin), className: "headerBoxStatus"}, [
+          span({className: "bold"}, ["Assigned Reviewer: "]),
+          span({className: "italic"}, [assignedAdmin ? JSON.parse(assignedAdmin).value : ""])
         ])
       ])
     );

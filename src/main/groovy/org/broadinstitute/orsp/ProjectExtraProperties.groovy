@@ -58,6 +58,7 @@ class ProjectExtraProperties {
     String exemptCategoryFourIV;
     String notEngagedCategories;
     String textOtherNotEngagedCategory;
+    String assignedAdmin;
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -78,6 +79,7 @@ class ProjectExtraProperties {
         this.setIrb(project.getIrb() ?: null)
         this.setAffiliations(project.getAffiliations() ?: null)
         this.setAffiliationOther(project.getAffiliationOther() ?: "")
+        this.setAssignedAdmin(project.getAssignedAdmin() ?: "")
 
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
