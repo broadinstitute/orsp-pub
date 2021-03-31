@@ -51,7 +51,7 @@ class Main extends Component {
         prev.status.summary = get(elementInfo, 'issue.summary', '');
         prev.status.status = projectStatus(get(elementInfo, 'issue', ''));
         prev.status.actor = createObjectCopy(get(elementInfo, 'extraProperties.actor', ''));
-        prev.status.assignedAdmin = createObjectCopy(get(elementInfo, 'extraProperties.assignedAdmin', ''));
+        prev.status.assignedAdmin = get(elementInfo, 'extraProperties.assignedAdmin', '');
         prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
         prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
         return prev;
