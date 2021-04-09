@@ -35,10 +35,7 @@ class IssueListController extends AuthenticatedController {
     }
 
     def issueItems() {
-        if (session.user && !isAdmin()) {
-            List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max, (String) params.admin)
-            render(issues as JSON)
-        } else if (session.user && isAdmin()) {
+        if (session.user) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max, (String) params.admin)
             render(issues as JSON)
         }
@@ -53,7 +50,6 @@ class IssueListController extends AuthenticatedController {
             } else {
                 users.addAll([SupplementalRole.ORSP, SupplementalRole.ADMIN])
             }
-
         }
 
         if (isComplianceOffice()) {

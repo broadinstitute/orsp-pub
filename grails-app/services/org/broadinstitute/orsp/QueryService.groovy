@@ -720,8 +720,6 @@ class QueryService implements Status {
                     keysAdmin.addAll(projectKeys)
                 }
             } as String
-
-            //keysAdmin = IssueExtraProperty.findAllByNameAndValueLikeInList(IssueExtraProperty.ASSIGNED_ADMIN, '%${allAdmins}%', [:])?.collect { it.projectKey }
         }
         if (keys.isEmpty()) { return Collections.emptyList() }
         keysAdmin.each {
@@ -744,7 +742,7 @@ class QueryService implements Status {
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> issues = sqlQuery.with {
             setParameterList('projectKeys', projectKeys)
-            addEntity("i", Issue)
+            addEntity(Issue)
             list()
         }
 
