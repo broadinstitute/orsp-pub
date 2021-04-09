@@ -532,7 +532,7 @@ export const ProjectMigration = {
 };
 
 export const Issues = {
-  getIssueList(assignee, max) {
-    return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max);
+  getIssueList(assignee, max, admin) {
+    return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max + '&admin=' + admin);
   },
 };

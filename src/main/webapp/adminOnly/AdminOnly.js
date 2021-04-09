@@ -6,6 +6,7 @@ import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldRadio } from '../components/InputFieldRadio';
+import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { compareNotEmptyObjects, createObjectCopy, isEmpty, scrollToTop } from '../util/Utils';
 import { format } from 'date-fns';
 import 'regenerator-runtime/runtime';
@@ -68,7 +69,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
         notEngagedCategories: '',
         textOtherNotEngagedCategory: '',
         otherCategory: false,
-        assignedReviewer: ''
+        assignedReviewer: '',
+        adminComments: ''
       }
     };
     this.addNewDegree = this.addNewDegree.bind(this)
@@ -118,6 +120,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
       formData.notEngagedCategories = issue.data.extraProperties.notEngagedCategories;
       formData.textOtherNotEngagedCategory = issue.data.extraProperties.textOtherNotEngagedCategory;
       formData.assignedReviewer = isEmpty(issue.data.extraProperties.assignedAdmin) ? '' : JSON.parse(issue.data.extraProperties.assignedAdmin);
+      formData.adminComments = issue.data.extraProperties.adminComments;
       initial = createObjectCopy(formData);
       if (this._isMounted) {
         this.setState(prev => {
@@ -319,6 +322,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
     form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
+    form.adminComments = this.state.formData.adminComments;
 
     if (this.state.formData.initialReviewType.value === 'Exempt') {
       form.categoryTwo = this.state.formData.categoryTwo;
@@ -502,8 +506,17 @@ const AdminOnly = hh(class AdminOnly extends Component {
               value: this.state.formData.assignedReviewer,
               onChange: this.handleSelect("assignedReviewer"),
               placeholder: "Select...",
-              readOnly: false,
+              readOnly: !this.state.isAdmin,
               edit: false
+            }),
+            InputFieldTextArea({
+              label: "Admin comments",
+              id: "inputAdminComments",
+              name: "adminComments",
+              value: this.state.formData.adminComments,
+              readOnly: !this.state.isAdmin,
+              required: true,
+              onChange: this.textHandler,
             }),
             InputFieldRadio({
               id: "radioProjectStatus",

@@ -1,15 +1,13 @@
 import { Component } from 'react';
 import { div, h, h1, hh, button, span } from 'react-hyperscript-helpers';
 import { TableComponent } from '../components/TableComponent';
-import { Btn } from '../components/Btn';
-import { Project, User } from '../util/ajax';
+import { Project } from '../util/ajax';
 import { formatDataPrintableFormat } from '../util/TableUtil';
 import { exportData, handleUnauthorized } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
 import '../index.css';
 import LoadingWrapper from '../components/LoadingWrapper';
-import UserListDialog from '../components/UserListDialog';
 import isEmpty from 'lodash/isEmpty';
 import findIndex from 'lodash/findIndex';
 import '../components/Btn.css';
@@ -112,8 +110,8 @@ const columns = (ref) => [
     dataField: 'assignedAdmin',
     hidden: ref.paramsContext.get('header') === 'My Projects',
     csvExport: true,
-    text: 'Assigned Admin',
-    csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : cell,
+    text: 'Assigned Reviewer',
+    csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : JSON.parse(cell).value,
     sort: true,
     sortFunc: (a, b, order) => {
       let result = 0;
@@ -131,24 +129,9 @@ const columns = (ref) => [
       return { width: '180px' };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
-      if (!isEmpty(row.assignedAdmin) || !component.isAdmin) {
-        return div({}, [
-          span({ style: { display: 'block', marginRight: '10px', float: 'left' } }, [row.assignedAdmin]),
-          div({ isRendered: component.isAdmin, className: 'floatRight' }, [
-            button({
-              id: "assignedBtn",
-              className: "btnPrimary",
-              style: { backgroundColor: 'transparent' },
-              onClick: () => ref.removeAssignedAdmin(row)
-            }, [
-              span({ className: "glyphicon glyphicon-remove", style: { color: '#95a5a6' } }, []),
-            ])
-          ])])
-      } else {
-        return div({ style: { textAlign: 'center' } }, [
-          button({ onClick: () => ref.assignAdmin(row.projectKey), className: 'btn btn-default btn-sm' }, ["Assign Admin"])
-        ]);
-      }
+      return div({}, [
+        !isEmpty(row.assignedAdmin) ? JSON.parse(cell).value : ''
+      ])
     }
   }
 ];
@@ -265,25 +248,8 @@ const IssueList = hh(class IssueList extends Component {
     exportData('print', '', issues, '', '', tableColumnsWidth, 'A3', 'landscape');
   };
 
-  assignAdmin = (issueKey) => {
-    this.setState(prev => {
-      prev.showAssignAdmin = !prev.showAssignAdmin;
-      prev.issueKey = issueKey;
-      return prev;
-    });
-  };
 
-  removeAssignedAdmin = async (row) => {
-    this.props.showSpinner();
-    Project.removeAssignedAdmin(row.projectKey).then(resp => {
-      this.setAdmin(null, row.projectKey);
-      this.props.hideSpinner();
-    }).catch(error => {
-      this.handleError(error);
-    });
-  }
-
-  success = (issueKey, assignedAdmin) => {
+  /*success = (issueKey, assignedAdmin) => {
     this.setAdmin(assignedAdmin, issueKey);
   }
 
@@ -295,7 +261,7 @@ const IssueList = hh(class IssueList extends Component {
       prev.issues = issues;
       return prev;
     });
-  }
+  }*/
 
   render() {
     return (
@@ -314,13 +280,7 @@ const IssueList = hh(class IssueList extends Component {
           showSearchBar: true,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           pagination: true
-        }),
-        h(UserListDialog, {
-          closeModal: this.assignAdmin,
-          show: this.state.showAssignAdmin,
-          issueKey: this.state.issueKey,
-          success: this.success
-        }),
+        })
       ])
     )
   }

@@ -1,5 +1,7 @@
 package org.broadinstitute.orsp
 
+import com.google.common.collect.Lists
+import com.google.common.collect.Sets
 import grails.converters.JSON
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
@@ -704,17 +706,27 @@ class QueryService implements Status {
      * @param max
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findByAssignee(Collection<String> userNames, Integer max) {
+    List<Issue> findByAssignee(Collection<String> userNames, Integer max, String admin, List<String> allAdmins) {
         if (userNames.isEmpty()) { return Collections.emptyList() }
         List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect { it.projectKey }
-        if (keys.isEmpty()) { return Collections.emptyList() }
-        findAllByProjectKeyInList(keys, max)
-    }
 
-    List<Issue> findByAssignedAdmin(Collection<String> userNames, Integer max) {
-        if (userNames.isEmpty()) { return Collections.emptyList() }
-        List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ASSIGNED_ADMIN, userNames.asList(), [:])?.collect { it.projectKey }
+        keys = Lists.newArrayList(Sets.newHashSet(keys))
+        List<String> keysAdmin = new ArrayList<String>()
+        if (StringUtils.isNotBlank(admin)) {
+            allAdmins.remove(admin)
+            allAdmins.each {
+                List<String> projectKeys = IssueExtraProperty.findAllByNameAndValueLike(IssueExtraProperty.ASSIGNED_ADMIN, "%"+it+"%", [:])?.collect { it.projectKey }
+                if (CollectionUtils.isNotEmpty(projectKeys)) {
+                    keysAdmin.addAll(projectKeys)
+                }
+            } as String
+
+            //keysAdmin = IssueExtraProperty.findAllByNameAndValueLikeInList(IssueExtraProperty.ASSIGNED_ADMIN, '%${allAdmins}%', [:])?.collect { it.projectKey }
+        }
         if (keys.isEmpty()) { return Collections.emptyList() }
+        keysAdmin.each {
+            keys.remove(it)
+        }
         findAllByProjectKeyInList(keys, max)
     }
 
@@ -744,6 +756,7 @@ class QueryService implements Status {
                 type             : IssueUtils.escapeQuote(it.type),
                 updateDate       : it.updateDate,
                 assignedAdmin    : it.getAssignedAdmin(),
+                adminComments    : it.getAdminComments(),
                 actors           : it.getActorUsernames()
         ]} as List<Issue>
     }
