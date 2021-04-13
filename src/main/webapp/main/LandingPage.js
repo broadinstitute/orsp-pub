@@ -121,8 +121,11 @@ const LandingPage = hh(class LandingPage extends Component{
           label: item.label
         };
       })
+      let all = {key:'', value:'', label:'All'}
+      orspAdmins.splice(0,0,all)
       this.setState(prev => {
         prev.orspAdmins = orspAdmins;
+        prev.assignedReviewer = all;
         return prev;
       })
     });
@@ -134,7 +137,7 @@ const LandingPage = hh(class LandingPage extends Component{
       prev[field] = selectedOption;
       return prev;
     });
-    Issues.getIssueList('true', 10, isEmpty(selectedOption) ? "" : selectedOption.key).then(
+    Issues.getIssueList('true', 20, isEmpty(selectedOption) ? "" : selectedOption.key).then(
       response => {
         
         let taskList = [];
@@ -179,7 +182,7 @@ const LandingPage = hh(class LandingPage extends Component{
     if (user.data.session && component.isBroad) {
       const [ projects, tasks ] = await Promise.all([
         Issues.getIssueList('false', 5, ''),
-        Issues.getIssueList('true', 10, isEmpty(this.state.assignedReviewer) ? "" : JSON.parse(this.state.assignedReviewer).key)
+        Issues.getIssueList('true', 10, '')
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
