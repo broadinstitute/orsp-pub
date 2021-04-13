@@ -248,21 +248,6 @@ const IssueList = hh(class IssueList extends Component {
     exportData('print', '', issues, '', '', tableColumnsWidth, 'A3', 'landscape');
   };
 
-
-  /*success = (issueKey, assignedAdmin) => {
-    this.setAdmin(assignedAdmin, issueKey);
-  }
-
-  setAdmin(assignedAdmin, projectKey) {
-    let issues = this.state.issues;
-    var index = findIndex(issues, { projectKey: projectKey });
-    issues[index].assignedAdmin = assignedAdmin;
-    this.setState(prev => {
-      prev.issues = issues;
-      return prev;
-    });
-  }*/
-
   render() {
     return (
       div({}, [
