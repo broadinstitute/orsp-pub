@@ -18,7 +18,7 @@ const styles = {
   expirationWidth: '110px',
   updatedWidth: '140px',
   typeWidth: '170px',
-  statusWidth: '220px'
+  statusWidth: '200px'
 };
 
 const columnsCopy = [{
@@ -35,7 +35,7 @@ const columnsCopy = [{
   dataField: 'title',
   text: 'Title',
   sort: true,
-  headerStyle: { width: styles.titleWidth },
+  headerStyle: { width: styles.typeWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
       linkFormatter(row, row.title)
@@ -66,13 +66,13 @@ const columnsCopy = [{
   dataField: 'assignedAdmin',
   text: 'Assigned reviewer',
   sort: true,
-  headerStyle: { width: styles.updatedWidth }
+  headerStyle: { width: styles.typeWidth }
 },
 {
   dataField: 'adminComments',
   text: 'Comments',
   sort: true,
-  headerStyle: { width: styles.updatedWidth }
+  headerStyle: { width: styles.typeWidth }
 }];
 
 const defaultSorted = [{
