@@ -179,10 +179,11 @@ const LandingPage = hh(class LandingPage extends Component{
     component.isBroad = get(resp.data, 'isBroad', false);
     component.isAdmin = get(resp.data, 'isAdmin', false);
     component.isViewer = get(resp.data, 'isViewer', false);
+    let records = component.isAdmin ? 20 : 5;
     if (user.data.session && component.isBroad) {
       const [ projects, tasks ] = await Promise.all([
         Issues.getIssueList('false', 5, ''),
-        Issues.getIssueList('true', 10, '')
+        Issues.getIssueList('true', records, '')
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
@@ -277,9 +278,9 @@ const LandingPage = hh(class LandingPage extends Component{
 
         div({className: "row", isRendered: component.isAdmin === true}, [
           div({className: "col-xs-12"}, [
-            h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
+            h3({style: {'fontWeight' : 'bold'}}, ["Admin Task List ",
               a({ style: {'fontWeight' : 'normal'},
-                href: '/issueList/list?assignee=true&header=My+Task+List'
+                href: '/issueList/list?assignee=true&header=Admin+Task+List'
               }, ["(show all)"])
             ]),
             div({ style: { 'marginBottom': '20px' }}, [
