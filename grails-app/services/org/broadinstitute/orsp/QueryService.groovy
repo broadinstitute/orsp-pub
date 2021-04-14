@@ -1,11 +1,15 @@
 package org.broadinstitute.orsp
 
+import com.google.common.collect.Lists
+import com.google.common.collect.Sets
+import grails.converters.JSON
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.Transactional
 import grails.util.Environment
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.webservice.Ontology
 import org.broadinstitute.orsp.webservice.PaginatedResponse
 import org.broadinstitute.orsp.webservice.PaginationParams
@@ -702,10 +706,25 @@ class QueryService implements Status {
      * @param max
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findByAssignee(Collection<String> userNames, Integer max) {
+    List<Issue> findByAssignee(Collection<String> userNames, Integer max, String admin, List<String> allAdmins) {
         if (userNames.isEmpty()) { return Collections.emptyList() }
         List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect { it.projectKey }
+
+        keys = Lists.newArrayList(Sets.newHashSet(keys))
+        List<String> keysAdmin = new ArrayList<String>()
+        if (StringUtils.isNotBlank(admin)) {
+            allAdmins.remove(admin)
+            allAdmins.each {
+                List<String> projectKeys = IssueExtraProperty.findAllByNameAndValueLike(IssueExtraProperty.ASSIGNED_ADMIN, "%"+it+"%", [:])?.collect { it.projectKey }
+                if (CollectionUtils.isNotEmpty(projectKeys)) {
+                    keysAdmin.addAll(projectKeys)
+                }
+            } as String
+        }
         if (keys.isEmpty()) { return Collections.emptyList() }
+        keysAdmin.each {
+            keys.remove(it)
+        }
         findAllByProjectKeyInList(keys, max)
     }
 
@@ -726,7 +745,18 @@ class QueryService implements Status {
             addEntity(Issue)
             list()
         }
-        issues
+
+        issues.collect{ it -> [
+                id               : it.id,
+                projectKey       : it.projectKey,
+                summary          : IssueUtils.escapeQuote(it.summary),
+                approvalStatus   : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                type             : IssueUtils.escapeQuote(it.type),
+                updateDate       : it.updateDate,
+                assignedAdmin    : it.getAssignedAdmin(),
+                adminComments    : it.getAdminComments(),
+                actors           : it.getActorUsernames()
+        ]} as List<Issue>
     }
 
     /**

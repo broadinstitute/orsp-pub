@@ -95,7 +95,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE,
             IssueExtraProperty.IS_ID_RECEIVE,
             IssueExtraProperty.IRB_REVIEWED_PROTOCOL,
-            IssueExtraProperty.HUMAN_SUBJECTS
+            IssueExtraProperty.HUMAN_SUBJECTS,
+            IssueExtraProperty.ADMIN_COMMENTS
     ]
 
 
