@@ -2,22 +2,23 @@ import React, { Component } from 'react';
 import { a, div, h, h3, hh } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from '../components/TableComponent';
-import { Issues, User } from '../util/ajax';
+import { Issues, User, Search } from '../util/ajax';
 import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
-import { projectStatus } from '../util/Utils';
+import { projectStatus, isEmpty } from '../util/Utils';
 import { Storage } from '../util/Storage';
+import { InputFieldSelect } from '../components/InputFieldSelect';
 import moment from 'moment';
 import get from 'lodash/get';
 
 const styles = {
   projectWidth: '120px',
-  titleWidth: '378px',
+  titleWidth: '220px',
   expirationWidth: '110px',
   updatedWidth: '140px',
   typeWidth: '170px',
-  statusWidth: '220px'
+  statusWidth: '200px'
 };
 
 const columnsCopy = [{
@@ -34,7 +35,7 @@ const columnsCopy = [{
   dataField: 'title',
   text: 'Title',
   sort: true,
-  headerStyle: { width: styles.titleWidth },
+  headerStyle: { width: styles.typeWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
       linkFormatter(row, row.title)
@@ -61,6 +62,17 @@ const columnsCopy = [{
   text: 'Expiration',
   sort: true,
   formatter: (cell, row, rowIndex, colIndex) => cell ? moment(cell).format('MM/DD/YYYY') : ''
+}, {
+  dataField: 'assignedAdmin',
+  text: 'Assigned reviewer',
+  sort: true,
+  headerStyle: { width: styles.typeWidth }
+},
+{
+  dataField: 'adminComments',
+  text: 'Notes',
+  sort: true,
+  headerStyle: { width: styles.typeWidth }
 }];
 
 const defaultSorted = [{
@@ -84,18 +96,76 @@ const LandingPage = hh(class LandingPage extends Component{
     this.state = {
       projectList: [],
       taskList: [],
+      assignedReviewer: '',
+      orspAdmins: [],
       logged: false
     };
   }
 
   componentDidMount = async () => {
     this._isMounted = true;
+    this.loadORSPAdmins();
     await this.init()
   };
 
   componentWillUnmount() {
     this._isMounted = false;
   }
+
+  loadORSPAdmins() {
+    Search.getORSPAdmins().then(response => {
+      let orspAdmins = response.data.map(function (item) {
+        return {
+          key: item.id,
+          value: item.value,
+          label: item.label
+        };
+      })
+      let all = {key:'', value:'', label:'All'}
+      orspAdmins.splice(0,0,all)
+      this.setState(prev => {
+        prev.orspAdmins = orspAdmins;
+        prev.assignedReviewer = all;
+        return prev;
+      })
+    });
+  }
+
+  handleSelect = (field) => () => (selectedOption) => {
+    this.props.showSpinner();
+    this.setState(prev => {
+      prev[field] = selectedOption;
+      return prev;
+    });
+    Issues.getIssueList('true', 20, isEmpty(selectedOption) ? "" : selectedOption.key).then(
+      response => {
+        
+        let taskList = [];
+        response.data.forEach(issue => {
+          taskList.push({
+            project: issue.projectKey,
+            title: issue.summary,
+            status: projectStatus(issue),
+            type: issue.type,
+            updated: parseDate(issue.updateDate),
+            expiration: parseDate(issue.expirationDate),
+            adminComments: issue.adminComments,
+            assignedAdmin: isEmpty(issue.assignedAdmin) ? "" : JSON.parse(issue.assignedAdmin).value  
+          });
+        });
+        this.setState(prev => {
+          prev.taskList = taskList;
+          return prev;
+        });
+        this.props.hideSpinner();
+      }).catch(
+      error => {
+        this.props.hideSpinner();
+        throw error
+      }
+    );
+
+  };
 
   init = async () => {
     this.props.showSpinner();
@@ -109,10 +179,11 @@ const LandingPage = hh(class LandingPage extends Component{
     component.isBroad = get(resp.data, 'isBroad', false);
     component.isAdmin = get(resp.data, 'isAdmin', false);
     component.isViewer = get(resp.data, 'isViewer', false);
+    let records = component.isAdmin ? 20 : 5;
     if (user.data.session && component.isBroad) {
       const [ projects, tasks ] = await Promise.all([
-        Issues.getIssueList('false', 5),
-        Issues.getIssueList('true', 5)
+        Issues.getIssueList('false', 5, ''),
+        Issues.getIssueList('true', records, '')
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
@@ -136,7 +207,9 @@ const LandingPage = hh(class LandingPage extends Component{
           status: projectStatus(issue),
           type: issue.type,
           updated: parseDate(issue.updateDate),
-          expiration: parseDate(issue.expirationDate)
+          expiration: parseDate(issue.expirationDate),
+          adminComments: issue.adminComments,
+          assignedAdmin: isEmpty(issue.assignedAdmin) ? "" : JSON.parse(issue.assignedAdmin).value  
         });
       });
       if (this._isMounted) {
@@ -162,7 +235,7 @@ const LandingPage = hh(class LandingPage extends Component{
      return (
       div({}, [
         About({showWarning: false}),
-        div({className: "row", isRendered: component.isBroad === true}, [
+        div({className: "row", isRendered: component.isBroad === true && component.isAdmin === false}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
               a({ style: {'fontWeight' : 'normal'},
@@ -200,6 +273,43 @@ const LandingPage = hh(class LandingPage extends Component{
               showExportButtons: false,
               showSearchBar: false
             })
+          ])
+        ]),
+
+        div({className: "row", isRendered: component.isAdmin === true}, [
+          div({className: "col-xs-12"}, [
+            h3({style: {'fontWeight' : 'bold'}}, ["Admin Task List ",
+              a({ style: {'fontWeight' : 'normal'},
+                href: '/issueList/list?assignee=true&header=Admin+Task+List'
+              }, ["(show all)"])
+            ]),
+            div({ style: { 'marginBottom': '20px' }}, [
+              InputFieldSelect({
+                label: "Assigned reviewer:",
+                id: "assignedAdmin",
+                name: "assignedAdmin",
+                options: this.state.orspAdmins,
+                value: this.state.assignedReviewer,
+                onChange: this.handleSelect("assignedReviewer"),
+                placeholder: "Select...",
+                readOnly: false,
+                edit: false
+              })
+            ]),
+            TableComponent({
+              remoteProp: false,
+              data: this.state.taskList,
+              columns: columnsCopy,
+              keyField: 'project',
+              fileName: 'TaskList',
+              search: false,
+              showPrintButton: false,
+              defaultSorted: defaultSorted,
+              pagination: false,
+              showExportButtons: false,
+              showSearchBar: false
+            })
+            
           ])
         ])
       ])

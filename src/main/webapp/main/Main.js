@@ -5,7 +5,7 @@ import { ProjectContainer } from "../projectContainer/ProjectContainer";
 import { ConsentGroupContainer } from "../consentGroupContainer/ConsentGroupContainer";
 import get from 'lodash/get';
 import defaultTo from 'lodash/defaultTo';
-import { isEmpty, projectStatus } from '../util/Utils';
+import { createObjectCopy, isEmpty, projectStatus } from '../util/Utils';
 import './Main.css';
 
 const LEGACY = 'Legacy';
@@ -50,7 +50,8 @@ class Main extends Component {
         prev.status.projectKey = get(elementInfo, 'issue.projectKey', '');
         prev.status.summary = get(elementInfo, 'issue.summary', '');
         prev.status.status = projectStatus(get(elementInfo, 'issue', ''));
-        prev.status.actor = get(elementInfo, 'extraProperties.actor', '');
+        prev.status.actor = createObjectCopy(get(elementInfo, 'extraProperties.actor', ''));
+        prev.status.assignedAdmin = get(elementInfo, 'extraProperties.assignedAdmin', '');
         prev.status.projectReviewApproved = get(elementInfo, 'extraProperties.projectReviewApproved', '');
         prev.status.attachmentsApproved = get(elementInfo, 'attachmentsApproved', '');
         return prev;

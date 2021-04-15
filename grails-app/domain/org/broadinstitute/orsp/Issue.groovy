@@ -146,6 +146,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getAssignedAdmin() { getExtraProperties().find { it.name == IssueExtraProperty.ASSIGNED_ADMIN}?.value }
 
+    transient String getAdminComments() { getExtraProperties().find { it.name == IssueExtraProperty.ADMIN_COMMENTS}?.value }
+
     // Others
     transient String getCollPublication() {
         BooleanOptions.getLabelForKey(getExtraProperties().find {
