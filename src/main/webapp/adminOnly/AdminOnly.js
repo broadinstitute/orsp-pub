@@ -510,7 +510,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
               edit: false
             }),
             InputFieldTextArea({
-              label: "Admin comments",
+              label: "Admin notes",
               id: "inputAdminComments",
               name: "adminComments",
               value: this.state.formData.adminComments,

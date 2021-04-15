@@ -70,7 +70,7 @@ const columnsCopy = [{
 },
 {
   dataField: 'adminComments',
-  text: 'Comments',
+  text: 'Notes',
   sort: true,
   headerStyle: { width: styles.typeWidth }
 }];
