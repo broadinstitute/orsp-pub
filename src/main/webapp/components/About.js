@@ -54,15 +54,18 @@ export const About = hh(class About extends Component {
             ]),
           ]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
-            "The Broad's Office of Research Subject Protection (ORSP) is committed to helping our community adhere to " +
-            "federal regulations and institutional policies governing the protection of human subjects who make our " +
-            "research possible. To fulfill that mission, the Broad must ensure appropriate regulatory oversight and " +
-            "reliable documentation storage.  The ORSP Portal is an online platform where Broad staff members can upload " +
-            "documents for ORSP review (either as stand-alone submissions, or in preparation for an IRB protocol applications), " +
-            "store consent forms and regulatory approvals, and search for data use restrictions. Please contact ",
-            a({
-              href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]
-            ), " for assistance."
+            "The Office of Research Subject Protection (ORSP) at the Broad Institute is committed to helping " +
+            "our community members adhere to federal regulations and institutional policies governing the " +
+            "protection of human subjects who make our research possible. To fulfill that mission, the Broad " +
+            "must ensure appropriate regulatory oversight and reliable documentation storage. The ORSP " +
+            "Portal (accessible at ",  
+            a({href:"https://orsp.broadinstitute.org/"}, ["https://orsp.broadinstitute.org/"]),
+            "​) is an online platform where Broad staff " +
+            "members can upload documents for ORSP review (either as stand-alone submissions, or in " +
+            "preparation for an IRB protocol application), store consent forms and regulatory approvals, and " +
+            "search for data use restrictions. Please contact ",
+            a({href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]),
+            " with any questions or requests for assistance.",
           ]),
           p({ isRendered: this.props.showWarning, style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0"}},[
             "Please note that Microsoft Edge and Internet Explorer are not supported browsers for the ORSP Portal. Please use Google Chrome or Firefox instead."
