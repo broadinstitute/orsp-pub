@@ -205,6 +205,21 @@ export const Table = hh(class Table extends Component {
       )]);
   };
 
+  organizationSelection = (cell,row) => {
+    return this.props.isViewer ? null :
+      div({className : "roles-container"}, [
+        span({}, [row.organizationName]),
+        button({
+            className: "btn btn-default btn-sm edit",
+            onClick: this.props.editOrganization(row),
+            disabled: !this.props.isAdmin,
+            title: "Edit"
+          }, [
+            span({className: "glyphicon glyphicon-pencil"}, [])
+          ]
+      )]);
+  };
+
   unlinkSampleCollection = (data) => (e) => {
     this.props.unlinkSampleCollection(data);
   };
@@ -324,6 +339,12 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.roleSelection}
                 >{header.name}</TableHeaderColumn>
+            } else if (header.value === 'organizationName') {
+                return <TableHeaderColumn isKey= {isKey}
+                  key={header.name}
+                  dataField={header.value}
+                  dataFormat={this.organizationSelection}
+                  >{header.name}</TableHeaderColumn>
             } else if (header.value ==='collectionName') {
                 return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}

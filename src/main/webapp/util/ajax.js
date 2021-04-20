@@ -318,6 +318,27 @@ export const User = {
   
 };
 
+export const Organization = {
+
+  getAllOrganizations(query) {
+    return axios.get(UrlConstants.getAllUsersUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
+
+  editOrganization(organizationId, name) {
+    return axios.put(UrlConstants.editOrganizationUrl, {organizationId: organizationId, name: name});
+  }
+  
+};
+
 export const Review = {
 
   deleteSuggestions(projectKey, type) {

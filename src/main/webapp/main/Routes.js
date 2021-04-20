@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import RolesManagement from '../rolesManagement/RolesManagement';
+import OrganizationsManagement from '../organizations/OrganizationsManagement';
 import ReviewCategories from '../reviewCategories/ReviewCategories';
 import Main from './Main';
 import FundingsSourceReport from '../fundingSourceReport/FundingsSourceReport';
@@ -29,6 +30,7 @@ import SampleCollection from '../sampleCollection/SampleCollection';
 const Routes = ( props ) => (
   <Switch>
     <AuthenticatedRoute path= {"/user/rolesManagement"} component={RolesManagement} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/admin/organizations"} component={OrganizationsManagement} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {["/project/main", "/newConsentGroup/main"]} component={Main} props={props}/> }/>
     <AuthenticatedRoute path= {"/project/pages"} component={NewProject} props={props}/> }/>
     <AuthenticatedRoute path= {"/admin/fundingReport"} component={FundingsSourceReport} props={props} admin={true}/> }/>
