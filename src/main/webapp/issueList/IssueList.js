@@ -104,9 +104,7 @@ const columns = (ref) => [
       ]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       !isNil(row.actors) ? row.actors.join(", ") : ''
-  },
-
-  {
+  }, {
     dataField: 'assignedAdmin',
     hidden: ref.paramsContext.get('header') === 'My Projects',
     csvExport: true,
@@ -132,6 +130,13 @@ const columns = (ref) => [
       return div({}, [
         !isEmpty(row.assignedAdmin) ? JSON.parse(cell).value : ''
       ])
+    }
+  }, {
+    dataField: 'adminComments',
+    text: 'Notes',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: styles.project.typeWidth };
     }
   }
 ];
