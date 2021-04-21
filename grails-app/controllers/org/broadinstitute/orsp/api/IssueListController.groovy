@@ -27,7 +27,8 @@ class IssueListController extends AuthenticatedController {
                     type             : IssueUtils.escapeQuote(it.type),
                     updateDate       : it.updateDate ? sd.format(it.updateDate) : '',
                     actors           : queryService.findUsersInUserNameList(it.actors)?.collect { it.displayName },
-                    assignedAdmin    : it.assignedAdmin
+                    assignedAdmin    : it.assignedAdmin,
+                    adminComments    : it.adminComments
             ]} as JSON
         } catch(Exception e) {
             handleException(e)

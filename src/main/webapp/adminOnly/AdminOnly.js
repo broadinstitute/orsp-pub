@@ -322,7 +322,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
     form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
-    form.adminComments = this.state.formData.adminComments;
+    form.adminComments = isEmpty(this.state.formData.adminComments) ? '--' : this.state.formData.adminComments;
 
     if (this.state.formData.initialReviewType.value === 'Exempt') {
       form.categoryTwo = this.state.formData.categoryTwo;
@@ -515,7 +515,6 @@ const AdminOnly = hh(class AdminOnly extends Component {
               name: "adminComments",
               value: this.state.formData.adminComments,
               readOnly: !this.state.isAdmin,
-              required: true,
               onChange: this.textHandler,
             }),
             InputFieldRadio({
