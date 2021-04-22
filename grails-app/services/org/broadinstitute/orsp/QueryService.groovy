@@ -1831,4 +1831,16 @@ class QueryService implements Status {
         query
     }
 
+    Collection<Organization> getOrganizations() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = ' select o.*  from organization as o where d.deleted = 0'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {
+            addEntity(Organization)
+            list()
+        }
+        result
+    }
+
 }

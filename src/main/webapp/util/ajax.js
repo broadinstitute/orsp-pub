@@ -321,7 +321,7 @@ export const User = {
 export const Organization = {
 
   getAllOrganizations(query) {
-    return axios.get(UrlConstants.getAllUsersUrl, {
+    return axios.get(UrlConstants.getAllOrganizationsUrl, {
       params: {
         draw: 1,
         start: query.start,

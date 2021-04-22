@@ -53,4 +53,12 @@ class PersistenceService {
         consentCollectionLink?.delete(flush: true)
     }
 
+    Organization saveOrganization(Integer id, String name, Boolean active) {
+        new Organization(
+                id: id,
+                name: name,
+                active: active
+        ).save(flush: true)
+    }
+
 }
