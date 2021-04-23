@@ -1,0 +1,76 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="jorbegoz" id="changelog-25.0">
+        <createTable tableName="organization">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT(1)">
+            </column>
+            <column name="deleted" type="BIT(1)">
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="changelog-25.0-1" author="jorbegoz">
+        <sql>
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('AbbVie', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Agilent ', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Apic', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Apures', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Asimov', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('BASF', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('BioLegend', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Blink', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Blueprint Medicines', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('BMS', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Bristol Myers Squibb', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Calico', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Charles River', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Civetta', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Cygnal', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Decibel', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Editas', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Envigo', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('GemPharmatech', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Genentech', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('GlaxoSmithKline', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('GSK', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('GV', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('H3', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Horizon Discovery', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('IBM', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Institute of Immunology', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Integrated DNA Technologies', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Janssen', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('KSQ', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('KWS', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Kyowa Hakko Kirin', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Life Technologies', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Lytica', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Merck', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Monsanto', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Novo Nordisk', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Oxford Genetics', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Pine Trees', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Pioneer Hi-Bred ', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Prime Medicine', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Promega', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Sanofi', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Santa Cruz', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Sherlock', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Taconic', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('TriLink', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('UCB', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Verve', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Vilmorin', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Vir', 1, 0);
+            INSERT INTO organization (`name`, `active`, `deleted`) VALUES ('Wuxi Biologics', 1, 0);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

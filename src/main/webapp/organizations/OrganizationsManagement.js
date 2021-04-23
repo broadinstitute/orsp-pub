@@ -8,7 +8,7 @@ import LoadingWrapper from '../components/LoadingWrapper';
 
 const tableHeaders =
   [
-    { name: 'Organization Name', value: 'organizationName' }
+    { name: 'Organization Name', value: 'name' }
   ];
 
   const stylesHeader = {
@@ -18,7 +18,7 @@ const tableHeaders =
   };
 
   const SORT_NAME_INDEX = {
-    'organizationName': 0
+    'name': 0
   };
 
 const OrganizationsManagement = hh(class OrganizationsManagement extends Component {
@@ -71,7 +71,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
   submit = (rowUpdated) => {
     this.setState(prev => {
       prev.editOrganizationDialog = false;
-      prev.organizations.find(it => it.organizationId === rowUpdated.organizationId).organizationName = rowUpdated.organizationName;
+      prev.organizations.find(it => it.id === rowUpdated.id).name = rowUpdated.name;
       return prev;
     });
   };
@@ -119,20 +119,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
         prev.lastPage = lastPage;
         prev.currentPage = page;
         prev.isAdmin = this.state.isAdmin;
-        //prev.organizations = result.data.data;
-        prev.organizations = [
-          {organizationId: 1, organizationName: 'AbbVie'},
-          {organizationId: 1, organizationName: 'Agilent'},
-          {organizationId: 1, organizationName: 'Apic'},
-          {organizationId: 1, organizationName: 'Apures'},
-          {organizationId: 1, organizationName: 'Asimov'},
-          {organizationId: 1, organizationName: 'BASF'},
-          {organizationId: 1, organizationName: 'BioLegend'},
-          {organizationId: 1, organizationName: 'Blink'},
-          {organizationId: 1, organizationName: 'Blueprint Medicines'},
-          {organizationId: 1, organizationName: 'BMS'},
-          {organizationId: 1, organizationName: 'Bristol Myers Squibb '}
-        ];
+        prev.organizations = result.data.data;
         prev.recordsTotal = result.data.recordsTotal;
         prev.recordsFiltered = result.data.recordsFiltered;
         prev.sizePerPage = query.length;
