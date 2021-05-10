@@ -36,7 +36,10 @@ class IssueListController extends AuthenticatedController {
     }
 
     def issueItems() {
-        if (session.user) {
+        if (session.user && params.admin) {
+            List<Issue> issues = projectsForAdmin((String) params.max, (String) params.admin)
+            render(issues as JSON)
+        } else if (session.user) {
             List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max, (String) params.admin)
             render(issues as JSON)
         }
@@ -71,6 +74,17 @@ class IssueListController extends AuthenticatedController {
         } else {
             queryService.findByUserNames(users, limit)
         }
+    }
+
+    private List<Issue> projectsForAdmin(String max, String admin) {
+        Collection<String> users = new ArrayList<>([getUser().getUserName()])
+
+        Integer limit = null
+        if (!max?.isEmpty()) {
+            limit = max?.toInteger()
+        }
+        List<String> allAdmins = new LinkedList<String>(Arrays.asList(grailsApplication.config.getProperty('orspAdmins')?.split(",")))
+        queryService.findByAssignee(users, limit, admin, allAdmins)
     }
 
 }

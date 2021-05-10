@@ -96,6 +96,7 @@ const LandingPage = hh(class LandingPage extends Component{
     this.state = {
       projectList: [],
       taskList: [],
+      adminTaskList: [],
       assignedReviewer: '',
       orspAdmins: [],
       logged: false
@@ -140,9 +141,9 @@ const LandingPage = hh(class LandingPage extends Component{
     Issues.getIssueList('true', 20, isEmpty(selectedOption) ? "" : selectedOption.key).then(
       response => {
         
-        let taskList = [];
+        let adminTaskList = [];
         response.data.forEach(issue => {
-          taskList.push({
+          adminTaskList.push({
             project: issue.projectKey,
             title: issue.summary,
             status: projectStatus(issue),
@@ -154,7 +155,7 @@ const LandingPage = hh(class LandingPage extends Component{
           });
         });
         this.setState(prev => {
-          prev.taskList = taskList;
+          prev.adminTaskList = adminTaskList;
           return prev;
         });
         this.props.hideSpinner();
@@ -173,17 +174,17 @@ const LandingPage = hh(class LandingPage extends Component{
     let resp = {};
     let projectList = [];
     let taskList = [];
+    let adminTaskList = [];
     if (user != null && user.data.session) {
       resp = await User.getUserSession();
     }
     component.isBroad = get(resp.data, 'isBroad', false);
     component.isAdmin = get(resp.data, 'isAdmin', false);
     component.isViewer = get(resp.data, 'isViewer', false);
-    let records = component.isAdmin ? 20 : 5;
-    if (user.data.session && component.isBroad) {
+    if (user.data.session && component.isBroad && !component.isAdmin) {
       const [ projects, tasks ] = await Promise.all([
         Issues.getIssueList('false', 5, ''),
-        Issues.getIssueList('true', records, '')
+        Issues.getIssueList('true', 5, '')
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
@@ -216,6 +217,34 @@ const LandingPage = hh(class LandingPage extends Component{
         this.setState({
           projectList: projectList,
           taskList: taskList,
+          logged: user.data.session
+        });
+        Storage.setUserIsLogged(user.data.session);
+        this.props.hideSpinner();
+      }
+    } else if (user.data.session && component.isBroad && component.isAdmin) {
+      const [ adminTasks ] = await Promise.all([
+        Issues.getIssueList('true', 20, '')
+      ]).catch(error => {
+        this.props.hideSpinner();
+        throw error
+      });
+
+      adminTasks.data.forEach(issue => {
+        adminTaskList.push({
+          project: issue.projectKey,
+          title: issue.summary,
+          status: projectStatus(issue),
+          type: issue.type,
+          updated: parseDate(issue.updateDate),
+          expiration: parseDate(issue.expirationDate),
+          adminComments: issue.adminComments,
+          assignedAdmin: isEmpty(issue.assignedAdmin) ? "" : JSON.parse(issue.assignedAdmin).value  
+        });
+      });
+      if (this._isMounted) {
+        this.setState({
+          adminTaskList: adminTaskList,
           logged: user.data.session
         });
         Storage.setUserIsLogged(user.data.session);
@@ -298,7 +327,7 @@ const LandingPage = hh(class LandingPage extends Component{
             ]),
             TableComponent({
               remoteProp: false,
-              data: this.state.taskList,
+              data: this.state.adminTaskList,
               columns: columnsCopy,
               keyField: 'project',
               fileName: 'TaskList',
