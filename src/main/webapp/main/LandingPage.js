@@ -138,7 +138,7 @@ const LandingPage = hh(class LandingPage extends Component{
       prev[field] = selectedOption;
       return prev;
     });
-    Issues.getIssueList('true', 20, isEmpty(selectedOption) ? "" : selectedOption.key).then(
+    Issues.getAdminIssueList(20, isEmpty(selectedOption) ? "" : selectedOption.key).then(
       response => {
         
         let adminTaskList = [];
@@ -183,8 +183,8 @@ const LandingPage = hh(class LandingPage extends Component{
     component.isViewer = get(resp.data, 'isViewer', false);
     if (user.data.session && component.isBroad && !component.isAdmin) {
       const [ projects, tasks ] = await Promise.all([
-        Issues.getIssueList('false', 5, ''),
-        Issues.getIssueList('true', 5, '')
+        Issues.getIssueList('false', 5),
+        Issues.getIssueList('true', 5)
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
@@ -224,7 +224,7 @@ const LandingPage = hh(class LandingPage extends Component{
       }
     } else if (user.data.session && component.isBroad && component.isAdmin) {
       const [ adminTasks ] = await Promise.all([
-        Issues.getIssueList('true', 20, '')
+        Issues.getAdminIssueList(20, '')
       ]).catch(error => {
         this.props.hideSpinner();
         throw error
@@ -309,7 +309,7 @@ const LandingPage = hh(class LandingPage extends Component{
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["Admin Task List ",
               a({ style: {'fontWeight' : 'normal'},
-                href: '/issueList/list?assignee=true&header=Admin+Task+List'
+                href: '/issueList/list?admin=true&assignee=false&header=Admin+Task+List'
               }, ["(show all)"])
             ]),
             div({ style: { 'marginBottom': '20px' }}, [

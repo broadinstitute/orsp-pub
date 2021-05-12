@@ -133,6 +133,7 @@ class UrlMappings {
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
 
         '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
+        '/api/admin-issue-list'(controller: 'issueList', action: 'adminIssueItems', method: 'GET')
         '/api/auth'(controller: 'auth', action: 'authUser')
 
         // Custom Error handlers.

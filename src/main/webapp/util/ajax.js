@@ -245,9 +245,10 @@ export const Project = {
     return type;
   },
 
-  getProjectByUser(assignee, max) {
+  getProjectByUser(admin, assignee, max) {
     let maxParam = !isNil(max) ? '&max=' + max : ''
-    return axios.get(UrlConstants.userProjectUrl + '?assignee=' + assignee + maxParam);
+    let adminParam = !isNil(admin) ? '&admin=' + admin : ''
+    return axios.get(UrlConstants.userProjectUrl + '?assignee=' + assignee + maxParam + adminParam);
   },
 
   removeAssignedAdmin(projectKey) {
@@ -532,7 +533,10 @@ export const ProjectMigration = {
 };
 
 export const Issues = {
-  getIssueList(assignee, max, admin) {
-    return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max + '&admin=' + admin);
+  getIssueList(assignee, max) {
+    return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max);
   },
+  getAdminIssueList(max, admin) {
+    return axios.get(UrlConstants.adminIssueListUrl + '?max=' + max + '&admin=' + admin);
+  }
 };

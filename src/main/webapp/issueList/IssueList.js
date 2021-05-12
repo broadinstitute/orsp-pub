@@ -178,7 +178,7 @@ const IssueList = hh(class IssueList extends Component {
   };
 
   tableHandler = async () => {
-    Project.getProjectByUser(this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
+    Project.getProjectByUser(this.paramsContext.get('admin'), this.paramsContext.get('assignee'), this.paramsContext.get('max')).then(result => {
       if (this._isMounted) {
         this.setState(prev => {
           prev.issues = result.data;

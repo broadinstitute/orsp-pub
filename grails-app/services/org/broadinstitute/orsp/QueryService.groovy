@@ -706,26 +706,71 @@ class QueryService implements Status {
      * @param max
      * @return List of JiraIssues that match the query
      */
-    List<Issue> findByAssignee(Collection<String> userNames, Integer max, String admin, List<String> allAdmins) {
+    List<Issue> findByAssignee(Collection<String> userNames, Integer max) {
         if (userNames.isEmpty()) { return Collections.emptyList() }
         List<String> keys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.ACTOR, userNames.asList(), [:])?.collect { it.projectKey }
 
-        keys = Lists.newArrayList(Sets.newHashSet(keys))
-        List<String> keysAdmin = new ArrayList<String>()
+        if (keys.isEmpty()) { return Collections.emptyList() }
+        findAllByProjectKeyInList(keys, max)
+    }
+
+    List<Issue> findByApprovalStatus(Integer max, String admin, List<String> allAdmins) {
+
+        List<String> projectReviewApprovedKeys = IssueExtraProperty.findAllByNameAndValue(IssueExtraProperty.PROJECT_REVIEW_APPROVED, "true", [:])?.collect { it.projectKey }
+        List<String> projectStatusApprovedKeys = IssueExtraProperty.findAllByNameAndValue(IssueExtraProperty.PROJECT_STATUS, IssueStatus.Approved.name, [:])?.collect { it.projectKey }
+
+        Set<String> duplicateKeys = new HashSet<>()
+        projectReviewApprovedKeys.each {
+            if (projectStatusApprovedKeys.contains(it)) {
+                duplicateKeys.add(it)
+            }
+        }
+
+        List<String> mainList = new ArrayList<String>()
+        mainList.addAll(duplicateKeys)
+
+        List<String> keysApproved = new ArrayList<String>()
+        mainList.each {
+            ArrayList pendingDocuments = getAttachmentsForProject(it).findAll() {
+                it.status == DocumentStatus.PENDING.status
+            }.fileType
+            if (pendingDocuments?.size() == 0) {
+                keysApproved.add(it)
+            }
+        }
+
         if (StringUtils.isNotBlank(admin)) {
             allAdmins.remove(admin)
             allAdmins.each {
                 List<String> projectKeys = IssueExtraProperty.findAllByNameAndValueLike(IssueExtraProperty.ASSIGNED_ADMIN, "%"+it+"%", [:])?.collect { it.projectKey }
                 if (CollectionUtils.isNotEmpty(projectKeys)) {
-                    keysAdmin.addAll(projectKeys)
+                    keysApproved.addAll(projectKeys)
                 }
             } as String
         }
-        if (keys.isEmpty()) { return Collections.emptyList() }
-        keysAdmin.each {
-            keys.remove(it)
+
+        String query = 'select * from issue where status NOT IN (:status) and approval_status NOT IN (:approvalStatus) and  project_key NOT IN (:projectKeys)  and deleted = 0 order by update_date desc '
+        if (max) { query = query + ' limit ' + max }
+        SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
+        List<Issue> issues = sqlQuery.with {
+            setParameterList('status', Arrays.asList(IssueStatus.Closed.name, IssueStatus.Completed.name, IssueStatus.Abandoned.name))
+            setParameterList('approvalStatus', Arrays.asList(IssueStatus.Closed.name, IssueStatus.Withdrawn.name))
+            setParameterList('projectKeys', keysApproved)
+            addEntity(Issue)
+            list()
         }
-        findAllByProjectKeyInList(keys, max)
+
+        issues.collect{ it -> [
+                id               : it.id,
+                projectKey       : it.projectKey,
+                summary          : IssueUtils.escapeQuote(it.summary),
+                approvalStatus   : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                type             : IssueUtils.escapeQuote(it.type),
+                updateDate       : it.updateDate,
+                assignedAdmin    : it.getAssignedAdmin(),
+                adminComments    : it.getAdminComments(),
+                actors           : it.getActorUsernames()
+        ]} as List<Issue>
     }
 
     /**
