@@ -48,20 +48,10 @@ const columnsCopy = [{
   formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
   headerStyle: { width: styles.statusWidth }
 }, {
-  dataField: 'type',
-  text: 'Type',
-  sort: true,
-  headerStyle: { width: styles.typeWidth }
-}, {
   dataField: 'updated',
   text: 'Updated',
   sort: true,
   headerStyle: { width: styles.updatedWidth }
-}, {
-  dataField: 'expiration',
-  text: 'Expiration',
-  sort: true,
-  formatter: (cell, row, rowIndex, colIndex) => cell ? moment(cell).format('MM/DD/YYYY') : ''
 }, {
   dataField: 'assignedAdmin',
   text: 'Assigned reviewer',
@@ -78,6 +68,60 @@ const columnsCopy = [{
 const defaultSorted = [{
   dataField: 'date',
   order: 'desc'
+}];
+
+const adminColumnsCopy = [{
+  dataField: 'project',
+  text: 'Project',
+  sort: true,
+  headerStyle: { width: styles.projectWidth },
+  formatter: (cell, row, rowIndex, colIndex) => {
+    return div({}, [
+      linkFormatter(row, row.project)
+    ])
+  }
+}, {
+  dataField: 'title',
+  text: 'Title',
+  sort: true,
+  headerStyle: { width: styles.typeWidth },
+  formatter: (cell, row, rowIndex, colIndex) => {
+    return div({}, [
+      linkFormatter(row, row.title)
+    ])
+  }
+}, {
+  dataField: 'status',
+  text: 'Status',
+  sort: true,
+  formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+  headerStyle: { width: styles.statusWidth }
+}, {
+  dataField: 'documentStatus',
+  text: 'Document status',
+  sort: true,
+  headerStyle: { width: styles.updatedWidth }
+}, {
+  dataField: 'reviewStatus',
+  text: 'Review status',
+  sort: true,
+  headerStyle: { width: styles.updatedWidth }
+}, {
+  dataField: 'updated',
+  text: 'Updated',
+  sort: true,
+  headerStyle: { width: styles.updatedWidth }
+}, {
+  dataField: 'assignedAdmin',
+  text: 'Assigned reviewer',
+  sort: true,
+  headerStyle: { width: styles.typeWidth }
+},
+{
+  dataField: 'adminComments',
+  text: 'Notes',
+  sort: true,
+  headerStyle: { width: styles.typeWidth }
 }];
 
 function linkFormatter(row, text) {
@@ -148,6 +192,8 @@ const LandingPage = hh(class LandingPage extends Component{
             title: issue.summary,
             status: projectStatus(issue),
             type: issue.type,
+            documentStatus: issue.documentStatus,
+            reviewStatus: issue.reviewStatus,
             updated: parseDate(issue.updateDate),
             expiration: parseDate(issue.expirationDate),
             adminComments: issue.adminComments,
@@ -235,6 +281,8 @@ const LandingPage = hh(class LandingPage extends Component{
           project: issue.projectKey,
           title: issue.summary,
           status: projectStatus(issue),
+          documentStatus: issue.documentStatus,
+          reviewStatus: issue.reviewStatus,
           type: issue.type,
           updated: parseDate(issue.updateDate),
           expiration: parseDate(issue.expirationDate),
@@ -328,7 +376,7 @@ const LandingPage = hh(class LandingPage extends Component{
             TableComponent({
               remoteProp: false,
               data: this.state.adminTaskList,
-              columns: columnsCopy,
+              columns: adminColumnsCopy,
               keyField: 'project',
               fileName: 'TaskList',
               search: false,

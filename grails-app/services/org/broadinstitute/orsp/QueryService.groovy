@@ -765,6 +765,8 @@ class QueryService implements Status {
                 projectKey       : it.projectKey,
                 summary          : IssueUtils.escapeQuote(it.summary),
                 approvalStatus   : IssueUtils.escapeQuote(it.getApprovalStatus()),
+                reviewStatus   : it.getProjectReviewApproved() ? 'Approved' : 'Pending',
+                documentStatus     : it.attachmentsApproved() ? 'Approved' : 'Pending',
                 type             : IssueUtils.escapeQuote(it.type),
                 updateDate       : it.updateDate,
                 assignedAdmin    : it.getAssignedAdmin(),

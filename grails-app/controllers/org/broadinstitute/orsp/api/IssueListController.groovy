@@ -21,7 +21,7 @@ class IssueListController extends AuthenticatedController {
                 render projectsForAdmin('', '')  as JSON
             } else {
                 SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd")
-                List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max, (String) params.admin)
+                List<Issue> issues = projectsForUser((String) params.assignee, (String) params.max)
                 render issues.collect{it -> [
                         id               : it.id,
                         projectKey       : it.projectKey,
