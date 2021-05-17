@@ -22,7 +22,7 @@ const styles = {
   project: {
     projectKeyWidth: '140px',
     projectWidth: '750px',
-    titleWidth: '200px',
+    titleWidth: '170px',
     typeWidth: '150px'
   }
 }
@@ -124,6 +124,119 @@ const columns = (ref) => [
       return 0;
     },
     headerStyle: (column, colIndex) => {
+      return { width: '150px' };
+    },
+    formatter: (cell, row, rowIndex, colIndex) => {
+      return div({}, [
+        !isEmpty(row.assignedAdmin) ? JSON.parse(cell).value : ''
+      ])
+    }
+  }, {
+    dataField: 'adminComments',
+    text: 'Notes',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: styles.project.typeWidth };
+    }
+  }
+];
+
+const adminColumns = (ref) => [
+  {
+    dataField: 'id',
+    text: 'Id',
+    hidden: true,
+    csvExport: false
+  }, {
+    dataField: 'projectKey',
+    text: 'Project',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: styles.project.projectKeyWidth };
+    },
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: { issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey } } }, [row.projectKey])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.projectKey])
+        ])
+      }
+    }
+  }, {
+    dataField: 'summary',
+    text: 'Title',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: styles.project.titleWidth };
+    },
+    formatter: (cell, row, rowIndex, colIndex) => {
+      if (row.type === "Consent Group") {
+        return div({}, [
+          h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.projectKey, state: { issueType: 'consent-group', tab: 'documents', consentKey: row.projectKey } } }, [row.summary])
+        ])
+      } else {
+        return div({}, [
+          h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey, state: { issueType: 'project', projectKey: row.projectKey } } }, [row.summary])
+        ])
+      }
+    }
+  }, {
+    dataField: 'approvalStatus',
+    text: 'Status',
+    formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    sort: true
+  }, {
+    dataField: 'reviewStatus',
+    text: 'Information Sub-status',
+    formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    sort: true
+  }, {
+    dataField: 'documentStatus',
+    text: 'Document Sub-status',
+    formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
+    sort: true
+  }, {
+    dataField: 'updateDate',
+    text: 'Updated',
+    sort: true,
+    classes: 'ellipsis-column'
+  },
+  {
+    dataField: 'actors',
+    text: 'Awaiting action from',
+    sort: true,
+    formatter: (cell, row, rowIndex, colIndex) =>
+      div({}, [
+        !isNil(row.actors) ? row.actors.join(", ") : ''
+      ]),
+    csvFormatter: (cell, row, rowIndex, colIndex) =>
+      !isNil(row.actors) ? row.actors.join(", ") : ''
+  }, {
+    dataField: 'assignedAdmin',
+    hidden: ref.paramsContext.get('header') === 'My Projects',
+    csvExport: true,
+    text: 'Assigned Reviewer',
+    csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : JSON.parse(cell).value,
+    sort: true,
+    sortFunc: (a, b, order) => {
+      let result = 0;
+      if (order === 'asc') {
+        if (isEmpty(a)) return 1;
+        if (isEmpty(b) || a < b) return -1;
+        if (b > a) return 1;
+      } else {
+        if (a > b) return -1;
+        if (b < a) return 1;
+      }
+      return 0;
+    },
+    headerStyle: (column, colIndex) => {
       return { width: '180px' };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
@@ -149,7 +262,6 @@ const IssueList = hh(class IssueList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showAssignAdmin: false,
       sizePerPage: 10,
       search: null,
       issueKey: null,
@@ -260,7 +372,7 @@ const IssueList = hh(class IssueList extends Component {
         TableComponent({
           remoteProp: false,
           data: this.state.issues,
-          columns: columns(this),
+          columns: this.paramsContext.get('admin') ? adminColumns(this) : columns(this),
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
