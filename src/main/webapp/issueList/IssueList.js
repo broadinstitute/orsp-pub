@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { div, h, h1, hh, button, span } from 'react-hyperscript-helpers';
 import { TableComponent } from '../components/TableComponent';
 import { Project } from '../util/ajax';
-import { formatDataPrintableFormat } from '../util/TableUtil';
+import { formatDataPrintableFormat, parseDate } from '../util/TableUtil';
 import { exportData, handleUnauthorized } from '../util/Utils';
 import { Link } from 'react-router-dom';
 import isNil from 'lodash/isNil';
@@ -92,7 +92,7 @@ const columns = (ref) => [
     dataField: 'updateDate',
     text: 'Updated',
     sort: true,
-    classes: 'ellipsis-column'
+    formatter: (cell, row, rowIndex, colIndex) => parseDate(cell)
   },
   {
     dataField: 'actors',
@@ -191,13 +191,13 @@ const adminColumns = (ref) => [
     sort: true
   }, {
     dataField: 'reviewStatus',
-    text: 'Information Sub-status',
+    text: 'Information status',
     formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     sort: true
   }, {
     dataField: 'documentStatus',
-    text: 'Document Sub-status',
+    text: 'Document status',
     formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     sort: true
@@ -205,7 +205,7 @@ const adminColumns = (ref) => [
     dataField: 'updateDate',
     text: 'Updated',
     sort: true,
-    classes: 'ellipsis-column'
+    formatter: (cell, row, rowIndex, colIndex) => parseDate(cell)
   },
   {
     dataField: 'actors',

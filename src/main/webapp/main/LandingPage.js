@@ -103,7 +103,7 @@ const adminColumnsCopy = [{
   headerStyle: { width: styles.updatedWidth }
 }, {
   dataField: 'reviewStatus',
-  text: 'Review status',
+  text: 'Information status',
   sort: true,
   headerStyle: { width: styles.updatedWidth }
 }, {

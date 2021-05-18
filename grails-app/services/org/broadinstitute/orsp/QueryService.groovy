@@ -754,7 +754,7 @@ class QueryService implements Status {
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> issues = sqlQuery.with {
             setParameterList('status', Arrays.asList(IssueStatus.Closed.name, IssueStatus.Completed.name, IssueStatus.Abandoned.name))
-            setParameterList('approvalStatus', Arrays.asList(IssueStatus.Closed.name, IssueStatus.Withdrawn.name))
+            setParameterList('approvalStatus', Arrays.asList(IssueStatus.Closed.name, IssueStatus.Withdrawn.name, IssueStatus.Disapproved.name))
             setParameterList('projectKeys', keysApproved)
             addEntity(Issue)
             list()
