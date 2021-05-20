@@ -717,7 +717,7 @@ class QueryService implements Status {
     List<Issue> findByApprovalStatus(Integer max, String admin, List<String> allAdmins) {
 
         List<String> projectReviewApprovedKeys = IssueExtraProperty.findAllByNameAndValue(IssueExtraProperty.PROJECT_REVIEW_APPROVED, "true", [:])?.collect { it.projectKey }
-        List<String> projectStatusApprovedKeys = IssueExtraProperty.findAllByNameAndValue(IssueExtraProperty.PROJECT_STATUS, IssueStatus.Approved.name, [:])?.collect { it.projectKey }
+        List<String> projectStatusApprovedKeys = IssueExtraProperty.findAllByNameAndValueInList(IssueExtraProperty.PROJECT_STATUS, Arrays.asList(IssueStatus.Approved.name, IssueStatus.Open.name), [:])?.collect { it.projectKey }
 
         Set<String> duplicateKeys = new HashSet<>()
         projectReviewApprovedKeys.each {
@@ -731,7 +731,7 @@ class QueryService implements Status {
 
         List<String> keysApproved = new ArrayList<String>()
         mainList.each {
-            ArrayList pendingDocuments = getAttachmentsForProject(it).findAll() {
+            ArrayList pendingDocuments = getDocumentsForProject(it).findAll() {
                 it.status == DocumentStatus.PENDING.status
             }.fileType
             if (pendingDocuments?.size() == 0) {
@@ -749,7 +749,7 @@ class QueryService implements Status {
             } as String
         }
 
-        String query = 'select * from issue where status NOT IN (:status) and approval_status NOT IN (:approvalStatus) and  project_key NOT IN (:projectKeys)  and deleted = 0 order by update_date desc '
+        String query = 'select * from issue where status NOT IN (:status) and (approval_status NOT IN (:approvalStatus) OR approval_status is null) and  project_key NOT IN (:projectKeys)  and deleted = 0 order by update_date desc '
         if (max) { query = query + ' limit ' + max }
         SQLQuery sqlQuery = getSessionFactory().currentSession.createSQLQuery(query)
         List<Issue> issues = sqlQuery.with {
@@ -758,6 +758,9 @@ class QueryService implements Status {
             setParameterList('projectKeys', keysApproved)
             addEntity(Issue)
             list()
+        }
+        issues.each {
+            it.setAttachments(getAttachmentsForProject(it.projectKey))
         }
 
         issues.collect{ it -> [

@@ -13,12 +13,11 @@ import moment from 'moment';
 import get from 'lodash/get';
 
 const styles = {
-  projectWidth: '120px',
+  projectWidth: '110px',
   titleWidth: '220px',
-  expirationWidth: '110px',
   updatedWidth: '140px',
   typeWidth: '170px',
-  statusWidth: '200px'
+  statusWidth: '150px'
 };
 
 const columnsCopy = [{
