@@ -27,15 +27,32 @@ class OrganizationController extends AuthenticatedController {
     }
 
     def addOrganization() {
-
+        Map<String, Object> organization = IssueUtils.getJson(Map.class, request.JSON)
+        try {
+            organizationService.createOrganization((String)organization.get("name") )
+            response.status = 201
+            render([message: 'Organization was created'] as JSON)
+        } catch(Exception e) {
+            handleException(e)
+        }
     }
 
     def editOrganization() {
         Map<String, Object> organization = IssueUtils.getJson(Map.class, request.JSON)
         try {
-            organizationService.editOrganization(organization.get("id"), organization.get("name"), organization.get("active") )
+            organizationService.editOrganization((Integer)organization.get("id"), (String)organization.get("name") )
             response.status = 200
             render([message: 'Organization was updated'] as JSON)
+        } catch(Exception e) {
+            handleException(e)
+        }
+    }
+
+    def deleteOrganization() {
+        try {
+            organizationService.deleteOrganization((String)params.id)
+            response.status = 200
+            render([message: 'Organization was deleted'] as JSON)
         } catch(Exception e) {
             handleException(e)
         }

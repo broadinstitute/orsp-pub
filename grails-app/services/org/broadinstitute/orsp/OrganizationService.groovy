@@ -20,16 +20,35 @@ class OrganizationService {
     }
 
     /**
+     * Creates an organization
+     *
+     * @param name Organization name
+     */
+    void createOrganization (String name) throws SQLException {
+        if (name != null) {
+            Organization organization = new Organization(
+                    name: name,
+                    active: true
+            )
+            persistenceService.saveOrganization(organization)
+        } else {
+            log.error("Error while trying to  create organization name null")
+            throw new IllegalArgumentException("Cannot create organization with null name")
+        }
+    }
+
+    /**
      * Edits an organization
      *
-     * @param userId        The user's id
-     * @param rolesToAssign Roles String array to be assigned
+     * @param id    Organization id
+     * @param name Organization name
      */
-    void editOrganization (Integer id, String name, Boolean active) throws SQLException {
+    void editOrganization (Integer id, String name) throws SQLException {
         if (id != null) {
             Organization organization = Organization.findById(id)
             if (organization != null) {
-                persistenceService.saveOrganization(organization.id, name, active)
+                organization.setName(name)
+                persistenceService.saveOrganization(organization)
             } else {
                 log.error("Error while trying to update organization id: ${id}")
                 throw new IllegalArgumentException("Error while trying to update organization id: ${id}")
@@ -37,6 +56,26 @@ class OrganizationService {
         } else {
             log.error("Error while trying to  update organization id null")
             throw new IllegalArgumentException("Cannot update organization of null id")
+        }
+    }
+
+    /**
+     * Delete an organization
+     *
+     * @param id Organization id
+     */
+    void deleteOrganization (String id) throws SQLException {
+        if (id != null) {
+            Organization organization = Organization.findById(id)
+            if (organization != null) {
+                persistenceService.deleteOrganization(organization)
+            } else {
+                log.error("Error while trying to  delete organization id null")
+                throw new IllegalArgumentException("Cannot delete organization with null id")
+            }
+        } else {
+            log.error("Error while trying to  delete organization id null")
+            throw new IllegalArgumentException("Cannot delete organization with null id")
         }
     }
 }

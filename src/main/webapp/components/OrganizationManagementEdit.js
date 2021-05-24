@@ -22,7 +22,7 @@ export const OrganizationManagementEdit = hh(class OrganizationManagementEdit ex
     ///this.defaultChecked();
     this.setState(prev => {
       prev.organizationData = this.props.organizationData;
-      prev.organizationName = this.props.organizationData.organizationName;
+      prev.organizationName = this.props.organizationData.name;
       return prev;
     })
   }
@@ -35,21 +35,36 @@ export const OrganizationManagementEdit = hh(class OrganizationManagementEdit ex
   }
 
   submit = () => {
-    Organization.editOrganization(this.props.organizationData.organizationId, this.state.organizationData.organizationName).then( () => {
-      
-
-      this.setState(prev => {
-        prev.organizationData.organizationName = prev.organizationName;
-        return prev;
+    if (this.props.organizationData.id) {
+      Organization.editOrganization(this.props.organizationData.id, this.state.organizationName).then( () => {
+        this.setState(prev => {
+          prev.organizationData.name = prev.organizationName;
+          return prev;
+        });
+        let response = createObjectCopy(this.state.organizationData);
+        this.props.closeOnSubmit(response);
+      }).catch(error => {
+        this.setState(prev => {
+          prev.showError = true;
+          return prev;
+        });
       });
-      let response = createObjectCopy(this.state.organizationData);
-      this.props.closeOnSubmit(response);
-    }).catch(error => {
-      this.setState(prev => {
-        prev.showError = true;
-        return prev;
+    } else {
+      Organization.addOrganization(this.state.organizationName).then( () => {
+        this.setState(prev => {
+          prev.organizationData.name = prev.organizationName;
+          return prev;
+        });
+        let response = createObjectCopy(this.state.organizationData);
+        this.props.closeOnSubmit(response);
+      }).catch(error => {
+        this.setState(prev => {
+          prev.showError = true;
+          return prev;
+        });
       });
-    });
+    }
+    
 
     
   };
@@ -81,13 +96,13 @@ export const OrganizationManagementEdit = hh(class OrganizationManagementEdit ex
         show: this.props.show
       }, [
         h(ModalHeader, {}, [
-          h(ModalTitle, { className: "dialogTitle" }, "Organization Name")
+          h(ModalTitle, { className: "dialogTitle" }, "Add/Edit Organization")
         ]),
         h(ModalBody, { className: "dialogBody rolesManagement" }, [
           h(Fragment, {}, [
             InputFieldText({
-              id: "organizationName",
-              name: "organizationName",
+              id: "id",
+              name: "name",
               label: "Organization Name",
               readOnly: false,
               value: this.state.organizationName,

@@ -77,6 +77,8 @@ export const UrlConstants = {
   dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
   editOrganizationUrl: context + '/api/edit-organization',
+  deleteOrganizationUrl: context + '/api/delete-organization',
+  addOrganizationUrl: context + '/api/add-organization',
   getAllOrganizationsUrl: context + '/api/get-organizations',
  
   infoLinkUrl: context + '/api/info-link',

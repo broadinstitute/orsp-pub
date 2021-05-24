@@ -334,7 +334,15 @@ export const Organization = {
   },
 
   editOrganization(organizationId, name) {
-    return axios.put(UrlConstants.editOrganizationUrl, {organizationId: organizationId, name: name});
+    return axios.put(UrlConstants.editOrganizationUrl, {id: organizationId, name: name});
+  },
+
+  addOrganization(name) {
+    return axios.post(UrlConstants.addOrganizationUrl, { name: name});
+  },
+
+  deleteOrganization(organizationId) {
+    return axios.delete(UrlConstants.deleteOrganizationUrl, { params: {id: organizationId }});
   }
   
 };

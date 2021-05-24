@@ -1,10 +1,12 @@
 import { Component } from 'react';
-import { div, h1, hh } from 'react-hyperscript-helpers';
+import { a, div, h1, hh } from 'react-hyperscript-helpers';
 import { Table } from '../components/Table';
 import { OrganizationManagementEdit } from '../components/OrganizationManagementEdit';
 import { Organization } from '../util/ajax';
 import { TablePaginator } from '../components/TablePaginator';
+import { Panel } from '../components/Panel';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
 
 const tableHeaders =
   [
@@ -21,6 +23,13 @@ const tableHeaders =
     'name': 0
   };
 
+  const styles = {
+
+    add: {
+      position: 'absolute', right: '15px', zIndex: '1'
+    }
+  };
+
 const OrganizationsManagement = hh(class OrganizationsManagement extends Component {
 
   constructor(props) {
@@ -35,9 +44,10 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
       currentPage: 1,
       organizations: [],
       editOrganizationDialog: false,
-      editOrganizationRowData: {},
+      rowData: {},
       showError: false,
-      isAdmin: true
+      isAdmin: true,
+      showRemoveModal: false,
     };
   }
 
@@ -55,10 +65,34 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
     this.setState(prev => {
       prev.editOrganizationDialog = !this.state.editOrganizationDialog;
       if (data !== undefined) {
-        prev.editOrganizationRowData = data;
+        prev.rowData = data;
       }
       return prev;
     });
+  };
+  
+  deleteOrganizationHandler = (data) => () => {
+    this.setState(prev => {
+      prev.showRemoveModal = !this.state.showRemoveModal;
+      if (data !== undefined) {
+        prev.rowData = data;
+      }
+      return prev;
+    });
+  };
+
+  deleteOrganization = () => {
+    Organization.deleteOrganization(this.state.rowData.id).
+      then(resp => {
+        this.closeRemoveModal();
+        this.init();
+      }).catch(error => {
+        this.setState(() => { throw error; });
+      });
+  };
+
+  closeRemoveModal = () => {
+    this.setState({ showRemoveModal: !this.state.showRemoveModal });
   };
 
   closeModal = () => () => {
@@ -69,9 +103,27 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
   };
 
   submit = (rowUpdated) => {
+    if (rowUpdated.id) {
+      this.setState(prev => {
+        prev.editOrganizationDialog = false;
+        prev.organizations.find(it => it.id === rowUpdated.id).name = rowUpdated.name;
+        return prev;
+      });
+    } else {
+      this.setState(prev => {
+        prev.editOrganizationDialog = false;
+        return prev;
+      });
+      this.init();
+    }
+    
+  };
+
+  addOrganizationHandler = () => {
     this.setState(prev => {
-      prev.editOrganizationDialog = false;
-      prev.organizations.find(it => it.id === rowUpdated.id).name = rowUpdated.name;
+      prev.editOrganizationDialog = !this.state.editOrganizationDialog;
+      const data = {id: null, name: '', active: true, deleted: false};
+      prev.rowData = data;
       return prev;
     });
   };
@@ -119,7 +171,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
         prev.lastPage = lastPage;
         prev.currentPage = page;
         prev.isAdmin = this.state.isAdmin;
-        prev.organizations = result.data.data;
+        prev.organizations = result.data;
         prev.recordsTotal = result.data.recordsTotal;
         prev.recordsFiltered = result.data.recordsFiltered;
         prev.sizePerPage = query.length;
@@ -139,32 +191,48 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
 
    render() {
     return(
+      Panel({ title: "Organizations" }, [
       div({ className: "roles-management" },[
-        h1({ style: stylesHeader.pageTitle}, ["Organizations"]),
+        a({
+          isRendered: this.state.isAdmin,
+          onClick: this.addOrganizationHandler,
+          className: "btn btn-primary",
+          style: styles.add
+        }, ["Add"]),
         Table({
           headers: tableHeaders,
           isAdmin: this.state.isAdmin,
           data: this.state.organizations,
           editOrganization: this.editOrganizationHandler,
+          deleteOrganization: this.deleteOrganizationHandler,
           reviewFlow: true,
           pagination: false,
           tableHandler: this.tableHandler,
           onSearchChange: this.onSearchChange,
           onSortChange: this.onSortChange
         }),
-        TablePaginator({
+        /*TablePaginator({
           onPageChange: this.onPageChange,
           currentPage: this.state.currentPage,
           lastPage: this.state.lastPage
-        }),
+        }),*/
+        ConfirmationDialog({
+          closeModal: this.closeRemoveModal,
+          show: this.state.showRemoveModal,
+          handleOkAction: this.deleteOrganization,
+          title: 'Delete Organization',
+          bodyText: 'Are you sure you want to delete this organization?',
+          actionLabel: 'Yes'
+        }, []),
         OrganizationManagementEdit({
           closeModal: this.closeModal,
           closeOnSubmit: this.submit,
           show: this.state.editOrganizationDialog,
           isRendered: this.state.editOrganizationDialog,
-          organizationData : this.state.editOrganizationRowData
+          organizationData : this.state.rowData
         })
       ])
+    ])
     );  
   }
 });
