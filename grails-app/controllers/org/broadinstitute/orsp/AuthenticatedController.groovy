@@ -19,6 +19,7 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
     PersistenceService persistenceService
     StatusEventService statusEventService
     PermissionService permissionService
+    OrganizationService organizationService
 
     public static final List<String> PROJECT_DOC_TYPES =
             [ "Amendment Form",

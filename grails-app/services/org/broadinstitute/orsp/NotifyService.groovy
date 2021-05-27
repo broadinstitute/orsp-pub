@@ -748,6 +748,24 @@ class NotifyService implements SendgridSupport, Status {
         )
     }
 
+    void notifyOrganizationsMatch(String projectKey, String matches) {
+        Issue project = Issue.findByProjectKey(projectKey)
+        User user = userService.findUser(project.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getDefaultRecipient()),
+                        ccAddresses: [],
+                        fromAddress: getDefaultFromAddress(),
+                        subject: "There's a companies/organizations name hit in " + project.projectKey,
+                        user: user,
+                        issue: project,
+                        details: matches)
+
+        arguments.view = "/notify/organizationsMatch"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
     Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved, String sessionUsername) {
         Map<String, String> values = new HashMap<>()
         Issue project = Issue.findByProjectKey(projectKey)
