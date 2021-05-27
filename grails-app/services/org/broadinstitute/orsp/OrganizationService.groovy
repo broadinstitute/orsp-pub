@@ -92,7 +92,7 @@ class OrganizationService {
         }
 
         if (!org.isEmpty()) {
-            String matches = org.stream().map({ o -> o.name }).collect(Collectors.joining(","))
+            String matches = org.stream().map({ o -> o.name }).collect(Collectors.joining(", "))
             notifyService.notifyOrganizationsMatch(issue.projectKey, matches)
         }
     }
