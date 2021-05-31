@@ -19,7 +19,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "devDependencies": {
     "babel-core": "6.26.3",
-    "babel-jest": "23.6.0",
+    "babel-jest": "27.0.2",
     "babel-loader": "7.1.5",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-env": "1.7.0",
