@@ -759,9 +759,16 @@ class QueryService implements Status {
             addEntity(Issue)
             list()
         }
-        issues.each {
+        issues.each { Issue it ->
             it.setAttachments(getAttachmentsForProject(it.projectKey))
+            if (it.type.contentEquals(IssueType.CONSENT_GROUP.name)) {
+                it.setConsentCollectionLinks(ConsentCollectionLink.findAllByConsentKey(it.projectKey))
+            }
         }
+
+
+
+
 
         issues.collect{ it -> [
                 id               : it.id,
